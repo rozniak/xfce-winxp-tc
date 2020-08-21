@@ -1,0 +1,167 @@
+/**
+ * scrollbar.scss - Scrollbar Widget Luna (Blue) Styles
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+ 
+scrollbar
+{
+    &.horizontal
+    {
+        background-image: url("../Resources/scrollbar_horz_track.png");
+        
+        
+        button
+        {
+            background-image: url("../Resources/scrollbar_horz_button.png");
+            border: 0px;
+            min-height: 17px;
+            min-width: 17px;
+            
+            
+            &:active
+            {
+                background-image: url("../Resources/scrollbar_horz_button_press.png");
+            }
+            
+            &:disabled
+            {
+                background-image: url("../Resources/scrollbar_horz_button_inactive.png");
+            }
+            
+            &:hover
+            {
+                background-image: url("../Resources/scrollbar_horz_button_hover.png");
+            }
+            
+            &.down
+            {
+                -gtk-icon-source: url("../Resources/scrollbar_right_glyph.png");
+                
+                
+                &:disabled
+                {
+                    -gtk-icon-source: url("../Resources/scrollbar_right_glyph_inactive.png");
+                }
+            }
+            
+            &.up
+            {
+                -gtk-icon-source: url("../Resources/scrollbar_left_glyph.png");
+                
+                
+                &:disabled
+                {
+                    -gtk-icon-source: url("../Resources/scrollbar_left_glyph_inactive.png");
+                }
+            }
+        }
+        
+        slider
+        {
+            border-image: url("../Resources/scrollbar_horz_slider.png") 3 3 3 3 stretch;
+            min-height: 11px;
+            min-width: 50px;
+            
+            
+            &:active
+            {
+                border-image: url("../Resources/scrollbar_horz_slider_press.png") 3 3 3 3 stretch;
+            }
+            
+            &:hover
+            {
+                border-image: url("../Resources/scrollbar_horz_slider_hover.png") 3 3 3 3 stretch;
+            }
+        }
+    }
+    
+    &.vertical
+    {
+        background-image: url("../Resources/scrollbar_vert_track.png");
+        
+        
+        button
+        {
+            background-image: url("../Resources/scrollbar_vert_button.png");
+            border: 0px;
+            min-height: 17px;
+            min-width: 17px;
+            
+            
+            &:active
+            {
+                background-image: url("../Resources/scrollbar_vert_button_press.png");
+            }
+            
+            &:disabled
+            {
+                background-image: url("../Resources/scrollbar_vert_button_inactive.png");
+            }
+            
+            &:hover
+            {
+                background-image: url("../Resources/scrollbar_vert_button_hover.png");
+            }
+            
+            &.down
+            {
+                -gtk-icon-source: url("../Resources/scrollbar_down_glyph.png");
+                
+                &:disabled
+                {
+                    -gtk-icon-source: url("../Resources/scrollbar_down_glyph_inactive.png");
+                }
+            }
+            
+            &.up
+            {
+                -gtk-icon-source: url("../Resources/scrollbar_up_glyph.png");
+                
+                &:disabled
+                {
+                    -gtk-icon-source: url("../Resources/scrollbar_up_glyph_inactive.png");
+                }
+            }
+        }
+        
+        slider
+        {
+            border-image: url("../Resources/scrollbar_vert_slider.png") 3 3 3 3 stretch;
+            min-height: 50px;
+            min-width: 11px;
+            
+            
+            &:active
+            {
+                border-image: url("../Resources/scrollbar_vert_slider_press.png") 3 3 3 3 stretch;
+            }
+            
+            &:hover
+            {
+                border-image: url("../Resources/scrollbar_vert_slider_hover.png") 3 3 3 3 stretch;
+            }
+        }
+    }
+    
+    slider
+    {
+        background-color: #C3D5FD;
+        border-style: solid;
+        border-width: 3;
+        
+        
+        &:active
+        {
+            background-color: #A5BEFB;
+        }
+        
+        &:hover
+        {
+            background-color: #D8E8FF;
+        }
+    }
+}

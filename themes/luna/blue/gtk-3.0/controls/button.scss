@@ -1,0 +1,29 @@
+/**
+ * button.scss - Button Widget Luna (Blue) Styles
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+button
+{
+    background-image: url("../Resources/button_body.png");
+    background-size: 100% 100%;
+    border-style: solid;
+    border-width: 3;
+    border-image: url("../Resources/button.png") 3 3 3 3 stretch;
+    
+    
+    &:active
+    {
+        background-image: url("../Resources/button_press_body.png");
+        border-image: url("../Resources/button_press.png") 3 3 3 3 stretch;
+    }
+    
+    &:hover
+    {
+        border-image: url("../Resources/button_hover.png") 3 3 3 3 stretch;
+    }
+}

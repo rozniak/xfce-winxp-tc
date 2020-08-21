@@ -1,0 +1,21 @@
+/**
+ * _base.scss - Base Widget Luna (Blue) Styles
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+box,
+menubar,
+dialog
+{
+    background-color: #ECE9D8;
+    color:            #000;
+}
+
+flowbox
+{
+    border: 0;
+}

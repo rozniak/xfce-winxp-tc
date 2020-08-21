@@ -1,0 +1,231 @@
+style "default" {
+    bg[NORMAL] = "#ece9d8"
+}
+
+style "button" {
+    xthickness = 4
+    ythickness = 4
+
+    engine "pixmap" {
+        image {
+            function = BOX
+            state = NORMAL
+            file = "../Resources/button.png"
+            border = { 4, 4, 4, 4 }
+            stretch = TRUE
+        }
+    }
+
+    engine "pixmap" {
+        image {
+            function = BOX
+            state = PRELIGHT
+            file = "../Resources/button_hover.png"
+            border = { 4, 4, 4, 4 }
+            stretch = TRUE
+        }
+    }
+
+    engine "pixmap" {
+        image {
+            function = BOX
+            state = ACTIVE
+            file = "../Resources/button_press.png"
+            border = { 4, 4, 4, 4 }
+            stretch = TRUE
+        }
+    }
+
+    engine "pixmap" {
+        image {
+            function = BOX
+            state = INSENSITIVE
+            file = "../Resources/button_inactive.png"
+            border = { 4, 4, 4, 4 }
+            stretch = TRUE
+        }
+    }
+
+    engine "pixmap" {
+        image {
+            function = BOX
+            state = SELECTED
+            file = "../Resources/button_active.png"
+            border = { 4, 4, 4, 4 }
+            stretch = TRUE
+        }
+    }
+}
+
+style "checkbox" {
+    engine "pixmap" {
+        # Check box unchecked
+        #
+        image {
+            function = CHECK
+            shadow = OUT
+            state = NORMAL
+            overlay_file = "../Resources/checkbox_unchecked.png"
+        }
+
+        image {
+            function = CHECK
+            shadow = OUT
+            state = PRELIGHT
+            overlay_file = "../Resources/checkbox_unchecked_hover.png"
+        }
+
+        image {
+            function = CHECK
+            shadow = OUT
+            state = ACTIVE
+            overlay_file = "../Resources/checkbox_unchecked_press.png"
+        }
+
+        image {
+            function = CHECK
+            shadow = OUT
+            state = INSENSITIVE
+            overlay_file = "../Resources/checkbox_unchecked_inactive.png"
+        }
+
+        # Check box checked
+        #
+        image {
+            function = CHECK
+            shadow = IN
+            state = NORMAL
+            overlay_file = "../Resources/checkbox_checked.png"
+        }
+
+        image {
+            function = CHECK
+            shadow = IN
+            state = PRELIGHT
+            overlay_file = "../Resources/checkbox_checked_hover.png"
+        }
+
+        image {
+            function = CHECK
+            shadow = IN
+            state = ACTIVE
+            overlay_file = "../Resources/checkbox_checked_press.png"
+        }
+
+        image {
+            function = CHECK
+            shadow = IN
+            state = INSENSITIVE
+            overlay_file = "../Resources/checkbox_checked_inactive.png"
+        }
+
+        # Check box indecisive
+        #
+        image {
+            function = CHECK
+            shadow = ETCHED_IN
+            state = NORMAL
+            overlay_file = "../Resources/checkbox_indecisive.png"
+        }
+
+        image {
+            function = CHECK
+            shadow = ETCHED_IN
+            state = PRELIGHT
+            overlay_file = "../Resources/checkbox_indecisive_hover.png"
+        }
+
+        image {
+            function = CHECK
+            shadow = ETCHED_IN
+            state = ACTIVE
+            overlay_file = "../Resources/checkbox_indecisive_press.png"
+        }
+
+        image {
+            function = CHECK
+            shadow = ETCHED_IN
+            state = INSENSITIVE
+            overlay_file = "../Resources/checkbox_indecisive_inactive.png"
+        }
+    }
+}
+
+style "radio" {
+    engine "pixmap" {
+        # Radio button unchecked
+        #
+        image {
+            function = OPTION
+            shadow = OUT
+            state = NORMAL
+            overlay_file = "../Resources/radio_unchecked.png"
+            overlay_stretch = FALSE
+        }
+
+        image {
+            function = OPTION
+            shadow = OUT
+            state = PRELIGHT
+            overlay_file = "../Resources/radio_unchecked_hover.png"
+            overlay_stretch = FALSE
+        }
+
+        image {
+            function = OPTION
+            shadow = OUT
+            state = ACTIVE
+            overlay_file = "../Resources/radio_unchecked_press.png"
+            overlay_stretch = FALSE
+        }
+
+        image {
+            function = OPTION
+            shadow = OUT
+            state = INSENSITIVE
+            overlay_file = "../Resources/radio_unchecked_inactive.png"
+            overlay_stretch = FALSE
+        }
+
+        # Radio button checked
+        #
+        image {
+            function = OPTION
+            shadow = IN
+            state = NORMAL
+            overlay_file = "../Resources/radio_checked.png"
+            overlay_stretch = FALSE
+        }
+
+        image {
+            function = OPTION
+            shadow = IN
+            state = PRELIGHT
+            overlay_file = "../Resources/radio_checked_hover.png"
+            overlay_stretch = FALSE
+        }
+
+        image {
+            function = OPTION
+            shadow = IN
+            state = ACTIVE
+            overlay_file = "../Resources/radio_checked_press.png"
+            overlay_stretch = FALSE
+        }
+
+        image {
+            function = OPTION
+            shadow = IN
+            state = INSENSITIVE
+            overlay_file = "../Resources/radio_checked_inactive.png"
+            overlay_stretch = FALSE
+        }
+    }
+}
+
+widget_class "*"                  style "default"
+
+widget_class "*GtkButton*"        style "button"
+
+widget_class "*<GtkCheckButton>*" style "checkbox"
+widget_class "*<GtkRadioButton>*" style "radio"
