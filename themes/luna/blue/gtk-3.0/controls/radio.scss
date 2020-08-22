@@ -1,0 +1,54 @@
+/**
+ * checkbox.scss - Check Box Widget Luna (Blue) Styles
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+radio
+{
+    background-image: url("../Resources/radio_unchecked.png");
+    margin-right: 6px;
+    min-height: 13px;
+    min-width: 13px;
+    
+    
+    /** Button states **/
+    &:active
+    {
+        background-image: url("../Resources/radio_unchecked_press.png");
+    }
+    
+    &:disabled
+    {
+        background-image: url("../Resources/radio_unchecked_inactive.png");
+    }
+    
+    &:hover
+    {
+        background-image: url("../Resources/radio_unchecked_hover.png");
+    }
+    
+    /** Check states **/
+    &:checked
+    {
+        -gtk-icon-source: url("../Resources/radio_check_glyph.png");
+    }
+    
+    &:checked:active
+    {
+        -gtk-icon-source: url("../Resources/radio_check_glyph_press.png");
+    }
+    
+    &:checked:disabled
+    {
+        -gtk-icon-source: url("../Resources/radio_check_glyph_inactive.png");
+    }
+    
+    &:checked:hover
+    {
+        -gtk-icon-source: url("../Resources/radio_check_glyph_hover.png");
+    }
+}
