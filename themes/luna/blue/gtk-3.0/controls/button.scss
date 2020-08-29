@@ -16,14 +16,19 @@ button
     border-image: url("../Resources/button.png") 3 3 3 3 stretch;
     
     
-    &:active
+    &:focus
     {
-        background-image: url("../Resources/button_press_body.png");
-        border-image: url("../Resources/button_press.png") 3 3 3 3 stretch;
+        border-image: url("../Resources/button_active.png") 3 3 3 3 stretch;
     }
     
     &:hover
     {
         border-image: url("../Resources/button_hover.png") 3 3 3 3 stretch;
+    }
+    
+    &:active
+    {
+        background-image: url("../Resources/button_press_body.png");
+        border-image: url("../Resources/button_press.png") 3 3 3 3 stretch;
     }
 }
