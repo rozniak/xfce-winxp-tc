@@ -14,7 +14,7 @@ notebook
     
     &.frame
     {
-        border-image: url("../Resources/tab-edge-box.png") 2 4 4 2 stretch;
+        border-image: url("../Resources/tab_edge_box.png") 2 4 4 2 stretch;
         border-style: solid;
         border-width: 2 4 4 2;
     }
@@ -29,7 +29,7 @@ notebook
         
         & > tabs > tab
         {
-            background-image: url("../Resources/tab-body.png");
+            background-image: url("../Resources/tab_body.png");
             background-size: 100% 100%;
             border-image: url("../Resources/tab.png") 5 3 0 3 stretch;
             border-style: solid;
@@ -39,14 +39,14 @@ notebook
             
             &:hover:not(:checked)
             {
-                background-image: url("../Resources/tab-hover-body.png");
-                border-image: url("../Resources/tab-hover.png") 5 3 0 3 stretch;
+                background-image: url("../Resources/tab_hover_body.png");
+                border-image: url("../Resources/tab_hover.png") 5 3 0 3 stretch;
             }
             
             &:checked
             {
                 background: #FCFCFE;
-                border-image: url("../Resources/tab-active.png") 3 3 0 3 stretch;
+                border-image: url("../Resources/tab_active.png") 3 3 0 3 stretch;
                 border-top-width: 3px;
                 margin-bottom: -1px;
             }
