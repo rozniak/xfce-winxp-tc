@@ -1,0 +1,26 @@
+/**
+ * frame.scss - Frame Widget Luna (Blue) Styles
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+frame
+{
+    & > border:not(.flat)
+    {
+        border-image: url("../Resources/frame_border.png") 3 stretch;
+        border-style: solid;
+        border-width: 3px;
+        margin: 0px;
+        padding: 0px;
+    }
+    
+    & > label
+    {
+        color: #0046D5;
+        padding: 0px 5px;
+    }
+}
