@@ -16,11 +16,6 @@ check
     
     
     /** Button states **/
-    &:active
-    {
-        background-image: url("../Resources/checkbox_unchecked_press.png");
-    }
-    
     &:disabled
     {
         background-image: url("../Resources/checkbox_unchecked_inactive.png");
@@ -31,15 +26,15 @@ check
         background-image: url("../Resources/checkbox_unchecked_hover.png");
     }
     
+    &:active
+    {
+        background-image: url("../Resources/checkbox_unchecked_press.png");
+    }
+    
     /** Check states **/
     &:checked
     {
         -gtk-icon-source: url("../Resources/checkbox_check_glyph.png");
-    }
-    
-    &:checked:active
-    {
-        -gtk-icon-source: url("../Resources/checkbox_check_glyph_press.png");
     }
     
     &:checked:disabled
@@ -52,14 +47,14 @@ check
         -gtk-icon-source: url("../Resources/checkbox_check_glyph_hover.png");
     }
     
+    &:checked:active
+    {
+        -gtk-icon-source: url("../Resources/checkbox_check_glyph_press.png");
+    }
+    
     &:indeterminate
     {
         -gtk-icon-source: url("../Resources/checkbox_indecisive_glyph.png");
-    }
-    
-    &:indeterminate:active
-    {
-        -gtk-icon-source: url("../Resources/checkbox_indecisive_glyph_press.png");
     }
     
     &:indeterminate:disabled
@@ -70,5 +65,10 @@ check
     &:indeterminate:hover
     {
         -gtk-icon-source: url("../Resources/checkbox_indecisive_hover.png");
+    }
+    
+    &:indeterminate:active
+    {
+        -gtk-icon-source: url("../Resources/checkbox_indecisive_glyph_press.png");
     }
 }

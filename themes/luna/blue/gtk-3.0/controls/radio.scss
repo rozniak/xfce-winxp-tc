@@ -16,11 +16,6 @@ radio
     
     
     /** Button states **/
-    &:active
-    {
-        background-image: url("../Resources/radio_unchecked_press.png");
-    }
-    
     &:disabled
     {
         background-image: url("../Resources/radio_unchecked_inactive.png");
@@ -31,15 +26,15 @@ radio
         background-image: url("../Resources/radio_unchecked_hover.png");
     }
     
+    &:active
+    {
+        background-image: url("../Resources/radio_unchecked_press.png");
+    }
+    
     /** Check states **/
     &:checked
     {
         -gtk-icon-source: url("../Resources/radio_check_glyph.png");
-    }
-    
-    &:checked:active
-    {
-        -gtk-icon-source: url("../Resources/radio_check_glyph_press.png");
     }
     
     &:checked:disabled
@@ -50,5 +45,10 @@ radio
     &:checked:hover
     {
         -gtk-icon-source: url("../Resources/radio_check_glyph_hover.png");
+    }
+    
+    &:checked:active
+    {
+        -gtk-icon-source: url("../Resources/radio_check_glyph_press.png");
     }
 }
