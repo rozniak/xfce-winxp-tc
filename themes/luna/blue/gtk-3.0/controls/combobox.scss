@@ -23,6 +23,7 @@ combobox
         margin: 1px;
         min-height: 18px;
         min-width: 15px;
+        padding-right: 18px;
         
         
         &:hover
@@ -45,5 +46,11 @@ combobox
     {
         border-width: 0px;
         padding-top: 2px;
+        
+        
+        & + button
+        {
+            padding-right: 0px;
+        }
     }
 }
