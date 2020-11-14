@@ -26,6 +26,7 @@ button
         border-image: url("../Resources/button_hover.png") 3 3 3 3 stretch;
     }
     
+    &:checked,
     &:active
     {
         background-image: url("../Resources/button_press_body.png");
