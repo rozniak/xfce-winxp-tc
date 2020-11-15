@@ -32,4 +32,11 @@ button
         background-image: url("../Resources/button_press_body.png");
         border-image: url("../Resources/button_press.png") 3 3 3 3 stretch;
     }
+    
+    &:disabled
+    {
+        background: #F5F4EA;
+        border-image: url("../Resources/button_inactive.png") 3 3 3 3 stretch;
+        color: #A1A192;
+    }
 }
