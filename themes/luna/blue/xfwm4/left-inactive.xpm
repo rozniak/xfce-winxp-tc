@@ -1,11 +1,11 @@
 /* XPM */
 static char *dummy[]={
 "5 31 5 1",
-". c #5b68cd",
-"# c #7480dc",
-"a c #7589de",
-"c c #758cdc",
-"b c #758cdd",
+". c #4f53bc",
+"# c #6d74cd",
+"a c #7382d9",
+"c c #7586dc",
+"b c #7587dd",
 ".#abc",
 ".#abc",
 ".#abc",
