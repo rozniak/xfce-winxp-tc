@@ -1,0 +1,4 @@
+//
+// GtkHeaderBar colour definitions
+//
+$headerbar_color: if($variant == 'light', lighten($bg_color, 5%), darken(bg_color, 3%));

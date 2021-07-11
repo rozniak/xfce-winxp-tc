@@ -1,0 +1,461 @@
+/**
+ * headerbar.scss - Luna (Blue) Headerbar Styles
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+%titlebar,
+headerbar
+{
+    border-color:  $alt_borders_color;
+    border-radius: 0;
+    border-style:  solid;
+    border-width:  0 0 1px;
+    min-height:    $_headerbar_height;
+    padding:       0 6px;
+
+    @include headerbar_fill(darken($bg_color, 10%));
+
+    &:backdrop
+    {
+        background-color: $bg_color;
+        background-image: none;
+        border-color:     $backdrop_borders_color;
+        box-shadow:       inset 0 1px $top_hilight;
+
+        transition: $backdrop_transition;
+    }
+
+    .title {
+        font-weight:   bold;
+        padding-left:  12px;
+        padding-right: 12px;
+    }
+
+    .subtitle {
+        font-size:     smaller;
+        padding-left:  12px;
+        padding-right: 12px;
+
+        @extend .dim-label;
+    }
+
+    // Darken switchbuttons for headerbars. issue #1588
+    //
+    stackswitcher button:checked,
+    button.toggle:checked
+    {
+        background:       if($variant == 'light', image(darken($bg_color, 17%)), image(darken($bg_color, 9%)));
+        border-color:     darken($borders_color, 3%);
+        border-top-color: darken($borders_color, 8%);
+
+        &:backdrop
+        {
+            @include button(backdrop-active);
+        }
+    }
+
+    .selection-mode &,
+    &.selection-mode
+    {
+        $_hc: mix($top_hilight, $suggested_bg_color, 50%); // Hilight color
+
+        border-color: $suggested_border_color;
+        color:        $selected_fg_color;
+        text-shadow:  0 -1px transparentize(black, 0.5);
+
+        @include headerbar_fill($suggested_bg_color, $_hc);
+
+        &:backdrop
+        {
+            background-color: $suggested_bg_color;
+            background-image: none;
+            box-shadow:       inset 0 1px mix($top_hilight, $suggested_bg_color, 60%);
+
+            label
+            {
+                color:       $selected_fg_color;
+                text-shadow: none;
+            }
+        }
+
+        .subtitle:link
+        {
+            @extend %link_selected;
+        }
+
+        button
+        {
+            @include button(normal, $suggested_bg_color, $selected_fg_color);
+
+            @at-root %selection_mode_button_flat,
+            &.flat
+            {
+                @include button(undecorated);
+            }
+
+            &:hover
+            {
+                @include button(hover, $suggested_bg_color, $selected_fg_color);
+            }
+
+            &:active,
+            &:checked,
+            &.toggle:checked,
+            &.toggle:active
+            {
+                @include button(active, $suggested_bg_color, $selected_fg_color);
+            }
+
+            &:backdrop
+            {
+                &.flat, &
+                {
+                    @include button(backdrop, $suggested_bg_color, $selected_fg_color);
+
+                    border-color:     $suggested_border_color;
+                    -gtk-icon-effect: none;
+
+                    &:active,
+                    &:checked
+                    {
+                        @include button(backdrop-active, $suggested_bg_color, $selected_fg_color);
+
+                        border-color: $suggested_border_color;
+                    }
+
+                    &:disabled
+                    {
+                        @include button(backdrop-insensitive, $suggested_bg_color, $selected_fg_color);
+
+                        border-color: $suggested_border_color;
+
+                        &:active, &:checked
+                        {
+                            @include button(backdrop-insensitive-active, $suggested_bg_color, $selected_fg_color);
+
+                            border-color: $suggested_border_color;
+                        }
+                    }
+                }
+            }
+
+            @at-root %selection_mode_button_flat,
+            &.flat
+            {
+                &:backdrop,
+                &:disabled,
+                &:backdrop:disabled
+                {
+                    @include button(undecorated);
+                }
+            }
+
+            &:disabled
+            {
+                @include button(insensitive, $suggested_bg_color, $selected_fg_color);
+
+                &:active,
+                &:checked
+                {
+                    @include button(insensitive-active, $suggested_bg_color, $selected_fg_color);
+                }
+            }
+
+            &.suggested-action
+            {
+                @include button(normal);
+
+                border-color: $suggested_border_color;
+
+                &:hover
+                {
+                    @include button(hover);
+
+                    border-color: $suggested_border_color;
+                }
+
+                &:active
+                {
+                    @include button(active);
+
+                    border-color: $suggested_border_color;
+                }
+
+                &:disabled
+                {
+                    @include button(insensitive);
+
+                    border-color: $suggested_border_color;
+                }
+
+                &:backdrop
+                {
+                    @include button(backdrop);
+
+                    border-color: $suggested_border_color;
+                }
+
+                &:backdrop:disabled
+                {
+                    @include button(backdrop-insensitive);
+
+                    border-color: $suggested_border_color;
+                }
+            }
+        }
+
+        .selection-menu
+        {
+            &:backdrop, &
+            {
+                background-color: transparentize($suggested_bg_color, 1);
+                background-image: none;
+                border-color:     transparentize($suggested_bg_color, 1);
+                box-shadow:       none;
+                min-height:       20px;
+                padding:          $_sel_menu_pad;
+
+                arrow
+                {
+                    -GtkArrow-arrow-scaling: 1;
+                }
+
+                .arrow
+                {
+                    color: transparentize($selected_fg_color, 0.5);
+                    -gtk-icon-shadow: none;
+                    -gtk-icon-source: -gtk-icontheme('pan-down-symbolic');
+                }
+            }
+        }
+    }
+
+    // Squared corners when the window is maximized, tiled, or fullscreen
+    //
+    .tiled        &,
+    .tiled-top    &,
+    .tiled-right  &,
+    .tiled-bottom &,
+    .tiled-left   &,
+    .maximized    &,
+    .fullscreen   &
+    {
+        &:backdrop, &
+        {
+            border-radius: 0;
+        }
+    }
+
+    &.default-decoration
+    {
+        min-height: 28px;
+        padding:    4px;
+
+        button.titlebutton
+        {
+            min-height: 26px;
+            min-width: 26px;
+            margin: 0;
+            padding: 0;
+        }
+    }
+
+    // Hide the close button separator
+    //
+    separator.titlebutton
+    {
+        opacity: 0;
+    }
+
+    .solid-csd &
+    {
+        &:backdrop, &
+        {
+            // Specificity bump
+            //
+            &:dir(rtl), &:dir(ltr)
+            {
+                margin-left:   -1px;
+                margin-right:  -1px;
+                margin-top:    -1px;
+                border-radius: 0;
+                box-shadow:    none;
+            }
+        }
+     }
+}
+
+headerbar
+{
+    // Add vertical margins to common widget on the headerbar to avoid them spanning
+    // the whole height
+    //
+    entry,
+    spinbutton,
+    separator:not(.sidebar),
+    button
+    {
+        margin-top:    $_hb_btn_pad;
+        margin-bottom: $_hb_btn_pad;
+    }
+
+    switch
+    {
+        margin-top:    $_switch_margin;
+        margin-bottom: $_switch_margin;
+    }
+
+    &.titlebar headerbar:not(.titlebar)
+    {
+        // Drop the background of non-titlebar nested headerbars. This is needed to
+        // work around headerbar sliding animation issues without refactoring
+        // Adwaita's support of titlebars and headerbars as it may break
+        // applications.
+        //
+        // See https://gitlab.gnome.org/GNOME/gtk/issues/1264 for more information.
+        //
+        background: none;
+        box-shadow: none;
+    }
+}
+
+.background .titlebar
+{
+    &:backdrop, &
+    {
+        border-top-left-radius:  $window_radius;
+        border-top-right-radius: $window_radius;
+    }
+}
+
+.background.tiled        .titlebar,
+.background.tiled-top    .titlebar,
+.background.tiled-right  .titlebar,
+.background.tiled-bottom .titlebar,
+.background.tiled-left   .titlebar,
+.background.maximized    .titlebar,
+.background.solid-csd    .titlebar
+{
+    &:backdrop, &
+    {
+        border-top-left-radius:  0;
+        border-top-right-radius: 0;
+    }
+}
+
+// Headerbar border rounding
+//
+headerbar
+{
+    window separator:first-child + &,
+    window &:first-child
+    {
+        &:backdrop, &
+        {
+            border-top-left-radius: 7px;
+        }
+    }
+
+    window &:last-child
+    {
+        &:backdrop, &
+        {
+            border-top-right-radius: 7px;
+        }
+    }
+
+    // Tackles the stacked headerbars case
+    //
+    window stack &
+    {
+        &:first-child, &:last-child
+        {
+            &:backdrop, &
+            {
+                border-top-left-radius: 7px;
+                border-top-right-radius: 7px;
+            }
+        }
+    }
+
+    window.tiled        &,
+    window.tiled-top    &,
+    window.tiled-right  &,
+    window.tiled-bottom &,
+    window.tiled-left   &,
+    window.maximized    &,
+    window.fullscreen   &,
+    window.solid-csd    &
+    {
+        &, &:backdrop
+        {
+            &,
+            &:first-child,
+            &:last-child,
+            &:only-child
+            {
+                border-top-left-radius: 0;
+                border-top-right-radius: 0;
+            }
+        }
+    }
+}
+
+.titlebar:not(headerbar)
+{
+    window.csd > &
+    {
+        // In csd we assume every titlebar is a headerbar so reset anything, this is
+        // needed for split toolbars cases
+        //
+        background-color: transparent;
+        background-image: none;
+        border-color:     transparent;
+        border-style:     none;
+        box-shadow:       none;
+        padding:          0;
+    }
+
+    separator
+    {
+        background-color: $borders_color; // FIXME: Use darker border?
+    }
+
+    @extend %titlebar;
+}
+
+//
+// Development versions of apps to use a differently styled headerbar
+//
+window.devel
+{
+    headerbar.titlebar:not(.selection-mode)
+    {
+        $c: darken($bg_color, 10%);
+        $gradient: cross-fade(10% -gtk-icontheme("system-run-symbolic"),
+                   image(transparent)) 90% 0/256px 256px no-repeat,
+                   linear-gradient(to right, transparent 65%, transparentize($selected_bg_color, 0.8)),
+                   linear-gradient(to top, darken($c, 3%), $c 3px, lighten($c, 6%));
+
+        @if $variant == 'dark'
+        {
+            $gradient: cross-fade(10% -gtk-icontheme("system-run-symbolic"),
+                       image(transparent)) 90% 0/256px 256px no-repeat,
+                       linear-gradient(to right, transparent 65%, transparentize($selected_bg_color, 0.9)),
+                       linear-gradient(to top, lighten($c, 3%) 3px, lighten($c, 5%));
+        }
+
+        background: $bg_color $gradient;
+
+        &:backdrop
+        {
+            background: $bg_color cross-fade(10% -gtk-icontheme("system-run-symbolic"),
+                        image(transparent)) 90% 0/256px 256px no-repeat,
+                        image($bg_color); // background-color would flash
+        }
+    }
+}

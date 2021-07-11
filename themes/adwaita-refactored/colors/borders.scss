@@ -1,0 +1,7 @@
+//
+// Colour definitions for borders
+//
+$selected_borders_color: if($variant == 'light', darken($selected_bg_color, 15%), darken($selected_bg_color, 30%));
+$borders_color:          if($variant == 'light', darken($bg_color,          18%), darken($bg_color,          10%));
+$alt_borders_color:      if($variant == 'light', darken($bg_color,          24%), darken($bg_color,          18%));
+$borders_edge:           if($variant == 'light', transparentize(#FFFFFF, 0.2),    transparentize($fg_color, 0.93));

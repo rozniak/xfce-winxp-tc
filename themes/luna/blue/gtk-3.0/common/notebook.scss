@@ -1,0 +1,324 @@
+/**
+ * notebook.scss - Luna (Blue) Notebook Styles
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+notebook
+{
+    background-color: $notebook_bg_color;
+
+    // Shared style
+    //
+    &
+    {
+        > header
+        {
+            background-color: $bg_color;
+
+            &.top
+            {
+                border-bottom: 1px solid $notebook_borders_color;
+
+                > tabs > tab
+                {
+                    background-image: url("../Resources/tab_top_body.png");
+                    border-image:     url("../Resources/tab_top.png") 5 3 0 3 stretch;
+                    border-width:     5px 3px 0px 3px;
+                    margin-right:     1px;
+                    padding:          0px 5px;
+
+                    &:hover:not(:checked)
+                    {
+                        background-image: url("../Resources/tab_top_hover_body.png");
+                        border-image:     url("../Resources/tab_top_hover.png") 5 3 0 3 stretch;
+                    }
+                    
+                    &:checked
+                    {
+                        border-image:      url("../Resources/tab_top_active.png") 3 3 0 3 stretch;
+                        border-top-width:  3px;
+                        margin-bottom:    -1px;
+                    }
+                }
+            }
+
+            &.bottom
+            {
+                border-top:   1px solid $notebook_borders_color;
+
+                > tabs > tab
+                {
+                    background-image: url("../Resources/tab_bottom_body.png");
+                    border-image:     url("../Resources/tab_bottom.png") 0 3 5 3 stretch;
+                    border-width:     0px 3px 5px 3px;
+                    margin-right:     1px;
+                    padding:          0px 5px;
+
+                    &:hover:not(:checked)
+                    {
+                        background-image: url("../Resources/tab_bottom_hover_body.png");
+                        border-image:     url("../Resources/tab_bottom_hover.png") 0 3 5 3 stretch;
+                    }
+
+                    &:checked
+                    {
+                        border-image:         url("../Resources/tab_bottom_active.png") 0 3 3 3 stretch;
+                        border-bottom-width:  3px;
+                        margin-top:          -1px;
+                        padding-top:          1px;
+                    }
+                }
+            }
+
+            &.left
+            {
+                border-right:   1px solid $notebook_borders_color;
+
+                > tabs > tab
+                {
+                    background-image: url("../Resources/tab_left_body.png");
+                    border-image:     url("../Resources/tab_left.png") 3 0 3 5 stretch;
+                    border-width:     3px 0px 3px 5px;
+                    margin-bottom:    1px;
+                    padding:          2px 5px;
+
+                    &:hover:not(:checked)
+                    {
+                        background-image: url("../Resources/tab_left_hover_body.png");
+                        border-image:     url("../Resources/tab_left_hover.png") 3 0 3 5 stretch;
+                    }
+
+                    &:checked
+                    {
+                        border-image:       url("../Resources/tab_left_active.png") 3 0 3 3 stretch;
+                        border-left-width:  3px;
+                        margin-right:      -1px;
+                    }
+                }
+            }
+
+            &.right
+            {
+                border-left:    1px solid $notebook_borders_color;
+
+                > tabs > tab
+                {
+                    background-image: url("../Resources/tab_right_body.png");
+                    border-image:     url("../Resources/tab_right.png") 3 5 3 0 stretch;
+                    border-width:     3px 5px 3px 0px;
+                    margin-bottom:    1px;
+                    padding:          2px 5px;
+
+                    &:hover:not(:checked)
+                    {
+                        background-image: url("../Resources/tab_right_hover_body.png");
+                        border-image:     url("../Resources/tab_right_hover.png") 3 5 3 0 stretch;
+                    }
+
+                    &:checked
+                    {
+                        border-image:        url("../Resources/tab_right_active.png") 3 3 3 0 stretch;
+                        border-right-width:  3px;
+                        margin-left:        -1px;
+                        padding-left:        6px;
+                    }
+                }
+            }
+            
+            > tabs > tab
+            {
+                background-position: center;
+                background-size:     120%;
+                border-style:        solid;
+
+                &:checked
+                {
+                    background: $notebook_selected_bg_color;
+                }
+            }
+        }
+    }
+
+    // Style when notebook has no border
+    //
+    &:not(.frame)
+    {
+        > header
+        {
+            &.bottom,
+            &.top
+            {
+                > tabs > tab
+                {
+                    &:first-child { margin-left:  1px; }
+                    &:last-child  { margin-right: 1px; }
+                }
+            }
+
+            &.left,
+            &.right
+            {
+                > tabs > tab
+                {
+                    &:first-child { margin-top:    1px; }
+                    &:last-child  { margin-bottom: 1px; }
+                }
+            }
+        }
+    }
+
+    // Style when notebook has a border
+    //
+    &.frame
+    {
+        border-image: url("../Resources/tab_edge_box.png") 2 4 4 2 stretch;
+        border-style: solid;
+        border-width: 2px 4px 4px 2px;
+
+        > header
+        {
+            &.top
+            {
+                border-right:  3px solid $bg_color;
+                margin: -2px -4px 0px -2px;
+            }
+
+            &.bottom
+            {
+                border-right: 3px solid $bg_color;
+                margin: 0px -4px -4px -2px;
+            }
+
+            &.left
+            {
+                border-bottom:  3px solid $bg_color;
+                margin: -2px 0px -4px -2px;
+            }
+
+            &.right
+            {
+                border-bottom:  3px solid $bg_color;
+                margin: -2px -4px -4px 0px;
+            }
+        }
+    }
+
+    // Some default Adwaita stuff
+    //
+    > header
+    {
+        // Default styles
+        //
+        &.top > tabs > arrow
+        {
+            @extend %notebook_vert_arrows;
+
+            border-top-style: none;
+        }
+
+        &.bottom > tabs > arrow
+        {
+            @extend %notebook_vert_arrows;
+
+            border-bottom-style: none;
+        }
+
+        @at-root %notebook_vert_arrows
+        {
+            margin-left:   -5px;
+            margin-right:  -5px;
+            padding-left:   4px;
+            padding-right:  4px;
+            
+            &.down { -gtk-icon-source: -gtk-icontheme('pan-start-symbolic'); }
+            &.up   { -gtk-icon-source: -gtk-icontheme('pan-end-symbolic');   }
+        }
+
+        &.left > tabs > arrow
+        {
+            @extend %notebook_horz_arrows;
+
+            border-left-style: none;
+        }
+
+        &.right > tabs > arrow
+        {
+            @extend %notebook_horz_arrows;
+            
+            border-right-style: none;
+        }
+
+        @at-root %notebook_horz_arrows
+        {
+            margin-bottom:  -5px;
+            margin-top:     -5px;
+            padding-bottom:  4px;
+            padding-top:     4px;
+
+            &.down { -gtk-icon-source: -gtk-icontheme('pan-up-symbolic');   }
+            &.up   { -gtk-icon-source: -gtk-icontheme('pan-down-symbolic'); }
+        }
+
+        > tabs > arrow
+        {
+            @extend %button_basic;
+
+            @extend %button_basic_flat;
+
+            border-radius: 0;
+            min-height:    16px;
+            min-width:     16px;
+
+            &:hover:not(:active):not(:backdrop)
+            {
+                background-clip:  padding-box;
+                background-color: transparentize(white, 0.7);
+                background-image: none;
+                border-color:     transparent;
+                box-shadow:       none;
+            }
+
+            &:disabled
+            {
+                @include button(undecorated);
+            }
+        }
+
+        tab
+        {
+            // Colors the button like the label, overridden otherwise
+            //
+            button.flat
+            {
+                margin-top:    2px;
+                margin-bottom: 2px;
+                min-width:     13px;
+                min-height:    13px;
+                padding:       0;
+
+                &:last-child
+                {
+                    margin-left:   5px;
+                    margin-right: -4px;
+                }
+
+                &:first-child
+                {
+                    margin-left:  -4px;
+                    margin-right:  5px;
+                }
+            }
+        }
+    }
+
+    // The :not(:only-child) is for "hidden" notebooks
+    //
+    > stack:not(:only-child)
+    { 
+        background-color: $base_color;
+    }
+}

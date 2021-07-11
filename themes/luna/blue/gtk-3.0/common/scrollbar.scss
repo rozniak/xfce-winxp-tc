@@ -1,0 +1,185 @@
+/**
+ * scrollbar.scss - Luna (Blue) Scrollbar Styles
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+scrollbar
+{
+    &.horizontal
+    {
+        background-image: url("../Resources/scrollbar_horz_track.png");
+
+        button
+        {
+            background-image: url("../Resources/scrollbar_horz_button.png");
+            min-height:       17px;
+            min-width:        17px;
+
+            &:hover
+            {
+                background-image: url("../Resources/scrollbar_horz_button_hover.png");
+            }
+
+            &:active
+            {
+                background-image: url("../Resources/scrollbar_horz_button_press.png");
+            }
+
+            &:disabled
+            {
+                background-image: url("../Resources/scrollbar_horz_button_inactive.png");
+            }
+
+            &.down
+            {
+                -gtk-icon-source: url("../Resources/scrollbar_right_glyph.png");
+
+                &:disabled
+                {
+                    -gtk-icon-source: url("../Resources/scrollbar_right_glyph_inactive.png");
+                }
+            }
+
+            &.up
+            {
+                -gtk-icon-source: url("../Resources/scrollbar_left_glyph.png");
+
+                &:disabled
+                {
+                    -gtk-icon-source: url("../Resources/scrollbar_left_glyph_inactive.png");
+                }
+            }
+        }
+
+        slider
+        {
+            background-image: url("../Resources/scrollbar_horz_gripper.png");
+            background-size:  8px 7px;
+            border-image:     url("../Resources/scrollbar_horz_slider.png") 3 3 3 3 stretch;
+            min-height:       11px;
+            min-width:        50px;
+
+            &:hover
+            {
+                background-image: url("../Resources/scrollbar_horz_gripper_hover.png");
+                border-image:     url("../Resources/scrollbar_horz_slider_hover.png") 3 3 3 3 stretch;
+            }
+
+            &:active
+            {
+                background-image: url("../Resources/scrollbar_horz_gripper_press.png");
+                border-image:     url("../Resources/scrollbar_horz_slider_press.png") 3 3 3 3 stretch;
+            }
+        }
+    }
+
+    &.vertical
+    {
+        background-image: url("../Resources/scrollbar_vert_track.png");
+
+        button
+        {
+            background-image: url("../Resources/scrollbar_vert_button.png");
+            min-height:       17px;
+            min-width:        17px;
+
+            &:disabled
+            {
+                background-image: url("../Resources/scrollbar_vert_button_inactive.png");
+            }
+
+            &:hover
+            {
+                background-image: url("../Resources/scrollbar_vert_button_hover.png");
+            }
+
+            &:active
+            {
+                background-image: url("../Resources/scrollbar_vert_button_press.png");
+            }
+
+            &.down
+            {
+                -gtk-icon-source: url("../Resources/scrollbar_down_glyph.png");
+
+                &:disabled
+                {
+                    -gtk-icon-source: url("../Resources/scrollbar_down_glyph_inactive.png");
+                }
+            }
+
+            &.up
+            {
+                -gtk-icon-source: url("../Resources/scrollbar_up_glyph.png");
+
+                &:disabled
+                {
+                    -gtk-icon-source: url("../Resources/scrollbar_up_glyph_inactive.png");
+                }
+            }
+        }
+
+        slider
+        {
+            background-image: url("../Resources/scrollbar_vert_gripper.png");
+            background-size:  7px 8px;
+            border-image:     url("../Resources/scrollbar_vert_slider.png") 3 3 3 3 stretch;
+            min-height:       50px;
+            min-width:        11px;
+
+            &:hover
+            {
+                background-image: url("../Resources/scrollbar_vert_gripper_hover.png");
+                border-image:     url("../Resources/scrollbar_vert_slider_hover.png") 3 3 3 3 stretch;
+            }
+
+            &:active
+            {
+                background-image: url("../Resources/scrollbar_vert_gripper_press.png");
+                border-image:     url("../Resources/scrollbar_vert_slider_press.png") 3 3 3 3 stretch;
+            }
+        }
+    }
+
+    button
+    {
+        background-size: 100%;
+
+        &,
+        &:active,
+        &:disabled,
+        &:hover
+        {
+            border: 0px;
+        }
+    }
+
+    slider
+    {
+        background-color:    #C3D5FD;
+        background-position: center;
+        background-repeat:   no-repeat;
+        border-style:        solid;
+        border-width:        3;
+
+        &:hover
+        {
+            background-color: #D8E8FF;
+        }
+
+        &:active
+        {
+            background-color: #A5BEFB;
+        }
+    }
+}
+
+treeview ~ scrollbar.vertical
+{
+    border-top:  1px solid $borders_color;
+    margin-top: -1px;
+}

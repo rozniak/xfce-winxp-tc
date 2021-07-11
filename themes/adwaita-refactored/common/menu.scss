@@ -1,0 +1,215 @@
+//
+// Menu styles
+//
+
+menubar,
+.menubar
+{
+    box-shadow: inset 0 -1px transparentize(black, 0.9);
+    padding:    0px;
+    -GtkWidget-window-dragging: true;
+
+    &:backdrop
+    {
+        background-color: $backdrop_bg_color;
+    }
+
+    > menuitem
+    {
+        min-height: 16px;
+        padding: 4px 8px;
+
+        // Remove padding and rounding from menubar submenus
+        //
+        menu
+        {
+            // Specificity bump
+            //
+            &:dir(rtl),
+            &:dir(ltr)
+            {
+                border-radius: 0;
+                padding: 0;
+            }
+        }
+
+        // Seems like it :hover even with keyboard focus
+        //
+        &:hover
+        {
+            box-shadow: inset 0 -3px $selected_bg_color;
+            color:      $link_color;
+        }
+
+        &:disabled
+        {
+            box-shadow: none;
+            color:      $insensitive_fg_color;
+        }
+    }
+
+    // Remove padding and rounding from menubar submenu decoration
+    .csd.popup decoration
+    {
+        border-radius: 0;
+    }
+}
+
+// Needed to make the border-radius of menus work
+// otherwise the background bleeds out of the menu edges
+//
+.background.popup
+{
+    background-color: transparent;
+}
+
+menu,
+.menu,
+.context-menu
+{
+    background-color: $menu_color;
+    border:           1px solid $borders_color; // Adds borders in a non composited env
+    margin:           4px;                      // See https://bugzilla.gnome.org/show_bug.cgi?id=591258
+    padding:          4px 0px;
+
+    .csd &
+    {
+        border:        none; // Axes borders in a composited env
+        border-radius: $menu_radius;
+    }
+
+    &:backdrop
+    {
+        background-color: $backdrop_menu_color;
+    }
+
+    menuitem
+    {
+        min-height:  16px;
+        min-width:   40px;
+        padding:     4px 6px;
+        text-shadow: none;
+
+        &:hover
+        {
+            background-color: $selected_bg_color;
+            color:            $selected_fg_color;
+        }
+
+        &:disabled
+        {
+            color: $insensitive_fg_color;
+
+            &:backdrop
+            {
+                color: $backdrop_insensitive_color;
+            }
+        }
+
+        &:backdrop,
+        &:backdrop:hover
+        {
+             background-color: transparent;
+             color:            $backdrop_fg_color;
+        }
+
+        // Submenu indicators
+        //
+        arrow
+        {
+            min-height: 16px;
+            min-width: 16px;
+
+            &:dir(ltr)
+            {
+                margin-left: 10px;
+                -gtk-icon-source: -gtk-icontheme('pan-end-symbolic');
+            }
+
+            &:dir(rtl)
+            {
+                -gtk-icon-source:-gtk-icontheme('pan-end-symbolic-rtl');
+                margin-right: 10px;
+            }
+        }
+
+        // Avoids labels color being overridden, see
+        // https://bugzilla.gnome.org/show_bug.cgi?id=767058
+        //
+        label
+        {
+            &:dir(rtl),
+            &:dir(ltr)
+            {
+                color: inherit; 
+            }
+        }
+    }
+
+    // Overflow arrows
+    //
+    > arrow
+    {
+        @include button(undecorated);
+
+        background-color: $menu_color;
+        border-radius:    0;
+        min-height:       16px;
+        min-width:        16px;
+        padding:          4px;
+
+        &.top
+        {
+            border-bottom:           1px solid mix($fg_color, $base_color, 10%);
+            border-top-right-radius: $menu_radius;
+            border-top-left-radius:  $menu_radius;
+            margin-top:              -4px;
+            -gtk-icon-source: -gtk-icontheme('pan-up-symbolic');
+        }
+
+        &.bottom
+        {
+            border-bottom-left-radius:  $menu_radius;
+            border-bottom-right-radius: $menu_radius;
+            border-top:                 1px solid mix($fg_color, $base_color, 10%);
+            margin-bottom:              -12px;
+            margin-top:                 8px;
+            -gtk-icon-source: -gtk-icontheme('pan-down-symbolic');
+        }
+
+        &:hover
+        {
+            background-color: mix($fg_color, $base_color, 10%);
+        }
+
+        &:backdrop
+        {
+            background-color: $backdrop_menu_color;
+        }
+
+        &:disabled
+        {
+            background-color: transparent;
+            border-color:     transparent;
+            color:            transparent;
+        }
+    }
+}
+
+menuitem
+{
+    accelerator
+    {
+        color: gtkalpha(currentColor, 0.55);
+    }
+
+    check,
+    radio
+    {
+        min-height: 16px;
+        min-width:  16px;
+
+        &:dir(ltr) { margin-right: 7px; }
+        &:dir(rtl) { margin-left: 7px;  }
+    }
+}

@@ -1,0 +1,4 @@
+//
+// Menu colour definitions
+//
+$menu_color: if($variant == 'light', $base_color, mix($bg_color, $base_color, 20%));

@@ -1,0 +1,11 @@
+//
+// The most basic colour definitions for all widgets
+//
+$base_color: if($variant == 'light', #FFFFFF, lighten(desaturate(#241f31, 100%), 2%));
+$text_color: if($variant == 'light', #000000, #FFFFFF);
+$bg_color:   if($variant == 'light', #F6F5F4, darken(desaturate(#3D3846, 100%),  4%));
+$fg_color:   if($variant == 'light', #2E3436, #EEEEEC);
+
+$base_hover_color:  transparentize($fg_color, 0.95);
+$drop_target_color: #4E9A06;
+$shadow_color:      transparentize(#000000,   0.9);

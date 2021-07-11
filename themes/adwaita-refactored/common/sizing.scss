@@ -1,0 +1,14 @@
+//
+// Constants for optional sizing
+//
+
+$_sizevariant:      'default'; //compact otherwise
+
+$_headerbar_height: if($_sizevariant == 'default', 46px,     40px);
+$_entry_height:     if($_sizevariant == 'default', 32px,     28px);
+$_btn_pad:          if($_sizevariant == 'default', 4px 9px,  2px 6px);
+$_hb_btn_pad:       if($_sizevariant == 'default', 6px,      5px);
+$_img_btn_pad:      if($_sizevariant == 'default', 5px,      2px);
+$_sel_menu_pad:     if($_sizevariant == 'default', 6px 10px, 4px 10px);
+$_circ_btn_pad:     if($_sizevariant == 'default', 4px,      2px);
+$_switch_margin:    if($_sizevariant == 'default', 10px,     7px);

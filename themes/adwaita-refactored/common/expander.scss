@@ -1,0 +1,27 @@
+//
+// Expander styles
+//
+
+expander
+{
+    title > arrow
+    {
+        min-width: 16px;
+        min-height: 16px;
+        -gtk-icon-source: -gtk-icontheme('pan-end-symbolic');
+
+        &:dir(rtl)
+        {
+            -gtk-icon-source: -gtk-icontheme('pan-end-symbolic-rtl');
+        }
+        
+        &:hover             { color: lighten($fg_color,30%);      }
+        &:disabled          { color: $insensitive_fg_color;       }
+        &:disabled:backdrop { color: $backdrop_insensitive_color; }
+        
+        &:checked
+        {
+            -gtk-icon-source: -gtk-icontheme('pan-down-symbolic');
+        }
+    }
+}

@@ -1,0 +1,42 @@
+/**
+ * widget.scss - Luna (Blue) Global Widget Styles
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+*
+{
+    padding: 0;
+    -GtkToolButton-icon-spacing: 4;
+    -GtkTextView-error-underline-color: $error_color;
+
+    // The size for scrollbars. The slider is 2px smaller, but we keep it
+    // up so that the whole area is sensitive to button presses for the
+    // slider. The stepper button is larger in both directions, the slider
+    // only in the width
+
+    -GtkScrolledWindow-scrollbar-spacing: 0;
+
+    -GtkToolItemGroup-expander-size: 11;
+
+    -GtkWidget-text-handle-width: 20;
+    -GtkWidget-text-handle-height: 24;
+
+    -GtkDialog-button-spacing: 4;
+    -GtkDialog-action-area-border: 0;
+
+    // We use the outline properties to signal the focus properties
+    // to the adwaita engine: using real CSS properties is faster,
+    // and we don't use any outlines for now.
+
+    //outline-color: gtkalpha(currentColor, 0.3);
+    //outline-style: dashed;
+    //outline-offset: -3px;
+    //outline-width: 1px;
+    //-gtk-outline-radius: $button-radius - 2;
+
+    -gtk-secondary-caret-color: $selected_bg_color
+}

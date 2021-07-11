@@ -1,0 +1,72 @@
+//
+// Popover styles
+//
+
+popover.background
+{
+    background-color: $popover_bg_color;
+    padding:          2px;
+
+    .csd &,
+    &
+    {
+        border:        1px solid $borders_color;
+        border-radius: $popover_radius;
+    }
+
+    .csd &
+    {
+        $_popover_border: if($variant == 'light', transparentize(#000000, 0.77), transparentize(#000000, 0.25));
+
+        background-clip: padding-box;
+        border-color:    $_popover_border;
+    }
+
+    box-shadow: 0 1px 2px transparentize(black, 0.7);
+
+    &:backdrop
+    {
+        background-color: $backdrop_bg_color;
+        box-shadow:       none;
+    }
+
+    > list,
+    > .view,
+    > toolbar
+    {
+        background-color: transparent;
+        border-style:     none;
+    }
+
+    .csd &,
+    &
+    {
+        &.touch-selection,
+        &.magnifier
+        {
+            @extend %osd;
+
+            border: 1px solid transparentize(white, 0.9);
+
+            button
+            {
+                @extend %osd_button
+            }
+        }
+
+        &.osd
+        {
+            @extend %osd;
+        }
+    }
+
+    separator
+    {
+        margin: 3px;
+    }
+
+    list separator
+    {
+        margin: 0px;
+    }
+}

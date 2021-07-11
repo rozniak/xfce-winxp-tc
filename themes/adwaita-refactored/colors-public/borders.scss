@@ -1,0 +1,13 @@
+//
+// Border color exports
+//
+
+//
+// Widgets main borders color
+//
+@define-color borders #{"" + $borders_color};
+
+//
+// Widgets main borders color on backdrop windows
+//
+@define-color unfocused_borders #{"" + $backdrop_borders_color};

@@ -1,0 +1,308 @@
+//
+// Check box and radio button styles
+//
+
+//
+// Draw regular check and radio items using our PNG assets
+//
+// All assets are rendered from assets.svg. never add pngs directly
+//
+
+// Selection-mode
+//
+@each $check_state, $check_icon, $check_color, $check_background in
+    ('',                  'none',                                       'transparent',                           $checkradio_bg_color),
+    (':hover',            'none',                                       'transparent',                           $checkradio_bg_color),
+    (':active',           'none',                                       'transparent',                           $checkradio_bg_color),
+    (':backdrop',         'none',                                       'transparent',                           '#{desaturate($checkradio_bg_color, 100%)}'),
+    (':checked',          '-gtk-icontheme(\'object-select-symbolic\')', $osd_fg_color,                           $checkradio_bg_color),
+    (':checked:hover',    '-gtk-icontheme(\'object-select-symbolic\')', $osd_fg_color,                           $checkradio_bg_color),
+    (':checked:active',   '-gtk-icontheme(\'object-select-symbolic\')', $osd_fg_color,                           $checkradio_bg_color),
+    (':backdrop:checked', '-gtk-icontheme(\'object-select-symbolic\')', '#{transparentize($osd_fg_color, 0.2)}', '#{desaturate($checkradio_bg_color, 100%)}')
+{
+    .view.content-view.check#{$check_state}:not(list),
+    .content-view:not(list) check#{$check_state}
+    {
+        background-color: #{$check_background};
+        background-image: none;
+        border-radius:    5px;
+        border-width:     0;
+        box-shadow:       none;
+        color:            #{$check_color};
+        margin:           4px;
+        min-width:        32px;
+        min-height:       32px;
+        transition:       200ms;
+        -gtk-icon-source: #{$check_icon};
+        -gtk-icon-shadow: none;
+    }
+}
+
+checkbutton.text-button,
+radiobutton.text-button
+{
+    // This is for a nice focus on check and radios text
+    //
+    outline-offset: 0;
+    padding:        2px 0;
+
+    label:not(:only-child)
+    {
+        &:first-child { margin-left:  4px; }
+        &:last-child  { margin-right: 4px; }
+    }
+}
+
+check,
+radio
+{
+    margin: 0 4px;
+    
+    &:only-child
+    {
+        margin: 0;
+    }
+
+    // When in a popover add more space between the label and the check, reset the
+    // other side margin.
+    //
+    // See https://bugzilla.gnome.org/show_bug.cgi?id=779570 for details.
+    //
+    popover &
+    {
+        &.left:dir(rtl)
+        {
+            margin-left:  0;
+            margin-right: 12px;
+        }
+
+        &.right:dir(ltr)
+        {
+            margin-left:  12px;
+            margin-right: 0;
+        }
+    }
+    
+    border:     1px solid;
+    min-height: 14px;
+    min-width:  14px;
+    -gtk-icon-source: none;
+
+    // Unchecked
+    //
+    &
+    {
+        $_c: if($variant == 'light', #FFFFFF, $bg_color);
+        
+        @each $state, $t in
+            ("",                   "normal"),
+            (":hover",             "hover"),
+            (":active",            "active"),
+            (":disabled",          "insensitive"),
+            (":backdrop",          "backdrop"),
+            (":backdrop:disabled", "backdrop-insensitive")
+        {
+            &#{$state}
+            {
+                @include check($t, $_c);
+            }
+        }
+    }
+    
+    // Checked
+    //
+    &
+    {
+        @each $t in
+            (':checked'),
+            (':indeterminate')
+        {
+            &#{$t}
+            {
+                @each $state, $t in
+                    ("",                   "normal"),
+                    (":hover",             "hover"),
+                    (":active",            "active"),
+                    (":disabled",          "insensitive"),
+                    (":backdrop",          "backdrop"),
+                    (":backdrop:disabled", "backdrop-insensitive")
+                {
+                    &#{$state}
+                    {
+                        @include check($t, $checkradio_bg_color, $checkradio_fg_color, $checked: true);
+                    }
+                }
+            }
+        }
+    }
+
+    &:backdrop
+    {
+        transition: $backdrop_transition;
+    }
+
+    @if $variant == 'light'
+    {
+        // The borders of the light variant versions of checks and radios are too
+        // similar in luminosity to the selected background color, hence we need
+        // special casing
+        //
+        row:selected &
+        {
+            border-color: $checkradio_borders_color;
+        }
+    }
+
+    .osd &
+    {
+        @include button(osd);
+        
+        &:hover    { @include button(osd);             }
+        &:active   { @include button(osd-active);      }
+        &:backdrop { @include button(osd-backdrop);    }
+        &:disabled { @include button(osd-insensitive); }
+    }
+    
+    menu menuitem &
+    {
+        margin: 0; // This is a workaround for a menu check/radio size allocation issue
+        
+        &, &:checked, &:indeterminate
+        {
+            // FIXME: Use button reset mixin
+            //
+            &, &:hover, &:disabled
+            { 
+                background-color: transparent;
+                background-image: none;
+                border-color:     currentColor;
+                box-shadow:       none;
+                color:            inherit;
+                min-height:       14px;
+                min-width:        14px;
+                -gtk-icon-shadow: none;
+            }
+        }
+    }
+}
+
+%check,
+check
+{
+    border-radius: 3px;
+
+    &:checked
+    {
+        -gtk-icon-source: image(
+                              -gtk-recolor(url("assets/check-symbolic.svg")),
+                              -gtk-recolor(url("assets/check-symbolic.symbolic.png"))
+                          );
+    }
+
+    &:indeterminate
+    {
+        -gtk-icon-source: image(
+                              -gtk-recolor(url("assets/dash-symbolic.svg")),
+                              -gtk-recolor(url("assets/dash-symbolic.symbolic.png"))
+                          );
+    }
+}
+
+%radio,
+radio
+{
+    border-radius: 100%;
+    
+    &:checked
+    {
+        -gtk-icon-source: image(
+                              -gtk-recolor(url("assets/bullet-symbolic.svg")),
+                              -gtk-recolor(url("assets/bullet-symbolic.symbolic.png"))
+                          );
+    }
+
+    &:indeterminate
+    {
+        -gtk-icon-source: image(
+                              -gtk-recolor(url("assets/dash-symbolic.svg")),
+                              -gtk-recolor(url("assets/dash-symbolic.symbolic.png"))
+                          );
+    }
+}
+
+//
+// ANIMATION:
+//
+// This is made with those pretty convoluted transitions, since checks and radios have
+// to animate only on state changes, the transformation is set on the active state and
+// it get reset on the checked state
+//
+radio:not(:indeterminate):not(:checked):active:not(:backdrop)
+{
+    -gtk-icon-transform: scale(0);
+}
+
+check:not(:indeterminate):not(:checked):active:not(:backdrop)
+{
+    -gtk-icon-transform: translate(6px, -3px) rotate(-45deg) scaleY(0.2) rotate(45deg) scaleX(0);
+}
+
+radio,
+check
+{
+    // Should tackle the indeterminate state, untested
+    //
+    &:active
+    {
+        -gtk-icon-transform: scale(0, 1);
+    } 
+
+    &:checked:not(:backdrop),
+    &:indeterminate:not(:backdrop)
+    {
+        transition: 400ms;
+        -gtk-icon-transform: unset;
+    }
+}
+
+menu menuitem
+{
+    radio,
+    check
+    {
+        &:checked:not(:backdrop),
+        &:indeterminate:not(:backdrop)
+        {
+            transition: none;
+        }
+    }
+}
+
+treeview.view check,
+treeview.view radio
+{
+    &:selected
+    {
+        &:focus,
+        &
+        {
+            color: $checkradio_fg_color;
+
+            @if $variant == 'light'
+            {
+                border-color: $selected_borders_color;
+            }
+        }
+    }
+}
+
+// This is a workaround
+//
+treeview.view radio:selected
+{
+    &:focus,
+    &
+    {
+        @extend %radio;
+    }
+}

@@ -1,0 +1,25 @@
+//
+// Print dialog styles
+//
+
+printdialog
+{
+    paper
+    {
+        background: #FFFFFF;
+        border:     1px solid $borders_color;
+        color:      $fg_color;
+        padding:    0;
+
+        &:backdrop
+        {
+            border-color: $backdrop_borders_color;
+            color:        $backdrop_fg_color;
+        }
+    }
+    
+    .dialog-action-box
+    {
+        margin: 12px;
+    }
+}

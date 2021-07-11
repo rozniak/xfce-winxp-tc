@@ -1,0 +1,5 @@
+//
+// Colour definitions for highlighted text
+//
+$selected_fg_color: #FFFFFF;
+$selected_bg_color: if($variant == 'light', #3584E4, darken(#3584E4, 20%));

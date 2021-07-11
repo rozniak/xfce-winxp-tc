@@ -1,0 +1,88 @@
+/**
+ * combobox.scss - Luna (Blue) Combobox Styles
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+combobox
+{
+    background-color: $base_color;
+    border:           1px solid $borders_color;
+
+    // Override button styles
+    //
+    button.combo
+    {
+        background-image:    url("../Resources/combobox_button.png");
+        background-position: right;
+        background-repeat:   no-repeat;
+        background-size:     contain;
+        border-width:        0px;
+        margin:              1px;
+        min-height:          18px;
+        min-width:           15px;
+        padding-right:       18px;
+
+        &:active
+        {
+            background-image: url("../Resources/combobox_button_press.png");
+        }
+
+        &:hover
+        {
+            background-image: url("../Resources/combobox_button_hover.png");
+        }
+
+        &:disabled
+        {
+            background-image: url("../Resources/combobox_button_inactive.png");
+        }
+    }
+
+    // Necessary to prevent "double border", because the entry widget also defines
+    // a border of its own
+    //
+    entry
+    {
+        border-width: 0px;
+    }
+
+    &.linked
+    {
+        button:nth-child(2)
+        {
+            &:dir(ltr) { @extend %linked_right; }
+            &:dir(rtl) { @extend %linked_left; }
+        }
+    }
+
+    // FIXME: Untested
+    //
+    &:drop(active)
+    {
+        box-shadow: none;
+
+        button.combo
+        {
+            @extend %button_basic_drop_active;
+        }
+    }
+}
+
+//
+// The combo is a composite widget so the way we do button linking doesn't
+// work, special case needed. See
+// https://bugzilla.gnome.org/show_bug.cgi?id=733979
+//
+.linked:not(.vertical) > combobox             > box > button.combo { @extend %linked_middle;     }
+.linked:not(.vertical) > combobox:first-child > box > button.combo { @extend %linked_left;       }
+.linked:not(.vertical) > combobox:last-child  > box > button.combo { @extend %linked_right;      }
+.linked:not(.vertical) > combobox:only-child  > box > button.combo { @extend %linked_only_child; }
+
+.linked.vertical > combobox             > box > button.combo { @extend %linked_vertical_middle;     }
+.linked.vertical > combobox:first-child > box > button.combo { @extend %linked_vertical_top;        }
+.linked.vertical > combobox:last-child  > box > button.combo { @extend %linked_vertical_bottom;     }
+.linked.vertical > combobox:only-child  > box > button.combo { @extend %linked_vertical_only_child; }

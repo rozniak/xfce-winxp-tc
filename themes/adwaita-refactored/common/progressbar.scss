@@ -1,0 +1,109 @@
+//
+// Progress bar styles
+//
+
+progressbar
+{
+    // Sizing
+    //
+    &.horizontal
+    {
+        trough,
+        progress
+        {
+            min-height: 2px;
+        }
+    }
+
+    &.vertical
+    {
+        trough,
+        progress
+        {
+            min-width: 2px;
+        }
+    }
+    
+    // The progress node is positioned after the trough border this moves it over it
+    //
+    &.horizontal progress { margin:  0   -1px; }
+    &.vertical   progress { margin: -1px  0;   }
+
+    // FIXME: insensitive state missing and some other state should be set probably
+    //
+    color:     transparentize($fg_color, 0.6);
+    font-size: smaller;
+    font-feature-settings: "tnum";
+    
+    &:backdrop
+    {
+        box-shadow: none;
+        transition: $backdrop_transition;
+    }
+    
+    trough
+    {
+        @extend %scale_trough;
+    }
+    
+    progress
+    {
+        @extend %scale_highlight;
+
+        border-radius: 1.5px;
+
+        &.left
+        {
+            border-top-left-radius:    2px;
+            border-bottom-left-radius: 2px;
+        }
+
+        &.right
+        {
+            border-top-right-radius:    2px;
+            border-bottom-right-radius: 2px;
+        }
+        
+        &.top
+        {
+            border-top-right-radius: 2px;
+            border-top-left-radius:  2px;
+        }
+        
+        &.bottom
+        {
+            border-bottom-right-radius: 2px;
+            border-bottom-left-radius:  2px;
+        }
+    }
+    
+    // progressbar.osd used for epiphany page loading process
+    //
+    &.osd
+    { 
+        background-color: transparent;
+        min-height:       3px;
+        min-width:        3px;
+        
+        trough
+        {
+            background-color: transparent;
+            border-radius:    0;
+            border-style:     none;
+            box-shadow:       none;
+        }
+
+        progress
+        {
+            border-radius: 0;
+            border-style:  none;
+        }
+    }
+
+    // Makes the progress indicator disappear, when the fraction is 0 
+    //
+    trough.empty progress
+    {
+        all: unset;
+    } 
+}

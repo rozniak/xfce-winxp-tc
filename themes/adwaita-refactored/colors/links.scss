@@ -1,0 +1,5 @@
+//
+// Colour definitions for links
+//
+$link_color:         if($variant == 'light', darken($selected_bg_color, 10%), lighten($selected_bg_color, 20%));
+$link_visited_color: if($variant == 'light', darken($selected_bg_color, 20%), lighten($selected_bg_color, 10%));

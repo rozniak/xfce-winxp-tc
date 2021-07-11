@@ -1,0 +1,7 @@
+//
+// Scrollbar colour definitions
+//
+$scrollbar_bg_color:            if($variant == 'light', mix($bg_color, $fg_color, 80%),  mix($base_color, $fg_color, 50%));
+$scrollbar_slider_active_color: if($variant == 'light', darken($selected_bg_color, 10%), lighten($selected_bg_color, 10%));
+$scrollbar_slider_color:        mix($fg_color, $bg_color, 60%);
+$scrollbar_slider_hover_color:  mix($fg_color, $bg_color, 80%);

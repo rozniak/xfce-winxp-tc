@@ -1,0 +1,120 @@
+/**
+ * touchcp.scss - Luna (Blue) Touch Copy-and-Paste Styles
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+// Touch selection handlebars for the popover.osd above
+//
+cursor-handle
+{
+    background-color: transparent;
+    background-image: none;
+    border-style:     none;
+    box-shadow:       none;
+    
+    @each $s, $as in
+        ('',        ''),
+        (':hover',  '-hover'),
+        (':active', '-active') // No need for insensitive and backdrop
+    {
+        &.top#{$s}:dir(ltr),
+        &.bottom#{$s}:dir(rtl)
+        {
+            $_url: 'assets/text-select-start#{$as}#{$asset_suffix}';
+
+            padding-left:     10px;
+            -gtk-icon-source: -gtk-scaled(
+                                  url('#{$_url}.png'),
+                                  url('#{$_url}@2.png')
+                              );
+        }
+        
+        &.bottom#{$s}:dir(ltr),
+        &.top#{$s}:dir(rtl)
+        {
+            $_url: 'assets/text-select-end#{$as}#{$asset_suffix}';
+
+            padding-right:    10px;
+            -gtk-icon-source: -gtk-scaled(
+                                  url('#{$_url}.png'),
+                                  url('#{$_url}@2.png')
+                              );
+        }
+        
+        &.insertion-cursor#{$s}:dir(ltr),
+        &.insertion-cursor#{$s}:dir(rtl)
+        {
+            $_url: 'assets/slider-horz-scale-has-marks-above#{$as}#{$asset_suffix}';
+
+            -gtk-icon-source: -gtk-scaled(
+                                  url('#{$_url}.png'),
+                                  url('#{$_url}@2.png')
+                              );
+        }
+    }
+}
+
+// Decouple the font of context menus from their entry/textview
+//
+.context-menu
+{
+    font: initial;
+}
+
+// Shortcut window keys
+//
+.keycap
+{
+    background-color: $base_color;
+    border:           1px solid;
+    border-color:     if($variant == 'light', mix($borders_color, $bg_color, 50%), $borders_color);
+    border-radius:    5px;
+    box-shadow:       if($variant == 'light', inset 0 -3px mix($base_color, $bg_color, 20%), inset 0 -3px mix($borders_color, $base_color, 60%));
+    color:            $fg_color;
+    font-size:        smaller;
+
+    min-width:      20px;
+    min-height:     25px;
+    margin-top:     2px;
+    padding-bottom: 3px;
+    padding-left:   6px;
+    padding-right:  6px;
+
+    &:backdrop
+    {
+        background-color: $backdrop_base_color;
+        color:            $backdrop_fg_color;
+        transition:       $backdrop_transition;
+    }
+}
+
+// FIXME: Needs to be done widget by widget, this wildcard should really die
+//
+:not(decoration):not(window):drop(active):focus,
+:not(decoration):not(window):drop(active)
+{
+    border-color: $drop_target_color;
+    box-shadow:   inset 0 0 0 1px $drop_target_color;
+    caret-color:  $drop_target_color;
+}
+
+// FIXME: Aggregate with buttons
+//
+stackswitcher button.text-button
+{
+    min-width: 100px;
+} 
+
+// FIXME: Aggregate with buttons
+//
+stackswitcher button.circular,
+stackswitcher button.text-button.circular
+{ 
+    min-height: 32px;
+    min-width:  32px;
+    padding:    0;
+}

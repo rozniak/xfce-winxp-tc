@@ -1,0 +1,10 @@
+//
+// View color exports
+//
+
+// Content view background such as thumbnails view in Photos or Boxes
+@define-color content_view_bg #{"" + $base_color};
+
+// Very contrasty background for text views (@theme_text_color foreground)
+//
+@define-color text_view_bg #{"" + if($variant == 'light', $base_color, darken($base_color,6%))};

@@ -1,0 +1,8 @@
+//
+// gtkalpha function (unsure whether to move to drawing)
+//
+
+@function gtkalpha($c, $a)
+{
+    @return unquote("alpha(#{$c}, #{$a})");
+}

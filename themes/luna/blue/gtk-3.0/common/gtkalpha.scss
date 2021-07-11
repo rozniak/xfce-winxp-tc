@@ -1,0 +1,13 @@
+/**
+ * gtkalpha.scss - Luna (Blue) gtkalpha Function
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+@function gtkalpha($c, $a)
+{
+    @return unquote("alpha(#{$c}, #{$a})");
+}

@@ -1,0 +1,57 @@
+/**
+ * messagedialog.scss - Luna (Blue) Message Box Dialog Styles
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+messagedialog
+{
+    .titlebar
+    {
+        min-height: 20px;
+        background-image: none;
+        background-color: $bg_color;
+        border-style: none;
+        border-top-left-radius: 7px;
+        border-top-right-radius: 7px;
+    }
+
+    // Rounded bottom border styling for CSD version
+    //
+    &.csd
+    {
+        &.background
+        {
+            // Bigger radius for better antialiasing
+            //
+            border-bottom-left-radius: $window_radius+1;
+            border-bottom-right-radius: $window_radius+1;
+        }
+        
+        .dialog-action-area button
+        {
+            border-right-style:  none;
+            border-bottom-style: none;
+            border-radius:       0;
+            padding:             10px 14px; // Labels are not vertically centered on message dialog, this is a workaround
+            -gtk-outline-radius: 0;
+            
+            &:first-child
+            {
+                border-left-style: none;
+
+                border-bottom-left-radius:       $button_radius + 2;
+                -gtk-outline-bottom-left-radius: $button_radius + 2;
+            }
+            
+            &:last-child
+            {
+                border-bottom-right-radius:       $button_radius + 2;
+                -gtk-outline-bottom-right-radius: $button_radius + 2;
+            }
+        }
+    }
+}

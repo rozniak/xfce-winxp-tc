@@ -1,0 +1,349 @@
+//
+// Text entry widget styles
+//
+
+%entry,
+entry
+{
+    %entry_basic, &
+    {
+        border:        1px solid;
+        border-radius: $button_radius;
+        min-height:    $_entry_height;
+        padding-left:  8px;
+        padding-right: 8px;
+        transition:    all 200ms $ease-out-quad;
+
+        @include entry(normal);
+
+        // Icons inside of the entry
+        //
+        image
+        {
+            &.left  { margin-right: 6px; }
+            &.right { margin-left:  6px; }
+        }
+
+
+        &.flat
+        {
+            &:focus,
+            &:backdrop,
+            &:disabled,
+            &:backdrop:disabled,
+            &
+            {
+                background-color: transparent;
+                border-color:     transparent;
+                border-radius:    0;
+                min-height:       0;
+                padding:          2px;
+            }
+        }
+
+        &:focus
+        {
+            @include entry(focus);
+        }
+
+        &:disabled
+        {
+            @include entry(insensitive);
+        }
+
+        &:backdrop
+        {
+            @include entry(backdrop);
+
+            transition: $backdrop_transition;
+        }
+
+        &:backdrop:disabled
+        {
+            @include entry(backdrop-insensitive);
+        }
+
+        selection
+        {
+            @extend %selected_items;
+        }
+
+        // Entry error and warning style
+        //
+        @each $e_type, $e_color in (error, $error_color),
+                                   (warning, $warning_color)
+        {
+            &.#{$e_type}
+            {
+                border-color: entry_focus_border($e_color);
+                color:        $e_color;
+
+                &:focus
+                {
+                    @include entry(focus, $e_color);
+                }
+
+                selection
+                {
+                    background-color: $e_color;
+                }
+            }
+        }
+
+        // Entry icons colors
+        //
+        image
+        {
+            color: mix($fg_color, $base_color, 80%);
+
+            &:hover
+            {
+                color: $fg_color;
+            }
+
+            &:active
+            {
+                color: $selected_bg_color;
+            }
+
+            &:backdrop
+            {
+                color: mix($backdrop_fg_color, $backdrop_base_color, 80%);
+            }
+        }
+
+        &:drop(active)
+        {
+            &:focus, &
+            {
+                border-color: $drop_target_color;
+                box-shadow:   inset 0 0 0 1px $drop_target_color;
+            }
+        }
+
+        .osd &
+        {
+            @include entry(osd);
+
+            &:focus
+            {
+                @include entry(osd-focus);
+            }
+
+            &:backdrop
+            {
+                @include entry(osd-backdrop);
+            }
+
+            &:disabled
+            {
+                @include entry(osd-insensitive);
+            }
+        }
+    }
+
+    progress
+    {
+        margin: 2px -6px;
+        background-color: transparent;
+        background-image: none;
+        border-radius: 0;
+        border-width: 0 0 2px;
+        border-color: $progress_bg_color;
+        border-style: solid;
+        box-shadow: none;
+
+        &:backdrop
+        {
+            background-color: transparent;
+        }
+    }
+
+    // Linked entries
+    //
+    .linked:not(.vertical) > & { @extend %linked; }
+    .linked:not(.vertical) > &:focus + &,
+    .linked:not(.vertical) > &:focus + button,
+    .linked:not(.vertical) > &:focus + combobox > box > button.combo { border-left-color: entry_focus_border(); }
+
+    .linked:not(.vertical) > &:focus.error + &,
+    .linked:not(.vertical) > &:focus.error + button,
+    .linked:not(.vertical) > &:focus.error + combobox > box > button.combo { border-left-color: entry_focus_border($error_color); }
+
+    .linked:not(.vertical) > &:drop(active) + &,
+    .linked:not(.vertical) > &:drop(active) + button,
+    .linked:not(.vertical) > &:drop(active) + combobox > box > button.combo { border-left-color: $drop_target_color; }
+
+    // Vertically linked entries
+    // FIXME: take care of "colored" entries
+    //
+    .linked.vertical > &
+    {
+        @extend %linked_vertical;
+
+        // Brighter border between linked entries
+        //
+        &:not(:disabled) + entry:not(:disabled),
+        &:not(:disabled) + %entry:not(:disabled)
+        {
+            border-top-color: mix($borders_color, $base_color, 30%);
+
+            &:backdrop
+            {
+                border-top-color: mix($backdrop_borders_color, $backdrop_base_color, 30%);
+            }
+        }
+
+        // Brighter border between linked insensitive entries
+        //
+        &:disabled + %entry:disabled,
+        &:disabled + entry:disabled
+        {
+            border-top-color: mix($borders_color, $base_color, 30%);
+        }
+
+        // Color back the top border of a linked focused entry following another entry.
+        // :not(:only-child) is a specificity bump hack.
+        //
+        + %entry:focus:not(:only-child),
+        + entry:focus:not(:only-child) { border-top-color: entry_focus_border(); }
+
+        + %entry:focus.error:not(:only-child),
+        + entry:focus.error:not(:only-child) { border-top-color: entry_focus_border($error_color); }
+
+        + %entry:drop(active):not(:only-child),
+        + entry:drop(active):not(:only-child) { border-top-color: $drop_target_color; }
+
+        // This takes care of coloring the top border of the focused entry subsequent widget.
+        // :not(:only-child) is a specificity bump hack.
+        //
+        &:focus:not(:only-child)
+        {
+            + %entry,
+            + entry,
+            + button,
+            + combobox > box > button.combo
+            {
+                border-top-color: entry_focus_border();
+            }
+        }
+
+        &:focus.error:not(:only-child)
+        {
+            + %entry,
+            + entry,
+            + button,
+            + combobox > box > button.combo
+            {
+                border-top-color: entry_focus_border($error_color);
+            }
+        }
+
+        &:drop(active):not(:only-child)
+        {
+            + %entry,
+            + entry,
+            + button,
+            + combobox > box > button.combo
+            {
+                border-top-color: $drop_target_color;
+            }
+        }
+    }
+
+    &.error
+    {
+        color: $error_color;
+    }
+}
+
+treeview entry
+{
+    &:focus
+    {
+        // Specificity bump hack
+        //
+        &:dir(rtl), &:dir(ltr)
+        {
+            background-color:    $base_color;
+            transition-property: color, background;
+        }
+    }
+
+    &.flat, &
+    {
+        border-radius:    0;
+        background-image: none;
+        background-color: $base_color;
+
+        &:focus
+        {
+            border-color: $selected_bg_color;
+        }
+    }
+}
+
+.entry-tag
+{
+    // Sizing
+    //
+    margin-top:    2px;
+    margin-bottom: 2px;
+    padding:       5px;
+
+
+    // Side margins: compensate the entry padding with a negative margin
+    // then the negative margin itself
+    //
+    :dir(ltr) &
+    {
+        margin-left: 8px;
+        margin-right: -5px;
+    }
+    :dir(rtl) &
+    {
+        margin-left: -5px;
+        margin-right: 8px;
+    }
+
+    border-style: none;
+
+    $_entry_tag_color: if($variant=='light', $selected_fg_color, $base_color);
+    color:             $_entry_tag_color;
+
+    $_entry_tag_bg:   if($variant=='light', $selected_bg_color, mix($fg_color, $base_color, 50%));
+    background-color: $_entry_tag_bg;
+
+    &:hover
+    {
+        background-color: lighten($_entry_tag_bg, 10%);
+    }
+
+    :backdrop &
+    {
+        background-color: if($variant=='light', $selected_bg_color,
+                                                 mix($backdrop_fg_color, $backdrop_base_color, 50%));
+        color:            $backdrop_base_color;
+    }
+
+    &.button
+    {
+        background-color: transparent;
+        color:            transparentize($_entry_tag_color, 0.3);
+    }
+
+    :not(:backdrop) &.button
+    {
+        &:hover
+        {
+            border: 1px solid $_entry_tag_bg;
+            color:  $_entry_tag_color;
+        }
+
+        &:active
+        {
+            background-color: $_entry_tag_bg;
+            color:            transparentize($_entry_tag_color, 0.3);
+        }
+    }
+}

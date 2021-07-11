@@ -1,0 +1,47 @@
+//
+// Pathbar styles
+//
+
+//
+// GtkPathBar does not work with just .linked, so we must override that. But we
+// can’t simply remove .linked from the widget as that might break other themes.
+//
+// Note also we select on filechooser to avoid interfering with NautilusPathBar.
+//
+filechooser .path-bar.linked > button
+{
+    @extend %linked_flippable;
+}
+
+.path-bar button
+{
+    &.text-button, &.image-button, &
+    {
+        padding-left:  4px;
+        padding-right: 4px;
+    }
+
+    &.text-button.image-button label
+    {
+        padding-left:  0;
+        padding-right: 0;
+    }
+
+    &.text-button.image-button, &
+    {
+        label:last-child  { padding-right: 8px; }
+        label:first-child { padding-left: 8px;  }
+    }
+
+    image
+    {
+        padding-left:  4px;
+        padding-right: 4px;
+    }
+
+    &.slider-button
+    {
+        padding-left:  0;
+        padding-right: 0;
+    }
+}

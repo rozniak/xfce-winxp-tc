@@ -1,0 +1,656 @@
+//
+// Scale styles
+//
+
+%scale_trough
+{
+    background-color: $dark_fill;
+    border:           1px solid $borders_color;
+    border-radius:    3px;
+
+    &:disabled
+    {
+        background-color: $insensitive_bg_color;
+    }
+
+    &:backdrop
+    {
+        background-color: $backdrop_dark_fill;
+        border-color:     $backdrop_borders_color;
+        transition:       $backdrop_transition;
+
+        &:disabled
+        {
+            background-color: $insensitive_bg_color;
+        }
+    }
+
+    // On selected list rows
+    //
+    row:selected &
+    {
+        &:disabled,
+        &
+        {
+            border-color: $selected_borders_color;
+        }
+    }
+    
+    // OSD
+    //
+    .osd & 
+    {
+        background-color: transparentize($osd_borders_color, 0.2);
+        border-color:     $osd_borders_color;
+        
+        &:disabled
+        {
+            background-color: $osd_insensitive_bg_color;
+        }
+    }
+}
+
+%scale_highlight
+{
+    background-color: $progress_bg_color;
+    border:           1px solid $progress_border_color;
+    border-radius:    3px;
+    
+    &:disabled
+    {
+        background-color: transparent;
+        border-color:     transparent;
+    }
+    
+    &:backdrop
+    {
+        border-color: if($variant == 'light', $progress_bg_color, $progress_border_color);
+        
+        &:disabled
+        {
+            background-color: transparent;
+            border-color:     transparent;
+        }
+    }
+    
+    // On selected list rows
+    //
+    row:selected &
+    {
+        &:disabled,
+        &
+        {
+            border-color: $selected_borders_color;
+        }
+    }
+    
+    // OSD
+    //
+    .osd &
+    {
+        border-color: $osd_borders_color;
+
+        &:disabled
+        {
+            border-color: transparent;
+        }
+    }
+}
+
+scale
+{
+    // Sizing
+    //
+    $_marks_distance: 6px;
+    $_marks_length:   6px;
+    
+    min-height: 10px;
+    min-width:  10px;
+    padding:    12px;
+
+    // Those are inside the trough node, I need them to show their own border over the
+    // trough one, so negative margin
+    //
+    fill,
+    highlight
+    {
+        margin: -1px;
+    }
+    
+    // The slider is inside the trough, so to have make it bigger there's a negative
+    // margin
+    //
+    slider
+    {
+        margin:     -9px;
+        min-height:  18px;
+        min-width:   18px;
+    }
+    
+    // Click-and-hold the slider to activate
+    //
+    &.fine-tune
+    {
+        &.horizontal
+        {
+            min-height:     16px;
+            padding-top:    9px;
+            padding-bottom: 9px;
+        }
+
+        &.vertical
+        {
+            min-width:     16px;
+            padding-left:  9px;
+            padding-right: 9px;
+        }
+        
+        // To make the trough grow in fine-tune mode
+        //
+        slider
+        {
+            margin: -6px;
+        }
+        
+        fill,
+        highlight,
+        trough
+        {
+            border-radius:       5px;
+            -gtk-outline-radius: 7px;
+        }
+    }
+    
+    // The backing bit
+    //
+    trough
+    {
+        @extend %scale_trough;
+        
+        outline-offset:      2px;
+        -gtk-outline-radius: 5px;
+    }
+    
+    // The colored part of the backing bit
+    //
+    highlight
+    {
+        @extend %scale_highlight;
+    }
+    
+    // This is another differently styled part of the backing bit, the most relevant
+    // use case is for example in media player to indicate how much video stream as
+    // been cached
+    //
+    fill
+    {
+        @extend %scale_trough;
+        
+        &:backdrop,
+        &
+        {
+            background-color: $borders_color;
+        }
+        
+        &:disabled
+        {
+            &:backdrop,
+            &
+            {
+                background-color: transparent;
+                border-color:     transparent;
+            }
+        }
+        
+        // OSD
+        //
+        .osd &
+        {
+            background-color: mix($osd_fg_color, $osd_borders_color, 25%);
+            
+            &:disabled
+            {
+                &:backdrop,
+                &
+                {
+                    background-color: transparent;
+                    border-color:     transparent;
+                }
+            }
+        }
+    }
+    
+    slider
+    {
+        @include button(normal-alt, $edge: $shadow_color);
+        
+        border:              1px solid darken($alt_borders_color, 3%);
+        border-radius:       100%;
+        transition:          $button_transition;
+        transition-property: background, border, box-shadow;
+        
+        &:hover
+        {
+            @include button(hover-alt, $edge: $shadow_color);
+        }
+        
+        &:active
+        {
+            border-color: $progress_border_color;
+        }
+        
+        &:disabled
+        {
+            @include button(insensitive);
+        }
+        
+        &:backdrop
+        {
+            transition: $backdrop_transition;
+            
+            @include button(backdrop);
+            
+            &:disabled
+            {
+                @include button(backdrop-insensitive);
+            }
+        }
+        
+        // On selected list rows
+        //
+        row:selected &
+        {
+            &:disabled,
+            &
+            {
+                border-color: $selected_borders_color;
+            }
+        }
+        
+        // OSD
+        //
+        .osd &
+        {
+            @include button(osd);
+
+            border-color:     darken($osd_borders_color, 3%);
+            background-color: opacify($osd_bg_color, 1); // Solid background needed here
+            
+            &:hover
+            {
+                @include button(osd-hover);
+
+                background-color: opacify($osd_bg_color, 1); // Solid background needed here
+            }
+            
+            &:active
+            {
+                @include button(osd-active);
+
+                background-color: opacify($osd_bg_color, 1); // Solid background needed here
+            }
+            
+            &:disabled
+            {
+                @include button(osd-insensitive);
+
+                background-color: opacify($osd_bg_color, 1); // Solid background needed here
+            }
+            
+            &:backdrop
+            {
+                @include button(osd-backdrop);
+
+                background-color: opacify($osd_bg_color, 1); // Solid background needed here
+                
+                &:disabled
+                {
+                    @include button(osd-backdrop-insensitive);
+
+                    background-color: opacify($osd_bg_color, 1); // Solid background needed here
+                }
+            }
+        }
+    }
+    
+    marks,
+    value
+    {
+        color: gtkalpha(currentColor, 0.55);
+        font-feature-settings: "tnum";
+    }
+    
+    // Marks margins
+    //
+    @each $scale_orient, $marks_class, $marks_pos, $marks_margin in
+        (horizontal, top,    top,    bottom),
+        (horizontal, bottom, bottom, top),
+        (vertical,   top,    left,   right),
+        (vertical,   bottom, right,  left)
+    {
+        &.#{$scale_orient} marks
+        {
+            &.#{$marks_class}
+            {
+                margin-#{$marks_margin}: $_marks_distance;
+                margin-#{$marks_pos}: -($_marks_distance + $_marks_length);
+            }
+        }
+        
+        &.#{$scale_orient}.fine-tune marks
+        {
+            &.#{$marks_class}
+            {
+                margin-#{$marks_margin}: $_marks_distance;
+                margin-#{$marks_pos}: -($_marks_distance + $_marks_length - 3px);
+            }
+        }
+    }
+
+    &.horizontal
+    {
+        indicator
+        {
+            min-height: $_marks_length;
+            min-width:  1px;
+        }
+        
+        &.fine-tune indicator
+        {
+            min-height: ($_marks_length - 3px);
+        }
+    }
+    
+    &.vertical
+    {
+        indicator
+        {
+            min-height: 1px;
+            min-width:  $_marks_length;
+        }
+
+        &.fine-tune indicator
+        {
+            min-width: ($_marks_length - 3px);
+        }
+    }
+    
+    //
+    // *WARNING* scale with marks madness following
+    //
+    
+    // FIXME: OSD and selected list rows missing, I don't feel like adding the other
+    //        144 assets needed for those...
+    //
+    $suffix: if($variant == 'light', '', '-dark');
+    
+    @each $dir_class, $dir_infix in
+        ('horizontal', 'horz'),
+        ('vertical',   'vert')
+    {
+        @each $marks_infix, $marks_class in
+            ('scale-has-marks-above', 'marks-before:not(.marks-after)'),
+            ('scale-has-marks-below', 'marks-after:not(.marks-before)')
+        {
+            @each $state, $state_infix in
+                ('',                   ''),
+                (':hover',             '-hover'),
+                (':active',            '-active'),
+                (':disabled',          '-insensitive'),
+                (':backdrop',          '-backdrop'),
+                (':backdrop:disabled', '-backdrop-insensitive')
+            {
+                &.#{$dir_class}.#{$marks_class}
+                {
+                    slider
+                    {
+                        &#{$state}
+                        {
+                            // An asymmetric slider asset is used here, so the margins
+                            // are uneven, the smaller margin is set on the point side
+                            //
+                            $_scale_asset: 'assets/slider-#{$dir_infix}-#{$marks_infix}#{$state_infix}#{$suffix}';
+
+                            background-color:  transparent;
+                            background-image:  -gtk-scaled(url('#{$_scale_asset}.png'), url('#{$_scale_asset}@2.png'));
+                            border-radius:     0;
+                            border-style:      none;
+                            margin:           -10px;
+
+                            $_scale_slider_bg_pos: bottom;
+                            
+                            @if $dir_class == 'horizontal'
+                            {
+                                min-height: 26px;
+                                min-width: 22px;
+
+                                @if $marks_infix == 'scale-has-marks-above'
+                                {
+                                    margin-top: -14px;
+                                    $_scale_slider_bg_pos: top;
+                                }
+                                @else
+                                {
+                                    margin-bottom: -14px;
+                                }
+                            }
+                            @else
+                            {
+                                min-height: 22px;
+                                min-width:  26px;
+
+                                @if $marks_infix == 'scale-has-marks-above'
+                                {
+                                    margin-left: -14px;
+                                    $_scale_slider_bg_pos: left bottom;
+                                }
+                                @else
+                                {
+                                    margin-right: -14px;
+                                    $_scale_slider_bg_pos: right bottom;
+                                }
+                            }
+                            
+                            background-position: $_scale_slider_bg_pos;
+                            background-repeat:   no-repeat;
+                            box-shadow:          none;
+                        }
+                    }
+                    
+                    &.fine-tune slider
+                    {
+                        // Bigger negative margins to make the trough grow here as
+                        // well
+                        //
+                        margin: -7px;
+
+                        @if $dir_class == 'horizontal'
+                        {
+                            @if $marks_infix == 'scale-has-marks-above'
+                            {
+                                margin-top: -11px;
+                            }
+                            @else
+                            {
+                                margin-bottom: -11px;
+                            }
+                        }
+                        @else
+                        {
+                            @if $marks_infix == 'scale-has-marks-above'
+                            {
+                                margin-left: -11px;
+                            }
+                            @else
+                            {
+                                margin-right: -11px;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    &.color
+    {
+        min-height: 0;
+        min-width:  0;
+        
+        trough
+        {
+            background-image:  image($borders_color);
+            background-repeat: no-repeat;
+        }
+        
+        &.horizontal
+        {
+            padding: 0 0 15px 0;
+
+            trough
+            {
+                background-position:     0 -3px;
+                border-top-left-radius:  0;
+                border-top-right-radius: 0;
+                padding-bottom:          4px;
+            }
+
+            slider
+            {
+                // Specificity bump
+                //
+                &:dir(ltr),
+                &:dir(rtl)
+                {
+                    &:hover,
+                    &:backdrop,
+                    &:disabled,
+                    &:backdrop:disabled,
+                    &
+                    {
+                        margin-bottom: -15px;
+                        margin-top:     6px;
+                    }
+                }
+            }
+        }
+        
+        &.vertical
+        {
+            &:dir(ltr)
+            {
+                padding: 0 0 0 15px;
+
+                trough
+                {
+                    background-position:        3px 0;
+                    border-bottom-right-radius: 0;
+                    border-top-right-radius:    0;
+                    padding-left:               4px;
+                }
+                
+                slider
+                {
+                    &:hover,
+                    &:backdrop,
+                    &:disabled,
+                    &:backdrop:disabled,
+                    &
+                    {
+                        margin-left:  -15px;
+                        margin-right:  6px;
+                    }
+                }
+            }
+            
+            &:dir(rtl)
+            {
+                padding: 0 15px 0 0;
+                
+                trough
+                {
+                    background-position:       -3px 0;
+                    border-bottom-left-radius:  0;
+                    border-top-left-radius:     0;
+                    padding-right:              4px;
+                }
+                
+                slider
+                {
+                    &:hover,
+                    &:backdrop,
+                    &:disabled,
+                    &:backdrop:disabled,
+                    &
+                    {
+                        margin-left:   6px;
+                        margin-right: -15px;
+                    }
+                }
+            }
+        }
+        
+        &.fine-tune
+        {
+            &.horizontal
+            {
+                // Specificity bump
+                //
+                &:dir(ltr),
+                &:dir(rtl)
+                {
+                    padding: 0 0 12px 0;
+
+                    trough
+                    {
+                        background-position: 0 -6px;
+                        padding-bottom:      7px;
+                    }
+
+                    slider
+                    {
+                        margin-bottom: -15px;
+                        margin-top:     6px;
+                    }
+                }
+            }
+
+            &.vertical
+            {
+                &:dir(ltr)
+                {
+                    padding: 0 0 0 12px;
+
+                    trough
+                    {
+                        background-position: 6px 0;
+                        padding-left:        7px;
+                    }
+
+                    slider
+                    {
+                        margin-left:  -15px;
+                        margin-right:  6px;
+                    }
+                }
+
+                &:dir(rtl)
+                {
+                    padding: 0 12px 0 0;
+                    
+                    trough
+                    {
+                        background-position: -6px 0;
+                        padding-right:        7px;
+                    }
+                    
+                    slider
+                    {
+                        margin-left:   6px;
+                        margin-right: -15px;
+                    }
+                }
+            }
+        }
+    }
+}
