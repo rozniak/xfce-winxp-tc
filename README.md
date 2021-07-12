@@ -24,14 +24,17 @@ This is almost certainly true, especially seeing as [theming GTK isn't really a 
 
 I hope to cover theming for standard GTK widgets across the board, but there will always be potential bugs with subclassed widgets and the like - they'll have to be handled on a case-by-case basis.
 
+The theme is now based directly from Adwaita to hopefully maximise compatibility and make it easier to fix theme bugs. A refactored form of Adwaita from the upstream GTK 3 sources exists in this repo to make it easier to base themes from/fix problems.
+
 ## Roadmap?
 I don't have a fancy looking roadmap document for this repo - like I said I am just chipping away here and there. Where I remember to I have been creating issues for things I will or would like to do in future. Most of which is related to theming but it would be nice to have some programs / `xfce-panel` plugins one day as well.
 
 ## Screenshots?
 It's still early days, whilst I do use the in-progress `Luna (Blue)` theme as my daily, it is by no means complete. It's usable, but not 'pretty'.
 
-In any case, here are some screenshots of the current state (as of 2020-11-15):
-![image](https://user-images.githubusercontent.com/13258281/99200348-a580df80-279c-11eb-994c-1b24488188e4.png)
-![image](https://user-images.githubusercontent.com/13258281/99200353-b3cefb80-279c-11eb-839f-f90f14c2544f.png)
-![image](https://user-images.githubusercontent.com/13258281/99200356-ba5d7300-279c-11eb-9128-0708f9df7592.png)
-![image](https://user-images.githubusercontent.com/13258281/99200359-c1848100-279c-11eb-9d9f-d3f351c19664.png)
+In any case, here are some screenshots of the current state (as of 2021-07-12):
+
+![image](https://user-images.githubusercontent.com/13258281/125337252-acb9b680-e346-11eb-9822-685dda43af9c.png)
+![image](https://user-images.githubusercontent.com/13258281/125337263-b04d3d80-e346-11eb-933f-1e7adcace129.png)
+![image](https://user-images.githubusercontent.com/13258281/125337268-b2af9780-e346-11eb-8690-4b72c417da86.png)
+![image](https://user-images.githubusercontent.com/13258281/125337491-f99d8d00-e346-11eb-8e4f-26e0c5783b6c.png)
