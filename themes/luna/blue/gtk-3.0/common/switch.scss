@@ -9,149 +9,46 @@
 
 switch
 {
-    outline-offset: -4px;
-    
-    // Similar to the .scale
-    //
-    background-color: $dark_fill;
-    border:           1px solid $borders_color;
-    border-radius:    14px;
-    color:            $fg_color;
-    text-shadow: 0 1px transparentize(black, 0.9);
-    
+    background:    linear-gradient(140deg, rgba(180,180,171,1) 0%, rgba(238,236,221,1) 100%);
+    border:        1px solid #1C5180;
+    border-radius: 14px;
+
     &:checked
     {
-        background-color: $checkradio_bg_color;
-        border-color:     $checkradio_borders_color;
-        color:            $selected_fg_color;
-        text-shadow: 0 1px transparentize($selected_borders_color, 0.5),
-                     0 0 2px transparentize(white, 0.4);
+        background: linear-gradient(140deg, rgba(93,234,89,1) 0%, rgba(21,147,18,1) 100%);
     }
-    
+
     &:disabled
     {
-        background-color: $insensitive_bg_color;
-        border-color:     $borders_color;
-        color:            $insensitive_fg_color;
-        text-shadow:      none;
+        background:   transparent;
+        border-color: #C0BFB5;
     }
-    
-    &:backdrop
-    {
-        background-color: $backdrop_dark_fill;
-        border-color:     $backdrop_borders_color;
-        color:            $backdrop_fg_color;
-        text-shadow:      none;
-        transition:       $backdrop_transition;
-        
-        &:checked
-        {
-            border-color:     if($variant == 'light', $checkradio_borders_color, $selected_borders_color);
-            background-color: $checkradio_bg_color;
 
-            @if $variant == 'light'
-            {
-                color: $backdrop_bg_color;
-            }
-        }
-        
-        &:disabled
-        {
-            background-color: $insensitive_bg_color;
-            border-color:     $backdrop_borders_color;
-            color:            $backdrop_insensitive_color;
-        }
-    }
-    
     slider
     {
-        border:         1px solid;
+        background:     linear-gradient(140deg, rgba(229,229,226,1) 0%, rgba(251,251,251,1) 100%);
+        border:         1px solid #1C5180;
         border-radius:  50%;
         margin:        -1px;
-        min-width:      24px;
-        min-height:     24px;
-        transition:     $button_transition;
-        -gtk-outline-radius: 20px;
-        
-        @if $variant == 'light'
+        min-height:     15px;
+        min-width:      15px;
+
+        &:hover
         {
-            @include button(normal-alt, $edge: $shadow_color);
+            background: linear-gradient(139deg, rgba(255,240,207,1) 0%, rgba(250,197,90,1) 100%);
         }
-        @else
+
+        &:disabled
         {
-            @include button(normal-alt, $c: lighten($bg_color,6%), $edge: $shadow_color);
+            background:   transparent;
+            border-color: #C0BFB5;
         }
     }
-    
+
     // Only show i / o for the accessible theme
     //
     image
     {
         color: transparent;
-    }
-    
-    &:hover slider
-    {
-        @if $variant == 'light'
-        {
-            @include button(hover-alt, $edge: $shadow_color);
-        }
-        @else
-        {
-            @include button(hover-alt, $c: lighten($bg_color,6%), $edge: $shadow_color);
-        }
-    }
-    
-    &:checked > slider
-    {
-        border: 1px solid $checkradio_borders_color;
-    }
-    
-    &:disabled slider
-    {
-        @include button(insensitive);
-    }
-    
-    &:backdrop
-    {
-        slider
-        {
-            transition: $backdrop_transition;
-
-            @include button(backdrop);
-        }
-        
-        &:checked > slider
-        {
-            border-color: $checkradio_borders_color;
-        }
-        
-        &:disabled slider
-        {
-            @include button(backdrop-insensitive);
-        }
-    }
-
-    row:selected &
-    {
-        @if $variant == 'light'
-        {
-            border-color: $checkradio_borders_color;
-            box-shadow: none;
-            
-            &:backdrop
-            {
-                border-color: $checkradio_borders_color;
-            }
-
-            > slider
-            {
-                &:checked,
-                &
-                {
-                    border-color: $checkradio_borders_color;
-                }
-            }
-        }
     }
 }
