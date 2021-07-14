@@ -559,33 +559,22 @@ toolbar.inline-toolbar toolbutton
 
 %linked_middle
 {
-    border-right-style:  none;
-    border-radius:       0;
-    -gtk-outline-radius: 0;
+    margin: inherit 2px;
 }
 
 %linked_left
 {
-    border-top-left-radius:          $button_radius;
-    border-bottom-left-radius:       $button_radius;
-    -gtk-outline-top-left-radius:    $button_radius;
-    -gtk-outline-bottom-left-radius: $button_radius;
+    margin-left: 0px;
 }
 
 %linked_right
 {
-    border-right-style:               solid;
-    border-top-right-radius:          $button_radius;
-    border-bottom-right-radius:       $button_radius;
-    -gtk-outline-top-right-radius:    $button_radius;
-    -gtk-outline-bottom-right-radius: $button_radius;
+    margin-right: 0px;
 }
 
 %linked_only_child
 {
-    border-style:        solid;
-    border-radius:       $button_radius;
-    -gtk-outline-radius: $button_radius;
+    margin: inherit 0px;
 }
 
 // .linked assumes Box, which reverses nodes in RTL, so 1st child is always left
@@ -625,33 +614,22 @@ toolbar.inline-toolbar toolbutton
 
 %linked_vertical_middle
 {
-    border-style:        solid solid none solid;
-    border-radius:       0;
-    -gtk-outline-radius: 0;
+    margin: 2px inherit;
 }
 
 %linked_vertical_top
 {
-    border-top-left-radius:        $button_radius;
-    border-top-right-radius:       $button_radius;
-    -gtk-outline-top-left-radius:  $button_radius;
-    -gtk-outline-top-right-radius: $button_radius;
+    margin-top: 0px;
 }
 
 %linked_vertical_bottom
 {
-    border-bottom-style:              solid;
-    border-bottom-left-radius:        $button_radius;
-    border-bottom-right-radius:       $button_radius;
-    -gtk-outline-bottom-left-radius:  $button_radius;
-    -gtk-outline-bottom-right-radius: $button_radius;
+    margin-bottom: 0px;
 }
 
 %linked_vertical_only_child
 {
-    border-style: solid;
-    border-radius: $button_radius;
-    -gtk-outline-radius: $button_radius;
+    margin: 0px inherit;
 }
 
 %linked_vertical

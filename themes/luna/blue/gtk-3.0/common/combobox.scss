@@ -12,9 +12,14 @@ combobox
     background-color: $base_color;
     border:           1px solid $borders_color;
 
+    &:disabled
+    {
+        background-color: $insensitive_bg_color;
+    }
+
     // Override button styles
     //
-    button.combo
+    button.combo:last-child
     {
         background-image:    url("../Resources/combobox_button.png");
         background-position: right;
@@ -50,15 +55,6 @@ combobox
         border-width: 0px;
     }
 
-    &.linked
-    {
-        button:nth-child(2)
-        {
-            &:dir(ltr) { @extend %linked_right; }
-            &:dir(rtl) { @extend %linked_left; }
-        }
-    }
-
     // FIXME: Untested
     //
     &:drop(active)
@@ -71,18 +67,3 @@ combobox
         }
     }
 }
-
-//
-// The combo is a composite widget so the way we do button linking doesn't
-// work, special case needed. See
-// https://bugzilla.gnome.org/show_bug.cgi?id=733979
-//
-.linked:not(.vertical) > combobox             > box > button.combo { @extend %linked_middle;     }
-.linked:not(.vertical) > combobox:first-child > box > button.combo { @extend %linked_left;       }
-.linked:not(.vertical) > combobox:last-child  > box > button.combo { @extend %linked_right;      }
-.linked:not(.vertical) > combobox:only-child  > box > button.combo { @extend %linked_only_child; }
-
-.linked.vertical > combobox             > box > button.combo { @extend %linked_vertical_middle;     }
-.linked.vertical > combobox:first-child > box > button.combo { @extend %linked_vertical_top;        }
-.linked.vertical > combobox:last-child  > box > button.combo { @extend %linked_vertical_bottom;     }
-.linked.vertical > combobox:only-child  > box > button.combo { @extend %linked_vertical_only_child; }
