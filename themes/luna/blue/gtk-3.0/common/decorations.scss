@@ -9,40 +9,18 @@
 
 decoration
 {
-    border-radius: $window_radius $window_radius 0 0;
-    
     // Lamefun trick to get rounded borders regardless of CSD use
     //
     border-width: 0px;
     
     // This needs to be transparent (see bug #722563)
     //
-    $_wm_border:          if($variant == 'light', transparentize(black, 0.77), transparentize(black, 0.25));
-    $_wm_border_backdrop: if($variant == 'light', transparentize(black, 0.82), transparentize(black, 0.25));
-    
-    // Doing borders with box-shadow
-    //
-    box-shadow: 0 3px 9px 1px transparentize(black, 0.5),
-                0 0   0   1px $_wm_border;
-
-    // FIXME: Rationalize shadows
+    $_wm_border:          transparentize(black, 0.77);
+    $_wm_border_backdrop: transparentize(black, 0.82);
 
     // This is used for the resize cursor area
     //
     margin: 10px;
-    
-    &:backdrop
-    {
-        // The transparent shadow here is to enforce that the shadow extents don't
-        // change when we go to backdrop, to prevent jumping windows.
-        // The biggest shadow should be in the same order then in the active state
-        // or the jumping will happen during the transition.
-        //
-        box-shadow: 0 3px 9px 1px transparent,
-                    0 2px 6px 2px transparentize(black, 0.8),
-                    0 0 0 1px $_wm_border_backdrop;
-        transition: $backdrop_transition;
-    }
     
     .maximized &,
     .fullscreen &
@@ -60,12 +38,6 @@ decoration
         border-radius: 0;
         box-shadow:    0 0 0 1px  $_wm_border_backdrop,
                        0 0 0 20px transparent; //transparent control workaround -- #3670
-
-        &:backdrop
-        {
-            box-shadow: 0 0 0 1px  $_wm_border_backdrop,
-                        0 0 0 20px transparent; // #3670
-        }
     }
     
     .popup &
@@ -77,7 +49,6 @@ decoration
     // Just doing borders, wm draws actual shadows
     //
     .ssd &          { box-shadow: 0 0 0 1px $_wm_border;          }
-    .ssd &:backdrop { box-shadow: 0 0 0 1px $_wm_border_backdrop; }
     
     .csd.popup &
     {
@@ -93,26 +64,19 @@ decoration
     
     messagedialog.csd &
     {
-        border-radius: $window_radius;
         box-shadow:    0 1px 2px transparentize(#000000,     0.8),
                        0 0 0 1px transparentize($_wm_border, 0.1);
     }
     
     .solid-csd &
     {
-        background-color: $borders_color;
+        background-color: blue;
         border:           solid 1px $borders_color;
         border-radius:    0;
         box-shadow:       inset 0 0 0 3px $headerbar_color,
                           inset 0 1px     $top_hilight;
         margin:           0;
         padding:          4px;
-        
-        &:backdrop
-        {
-            box-shadow: inset 0 0 0 3px $backdrop_bg_color,
-                        inset 0 1px     $top_hilight;
-        }
     }
 }
 
@@ -125,15 +89,6 @@ button.titlebutton
     @extend %button_basic_flat;
     
     @include _button_text_shadow;
-    
-    &:not(.appmenu)
-    {
-        border-radius: 9999px;
-        padding:       $_hb_btn_pad;
-        margin:        0 2px;
-        min-height:    0;
-        min-width:     0;
-    }
     
     .selection-mode &
     {
@@ -189,4 +144,54 @@ headerbar.selection-mode button.titlebutton,
 .monospace
 {
     font-family: monospace;
+}
+
+// CSD window borders
+//
+.csd:not(tooltip):not(.popup)
+{
+    border-image: url("../Resources/csd-window-border.png") 0 5 5 5 stretch;
+    border-style: solid;
+    border-width: 0px 5px 5px;
+
+    &:backdrop
+    {
+        border-image: url("../Resources/csd-window-border-backdrop.png") 0 5 5 5 stretch;
+    }
+
+    &.tiled,
+    &.tiled-top,
+    &.tiled-right,
+    &.tiled-bottom,
+    &.tiled-left,
+    &.maximized,
+    &.fullscreen
+    {
+        border: none;
+    }
+
+    // FIXME: This bodge fixes GLADE, which uses a stack - padding to the window
+    //        itself did not fix the issue so this was the next best thing
+    //
+    //        Not sure if it causes problems with other programs however...
+    //
+    > stack
+    {
+        padding: 0px 5px 5px;
+    }
+
+    // Style revealers that are top-level in the CSD, otherwise they will be missing
+    // borders on their sides
+    //
+    > box > searchbar > revealer > box
+    {
+        border-image: url("../Resources/csd-window-border.png") 0 5 5 5 stretch;
+        border-style: solid;
+        border-width: 0px 5px;
+
+        &:backdrop
+        {
+            border-image: url("../Resources/csd-window-border-backdrop.png") 0 5 5 5 stretch;
+        }
+    }
 }
