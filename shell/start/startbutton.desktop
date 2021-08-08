@@ -1,0 +1,9 @@
+[Xfce Panel]
+Type=X-XFCE-PanelPlugin
+Encoding=UTF-8
+Name=Start button
+Comment=Windows XP Start button
+Icon=start-logo
+X-XFCE-Module=startbutton-plugin
+X-XFCE-Internal=false
+X-XFCE-API=2.0

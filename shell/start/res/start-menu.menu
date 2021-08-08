@@ -1,0 +1,107 @@
+<!DOCTYPE Menu PUBLIC "-//freedesktop//DTD Menu 1.0//EN"
+  "http://www.freedesktop.org/standards/menu-spec/1.0/menu.dtd">
+
+<Menu>
+    <DefaultAppDirs/>
+
+    <Menu>
+        <Name>Accessories</Name>
+        <Include>
+            <Category>Utility</Category>
+        </Include>
+        <Exclude>
+            <Category>X-XFCE</Category>
+        </Exclude>
+    </Menu>
+
+    <Menu>
+        <Name>Development</Name>
+        <Include>
+            <Category>Development</Category>
+        </Include>
+    </Menu>
+
+    <Menu>
+        <Name>Education</Name>
+        <Include>
+            <Category>Education</Category>
+        </Include>
+        <Exclude>
+            <Category>X-XFCE</Category>
+        </Exclude>
+    </Menu>
+
+    <Menu>
+        <Name>Games</Name>
+        <Include>
+            <Category>Game</Category>
+        </Include>
+        <Exclude>
+            <Category>X-XFCE</Category>
+        </Exclude>
+    </Menu>
+
+    <Menu>
+        <Name>Graphics</Name>
+        <Include>
+            <Category>Graphics</Category>
+        </Include>
+        <Exclude>
+            <Category>X-XFCE</Category>
+        </Exclude>
+    </Menu>
+
+    <Menu>
+        <Name>Internet</Name>
+        <Include>
+            <Category>Network</Category>
+        </Include>
+        <Exclude>
+            <Category>X-XFCE</Category>
+        </Exclude>
+    </Menu>
+
+    <Menu>
+        <Name>Office</Name>
+        <Include>
+            <Category>Office</Category>
+        </Include>
+        <Exclude>
+            <Category>X-XFCE</Category>
+        </Exclude>
+    </Menu>
+
+    <Menu>
+        <Name>Multimedia</Name>
+        <Include>
+            <Or>
+                <Category>Audio</Category>
+                <Category>AudioVideo</Category>
+                <Category>Video</Category>
+            </Or>
+        </Include>
+        <Exclude>
+            <Category>X-XFCE</Category>
+        </Exclude>
+    </Menu>
+
+    <Menu>
+        <Name>Science</Name>
+        <Include>
+            <Category>Science</Category>
+        </Include>
+        <Exclude>
+            <Category>X-XFCE</Category>
+        </Exclude>
+    </Menu>
+
+    <Menu>
+        <Name>System</Name>
+        <Include>
+            <Category>System</Category>
+        </Include>
+        <Exclude>
+            <Category>X-XFCE</Category>
+        </Exclude>
+    </Menu>
+</Menu>

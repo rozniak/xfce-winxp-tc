@@ -26,3 +26,7 @@ $variant: 'light';
 // Import color definition exports (for third-party apps and WMs)
 //
 @import "colors-public/all";
+
+// Import program-specific overrides
+//
+@import "override/all";
