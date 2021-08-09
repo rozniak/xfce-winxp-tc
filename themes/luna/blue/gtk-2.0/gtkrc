@@ -3,9 +3,6 @@ style "default" {
 }
 
 style "button" {
-    xthickness = 4
-    ythickness = 4
-
     engine "pixmap" {
         image {
             function = BOX
@@ -223,9 +220,86 @@ style "radio" {
     }
 }
 
+style "taskband" {
+    ythickness = 4
+
+    engine "pixmap" {
+        image {
+            function = BOX
+            state    = NORMAL
+            file     = "../Resources/taskbar_bg.png"
+            border   = { 0, 0, 0, 0 }
+            stretch  = TRUE
+        }
+    }
+}
+
+style "taskbandbutton" {
+    fg[NORMAL]   = "#FFF"
+    fg[PRELIGHT] = "#FFF"
+    fg[ACTIVE]   = "#FFF"
+    fg[SELECTED] = "#FFF"
+
+    engine "pixmap" {
+        image {
+            function = BOX
+            state = NORMAL
+            file = "../Resources/taskband_button.png"
+            border = { 2, 2, 2, 2 }
+            stretch = TRUE
+        }
+    }
+
+    engine "pixmap" {
+        image {
+            function = BOX
+            state = PRELIGHT
+            shadow = OUT
+            file = "../Resources/taskband_button_hover.png"
+            border = { 2, 2, 2, 2 }
+            stretch = TRUE
+        }
+    }
+
+    engine "pixmap" {
+        image {
+            function = BOX
+            state = PRELIGHT
+            shadow = IN
+            file = "../Resources/taskband_button_press_hover.png"
+            border = { 2, 2, 2, 2 }
+            stretch = TRUE
+        }
+    }
+
+    engine "pixmap" {
+        image {
+            function = BOX
+            state = ACTIVE
+            file = "../Resources/taskband_button_press.png"
+            border = { 2, 2, 2, 2 }
+            stretch = TRUE
+        }
+    }
+
+    engine "pixmap" {
+        image {
+            function = BOX
+            state = SELECTED
+            file = "../Resources/taskband_button_press.png"
+            border = { 2, 2, 2, 2 }
+            stretch = TRUE
+        }
+    }
+}
+
 widget_class "*"                  style "default"
 
 widget_class "*GtkButton*"        style "button"
 
 widget_class "*<GtkCheckButton>*" style "checkbox"
 widget_class "*<GtkRadioButton>*" style "radio"
+
+
+widget_class "*XfcePanelWindow*Plugin*" style "taskband"
+widget_class "*Window*Plugin*Button*" style "taskbandbutton"
