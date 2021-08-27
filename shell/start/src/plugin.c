@@ -5,6 +5,7 @@
 #include "plugin.h"
 #include "startbutton.h"
 #include "startmenu.h"
+#include "util.h"
 
 //
 // GTK OOP CLASS/INSTANCE DEFINITIONS
@@ -73,6 +74,8 @@ static void start_plugin_construct(
         START_BUTTON(start->start_button),
         start
     );
+
+    gtk_widget_add_style_class(GTK_WIDGET(plugin), "xp-start-plugin");
 
     gtk_container_add(GTK_CONTAINER(plugin), start->start_button);
     gtk_widget_show_all(start->start_button);
