@@ -1,0 +1,51 @@
+/**
+ * xfce-window-buttons.scss - Luna (Blue) XFCE Window Buttons Styles
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+*
+{
+    -XfceTasklist-minimized-icon-lucency: 100;
+}
+
+.tasklist
+{
+    .label-hidden
+    {
+        opacity: 1.0;
+    }
+
+    button
+    {
+        background-image:    url("../Resources/taskband_button_body.png");
+        background-position: -2px 0px;
+        background-size:     102% 100%;
+        border-image:        url("../Resources/taskband_button.png") 2 2 2 2 stretch;
+        border-style:        solid;
+        border-width:        2px;
+        color:               #FFFFFF;
+        margin:              3px 0px 2px;
+
+        &:hover
+        {
+            background-image: url("../Resources/taskband_button_hover_body.png");
+            border-image:     url("../Resources/taskband_button_hover.png") 2 2 2 2 stretch;
+        }
+
+        &:active, &:checked
+        {
+            background-image: url("../Resources/taskband_button_press_body.png");
+            border-image:     url("../Resources/taskband_button_press.png") 2 2 2 2 stretch;
+
+            &:hover
+            {
+                background-image: url("../Resources/taskband_button_press_hover_body.png");
+                border-image:     url("../Resources/taskband_button_press_hover.png") 2 2 2 2 stretch;
+            }
+        }
+    }
+}
