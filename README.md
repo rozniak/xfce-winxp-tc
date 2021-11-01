@@ -10,13 +10,15 @@ I used to use Luna theme ports back when Windows 7 was still supported - it's no
 The ports I've seen do a very minimal job leaving most of the UI looking very GNOME-ish, I want a clearly XP-style look. The themes here should be comprehensive.
 
 ## Building / Installation
-Right now the build process targets Debian (as a `.deb`) - I have an issue open #35 to resolve this in future for other package managers.
+Right now the build process targets Debian (as a `.deb`) - I have an issue open [#35](https://github.com/rozniak/xfce-winxp-tc/issues/35) to resolve this in future for other package managers.
 
 For now - Debian users can use these steps to build and install:
-```
+``` sh
+sudo apt update && sudo apt install libsass1 # Install sass compiler dependency
+git clone https://github.com/rozniak/xfce-winxp-tc
 cd packaging
 ./build-deb.sh
-sudo dpkg -i debian.deb
+sudo apt install ./debian.deb
 ```
 
 ## The theme(s) are buggy!
