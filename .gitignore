@@ -1,4 +1,5 @@
 *.deb
+*.log
 *.swp
 *.kra
 *~

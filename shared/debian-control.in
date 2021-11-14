@@ -1,0 +1,6 @@
+Package: lib@PROJECT_NAME@-@PROJECT_VERSION@
+Version: @PROJECT_VERSION@
+Maintainer: Rory Fewell <roryf@oddmatics.uk>
+Architecture: @ARCH_NAME@
+Section: free
+Description: @PROJECT_DESCRIPTION@
