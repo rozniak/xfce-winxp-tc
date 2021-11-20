@@ -1,23 +1,23 @@
 # xfce-winxp-tc
 This is my little chipping-away spot for a Windows XP Total Conversion for XFCE.
 
+![desktop](https://user-images.githubusercontent.com/13258281/142736910-7393327e-5361-4347-a06e-783d23ab936c.png)
+
+
 ## What?
-Essentially this repo is a 'project' to replicate the XP experience on XFCE / Linux in general. I'm working on themes at the moment (easier said than done), and potentially programs later down the line.
+Essentially this repo is a 'project' to replicate the XP experience on XFCE / Linux in general. This includes everything from desktop themes, icons, cursors, all the way to programs and the shell itself.
 
 ## Why?
-I used to use Luna theme ports back when Windows 7 was still supported - it's no longer supported and customisability is non-existent on Windows 10 and whilst ports for XP themes do exist for Linux, I don't think they're particularly great. I want the theme to be close to pixel-perfect, limitations with GTK and XFCE notwithstanding.
+I used to use Luna theme ports back when Windows 7 was still supported - it's no longer supported and customisability is non-existent on Windows 10. Whilst ports for XP themes do exist for Linux, I don't think they're particularly great. I want to replicate the Windows XP experience, as close to pixel perfect as possible.
 
-The ports I've seen do a very minimal job leaving most of the UI looking very GNOME-ish, I want a clearly XP-style look. The themes here should be comprehensive.
+As part of my aim this includes writing programs and panel plugins to achieve this goal, such as the Start menu shown in the screenshot above.
 
 ## Building / Installation
-Right now the build process targets Debian (as a `.deb`) - I have an issue open #35 to resolve this in future for other package managers.
+Make sure to clone this repository recursively so that `/submodules` is populated! (use `git clone <url> --recurse-submodules`)
 
-For now - Debian users can use these steps to build and install:
-```
-cd packaging
-./build-deb.sh
-sudo dpkg -i debian.deb
-```
+The build process involves packaging for each component, and then installing those packages. At the moment, I have only implemented `.deb` packaging, though I have [issue #35](https://github.com/rozniak/xfce-winxp-tc/issues/35) open to sort out other package managers eventually.
+
+The packaging is, of course, [found under `/packaging`](https://github.com/rozniak/xfce-winxp-tc/tree/master/packaging) (except for `/submodules`), with each directory explaining how to use the relevant script. In general, have a poke around in this repository, there are `README`s in each directory that will explain what things are, and how to install them. 😁
 
 ## The theme(s) are buggy!
 This is almost certainly true, especially seeing as [theming GTK isn't really a supported feature](https://stopthemingmy.app/). If you're using themes from this repository and programs look broken, you should file issues here rather than pestering the developers of said program.
@@ -27,10 +27,14 @@ I hope to cover theming for standard GTK widgets across the board, but there wil
 The theme is now based directly from Adwaita to hopefully maximise compatibility and make it easier to fix theme bugs. A refactored form of Adwaita from the upstream GTK 3 sources exists in this repo to make it easier to base themes from/fix problems.
 
 ## Roadmap?
-I don't have a fancy looking roadmap document for this repo - like I said I am just chipping away here and there. Where I remember to I have been creating issues for things I will or would like to do in future. Most of which is related to theming but it would be nice to have some programs / `xfce-panel` plugins one day as well.
+I don't have a fancy looking roadmap document for this repo - there's too much to list really. Essentially, if something was in Windows XP, it's on my mind.
+
+As part of that, user-friendliness is always a target - besides themes and programs, I aim to one day have a nice setup application/process akin to XP's. And perhaps an OOBE if I can figure that out (mostly for the nostalgic music).
 
 ## Screenshots?
 It's still early days, whilst I do use the in-progress `Luna (Blue)` theme as my daily, it is by no means complete. It's usable, but not 'pretty'.
+
+These screenshots are quite old, but generally reflect the current status of the desktop theme (due to working on things like the Start menu). I will be resuming the theming work shortly, so keep an eye out. 😉
 
 In any case, here are some screenshots of the current state (as of 2021-07-19):
 

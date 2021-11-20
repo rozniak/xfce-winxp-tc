@@ -11,6 +11,8 @@ else()
     message(FATAL_ERROR "No install dir defined for ${CMAKE_SYSTEM_PROCESSOR}!")
 endif()
 
+set(DEB_DEPENDENCIES "libglib2.0-dev, libgtk-3-dev, libwintc-comgtk-1.0")
+
 find_package(PkgConfig REQUIRED)
 
 pkg_check_modules(GDK  REQUIRED gdk-3.0)

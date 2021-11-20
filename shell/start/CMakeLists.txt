@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 
-project(startbutton-plugin)
+project(startmenu-plugin)
 
 find_package(PkgConfig REQUIRED)
 
@@ -33,7 +33,7 @@ link_directories(
     ${XFCE4PANEL_LIBRARY_DIRS}
     ${XFCE4UTIL_LIBRARY_DIRS})
 
-add_library(startbutton-plugin MODULE
+add_library(startmenu-plugin MODULE
     src/action.h
     src/action.c
     src/placeslist.h
@@ -51,7 +51,7 @@ add_library(startbutton-plugin MODULE
     src/util.h
     src/util.c)
 
-target_link_libraries(startbutton-plugin
+target_link_libraries(startmenu-plugin
     PRIVATE ${GARCON_LIBRARIES}
     PRIVATE ${GARCON_GTK3_LIBRARIES}
     PRIVATE ${GDK_LIBRARIES}

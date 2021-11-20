@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 
-project(systray-plugin)
+project(xpsystray-plugin)
 
 find_package(PkgConfig REQUIRED)
 
@@ -33,13 +33,13 @@ link_directories(
     ${XFCE4PANEL_LIBRARY_DIRS}
     ${XFCE4UTIL_LIBRARY_DIRS})
 
-add_library(systray-plugin MODULE
+add_library(xpsystray-plugin MODULE
     src/clock.h
     src/clock.c
     src/plugin.h
     src/plugin.c)
 
-target_link_libraries(systray-plugin
+target_link_libraries(xpsystray-plugin
     PRIVATE ${GARCON_LIBRARIES}
     PRIVATE ${GARCON_GTK3_LIBRARIES}
     PRIVATE ${GDK_LIBRARIES}

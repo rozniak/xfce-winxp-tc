@@ -85,7 +85,7 @@ do
         fi
     fi
 
-    # Set up working directory
+    # Set up build directory
     #
     build_dir="${lib_dir}/build"
 
@@ -121,6 +121,13 @@ do
     pkg_lib_dir="${PKG_DIR}${libdir}"
     pkg_pkgconfig_dir="${PKG_DIR}${pkgconfigdir}"
 
+    if [[ -d "${PKG_DIR}" ]]
+    then
+        rm -rf "${PKG_DIR}"
+    fi
+
+    cd "${CURDIR}"
+
     mkdir -p "${pkg_debian_dir}"
     mkdir -p "${pkg_include_dir}"
     mkdir -p "${pkg_lib_dir}"
@@ -128,12 +135,28 @@ do
 
     # Copy files
     #
-    cd "${CURDIR}"
+    pkg_setup_result=0
 
-    cp "${build_dir}/debian-control" "${pkg_debian_dir}/control"
-    cp "${build_dir}/"*.h "${pkg_include_dir}"
-    cp "${build_dir}/"*.so* "${pkg_lib_dir}"
-    cp "${build_dir}/"*.pc "${pkg_pkgconfig_dir}"
+    cp "${build_dir}/debian-control" "${pkg_debian_dir}/control" >> "${log_path}" 2>&1
+    ((pkg_setup_result+=$?))
+
+    cp "${build_dir}/"*.h "${pkg_include_dir}" >> "${log_path}" 2>&1
+    ((pkg_setup_result+=$?))
+
+    cp "${build_dir}/"*.so* "${pkg_lib_dir}" >> "${log_path}" 2>&1
+    ((pkg_setup_result+=$?))
+
+    cp "${build_dir}/"*.pc "${pkg_pkgconfig_dir}" >> "${log_path}" 2>&1
+    ((pkg_setup_result+=$?))
+
+    # Check package setup good
+    #
+    if [[ $pkg_setup_result -gt 0 ]]
+    then
+        echo "Failed to copy files for ${libstr}, see ${log_path} for output."
+        rm -rf "${PKG_DIR}"
+        exit 1
+    fi
 
     # Compile package
     #

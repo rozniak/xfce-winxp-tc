@@ -83,6 +83,31 @@ do
         theme_shadows="${BASH_REMATCH[1]}"
         theme_scheme="${BASH_REMATCH[2]}"
 
+        log_path="${CURDIR}/${theme_scheme}-${theme_shadows}.log"
+
+        if [[ ! -d "${theme_cfg_dir}" ]]
+        then
+            echo "Cannot find xcursorgen configs for ${themestr}, skipping."
+            continue
+        fi
+
+        if [[ ! -f "${theme_map_path}" ]]
+        then
+            echo "Cannot find mappings file for ${themestr}, skipping."
+            continue
+        fi
+
+        if [[ -f "${log_path}" ]]
+        then
+            rm -f "${log_path}"
+
+            if [[ $? -gt 0 ]]
+            then
+                echo "Failed to delete ${log_path}, skipping."
+                continue
+            fi
+        fi
+
         # Set up our package's working directory
         #
         pkg_theme_dir="${PKG_DIR}/usr/share/icons/${theme_scheme}-${theme_shadows}"
@@ -95,17 +120,18 @@ do
             rm -rf "${PKG_DIR}"
         fi
 
-        mkdir "${PKG_DIR}"
+        mkdir -p "${PKG_DIR}"
+        mkdir -p "${pkg_cursor_dir}"
         mkdir -p "${pkg_curres_dir}"
-        mkdir "${pkg_debian_dir}"
+        mkdir -p "${pkg_debian_dir}"
 
         # Generate X cursors, shift them to our working dir and remove the '.out' ext
         #
         cd "${theme_dir}"
 
-        find "${theme_cfg_dir}" -type f -exec xcursorgen '{}' '{}.out' \; > /dev/null 2>&1
-        mv "${theme_cfg_dir}"/*.out "${pkg_curres_dir}"
-        find "${pkg_curres_dir}" -type f -execdir rename 's/(.*)\.cfg\.out/\1/' '{}' \; > /dev/null 2>&1
+        find "${theme_cfg_dir}" -type f -exec xcursorgen '{}' '{}.out' \; > "${log_path}" 2>&1
+        mv "${theme_cfg_dir}"/*.out "${pkg_curres_dir}" > "${log_path}" 2>&1
+        find "${pkg_curres_dir}" -type f -execdir rename 's/(.*)\.cfg\.out/\1/' '{}' \; > "${log_path}" 2>&1
 
         # Create symbolic links
         #
@@ -123,45 +149,52 @@ do
                 pkg_res_target="res/${resname}"
                 pkg_xcur_source="${pkg_cursor_dir}/${xcurname}"
 
-                ln -s "${pkg_res_target}" "${pkg_xcur_source}"
+                ln -s "${pkg_res_target}" "${pkg_xcur_source}" > "${log_path}" 2>&1
+
+                if [[ $? -gt 0 ]]
+                then
+                    "Failed to create symlink for ${xcurname} in ${themestr}."
+                    continue
+                fi
             else
                 echo "Invalid mapping '${mapping}' in ${theme_map_path}."
                 continue
             fi
         done
 
-        # Copy across index.theme
+        # Copy files
         #
-        cp "${theme_dir}/index.theme" "${pkg_theme_dir}"
+        pkg_setup_result=0
 
-        # Create CONTROL file
+        cp "${theme_dir}/index.theme" "${pkg_theme_dir}" >> "${log_path}" 2>&1
+        ((pkg_setup_result+=$?))
+
+        cp "${theme_dir}/debian-control" "${pkg_debian_dir}/control" >> "${log_path}" 2>&1
+        ((pkg_setup_result+=$?))
+
+        # Check package setup good
         #
-        # FIXME: One day this should probably read the description and maintainer(?)
-        #        from a file in the cursor theme's directory
-        #
-        debian_control=`cat <<EOF
-Package: cursor-theme-${theme_shadows}-${theme_scheme}
-Version: 0.0.1
-Maintainer: Rory Fewell <roryf@oddmatics.uk>
-Architecture: all
-Section: non-free
-Description: A Windows XP cursor theme.
-EOF
-`
-        echo "${debian_control}" > "${pkg_debian_dir}/control"
+        if [[ $pkg_setup_result -gt 0 ]]
+        then
+            echo "Failed to copy files for ${themestr}, see ${log_path} for output."
+            rm -rf "${PKG_DIR}"
+            continue
+        fi
 
         # Compile package
         #
         cd "${CURDIR}"
 
-        fakeroot dpkg-deb -v --build "${PKG_DIR}" > /dev/null 2>&1
+        fakeroot dpkg-deb -v --build "${PKG_DIR}" >> "${log_path}" 2>&1
 
         if [[ $? -gt 0 ]]
         then
-            "Failed to build package for ${themestr}."
+            "Failed to build package for ${themestr}, see ${log_path} for output."
             continue
         fi
 
+        # Tidy
+        #
         mv "${PKG_DIR}.deb" "cursor-theme-${theme_shadows}-${theme_scheme}.deb"
 
         rm -rf "${PKG_DIR}"

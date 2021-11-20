@@ -4,5 +4,4 @@
 *.kra
 *~
 [Bb]uild/
-packaging/debian
-packaging/.sass-cache
+.sass-cache/

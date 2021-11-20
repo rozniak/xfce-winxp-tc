@@ -1,9 +1,9 @@
 [Xfce Panel]
 Type=X-XFCE-PanelPlugin
 Encoding=UTF-8
-Name=Notification Area
-Comment=Windows XP notification area
+Name=Start button
+Comment=Windows XP Start menu
 Icon=start-logo
-X-XFCE-Module=systray-plugin
+X-XFCE-Module=startmenu-plugin
 X-XFCE-Internal=false
 X-XFCE-API=2.0

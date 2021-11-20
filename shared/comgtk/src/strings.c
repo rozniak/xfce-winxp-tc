@@ -4,10 +4,6 @@
 #include "strings.h"
 
 //
-// FORWARD DECLARATIONS
-//
-
-//
 // PUBLIC FUNCTIONS
 //
 gint wintc_strstr_count(

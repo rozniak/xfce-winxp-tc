@@ -4,3 +4,4 @@ Maintainer: Rory Fewell <roryf@oddmatics.uk>
 Architecture: @ARCH_NAME@
 Section: free
 Description: @PROJECT_DESCRIPTION@
+Depends: @DEB_DEPENDENCIES@
