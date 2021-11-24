@@ -162,7 +162,7 @@ window.csd.xp-start-menu // Specificity hack -_-
         color:        #373737;
         min-width:    182px;
 
-        .xp-all-programs
+        box.xp-start-all-programs
         {
             font-weight: bold;
 
@@ -278,16 +278,18 @@ window.csd.xp-start-menu // Specificity hack -_-
             image
             {
                 background: #CCD6EB;
+                box-shadow: none;
+                margin: 0px;
             }
         }
         
         label
         {
-            color:        #FFFFFF;
-            font-family:  'Franklin Gothic Medium';
-            font-size:    14pt;
+            color:       #FFFFFF;
+            font-family: 'Franklin Gothic Medium';
+            font-size:   14pt;
             margin-left: 5px;
-            text-shadow:  0px 1px 2px #000000;
+            text-shadow: 0px 1px 2px #000000;
         }
     }
 }

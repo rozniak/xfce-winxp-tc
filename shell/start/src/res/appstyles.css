@@ -1,0 +1,46 @@
+box > menubar > menuitem > box > image
+{
+    margin: 0px 6px 0px 2px;
+}
+
+box > menubar > separator
+{
+    margin: 4px 0px;
+}
+
+box.xp-start-all-programs
+{
+    font-weight: bold;
+    min-height:  32px;
+}
+
+separator.xp-start-all-programs
+{
+    margin-top: 40px;
+}
+
+.xp-start-logoffpane button
+{
+    margin: 8px 3px;
+}
+
+.xp-start-logoffpane button:last-child
+{
+    margin-right: 8px;
+}
+
+.xp-start-logoffpane image
+{
+    margin-right: 4px;
+}
+
+.xp-start-userpane image
+{
+    box-shadow: 0px 0px 2px 0px rgba(0,0,0,0.75);
+    margin: 10px;
+}
+
+.xp-start-userpane label
+{
+    font-size: 16pt;
+}

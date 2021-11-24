@@ -19,8 +19,6 @@ struct _StartMenuPrivate
     StartMenu* menu;
 
     GtkWidget* main_box;
-    GtkWidget* places_list;
-    GtkWidget* programs_list;
 };
 
 struct _StartMenuClass
@@ -171,13 +169,37 @@ void start_menu_get_popup_position(
     gint*            y
 )
 {
-    xfce_panel_plugin_position_widget(
-        plugin,
-        (START_MENU(menu))->priv->main_box,
-        widget,
-        x,
-        y
+    GtkAllocation box_alloc;
+    gint          wnd_x;
+    gint          wnd_y;
+
+    // Find where the attach widget is
+    //
+    gtk_window_get_position(
+        GTK_WINDOW(gtk_widget_get_toplevel(widget)),
+        &wnd_x,
+        &wnd_y
     );
+
+    // Find my size
+    //
+    gtk_widget_get_allocation(
+        (START_MENU(menu))->priv->main_box,
+        &box_alloc
+    );
+
+    // Respond
+    // 
+    // FIXME: This is assuming the panel is on the bottom of the screen
+    //        AND that the start menu fits on screen
+    //
+    //        Need to:
+    //            - Check screen geometry to try and fit the Start menu
+    //            - Check which way to open the Start menu
+    //                ( xfce_panel_plugin_arrow_type() ? )
+    //
+    *x = wnd_x;
+    *y = wnd_y - box_alloc.height;
 }
 
 //
@@ -305,10 +327,6 @@ static void create_places_structure(
     // Add style class
     //
     gtk_widget_add_style_class(GTK_WIDGET(places_box), "xp-start-places-column");
-
-    // Connect to instance
-    //
-    start_menu->priv->places_list = places_list;
 }
 
 static void create_programs_structure(
@@ -359,10 +377,6 @@ static void create_programs_structure(
     // Add style class
     //
     gtk_widget_add_style_class(GTK_WIDGET(programs_box), "xp-start-programs-column");
-
-    // Connect to instance
-    //
-    start_menu->priv->programs_list = programs_list;
 }
 
 static void create_taskcolumns_structure(

@@ -1,6 +1,8 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.12)
 
 project(startmenu-plugin)
+
+set(GRESOURCE_DEPENDENCIES "")
 
 find_package(PkgConfig REQUIRED)
 
@@ -12,6 +14,34 @@ pkg_check_modules(GLIB REQUIRED glib-2.0)
 pkg_check_modules(GTK3 REQUIRED gtk+-3.0)
 pkg_check_modules(XFCE4PANEL REQUIRED libxfce4panel-2.0)
 pkg_check_modules(XFCE4UTIL REQUIRED libxfce4util-1.0)
+
+find_program(GLIB_COMPILE_RESOURCES glib-compile-resources REQUIRED)
+
+execute_process(
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/src/res
+    COMMAND ${GLIB_COMPILE_RESOURCES} --generate-dependencies resources.xml
+    OUTPUT_VARIABLE GRESOURCE_DEPENDENCIES)
+
+string(REPLACE "\n" ";" GRESOURCE_DEPENDENCIES ${GRESOURCE_DEPENDENCIES})
+list(POP_BACK GRESOURCE_DEPENDENCIES)
+list(TRANSFORM GRESOURCE_DEPENDENCIES PREPEND "src/res/")
+
+add_custom_command(
+    OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/src/resources.c
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/src/res
+    COMMAND ${GLIB_COMPILE_RESOURCES}
+    ARGS
+        --target=../resources.c
+        --generate
+        resources.xml
+    VERBATIM
+    MAIN_DEPENDENCY src/res/resources.xml
+    DEPENDS
+    ${GRESOURCE_DEPENDENCIES})
+
+add_custom_target(
+    project-resources
+    DEPENDS src/resources.c)
 
 include_directories(
     ${GARCON_INCLUDE_DIRS}
@@ -42,6 +72,7 @@ add_library(startmenu-plugin MODULE
     src/plugin.c
     src/programslist.h
     src/programslist.c
+    src/resources.c
     src/startbutton.h
     src/startbutton.c
     src/startmenu.h
@@ -50,6 +81,8 @@ add_library(startmenu-plugin MODULE
     src/startmenuitem.c
     src/util.h
     src/util.c)
+
+add_dependencies(startmenu-plugin project-resources)
 
 target_link_libraries(startmenu-plugin
     PRIVATE ${GARCON_LIBRARIES}

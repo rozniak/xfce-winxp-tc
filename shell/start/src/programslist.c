@@ -35,7 +35,8 @@ static void programs_list_append_default_items(
     ProgramsList* programs_list
 );
 static void programs_list_append_separator(
-    ProgramsList* programs_list
+    ProgramsList* programs_list,
+    const gchar*  style_class
 );
 static void programs_list_append_top_items(
     ProgramsList* programs_list,
@@ -79,11 +80,11 @@ void programs_list_refresh(
 {
     programs_list_append_default_items(programs_list);
 
-    programs_list_append_separator(programs_list);
+    programs_list_append_separator(programs_list, NULL);
 
     programs_list_append_top_items(programs_list, 6);
 
-    programs_list_append_separator(programs_list);
+    programs_list_append_separator(programs_list, "xp-start-all-programs");
 
     programs_list_append_all_programs_item(programs_list);
 }
@@ -142,7 +143,7 @@ static void programs_list_append_all_programs_item(
 
     // Set style
     //
-    gtk_widget_add_style_class(outer_box, "xp-all-programs");
+    gtk_widget_add_style_class(outer_box, "xp-start-all-programs");
     gtk_widget_add_style_class(arrow_box, "arrow");
 
     // Box up
@@ -191,10 +192,16 @@ static void programs_list_append_default_items(
 }
 
 static void programs_list_append_separator(
-    ProgramsList* programs_list
+    ProgramsList* programs_list,
+    const gchar*  style_class
 )
 {
     GtkWidget* separator = gtk_separator_menu_item_new();
+
+    if (style_class != NULL)
+    {
+        gtk_widget_add_style_class(separator, style_class);
+    }
 
     gtk_menu_shell_append(GTK_MENU_SHELL(programs_list), separator);
 }
