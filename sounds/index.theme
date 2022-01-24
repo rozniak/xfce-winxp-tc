@@ -1,0 +1,6 @@
+[Sound Theme]
+Name=Windows XP Default
+Directories=stereo
+
+[stereo]
+OutputProfile=stereo
