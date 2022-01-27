@@ -4,7 +4,7 @@ arrow-->arrow
 bd_double_arrow-->resize-nw-se
 bottom_left_corner-->resize-sw-ne
 bottom_right_corner-->resize-nw-se
-bottom_side-->bottom-side
+bottom_side-->resize-v
 bottom_tee-->bottom-tee
 cell-->cell
 circle-->unavailable
@@ -44,7 +44,7 @@ icon-->precision
 left_ptr-->arrow
 left_ptr_help-->arrow-help
 left_ptr_watch-->arrow-wait
-left_side-->left-side
+left_side-->resize-h
 left_tee-->left-tee
 link-->hand
 ll_angle-->sw
@@ -65,7 +65,7 @@ pointer-move-->arrow-move
 progress-->arrow-wait
 question_arrow-->arrow-help
 right_ptr-->arrow-r
-right_side-->right-side
+right_side-->resize-h
 right_tee-->right-tee
 row-resize-->resize-v
 s-resize-->resize-v
@@ -88,7 +88,7 @@ tcross-->precision
 top_left_arrow-->arrow
 top_left_corner-->resize-nw-se
 top_right_corner-->resize-sw-ne
-top_side-->top-side
+top_side-->resize-v
 top_tee-->top-tee
 ul_angle-->nw
 ur_angle-->ne
