@@ -97,7 +97,6 @@ static void wintc_run_dialog_init(
     GtkWidget* label_instruction;
     GtkWidget* label_open;
     GtkWidget* icon;
-    GtkWidget* window;
 
     // Set up window
     //
@@ -176,7 +175,7 @@ static void wintc_run_dialog_init(
     box_input        = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
     box_instructions = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 
-    gtk_container_add(GTK_CONTAINER(window), box_outer);
+    gtk_container_add(GTK_CONTAINER(self), box_outer);
 
     gtk_box_pack_start(GTK_BOX(box_instructions), icon, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(box_instructions), label_instruction, FALSE, FALSE, 0);
