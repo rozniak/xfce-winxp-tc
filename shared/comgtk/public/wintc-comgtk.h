@@ -36,22 +36,25 @@ void wintc_log_error_and_clear(
 // List-related
 //
 GList* wintc_list_distinct_append(
-    GList*       list,
-    gpointer     data,
-    GCompareFunc comparer
+    GList*         list,
+    gpointer       data,
+    GCompareFunc   comparer,
+    GDestroyNotify free_func
 );
 
 GList* wintc_list_distinct_insert(
-    GList*       list,
-    gpointer     data,
-    gint         position,
-    GCompareFunc comparer
+    GList*         list,
+    gpointer       data,
+    gint           position,
+    GCompareFunc   comparer,
+    GDestroyNotify free_func
 );
 
 GList* wintc_list_distinct_prepend(
-    GList*       list,
-    gpointer     data,
-    GCompareFunc comparer
+    GList*         list,
+    gpointer       data,
+    GCompareFunc   comparer,
+    GDestroyNotify free_func
 );
 
 gchar* wintc_list_implode_strings(
@@ -59,9 +62,9 @@ gchar* wintc_list_implode_strings(
 );
 
 GList* wintc_list_limit(
-    GList*   list,
-    gint     limit,
-    gboolean free_data
+    GList*         list,
+    gint           limit,
+    GDestroyNotify free_func
 );
 
 GList* wintc_list_read_from_string(

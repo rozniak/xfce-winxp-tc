@@ -76,7 +76,7 @@ gboolean wintc_append_run_history(
             wintc_list_limit(
                 internal_history_list,
                 HISTORY_MAX_SIZE - 1,
-                TRUE
+                (GDestroyNotify) g_free
             );
     }
     
@@ -86,7 +86,8 @@ gboolean wintc_append_run_history(
         wintc_list_distinct_prepend(
             internal_history_list,
             g_strdup(cmdline),
-            (GCompareFunc) g_strcmp0
+            (GCompareFunc) g_strcmp0,
+            (GDestroyNotify) g_free
         );
 
     // Iterate through and create text file
