@@ -56,7 +56,7 @@ fi
 log_path="${CURDIR}/${PKG_NAME}.log"
 pkg_setup_result=0
 
-pkg_font_dir="${PKG_DIR}/usr/share/fonts/truetype/wintc"
+pkg_ttf_dir="${PKG_DIR}/usr/share/fonts/truetype/wintc"
 pkg_debian_dir="${PKG_DIR}/DEBIAN"
 
 if [[ -d "${PKG_DIR}" ]]
@@ -76,20 +76,14 @@ then
 fi
 
 mkdir -p "${PKG_DIR}"
-mkdir -p "${pkg_font_dir}"
+mkdir -p "${pkg_ttf_dir}"
 mkdir -p "${pkg_debian_dir}"
 
-cp "${FONTS_ROOT}"/* "${pkg_font_dir}" >> "${log_path}" 2>&1
+cp "${FONTS_ROOT}/ttf"/* "${pkg_ttf_dir}" >> "${log_path}" 2>&1
 ((pkg_setup_result+=$?))
 
-tee "${pkg_debian_dir}/control" <<EOF > /dev/null 2>&1
-Package: $PKG_NAME
-Version: 0.0.1
-Maintainer: Rory Fewell <roryf@oddmatics.uk>
-Architecture: all
-Section: non-free
-Description: Windows XP system fonts.
-EOF
+cp "${FONTS_ROOT}/debian-control" "${pkg_debian_dir}/control" >> "${log_path}" 2>&1
+((pkg_setup_result+=$?))
 
 # Check package setup good
 #
