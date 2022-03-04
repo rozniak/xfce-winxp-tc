@@ -19,6 +19,9 @@ REQUIRED_PACKAGES=(
     'cmake'
     'fakeroot'
     'make'
+    'libxfce4panel-2.0-dev'
+    'libgarcon-gtk3-1-dev'
+    'xfce4-panel'
 )
 SCRIPTDIR=`dirname "$0"`
 

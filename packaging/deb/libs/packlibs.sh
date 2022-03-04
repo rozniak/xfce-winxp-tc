@@ -19,6 +19,8 @@ REQUIRED_PACKAGES=(
     'cmake'
     'fakeroot'
     'make'
+    'build-essential'
+    'libgtk-3-dev'
 )
 SCRIPTDIR=`dirname "$0"`
 
