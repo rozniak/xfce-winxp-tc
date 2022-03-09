@@ -1,0 +1,9 @@
+/* XPM */
+static char *dummy[]={
+"3 3 3 1",
+"a c #7d7d7d",
+". c #e1e0e0",
+"# c #ffffff",
+".#a",
+"##a",
+"aaa"};

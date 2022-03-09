@@ -1,7 +1,9 @@
-button_offset=1
+button_offset=2
 button_spacing=2
+maximized_offset=2
+frame_border_top=3
 full_width_title=false
-title_horizontal_offset=0
+title_horizontal_offset=4
 title_vertical_offset_active=2
 title_vertical_offset_inactive=2
 show_app_icon=true

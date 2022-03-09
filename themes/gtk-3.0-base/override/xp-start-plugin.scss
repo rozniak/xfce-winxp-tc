@@ -1,0 +1,297 @@
+/**
+ * xp-start-plugin.scss - Luna (Blue) Start Button/Menu Styles
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+button.xp-start-button
+{
+    background-image: url("../Resources/gtk-3.0/start_button_body.png");
+    background-size:  100% 100%;
+    border-image:     url("../Resources/gtk-3.0/start_button.png") 0 8 0 5 stretch;
+    border-style:     solid;
+    border-width:     0px 8px 0px 5px;
+    color:            #FFF;
+    font-family:      'Franklin Gothic Medium';
+    font-size:        14pt;
+    font-style:       italic;
+    text-shadow:      1px 1px 2px #152404;
+
+    &:hover
+    {
+        background-image: url("../Resources/gtk-3.0/start_button_hover_body.png");
+        border-image:     url("../Resources/gtk-3.0/start_button_hover.png") 0 8 0 5 stretch;
+    }
+
+    &:active,
+    &:checked
+    {
+        background-image: url("../Resources/gtk-3.0/start_button_press_body.png");
+        border-image:     url("../Resources/gtk-3.0/start_button_press.png") 0 8 0 5 stretch;
+    }
+
+    @at-root .xp-flag
+    {
+        background-image:    url("../Resources/gtk-3.0/start_flag.png");
+        background-position: center;
+        background-repeat:   no-repeat;
+        margin-left:         5px;
+        margin-right:        4px;
+        min-height:          20px;
+        min-width:           20px;
+    }
+
+    label
+    {
+        margin-right: 20px;
+    }
+}
+
+window.csd.xp-start-menu // Specificity hack -_-
+{
+    background: transparent;
+    border:     none;
+
+    decoration
+    {
+        box-shadow: 6px 6px 2px -3px rgba(0, 0, 0, 0.4);
+    }
+
+    menubar
+    {
+        padding: 6px;
+        
+        menuitem,
+        separator
+        {
+            &:not(:last-child)
+            {
+                margin-bottom: 4px;
+            }
+        }
+    }
+
+    @at-root .xp-start-logoffpane
+    {
+        background-image:     url("../Resources/gtk-3.0/start_logoffpane_body.png");
+        background-position: -2px 0px;
+        background-size:      101% 100%;
+        border-image:         url("../Resources/gtk-3.0/start_logoffpane_border.png") 0 4 0 4 stretch;
+        border-style:         solid;
+        border-width:         0px 4px;
+
+        button
+        {
+            margin-bottom: 6px;
+            margin-top:    4px;
+            padding:       2px 8px 2px 2px;
+
+            &:last-child
+            {
+                margin-right: -3px;
+            }
+
+            &,
+            &:active,
+            &:checked,
+            &:focus,
+            &:hover
+            {
+                background: transparent;
+                border:     none;
+                color:      #FFFFFF;
+            }
+
+            &:active,
+            &:hover
+            {
+                background: $selected_bg_color;
+                color:      $selected_fg_color;
+            }
+
+            &:active
+            {
+                padding: 3px 7px 1px 3px;
+            }
+
+            image
+            {
+                margin-right: 4px;
+            }
+        }
+    }
+
+    @at-root .xp-start-places-column
+    {
+        background:   #D3E5FA;
+        border-image: url("../Resources/gtk-3.0/start_places_border.png") 3 6 1 1 stretch;
+        border-style: solid;
+        border-width: 3px 6px 1px 1px;
+        color:        #0A246A;
+        
+        menuitem
+        {
+            padding: 0px;
+
+            &.significant
+            {
+                font-weight: bold;
+            }
+
+            image
+            {
+                margin-right: 2px;
+            }
+        }
+
+        separator
+        {
+            background: linear-gradient(90deg, rgba(211,229,250,1) 0%, rgba(129,182,255,1) 35%, rgba(129,182,255,1) 50%, rgba(129,182,255,1) 65%, rgba(211,229,250,1) 100%);
+        }
+    }
+
+    @at-root .xp-start-programs-column
+    {
+        background:   #FFFFFF;
+        border-image: url("../Resources/gtk-3.0/start_programs_border.png") 3 0 1 2 stretch;
+        border-style: solid;
+        border-width: 3px 0px 1px 2px;
+        color:        #373737;
+        min-width:    182px;
+
+        box.xp-start-all-programs
+        {
+            font-weight: bold;
+            min-height:  initial;
+
+            .arrow
+            {
+                background-image:    url("../Resources/gtk-3.0/all_programs_arrow.png");
+                background-position: right center;
+                background-repeat:   no-repeat;
+                margin-left:         10px;
+                min-height:          24px;
+                min-width:           16px;
+                
+                &:hover
+                {
+                    background-image: url("../Resources/gtk-3.0/all_programs_arrow_hot.png");
+                }
+            }
+        }
+        
+        menu
+        {
+            border-image: url("../Resources/gtk-3.0/start_menu_item.png") 1 1 1 6 stretch;
+            border-style: solid;
+            border-width: 1px 1px 1px 6px;
+
+            
+            menuitem:not(.something):not(.somethingelse) // FIXME: Specificity hack
+            {
+                margin:  0px 1px 0px 6px;
+                padding: 3px 0px 2px 12px;
+
+                &:first-child
+                {
+                    margin-top: 1px;
+                }
+
+                &:last-child
+                {
+                    margin-bottom: 1px;
+                }
+
+                image
+                {
+                    margin-right: 2px;
+                }
+            }
+
+            separator
+            {
+                margin-left: 12px;
+            }
+        }
+
+        menuitem
+        {
+            padding: 2px;
+
+            image
+            {
+                margin-right: 6px;
+            }
+
+            &.xp-start-default-item
+            {
+                label
+                {
+                    &:first-child
+                    {
+                        font-weight: bold;
+                    }
+
+                    &:last-child
+                    {
+                        color: #808080;
+                    }
+                }
+
+                &:hover label
+                {
+                    color: $selected_fg_color;
+                }
+            }
+        }
+        
+        separator
+        {
+            background: linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(211,211,200,1) 25%, rgba(211,211,200,1) 50%, rgba(211,211,200,1) 75%, rgba(255,255,255,1) 100%);
+            
+            &:nth-last-child(2)
+            {
+                margin-top: 10px;
+            }
+        }
+    }
+
+    @at-root .xp-start-userpane
+    {
+        background-image:     url("../Resources/gtk-3.0/start_userpane_body.png");
+        background-size:      101% 100%;
+        background-position: -2px 0px;
+        border-image:         url("../Resources/gtk-3.0/start_userpane_border.png") 5 6 0 6 stretch;
+        border-style:         solid;
+        border-width:         5px 6px 0px;
+        min-width:            380px;
+
+        box
+        {
+            border-image: url("../Resources/gtk-3.0/user_tile_border.png") 2 5 5 2 stretch;
+            border-style: solid;
+            border-width: 2px 5px 5px 2px;
+            margin:       2px 0px 2px 1px;
+            
+            image
+            {
+                background: #CCD6EB;
+                box-shadow: none;
+                margin: 0px;
+            }
+        }
+        
+        label
+        {
+            color:       #FFFFFF;
+            font-family: 'Franklin Gothic Medium';
+            font-size:   14pt;
+            margin-left: 5px;
+            text-shadow: 0px 1px 2px #000000;
+        }
+    }
+}
+

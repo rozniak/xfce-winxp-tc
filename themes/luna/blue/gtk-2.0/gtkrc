@@ -1,305 +1,40 @@
-style "default" {
-    bg[NORMAL] = "#ece9d8"
-}
+# Based on Bridge by ScionicSpectre
+# vim:set ts=2 sw=2 sts=2 ai et:
+#
+# This is the GTK+ 2 version of Adwaita. It's whole purpose is to look as the
+# GTK+ 3 version as much as possible until GTK+ 2 dies completely.
+#
+# Note: comments for explaining styles are on the bottom of each file beside the
+# widget matches.
 
-style "button" {
-    engine "pixmap" {
-        image {
-            function = BOX
-            state = NORMAL
-            file = "../Resources/button.png"
-            border = { 4, 4, 4, 4 }
-            stretch = TRUE
-        }
-    }
+# Declare the colours used throughout the theme.
+# There shouldn't be any fiddling with them in the theme files themselves in
+# order to not mess up the dark theme.
 
-    engine "pixmap" {
-        image {
-            function = BOX
-            state = PRELIGHT
-            file = "../Resources/button_hover.png"
-            border = { 4, 4, 4, 4 }
-            stretch = TRUE
-        }
-    }
+# Text/base
+gtk-color-scheme = "text_color:#000000\nbase_color:#FFFFFF"
+# Foreground/background
+gtk-color-scheme = "fg_color:#000000\nbg_color:#ECE9D8"
+# Selected foreground/background
+gtk-color-scheme = "selected_fg_color:#ffffff\nselected_bg_color:#316AC5"
+# Insensitive foreground/background
+gtk-color-scheme = "insensitive_fg_color:#ACA899\ninsensitive_bg_color:#ECE9D8"
+# Menus
+gtk-color-scheme = "menu_color:#FFFFFF"
+# Links
+gtk-color-scheme = "link_color:#0000ee\nvisited_link_color:#551a8b"
+# Treeview headers
+gtk-color-scheme = "column_header_color:#EBEADB\nhover_column_header_color:#FFFFFF"
+# Window decoration
+gtk-color-scheme = "window_color:#ECE9D8"
+# Tooltips
+gtk-color-scheme = "tooltip_fg_color:#000000\ntooltip_bg_color:#FFFFE1"
 
-    engine "pixmap" {
-        image {
-            function = BOX
-            state = ACTIVE
-            file = "../Resources/button_press.png"
-            border = { 4, 4, 4, 4 }
-            stretch = TRUE
-        }
-    }
+# Set GTK settings
+gtk-auto-mnemonics              = 1
+gtk-primary-button-warps-slider = 1
 
-    engine "pixmap" {
-        image {
-            function = BOX
-            state = INSENSITIVE
-            file = "../Resources/button_inactive.png"
-            border = { 4, 4, 4, 4 }
-            stretch = TRUE
-        }
-    }
-
-    engine "pixmap" {
-        image {
-            function = BOX
-            state = SELECTED
-            file = "../Resources/button_active.png"
-            border = { 4, 4, 4, 4 }
-            stretch = TRUE
-        }
-    }
-}
-
-style "checkbox" {
-    engine "pixmap" {
-        # Check box unchecked
-        #
-        image {
-            function = CHECK
-            shadow = OUT
-            state = NORMAL
-            overlay_file = "../Resources/checkbox_unchecked.png"
-        }
-
-        image {
-            function = CHECK
-            shadow = OUT
-            state = PRELIGHT
-            overlay_file = "../Resources/checkbox_unchecked_hover.png"
-        }
-
-        image {
-            function = CHECK
-            shadow = OUT
-            state = ACTIVE
-            overlay_file = "../Resources/checkbox_unchecked_press.png"
-        }
-
-        image {
-            function = CHECK
-            shadow = OUT
-            state = INSENSITIVE
-            overlay_file = "../Resources/checkbox_unchecked_inactive.png"
-        }
-
-        # Check box checked
-        #
-        image {
-            function = CHECK
-            shadow = IN
-            state = NORMAL
-            overlay_file = "../Resources/checkbox_checked.png"
-        }
-
-        image {
-            function = CHECK
-            shadow = IN
-            state = PRELIGHT
-            overlay_file = "../Resources/checkbox_checked_hover.png"
-        }
-
-        image {
-            function = CHECK
-            shadow = IN
-            state = ACTIVE
-            overlay_file = "../Resources/checkbox_checked_press.png"
-        }
-
-        image {
-            function = CHECK
-            shadow = IN
-            state = INSENSITIVE
-            overlay_file = "../Resources/checkbox_checked_inactive.png"
-        }
-
-        # Check box indecisive
-        #
-        image {
-            function = CHECK
-            shadow = ETCHED_IN
-            state = NORMAL
-            overlay_file = "../Resources/checkbox_indecisive.png"
-        }
-
-        image {
-            function = CHECK
-            shadow = ETCHED_IN
-            state = PRELIGHT
-            overlay_file = "../Resources/checkbox_indecisive_hover.png"
-        }
-
-        image {
-            function = CHECK
-            shadow = ETCHED_IN
-            state = ACTIVE
-            overlay_file = "../Resources/checkbox_indecisive_press.png"
-        }
-
-        image {
-            function = CHECK
-            shadow = ETCHED_IN
-            state = INSENSITIVE
-            overlay_file = "../Resources/checkbox_indecisive_inactive.png"
-        }
-    }
-}
-
-style "radio" {
-    engine "pixmap" {
-        # Radio button unchecked
-        #
-        image {
-            function = OPTION
-            shadow = OUT
-            state = NORMAL
-            overlay_file = "../Resources/radio_unchecked.png"
-            overlay_stretch = FALSE
-        }
-
-        image {
-            function = OPTION
-            shadow = OUT
-            state = PRELIGHT
-            overlay_file = "../Resources/radio_unchecked_hover.png"
-            overlay_stretch = FALSE
-        }
-
-        image {
-            function = OPTION
-            shadow = OUT
-            state = ACTIVE
-            overlay_file = "../Resources/radio_unchecked_press.png"
-            overlay_stretch = FALSE
-        }
-
-        image {
-            function = OPTION
-            shadow = OUT
-            state = INSENSITIVE
-            overlay_file = "../Resources/radio_unchecked_inactive.png"
-            overlay_stretch = FALSE
-        }
-
-        # Radio button checked
-        #
-        image {
-            function = OPTION
-            shadow = IN
-            state = NORMAL
-            overlay_file = "../Resources/radio_checked.png"
-            overlay_stretch = FALSE
-        }
-
-        image {
-            function = OPTION
-            shadow = IN
-            state = PRELIGHT
-            overlay_file = "../Resources/radio_checked_hover.png"
-            overlay_stretch = FALSE
-        }
-
-        image {
-            function = OPTION
-            shadow = IN
-            state = ACTIVE
-            overlay_file = "../Resources/radio_checked_press.png"
-            overlay_stretch = FALSE
-        }
-
-        image {
-            function = OPTION
-            shadow = IN
-            state = INSENSITIVE
-            overlay_file = "../Resources/radio_checked_inactive.png"
-            overlay_stretch = FALSE
-        }
-    }
-}
-
-style "taskband" {
-    ythickness = 4
-
-    engine "pixmap" {
-        image {
-            function = BOX
-            state    = NORMAL
-            file     = "../Resources/taskbar_bg.png"
-            border   = { 0, 0, 0, 0 }
-            stretch  = TRUE
-        }
-    }
-}
-
-style "taskbandbutton" {
-    fg[NORMAL]   = "#FFF"
-    fg[PRELIGHT] = "#FFF"
-    fg[ACTIVE]   = "#FFF"
-    fg[SELECTED] = "#FFF"
-
-    engine "pixmap" {
-        image {
-            function = BOX
-            state = NORMAL
-            file = "../Resources/taskband_button.png"
-            border = { 2, 2, 2, 2 }
-            stretch = TRUE
-        }
-    }
-
-    engine "pixmap" {
-        image {
-            function = BOX
-            state = PRELIGHT
-            shadow = OUT
-            file = "../Resources/taskband_button_hover.png"
-            border = { 2, 2, 2, 2 }
-            stretch = TRUE
-        }
-    }
-
-    engine "pixmap" {
-        image {
-            function = BOX
-            state = PRELIGHT
-            shadow = IN
-            file = "../Resources/taskband_button_press_hover.png"
-            border = { 2, 2, 2, 2 }
-            stretch = TRUE
-        }
-    }
-
-    engine "pixmap" {
-        image {
-            function = BOX
-            state = ACTIVE
-            file = "../Resources/taskband_button_press.png"
-            border = { 2, 2, 2, 2 }
-            stretch = TRUE
-        }
-    }
-
-    engine "pixmap" {
-        image {
-            function = BOX
-            state = SELECTED
-            file = "../Resources/taskband_button_press.png"
-            border = { 2, 2, 2, 2 }
-            stretch = TRUE
-        }
-    }
-}
-
-widget_class "*"                  style "default"
-
-widget_class "*GtkButton*"        style "button"
-
-widget_class "*<GtkCheckButton>*" style "checkbox"
-widget_class "*<GtkRadioButton>*" style "radio"
-
-
-widget_class "*XfcePanelWindow*Plugin*" style "taskband"
-widget_class "*Window*Plugin*Button*" style "taskbandbutton"
+# And hand over the control to the theme files
+include "main.rc"
+include "apps.rc"
+include "hacks.rc"

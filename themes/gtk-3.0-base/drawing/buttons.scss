@@ -1,0 +1,168 @@
+/**
+ * buttons.scss - Luna (Blue) Button Functions/Mixins
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+@function _button_hilight_color($c)
+{
+    //
+    // Calculate the right top hilight color for buttons
+    //
+    // $c: base color;
+    //
+    @if      lightness($c) > 95% { @return #FFFFFF; }
+    @else if lightness($c) > 90% { @return transparentize(#FFFFFF, 0.2); }
+    @else if lightness($c) > 80% { @return transparentize(#FFFFFF, 0.5); }
+    @else if lightness($c) > 50% { @return transparentize(#FFFFFF, 0.8); }
+    @else if lightness($c) > 40% { @return transparentize(#FFFFFF, 0.9); }
+    @else { @return transparentize(#FFFFFF, 0.98); }
+}
+
+@mixin _button_text_shadow($tc:$fg_color, $bg:$bg_color)
+{
+    //
+    // Helper function for the text emboss effect
+    //
+    // $tc is the optional text color, not the shadow color
+    //
+    // TODO: This function needs a way to deal with special cases
+    //
+
+    $_shadow: _text_shadow_color($tc, $bg);
+
+    @if lightness($tc) < 50%
+    {
+        text-shadow:      0 1px $_shadow;
+        -gtk-icon-shadow: 0 1px $_shadow;
+    }
+    @else
+    {
+        text-shadow:      0 -1px $_shadow;
+        -gtk-icon-shadow: 0 -1px $_shadow;
+    }
+}
+
+@mixin button($t, $c:$bg_color, $tc:$fg_color, $edge: none, $backimage: null)
+{
+    //
+    // Button drawing function
+    //
+    // $t:         button type
+    // $c:         base button color for colored* types
+    // $tc:        optional text color for colored* types
+    // $edge:      set to none to not draw the bottom edge or specify a color to not
+    //             use the default one
+    // $backimage: additional background-image behind the default one
+    //             (for the button.circular hack)
+    //
+    // Possible $t values:
+    // normal, hover, active, insensitive, insensitive-active,
+    // backdrop, backdrop-active, backdrop-insensitive, backdrop-insensitive-active,
+    // osd, osd-hover, osd-active, osd-insensitive, osd-backdrop, undecorated
+    //
+    $_hilight_color: _button_hilight_color($c);
+    $_button_edge:   if($edge == none, none, _widget_edge($edge));
+    $_blank_edge:    if($edge == none, none, _widget_edge(transparentize($edge, 1)));
+    $_button_shadow: 0 1px 2px transparentize($shadow_color, 0.03);
+    
+    background-position: center;
+    background-size:     110% 110%;
+    border-style:        solid;
+    border-width:        3;
+    color:               $tc;
+
+    @if $t == normal     or
+        $t == normal-alt or
+        $t == backdrop   or
+        $t == osd
+    {
+        //
+        // Normal Button
+        //
+        background-image: url("../Resources/gtk-3.0/button_body.png");
+        border-image:     url("../Resources/gtk-3.0/button_border.png") 3 3 3 3 stretch;
+    }
+    @else if $t == focus
+    {
+        //
+        // Focused Button
+        //
+        background-image: url("../Resources/gtk-3.0/button_body.png");
+        border-image:     url("../Resources/gtk-3.0/button_active_border.png") 3 3 3 3 stretch;
+    }
+    @else if $t == hover     or
+             $t == hover-alt or
+             $t == osd-hover
+    {
+        //
+        // Hovered Button
+        //
+        background-image: url("../Resources/gtk-3.0/button_body.png");
+        border-image:     url("../Resources/gtk-3.0/button_hover_border.png") 3 3 3 3 stretch;
+    }
+    @else if $t == active          or
+             $t == backdrop-active or
+             $t == osd-active
+    {
+        //
+        // Pushed Button
+        //
+        background-image: url("../Resources/gtk-3.0/button_press_body.png");
+        border-image:     url("../Resources/gtk-3.0/button_press_border.png") 3 3 3 3 stretch;
+    }
+    @else if $t == insensitive                 or
+             $t == insensitive-active          or
+             $t == backdrop-insensitive        or
+             $t == backdrop-insensitive-active or
+             $t == osd-insensitive
+    {
+        //
+        // Insensitive Button
+        //
+        background:   #F5F4EA;
+        border-image: url("../Resources/gtk-3.0/button_inactive_border.png") 3 3 3 3 stretch;
+        color:        $insensitive_fg_color;
+    }
+    @else if $t == flat-hover
+    {
+        //
+        // Hovered or Focused Flat Button
+        //
+        background-image: url("../Resources/gtk-3.0/button_toolbar_hover_body.png");
+        border-image:     url("../Resources/gtk-3.0/button_toolbar_hover_border.png") 3 3 3 3 stretch;
+    }
+    @else if $t == flat-active
+    {
+        //
+        // Pushed Flat Button
+        //
+        background-image: url("../Resources/gtk-3.0/button_toolbar_press_body.png");
+        border-image:     url("../Resources/gtk-3.0/button_toolbar_press_border.png") 3 3 3 3 stretch;
+    }
+    @else if $t == flat-insensitive
+    {
+        //
+        // Insensitive Flat Button
+        //
+        color: $insensitive_fg_color;
+        -gtk-icon-effect: dim;
+    }
+    @else if $t == undecorated
+    {
+        //
+        // Reset
+        //
+        background-color: transparent;
+        background-image: none;
+        border-color:     transparent;
+        border-image:     none;
+        text-shadow:      none;
+        -gtk-icon-shadow: none;
+
+        @include _shadows(inset 0 1px transparentize(white, 1), $_blank_edge);
+    }
+}

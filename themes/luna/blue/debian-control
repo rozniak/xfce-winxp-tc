@@ -1,7 +1,0 @@
-Package: xfce-theme-luna-blue
-Version: 0.0.1
-Maintainer: Rory Fewell <roryf@oddmatics.uk>
-Architecture: all
-Section: non-free
-Description: Windows XP Luna (Blue) Theme for XFCE.
-Depends: xfce4, xfwm4
