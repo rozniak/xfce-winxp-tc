@@ -83,7 +83,7 @@
         //
         // Normal Button
         //
-        background-image: url("../Resources/gtk-3.0/button_body.png");
+        background-image: url("../Resources/gtk-3.0/button_body.png"), linear-gradient(170deg, rgba(252,252,252,1) 0%, rgba(233,232,225,1) 100%);
         border-image:     url("../Resources/gtk-3.0/button_border.png") 3 3 3 3 stretch;
     }
     @else if $t == focus
@@ -91,7 +91,7 @@
         //
         // Focused Button
         //
-        background-image: url("../Resources/gtk-3.0/button_body.png");
+        background-image: url("../Resources/gtk-3.0/button_body.png"), linear-gradient(170deg, rgba(252,252,252,1) 0%, rgba(233,232,225,1) 100%);
         border-image:     url("../Resources/gtk-3.0/button_active_border.png") 3 3 3 3 stretch;
     }
     @else if $t == hover     or
@@ -101,7 +101,7 @@
         //
         // Hovered Button
         //
-        background-image: url("../Resources/gtk-3.0/button_body.png");
+        background-image: url("../Resources/gtk-3.0/button_body.png"), linear-gradient(170deg, rgba(252,252,252,1) 0%, rgba(233,232,225,1) 100%);
         border-image:     url("../Resources/gtk-3.0/button_hover_border.png") 3 3 3 3 stretch;
     }
     @else if $t == active          or
@@ -111,7 +111,7 @@
         //
         // Pushed Button
         //
-        background-image: url("../Resources/gtk-3.0/button_press_body.png");
+        background-image: url("../Resources/gtk-3.0/button_press_body.png"), linear-gradient(170deg, rgba(228,227,220,1) 0%, rgba(226,225,217,1) 5%, rgba(226,225,217,1) 95%, rgba(228,227,220,1) 100%);
         border-image:     url("../Resources/gtk-3.0/button_press_border.png") 3 3 3 3 stretch;
     }
     @else if $t == insensitive                 or
@@ -132,7 +132,7 @@
         //
         // Hovered or Focused Flat Button
         //
-        background-image: url("../Resources/gtk-3.0/button_toolbar_hover_body.png");
+        background-image: url("../Resources/gtk-3.0/button_toolbar_hover_body.png"), linear-gradient(170deg, rgba(252,252,248,1) 0%, rgba(235,234,224,1) 100%);
         border-image:     url("../Resources/gtk-3.0/button_toolbar_hover_border.png") 3 3 3 3 stretch;
     }
     @else if $t == flat-active
@@ -140,7 +140,7 @@
         //
         // Pushed Flat Button
         //
-        background-image: url("../Resources/gtk-3.0/button_toolbar_press_body.png");
+        background-image: url("../Resources/gtk-3.0/button_toolbar_press_body.png"), linear-gradient(170deg, rgba(229,228,222,1) 0%, rgba(226,225,217,1) 100%);
         border-image:     url("../Resources/gtk-3.0/button_toolbar_press_border.png") 3 3 3 3 stretch;
     }
     @else if $t == flat-insensitive

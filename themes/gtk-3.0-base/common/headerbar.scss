@@ -225,9 +225,9 @@ headerbar
      button.flat,
      button.titlebutton
      {
-         background-image:    url("../Resources/gtk-3.0/caption_button_body.png");
+         background-image:    url("../Resources/gtk-3.0/caption_button_body.png"), linear-gradient(170deg, rgba(154,183,250,1) 0%, rgba(49,107,244,1) 15%, rgba(19,105,244,1) 65%, rgba(2,90,240,1) 100%);
          background-position: center;
-         background-size:     110% 110%;
+         background-size:     100% 100%;
          border-image:        url("../Resources/gtk-3.0/caption_button_border.png") 3 3 3 3 stretch;
          border-style:        solid;
          border-width:        3px;
@@ -235,76 +235,76 @@ headerbar
 
          &:focus
          {
-             background-image: url("../Resources/gtk-3.0/caption_button_body.png");
+             background-image: url("../Resources/gtk-3.0/caption_button_body.png"), linear-gradient(170deg, rgba(154,183,250,1) 0%, rgba(49,107,244,1) 15%, rgba(19,105,244,1) 65%, rgba(2,90,240,1) 100%);
              border-image:     url("../Resources/gtk-3.0/caption_button_border.png") 3 3 3 3 stretch;
              color:            #FFF;
          }
 
          &:hover
          {
-             background-image: url("../Resources/gtk-3.0/caption_button_hover_body.png");
+             background-image: url("../Resources/gtk-3.0/caption_button_hover_body.png"), linear-gradient(170deg, rgba(164,194,255,1) 0%, rgba(56,121,252,1) 15%, rgba(31,151,253,1) 80%, rgba(17,132,250,1) 100%);
              border-image:     url("../Resources/gtk-3.0/caption_button_hover_border.png") 3 3 3 3 stretch;
              color:            #FFF;
          }
 
          &:active
          {
-             background-image: url("../Resources/gtk-3.0/caption_button_press_body.png");
+             background-image: url("../Resources/gtk-3.0/caption_button_press_body.png"), linear-gradient(170deg, rgba(0,56,130,1) 0%, rgba(0,77,178,1) 20%, rgba(0,94,195,1) 80%, rgba(0,91,192,1) 100%);
              border-image:     url("../Resources/gtk-3.0/caption_button_press_border.png") 3 3 3 3 stretch;
              color:            #78A2D8;
          }
 
          &:checked
          {
-             background-image: url("../Resources/gtk-3.0/caption_button_press_body.png");
+             background-image: url("../Resources/gtk-3.0/caption_button_press_body.png"), linear-gradient(170deg, rgba(0,56,130,1) 0%, rgba(0,77,178,1) 20%, rgba(0,94,195,1) 80%, rgba(0,91,192,1) 100%);
              border-image:     url("../Resources/gtk-3.0/caption_button_press_border.png") 3 3 3 3 stretch;
              color:            #FFF;
          }
 
          &:disabled
          {
-             background-image: url("../Resources/gtk-3.0/caption_button_inactive_body.png");
+             background-image: url("../Resources/gtk-3.0/caption_button_inactive_body.png"), linear-gradient(170deg, rgba(82,130,234,1) 0%, rgba(1,83,241,1) 20%, rgba(1,83,241,1) 100%);
              border-image:     url("../Resources/gtk-3.0/caption_button_inactive_border.png") 3 3 3 3 stretch;
              color:            #8C9DE7;
          }
 
          &:backdrop
          {
-             background-image: url("../Resources/gtk-3.0/caption_button_backdrop_body.png");
+             background-image: url("../Resources/gtk-3.0/caption_button_backdrop_body.png"), linear-gradient(179deg, rgba(136,162,234,1) 0%, rgba(136,162,234,1) 2%, rgba(92,127,233,1) 10%, rgba(92,127,233,1) 50%, rgba(63,119,235,1) 100%);
              border-image:     url("../Resources/gtk-3.0/caption_button_backdrop_border.png") 3 3 3 3 stretch;
              color:            #FFF;
 
              &:focus
              {
-                 background-image: url("../Resources/gtk-3.0/caption_button_backdrop_body.png");
+                 background-image: url("../Resources/gtk-3.0/caption_button_backdrop_body.png"), linear-gradient(179deg, rgba(136,162,234,1) 0%, rgba(136,162,234,1) 2%, rgba(92,127,233,1) 10%, rgba(92,127,233,1) 50%, rgba(63,119,235,1) 100%);
                  border-image:     url("../Resources/gtk-3.0/caption_button_backdrop_border.png") 3 3 3 3 stretch;
                  color:            #FFF;
              }
 
              &:hover
              {
-                 background-image: url("../Resources/gtk-3.0/caption_button_backdrop_hover_body.png");
+                 background-image: url("../Resources/gtk-3.0/caption_button_backdrop_hover_body.png"), linear-gradient(175deg, rgba(164,194,255,1) 0%, rgba(56,121,252,1) 20%, rgba(56,121,252,1) 45%, rgba(31,151,253,1) 75%, rgba(63,119,235,1) 100%);
                  border-image:     url("../Resources/gtk-3.0/caption_button_backdrop_hover_border.png") 3 3 3 3 stretch;
                  color:            #FFF;
              }
 
              &:active
              {
-                 background-image: url("../Resources/gtk-3.0/caption_button_backdrop_press_body.png");
+                 background-image: url("../Resources/gtk-3.0/caption_button_backdrop_press_body.png"), linear-gradient(175deg, rgba(75,121,204,1) 0%, rgba(79,136,225,1) 100%);
                  border-image:     url("../Resources/gtk-3.0/caption_button_backdrop_press_border.png") 3 3 3 3 stretch;
                  color:            #97B0E2;
              }
 
              &:checked
              {
-                 background-image: url("../Resources/gtk-3.0/caption_button_backdrop_press_body.png");
+                 background-image: url("../Resources/gtk-3.0/caption_button_backdrop_press_body.png"), linear-gradient(175deg, rgba(75,121,204,1) 0%, rgba(79,136,225,1) 100%);
                  border-image:     url("../Resources/gtk-3.0/caption_button_backdrop_press_border.png") 3 3 3 3 stretch;
                  color:            #FFF;
              }
 
              &:disabled
              {
-                 background-image: url("../Resources/gtk-3.0/caption_button_backdrop_inactive_body.png");
+                 background-image: url("../Resources/gtk-3.0/caption_button_backdrop_inactive_body.png"), linear-gradient(175deg, rgba(127,150,226,1) 0%, rgba(100,125,224,1) 40%, rgba(96,134,232,1) 100%);
                  border-image:     url("../Resources/gtk-3.0/caption_button_backdrop_inactive_border.png") 3 3 3 3 stretch;
                  color:            #919FE6;
              }
@@ -313,9 +313,9 @@ headerbar
 
      button.titlebutton:last-child
      {
-         background-image:    url("../Resources/gtk-3.0/close_button_body.png");
+         background-image:    url("../Resources/gtk-3.0/close_button_body.png"), linear-gradient(170deg, rgba(241,172,154,1) 0%, rgba(223,82,46,1) 15%, rgba(224,56,2,1) 100%);
          background-position: center;
-         background-size:     110% 110%;
+         background-size:     100% 100%;
          border-image:        url("../Resources/gtk-3.0/close_button_border.png") 3 3 3 3 stretch;
          border-style:        solid;
          border-width:        3px;
@@ -323,7 +323,7 @@ headerbar
 
          &:hover
          {
-             background-image: url("../Resources/gtk-3.0/close_button_hover_body.png");
+             background-image: url("../Resources/gtk-3.0/close_button_hover_body.png"), linear-gradient(170deg, rgba(255,184,176,1) 0%, rgba(253,100,81,1) 15%, rgba(254,133,102,1) 80%, rgba(252,107,71,1) 100%);
              border-image:     url("../Resources/gtk-3.0/close_button_hover_border.png") 3 3 3 3 stretch;
              color:            #FFF;
          }
@@ -331,27 +331,27 @@ headerbar
          &:active,
          &:checked
          {
-             background-image: url("../Resources/gtk-3.0/close_button_press_body.png");
+             background-image: url("../Resources/gtk-3.0/close_button_press_body.png"), linear-gradient(170deg, rgba(141,44,20,1) 0%, rgba(191,61,28,1) 15%, rgba(203,73,34,1) 80%, rgba(202,72,33,1) 100%);
              border-image:     url("../Resources/gtk-3.0/close_button_press_border.png") 3 3 3 3 stretch;
              color:            #DF9A88;
          }
 
          &:disabled
          {
-             background-image: url("../Resources/gtk-3.0/close_button_inactive_body.png");
+             background-image: url("../Resources/gtk-3.0/close_button_inactive_body.png"), linear-gradient(170deg, rgba(120,135,207,1) 0%, rgba(116,112,177,1) 100%);
              border-image:     url("../Resources/gtk-3.0/close_button_inactive_border.png") 3 3 3 3 stretch;
              color:            #9598CC;
          }
 
          &:backdrop
          {
-             background-image: url("../Resources/gtk-3.0/close_button_backdrop_body.png");
+             background-image: url("../Resources/gtk-3.0/close_button_backdrop_body.png"), linear-gradient(170deg, rgba(180,156,186,1) 0%, rgba(175,102,115,1) 100%);
              border-image:     url("../Resources/gtk-3.0/close_button_backdrop_border.png") 3 3 3 3 stretch;
              color:            #FFF;
 
              &:hover
              {
-                 background-image: url("../Resources/gtk-3.0/close_button_backdrop_hover_body.png");
+                 background-image: url("../Resources/gtk-3.0/close_button_backdrop_hover_body.png"), linear-gradient(170deg, rgba(255,184,176,1) 0%, rgba(252,100,83,1) 15%, rgba(254,129,94,1) 80%, rgba(252,107,71,1) 100%);
                  border-image:     url("../Resources/gtk-3.0/close_button_backdrop_hover_border.png") 3 3 3 3 stretch;
                  color:            #FFF;
              }
@@ -359,14 +359,14 @@ headerbar
              &:active,
              &:checked
              {
-                 background-image: url("../Resources/gtk-3.0/close_button_backdrop_press_body.png");
+                 background-image: url("../Resources/gtk-3.0/close_button_backdrop_press_body.png"), linear-gradient(170deg, rgba(141,44,20,1) 0%, rgba(192,62,29,1) 15%, rgba(204,73,34,1) 100%);
                  border-image:     url("../Resources/gtk-3.0/close_button_backdrop_press_border.png") 3 3 3 3 stretch;
                  color:            #CBADBA;
              }
 
              &:disabled
              {
-                 background-image: url("../Resources/gtk-3.0/close_button_backdrop_inactive_body.png");
+                 background-image: url("../Resources/gtk-3.0/close_button_backdrop_inactive_body.png"), linear-gradient(170deg, rgba(120,135,207,1) 0%, rgba(116,112,177,1) 100%);
                  border-image:     url("../Resources/gtk-3.0/close_button_backdrop_inactive_border.png") 3 3 3 3 stretch;
                  color:            #A0A2D8;
              }

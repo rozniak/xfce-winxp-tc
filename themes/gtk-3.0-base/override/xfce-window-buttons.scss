@@ -21,10 +21,9 @@
 
     button
     {
-        background-image:    url("../Resources/gtk-3.0/taskband_button_body.png");
-        background-position: -2px 0px;
-        background-size:     102% 100%;
-        border-image:        url("../Resources/gtk-3.0/taskband_button.png") 2 2 2 2 stretch;
+        background-image:    url("../Resources/gtk-3.0/taskband_button_body.png"), linear-gradient(126deg, rgba(112,170,250,1) 0%, rgba(57,123,242,1) 10%, rgba(57,123,242,1) 100%);
+        background-size:     100% 100%;
+        border-image:        url("../Resources/gtk-3.0/taskband_button_border.png") 2 2 2 2 stretch;
         border-style:        solid;
         border-width:        2px;
         color:               #FFFFFF;
@@ -32,19 +31,19 @@
 
         &:hover
         {
-            background-image: url("../Resources/gtk-3.0/taskband_button_hover_body.png");
-            border-image:     url("../Resources/gtk-3.0/taskband_button_hover.png") 2 2 2 2 stretch;
+            background-image: url("../Resources/gtk-3.0/taskband_button_hover_body.png"), linear-gradient(126deg, rgba(145,201,255,1) 0%, rgba(49,132,255,1) 10%, rgba(49,132,255,1) 100%);
+            border-image:     url("../Resources/gtk-3.0/taskband_button_hover_border.png") 2 2 2 2 stretch;
         }
 
         &:active, &:checked
         {
-            background-image: url("../Resources/gtk-3.0/taskband_button_press_body.png");
-            border-image:     url("../Resources/gtk-3.0/taskband_button_press.png") 2 2 2 2 stretch;
+            background-image: url("../Resources/gtk-3.0/taskband_button_press_body.png"), linear-gradient(126deg, rgba(22,76,168,1) 0%, rgba(42,93,182,1) 10%, rgba(42,93,182,1) 100%);
+            border-image:     url("../Resources/gtk-3.0/taskband_button_press_border.png") 2 2 2 2 stretch;
 
             &:hover
             {
-                background-image: url("../Resources/gtk-3.0/taskband_button_press_hover_body.png");
-                border-image:     url("../Resources/gtk-3.0/taskband_button_press_hover.png") 2 2 2 2 stretch;
+                background-image: url("../Resources/gtk-3.0/taskband_button_press_hover_body.png"), linear-gradient(126deg, rgba(51,106,222,1) 0%, rgba(54,116,232,1) 10%, rgba(54,116,232,1) 100%);
+                border-image:     url("../Resources/gtk-3.0/taskband_button_press_hover_border.png") 2 2 2 2 stretch;
             }
         }
     }
