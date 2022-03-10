@@ -15,6 +15,7 @@ combobox
     &:disabled
     {
         background-color: $insensitive_bg_color;
+        border-color:           $insensitive_borders_color;
     }
 
     // Override button styles
