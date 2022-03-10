@@ -103,14 +103,14 @@ check
     //
     -gtk-icon-source: url("../Resources/checkbox_unchecked.png");
 
-    &:active
-    {
-        -gtk-icon-source: url("../Resources/checkbox_unchecked_press.png");
-    }
-
     &:hover
     {
         -gtk-icon-source: url("../Resources/checkbox_unchecked_hover.png");
+    }
+
+    &:active
+    {
+        -gtk-icon-source: url("../Resources/checkbox_unchecked_press.png");
     }
 
     &:disabled
@@ -124,14 +124,14 @@ check
     {
         -gtk-icon-source: url("../Resources/checkbox_checked.png");
 
-        &:active
-        {
-            -gtk-icon-source: url("../Resources/checkbox_checked_press.png");
-        }
-
         &:hover
         {
             -gtk-icon-source: url("../Resources/checkbox_checked_hover.png");
+        }
+
+        &:active
+        {
+            -gtk-icon-source: url("../Resources/checkbox_checked_press.png");
         }
 
         &:disabled
@@ -146,14 +146,14 @@ check
     {
         -gtk-icon-source: url("../Resources/checkbox_indecisive.png");
 
-        &:active
-        {
-            -gtk-icon-source: url("../Resources/checkbox_indecisive_press.png");
-        }
-
         &:hover
         {
             -gtk-icon-source: url("../Resources/checkbox_indecisive_hover.png");
+        }
+
+        &:active
+        {
+            -gtk-icon-source: url("../Resources/checkbox_indecisive_press.png");
         }
 
         &:disabled
@@ -173,14 +173,14 @@ radio
     //
     -gtk-icon-source: url("../Resources/radio_unchecked.png");
 
-    &:active
-    {
-        -gtk-icon-source: url("../Resources/radio_unchecked_press.png");
-    }
-
     &:hover
     {
         -gtk-icon-source: url("../Resources/radio_unchecked_hover.png");
+    }
+
+    &:active
+    {
+        -gtk-icon-source: url("../Resources/radio_unchecked_press.png");
     }
 
     &:disabled
@@ -195,14 +195,14 @@ radio
     {
         -gtk-icon-source: url("../Resources/radio_checked.png");
 
-        &:active
-        {
-            -gtk-icon-source: url("../Resources/radio_checked_press.png");
-        }
-
         &:hover
         {
             -gtk-icon-source: url("../Resources/radio_checked_hover.png");
+        }
+
+        &:active
+        {
+            -gtk-icon-source: url("../Resources/radio_checked_press.png");
         }
 
         &:disabled
