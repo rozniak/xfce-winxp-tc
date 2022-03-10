@@ -144,21 +144,21 @@ check
     //
     &:indeterminate
     {
-        -gtk-icon-source: url("../Resources/gtk-3.0/checkbox_indecisive.png");
+        -gtk-icon-source: url("../Resources/checkbox_indecisive.png");
 
         &:active
         {
-            -gtk-icon-source: url("../Resources/gtk-3.0/checkbox_indecisive_press.png");
+            -gtk-icon-source: url("../Resources/checkbox_indecisive_press.png");
         }
 
         &:hover
         {
-            -gtk-icon-source: url("../Resources/gtk-3.0/checkbox_indecisive_hover.png");
+            -gtk-icon-source: url("../Resources/checkbox_indecisive_hover.png");
         }
 
         &:disabled
         {
-            -gtk-icon-source: url("../Resources/gtk-3.0/checkbox_indecisive_inactive.png");
+            -gtk-icon-source: url("../Resources/checkbox_indecisive_inactive.png");
         }
     }
 }
