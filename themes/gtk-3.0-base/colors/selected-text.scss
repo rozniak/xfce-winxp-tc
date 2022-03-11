@@ -7,5 +7,5 @@
  * Author(s): Rory Fewell <roryf@oddmatics.uk>
  */
 
-$selected_fg_color: #FFFFFF;
-$selected_bg_color: #316AC5;
+$selected_fg_color: #FFFFFF !default;
+$selected_bg_color: #316AC5 !default;

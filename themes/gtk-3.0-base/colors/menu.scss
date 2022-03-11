@@ -7,5 +7,5 @@
  * Author(s): Rory Fewell <roryf@oddmatics.uk>
  */
 
-$menu_color:         $base_color;
-$menu_borders_color: #ACA889;
+$menu_color:         $base_color !default;
+$menu_borders_color: #ACA889 !default;

@@ -7,7 +7,7 @@
  * Author(s): Rory Fewell <roryf@oddmatics.uk>
  */
 
-$selected_borders_color: #7f9db9;
-$borders_color:          #7f9db9;
-$alt_borders_color:      #7f9db9;
-$borders_edge:           #7f9db9;
+$borders_color:          #7f9db9 !default;
+$selected_borders_color: $borders_color !default;
+$alt_borders_color:      $borders_color !default;
+$borders_edge:           $borders_color !default;

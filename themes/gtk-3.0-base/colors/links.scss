@@ -7,6 +7,6 @@
  * Author(s): Rory Fewell <roryf@oddmatics.uk>
  */
 
-$link_color:         #0000ee;
-$link_active_color:  #ee0000;
-$link_visited_color: #551a8b;
+$link_color:         #0000ee !default;
+$link_active_color:  #ee0000 !default;
+$link_visited_color: #551a8b !default;

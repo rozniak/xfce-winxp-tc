@@ -7,6 +7,7 @@
  * Author(s): Rory Fewell <roryf@oddmatics.uk>
  */
 
-$treeview_header_color:              #EBEADB;
-$treeview_header_hover_color:        #FFFFFF;
-$treeview_header_active_color:       #DEDFDA;
+$treeview_header_color:              #EBEADB !default;
+$treeview_header_hover_color:        #FFFFFF !default;
+$treeview_header_active_color:       #DEDFDA !default;
+$treeview_header_border_color:       #000000 !default; // FIXME: Unused atm

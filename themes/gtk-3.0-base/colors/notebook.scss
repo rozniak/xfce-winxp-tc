@@ -7,6 +7,6 @@
  * Author(s): Rory Fewell <roryf@oddmatics.uk>
  */
 
-$notebook_bg_color:          #FCFCFE;
-$notebook_borders_color:     #919B9C;
-$notebook_selected_bg_color: #FCFCFE;
+$notebook_bg_color:          #FCFCFE !default;
+$notebook_borders_color:     #919B9C !default;
+$notebook_selected_bg_color: #FCFCFE !default;

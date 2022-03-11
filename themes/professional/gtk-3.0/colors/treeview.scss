@@ -1,0 +1,15 @@
+/**
+ * treeview.scss - Professional Style Tree-view Colour Constants
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+// FIXME: Review these when able - not sure if hover/active colours are different
+//
+$treeview_header_color: #DBDBCE;
+$treeview_header_hover_color: $treeview_header_color;
+$treeview_header_active_color: $treeview_header_color;
+$treeview_header_border_color: #BFBFB3;
