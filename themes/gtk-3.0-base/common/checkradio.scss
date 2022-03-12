@@ -88,8 +88,8 @@ radio
         }
     }
     
-    min-height: 13px;
-    min-width:  13px;
+    min-height: $checkradio_size;
+    min-width:  $checkradio_size;
     -gtk-icon-source: none;
 }
 
