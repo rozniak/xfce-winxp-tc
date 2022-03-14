@@ -41,8 +41,8 @@ button.xp-start-button
         background-repeat:   no-repeat;
         margin-left:         5px;
         margin-right:        4px;
-        min-height:          20px;
-        min-width:           20px;
+        min-height:          $start_flag_size;
+        min-width:           $start_flag_size;
     }
 
     label

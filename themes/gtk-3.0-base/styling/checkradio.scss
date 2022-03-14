@@ -1,5 +1,5 @@
 /**
- * checkradio.scss - Professional Style Check Box and Radio Button Size Constants
+ * checkradio.scss - Theme Base Check Box and Radio Button Style Constants
  *
  * This source-code is part of Windows XP stuff for XFCE:
  * <<https://www.oddmatics.uk>>
@@ -7,4 +7,4 @@
  * Author(s): Rory Fewell <roryf@oddmatics.uk>
  */
 
-$checkradio_size: 16px;
+$checkradio_size: 13px !default;
