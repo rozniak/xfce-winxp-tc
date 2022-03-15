@@ -1,0 +1,39 @@
+/**
+ * button.scss - Professional Style Button Style Constants
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+$button_border_size: 4px;
+
+$button_background: linear-gradient(180deg, rgba(240,242,236,1) 0%, rgba(222,224,218,1) 100%);
+$button_border_image: url("../Resources/gtk-3.0/button_border.png") 4 4 4 4 stretch;
+
+$button_focused_background: linear-gradient(180deg, rgba(237,237,233,1) 0%, rgba(228,231,225,1) 100%);
+$button_focused_border_image: url("../Resources/gtk-3.0/button_active_border.png") 4 4 4 4 stretch;
+
+$button_hover_background: linear-gradient(180deg, rgba(177,206,239,1) 0%, rgba(155,188,229,1) 100%);
+$button_hover_border_image: url("../Resources/gtk-3.0/button_hover_border.png") 4 4 4 4 stretch;
+
+$button_pressed_background: linear-gradient(180deg, rgba(143,173,211,1) 0%, rgba(163,190,220,1) 100%);
+$button_pressed_border_image: url("../Resources/gtk-3.0/button_press_border.png") 4 4 4 4 stretch;
+
+$button_inactive_background: linear-gradient(180deg, rgba(237,238,234,1) 0%, rgba(225,227,221,1) 100%);
+$button_inactive_border_image: url("../Resources/gtk-3.0/button_inactive_border.png") 4 4 4 4 stretch;
+
+/**
+$button_flat_focused_background: ;
+$button_flat_focused_border_image: ;
+
+$button_flat_hover_background: ;
+$button_flat_hover_border_image: ;
+
+$button_flat_pressed_background: ;
+$button_flat_pressed_border_image: ;
+
+$button_flat_inactive_background: ;
+$button_flat_inactive_border_image: ;
+*/

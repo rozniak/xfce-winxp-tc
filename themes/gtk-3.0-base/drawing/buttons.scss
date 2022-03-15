@@ -69,11 +69,10 @@
     $_blank_edge:    if($edge == none, none, _widget_edge(transparentize($edge, 1)));
     $_button_shadow: 0 1px 2px transparentize($shadow_color, 0.03);
     
-    background-position: center;
-    background-size:     110% 110%;
-    border-style:        solid;
-    border-width:        3;
-    color:               $tc;
+    background-size: 100% 100%;
+    border-style:    solid;
+    border-width:    $button_border_size;
+    color:           $tc;
 
     @if $t == normal     or
         $t == normal-alt or
@@ -83,16 +82,16 @@
         //
         // Normal Button
         //
-        background-image: url("../Resources/gtk-3.0/button_body.png"), linear-gradient(170deg, rgba(252,252,252,1) 0%, rgba(233,232,225,1) 100%);
-        border-image:     url("../Resources/gtk-3.0/button_border.png") 3 3 3 3 stretch;
+        background-image: $button_background;
+        border-image:     $button_border_image;
     }
     @else if $t == focus
     {
         //
         // Focused Button
         //
-        background-image: url("../Resources/gtk-3.0/button_body.png"), linear-gradient(170deg, rgba(252,252,252,1) 0%, rgba(233,232,225,1) 100%);
-        border-image:     url("../Resources/gtk-3.0/button_active_border.png") 3 3 3 3 stretch;
+        background-image: $button_focused_background;
+        border-image:     $button_focused_border_image;
     }
     @else if $t == hover     or
              $t == hover-alt or
@@ -101,8 +100,8 @@
         //
         // Hovered Button
         //
-        background-image: url("../Resources/gtk-3.0/button_body.png"), linear-gradient(170deg, rgba(252,252,252,1) 0%, rgba(233,232,225,1) 100%);
-        border-image:     url("../Resources/gtk-3.0/button_hover_border.png") 3 3 3 3 stretch;
+        background-image: $button_hover_background;
+        border-image:     $button_hover_border_image;
     }
     @else if $t == active          or
              $t == backdrop-active or
@@ -111,8 +110,8 @@
         //
         // Pushed Button
         //
-        background-image: url("../Resources/gtk-3.0/button_press_body.png"), linear-gradient(170deg, rgba(228,227,220,1) 0%, rgba(226,225,217,1) 5%, rgba(226,225,217,1) 95%, rgba(228,227,220,1) 100%);
-        border-image:     url("../Resources/gtk-3.0/button_press_border.png") 3 3 3 3 stretch;
+        background-image: $button_pressed_background;
+        border-image:     $button_pressed_border_image;
     }
     @else if $t == insensitive                 or
              $t == insensitive-active          or
@@ -123,8 +122,8 @@
         //
         // Insensitive Button
         //
-        background:   #F5F4EA;
-        border-image: url("../Resources/gtk-3.0/button_inactive_border.png") 3 3 3 3 stretch;
+        background:   $button_inactive_background;
+        border-image: $button_inactive_border_image;
         color:        $insensitive_fg_color;
     }
     @else if $t == flat-hover
