@@ -18,8 +18,8 @@ $button_focused_border_image: url("../Resources/gtk-3.0/button_active_border.png
 $button_hover_background: url("../Resources/gtk-3.0/button_body.png"), linear-gradient(170deg, rgba(252,252,252,1) 0%, rgba(233,232,225,1) 100%) !default;
 $button_hover_border_image: url("../Resources/gtk-3.0/button_hover_border.png") 3 3 3 3 stretch !default;
 
-$button_pressed_background: url("../Resources/gtk-3.0/button_press_body.png"), linear-gradient(170deg, rgba(228,227,220,1) 0%, rgba(226,225,217,1) 5%, rgba(226,225,217,1) 95%, rgba(228,227,220,1) 100%) !default;
-$button_pressed_border_image: url("../Resources/gtk-3.0/button_press_border") 3 3 3 3 stretch !default;
+$button_press_background: url("../Resources/gtk-3.0/button_press_body.png"), linear-gradient(170deg, rgba(228,227,220,1) 0%, rgba(226,225,217,1) 5%, rgba(226,225,217,1) 95%, rgba(228,227,220,1) 100%) !default;
+$button_press_border_image: url("../Resources/gtk-3.0/button_press_border.png") 3 3 3 3 stretch !default;
 
 $button_inactive_background: #F5F4EA !default;
 $button_inactive_border_image: url("../Resources/gtk-3.0/button_inactive_border.png") 3 3 3 3 stretch !default;

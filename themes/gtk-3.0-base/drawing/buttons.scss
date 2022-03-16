@@ -110,8 +110,8 @@
         //
         // Pushed Button
         //
-        background-image: $button_pressed_background;
-        border-image:     $button_pressed_border_image;
+        background-image: $button_press_background;
+        border-image:     $button_press_border_image;
     }
     @else if $t == insensitive                 or
              $t == insensitive-active          or
