@@ -20,7 +20,7 @@ $taskband_button_background:   url("../Resources/gtk-3.0/taskband_button_body.pn
 $taskband_button_border:       2px solid #000 !default;
 $taskband_button_border_image: url("../Resources/gtk-3.0/taskband_button_border.png") 2 2 2 2 stretch !default;
 
-$taskband_button_hover_background:   url("../Resources/gtk-3.0/taskband_button_hover_body.png"), linear-gradient(126deg, rgba(145,201,255,1) 0%, rgba(49,132,255,1) 10%, rgba(49,132,255,1) 100%) !default;
+$taskband_button_hover_background:   url("../Resources/gtk-3.0/taskband_button_hover_body.png"), linear-gradient(126deg, rgba(145,201,255,1) 0%, rgba(49,132,255,1) 1%, rgba(49,132,255,1) 100%) !default;
 $taskband_button_hover_border:       2px solid #000 !default;
 $taskband_button_hover_border_image: url("../Resources/gtk-3.0/taskband_button_hover_border.png") 2 2 2 2 stretch !default;
 

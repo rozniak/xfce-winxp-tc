@@ -24,7 +24,16 @@
     //       Got to love GTK sometimes...
     //
     background: $taskband_background;
-    color:      $taskband_fg_color;
+
+    & *
+    {
+        color: $taskband_fg_color;
+    }
+
+    & menuitem
+    {
+        color: $fg_color;
+    }
     
     @if $taskband_border_size == 0px
     {
