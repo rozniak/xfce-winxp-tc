@@ -9,29 +9,26 @@
 
 button.xp-start-button
 {
-    background-image: url("../Resources/gtk-3.0/start_button_body.png"), linear-gradient(179deg, rgba(150,196,150,1) 0%, rgba(54,143,55,1) 15%, rgba(54,143,55,1) 35%, rgba(61,159,62,1) 60%, rgba(61,152,61,1) 100%);
-    background-size:  100% 100%;
-    border-image:     url("../Resources/gtk-3.0/start_button_border.png") 2 13 3 5 stretch;
-    border-style:     solid;
-    border-width:     2px 13px 3px 5px;
-    color:            #FFF;
-    font-family:      'Franklin Gothic Medium';
-    font-size:        14pt;
-    font-style:       italic;
-    margin-right:     7px;
-    text-shadow:      1px 1px 2px #152404;
+    background:      $start_button_background;
+    background-size: 100% 100%;
+    border:          $start_button_border;
+    border-image:    $start_button_border_image;
+    color:           #FFF;
+    font:            $start_button_font;
+    margin-right:    7px;
+    text-shadow:     $start_button_text_shadow;
 
     &:hover
     {
-        background-image: url("../Resources/gtk-3.0/start_button_hover_body.png"), linear-gradient(179deg, rgba(146,207,145,1) 0%, rgba(65,174,66,1) 15%, rgba(65,180,65,1) 50%, rgba(64,173,65,1) 95%, rgba(64,166,65,1) 100%);
-        border-image:     url("../Resources/gtk-3.0/start_button_hover_border.png") 2 13 3 5 stretch;
+        background: $start_button_hover_background;
+        border-image: $start_button_hover_border_image;
     }
 
     &:active,
     &:checked
     {
-        background-image: url("../Resources/gtk-3.0/start_button_press_body.png"), linear-gradient(179deg, rgba(43,91,43,1) 0%, rgba(43,91,43,1) 10%, rgba(29,129,29,1) 15%, rgba(29,129,29,1) 35%, rgba(29,145,29,1) 55%, rgba(29,145,29,1) 100%);
-        border-image:     url("../Resources/gtk-3.0/start_button_press_border.png") 2 13 3 5 stretch;
+        background: $start_button_press_background;
+        border-image: $start_button_press_border_image;
     }
 
     @at-root .xp-flag
