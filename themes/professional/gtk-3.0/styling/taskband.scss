@@ -1,0 +1,37 @@
+/**
+ * taskband.scss - Professional Style Taskband Style Constants
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+// Taskband itself
+//
+$taskband_background:   $bg_color;
+$taskband_border_size:  3px 0px 1px 0px;
+$taskband_border_image: url("../Resources/gtk-3.0/taskband_horz_border.png") 3px 0px 1px 0px stretch;
+$taskband_fg_color:     #000000;
+
+// Taskband buttons
+//
+$taskband_button_background:   $bg_color;
+$taskband_button_border:       1px solid $bg_color;
+$taskband_button_border_image: none;
+
+$taskband_button_hover_background:   #D9E8FA;
+$taskband_button_hover_border:       1px solid #BBC3D7;
+$taskband_button_hover_border_image: none;
+
+$taskband_button_press_background:   #2469BF;
+$taskband_button_press_border:       1px solid #2160AF;
+$taskband_button_press_border_image: none;
+
+$taskband_button_selected_background:   #AACFFE;
+$taskband_button_selected_border:       1px solid #92AED4;
+$taskband_button_selected_border_image: none;
+
+$taskband_button_selected_hover_background:   $taskband_button_press_background;
+$taskband_button_selected_hover_border:       $taskband_button_press_border;
+$taskband_button_selected_hover_border_image: $taskband_button_press_border_image;

@@ -23,8 +23,18 @@
     //
     //       Got to love GTK sometimes...
     //
-    background-image:  url("../Resources/gtk-3.0/taskband_horz.png");
-    background-repeat: repeat-x;
-    background-size:   10px 100%;
-    border: none; // This does nothing really - the panel overrides it currently
+    background: $taskband_background;
+    color:      $taskband_fg_color;
+    
+    @if $taskband_border_size == 0px
+    {
+        border: none;
+    }
+    @else
+    {
+        border: $taskband_border_size solid #000000;
+        border-image: $taskband_border_image;
+    }
+
+    //border: none; // This does nothing really - the panel overrides it currently
 }
