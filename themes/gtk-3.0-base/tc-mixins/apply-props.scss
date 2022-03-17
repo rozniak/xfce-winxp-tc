@@ -1,0 +1,21 @@
+/**
+ * apply-props.scss - WinTC Property Applying SCSS Mixins
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+@mixin __wintc_apply_props(
+    $theme_part_map
+)
+{
+    @each $rule_name, $rule_value in $theme_part_map
+    {
+        @if $rule_value != "undefined"
+        {
+            #{$rule_name}: #{$rule_value};
+        }
+    }
+}

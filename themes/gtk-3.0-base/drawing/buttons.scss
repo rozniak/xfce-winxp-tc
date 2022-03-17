@@ -69,7 +69,6 @@
     $_blank_edge:    if($edge == none, none, _widget_edge(transparentize($edge, 1)));
     $_button_shadow: 0 1px 2px transparentize($shadow_color, 0.03);
     
-    background-size: 100% 100%;
     border-style:    solid;
     border-width:    $button_border_size;
     color:           $tc;
@@ -82,16 +81,22 @@
         //
         // Normal Button
         //
-        background-image: $button_background;
-        border-image:     $button_border_image;
+        border-image: $button_border_image;
+
+        @include __wintc_apply_props(
+            $button_styles
+        );
     }
     @else if $t == focus
     {
         //
         // Focused Button
         //
-        background-image: $button_focused_background;
-        border-image:     $button_focused_border_image;
+        border-image: $button_focused_border_image;
+
+        @include __wintc_apply_props(
+            $button_focused_styles
+        );
     }
     @else if $t == hover     or
              $t == hover-alt or
@@ -100,8 +105,11 @@
         //
         // Hovered Button
         //
-        background-image: $button_hover_background;
-        border-image:     $button_hover_border_image;
+        border-image: $button_hover_border_image;
+
+        @include __wintc_apply_props(
+            $button_hover_styles
+        );
     }
     @else if $t == active          or
              $t == backdrop-active or
@@ -110,8 +118,11 @@
         //
         // Pushed Button
         //
-        background-image: $button_press_background;
-        border-image:     $button_press_border_image;
+        border-image: $button_press_border_image;
+
+        @include __wintc_apply_props(
+            $button_press_styles
+        );
     }
     @else if $t == insensitive                 or
              $t == insensitive-active          or
@@ -122,9 +133,12 @@
         //
         // Insensitive Button
         //
-        background:   $button_inactive_background;
         border-image: $button_inactive_border_image;
         color:        $insensitive_fg_color;
+
+        @include __wintc_apply_props(
+            $button_inactive_styles
+        );
     }
     @else if $t == flat-hover
     {

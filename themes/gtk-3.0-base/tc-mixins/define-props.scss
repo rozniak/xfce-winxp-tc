@@ -1,0 +1,97 @@
+/**
+ * define-props.scss - WinTC Property Defining SCSS Mixins
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+@function __wintc_handle_define(
+    $theme_part_map,
+    $rule_name,
+    $value_set,
+    $define_default
+)
+{
+    @if $define_default and map-has-key($theme_part_map, $rule_name)
+    {
+        @return $theme_part_map;
+    }
+
+    @return map-set(
+        $theme_part_map,
+        $rule_name,
+        $value_set
+    );
+}
+
+@function wintc_define_props_bg(
+    $theme_part_map,
+    $value_background_color,
+    $value_background_image,
+    $value_background_size,
+    $value_background_repeat,
+    $define_default
+)
+{
+    $theme_part_map:
+        __wintc_handle_define(
+            $theme_part_map,
+            "background-color",
+            $value_background_color,
+            $define_default
+        );
+
+    $theme_part_map:
+        __wintc_handle_define(
+            $theme_part_map,
+            "background-image",
+            $value_background_image,
+            $define_default
+        );
+
+    $theme_part_map:
+        __wintc_handle_define(
+            $theme_part_map,
+            "background-size",
+            $value_background_size,
+            $define_default
+        );
+
+    $theme_part_map:
+        __wintc_handle_define(
+            $theme_part_map,
+            "background-repeat",
+            $value_background_repeat,
+            $define_default
+        );
+
+    @return $theme_part_map;
+}
+
+@function wintc_define_props_fg(
+    $theme_part_map,
+    $value_color,
+    $value_text_shadow,
+    $define_default
+)
+{
+    $theme_part_map:
+        __wintc_handle_define(
+            $theme_part_map,
+            "color",
+            $value_color,
+            $define_default
+        );
+
+    $theme_part_map:
+        __wintc_handle_define(
+            $theme_part_map,
+            "text-shadow",
+            $value_text_shadow,
+            $define_default
+        );
+
+    @return $theme_part_map;
+}
