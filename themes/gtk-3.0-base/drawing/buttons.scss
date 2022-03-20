@@ -69,9 +69,16 @@
     $_blank_edge:    if($edge == none, none, _widget_edge(transparentize($edge, 1)));
     $_button_shadow: 0 1px 2px transparentize($shadow_color, 0.03);
     
-    border-style:    solid;
-    border-width:    $button_border_size;
-    color:           $tc;
+    color: $tc;
+
+    @include __wintc_apply_specific_props(
+        $button_styles,
+        "border-style",
+        "border-top-width",
+        "border-right-width",
+        "border-bottom-width",
+        "border-left-width"
+    );
 
     @if $t == normal     or
         $t == normal-alt or
@@ -81,8 +88,6 @@
         //
         // Normal Button
         //
-        border-image: $button_border_image;
-
         @include __wintc_apply_props(
             $button_styles
         );
@@ -92,8 +97,6 @@
         //
         // Focused Button
         //
-        border-image: $button_focused_border_image;
-
         @include __wintc_apply_props(
             $button_focused_styles
         );
@@ -105,8 +108,6 @@
         //
         // Hovered Button
         //
-        border-image: $button_hover_border_image;
-
         @include __wintc_apply_props(
             $button_hover_styles
         );
@@ -118,8 +119,6 @@
         //
         // Pushed Button
         //
-        border-image: $button_press_border_image;
-
         @include __wintc_apply_props(
             $button_press_styles
         );
@@ -133,8 +132,7 @@
         //
         // Insensitive Button
         //
-        border-image: $button_inactive_border_image;
-        color:        $insensitive_fg_color;
+        color: $insensitive_fg_color;
 
         @include __wintc_apply_props(
             $button_inactive_styles

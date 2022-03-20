@@ -26,6 +26,58 @@
     );
 }
 
+@function __wintc_handle_define_box(
+    $theme_part_map,
+    $box_part,
+    $value_top,
+    $value_right,
+    $value_bottom,
+    $value_left,
+    $define_default
+)
+{
+    $rule_name_suffix: "#{$box_part}";
+
+    @if $box_part == "border"
+    {
+        $rule_name_suffix: "-width";
+    }
+
+    $theme_part_map:
+        __wintc_handle_define(
+            $theme_part_map,
+            "#{$box_part}-top#{$rule_name_suffix}",
+            __wintc_apply_units($value_top, "px"),
+            $define_default
+        );
+
+    $theme_part_map:
+        __wintc_handle_define(
+            $theme_part_map,
+            "#{$box_part}-right#{$rule_name_suffix}",
+            __wintc_apply_units($value_right, "px"),
+            $define_default
+        );
+
+    $theme_part_map:
+        __wintc_handle_define(
+            $theme_part_map,
+            "#{$box_part}-bottom#{$rule_name_suffix}",
+            __wintc_apply_units($value_bottom, "px"),
+            $define_default
+        );
+
+    $theme_part_map:
+        __wintc_handle_define(
+            $theme_part_map,
+            "#{$box_part}-left#{$rule_name_suffix}",
+            __wintc_apply_units($value_left, "px"),
+            $define_default
+        );
+
+    @return $theme_part_map;
+}
+
 @function wintc_define_props_bg(
     $theme_part_map,
     $value_background_color,
@@ -70,6 +122,178 @@
     @return $theme_part_map;
 }
 
+@function wintc_define_props_borders(
+    $theme_part_map,
+    $value_border_style,
+    $value_top_size,
+    $value_right_size,
+    $value_bottom_size,
+    $value_left_size,
+    $value_border_color,
+    $value_border_image,
+    $define_default
+)
+{
+    // If the border style is being set to none, there's no point in setting the other
+    // properties
+    //
+    // We explicitly set undefined so that nothing gets emitted in the CSS beyond the
+    // border definition
+    //
+    @if $value_border_style == "none"
+    {
+        $theme_part_map:
+            __wintc_handle_define(
+                $theme_part_map,
+                "border-style",
+                "none",
+                $define_default
+            );
+
+        $theme_part_map:
+            __wintc_handle_define_box(
+                $theme_part_map,
+                "border",
+                "undefined",
+                "undefined",
+                "undefined",
+                "undefined",
+                $define_default
+            );
+
+        $theme_part_map:
+            __wintc_handle_define(
+                $theme_part_map,
+                "border-color",
+                "undefined",
+                $define_default
+            );
+
+        $theme_part_map:
+            __wintc_handle_define_box(
+                $theme_part_map,
+                "border-image",
+                "undefined",
+                "undefined",
+                "undefined",
+                "undefined",
+                $define_default
+            );
+
+        $theme_part_map:
+            __wintc_handle_define(
+                $theme_part_map,
+                "border-image-source",
+                "undefined",
+                $define_default
+            );
+
+        @return $theme_part_map;
+    }
+
+    // If the border style is being defined here, then we define other properties
+    // related to border width and image
+    //
+    // The reason for this is that we make the assumption that if the style is being
+    // defined now, then so are these other properties, and they are typically
+    // inherited
+    //
+    @if __wintc_has_value($value_border_style)
+    {
+        $theme_part_map:
+            __wintc_handle_define(
+                $theme_part_map,
+                "border-style",
+                $value_border_style,
+                $define_default
+            );
+
+        $theme_part_map:
+            __wintc_handle_define_box(
+                $theme_part_map,
+                "border",
+                $value_top_size,
+                $value_right_size,
+                $value_bottom_size,
+                $value_left_size,
+                $define_default
+            );
+
+        // If a border image is being set, then we should set the slices here too,
+        // though we can't use the box define because there isn't individual properties
+        // for each side's slice
+        //
+        @if $value_border_image != "undefined"
+        {
+            // All four sides MUST be defined for this to work
+            //
+            @if not __wintc_has_value(
+                $value_top_size,
+                $value_right_size,
+                $value_bottom_size,
+                $value_left_size
+            )
+            {
+                @error "Border style defined with image, but not all widths!";
+            }
+
+            $theme_part_map:
+                __wintc_handle_define(
+                    $theme_part_map,
+                    "border-image-slice",
+                    "#{$value_top_size} #{$value_right_size} #{$value_bottom_size} #{$value_left_size}",
+                    $define_default
+                );
+        }
+    }
+
+    // Define the color / image
+    //
+    $theme_part_map:
+        __wintc_handle_define(
+            $theme_part_map,
+            "border-color",
+            $value_border_color,
+            $define_default
+        );
+
+    $theme_part_map:
+        __wintc_handle_define(
+            $theme_part_map,
+            "border-image-source",
+            $value_border_image,
+            $define_default
+        );
+
+    @return $theme_part_map;
+}
+
+@function wintc_define_props_box(
+    $theme_part_map,
+    $box_part,
+    $value_top_size,
+    $value_right_size,
+    $value_bottom_size,
+    $value_left_size,
+    $define_default
+)
+{
+    @if $box_part != "margin" and $box_part != "padding"
+    {
+        @error "Only margin and padding rules can be defined with this function.";
+    }
+
+    @return __wintc_handle_define_box(
+        $theme_part_map,
+        $box_part,
+        $value_top_size,
+        $value_right_size,
+        $value_bottom_size,
+        $value_left_size,
+        $define_default
+    );
+}
+
 @function wintc_define_props_fg(
     $theme_part_map,
     $value_color,
@@ -90,6 +314,50 @@
             $theme_part_map,
             "text-shadow",
             $value_text_shadow,
+            $define_default
+        );
+
+    @return $theme_part_map;
+}
+
+@function wintc_define_props_font(
+    $theme_part_map,
+    $value_family,
+    $value_size,
+    $value_style,
+    $value_weight,
+    $define_default
+)
+{
+    $theme_part_map:
+        __wintc_handle_define(
+            $theme_part_map,
+            "font-family",
+            $value_family,
+            $define_default
+        );
+
+    $theme_part_map:
+        __wintc_handle_define(
+            $theme_part_map,
+            "font-size",
+            $value_size,
+            $define_default
+        );
+
+    $theme_part_map:
+        __wintc_handle_define(
+            $theme_part_map,
+            "font-style",
+            $value_family,
+            $define_default
+        );
+
+    $theme_part_map:
+        __wintc_handle_define(
+            $theme_part_map,
+            "font-weight",
+            $value_weight,
             $define_default
         );
 

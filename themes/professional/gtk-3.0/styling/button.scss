@@ -7,8 +7,6 @@
  * Author(s): Rory Fewell <roryf@oddmatics.uk>
  */
 
-$button_border_size: 4px;
-
 $button_styles:
     wintc_define_props_bg(
         $button_styles,
@@ -18,7 +16,18 @@ $button_styles:
         "undefined",
         false
     );
-$button_border_image: url("../Resources/gtk-3.0/button_border.png") 4 4 4 4 stretch;
+$button_styles:
+    wintc_define_props_borders(
+        $button_styles,
+        "solid",
+        4,
+        4,
+        4,
+        4,
+        "undefined",
+        "url('../Resources/gtk-3.0/button_border.png')",
+        false
+    );
 
 $button_focused_styles:
     wintc_define_props_bg(
@@ -29,7 +38,18 @@ $button_focused_styles:
         "undefined",
         false
     );
-$button_focused_border_image: url("../Resources/gtk-3.0/button_active_border.png") 4 4 4 4 stretch;
+$button_focused_styles:
+    wintc_define_props_borders(
+        $button_focused_styles,
+        "undefined",
+        "undefined",
+        "undefined",
+        "undefined",
+        "undefined",
+        "undefined",
+        "url('../Resources/gtk-3.0/button_active_border.png')",
+        false
+    );
 
 $button_hover_styles:
     wintc_define_props_bg(
@@ -40,7 +60,18 @@ $button_hover_styles:
         "undefined",
         false
     );
-$button_hover_border_image: url("../Resources/gtk-3.0/button_hover_border.png") 4 4 4 4 stretch;
+$button_hover_styles:
+    wintc_define_props_borders(
+        $button_hover_styles,
+        "undefined",
+        "undefined",
+        "undefined",
+        "undefined",
+        "undefined",
+        "undefined",
+        "url('../Resources/gtk-3.0/button_hover_border.png')",
+        false
+    );
 
 $button_press_styles:
     wintc_define_props_bg(
@@ -51,7 +82,18 @@ $button_press_styles:
         "undefined",
         false
     );
-$button_press_border_image: url("../Resources/gtk-3.0/button_press_border.png") 4 4 4 4 stretch;
+$button_press_styles:
+    wintc_define_props_borders(
+        $button_press_styles,
+        "undefined",
+        "undefined",
+        "undefined",
+        "undefined",
+        "undefined",
+        "undefined",
+        "url('../Resources/gtk-3.0/button_press_border.png')",
+        false
+    );
 
 $button_inactive_styles:
     wintc_define_props_bg(
@@ -62,7 +104,18 @@ $button_inactive_styles:
         "undefined",
         false
     );
-$button_inactive_border_image: url("../Resources/gtk-3.0/button_inactive_border.png") 4 4 4 4 stretch;
+$button_inactive_styles:
+    wintc_define_props_borders(
+        $button_inactive_styles,
+        "undefined",
+        "undefined",
+        "undefined",
+        "undefined",
+        "undefined",
+        "undefined",
+        "url('../Resources/gtk-3.0/button_inactive_border.png')",
+        false
+    );
 
 /**
 $button_flat_focused_background: ;

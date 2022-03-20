@@ -1,0 +1,24 @@
+/**
+ * has-value.scss - WinTC Validate Value SCSS Mixin
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+@function __wintc_has_value(
+    $values...
+)
+{
+    @each $value in $values
+    {
+        @if $value == "undefined" or
+            $value == "default"
+        {
+            @return false;
+        }
+    }
+
+    @return true;
+}

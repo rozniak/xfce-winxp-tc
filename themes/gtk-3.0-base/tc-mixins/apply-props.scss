@@ -7,15 +7,54 @@
  * Author(s): Rory Fewell <roryf@oddmatics.uk>
  */
 
+@mixin __wintc_apply_prop(
+    $rule_name,
+    $rule_value
+)
+{
+    @if $rule_value != "undefined"
+    {
+        #{$rule_name}: #{$rule_value};
+    }
+}
+
 @mixin __wintc_apply_props(
     $theme_part_map
 )
 {
     @each $rule_name, $rule_value in $theme_part_map
     {
-        @if $rule_value != "undefined"
+        @include __wintc_apply_prop($rule_name, $rule_value);
+    }
+}
+
+@mixin __wintc_apply_props_excluding(
+    $theme_part_map,
+    $rules...
+)
+{
+    @each $rule_name, $rule_value in $theme_part_map
+    {
+        @if index($rules, $rule_name) == null
         {
-            #{$rule_name}: #{$rule_value};
+            @include __wintc_apply_prop($rule_name, $rule_value);
+        }
+    }
+}
+
+@mixin __wintc_apply_specific_props(
+    $theme_part_map,
+    $rules...
+)
+{
+    @each $rule_name in $rules
+    {
+        @if map-has-key($theme_part_map, $rule_name)
+        {
+            @include __wintc_apply_prop(
+                $rule_name,
+                map-get($theme_part_map, $rule_name)
+            );
         }
     }
 }
