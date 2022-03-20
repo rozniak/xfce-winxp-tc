@@ -9,6 +9,8 @@
 
 // Taskband itself
 //
+$taskband_horz_margins: 7px !default;
+
 $taskband_background:   linear-gradient(180deg, rgba(49,104,213,1) 0%, rgba(73,147,230,1) 9%, rgba(36,93,215,1) 18%, rgba(36,93,219,1) 50%, rgba(37,97,222,1) 89%, rgba(25,65,165,1) 100%) !default;
 $taskband_border_size:  0px !default;
 $taskband_border_image: none !default;

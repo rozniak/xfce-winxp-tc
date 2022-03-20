@@ -9,26 +9,36 @@
 
 button.xp-start-button
 {
-    background:      $start_button_background;
-    background-size: 100% 100%;
-    border:          $start_button_border;
-    border-image:    $start_button_border_image;
-    color:           #FFF;
-    font:            $start_button_font;
-    margin-right:    7px;
-    text-shadow:     $start_button_text_shadow;
+    // HACK: Slight hack going on here - in Windows XP, the window buttons has a margin
+    //       either side of it, however it doesn't seem like the custom widget in XFCE
+    //       applies the margin property at all
+    //
+    //       As a result, we have to apply a margin on the Start button here, and on
+    //       the notification area as well - this does make the assumption that the
+    //       user has everything set up in the same order as XP unfortunately:
+    //
+    //       Start - window buttons - systray
+    //
+    //       Maybe if a custom window buttons plugin is developed using a simple GtkBox
+    //       this problem could be avoided so we could directly apply margin on the
+    //       box rather the surrounding widgets
+    //
+    @include __wintc_apply_props_excluding(
+        $start_button_styles,
+        "margin-right"
+    );
+
+    margin-right: $taskband_horz_margins + __wintc_get_prop($start_button_styles, "margin-right");
 
     &:hover
     {
-        background: $start_button_hover_background;
-        border-image: $start_button_hover_border_image;
+        @include __wintc_apply_props($start_button_hover_styles);
     }
 
     &:active,
     &:checked
     {
-        background: $start_button_press_background;
-        border-image: $start_button_press_border_image;
+        @include __wintc_apply_props($start_button_press_styles);
     }
 
     @at-root .xp-flag

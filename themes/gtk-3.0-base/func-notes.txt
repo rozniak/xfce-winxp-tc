@@ -2,7 +2,7 @@ notes on wintc mixins and functions
 -----------------------------------
 
 special values:
-  - undefine - override default with no define
+  - undefined - override default with no define
   
   - default - theme doesnt define a value, uses default
   
@@ -84,4 +84,13 @@ mixin/func list:
 @include __wintc_apply_props_excluding(
     theme-part-map,
     exclude-rules...
+)
+
+@include __wintc_get_prop(
+    theme-part-map,
+    rule-name
+)
+
+@include __wintc_has_value(
+    values...
 )

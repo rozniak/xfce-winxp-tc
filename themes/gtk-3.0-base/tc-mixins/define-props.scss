@@ -36,7 +36,7 @@
     $define_default
 )
 {
-    $rule_name_suffix: "#{$box_part}";
+    $rule_name_suffix: "";
 
     @if $box_part == "border"
     {
@@ -47,7 +47,7 @@
         __wintc_handle_define(
             $theme_part_map,
             "#{$box_part}-top#{$rule_name_suffix}",
-            __wintc_apply_units($value_top, "px"),
+            $value_top * 1px,
             $define_default
         );
 
@@ -55,7 +55,7 @@
         __wintc_handle_define(
             $theme_part_map,
             "#{$box_part}-right#{$rule_name_suffix}",
-            __wintc_apply_units($value_right, "px"),
+            $value_right * 1px,
             $define_default
         );
 
@@ -63,7 +63,7 @@
         __wintc_handle_define(
             $theme_part_map,
             "#{$box_part}-bottom#{$rule_name_suffix}",
-            __wintc_apply_units($value_bottom, "px"),
+            $value_bottom * 1px,
             $define_default
         );
 
@@ -71,7 +71,7 @@
         __wintc_handle_define(
             $theme_part_map,
             "#{$box_part}-left#{$rule_name_suffix}",
-            __wintc_apply_units($value_left, "px"),
+            $value_left * 1px,
             $define_default
         );
 
@@ -349,7 +349,7 @@
         __wintc_handle_define(
             $theme_part_map,
             "font-style",
-            $value_family,
+            $value_style,
             $define_default
         );
 

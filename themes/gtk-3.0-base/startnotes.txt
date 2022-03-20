@@ -1,0 +1,15 @@
+.xp-flag
+{
+    background-position: 0px -1px;
+    margin: 0px;
+}
+
+.xp-start-button
+{
+    margin: 4px 7px 3px 2px;
+}
+
+.xp-start-button label
+{
+    margin: 3px 1px 0px;
+}
