@@ -26,6 +26,9 @@ I hope to cover theming for standard GTK widgets across the board, but there wil
 
 The theme is now based directly from Adwaita to hopefully maximise compatibility and make it easier to fix theme bugs. A refactored form of Adwaita from the upstream GTK 3 sources exists in this repo to make it easier to base themes from/fix problems.
 
+## Licence
+The source code in this repository, essentially any *text* files, such as SASS, C, Bash script source code, are licensed under GPL 2.0. This licence obviously does not cover the assets from Windows/Office (images, sounds, fonts etc.).
+
 ## Roadmap?
 I don't have a fancy looking roadmap document for this repo - there's too much to list really. Essentially, if something was in Windows XP, it's on my mind.
 
