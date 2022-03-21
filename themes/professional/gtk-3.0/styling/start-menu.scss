@@ -12,91 +12,94 @@ $start_flag_size: 21px;
 $start_button_styles:
     wintc_define_props_bg(
         $start_button_styles,
-        "undefined",
-        "linear-gradient(180deg, rgba(240,242,236,1) 0%, rgba(222,224,218,1) 100%)",
-        "undefined",
-        "undefined",
-        false
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        linear-gradient(180deg, rgba(240,242,236,1) 0%, rgba(222,224,218,1) 100%)
     );
 $start_button_styles:
     wintc_define_props_borders(
         $start_button_styles,
-        "solid",
+        false,
+        solid,
         2,
         2,
         2,
         2,
-        "undefined",
-        "url('../Resources/gtk-3.0/start_button_border.png')",
-        false
+        undefined,
+        url('../Resources/gtk-3.0/start_button_border.png')
     );
 $start_button_styles:
     wintc_define_props_box(
         $start_button_styles,
-        "margin",
+        false,
+        margin,
         2,
         0,
         2,
-        2,
-        false
+        2
     );
 $start_button_styles: // FIXME: This should be unnecessary once native becomes default
     wintc_define_props_fg(
         $start_button_styles,
-        "undefined",
-        "undefined",
-        false
+        false,
+        undefined,
+        undefined
     );
 $start_button_styles: // FIXME: As above, native should have these values by default
     wintc_define_props_font(
         $start_button_styles,
+        false,
         "sans-serif",
         8pt,
         normal,
-        bold,
-        false
+        bold
     );
 
 $start_button_hover_styles:
     wintc_define_props_bg(
         $start_button_hover_styles,
-        "undefined",
-        "linear-gradient(180deg, rgba(177,206,239,1) 0%, rgba(155,188,229,1) 100%)",
-        "undefined",
-        "undefined",
-        false
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        linear-gradient(180deg, rgba(177,206,239,1) 0%, rgba(155,188,229,1) 100%)
     );
 $start_button_hover_styles:
     wintc_define_props_borders(
         $start_button_hover_styles,
-        "undefined",
-        "undefined",
-        "undefined",
-        "undefined",
-        "undefined",
-        "undefined",
-        "url('../Resources/gtk-3.0/start_button_hover_border.png')",
-        false
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/gtk-3.0/start_button_hover_border.png')
     );
 
 $start_button_press_styles:
     wintc_define_props_bg(
         $start_button_press_styles,
-        "undefined",
-        "linear-gradient(180deg, rgba(143,173,211,1) 0%, rgba(157,185,217,1) 90%, rgba(163,190,220,1) 100%)",
-        "undefined",
-        "undefined",
-        false
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        linear-gradient(180deg, rgba(143,173,211,1) 0%, rgba(157,185,217,1) 90%, rgba(163,190,220,1) 100%)
     );
 $start_button_press_styles:
     wintc_define_props_borders(
         $start_button_press_styles,
-        "undefined",
-        "undefined",
-        "undefined",
-        "undefined",
-        "undefined",
-        "undefined",
-        "url('../Resources/gtk-3.0/start_button_press_border.png')",
-        false
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/gtk-3.0/start_button_press_border.png')
     );

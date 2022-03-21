@@ -13,8 +13,8 @@
 {
     @each $value in $values
     {
-        @if $value == "undefined" or
-            $value == "default"
+        @if $value == undefined or
+            $value == default
         {
             @return false;
         }

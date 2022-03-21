@@ -10,111 +10,120 @@
 $button_styles:
     wintc_define_props_bg(
         $button_styles,
-        "undefined",
-        "url('../Resources/gtk-3.0/button_body.png'), linear-gradient(170deg, rgba(252,252,252,1) 0%, rgba(233,232,225,1) 100%)",
-        "100% 100%",
-        "undefined",
-        true
+        true,
+        undefined,
+        100% 100%,
+        undefined,
+        undefined,
+        url('../Resources/gtk-3.0/button_body.png'),
+        linear-gradient(170deg, rgba(252,252,252,1) 0%, rgba(233,232,225,1) 100%)
     );
 $button_styles:
     wintc_define_props_borders(
         $button_styles,
-        "solid",
+        true,
+        solid,
         3,
         3,
         3,
         3,
-        "undefined",
-        "url('../Resources/gtk-3.0/button_border.png')",
-        true
+        undefined,
+        url('../Resources/gtk-3.0/button_border.png'),
     );
 
 $button_focused_styles:
     wintc_define_props_bg(
         $button_focused_styles,
-        "undefined",
-        "url('../Resources/gtk-3.0/button_body.png'), linear-gradient(170deg, rgba(252,252,252,1) 0%, rgba(233,232,225,1) 100%)",
-        "undefined",
-        "undefined",
         true
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/gtk-3.0/button_body.png'),
+        linear-gradient(170deg, rgba(252,252,252,1) 0%, rgba(233,232,225,1) 100%)
     );
 $button_focused_styles:
     wintc_define_props_borders(
         $button_focused_styles,
-        "undefined",
-        "undefined",
-        "undefined",
-        "undefined",
-        "undefined",
-        "undefined",
-        "url('../Resources/gtk-3.0/button_active_border.png')",
-        true
+        true,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/gtk-3.0/button_active_border.png')
     );
 
 $button_hover_styles:
     wintc_define_props_bg(
         $button_hover_styles,
-        "undefined",
-        "url('../Resources/gtk-3.0/button_body.png'), linear-gradient(170deg, rgba(252,252,252,1) 0%, rgba(233,232,225,1) 100%)",
-        "undefined",
-        "undefined",
-        true
+        true,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/gtk-3.0/button_body.png'),
+        linear-gradient(170deg, rgba(252,252,252,1) 0%, rgba(233,232,225,1) 100%)
     );
 $button_hover_styles:
     wintc_define_props_borders(
         $button_hover_styles,
-        "undefined",
-        "undefined",
-        "undefined",
-        "undefined",
-        "undefined",
-        "undefined",
-        "url('../Resources/gtk-3.0/button_hover_border.png')",
-        true
+        true,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/gtk-3.0/button_hover_border.png')
     );
 
 $button_press_styles:
     wintc_define_props_bg(
         $button_press_styles,
-        "undefined",
-        "url('../Resources/gtk-3.0/button_press_body.png'), linear-gradient(170deg, rgba(228,227,220,1) 0%, rgba(226,225,217,1) 5%, rgba(226,225,217,1) 95%, rgba(228,227,220,1) 100%)",
-        "undefined",
-        "undefined",
-        true
+        true,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/gtk-3.0/button_press_body.png'),
+        linear-gradient(170deg, rgba(228,227,220,1) 0%, rgba(226,225,217,1) 5%, rgba(226,225,217,1) 95%, rgba(228,227,220,1) 100%),
     );
 $button_press_styles:
     wintc_define_props_borders(
         $button_press_styles,
-        "undefined",
-        "undefined",
-        "undefined",
-        "undefined",
-        "undefined",
-        "undefined",
-        "url('../Resources/gtk-3.0/button_press_border.png')",
-        true
+        true,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/gtk-3.0/button_press_border.png')
     );
 
 $button_inactive_styles:
     wintc_define_props_bg(
         $button_inactive_styles,
-        "#F5F4EA",
-        "undefined",
-        "undefined",
-        "undefined",
-        true
+        true,
+        #F5F4EA,
+        undefined,
+        undefined,
+        undefined,
+        undefined
     );
 $button_inactive_styles:
     wintc_define_props_borders(
         $button_inactive_styles,
-        "undefined",
-        "undefined",
-        "undefined",
-        "undefined",
-        "undefined",
-        "undefined",
-        "url('../Resources/gtk-3.0/button_inactive_border.png')",
-        true
+        true,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/gtk-3.0/button_inactive_border.png')
     );
 
 /**

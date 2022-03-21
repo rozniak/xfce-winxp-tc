@@ -10,66 +10,67 @@ mixin/func list:
 
 @include wintc_define_props_bg(
     theme-part-map,
+    default?
     bg-color,
-    bg-image,
     bg-size,
     bg-repeat,
-    default?
+    bg-position,
+    bg-images...
 )
 
 @include wintc_define_props_borders(
     theme-part-map,
+    default?,
     has borders? (solid, none, default, undefine),
     top-size,
     right-size,
     bottom-size,
     left-size,
     color,
-    image,
-    default?
+    image
 )
 
 @include wintc_define_props_box(
     theme-part-map,
+    default?,
     margin or padding,
     top-size,
     right-size,
     bottom-size,
-    left-size,
-    default?
+    left-size
 )
 
 @include wintc_define_props_fg(
     theme-part-map,
-    color,
-    text-shadow,
     default?
+    color,
+    text-shadow
 )
 
 @include wintc_define_props_font(
     theme-part-map,
+    default?,
     family,
     size,
     style,
-    weight,
-    default?
+    weight
 )
 
 @include __wintc_handle_define(
     theme-part-map,
+    default?,
     rule,
-    value,
-    default?
+    value
 )
 
 @include __wintc_handle_define_box(
     theme-part-map,
+    default?,
     box-part,
     top-size,
     right-size,
     bottom-size,
-    left-size,
-    default?
+    left-size
 )
 
 @include __wintc_apply_props(

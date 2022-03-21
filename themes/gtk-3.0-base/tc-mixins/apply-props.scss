@@ -12,7 +12,7 @@
     $rule_value
 )
 {
-    @if $rule_value != "undefined"
+    @if $rule_value != undefined
     {
         #{$rule_name}: #{$rule_value};
     }
