@@ -9,6 +9,27 @@
 
 $start_flag_size: 21px;
 
+$start_flag_styles:
+    wintc_define_props_bg(
+        $start_flag_styles,
+        false,
+        undefined,
+        undefined,
+        default,
+        0px -1px,
+        default
+    );
+$start_flag_styles: // FIXME: May need adjusting when native is default
+    wintc_define_props_box(
+        $start_flag_styles,
+        false,
+        margin,
+        undefined,
+        0,
+        undefined,
+        0
+    );
+
 $start_button_styles:
     wintc_define_props_bg(
         $start_button_styles,
@@ -36,9 +57,9 @@ $start_button_styles:
         $start_button_styles,
         false,
         margin,
-        2,
+        4,
         0,
-        2,
+        3,
         2
     );
 $start_button_styles: // FIXME: This should be unnecessary once native becomes default
@@ -102,4 +123,15 @@ $start_button_press_styles:
         undefined,
         undefined,
         url('../Resources/gtk-3.0/start_button_press_border.png')
+    );
+
+$start_button_text_styles:
+    wintc_define_props_box(
+        $start_button_text_styles,
+        false,
+        margin,
+        3,
+        1,
+        0,
+        1
     );

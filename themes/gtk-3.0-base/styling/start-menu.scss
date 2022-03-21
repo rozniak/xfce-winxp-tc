@@ -9,6 +9,27 @@
 
 $start_flag_size: 20px !default;
 
+$start_flag_styles:
+    wintc_define_props_bg(
+        $start_flag_styles,
+        true,
+        undefined,
+        undefined,
+        no-repeat,
+        0px 3px,
+        url('../Resources/gtk-3.0/start_flag.png')
+    );
+$start_flag_styles:
+    wintc_define_props_box(
+        $start_flag_styles,
+        true,
+        margin,
+        undefined,
+        4,
+        undefined,
+        5
+    );
+
 $start_button_styles:
     wintc_define_props_bg(
         $start_button_styles,
@@ -95,4 +116,15 @@ $start_button_press_styles:
         undefined,
         undefined,
         url('../Resources/gtk-3.0/start_button_press_border.png')
+    );
+
+$start_button_text_styles:
+    wintc_define_props_box(
+        $start_button_text_styles,
+        true,
+        margin,
+        0,
+        14,
+        0,
+        0
     );

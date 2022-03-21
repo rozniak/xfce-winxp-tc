@@ -14,7 +14,11 @@
     $value_set,
 )
 {
-    @if $define_default and map-has-key($theme_part_map, $rule_name)
+    // If we're attempting to set a default value, and one is already set, OR we are
+    // using the default value - just return
+    //
+    @if ($define_default and map-has-key($theme_part_map, $rule_name)) or
+        $value_set == default
     {
         @return $theme_part_map;
     }

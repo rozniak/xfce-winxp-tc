@@ -43,18 +43,19 @@ button.xp-start-button
 
     @at-root .xp-flag
     {
-        background-image:    url("../Resources/gtk-3.0/start_flag.png");
-        background-position: center;
-        background-repeat:   no-repeat;
-        margin-left:         5px;
-        margin-right:        4px;
+        @include __wintc_apply_props_excluding(
+            $start_flag_styles,
+            "min-height",
+            "min-width"
+        );
+
         min-height:          $start_flag_size;
         min-width:           $start_flag_size;
     }
 
     label
     {
-        margin-right: 14px;
+        @include __wintc_apply_props($start_button_text_styles);
     }
 }
 
