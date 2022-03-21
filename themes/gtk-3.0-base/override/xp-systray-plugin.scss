@@ -9,13 +9,13 @@
 
 .xp-systray
 {
-    background-image:  url("../Resources/gtk-3.0/taskband_tray_horz_body.png");
-    background-repeat: repeat-x;
-    background-size:   1px 100%;
-    border-image:      url("../Resources/gtk-3.0/taskband_tray_horz.png") 5 0 3 16 stretch;
-    border-style:      solid;
-    border-width:      5px 0px 3px 16px;
-    color:             #FFFFFF;
-    margin-left:       7px;
-    padding-right:     14px;
+    // HACK: This bit here to do with margin-left has to do with the taskband, and is
+    //       described in override/xp-start-plugin.scss
+    //
+    @include __wintc_apply_props_excluding(
+        $systray_styles,
+        "margin-left"
+    );
+
+    margin-left: $taskband_horz_margins + __wintc_get_prop($systray_styles, "margin-left");
 }

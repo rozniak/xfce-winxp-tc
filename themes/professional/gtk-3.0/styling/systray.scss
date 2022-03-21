@@ -1,0 +1,54 @@
+/**
+ * systray.scss - Professional Style Notification Area Style Constants
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+// FIXME: This entire thing probably won't be necessary when native is default - it's
+//        practically the same as Windows Classic...
+//
+$systray_styles:
+    wintc_define_props_bg(
+        $systray_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
+$systray_styles:
+    wintc_define_props_borders(
+        $systray_styles,
+        false,
+        inset,
+        1,
+        1,
+        1,
+        1,
+        $borders_color,
+        undefined
+    );
+$systray_styles:
+    wintc_define_props_box(
+        $systray_styles,
+        false,
+        margin,
+        2,
+        2,
+        2,
+        undefined
+    );
+$systray_styles:
+    wintc_define_props_box(
+        $systray_styles,
+        false,
+        padding,
+        undefined,
+        8,
+        undefined,
+        8
+    );
