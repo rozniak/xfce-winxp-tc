@@ -1,26 +1,33 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.0)
 
-project(startmenu-plugin)
-
-set(GRESOURCE_DEPENDENCIES "")
+project(
+    startmenu-plugin
+    VERSION 1.0
+    DESCRIPTION "Windows Total Conversion Start menu xfce-panel plugin."
+)
 
 find_package(PkgConfig REQUIRED)
 
-pkg_check_modules(GARCON REQUIRED garcon-1)
+pkg_check_modules(GARCON      REQUIRED garcon-1)
 pkg_check_modules(GARCON_GTK3 REQUIRED garcon-gtk3-1)
-pkg_check_modules(GDK REQUIRED gdk-3.0)
-pkg_check_modules(GIO REQUIRED gio-2.0)
-pkg_check_modules(GLIB REQUIRED glib-2.0)
-pkg_check_modules(GTK3 REQUIRED gtk+-3.0)
-pkg_check_modules(XFCE4PANEL REQUIRED libxfce4panel-2.0)
-pkg_check_modules(XFCE4UTIL REQUIRED libxfce4util-1.0)
+pkg_check_modules(GDK         REQUIRED gdk-3.0)
+pkg_check_modules(GIO         REQUIRED gio-2.0)
+pkg_check_modules(GLIB        REQUIRED glib-2.0)
+pkg_check_modules(GTK3        REQUIRED gtk+-3.0)
+pkg_check_modules(XFCE4PANEL  REQUIRED libxfce4panel-2.0)
+pkg_check_modules(XFCE4UTIL   REQUIRED libxfce4util-1.0)
+
+# Set up GResources target for the build
+#
+set(GRESOURCE_DEPENDENCIES "")
 
 find_program(GLIB_COMPILE_RESOURCES glib-compile-resources REQUIRED)
 
 execute_process(
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/src/res
     COMMAND ${GLIB_COMPILE_RESOURCES} --generate-dependencies resources.xml
-    OUTPUT_VARIABLE GRESOURCE_DEPENDENCIES)
+    OUTPUT_VARIABLE GRESOURCE_DEPENDENCIES
+)
 
 string(REPLACE "\n" ";" GRESOURCE_DEPENDENCIES ${GRESOURCE_DEPENDENCIES})
 list(POP_BACK GRESOURCE_DEPENDENCIES)
@@ -37,33 +44,18 @@ add_custom_command(
     VERBATIM
     MAIN_DEPENDENCY src/res/resources.xml
     DEPENDS
-    ${GRESOURCE_DEPENDENCIES})
+    ${GRESOURCE_DEPENDENCIES}
+)
 
 add_custom_target(
     project-resources
-    DEPENDS src/resources.c)
+    DEPENDS src/resources.c
+)
 
-include_directories(
-    ${GARCON_INCLUDE_DIRS}
-    ${GARCON_GTK3_INCLUDE_DIRS}
-    ${GDK_INCLUDE_DIRS}
-    ${GIO_INCLUDE_DIRS}
-    ${GLIB_INCLUDE_DIRS}
-    ${GTK3_INCLUDE_DIRS}
-    ${XFCE4PANEL_INCLUDE_DIRS}
-    ${XFCE4UTIL_INCLUDE_DIRS})
-
-link_directories(
-    ${GARCON_LIBRARY_DIRS}
-    ${GARCON_GTK3_LIBRARY_DIRS}
-    ${GDK_LIBRARY_DIRS}
-    ${GIO_LIBRARY_DIRS}
-    ${GLIB_LIBRARY_DIRS}
-    ${GTK3_LIBRARY_DIRS}
-    ${XFCE4PANEL_LIBRARY_DIRS}
-    ${XFCE4UTIL_LIBRARY_DIRS})
-
-add_library(startmenu-plugin MODULE
+# Main target
+#
+add_library(
+    startmenu-plugin MODULE
     src/action.h
     src/action.c
     src/placeslist.h
@@ -80,9 +72,38 @@ add_library(startmenu-plugin MODULE
     src/startmenuitem.h
     src/startmenuitem.c
     src/util.h
-    src/util.c)
+    src/util.c
+)
 
-add_dependencies(startmenu-plugin project-resources)
+target_compile_options(
+    startmenu-plugin
+    PRIVATE -Wall -Wextra -Wpedantic -Werror
+)
+
+target_include_directories(
+    startmenu-plugin
+    SYSTEM
+    PRIVATE ${GARCON_INCLUDE_DIRS}
+    PRIVATE ${GARCON_GTK3_INCLUDE_DIRS}
+    PRIVATE ${GDK_INCLUDE_DIRS}
+    PRIVATE ${GIO_INCLUDE_DIRS}
+    PRIVATE ${GLIB_INCLUDE_DIRS}
+    PRIVATE ${GTK3_INCLUDE_DIRS}
+    PRIVATE ${XFCE4PANEL_INCLUDE_DIRS}
+    PRIVATE ${XFCE4UTIL_INCLUDE_DIRS}
+)
+
+target_link_directories(
+    startmenu-plugin
+    PRIVATE ${GARCON_LIBRARY_DIRS}
+    PRIVATE ${GARCON_GTK3_LIBRARY_DIRS}
+    PRIVATE ${GDK_LIBRARY_DIRS}
+    PRIVATE ${GIO_LIBRARY_DIRS}
+    PRIVATE ${GLIB_LIBRARY_DIRS}
+    PRIVATE ${GTK3_LIBRARY_DIRS}
+    PRIVATE ${XFCE4PANEL_LIBRARY_DIRS}
+    PRIVATE ${XFCE4UTIL_LIBRARY_DIRS}
+)
 
 target_link_libraries(startmenu-plugin
     PRIVATE ${GARCON_LIBRARIES}
@@ -93,3 +114,5 @@ target_link_libraries(startmenu-plugin
     PRIVATE ${GTK3_LIBRARIES}
     PRIVATE ${XFCE4PANEL_LIBRARIES}
     PRIVATE ${XFCE4UTIL_LIBRARIES})
+
+add_dependencies(startmenu-plugin project-resources)

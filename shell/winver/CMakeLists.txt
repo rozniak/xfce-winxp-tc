@@ -1,23 +1,45 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.0)
 
-project(winver)
+project(
+    winver
+    VERSION 1.0
+    DESCRIPTION "Windows Total Conversion 'About Windows' utility."
+)
 
 find_package(PkgConfig REQUIRED)
 
-pkg_check_modules(GLIB REQUIRED glib-2.0)
-pkg_check_modules(GTK3 REQUIRED gtk+-3.0)
+pkg_check_modules(GLIB         REQUIRED glib-2.0)
+pkg_check_modules(GTK3         REQUIRED gtk+-3.0)
+pkg_check_modules(WINTC_COMGTK REQUIRED wintc-comgtk)
 
-include_directories(
-    ${GLIB_INCLUDE_DIRS}
-    ${GTK3_INCLUDE_DIRS})
+add_executable(
+    winver
+    src/winver.c
+)
 
-link_directories(
-    ${GLIB_LIBRARY_DIRS}
-    ${GTK3_LIBRARY_DIRS})
+target_compile_options(
+    winver
+    PRIVATE -Wall -Wextra -Wpedantic -Werror
+)
 
-add_executable(winver
-    src/winver.c)
+target_include_directories(
+    winver
+    SYSTEM
+    PRIVATE ${GLIB_INCLUDE_DIRS}
+    PRIVATE ${GTK3_INCLUDE_DIRS}
+    PRIVATE ${WINTC_COMGTK_INCLUDE_DIRS}
+)
 
-target_link_libraries(winver
+target_link_directories(
+    winver
+    PRIVATE ${GLIB_LIBRARY_DIRS}
+    PRIVATE ${GTK3_LIBRARY_DIRS}
+    PRIVATE ${WINTC_COMGTK_INCLUDE_DIRS}
+)
+
+target_link_libraries(
+    winver
     PRIVATE ${GLIB_LIBRARIES}
-    PRIVATE ${GTK3_LIBRARIES})
+    PRIVATE ${GTK3_LIBRARIES}
+    PRIVATE ${WINTC_COMGTK_INCLUDE_DIRS}
+)

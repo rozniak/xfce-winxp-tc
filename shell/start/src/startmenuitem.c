@@ -4,6 +4,7 @@
 #include <gio/gdesktopappinfo.h>
 #include <gio/gio.h>
 #include <gtk/gtk.h>
+#include <wintc-comgtk.h>
 
 #include "action.h"
 #include "startmenuitem.h"
@@ -64,7 +65,7 @@ G_DEFINE_TYPE_WITH_CODE(
     start_menu_item,
     GTK_TYPE_MENU_ITEM,
     G_ADD_PRIVATE(StartMenuItem)
-);
+)
 
 static void start_menu_item_class_init(
     StartMenuItemClass* klass
@@ -79,8 +80,7 @@ static void start_menu_item_init(
     StartMenuItem* self
 )
 {
-    self->priv =
-        G_TYPE_INSTANCE_GET_PRIVATE(self, TYPE_START_MENU_ITEM, StartMenuItemPrivate);
+    self->priv = start_menu_item_get_instance_private(self);
 
     g_signal_connect(
         G_OBJECT(self),
@@ -228,7 +228,6 @@ GtkWidget* start_menu_item_new_from_desktop_entry(
     GAppInfo* app_info = G_APP_INFO(entry);
 
     const gchar* app_desc = g_app_info_get_description(app_info);
-    const gchar* cmd_line = g_app_info_get_commandline(app_info);
     const gchar* exe_path = g_app_info_get_executable(app_info);
     const gchar* name     = g_app_info_get_name(app_info);
 
@@ -444,7 +443,7 @@ static GtkWidget* start_menu_item_new_manual(
 //
 static void on_menu_item_activate(
     GtkWidget* widget,
-    gpointer   user_data
+    WINTC_UNUSED(gpointer user_data)
 )
 {
     StartMenuItem* start_menu_item = START_MENU_ITEM(widget);

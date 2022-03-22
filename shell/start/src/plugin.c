@@ -1,6 +1,7 @@
 #include <gtk/gtk.h>
 #include <libxfce4panel/libxfce4panel.h>
 #include <libxfce4util/libxfce4util.h>
+#include <wintc-comgtk.h>
 
 #include "plugin.h"
 #include "startbutton.h"
@@ -51,11 +52,8 @@ static void start_plugin_class_init(
 }
 
 static void start_plugin_init(
-    StartPlugin* start_plugin
-)
-{
-    // nothing
-}
+    WINTC_UNUSED(StartPlugin* start_plugin)
+) {}
 
 static void start_plugin_construct(
     XfcePanelPlugin* plugin

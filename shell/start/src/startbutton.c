@@ -2,6 +2,7 @@
 #include <gtk/gtk.h>
 #include <libxfce4panel/xfce-panel-plugin.h>
 #include <libxfce4util/libxfce4util.h>
+#include <wintc-comgtk.h>
 
 #include "plugin.h"
 #include "startbutton.h"
@@ -44,7 +45,7 @@ static void on_start_menu_hidden(
 //
 // GTK TYPE DEFINITION & CTORS
 //
-G_DEFINE_TYPE(StartButton, start_button, GTK_TYPE_TOGGLE_BUTTON);
+G_DEFINE_TYPE(StartButton, start_button, GTK_TYPE_TOGGLE_BUTTON)
 
 static void start_button_class_init(
     StartButtonClass* klass
@@ -152,7 +153,7 @@ void start_button_attach_plugin(
 //
 static void on_clicked(
     GtkButton* button,
-    gpointer   user_data
+    WINTC_UNUSED(gpointer user_data)
 )
 {
     StartButton* start_button = START_BUTTON(button);
@@ -193,8 +194,8 @@ static void on_clicked(
 }
 
 static void on_start_menu_hidden(
-    GtkWidget* widget,
-    gpointer   user_data
+    WINTC_UNUSED(GtkWidget* widget),
+    gpointer user_data
 )
 {
     gtk_toggle_button_set_active(

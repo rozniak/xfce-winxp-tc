@@ -4,6 +4,7 @@
 #include <libxfce4panel/xfce-panel-plugin.h>
 #include <libxfce4util/libxfce4util.h>
 #include <unistd.h>
+#include <wintc-comgtk.h>
 
 #include "action.h"
 #include "placeslist.h"
@@ -83,7 +84,7 @@ G_DEFINE_TYPE_WITH_CODE(
     start_menu,
     GTK_TYPE_WINDOW,
     G_ADD_PRIVATE(StartMenu)
-);
+)
 
 static void start_menu_class_init(
     StartMenuClass* klass
@@ -98,7 +99,7 @@ static void start_menu_init(
     StartMenu* self
 )
 {
-    self->priv = G_TYPE_INSTANCE_GET_PRIVATE(self, TYPE_START_MENU, StartMenuPrivate);
+    self->priv = start_menu_get_instance_private(self);
 
     // Set up hints
     //
@@ -162,11 +163,11 @@ static void start_menu_finalize(
 // PUBLIC FUNCTIONS
 //
 void start_menu_get_popup_position(
-    GtkWidget*       menu,
-    XfcePanelPlugin* plugin,
-    GtkWidget*       widget,
-    gint*            x,
-    gint*            y
+    GtkWidget* menu,
+    WINTC_UNUSED(XfcePanelPlugin* plugin),
+    GtkWidget* widget,
+    gint*      x,
+    gint*      y
 )
 {
     GtkAllocation box_alloc;
@@ -206,8 +207,8 @@ void start_menu_get_popup_position(
 // PRIVATE FUNCTIONS
 //
 static void create_logoffpane_structure(
-    StartMenu* start_menu,
-    GtkBox*    box
+    WINTC_UNUSED(StartMenu* start_menu),
+    GtkBox* box
 )
 {
     GtkWidget* logoffpane_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
@@ -399,8 +400,8 @@ static void create_taskcolumns_structure(
 }
 
 static void create_userpane_structure(
-    StartMenu* start_menu,
-    GtkBox*    box
+    WINTC_UNUSED(StartMenu* start_menu),
+    GtkBox* box
 )
 {
     GtkWidget* userpane_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
@@ -473,8 +474,8 @@ static void create_userpane_structure(
 // CALLBACKS
 //
 static void on_action_button_clicked(
-    GtkButton* button,
-    gpointer   user_data
+    WINTC_UNUSED(GtkButton* button),
+    gpointer user_data
 )
 {
     launch_action(GPOINTER_TO_INT(user_data));
@@ -482,8 +483,8 @@ static void on_action_button_clicked(
 
 static gboolean on_focus_out(
     GtkWidget* widget,
-    GdkEvent*  event,
-    gpointer   user_data
+    WINTC_UNUSED(GdkEvent* event),
+    WINTC_UNUSED(gpointer  user_data)
 )
 {
     gtk_widget_hide(widget);
@@ -491,7 +492,7 @@ static gboolean on_focus_out(
 }
 
 static void on_selection_done(
-    GtkWidget* widget,
+    WINTC_UNUSED(GtkWidget* widget),
     StartMenu* start_menu
 )
 {

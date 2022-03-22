@@ -46,7 +46,7 @@ static void programs_list_append_top_items(
 //
 // GTK TYPE DEFINITION & CTORS
 //
-G_DEFINE_TYPE(ProgramsList, programs_list, GTK_TYPE_MENU_BAR);
+G_DEFINE_TYPE(ProgramsList, programs_list, GTK_TYPE_MENU_BAR)
 
 static void programs_list_class_init(
     ProgramsListClass* klass

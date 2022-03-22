@@ -70,7 +70,7 @@ G_DEFINE_TYPE_WITH_CODE(
     wintc_run_dialog,
     GTK_TYPE_APPLICATION_WINDOW,
     G_ADD_PRIVATE(WinTCRunDialog)
-);
+)
 
 static void wintc_run_dialog_class_init(
     WinTCRunDialogClass* klass
@@ -324,7 +324,7 @@ static void iter_run_history(
 }
 
 static void on_browse_button_clicked(
-    GtkWidget*      button,
+    WINTC_UNUSED(GtkWidget* button),
     WinTCRunDialog* dialog
 )
 {
@@ -390,7 +390,7 @@ static void on_browse_button_clicked(
 }
 
 static void on_cancel_button_clicked(
-    GtkWidget*      button,
+    WINTC_UNUSED(GtkWidget* button),
     WinTCRunDialog* dialog
 )
 {
@@ -400,7 +400,7 @@ static void on_cancel_button_clicked(
 static gboolean on_dialog_key_pressed(
     GtkWidget*   dialog,
     GdkEventKey* event,
-    gpointer     user_data
+    WINTC_UNUSED(gpointer user_data)
 )
 {
     if (event->keyval == GDK_KEY_Escape)
@@ -413,7 +413,7 @@ static gboolean on_dialog_key_pressed(
 }
 
 static void on_ok_button_clicked(
-    GtkWidget*      button,
+    WINTC_UNUSED(GtkWidget* button),
     WinTCRunDialog* dialog
 )
 {

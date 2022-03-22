@@ -94,7 +94,7 @@ gchar* wintc_list_implode_strings(
             g_string_append_printf(
                 str,
                 "%s",
-                iter->data
+                (gchar*) iter->data
             );
 
             first = FALSE;
@@ -104,7 +104,7 @@ gchar* wintc_list_implode_strings(
             g_string_append_printf(
                 str,
                 "\n%s",
-                iter->data
+                (gchar*) iter->data
             );
         }
 
@@ -159,7 +159,7 @@ GList* wintc_list_read_from_string(
     lines = g_strsplit(str, "\n", -1);
     count = g_strv_length(lines);
 
-    for (int i = 0; i < count; i++)
+    for (guint i = 0; i < count; i++)
     {
         list =
             g_list_append(

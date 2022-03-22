@@ -54,7 +54,7 @@ G_DEFINE_TYPE_WITH_CODE(
     tray_clock,
     GTK_TYPE_LABEL,
     G_ADD_PRIVATE(TrayClock)
-);
+)
 
 static void tray_clock_class_init(
     TrayClockClass* klass
@@ -112,7 +112,7 @@ static void tray_clock_finalize(
 {
     TrayClock* tray_clock = TRAY_CLOCK(object);
 
-    if (tray_clock->priv->clock_source_id > -1)
+    if (tray_clock->priv->clock_source_id > 0)
     {
         g_source_remove(tray_clock->priv->clock_source_id);
     }

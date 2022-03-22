@@ -50,7 +50,7 @@ static void wintc_run_application_shutdown(
 //
 // GTK TYPE DEFINITION & CTORS
 //
-G_DEFINE_TYPE(WinTCRunApplication, wintc_run_application, GTK_TYPE_APPLICATION);
+G_DEFINE_TYPE(WinTCRunApplication, wintc_run_application, GTK_TYPE_APPLICATION)
 
 static void wintc_run_application_class_init(
     WinTCRunApplicationClass* klass
@@ -68,7 +68,7 @@ static void wintc_run_application_class_init(
 }
 
 static void wintc_run_application_init(
-    WinTCRunApplication* self
+    WINTC_UNUSED(WinTCRunApplication* self)
 ) {}
 
 //
@@ -113,13 +113,11 @@ static void wintc_run_application_activate(
 }
 
 static void wintc_run_application_open(
-    GApplication* application,
-    GFile**       files,
-    int           n_files,
-    const gchar*  hint
-)
-{
-}
+    WINTC_UNUSED(GApplication* application),
+    WINTC_UNUSED(GFile**       files),
+    WINTC_UNUSED(int           n_files),
+    WINTC_UNUSED(const gchar*  hint)
+) {}
 
 static void wintc_run_application_startup(
     GApplication* application

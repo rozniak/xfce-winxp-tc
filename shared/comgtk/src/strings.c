@@ -11,9 +11,9 @@ gint wintc_strstr_count(
     const gchar* needle
 )
 {
-    gint   advance = strlen(needle);
-    gint   count;
-    gchar* pchar   = haystack;
+    gint         advance = strlen(needle);
+    gint         count;
+    const gchar* pchar   = haystack;
 
     while (pchar != NULL)
     {
@@ -29,7 +29,7 @@ gint wintc_strstr_count(
     return count;
 }
 
-gboolean wintc_strsteal(
+void wintc_strsteal(
     gchar** dest,
     gchar** src
 )
@@ -49,16 +49,16 @@ gchar* wintc_strsubst(
     const gchar* replacewith
 )
 {
-    gchar* buffer;
-    gint   findsize     = strlen(findwhat);
-    gint   replacecount = wintc_strstr_count(str, findwhat);
-    gint   replacesize  = strlen(replacewith);
-    gchar* pbuffer;
-    gchar* pchar        = str;
-    gchar* pnext        = NULL;
-    gint   required;
-    gint   strsize      = strlen(str);
-    gint   tocopy;
+    gchar*       buffer;
+    gint         findsize     = strlen(findwhat);
+    gint         replacecount = wintc_strstr_count(str, findwhat);
+    gint         replacesize  = strlen(replacewith);
+    gchar*       pbuffer;
+    const gchar* pchar        = str;
+    const gchar* pnext        = NULL;
+    gint         required;
+    gint         strsize      = strlen(str);
+    gint         tocopy;
 
     // Work out how much space we need
     //

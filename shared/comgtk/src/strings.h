@@ -11,7 +11,7 @@ gint wintc_strstr_count(
     const gchar* needle
 );
 
-gboolean wintc_strsteal(
+void wintc_strsteal(
     gchar** dest,
     gchar** src
 );

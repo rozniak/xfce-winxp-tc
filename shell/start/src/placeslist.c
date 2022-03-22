@@ -39,7 +39,7 @@ static void places_list_append_separator(
 //
 // GTK TYPE DEFINITION & CTORS
 //
-G_DEFINE_TYPE(PlacesList, places_list, GTK_TYPE_MENU_BAR);
+G_DEFINE_TYPE(PlacesList, places_list, GTK_TYPE_MENU_BAR)
 
 static void places_list_class_init(
     PlacesListClass* klass

@@ -4,6 +4,7 @@
 #include <sys/sysinfo.h>
 #include <sys/utsname.h>
 #include <unistd.h>
+#include <wintc-comgtk.h>
 
 //
 // FORWARD DECLARATIONS
@@ -96,7 +97,7 @@ int main(
     sysinfo(&stats);
     g_sprintf(
         system_stats,
-        "Physical memory available to Windows: %d KB",
+        "Physical memory available to Windows: %lu KB",
         stats.totalram / 1024
     );
 
@@ -237,8 +238,8 @@ static GtkWidget* create_winver_label(
 // CALLBACKS
 //
 static void on_ok_button_clicked(
-    GtkButton* button,
-    gpointer   user_data
+    WINTC_UNUSED(GtkButton* button),
+    gpointer user_data
 )
 {
     gtk_window_close(
@@ -247,8 +248,8 @@ static void on_ok_button_clicked(
 }
 
 static void on_window_destroyed(
-    GtkWidget* widget,
-    gpointer   user_data
+    WINTC_UNUSED(GtkWidget* widget),
+    WINTC_UNUSED(gpointer   user_data)
 )
 {
     gtk_main_quit();

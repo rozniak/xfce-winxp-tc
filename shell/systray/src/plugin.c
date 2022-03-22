@@ -2,6 +2,7 @@
 #include <gtk/gtk.h>
 #include <libxfce4panel/libxfce4panel.h>
 #include <libxfce4util/libxfce4util.h>
+#include <wintc-comgtk.h>
 
 #include "clock.h"
 #include "plugin.h"
@@ -32,7 +33,7 @@ static void systray_plugin_construct(
 //
 // GTK TYPE DEFINITION & CTORS
 //
-XFCE_PANEL_DEFINE_PLUGIN(SystrayPlugin, systray_plugin);
+XFCE_PANEL_DEFINE_PLUGIN(SystrayPlugin, systray_plugin)
 
 static void systray_plugin_class_init(
     SystrayPluginClass* klass
@@ -46,11 +47,8 @@ static void systray_plugin_class_init(
 }
 
 static void systray_plugin_init(
-    SystrayPlugin* systray_plugin
-)
-{
-    // nothing
-}
+    WINTC_UNUSED(SystrayPlugin* systray_plugin)
+) {}
 
 static void systray_plugin_construct(
     XfcePanelPlugin* plugin

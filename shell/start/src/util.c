@@ -2,6 +2,7 @@
 #include <gio/gdesktopappinfo.h>
 #include <glib.h>
 #include <gtk/gtk.h>
+#include <wintc-comgtk.h>
 
 #include "util.h"
 
@@ -187,7 +188,7 @@ void gtk_widget_add_style_class(
 
 void menu_shell_deselect_on_leave(
     GtkWidget*    widget,
-    GdkEvent*     event,
+    WINTC_UNUSED(GdkEvent* event),
     GtkMenuShell* menu_shell
 )
 {
@@ -201,7 +202,7 @@ void menu_shell_deselect_on_leave(
 
 void menu_shell_select_on_enter(
     GtkWidget*    widget,
-    GdkEvent*     event,
+    WINTC_UNUSED(GdkEvent* event),
     GtkMenuShell* menu_shell
 )
 {
