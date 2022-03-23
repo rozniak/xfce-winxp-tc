@@ -1,0 +1,240 @@
+#
+# luna-blue.toml - Luna (Blue) Theme Descriptor
+#
+# This source-code is part of Windows XP stuff for XFCE:
+# <<https://www.oddmatics.uk>>
+#
+# Author(s): Rory Fewell <roryf@oddmatics.uk>
+#
+
+#
+# Theme metadata
+#
+[about]
+collection = "Windows XP style"
+scheme     = "Default (blue)"
+
+#
+# Main theme config
+#
+[config]
+gtkTheme       = "Windows XP style (Blue)"
+fontFamily     = "Tahoma Regular"
+fontSize       = 8
+fontFamilyMono = "Courier New Regular"
+fontSizeMono   = 9
+wallpaper      = "/usr/share/wallpapers/bliss.png"
+xdgIconTheme   = "Luna"
+
+#
+# Native config (Windows Classic)
+#
+[config.native]
+
+# 3D Objects
+#
+[config.native.threeDObjects]
+[config.native.threeDObjects.controlColor1]
+r = 236
+g = 233
+b = 216
+
+[config.native.threeDObjects.fontColor]
+r     = 0
+g     = 0
+b     = 0
+
+# Active Title Bar
+#
+[config.native.activeTitleBar]
+controlSize = 25
+
+[config.native.activeTitleBar.controlColor1]
+r = 0
+g = 84
+b = 227
+
+[config.native.activeTitleBar.controlColor2]
+r = 61
+g = 149
+b = 255
+
+# Active Window Border
+#
+[config.native.activeWindowBorder]
+controlSize = 1
+
+[config.native.activeWindowBorder.controlColor1]
+r = 212
+g = 208
+b = 200
+
+# Application Background
+#
+[config.native.applicationBackground]
+[config.native.applicationBackground.controlColor1]
+r = 128
+g = 128
+b = 128
+
+# Caption Buttons
+#
+[config.native.captionButtons]
+controlSize = 25
+
+# Desktop
+#
+[config.native.desktop]
+[config.native.desktop.controlColor1]
+r = 0
+g = 78
+b = 152
+
+# Icon
+#
+[config.native.icon]
+controlSize = 32
+fontFamily  = "sans-serif"
+fontSize    = 8
+
+# Icon Spacing (Horizontal)
+#
+[config.native.iconSpacingHorz]
+controlSize = 43
+
+# Icon Spacing (Vertical)
+#
+[config.native.iconSpacingVert]
+controlSize = 43
+
+# Inactive Title Bar
+#
+[config.native.inactiveTitleBar]
+controlSize = 25
+
+[config.native.inactiveTitleBar.controlColor1]
+r = 122
+g = 150
+b = 223
+
+[config.native.inactiveTitleBar.controlColor2]
+r = 157
+g = 185
+b = 235
+
+[config.native.inactiveTitleBar.fontColor]
+r = 216
+g = 228
+b = 248
+
+# Inactive Window Border
+#
+[config.native.inactiveWindowBorder]
+controlSize = 1
+
+[config.native.inactiveWindowBorder.controlColor1]
+r = 212
+g = 208
+b = 200
+
+# Menu
+#
+[config.native.menu]
+controlSize = 19
+fontFamily  = "sans-serif"
+fontSize    = 8
+
+[config.native.menu.controlColor1]
+r = 255
+g = 255
+b = 255
+
+[config.native.menu.fontColor]
+r = 0
+g = 0
+b = 0
+
+# Message Box
+#
+[config.native.messageBox]
+fontFamily = "sans-serif"
+fontSize   = 8
+
+[config.native.messageBox.fontColor]
+r = 0
+g = 0
+b = 0
+
+# Palette Title
+#
+[config.native.paletteTitle]
+controlSize = 17
+fontFamily  = "sans-serif"
+fontSize    = 8
+
+# Scrollbar
+#
+[config.native.scrollbar]
+controlSize = 17
+
+# Selected Items
+#
+[config.native.selectedItems]
+controlSize = 19
+fontFamily  = "sans-serif"
+fontSize    = 8
+
+[config.native.selectedItems.controlColor1]
+r = 49
+g = 106
+b = 197
+
+[config.native.selectedItems.fontColor]
+r = 255
+g = 255
+b = 255
+
+# Tooltip
+#
+[config.native.toolTip]
+fontFamily = "sans-serif"
+fontSize   = 8
+
+[config.native.toolTip.controlColor1]
+r = 255
+g = 255
+b = 225
+
+[config.native.toolTip.fontColor]
+r = 0
+g = 0
+b = 0
+
+# Window
+#
+[config.native.window]
+[config.native.window.controlColor1]
+r = 255
+g = 255
+b = 255
+
+[config.native.window.fontColor]
+r = 0
+g = 0
+b = 0
+
+#
+# XFCE panel config
+#
+[config.xfce4-panel]
+panelHeight = 30
+
+#
+# XFWM4 config
+#
+[config.xfwm4]
+captionAlignment  = "left"
+captionFontFamily = "Trebuchet MS Bold"
+captionFontSize   = 10
+captionLayout     = "O|HMC"
+decorationTheme   = "Windows XP style (Blue)"
