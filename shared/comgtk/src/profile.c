@@ -27,6 +27,7 @@ gboolean wintc_profile_ensure_exists(
             out_error,
             G_FILE_ERROR,
             g_file_error_from_errno(errno),
+            "%s",
             g_strerror(errno)
         );
 

@@ -457,7 +457,7 @@ static void on_menu_item_activate(
         // FIXME: Debugging
         //
         gchar* argv_debug = g_strjoinv(" ", start_menu_item->priv->cmd_argv);
-        g_message(argv_debug);
+        g_message("%s", argv_debug);
         g_free(argv_debug);
 
         launch_command(start_menu_item->priv->cmd_argv);

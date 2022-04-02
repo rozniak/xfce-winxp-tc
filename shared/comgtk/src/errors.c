@@ -26,7 +26,7 @@ void wintc_log_error_and_clear(
     GError** error
 )
 {
-    g_message((*error)->message);
+    g_message("%s", (*error)->message);
 
     g_clear_error(error);
 }

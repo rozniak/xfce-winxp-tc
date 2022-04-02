@@ -19,6 +19,7 @@ gint wintc_messagebox_show(
             GTK_DIALOG_MODAL,
             type,
             buttons,
+            "%s",
             text
         );
 

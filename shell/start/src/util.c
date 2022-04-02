@@ -216,7 +216,7 @@ void report_g_error_and_clear(
     GError** error
 )
 {
-    g_error((*error)->message);
+    g_error("%s", (*error)->message);
     g_clear_error(error);
 }
 
