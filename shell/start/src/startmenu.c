@@ -3,6 +3,7 @@
 #include <gtk/gtk.h>
 #include <libxfce4panel/xfce-panel-plugin.h>
 #include <libxfce4util/libxfce4util.h>
+#include <pwd.h>
 #include <unistd.h>
 #include <wintc-comgtk.h>
 
@@ -387,7 +388,7 @@ static void create_taskcolumns_structure(
 {
     // Create structure
     //
-    GtkWidget* columns_box  = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+    GtkWidget* columns_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 
     create_programs_structure(start_menu, GTK_BOX(columns_box));
     create_places_structure(start_menu, GTK_BOX(columns_box));
@@ -456,7 +457,9 @@ static void create_userpane_structure(
 
     // Username display
     //
-    GtkWidget* username_label = gtk_label_new(getlogin());
+    struct passwd* user_pwd = getpwuid(getuid());
+
+    GtkWidget* username_label = gtk_label_new(user_pwd->pw_name);
 
     // Construct box
     //

@@ -4,6 +4,7 @@
 #include <sys/sysinfo.h>
 #include <sys/utsname.h>
 #include <unistd.h>
+#include <pwd.h>
 #include <wintc-comgtk.h>
 
 //
@@ -79,35 +80,39 @@ int main(
 
     // Get kernel info
     //
-    gchar* kernel_version = g_slice_alloc0(sizeof(gchar) * 255);
+    gchar* kernel_version;
 
     uname(&kernel_info);
-    g_sprintf(
-        kernel_version,
-        "%s (%s %s)",
-        kernel_info.version,
-        kernel_info.sysname,
-        kernel_info.release
-    );
+    
+    kernel_version =
+        g_strdup_printf(
+            "%s (%s %s)",
+            kernel_info.version,
+            kernel_info.sysname,
+            kernel_info.release
+        );
     
     // Get system info
     //
-    gchar* system_stats = g_slice_alloc0(sizeof(gchar) * 255);
+    gchar* system_stats;
 
     sysinfo(&stats);
-    g_sprintf(
-        system_stats,
-        "Physical memory available to Windows: %lu KB",
-        stats.totalram / 1024
-    );
+
+    system_stats =
+        g_strdup_printf(
+            "Physical memory available to Windows: %lu KB",
+            stats.totalram / 1024
+        );
 
     // Create labels
     // 
+    struct passwd *user_pwd = getpwuid(getuid());
+
     label_product   = create_winver_label("Microsoft ® Windows");
     label_version   = create_winver_label(kernel_version);
     label_copyright = create_winver_label("Copyright © 1985-2005 Microsoft Corporation");
     label_eula      = create_winver_label("This product is licensed under the terms of the End User License Agreement to:");
-    label_eula_user = create_winver_label(getlogin());
+    label_eula_user = create_winver_label(user_pwd->pw_name);
     label_memory    = create_winver_label(system_stats);
 
     apply_box_model_style(label_product,   "margin", "top",    4);
@@ -160,8 +165,8 @@ int main(
     
     // Clear mem
     //
-    g_slice_free1(sizeof(gchar) * 255, kernel_version);
-    g_slice_free1(sizeof(gchar) * 255, system_stats);
+    g_free(kernel_version);
+    g_free(system_stats);
 
     // Launch now
     //
