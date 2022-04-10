@@ -3,6 +3,8 @@
 #include <gio/gdesktopappinfo.h>
 #include <glib.h>
 #include <gtk/gtk.h>
+#include <wintc-comgtk.h>
+#include <wintc-exec.h>
 
 #include "startmenuitem.h"
 #include "programslist.h"
@@ -143,8 +145,8 @@ static void programs_list_append_all_programs_item(
 
     // Set style
     //
-    gtk_widget_add_style_class(outer_box, "xp-start-all-programs");
-    gtk_widget_add_style_class(arrow_box, "arrow");
+    wintc_widget_add_style_class(outer_box, "xp-start-all-programs");
+    wintc_widget_add_style_class(arrow_box, "arrow");
 
     // Box up
     //
@@ -165,8 +167,23 @@ static void programs_list_append_default_items(
 
     // Load desktop entries and create menu items
     //
-    GDesktopAppInfo* internet_entry = g_desktop_app_info_new_from_scheme("http");
-    GDesktopAppInfo* email_entry    = g_desktop_app_info_new_from_scheme("mailto");
+    GDesktopAppInfo* internet_entry = wintc_query_mime_handler(
+                                          "x-scheme-handler/http",
+                                          NULL
+                                      );
+    GDesktopAppInfo* email_entry    = wintc_query_mime_handler(
+                                          "x-scheme-handler/mailto",
+                                          NULL
+                                      );
+
+    //
+    // FIXME: Handle NULL entries here! ATM there is a bodge in startmenuitem.c, which
+    //        isn't really the right place for it (since in future, the desktop entry
+    //        constructor could be used for pinned items!)
+    //
+    //        (Also we throw away the error, it should be handled as well ofc, I'm too
+    //        lazy to do that this evening)
+    //
 
     GtkWidget* internet_item = start_menu_item_new_from_desktop_entry(
                                    internet_entry,
@@ -200,7 +217,7 @@ static void programs_list_append_separator(
 
     if (style_class != NULL)
     {
-        gtk_widget_add_style_class(separator, style_class);
+        wintc_widget_add_style_class(separator, style_class);
     }
 
     gtk_menu_shell_append(GTK_MENU_SHELL(programs_list), separator);
@@ -218,7 +235,7 @@ static void programs_list_append_top_items(
 
     if (!garcon_menu_load(all_entries, NULL, &load_error))
     {
-        report_g_error_and_clear(&load_error);
+        wintc_log_error_and_clear(&load_error);
         return;
     }
 

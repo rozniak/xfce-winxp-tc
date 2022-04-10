@@ -5,6 +5,7 @@
 #include <gio/gdesktopappinfo.h>
 #include <glib.h>
 #include <gtk/gtk.h>
+#include <wintc-exec.h>
 
 G_BEGIN_DECLS
 
@@ -28,7 +29,7 @@ GType start_menu_item_get_type(void) G_GNUC_CONST;
 // PUBLIC FUNCTIONS
 //
 GtkWidget* start_menu_item_new_from_action(
-    gint action
+    WinTCAction action
 );
 GtkWidget* start_menu_item_new_from_desktop_entry(
     GDesktopAppInfo* entry,

@@ -24,13 +24,41 @@
 #define WINTC_GCHAR_BUFFER_SIZE sizeof(gchar) * 255
 
 //
+// Default procedures
+//
+void wintc_menu_shell_deselect_on_leave(
+    GtkWidget*    widget,
+    WINTC_UNUSED(GdkEvent* event),
+    GtkMenuShell* menu_shell
+);
+
+void wintc_menu_shell_select_on_enter(
+    GtkWidget*    widget,
+    WINTC_UNUSED(GdkEvent* event),
+    GtkMenuShell* menu_shell
+);
+
+//
 // Error-related
 //
+#define WINTC_GENERAL_ERROR wintc_general_error_quark()
+
+typedef enum
+{
+    WINTC_GENERAL_ERROR_NOTIMPL
+} WinTCGeneralError;
+
 void wintc_display_error_and_clear(
     GError** error
 );
 
+GQuark wintc_general_error_quark(void);
+
 void wintc_log_error_and_clear(
+    GError** error
+);
+
+void wintc_nice_error_and_clear(
     GError** error
 );
 
@@ -116,8 +144,28 @@ gboolean wintc_profile_set_file_contents(
 );
 
 //
+// Signal-related
+//
+void wintc_signal_connect_list(
+    GList*       widgets,
+    const gchar* signal_name,
+    GCallback    cb,
+    gpointer     user_data
+);
+
+//
 // Strings-related
 //
+gchar* wintc_str_set_prefix(
+    const gchar* str,
+    const gchar* prefix
+);
+
+gchar* wintc_str_set_suffix(
+    const gchar* str,
+    const gchar* suffix
+);
+
 gint wintc_strstr_count(
     const gchar* haystack,
     const gchar* needle

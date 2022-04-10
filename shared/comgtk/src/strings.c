@@ -6,6 +6,44 @@
 //
 // PUBLIC FUNCTIONS
 //
+gchar* wintc_str_set_prefix(
+    const gchar* str,
+    const gchar* prefix
+)
+{
+    if (g_str_has_prefix(str, prefix))
+    {
+        return g_strdup(str);
+    }
+    else
+    {
+        return g_strdup_printf(
+            "%s%s",
+            prefix,
+            str
+        );
+    }
+}
+
+gchar* wintc_str_set_suffix(
+    const gchar* str,
+    const gchar* suffix
+)
+{
+    if (g_str_has_suffix(str, suffix))
+    {
+        return g_strdup(str);
+    }
+    else
+    {
+        return g_strdup_printf(
+            "%s%s",
+            str,
+            suffix
+        );
+    }
+}
+
 gint wintc_strstr_count(
     const gchar* haystack,
     const gchar* needle

@@ -8,14 +8,16 @@ project(
 
 find_package(PkgConfig REQUIRED)
 
-pkg_check_modules(GARCON      REQUIRED garcon-1)
-pkg_check_modules(GARCON_GTK3 REQUIRED garcon-gtk3-1)
-pkg_check_modules(GDK         REQUIRED gdk-3.0)
-pkg_check_modules(GIO         REQUIRED gio-2.0)
-pkg_check_modules(GLIB        REQUIRED glib-2.0)
-pkg_check_modules(GTK3        REQUIRED gtk+-3.0)
-pkg_check_modules(XFCE4PANEL  REQUIRED libxfce4panel-2.0)
-pkg_check_modules(XFCE4UTIL   REQUIRED libxfce4util-1.0)
+pkg_check_modules(GARCON       REQUIRED garcon-1)
+pkg_check_modules(GARCON_GTK3  REQUIRED garcon-gtk3-1)
+pkg_check_modules(GDK          REQUIRED gdk-3.0)
+pkg_check_modules(GIO          REQUIRED gio-2.0)
+pkg_check_modules(GLIB         REQUIRED glib-2.0)
+pkg_check_modules(GTK3         REQUIRED gtk+-3.0)
+pkg_check_modules(WINTC_COMGTK REQUIRED wintc-comgtk)
+pkg_check_modules(WINTC_EXEC   REQUIRED wintc-exec)
+pkg_check_modules(XFCE4PANEL   REQUIRED libxfce4panel-2.0)
+pkg_check_modules(XFCE4UTIL    REQUIRED libxfce4util-1.0)
 
 # Set up GResources target for the build
 #
@@ -89,6 +91,8 @@ target_include_directories(
     PRIVATE ${GIO_INCLUDE_DIRS}
     PRIVATE ${GLIB_INCLUDE_DIRS}
     PRIVATE ${GTK3_INCLUDE_DIRS}
+    PRIVATE ${WINTC_COMGTK_INCLUDE_DIRS}
+    PRIVATE ${WINTC_EXEC_INCLUDE_DIRS}
     PRIVATE ${XFCE4PANEL_INCLUDE_DIRS}
     PRIVATE ${XFCE4UTIL_INCLUDE_DIRS}
 )
@@ -101,6 +105,8 @@ target_link_directories(
     PRIVATE ${GIO_LIBRARY_DIRS}
     PRIVATE ${GLIB_LIBRARY_DIRS}
     PRIVATE ${GTK3_LIBRARY_DIRS}
+    PRIVATE ${WINTC_COMGTK_LIBRARY_DIRS}
+    PRIVATE ${WINTC_EXEC_LIBRARY_DIRS}
     PRIVATE ${XFCE4PANEL_LIBRARY_DIRS}
     PRIVATE ${XFCE4UTIL_LIBRARY_DIRS}
 )
@@ -112,6 +118,8 @@ target_link_libraries(startmenu-plugin
     PRIVATE ${GIO_LIBRARIES}
     PRIVATE ${GLIB_LIBRARIES}
     PRIVATE ${GTK3_LIBRARIES}
+    PRIVATE ${WINTC_COMGTK_LIBRARIES}
+    PRIVATE ${WINTC_EXEC_LIBRARIES}
     PRIVATE ${XFCE4PANEL_LIBRARIES}
     PRIVATE ${XFCE4UTIL_LIBRARIES})
 

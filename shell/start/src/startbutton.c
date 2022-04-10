@@ -90,8 +90,8 @@ static void start_button_init(
 
     // Add style class
     //
-    gtk_widget_add_style_class(GTK_WIDGET(self), "xp-start-button");
-    gtk_widget_add_style_class(icon_box,         "xp-flag");
+    wintc_widget_add_style_class(GTK_WIDGET(self), "xp-start-button");
+    wintc_widget_add_style_class(icon_box,         "xp-flag");
 }
 
 //

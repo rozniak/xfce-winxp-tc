@@ -1,7 +1,8 @@
 #include <glib.h>
 #include <gtk/gtk.h>
+#include <wintc-comgtk.h>
+#include <wintc-exec.h>
 
-#include "action.h"
 #include "startmenuitem.h"
 #include "placeslist.h"
 #include "util.h"
@@ -28,7 +29,7 @@ static void places_list_finalize(
 
 static void places_list_append_item(
     PlacesList* places_list,
-    gint        name,
+    WinTCAction action_id,
     gboolean    significant
 );
 
@@ -63,27 +64,27 @@ static void places_list_init(
 
     places_list_append_item(
         self,
-        XP_ACTION_MYDOCS,
+        WINTC_ACTION_MYDOCS,
         TRUE
     );
     places_list_append_item(
         self,
-        XP_ACTION_MYRECENTS,
+        WINTC_ACTION_MYRECENTS,
         TRUE
     );
     places_list_append_item(
         self,
-        XP_ACTION_MYPICS,
+        WINTC_ACTION_MYPICS,
         TRUE
     );
     places_list_append_item(
         self,
-        XP_ACTION_MYMUSIC,
+        WINTC_ACTION_MYMUSIC,
         TRUE
     );
     places_list_append_item(
         self,
-        XP_ACTION_MYCOMP,
+        WINTC_ACTION_MYCOMP,
         TRUE
     );
 
@@ -91,22 +92,22 @@ static void places_list_init(
 
     places_list_append_item(
         self,
-        XP_ACTION_CONTROL,
+        WINTC_ACTION_CONTROL,
         FALSE
     );
     places_list_append_item(
         self,
-        XP_ACTION_MIMEMGMT,
+        WINTC_ACTION_MIMEMGMT,
         FALSE
     );
     places_list_append_item(
         self,
-        XP_ACTION_CONNECTTO,
+        WINTC_ACTION_CONNECTTO,
         FALSE
     );
     places_list_append_item(
         self,
-        XP_ACTION_PRINTERS,
+        WINTC_ACTION_PRINTERS,
         FALSE
     );
 
@@ -114,17 +115,17 @@ static void places_list_init(
 
     places_list_append_item(
         self,
-        XP_ACTION_HELP,
+        WINTC_ACTION_HELP,
         FALSE
     );
     places_list_append_item(
         self,
-        XP_ACTION_SEARCH,
+        WINTC_ACTION_SEARCH,
         FALSE
     );
     places_list_append_item(
         self,
-        XP_ACTION_RUN,
+        WINTC_ACTION_RUN,
         FALSE
     );
 }
@@ -144,7 +145,7 @@ static void places_list_finalize(
 //
 static void places_list_append_item(
     PlacesList* places_list,
-    gint        action_id,
+    WinTCAction action_id,
     gboolean    significant
 )
 {
@@ -154,7 +155,7 @@ static void places_list_append_item(
     //
     if (significant)
     {
-        gtk_widget_add_style_class(item, "significant");
+        wintc_widget_add_style_class(item, "significant");
     }
 
     // FIXME: Shift 24 size to constant

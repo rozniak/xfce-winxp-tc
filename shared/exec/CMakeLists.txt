@@ -26,8 +26,14 @@ pkg_check_modules(GTK3 REQUIRED gtk+-3.0)
 
 add_library(
     wintc-exec
+    src/action.h
+    src/action.c
+    src/desktop.h
+    src/desktop.c
     src/exec.h
     src/exec.c
+    src/mime.h
+    src/mime.c
 )
 
 set_target_properties(

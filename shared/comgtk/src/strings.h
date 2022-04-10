@@ -6,6 +6,16 @@
 //
 // PUBLIC FUNCTIONS
 //
+gchar* wintc_str_set_prefix(
+    const gchar* str,
+    const gchar* prefix
+);
+
+gchar* wintc_str_set_suffix(
+    const gchar* str,
+    const gchar* suffix
+);
+
 gint wintc_strstr_count(
     const gchar* haystack,
     const gchar* needle

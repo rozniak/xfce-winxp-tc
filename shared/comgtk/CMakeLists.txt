@@ -25,6 +25,8 @@ pkg_check_modules(GTK3 REQUIRED gtk+-3.0)
 add_library(
     wintc-comgtk
     src/debug.h
+    src/defprocs.c
+    src/defprocs.h
     src/errors.c
     src/errors.h
     src/gchar.h
@@ -35,6 +37,8 @@ add_library(
     src/profile.c
     src/profile.h
     src/shorthand.h
+    src/signals.c
+    src/signals.h
     src/strings.c
     src/strings.h
     src/styles.c

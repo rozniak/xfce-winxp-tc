@@ -5,6 +5,7 @@
 #include <gio/gio.h>
 #include <gtk/gtk.h>
 #include <wintc-comgtk.h>
+#include <wintc-exec.h>
 
 #include "action.h"
 #include "startmenuitem.h"
@@ -17,8 +18,8 @@ struct _StartMenuItemPrivate
 {
     StartMenuItem*  menuitem;
 
-    gint            action;
-    gchar**         cmd_argv;
+    WinTCAction     action;
+    gchar*          cmdline;
     gboolean        is_action;
 
     GtkWidget*      icon;
@@ -99,9 +100,9 @@ static void start_menu_item_finalize(
 {
     StartMenuItem* start_menu_item = START_MENU_ITEM(object);
 
-    if (start_menu_item->priv->cmd_argv != NULL)
+    if (start_menu_item->priv->cmdline != NULL)
     {
-        g_strfreev(start_menu_item->priv->cmd_argv);
+        g_free(start_menu_item->priv->cmdline);
     }
 
     (*G_OBJECT_CLASS(start_menu_item_parent_class)->finalize) (object);
@@ -111,7 +112,7 @@ static void start_menu_item_finalize(
 // PUBLIC FUNCTIONS
 //
 GtkWidget* start_menu_item_new_from_action(
-    gint action
+    WinTCAction action
 )
 {
     const gchar* comment;
@@ -123,73 +124,73 @@ GtkWidget* start_menu_item_new_from_action(
     //
     switch (action)
     {
-        case XP_ACTION_MYDOCS:
+        case WINTC_ACTION_MYDOCS:
             comment   = "Opens the My Documents folder, where you can store letters, reports, notes, and other kinds of documents.";
             icon_name = "folder-documents";
             name      = "My Documents";
             break;
 
-        case XP_ACTION_MYRECENTS:
+        case WINTC_ACTION_MYRECENTS:
             comment   = "Displays recently opened documents and folders.";
             icon_name = "document-open-recent";
             name      = "My Recent Documents";
             break;
 
-        case XP_ACTION_MYPICS:
+        case WINTC_ACTION_MYPICS:
             comment   = "Opens the My Pictures folder, where you can store digital photos, images, and graphics files.";
             icon_name = "folder-pictures";
             name      = "My Pictures";
             break;
 
-        case XP_ACTION_MYMUSIC:
+        case WINTC_ACTION_MYMUSIC:
             comment   = "Opens the My Music folder, where you can store music and other audio files.";
             icon_name = "folder-music";
             name      = "My Music";
             break;
 
-        case XP_ACTION_MYCOMP:
+        case WINTC_ACTION_MYCOMP:
             comment   = "Gives access to, and information about, the disk drives, cameras, scanners, and other hardware connected to your computer.";
             icon_name = "computer";
             name      = "My Computer";
             break;
 
-        case XP_ACTION_CONTROL:
+        case WINTC_ACTION_CONTROL:
             comment   = "Provides options for you to customize the appearance and functionality of your computer, add or remove programs, and set up network connections and user accounts.";
             icon_name = "preferences-other";
             name      = "Control Panel";
             break;
 
-        case XP_ACTION_MIMEMGMT:
+        case WINTC_ACTION_MIMEMGMT:
             comment   = "Chooses default programs for certain activities, such as Web browsing or sending e-mail, and specifies which programs are accessible from the Start menu, desktop, and other locations.";
             icon_name = "preferences-desktop-default-applications";
             name      = "Set Program Access and Defaults";
             break;
 
-        case XP_ACTION_CONNECTTO:
+        case WINTC_ACTION_CONNECTTO:
             comment   = "Connects to other computers, networks, and the Internet.";
             icon_name = "preferences-system-network";
             name      = "Connect To";
             break;
 
-        case XP_ACTION_PRINTERS:
+        case WINTC_ACTION_PRINTERS:
             comment   = "Shows installed printers and fax printers and helps you add new ones.";
             icon_name = "printer";
             name      = "Printers and Faxes";
             break;
 
-        case XP_ACTION_HELP:
+        case WINTC_ACTION_HELP:
             comment   = "Opens a central location for Help topics, tutorials, troubleshooting, and other support services.";
             icon_name = "help-browser";
             name      = "Help and Support";
             break;
 
-        case XP_ACTION_SEARCH:
+        case WINTC_ACTION_SEARCH:
             comment   = "Opens a window where you can pick search options and work with search results.";
             icon_name = "system-search";
             name      = "Search";
             break;
 
-        case XP_ACTION_RUN:
+        case WINTC_ACTION_RUN:
             comment   = "Opens a program, folder, document or Web site.";
             icon_name = "system-run";
             name      = "Run...";
@@ -225,13 +226,35 @@ GtkWidget* start_menu_item_new_from_desktop_entry(
     const gchar*     comment
 )
 {
+    // FIXME: Temp bodge for handling NULL desktop entry (handle properly in
+    // programslist.c)
+    //
+    //  (We just insert a default item to open the MIME management action)
+    //
+    if (entry == NULL)
+    {
+        GtkWidget* null_menu_item =
+            start_menu_item_new_manual(
+                "important",
+                "Click to specify a default",
+                comment != NULL ? comment : "No default program could be identified.",
+                generic_name
+            );
+
+        (START_MENU_ITEM(null_menu_item))->priv->action    = WINTC_ACTION_MIMEMGMT;
+        (START_MENU_ITEM(null_menu_item))->priv->is_action = TRUE;
+
+        return null_menu_item;
+    }
+
+    // Normal code - desktop entry actually exists! Wahey!
+    //
     GAppInfo* app_info = G_APP_INFO(entry);
 
     const gchar* app_desc = g_app_info_get_description(app_info);
     const gchar* exe_path = g_app_info_get_executable(app_info);
     const gchar* name     = g_app_info_get_name(app_info);
 
-    gchar* cmd      = g_desktop_app_info_get_command_expanded(entry);
     gchar* exe_name = g_path_get_basename(exe_path);
 
     GtkWidget* start_menu_item =
@@ -242,10 +265,9 @@ GtkWidget* start_menu_item_new_from_desktop_entry(
             generic_name
         );
 
-    (START_MENU_ITEM(start_menu_item))->priv->cmd_argv =
-        true_shell_parse_argv(cmd);
+    (START_MENU_ITEM(start_menu_item))->priv->cmdline =
+        wintc_desktop_app_info_get_command(entry);
 
-    g_free(cmd);
     g_free(exe_name);
 
     return start_menu_item;
@@ -267,12 +289,8 @@ GtkWidget* start_menu_item_new_from_garcon_item(
             generic_name
         );
 
-    gchar* cmd = garcon_menu_item_get_command_expanded(item);
-
-    (START_MENU_ITEM(start_menu_item))->priv->cmd_argv =
-        true_shell_parse_argv(cmd);
-
-    g_free(cmd);
+    (START_MENU_ITEM(start_menu_item))->priv->cmdline =
+        garcon_menu_item_get_command_expanded(item);
 
     return start_menu_item;
 }
@@ -346,7 +364,7 @@ static GtkWidget* start_menu_item_new_manual(
     {
         // Add style class to distinguish this menu item
         //
-        gtk_widget_add_style_class(
+        wintc_widget_add_style_class(
             GTK_WIDGET(start_menu_item),
             "xp-start-default-item"
         );
@@ -425,7 +443,7 @@ static GtkWidget* start_menu_item_new_manual(
     //
     if (comment != NULL)
     {
-        gchar* real_comment = g_str_set_suffix(comment, ".");
+        gchar* real_comment = wintc_str_set_suffix(comment, ".");
 
         gtk_widget_set_tooltip_text(
             GTK_WIDGET(start_menu_item),
@@ -454,12 +472,6 @@ static void on_menu_item_activate(
     }
     else
     {
-        // FIXME: Debugging
-        //
-        gchar* argv_debug = g_strjoinv(" ", start_menu_item->priv->cmd_argv);
-        g_message("%s", argv_debug);
-        g_free(argv_debug);
-
-        launch_command(start_menu_item->priv->cmd_argv);
+        launch_command(start_menu_item->priv->cmdline);
     }
 }

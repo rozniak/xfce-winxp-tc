@@ -4,6 +4,8 @@
 #include <sys/wait.h>
 #include <wintc-comgtk.h>
 
+#include "desktop.h"
+#include "mime.h"
 #include "exec.h"
 
 //
@@ -18,14 +20,6 @@ typedef gboolean (*CmdParseFunc) (
 //
 // FORWARD DECLARATIONS
 //
-static gchar* expand_desktop_entry_cmdline(
-    const gchar* cmdline,
-    const gchar* name,
-    const gchar* icon_name,
-    const gchar* entry_path,
-    gboolean     needs_terminal
-);
-
 static gboolean parse_file_in_cmdline(
     const gchar* cmdline,
     gchar**      out_cmdline,
@@ -66,39 +60,6 @@ static CmdParseFunc parsers[] = {
 //
 // PUBLIC FUNCTIONS
 //
-gchar* wintc_desktop_app_info_get_command(
-    GDesktopAppInfo* entry
-)
-{
-    GAppInfo* app_info = G_APP_INFO(entry);
-
-    const gchar* cmd_line = g_app_info_get_commandline(app_info);
-    const gchar* exe_path = g_app_info_get_executable(app_info);
-
-    if (cmd_line != NULL)
-    {
-        gchar* expanded;
-        gchar* icon_name = g_path_get_basename(exe_path);
-
-        expanded =
-            expand_desktop_entry_cmdline(
-                cmd_line,
-                g_app_info_get_name(app_info),
-                icon_name,
-                g_desktop_app_info_get_filename(entry),
-                FALSE
-            );
-
-        g_free(icon_name);
-
-        return expanded;
-    }
-    else
-    {
-        return g_strdup(exe_path);
-    }
-}
-
 gboolean wintc_launch_command(
     const gchar* cmdline,
     GError**     out_error
@@ -193,285 +154,19 @@ gboolean wintc_launch_command(
     return TRUE;
 }
 
-gchar* wintc_query_mime_for_file(
-    const gchar* filepath,
-    GError**     out_error
-)
-{
-    gchar* xdg_query_cmd =
-        g_strconcat(
-            "xdg-mime query filetype \"",
-            filepath,
-            "\"",
-            NULL
-        );
-
-    gchar*   cmd_output = NULL;
-    GError*  error      = NULL;
-    gint     status;
-    gboolean success    = FALSE;
-
-    WINTC_LOG_DEBUG("Querying MIME type for: %s", filepath);
-
-    WINTC_SAFE_REF_CLEAR(out_error);
-
-    // Run the query
-    //
-    success =
-        g_spawn_command_line_sync(
-            xdg_query_cmd,
-            &cmd_output,
-            NULL,
-            &status,
-            &error
-        );
-
-    status = WEXITSTATUS(status);
-
-    g_free(xdg_query_cmd);
-
-    if (success && status == 0)
-    {
-        g_strstrip(cmd_output);
-
-        WINTC_LOG_DEBUG("Determined: %s", cmd_output);
-
-        return cmd_output;
-    }
-
-    // Handle errors
-    //
-    if (error != NULL)
-    {
-        WINTC_LOG_DEBUG("An error occurred: %s", error->message);
-
-        g_propagate_error(out_error, error);
-
-        return NULL;
-    }
-
-    WINTC_LOG_DEBUG("Failed with code %d", status);
-
-    switch (status)
-    {
-        case 2: // File not found
-            g_set_error(
-                out_error,
-                G_FILE_ERROR,
-                G_FILE_ERROR_NOENT,
-                "Cannot find file or folder '%s'.",
-                filepath
-            );
-
-            break;
-
-        default:
-            g_set_error(
-                out_error,
-                G_FILE_ERROR,
-                G_FILE_ERROR_FAILED,
-                "Unknown error occurred."
-            );
-
-            break;
-    }
-
-    return NULL;
-}
-
-gchar* wintc_query_mime_handler(
-    const gchar*      mime_query,
-    GError**          out_error,
-    GDesktopAppInfo** out_entry
-)
-{
-    gchar* xdg_query_cmd =
-        g_strconcat(
-            "xdg-mime query default ",
-            mime_query,
-            NULL
-        );
-
-    GDesktopAppInfo* entry      = NULL;
-    gchar*           cmd_output = NULL;
-    GError*          error      = NULL;
-    gchar*           filename   = NULL;
-    gboolean         success    = FALSE;
-
-    WINTC_LOG_DEBUG("Querying handler for MIME type %s", mime_query);
-
-    WINTC_SAFE_REF_CLEAR(out_error);
-    WINTC_SAFE_REF_CLEAR(out_entry);
-
-    // Run the query
-    //
-    success =
-        g_spawn_command_line_sync(
-            xdg_query_cmd,
-            &cmd_output,
-            NULL,
-            NULL,
-            &error
-        );
-
-    g_free(xdg_query_cmd);
-
-    if (success)
-    {
-        // Did we actually get anything?
-        //
-        gint output_length = g_utf8_strlen(cmd_output, -1);
-
-        if (output_length == 0)
-        {
-            WINTC_LOG_DEBUG("No handler found!");
-
-            g_set_error(
-                out_error,
-                G_FILE_ERROR,
-                G_FILE_ERROR_NOSYS,
-                "No program is mapped to MIME type '%s'.",
-                mime_query
-            );
-
-            g_free(cmd_output);
-
-            return NULL;
-        }
-
-        // We did! It's a desktop entry, so retrieve it
-        //
-        filename = g_utf8_substring(
-                       cmd_output,
-                       0,
-                       g_utf8_strlen(cmd_output, -1) - 1
-                   );
-        entry    = g_desktop_app_info_new(
-                       filename
-                   );
-
-        WINTC_LOG_DEBUG("Query returned: %s", filename);
-
-        g_free(cmd_output);
-        g_free(filename);
-    }
-    else
-    {
-        WINTC_LOG_DEBUG("Failed to query MIME type: %s", error->message);
-
-        g_propagate_error(out_error, error);
-
-        g_free(cmd_output);
-
-        return NULL;
-    }
-
-    if (entry == NULL)
-    {
-        g_set_error(
-            out_error,
-            G_FILE_ERROR,
-            G_FILE_ERROR_FAILED,
-            "Unable to load desktop entry for MIME type handler '%s'.",
-            mime_query
-        );
-
-        WINTC_LOG_DEBUG("Failed to load desktop entry!?");
-
-        return NULL;
-    }
-
-    WINTC_SAFE_REF_SET(out_entry, entry);
-
-    return wintc_desktop_app_info_get_command(entry);
-}
-
 //
 // PRIVATE FUNCTIONS
 //
-static gchar* expand_desktop_entry_cmdline(
-    const gchar* cmdline,
-    const gchar* name,
-    const gchar* icon_name,
-    const gchar* entry_path,
-    gboolean     needs_terminal
-)
-{
-    GString* expanded = g_string_sized_new(250);
-
-    if (needs_terminal)
-    {
-        g_string_append(
-            expanded,
-            "exo-open --launch TerminalEmulator"
-        );
-    }
-
-    // Iterate through cmdline character by character to expand shortcodes
-    //
-    const gchar* iter;
-
-    for (iter = cmdline; *iter != '\0'; iter++)
-    {
-        if (
-            iter[0] == '%' &&
-            iter[1] != '\0'
-        )
-        {
-            switch (*++iter)
-            {
-                case 'c':
-                    if (name != NULL)
-                    {
-                        g_string_append(
-                            expanded,
-                            name
-                        );
-                    }
-
-                    break;
-
-                case 'i':
-                    if (icon_name != NULL)
-                    {
-                        g_string_append(
-                            expanded,
-                            name
-                        );
-                    }
-
-                    break;
-
-                case 'k':
-                    g_string_append(
-                        expanded,
-                        entry_path
-                    );
-                    break;
-
-                case '%':
-                    g_string_append_c(expanded, '%');
-                    break;
-            }
-        }
-        else
-        {
-            g_string_append_c(expanded, *iter);
-        }
-    }
-
-    return g_string_free(expanded, FALSE);
-}
-
 static gboolean parse_file_in_cmdline(
     const gchar* cmdline,
     gchar**      out_cmdline,
     GError**     out_error
 )
 {
-    GError* error        = NULL;
-    gchar*  file_handler;
-    gchar*  file_mime;
+    GError*          error           = NULL;
+    gchar*           file_mime;
+    gchar*           handler_cmdline;
+    GDesktopAppInfo* handler_entry;
 
     WINTC_SAFE_REF_CLEAR(out_cmdline);
     WINTC_SAFE_REF_CLEAR(out_error);
@@ -508,14 +203,13 @@ static gboolean parse_file_in_cmdline(
     {
         WINTC_LOG_DEBUG("Not an executable, will look for handler.");
 
-        file_handler =
+        handler_entry =
             wintc_query_mime_handler(
                 file_mime,
-                &error,
-                NULL
+                &error
             );
 
-        if (file_handler == NULL)
+        if (handler_entry == NULL)
         {
             WINTC_LOG_DEBUG("I have nothing to handle the file!");
 
@@ -529,18 +223,19 @@ static gboolean parse_file_in_cmdline(
 
         // We found a handler, build the cmdline now and return
         //
+        handler_cmdline = wintc_desktop_app_info_get_command(handler_entry);
+
         WINTC_SAFE_REF_SET(
             out_cmdline,
-            g_strconcat(
-                file_handler,
-                " \"",
-                cmdline,
-                "\"",
-                NULL
+            g_strdup_printf(
+                "%s \"%s\"",
+                handler_cmdline,
+                cmdline
             )
         );
 
-        g_free(file_handler);
+        g_clear_object(&handler_entry);
+        g_free(handler_cmdline);
         g_free(file_mime);
 
         return TRUE;
@@ -657,12 +352,12 @@ static gboolean parse_url_in_cmdline(
 {
     static GRegex* url_regex = NULL;
 
-    gchar*      app_name;
-    GError*     error         = NULL;
-    GString*    final_cmdline;
-    GMatchInfo* match_info;
-    gchar*      mime_type;
-    gchar*      uri_scheme;
+    GError*          error           = NULL;
+    GDesktopAppInfo* handler_entry;
+    gchar*           handler_cmdline;
+    GMatchInfo*      match_info;
+    gchar*           mime_type;
+    gchar*           uri_scheme;
 
     WINTC_SAFE_REF_CLEAR(out_cmdline);
     WINTC_SAFE_REF_CLEAR(out_error);
@@ -708,23 +403,23 @@ static gboolean parse_url_in_cmdline(
         return FALSE;
     }
 
-    // Command line IS a URL, retrieve the scheme, query the handling program, return
-    // program with URI as argument
+    // Command line IS a URL, retrieve the scheme, query the handling program...
     //
     WINTC_LOG_DEBUG("Yeah, looks like a URL.");
 
     uri_scheme = g_match_info_fetch(match_info, 1);
-    mime_type  = g_strconcat(
-                     "x-scheme-handler/",
-                     uri_scheme,
-                     NULL
+    mime_type  = g_strdup_printf(
+                     "x-scheme-handler/%s",
+                     uri_scheme
                  );
 
-    app_name = wintc_query_mime_handler(mime_type, &error, NULL);
+    handler_entry = wintc_query_mime_handler(mime_type, &error);
 
     g_match_info_free(match_info);
+    g_free(mime_type);
+    g_free(uri_scheme);
 
-    if (app_name == NULL)
+    if (handler_entry == NULL)
     {
         WINTC_LOG_DEBUG("I have nothing to handle the URL!");
 
@@ -733,13 +428,22 @@ static gboolean parse_url_in_cmdline(
         return FALSE;
     }
 
-    final_cmdline = g_string_sized_new(500);
+    // Output the constructed cmdline, the application cmdline with the URL as the
+    // argument
+    //
+    handler_cmdline = wintc_desktop_app_info_get_command(handler_entry);
 
-    g_string_append(final_cmdline, app_name);
-    g_string_append(final_cmdline, " ");
-    g_string_append(final_cmdline, cmdline);
+    WINTC_SAFE_REF_SET(
+        out_cmdline,
+        g_strdup_printf(
+            "%s %s",
+            handler_cmdline,
+            cmdline
+        )
+    );
 
-    WINTC_SAFE_REF_SET(out_cmdline, g_string_free(final_cmdline, FALSE));
+    g_clear_object(&handler_entry);
+    g_free(handler_cmdline);
 
     return TRUE;
 }

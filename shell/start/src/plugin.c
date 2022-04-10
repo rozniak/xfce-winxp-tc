@@ -89,7 +89,7 @@ static void start_plugin_construct(
         start
     );
 
-    gtk_widget_add_style_class(GTK_WIDGET(plugin), "xp-start-plugin");
+    wintc_widget_add_style_class(GTK_WIDGET(plugin), "xp-start-plugin");
 
     gtk_container_add(GTK_CONTAINER(plugin), start->start_button);
     gtk_widget_show_all(start->start_button);

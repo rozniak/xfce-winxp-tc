@@ -145,7 +145,7 @@ static void start_menu_init(
 
     // Add style class
     //
-    gtk_widget_add_style_class(GTK_WIDGET(self), "xp-start-menu");
+    wintc_widget_add_style_class(GTK_WIDGET(self), "xp-start-menu");
 
     gtk_widget_show_all(self->priv->main_box);
 }
@@ -232,7 +232,7 @@ static void create_logoffpane_structure(
         G_OBJECT(logoff_button),
         "clicked",
         G_CALLBACK(on_action_button_clicked),
-        GINT_TO_POINTER(XP_ACTION_LOGOFF)
+        GINT_TO_POINTER(WINTC_ACTION_LOGOFF)
     );
 
     // FIXME: Localize
@@ -260,7 +260,7 @@ static void create_logoffpane_structure(
         G_OBJECT(shutdown_button),
         "clicked",
         G_CALLBACK(on_action_button_clicked),
-        GINT_TO_POINTER(XP_ACTION_SHUTDOWN)
+        GINT_TO_POINTER(WINTC_ACTION_SHUTDOWN)
     );
 
     // FIXME: Localize
@@ -278,7 +278,7 @@ static void create_logoffpane_structure(
 
     // Add style class
     //
-    gtk_widget_add_style_class(GTK_WIDGET(logoffpane_box), "xp-start-logoffpane");
+    wintc_widget_add_style_class(GTK_WIDGET(logoffpane_box), "xp-start-logoffpane");
 }
 
 static void create_places_structure(
@@ -304,16 +304,16 @@ static void create_places_structure(
             GTK_CONTAINER(places_list)
         );
 
-    connect_widget_list_signals(
+    wintc_signal_connect_list(
         menu_children,
         "enter-notify-event",
-        G_CALLBACK(menu_shell_select_on_enter),
+        G_CALLBACK(wintc_menu_shell_select_on_enter),
         places_list
     );
-    connect_widget_list_signals(
+    wintc_signal_connect_list(
         menu_children,
         "leave-notify-event",
-        G_CALLBACK(menu_shell_deselect_on_leave),
+        G_CALLBACK(wintc_menu_shell_deselect_on_leave),
         places_list
     );
 
@@ -328,7 +328,7 @@ static void create_places_structure(
 
     // Add style class
     //
-    gtk_widget_add_style_class(GTK_WIDGET(places_box), "xp-start-places-column");
+    wintc_widget_add_style_class(GTK_WIDGET(places_box), "xp-start-places-column");
 }
 
 static void create_programs_structure(
@@ -354,16 +354,16 @@ static void create_programs_structure(
             GTK_CONTAINER(programs_list)
         );
 
-    connect_widget_list_signals(
+    wintc_signal_connect_list(
         menu_children,
         "enter-notify-event",
-        G_CALLBACK(menu_shell_select_on_enter),
+        G_CALLBACK(wintc_menu_shell_select_on_enter),
         programs_list
     );
-    connect_widget_list_signals(
+    wintc_signal_connect_list(
         menu_children,
         "leave-notify-event",
-        G_CALLBACK(menu_shell_deselect_on_leave),
+        G_CALLBACK(wintc_menu_shell_deselect_on_leave),
         programs_list
     );
 
@@ -378,7 +378,7 @@ static void create_programs_structure(
 
     // Add style class
     //
-    gtk_widget_add_style_class(GTK_WIDGET(programs_box), "xp-start-programs-column");
+    wintc_widget_add_style_class(GTK_WIDGET(programs_box), "xp-start-programs-column");
 }
 
 static void create_taskcolumns_structure(
@@ -397,7 +397,7 @@ static void create_taskcolumns_structure(
 
     // Add style class
     //
-    gtk_widget_add_style_class(GTK_WIDGET(columns_box), "xp-start-columns");
+    wintc_widget_add_style_class(GTK_WIDGET(columns_box), "xp-start-columns");
 }
 
 static void create_userpane_structure(
@@ -448,7 +448,7 @@ static void create_userpane_structure(
     }
     else
     {
-        report_g_error_and_clear(&load_error);
+        wintc_log_error_and_clear(&load_error);
         gtk_widget_set_size_request(pic_image, 48, 48);
     }
 
@@ -470,7 +470,7 @@ static void create_userpane_structure(
 
     // Add style class
     //
-    gtk_widget_add_style_class(userpane_box, "xp-start-userpane");
+    wintc_widget_add_style_class(userpane_box, "xp-start-userpane");
 }
 
 //
