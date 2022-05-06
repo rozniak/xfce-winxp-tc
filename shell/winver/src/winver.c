@@ -92,6 +92,10 @@ int main(
             kernel_info.release
         );
     
+    // Set system locale
+    //
+    setlocale(LC_ALL, "");
+    
     // Get system info
     //
     gchar* system_stats;
@@ -100,7 +104,7 @@ int main(
 
     system_stats =
         g_strdup_printf(
-            "Physical memory available to Windows: %lu KB",
+            "Physical memory available to Windows: %'lu KB",
             stats.totalram / 1024
         );
 
