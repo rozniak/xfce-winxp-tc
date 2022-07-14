@@ -1,0 +1,57 @@
+# Lithuanian translations for PACKAGE package.
+# Copyright (C) 2022 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Automatically generated, 2022.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-07-14 18:37+0100\n"
+"PO-Revision-Date: 2022-07-14 18:37+0100\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: lt\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n"
+"%100<10 || n%100>=20) ? 1 : 2);\n"
+
+msgid "Run"
+msgstr "Vykdyti"
+
+msgid ""
+"Type the name of a program, folder, document, or Internet resource, and "
+"Windows will open it for you."
+msgstr ""
+"Įveskite programos, aplanko, dokumento ar interneto išteklių pavadinimą ir "
+"Windows jį atidarys."
+
+msgid "All Files"
+msgstr "Visi failai"
+
+msgid "Programs"
+msgstr "Programos"
+
+msgid ""
+"Windows cannot find '%s'. Make sure you typed the name correctly, and then "
+"try again. To search for a file, click the Start button, and then click "
+"Search."
+msgstr ""
+"Windows negali rasti '%s'. Patikrinkite, ar teisingai įvedėte pavadinimą ir "
+"tada pamėginkite dar kartą. Jei norite ieškoti failo, spustelėkite mygtuką "
+"Pradėti ir tada spustelėkite Ieškoti."
+
+#: src/dialog.c:480
+#, c-format
+msgid ""
+"%s\n"
+"\n"
+"The parameter is incorrect"
+msgstr ""
+
+#: src/dialog.c:489
+#, c-format
+msgid "Execution of '%s' failed."
+msgstr ""

@@ -1,0 +1,271 @@
+# Arabic translations for PACKAGE package.
+# Copyright (C) 2022 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Automatically generated, 2022.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-04-24 23:23+0100\n"
+"PO-Revision-Date: 2022-07-13 22:35+0100\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: ar_SA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.4.2\n"
+
+msgid "OK"
+msgstr "موافق"
+
+msgid "Cancel"
+msgstr "إلغاء الأمر"
+
+msgid "Yes"
+msgstr "نعم"
+
+msgid "No"
+msgstr "لا"
+
+msgid "Abort"
+msgstr "إحباط"
+
+msgid "Retry"
+msgstr "إعادة المحاولة"
+
+msgid "Ignore"
+msgstr "تجاهل"
+
+msgid "Help"
+msgstr "تعليمات"
+
+msgid "File"
+msgstr "ملف"
+
+msgid "Edit"
+msgstr "تحرير"
+
+msgid "View"
+msgstr "عرض"
+
+msgid "Insert"
+msgstr "إدراج"
+
+msgid "Format"
+msgstr "تنسيق"
+
+msgid "Tools"
+msgstr "أدوات"
+
+msgid "Window"
+msgstr "Windows"
+
+msgid "New"
+msgstr "جديد"
+
+msgid "Browse"
+msgstr "استعراض"
+
+msgid "Open"
+msgstr "فتح"
+
+msgid "Save"
+msgstr "حفظ"
+
+msgid "Save As"
+msgstr "حفظ باسم"
+
+#: src/controls.c:42
+msgid "Save All"
+msgstr ""
+
+msgid "Close"
+msgstr "إغلاق"
+
+msgid "Close All"
+msgstr "إغلاق الكل"
+
+msgid "Properties"
+msgstr "خصائص"
+
+msgid "Print"
+msgstr "طباعة"
+
+#: src/controls.c:48
+msgid "Print Preview"
+msgstr ""
+
+msgid "Page Setup"
+msgstr "إعداد الصفحة"
+
+msgid "Exit"
+msgstr "إنهاء"
+
+msgid "Undo"
+msgstr "تراجع"
+
+msgid "Redo"
+msgstr "إعادة"
+
+msgid "Cut"
+msgstr "قص"
+
+msgid "Copy"
+msgstr "نسخ"
+
+msgid "Paste"
+msgstr "لصق"
+
+msgid "Delete"
+msgstr "حذف"
+
+#: src/controls.c:63
+msgid "Find"
+msgstr ""
+
+#: src/controls.c:64
+msgid "Find Next"
+msgstr ""
+
+#: src/controls.c:65
+msgid "Replace"
+msgstr ""
+
+#: src/controls.c:66
+msgid "Replace All"
+msgstr ""
+
+msgid "Go To"
+msgstr "الانتقال إلى"
+
+msgid "Select All"
+msgstr "تحديد الكل"
+
+msgid "Zoom"
+msgstr "تكبير/تصغير"
+
+msgid "Zoom In"
+msgstr "تكبير"
+
+msgid "Zoom Out"
+msgstr "تصغير"
+
+msgid "Best Fit"
+msgstr "الاحتواء الأفضل"
+
+#: src/controls.c:77
+msgid "Actual Size"
+msgstr ""
+
+msgid "Full Screen"
+msgstr "ملء الشاشة"
+
+msgid "Status Bar"
+msgstr "شريط المعلومات"
+
+msgid "Font"
+msgstr "خطوط"
+
+#: src/controls.c:84
+msgid "Font style"
+msgstr ""
+
+msgid "Bold"
+msgstr "أسود عريض"
+
+msgid "Italic"
+msgstr "مائل"
+
+#: src/controls.c:87
+msgid "Regular"
+msgstr ""
+
+msgid "Size"
+msgstr "الحجم"
+
+msgid "Word Wrap"
+msgstr "التفاف النص"
+
+msgid "Options"
+msgstr "خيارات"
+
+msgid "Customize"
+msgstr "تخصيص"
+
+msgid "New Window"
+msgstr "إطار جديد"
+
+#: src/controls.c:99
+msgid "New Tab"
+msgstr ""
+
+msgid "Close Window"
+msgstr "إغلاق الإطار"
+
+#: src/controls.c:101
+msgid "Close Tab"
+msgstr ""
+
+#: src/controls.c:105
+msgid "Help Topics"
+msgstr ""
+
+msgid "About %s"
+msgstr "حول %s"
+
+msgid "..."
+msgstr "..."
+
+msgid ":"
+msgstr ":"
+
+msgid "Application Data"
+msgstr "Application Data"
+
+msgid "Desktop"
+msgstr "سطح المكتب"
+
+msgid "Downloads"
+msgstr "تحميل"
+
+msgid "Favorites"
+msgstr "المفضلة"
+
+msgid "My Documents"
+msgstr "My Documents"
+
+msgid "My Music"
+msgstr "My Music"
+
+msgid "My Pictures"
+msgstr "My Pictures"
+
+msgid "My Recent Documents"
+msgstr "المستندات الأخيرة"
+
+msgid "Recycle Bin"
+msgstr "سلة المحذوفات"
+
+msgid "My Video"
+msgstr "الفيديو"
+
+#: src/places.c:22
+msgid "Adminstrative Tools"
+msgstr ""
+
+msgid "My Computer"
+msgstr "جهاز الكمبيوتر"
+
+msgid "My Network Places"
+msgstr "مواضع شبكة الاتصال"
+
+msgid "Control Panel"
+msgstr "لوحة التحكم"
+
+msgid "Network Connections"
+msgstr "اتصالات شبكة الاتصال"
+
+msgid "Printers and Faxes"
+msgstr "الطابعات والفاكسات"

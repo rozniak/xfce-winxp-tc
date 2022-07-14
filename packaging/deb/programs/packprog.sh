@@ -19,6 +19,7 @@ REQUIRED_PACKAGES=(
     'cmake'
     'fakeroot'
     'make'
+    'gettext'
 )
 SCRIPTDIR=`dirname "$0"`
 
@@ -131,6 +132,7 @@ do
     #
     pkg_debian_dir="${PKG_DIR}/DEBIAN"
     pkg_desktop_dir="${PKG_DIR}/usr/share/applications"
+    pkg_locale_dir="${PKG_DIR}/usr/share/locale"
     pkg_prog_dir="${PKG_DIR}/usr/bin"
     pkg_res_dir="${PKG_DIR}/usr/share/winxp/shell-res"
 
@@ -150,6 +152,7 @@ do
     mkdir -p "${PKG_DIR}"
     mkdir -p "${pkg_debian_dir}"
     mkdir -p "${pkg_prog_dir}"
+    mkdir -p "${pkg_locale_dir}"
 
     # Copy files
     #
@@ -161,6 +164,8 @@ do
     cp "${build_dir}/${prog_name}" "${pkg_prog_dir}" >> "${log_path}" 2>&1
     ((pkg_setup_result+=$?))
 
+    # Include desktop entry if present
+    #
     if [[ -f "${prog_dir}/${prog_name}.desktop" ]]
     then
         mkdir -p "${pkg_desktop_dir}"
@@ -169,6 +174,27 @@ do
         ((pkg_setup_result+=$?))
     fi
 
+    # Include translations if present
+    #
+    if [[ -d "${prog_dir}/po" ]]
+    then
+        for pofile in "${prog_dir}/po"/*
+        do
+            if [[ "${pofile}" =~ /([a-z]{2}(_[A-Z]{2})?)\.po$ ]]
+            then
+                po_language="${BASH_REMATCH[1]}"
+                locale_dir="${pkg_locale_dir}/${po_language}/LC_MESSAGES"
+
+                mkdir -p "${locale_dir}"
+
+                msgfmt -o "${locale_dir}/wintc-${prog_name}.mo" "${pofile}" >> "${log_path}" 2>&1
+                ((pkg_setup_result+=$?))
+            fi
+        done
+    fi
+
+    # Include resources if present
+    #
     if [[ -d "${prog_dir}/res" ]]
     then
         mkdir -p "${pkg_res_dir}"

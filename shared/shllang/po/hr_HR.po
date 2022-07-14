@@ -1,0 +1,275 @@
+# Croatian translations for PACKAGE package.
+# Copyright (C) 2022 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Automatically generated, 2022.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-04-24 23:23+0100\n"
+"PO-Revision-Date: 2022-07-13 22:38+0100\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: hr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Poedit 2.4.2\n"
+
+msgid "OK"
+msgstr "U redu"
+
+msgid "Cancel"
+msgstr "Odustani"
+
+msgid "Yes"
+msgstr "Da"
+
+msgid "No"
+msgstr "Ne"
+
+#: src/controls.c:19
+msgid "Abort"
+msgstr ""
+
+msgid "Retry"
+msgstr "Pokušaj ponovno"
+
+msgid "Ignore"
+msgstr "Zanemari"
+
+msgid "Help"
+msgstr "Pomoć"
+
+msgid "File"
+msgstr "Datoteka"
+
+msgid "Edit"
+msgstr "Uređivanje"
+
+msgid "View"
+msgstr "Prikaz"
+
+msgid "Insert"
+msgstr "Umetni"
+
+msgid "Format"
+msgstr "Oblikovanje"
+
+msgid "Tools"
+msgstr "Alati"
+
+msgid "Window"
+msgstr "Windows"
+
+msgid "New"
+msgstr "Novo"
+
+msgid "Browse"
+msgstr "Pregledaj"
+
+msgid "Open"
+msgstr "Otvori"
+
+msgid "Save"
+msgstr "Spremi"
+
+msgid "Save As"
+msgstr "Spremi kao"
+
+#: src/controls.c:42
+msgid "Save All"
+msgstr ""
+
+msgid "Close"
+msgstr "Zatvori"
+
+#: src/controls.c:44
+msgid "Close All"
+msgstr ""
+
+msgid "Properties"
+msgstr "Svojstva"
+
+msgid "Print"
+msgstr "Ispis"
+
+#: src/controls.c:48
+msgid "Print Preview"
+msgstr ""
+
+msgid "Page Setup"
+msgstr "Postava stranice"
+
+msgid "Exit"
+msgstr "Izlaz"
+
+msgid "Undo"
+msgstr "Poništi"
+
+msgid "Redo"
+msgstr "Ponovi"
+
+msgid "Cut"
+msgstr "Izreži"
+
+msgid "Copy"
+msgstr "Kopiraj"
+
+msgid "Paste"
+msgstr "Zalijepi"
+
+msgid "Delete"
+msgstr "Izbriši"
+
+msgid "Find"
+msgstr "Traži"
+
+msgid "Find Next"
+msgstr "Traži sljedeće"
+
+msgid "Replace"
+msgstr "Zamijeni"
+
+#: src/controls.c:66
+msgid "Replace All"
+msgstr ""
+
+msgid "Go To"
+msgstr "Idi na"
+
+msgid "Select All"
+msgstr "Odaberi sve"
+
+#: src/controls.c:73
+msgid "Zoom"
+msgstr ""
+
+#: src/controls.c:74
+msgid "Zoom In"
+msgstr ""
+
+#: src/controls.c:75
+msgid "Zoom Out"
+msgstr ""
+
+msgid "Best Fit"
+msgstr "Najbolje pristajanje"
+
+#: src/controls.c:77
+msgid "Actual Size"
+msgstr ""
+
+msgid "Full Screen"
+msgstr "Cijeli zaslon"
+
+msgid "Status Bar"
+msgstr "Traka stanja"
+
+msgid "Font"
+msgstr "Fontovi"
+
+msgid "Font style"
+msgstr "Stil fonta"
+
+msgid "Bold"
+msgstr "Podebljano"
+
+msgid "Italic"
+msgstr "Kurziv"
+
+msgid "Regular"
+msgstr "Običan"
+
+msgid "Size"
+msgstr "Veličina"
+
+msgid "Word Wrap"
+msgstr "Prelamanje riječi"
+
+msgid "Options"
+msgstr "Odrednik"
+
+msgid "Customize"
+msgstr "Prilagodi"
+
+#: src/controls.c:98
+msgid "New Window"
+msgstr ""
+
+#: src/controls.c:99
+msgid "New Tab"
+msgstr ""
+
+msgid "Close Window"
+msgstr "Zatvaranje prozora"
+
+#: src/controls.c:101
+msgid "Close Tab"
+msgstr ""
+
+#: src/controls.c:105
+msgid "Help Topics"
+msgstr ""
+
+msgid "About %s"
+msgstr "O programu %s"
+
+msgid "..."
+msgstr "..."
+
+#: src/controls.c:111
+msgid ":"
+msgstr ""
+
+msgid "Application Data"
+msgstr "Application Data"
+
+msgid "Desktop"
+msgstr "Desktop"
+
+msgid "Downloads"
+msgstr "Preuzimanja"
+
+msgid "Favorites"
+msgstr "Favoriti"
+
+msgid "My Documents"
+msgstr "Moji dokumenti"
+
+msgid "My Music"
+msgstr "My Music"
+
+msgid "My Pictures"
+msgstr "My Pictures"
+
+msgid "My Recent Documents"
+msgstr "Moji nedavni dokumenti"
+
+msgid "Recycle Bin"
+msgstr "Smeće"
+
+msgid "My Video"
+msgstr "Moj video"
+
+#: src/places.c:22
+msgid "Adminstrative Tools"
+msgstr ""
+
+msgid "My Computer"
+msgstr "Moje računalo"
+
+msgid "My Network Places"
+msgstr "Moja mrežna mjesta"
+
+msgid "Control Panel"
+msgstr "Upravljačka ploča"
+
+msgid "Network Connections"
+msgstr "Mrežne veze"
+
+msgid "Printers and Faxes"
+msgstr "Pisači i faksovi"

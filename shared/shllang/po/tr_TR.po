@@ -1,0 +1,267 @@
+# Turkish translations for PACKAGE package.
+# Copyright (C) 2022 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Automatically generated, 2022.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-04-24 23:23+0100\n"
+"PO-Revision-Date: 2022-07-13 22:44+0100\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: tr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 2.4.2\n"
+
+msgid "OK"
+msgstr "Tamam"
+
+msgid "Cancel"
+msgstr "İptal"
+
+msgid "Yes"
+msgstr "Evet"
+
+msgid "No"
+msgstr "Hayır"
+
+msgid "Abort"
+msgstr "Durdur"
+
+msgid "Retry"
+msgstr "Yeniden Dene"
+
+msgid "Ignore"
+msgstr "Yoksay"
+
+msgid "Help"
+msgstr "Yardım"
+
+msgid "File"
+msgstr "Dosya"
+
+msgid "Edit"
+msgstr "Düzenle"
+
+msgid "View"
+msgstr "Görünüm"
+
+msgid "Insert"
+msgstr "Ekle"
+
+msgid "Format"
+msgstr "Biçim"
+
+msgid "Tools"
+msgstr "Araçlar"
+
+msgid "Window"
+msgstr "Windows"
+
+msgid "New"
+msgstr "Yeni"
+
+msgid "Browse"
+msgstr "Gözat"
+
+msgid "Open"
+msgstr "Aç"
+
+msgid "Save"
+msgstr "Kaydet"
+
+msgid "Save As"
+msgstr "Farklı Kaydet"
+
+#: src/controls.c:42
+msgid "Save All"
+msgstr ""
+
+msgid "Close"
+msgstr "Kapat"
+
+msgid "Close All"
+msgstr "Tümünü Kapat"
+
+msgid "Properties"
+msgstr "Özellikler"
+
+msgid "Print"
+msgstr "Yazdır"
+
+#: src/controls.c:48
+msgid "Print Preview"
+msgstr ""
+
+msgid "Page Setup"
+msgstr "Sayfa Yapısı"
+
+msgid "Exit"
+msgstr "Çıkış"
+
+msgid "Undo"
+msgstr "Geri Al"
+
+msgid "Redo"
+msgstr "Yinele"
+
+msgid "Cut"
+msgstr "Kes"
+
+msgid "Copy"
+msgstr "Kopyala"
+
+msgid "Paste"
+msgstr "Yapıştır"
+
+msgid "Delete"
+msgstr "Sil"
+
+msgid "Find"
+msgstr "Bul"
+
+msgid "Find Next"
+msgstr "Sonrakini Bul"
+
+msgid "Replace"
+msgstr "Değiştir"
+
+#: src/controls.c:66
+msgid "Replace All"
+msgstr ""
+
+msgid "Go To"
+msgstr "Git"
+
+msgid "Select All"
+msgstr "Tümünü Seç"
+
+msgid "Zoom"
+msgstr "Yakınlaştır"
+
+msgid "Zoom In"
+msgstr "Büyüt"
+
+msgid "Zoom Out"
+msgstr "Küçült"
+
+msgid "Best Fit"
+msgstr "En Uygun"
+
+#: src/controls.c:77
+msgid "Actual Size"
+msgstr ""
+
+msgid "Full Screen"
+msgstr "Tam Ekran"
+
+msgid "Status Bar"
+msgstr "Durum Çubuğu"
+
+msgid "Font"
+msgstr "Yazı Tipleri"
+
+msgid "Font style"
+msgstr "Yazı tipi stili"
+
+msgid "Bold"
+msgstr "Kalın"
+
+msgid "Italic"
+msgstr "Italic"
+
+msgid "Regular"
+msgstr "Normal"
+
+msgid "Size"
+msgstr "Boyut"
+
+msgid "Word Wrap"
+msgstr "Sözcük Kaydır"
+
+msgid "Options"
+msgstr "Seçenekler"
+
+msgid "Customize"
+msgstr "Özelleştir"
+
+msgid "New Window"
+msgstr "Yeni Pencere"
+
+#: src/controls.c:99
+msgid "New Tab"
+msgstr ""
+
+msgid "Close Window"
+msgstr "Pencereyi Kapat"
+
+#: src/controls.c:101
+msgid "Close Tab"
+msgstr ""
+
+#: src/controls.c:105
+msgid "Help Topics"
+msgstr ""
+
+msgid "About %s"
+msgstr "%s Hakkında"
+
+msgid "..."
+msgstr "..."
+
+msgid ":"
+msgstr ":"
+
+msgid "Application Data"
+msgstr "Application Data"
+
+msgid "Desktop"
+msgstr "Desktop"
+
+msgid "Downloads"
+msgstr "Karşıdan Yüklenenler"
+
+msgid "Favorites"
+msgstr "Sık Kullanılanlar"
+
+msgid "My Documents"
+msgstr "Belgelerim"
+
+msgid "My Music"
+msgstr "Müziğim"
+
+msgid "My Pictures"
+msgstr "Resimlerim"
+
+msgid "My Recent Documents"
+msgstr "En Son Kullandıklarım"
+
+msgid "Recycle Bin"
+msgstr "Geri Dönüşüm Kutusu"
+
+msgid "My Video"
+msgstr "Videom"
+
+#: src/places.c:22
+msgid "Adminstrative Tools"
+msgstr ""
+
+msgid "My Computer"
+msgstr "Bilgisayarım"
+
+msgid "My Network Places"
+msgstr "Ağ Bağlantılarım"
+
+msgid "Control Panel"
+msgstr "Denetim Masası"
+
+msgid "Network Connections"
+msgstr "Ağ Bağlantıları"
+
+msgid "Printers and Faxes"
+msgstr "Yazıcı ve Fakslar"

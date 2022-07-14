@@ -1,0 +1,267 @@
+# Czech translations for PACKAGE package.
+# Copyright (C) 2022 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Automatically generated, 2022.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-04-24 23:23+0100\n"
+"PO-Revision-Date: 2022-07-13 22:36+0100\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: cs\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+"X-Generator: Poedit 2.4.2\n"
+
+msgid "OK"
+msgstr "OK"
+
+msgid "Cancel"
+msgstr "Storno"
+
+msgid "Yes"
+msgstr "Ano"
+
+msgid "No"
+msgstr "Ne"
+
+msgid "Abort"
+msgstr "Přerušit"
+
+msgid "Retry"
+msgstr "Opakovat"
+
+msgid "Ignore"
+msgstr "Přeskočit"
+
+msgid "Help"
+msgstr "Nápověda"
+
+msgid "File"
+msgstr "Soubor"
+
+msgid "Edit"
+msgstr "Upravit"
+
+msgid "View"
+msgstr "Zobrazit"
+
+msgid "Insert"
+msgstr "Vložit"
+
+msgid "Format"
+msgstr "Formát"
+
+msgid "Tools"
+msgstr "Nástroje"
+
+msgid "Window"
+msgstr "Systém Windows"
+
+msgid "New"
+msgstr "Nový objekt"
+
+msgid "Browse"
+msgstr "Procházet"
+
+msgid "Open"
+msgstr "Otevřít"
+
+msgid "Save"
+msgstr "Uložit"
+
+msgid "Save As"
+msgstr "Uložit jako"
+
+#: src/controls.c:42
+msgid "Save All"
+msgstr ""
+
+msgid "Close"
+msgstr "Zavřít"
+
+msgid "Close All"
+msgstr "Zavřít vše"
+
+msgid "Properties"
+msgstr "Vlastnosti"
+
+msgid "Print"
+msgstr "Tisk"
+
+#: src/controls.c:48
+msgid "Print Preview"
+msgstr ""
+
+msgid "Page Setup"
+msgstr "Vzhled stránky"
+
+msgid "Exit"
+msgstr "Konec"
+
+msgid "Undo"
+msgstr "Zpět"
+
+msgid "Redo"
+msgstr "Znovu"
+
+msgid "Cut"
+msgstr "Vyjmout"
+
+msgid "Copy"
+msgstr "Kopírovat"
+
+msgid "Paste"
+msgstr "Vložit"
+
+msgid "Delete"
+msgstr "Odstranit"
+
+msgid "Find"
+msgstr "Najít"
+
+msgid "Find Next"
+msgstr "Najít další"
+
+msgid "Replace"
+msgstr "Nahradit"
+
+#: src/controls.c:66
+msgid "Replace All"
+msgstr ""
+
+msgid "Go To"
+msgstr "Přejít na"
+
+msgid "Select All"
+msgstr "Vybrat vše"
+
+msgid "Zoom"
+msgstr "Lupa"
+
+msgid "Zoom In"
+msgstr "Přiblížit"
+
+msgid "Zoom Out"
+msgstr "Oddálit"
+
+msgid "Best Fit"
+msgstr "Přizpůsobit"
+
+#: src/controls.c:77
+msgid "Actual Size"
+msgstr ""
+
+msgid "Full Screen"
+msgstr "Celá obrazovka"
+
+msgid "Status Bar"
+msgstr "Stavový řádek"
+
+msgid "Font"
+msgstr "Písma"
+
+msgid "Font style"
+msgstr "Řez písma"
+
+msgid "Bold"
+msgstr "Tučné"
+
+msgid "Italic"
+msgstr "Kurzíva"
+
+msgid "Regular"
+msgstr "Normální"
+
+msgid "Size"
+msgstr "Velikost"
+
+msgid "Word Wrap"
+msgstr "Zalamování řádků"
+
+msgid "Options"
+msgstr "Možnosti"
+
+msgid "Customize"
+msgstr "Vlastní nastavení"
+
+msgid "New Window"
+msgstr "Nové okno"
+
+#: src/controls.c:99
+msgid "New Tab"
+msgstr ""
+
+msgid "Close Window"
+msgstr "Zavřít okno"
+
+#: src/controls.c:101
+msgid "Close Tab"
+msgstr ""
+
+#: src/controls.c:105
+msgid "Help Topics"
+msgstr ""
+
+msgid "About %s"
+msgstr "O produktu %s"
+
+msgid "..."
+msgstr "..."
+
+msgid ":"
+msgstr ":"
+
+msgid "Application Data"
+msgstr "Data aplikací"
+
+msgid "Desktop"
+msgstr "Plocha"
+
+msgid "Downloads"
+msgstr "Stažení"
+
+msgid "Favorites"
+msgstr "Oblíbené položky"
+
+msgid "My Documents"
+msgstr "Dokumenty"
+
+msgid "My Music"
+msgstr "Hudba"
+
+msgid "My Pictures"
+msgstr "Obrázky"
+
+msgid "My Recent Documents"
+msgstr "Poslední dokumenty"
+
+msgid "Recycle Bin"
+msgstr "Koš"
+
+msgid "My Video"
+msgstr "Filmy"
+
+#: src/places.c:22
+msgid "Adminstrative Tools"
+msgstr ""
+
+msgid "My Computer"
+msgstr "Tento počítač"
+
+msgid "My Network Places"
+msgstr "Místa v síti"
+
+msgid "Control Panel"
+msgstr "Ovládací panely"
+
+msgid "Network Connections"
+msgstr "Síťová připojení"
+
+msgid "Printers and Faxes"
+msgstr "Tiskárny a faxy"

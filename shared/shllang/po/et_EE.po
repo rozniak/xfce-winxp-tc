@@ -1,0 +1,274 @@
+# Estonian translations for PACKAGE package.
+# Copyright (C) 2022 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Automatically generated, 2022.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-04-24 23:23+0100\n"
+"PO-Revision-Date: 2022-07-13 22:37+0100\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: et\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 2.4.2\n"
+
+msgid "OK"
+msgstr "OK"
+
+msgid "Cancel"
+msgstr "Loobu"
+
+msgid "Yes"
+msgstr "Jah"
+
+msgid "No"
+msgstr "Ei"
+
+#: src/controls.c:19
+msgid "Abort"
+msgstr ""
+
+msgid "Retry"
+msgstr "Proovi uuesti"
+
+msgid "Ignore"
+msgstr "Ignoreeri"
+
+msgid "Help"
+msgstr "Spikker"
+
+msgid "File"
+msgstr "Fail"
+
+msgid "Edit"
+msgstr "Redigeeri"
+
+msgid "View"
+msgstr "Vaade"
+
+msgid "Insert"
+msgstr "Lisa"
+
+msgid "Format"
+msgstr "Vorminda"
+
+msgid "Tools"
+msgstr "Tööriistad"
+
+msgid "Window"
+msgstr "Windows"
+
+msgid "New"
+msgstr "Uus"
+
+msgid "Browse"
+msgstr "Sirvi"
+
+msgid "Open"
+msgstr "Ava"
+
+msgid "Save"
+msgstr "Salvesta"
+
+msgid "Save As"
+msgstr "Salvesta nimega"
+
+#: src/controls.c:42
+msgid "Save All"
+msgstr ""
+
+msgid "Close"
+msgstr "Sule"
+
+#: src/controls.c:44
+msgid "Close All"
+msgstr ""
+
+msgid "Properties"
+msgstr "Atribuudid"
+
+msgid "Print"
+msgstr "Prindi"
+
+#: src/controls.c:48
+msgid "Print Preview"
+msgstr ""
+
+msgid "Page Setup"
+msgstr "Lehekülje häälestus"
+
+msgid "Exit"
+msgstr "Välju"
+
+msgid "Undo"
+msgstr "Võta tagasi"
+
+msgid "Redo"
+msgstr "Tee uuesti"
+
+msgid "Cut"
+msgstr "Lõika"
+
+msgid "Copy"
+msgstr "Kopeeri"
+
+msgid "Paste"
+msgstr "Kleebi"
+
+msgid "Delete"
+msgstr "Kustuta"
+
+msgid "Find"
+msgstr "Otsing"
+
+msgid "Find Next"
+msgstr "Otsi järgmine"
+
+msgid "Replace"
+msgstr "Asendus"
+
+#: src/controls.c:66
+msgid "Replace All"
+msgstr ""
+
+msgid "Go To"
+msgstr "Mine"
+
+msgid "Select All"
+msgstr "Vali kõik"
+
+#: src/controls.c:73
+msgid "Zoom"
+msgstr ""
+
+#: src/controls.c:74
+msgid "Zoom In"
+msgstr ""
+
+#: src/controls.c:75
+msgid "Zoom Out"
+msgstr ""
+
+msgid "Best Fit"
+msgstr "Parim sobivus"
+
+#: src/controls.c:77
+msgid "Actual Size"
+msgstr ""
+
+msgid "Full Screen"
+msgstr "Täisekraan"
+
+msgid "Status Bar"
+msgstr "Olekuriba"
+
+msgid "Font"
+msgstr "Fondid"
+
+msgid "Font style"
+msgstr "Fondi laad"
+
+msgid "Bold"
+msgstr "Paks"
+
+msgid "Italic"
+msgstr "Kursiiv"
+
+msgid "Regular"
+msgstr "Harilik"
+
+msgid "Size"
+msgstr "Maht"
+
+msgid "Word Wrap"
+msgstr "Murra ridu"
+
+msgid "Options"
+msgstr "Suvandid"
+
+msgid "Customize"
+msgstr "Kohandamine"
+
+#: src/controls.c:98
+msgid "New Window"
+msgstr ""
+
+#: src/controls.c:99
+msgid "New Tab"
+msgstr ""
+
+msgid "Close Window"
+msgstr "Sule aken"
+
+#: src/controls.c:101
+msgid "Close Tab"
+msgstr ""
+
+#: src/controls.c:105
+msgid "Help Topics"
+msgstr ""
+
+msgid "About %s"
+msgstr "Teave programmi %s kohta"
+
+msgid "..."
+msgstr "..."
+
+#: src/controls.c:111
+msgid ":"
+msgstr ""
+
+msgid "Application Data"
+msgstr "Application Data"
+
+msgid "Desktop"
+msgstr "Desktop"
+
+msgid "Downloads"
+msgstr "Allalaadimine"
+
+msgid "Favorites"
+msgstr "Lemmikud"
+
+msgid "My Documents"
+msgstr "Minu dokumendid"
+
+msgid "My Music"
+msgstr "My Music"
+
+msgid "My Pictures"
+msgstr "My Pictures"
+
+msgid "My Recent Documents"
+msgstr "Minu viimatised dokumendid"
+
+msgid "Recycle Bin"
+msgstr "Prügikast"
+
+msgid "My Video"
+msgstr "Minu videod"
+
+#: src/places.c:22
+msgid "Adminstrative Tools"
+msgstr ""
+
+msgid "My Computer"
+msgstr "Minu arvuti"
+
+msgid "My Network Places"
+msgstr "Minu võrgukohad"
+
+msgid "Control Panel"
+msgstr "Juhtpaneel"
+
+msgid "Network Connections"
+msgstr "Võrguühendused"
+
+msgid "Printers and Faxes"
+msgstr "Printerid ja faksid"

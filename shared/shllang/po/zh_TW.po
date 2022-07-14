@@ -1,0 +1,266 @@
+# Chinese translations for PACKAGE package.
+# Copyright (C) 2022 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Automatically generated, 2022.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-04-24 23:23+0100\n"
+"PO-Revision-Date: 2022-07-13 22:44+0100\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: zh_TW\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.4.2\n"
+
+msgid "OK"
+msgstr "確定"
+
+msgid "Cancel"
+msgstr "取消"
+
+msgid "Yes"
+msgstr "是(Y)"
+
+msgid "No"
+msgstr "否(N)"
+
+msgid "Abort"
+msgstr "中止(A)"
+
+msgid "Retry"
+msgstr "重試(R)"
+
+msgid "Ignore"
+msgstr "略過(I)"
+
+msgid "Help"
+msgstr "說明(H)"
+
+msgid "File"
+msgstr "檔案"
+
+msgid "Edit"
+msgstr "編輯(E)"
+
+msgid "View"
+msgstr "檢視(V)"
+
+msgid "Insert"
+msgstr "插入(I)"
+
+msgid "Format"
+msgstr "格式(O)"
+
+msgid "Tools"
+msgstr "工具"
+
+msgid "Window"
+msgstr "Windows"
+
+msgid "New"
+msgstr "開新檔案(N)"
+
+msgid "Browse"
+msgstr "瀏覽"
+
+msgid "Open"
+msgstr "開啟(O)"
+
+msgid "Save"
+msgstr "儲存"
+
+msgid "Save As"
+msgstr "另存新檔"
+
+#: src/controls.c:42
+msgid "Save All"
+msgstr ""
+
+msgid "Close"
+msgstr "關閉"
+
+msgid "Close All"
+msgstr "全部關閉(L)"
+
+msgid "Properties"
+msgstr "內容(R)"
+
+msgid "Print"
+msgstr "列印"
+
+#: src/controls.c:48
+msgid "Print Preview"
+msgstr ""
+
+msgid "Page Setup"
+msgstr "設定列印格式"
+
+msgid "Exit"
+msgstr "結束(X)"
+
+msgid "Undo"
+msgstr "復原(U)"
+
+msgid "Redo"
+msgstr "重做"
+
+msgid "Cut"
+msgstr "剪下"
+
+msgid "Copy"
+msgstr "複製"
+
+msgid "Paste"
+msgstr "貼上"
+
+msgid "Delete"
+msgstr "刪除(D)"
+
+msgid "Find"
+msgstr "尋找"
+
+msgid "Find Next"
+msgstr "找下一個(F)"
+
+msgid "Replace"
+msgstr "取代"
+
+#: src/controls.c:66
+msgid "Replace All"
+msgstr ""
+
+msgid "Go To"
+msgstr "移至(O)"
+
+msgid "Select All"
+msgstr "全選(A)"
+
+msgid "Zoom"
+msgstr "縮放"
+
+msgid "Zoom In"
+msgstr "放大(I)"
+
+msgid "Zoom Out"
+msgstr "縮小(O)"
+
+msgid "Best Fit"
+msgstr "符合最佳大小(B)"
+
+#: src/controls.c:77
+msgid "Actual Size"
+msgstr ""
+
+msgid "Full Screen"
+msgstr "全螢幕"
+
+msgid "Status Bar"
+msgstr "狀態列(S)"
+
+msgid "Font"
+msgstr "字型(N)"
+
+msgid "Font style"
+msgstr "字型樣式(Y)"
+
+msgid "Bold"
+msgstr "粗體"
+
+msgid "Italic"
+msgstr "斜體"
+
+msgid "Regular"
+msgstr "標準"
+
+msgid "Size"
+msgstr "大小"
+
+msgid "Word Wrap"
+msgstr "自動換行(W)"
+
+msgid "Options"
+msgstr "選項"
+
+msgid "Customize"
+msgstr "自訂"
+
+msgid "New Window"
+msgstr "新視窗(N)"
+
+#: src/controls.c:99
+msgid "New Tab"
+msgstr ""
+
+msgid "Close Window"
+msgstr "關閉視窗"
+
+#: src/controls.c:101
+msgid "Close Tab"
+msgstr ""
+
+#: src/controls.c:105
+msgid "Help Topics"
+msgstr ""
+
+msgid "About %s"
+msgstr "關於 %s"
+
+msgid "..."
+msgstr "..."
+
+msgid ":"
+msgstr ":"
+
+msgid "Application Data"
+msgstr "Application Data"
+
+msgid "Desktop"
+msgstr "桌面"
+
+msgid "Downloads"
+msgstr "下載"
+
+msgid "Favorites"
+msgstr "我的最愛(A)"
+
+msgid "My Documents"
+msgstr "My Documents"
+
+msgid "My Music"
+msgstr "My Music"
+
+msgid "My Pictures"
+msgstr "My Pictures"
+
+msgid "My Recent Documents"
+msgstr "我最近的文件"
+
+msgid "Recycle Bin"
+msgstr "資源回收筒"
+
+msgid "My Video"
+msgstr "My Video"
+
+#: src/places.c:22
+msgid "Adminstrative Tools"
+msgstr ""
+
+msgid "My Computer"
+msgstr "我的電腦"
+
+msgid "My Network Places"
+msgstr "網路上的芳鄰"
+
+msgid "Control Panel"
+msgstr "控制台"
+
+msgid "Network Connections"
+msgstr "網路連線"
+
+msgid "Printers and Faxes"
+msgstr "印表機和傳真"

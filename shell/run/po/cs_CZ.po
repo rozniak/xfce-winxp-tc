@@ -1,0 +1,56 @@
+# Czech translations for PACKAGE package.
+# Copyright (C) 2022 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Automatically generated, 2022.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-07-14 18:37+0100\n"
+"PO-Revision-Date: 2022-07-14 18:37+0100\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: cs\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+
+msgid "Run"
+msgstr "Spustit"
+
+msgid ""
+"Type the name of a program, folder, document, or Internet resource, and "
+"Windows will open it for you."
+msgstr ""
+"Zadejte název programu, složky, dokumentu nebo zdroje v síti Internet a "
+"systém Windows jej otevře."
+
+msgid "All Files"
+msgstr "Všechny soubory"
+
+msgid "Programs"
+msgstr "Programy"
+
+msgid ""
+"Windows cannot find '%s'. Make sure you typed the name correctly, and then "
+"try again. To search for a file, click the Start button, and then click "
+"Search."
+msgstr ""
+"Systém Windows nemůže nalézt %s. Přesvědčete se, zda je název zadán správně, "
+"a akci opakujte. Pro hledání souboru klepněte na tlačítko Start a pak na "
+"položku Hledat."
+
+#: src/dialog.c:480
+#, c-format
+msgid ""
+"%s\n"
+"\n"
+"The parameter is incorrect"
+msgstr ""
+
+#: src/dialog.c:489
+#, c-format
+msgid "Execution of '%s' failed."
+msgstr ""

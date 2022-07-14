@@ -1,0 +1,268 @@
+# Slovenian translations for PACKAGE package.
+# Copyright (C) 2022 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Automatically generated, 2022.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-04-24 23:23+0100\n"
+"PO-Revision-Date: 2022-07-13 22:43+0100\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: sl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n"
+"%100==4 ? 2 : 3);\n"
+"X-Generator: Poedit 2.4.2\n"
+
+msgid "OK"
+msgstr "V redu"
+
+msgid "Cancel"
+msgstr "Prekliči"
+
+msgid "Yes"
+msgstr "Da"
+
+msgid "No"
+msgstr "Ne"
+
+msgid "Abort"
+msgstr "Abort"
+
+msgid "Retry"
+msgstr "Poskusi znova"
+
+msgid "Ignore"
+msgstr "Prezri"
+
+msgid "Help"
+msgstr "Pomoč"
+
+msgid "File"
+msgstr "Datoteka"
+
+msgid "Edit"
+msgstr "Urejanje"
+
+msgid "View"
+msgstr "Pogled"
+
+msgid "Insert"
+msgstr "Vstavljanje"
+
+msgid "Format"
+msgstr "Oblika"
+
+msgid "Tools"
+msgstr "Orodja"
+
+msgid "Window"
+msgstr "Windows"
+
+msgid "New"
+msgstr "Novo"
+
+msgid "Browse"
+msgstr "Prebrskaj"
+
+msgid "Open"
+msgstr "Odpri"
+
+msgid "Save"
+msgstr "Shrani"
+
+msgid "Save As"
+msgstr "Shrani kot"
+
+#: src/controls.c:42
+msgid "Save All"
+msgstr ""
+
+msgid "Close"
+msgstr "Zapri"
+
+msgid "Close All"
+msgstr "Zapri vse"
+
+msgid "Properties"
+msgstr "Lastnosti"
+
+msgid "Print"
+msgstr "Tiskanje"
+
+#: src/controls.c:48
+msgid "Print Preview"
+msgstr ""
+
+msgid "Page Setup"
+msgstr "Priprava strani"
+
+msgid "Exit"
+msgstr "Izhod"
+
+msgid "Undo"
+msgstr "Razveljavi"
+
+msgid "Redo"
+msgstr "Uveljavi"
+
+msgid "Cut"
+msgstr "Izreži"
+
+msgid "Copy"
+msgstr "Kopiraj"
+
+msgid "Paste"
+msgstr "Prilepi"
+
+msgid "Delete"
+msgstr "Izbriši"
+
+msgid "Find"
+msgstr "Iskanje"
+
+msgid "Find Next"
+msgstr "Nadaljuj iskanje"
+
+msgid "Replace"
+msgstr "Zamenjava"
+
+#: src/controls.c:66
+msgid "Replace All"
+msgstr ""
+
+msgid "Go To"
+msgstr "Pojdi na"
+
+msgid "Select All"
+msgstr "Izberi vse"
+
+msgid "Zoom"
+msgstr "Zoom"
+
+msgid "Zoom In"
+msgstr "Zoom In"
+
+msgid "Zoom Out"
+msgstr "Zoom Out"
+
+msgid "Best Fit"
+msgstr "Najboljša prilagoditev"
+
+#: src/controls.c:77
+msgid "Actual Size"
+msgstr ""
+
+msgid "Full Screen"
+msgstr "Celoten zaslon"
+
+msgid "Status Bar"
+msgstr "Vrstica stanja"
+
+msgid "Font"
+msgstr "Pisave"
+
+msgid "Font style"
+msgstr "Slog pisave"
+
+msgid "Bold"
+msgstr "Krepko"
+
+msgid "Italic"
+msgstr "Ležeče"
+
+msgid "Regular"
+msgstr "Običajno"
+
+msgid "Size"
+msgstr "Velikost"
+
+msgid "Word Wrap"
+msgstr "Prelom vrstice"
+
+msgid "Options"
+msgstr "Možnosti"
+
+msgid "Customize"
+msgstr "Po meri"
+
+msgid "New Window"
+msgstr "New Window"
+
+#: src/controls.c:99
+msgid "New Tab"
+msgstr ""
+
+msgid "Close Window"
+msgstr "Zapri okno"
+
+#: src/controls.c:101
+msgid "Close Tab"
+msgstr ""
+
+#: src/controls.c:105
+msgid "Help Topics"
+msgstr ""
+
+msgid "About %s"
+msgstr "%s - vizitka"
+
+msgid "..."
+msgstr "..."
+
+msgid ":"
+msgstr ":"
+
+msgid "Application Data"
+msgstr "Application Data"
+
+msgid "Desktop"
+msgstr "Namizje"
+
+msgid "Downloads"
+msgstr "Prenosi"
+
+msgid "Favorites"
+msgstr "Priljubljene"
+
+msgid "My Documents"
+msgstr "Moji dokumenti"
+
+msgid "My Music"
+msgstr "Moja glasba"
+
+msgid "My Pictures"
+msgstr "Moje slike"
+
+msgid "My Recent Documents"
+msgstr "Moji nedavni dokumenti"
+
+msgid "Recycle Bin"
+msgstr "Koš"
+
+msgid "My Video"
+msgstr "Moj video"
+
+#: src/places.c:22
+msgid "Adminstrative Tools"
+msgstr ""
+
+msgid "My Computer"
+msgstr "Moj računalnik"
+
+msgid "My Network Places"
+msgstr "Moja omrežna mesta"
+
+msgid "Control Panel"
+msgstr "Nadzorna plošča"
+
+msgid "Network Connections"
+msgstr "Omrežne povezave"
+
+msgid "Printers and Faxes"
+msgstr "Tiskalniki in faksi"

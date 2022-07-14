@@ -1,0 +1,267 @@
+# Dutch translations for PACKAGE package.
+# Copyright (C) 2022 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Automatically generated, 2022.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-04-24 23:23+0100\n"
+"PO-Revision-Date: 2022-07-13 22:40+0100\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: nl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 2.4.2\n"
+
+msgid "OK"
+msgstr "OK"
+
+msgid "Cancel"
+msgstr "Annuleren"
+
+msgid "Yes"
+msgstr "Ja"
+
+msgid "No"
+msgstr "Nee"
+
+msgid "Abort"
+msgstr "Afbreken"
+
+msgid "Retry"
+msgstr "Opnieuw"
+
+msgid "Ignore"
+msgstr "Negeren"
+
+msgid "Help"
+msgstr "Help"
+
+msgid "File"
+msgstr "Bestand"
+
+msgid "Edit"
+msgstr "Bewerken"
+
+msgid "View"
+msgstr "Beeld"
+
+msgid "Insert"
+msgstr "Invoegen"
+
+msgid "Format"
+msgstr "Opmaak"
+
+msgid "Tools"
+msgstr "Extra"
+
+msgid "Window"
+msgstr "Windows"
+
+msgid "New"
+msgstr "Nieuw"
+
+msgid "Browse"
+msgstr "Bladeren"
+
+msgid "Open"
+msgstr "Openen"
+
+msgid "Save"
+msgstr "Opslaan"
+
+msgid "Save As"
+msgstr "Opslaan als"
+
+#: src/controls.c:42
+msgid "Save All"
+msgstr ""
+
+msgid "Close"
+msgstr "Sluiten"
+
+msgid "Close All"
+msgstr "Alle shares sluiten"
+
+msgid "Properties"
+msgstr "Eigenschappen"
+
+msgid "Print"
+msgstr "Afdrukken"
+
+#: src/controls.c:48
+msgid "Print Preview"
+msgstr ""
+
+msgid "Page Setup"
+msgstr "Pagina-instelling"
+
+msgid "Exit"
+msgstr "Afsluiten"
+
+msgid "Undo"
+msgstr "Ongedaan maken"
+
+msgid "Redo"
+msgstr "Opnieuw"
+
+msgid "Cut"
+msgstr "Knippen"
+
+msgid "Copy"
+msgstr "Kopiëren"
+
+msgid "Paste"
+msgstr "Plakken"
+
+msgid "Delete"
+msgstr "Verwijderen"
+
+msgid "Find"
+msgstr "Zoeken"
+
+msgid "Find Next"
+msgstr "Volgende zoeken"
+
+msgid "Replace"
+msgstr "Vervangen"
+
+#: src/controls.c:66
+msgid "Replace All"
+msgstr ""
+
+msgid "Go To"
+msgstr "Ga naar"
+
+msgid "Select All"
+msgstr "Alles selecteren"
+
+msgid "Zoom"
+msgstr "In- en uitzoomen"
+
+msgid "Zoom In"
+msgstr "Inzoomen"
+
+msgid "Zoom Out"
+msgstr "Uitzoomen"
+
+msgid "Best Fit"
+msgstr "Passend"
+
+#: src/controls.c:77
+msgid "Actual Size"
+msgstr ""
+
+msgid "Full Screen"
+msgstr "Volledig scherm"
+
+msgid "Status Bar"
+msgstr "Statusbalk"
+
+msgid "Font"
+msgstr "Lettertypen"
+
+msgid "Font style"
+msgstr "Tekenstijl"
+
+msgid "Bold"
+msgstr "Vet"
+
+msgid "Italic"
+msgstr "Cursief"
+
+msgid "Regular"
+msgstr "Normaal"
+
+msgid "Size"
+msgstr "Grootte"
+
+msgid "Word Wrap"
+msgstr "Automatische terugloop"
+
+msgid "Options"
+msgstr "Opties"
+
+msgid "Customize"
+msgstr "Aanpassen"
+
+msgid "New Window"
+msgstr "Nieuw venster"
+
+#: src/controls.c:99
+msgid "New Tab"
+msgstr ""
+
+msgid "Close Window"
+msgstr "Venster sluiten"
+
+#: src/controls.c:101
+msgid "Close Tab"
+msgstr ""
+
+#: src/controls.c:105
+msgid "Help Topics"
+msgstr ""
+
+msgid "About %s"
+msgstr "Info"
+
+msgid "..."
+msgstr "..."
+
+msgid ":"
+msgstr ":"
+
+msgid "Application Data"
+msgstr "Application Data"
+
+msgid "Desktop"
+msgstr "Bureaublad"
+
+msgid "Downloads"
+msgstr "Gedownloade elementen"
+
+msgid "Favorites"
+msgstr "Favorieten"
+
+msgid "My Documents"
+msgstr "Mijn documenten"
+
+msgid "My Music"
+msgstr "Mijn muziek"
+
+msgid "My Pictures"
+msgstr "Mijn afbeeldingen"
+
+msgid "My Recent Documents"
+msgstr "Onlangs geopend"
+
+msgid "Recycle Bin"
+msgstr "Prullenbak"
+
+msgid "My Video"
+msgstr "Mijn video"
+
+#: src/places.c:22
+msgid "Adminstrative Tools"
+msgstr ""
+
+msgid "My Computer"
+msgstr "Deze computer"
+
+msgid "My Network Places"
+msgstr "Mijn netwerklocaties"
+
+msgid "Control Panel"
+msgstr "Configuratiescherm"
+
+msgid "Network Connections"
+msgstr "Netwerkverbindingen"
+
+msgid "Printers and Faxes"
+msgstr "Printers en faxapparaten"

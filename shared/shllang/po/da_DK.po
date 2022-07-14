@@ -1,0 +1,267 @@
+# Danish translations for PACKAGE package.
+# Copyright (C) 2022 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Automatically generated, 2022.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-04-24 23:23+0100\n"
+"PO-Revision-Date: 2022-07-13 22:36+0100\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: da\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 2.4.2\n"
+
+msgid "OK"
+msgstr "OK"
+
+msgid "Cancel"
+msgstr "Annuller"
+
+msgid "Yes"
+msgstr "Ja"
+
+msgid "No"
+msgstr "Nej"
+
+msgid "Abort"
+msgstr "Afbryd"
+
+msgid "Retry"
+msgstr "Forsøg igen"
+
+msgid "Ignore"
+msgstr "Ignorer"
+
+msgid "Help"
+msgstr "Hjælp"
+
+msgid "File"
+msgstr "Fil"
+
+msgid "Edit"
+msgstr "Rediger"
+
+msgid "View"
+msgstr "Vis"
+
+msgid "Insert"
+msgstr "Indsæt"
+
+msgid "Format"
+msgstr "Formater"
+
+msgid "Tools"
+msgstr "Funktioner"
+
+msgid "Window"
+msgstr "Windows"
+
+msgid "New"
+msgstr "Ny"
+
+msgid "Browse"
+msgstr "Gennemse"
+
+msgid "Open"
+msgstr "Åbn"
+
+msgid "Save"
+msgstr "Gem"
+
+msgid "Save As"
+msgstr "Gem som"
+
+#: src/controls.c:42
+msgid "Save All"
+msgstr ""
+
+msgid "Close"
+msgstr "Luk"
+
+msgid "Close All"
+msgstr "Luk alle"
+
+msgid "Properties"
+msgstr "Egenskaber"
+
+msgid "Print"
+msgstr "Udskriv"
+
+#: src/controls.c:48
+msgid "Print Preview"
+msgstr ""
+
+msgid "Page Setup"
+msgstr "Sideopsætning"
+
+msgid "Exit"
+msgstr "Afslut"
+
+msgid "Undo"
+msgstr "Fortryd"
+
+msgid "Redo"
+msgstr "Annuller Fortryd"
+
+msgid "Cut"
+msgstr "Klip"
+
+msgid "Copy"
+msgstr "Kopier"
+
+msgid "Paste"
+msgstr "Sæt ind"
+
+msgid "Delete"
+msgstr "Slet"
+
+msgid "Find"
+msgstr "Søg"
+
+msgid "Find Next"
+msgstr "Find næste"
+
+msgid "Replace"
+msgstr "Erstat"
+
+#: src/controls.c:66
+msgid "Replace All"
+msgstr ""
+
+msgid "Go To"
+msgstr "Skift til"
+
+msgid "Select All"
+msgstr "Marker alt"
+
+msgid "Zoom"
+msgstr "Zoom"
+
+msgid "Zoom In"
+msgstr "Zoom ind"
+
+msgid "Zoom Out"
+msgstr "Zoom ud"
+
+msgid "Best Fit"
+msgstr "Tilpas"
+
+#: src/controls.c:77
+msgid "Actual Size"
+msgstr ""
+
+msgid "Full Screen"
+msgstr "Fuld skærm"
+
+msgid "Status Bar"
+msgstr "Statuslinje"
+
+msgid "Font"
+msgstr "Skrifttyper"
+
+msgid "Font style"
+msgstr "Typografi"
+
+msgid "Bold"
+msgstr "Fed"
+
+msgid "Italic"
+msgstr "Kursiv"
+
+msgid "Regular"
+msgstr "Normal"
+
+msgid "Size"
+msgstr "Størrelse"
+
+msgid "Word Wrap"
+msgstr "Tekstombrydning"
+
+msgid "Options"
+msgstr "Indstillinger"
+
+msgid "Customize"
+msgstr "Tilpas"
+
+msgid "New Window"
+msgstr "Nyt vindue"
+
+#: src/controls.c:99
+msgid "New Tab"
+msgstr ""
+
+msgid "Close Window"
+msgstr "Luk vindue"
+
+#: src/controls.c:101
+msgid "Close Tab"
+msgstr ""
+
+#: src/controls.c:105
+msgid "Help Topics"
+msgstr ""
+
+msgid "About %s"
+msgstr "Om %s"
+
+msgid "..."
+msgstr "..."
+
+msgid ":"
+msgstr ":"
+
+msgid "Application Data"
+msgstr "Application Data"
+
+msgid "Desktop"
+msgstr "Skrivebord"
+
+msgid "Downloads"
+msgstr "Overførsler"
+
+msgid "Favorites"
+msgstr "Foretrukne"
+
+msgid "My Documents"
+msgstr "Dokumenter"
+
+msgid "My Music"
+msgstr "Musik"
+
+msgid "My Pictures"
+msgstr "Billeder"
+
+msgid "My Recent Documents"
+msgstr "Seneste dokumenter"
+
+msgid "Recycle Bin"
+msgstr "Papirkurv"
+
+msgid "My Video"
+msgstr "Videoer"
+
+#: src/places.c:22
+msgid "Adminstrative Tools"
+msgstr ""
+
+msgid "My Computer"
+msgstr "Denne computer"
+
+msgid "My Network Places"
+msgstr "Netværkssteder"
+
+msgid "Control Panel"
+msgstr "Kontrolpanel"
+
+msgid "Network Connections"
+msgstr "Netværksforbindelser"
+
+msgid "Printers and Faxes"
+msgstr "Printere og faxenheder"

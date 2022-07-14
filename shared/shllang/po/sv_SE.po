@@ -1,0 +1,267 @@
+# Swedish translations for PACKAGE package.
+# Copyright (C) 2022 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Automatically generated, 2022.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-04-24 23:23+0100\n"
+"PO-Revision-Date: 2022-07-13 22:43+0100\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: sv\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 2.4.2\n"
+
+msgid "OK"
+msgstr "OK"
+
+msgid "Cancel"
+msgstr "Avbryt"
+
+msgid "Yes"
+msgstr "Ja"
+
+msgid "No"
+msgstr "Nej"
+
+msgid "Abort"
+msgstr "Avbryt"
+
+msgid "Retry"
+msgstr "Försök igen"
+
+msgid "Ignore"
+msgstr "Ignorera"
+
+msgid "Help"
+msgstr "Hjälp"
+
+msgid "File"
+msgstr "Fil"
+
+msgid "Edit"
+msgstr "Redigera"
+
+msgid "View"
+msgstr "Visa"
+
+msgid "Insert"
+msgstr "Infoga"
+
+msgid "Format"
+msgstr "Format"
+
+msgid "Tools"
+msgstr "Verktyg"
+
+msgid "Window"
+msgstr "Windows"
+
+msgid "New"
+msgstr "Nytt"
+
+msgid "Browse"
+msgstr "Bläddra"
+
+msgid "Open"
+msgstr "Öppna"
+
+msgid "Save"
+msgstr "Spara"
+
+msgid "Save As"
+msgstr "Spara som"
+
+#: src/controls.c:42
+msgid "Save All"
+msgstr ""
+
+msgid "Close"
+msgstr "Stäng"
+
+msgid "Close All"
+msgstr "Stäng alla"
+
+msgid "Properties"
+msgstr "Egenskaper"
+
+msgid "Print"
+msgstr "Skriv ut"
+
+#: src/controls.c:48
+msgid "Print Preview"
+msgstr ""
+
+msgid "Page Setup"
+msgstr "Utskriftsformat"
+
+msgid "Exit"
+msgstr "Avsluta"
+
+msgid "Undo"
+msgstr "Ångra"
+
+msgid "Redo"
+msgstr "Gör om"
+
+msgid "Cut"
+msgstr "Klipp ut"
+
+msgid "Copy"
+msgstr "Kopiera"
+
+msgid "Paste"
+msgstr "Klistra in"
+
+msgid "Delete"
+msgstr "Ta bort"
+
+msgid "Find"
+msgstr "Sök"
+
+msgid "Find Next"
+msgstr "Sök nästa"
+
+msgid "Replace"
+msgstr "Ersätt"
+
+#: src/controls.c:66
+msgid "Replace All"
+msgstr ""
+
+msgid "Go To"
+msgstr "Gå till"
+
+msgid "Select All"
+msgstr "Markera alla"
+
+msgid "Zoom"
+msgstr "Zoomning"
+
+msgid "Zoom In"
+msgstr "Zooma in"
+
+msgid "Zoom Out"
+msgstr "Zooma ut"
+
+msgid "Best Fit"
+msgstr "Anpassa storlek"
+
+#: src/controls.c:77
+msgid "Actual Size"
+msgstr ""
+
+msgid "Full Screen"
+msgstr "Helskärm"
+
+msgid "Status Bar"
+msgstr "Statusfält"
+
+msgid "Font"
+msgstr "Teckensnitt"
+
+msgid "Font style"
+msgstr "Stil"
+
+msgid "Bold"
+msgstr "Fet"
+
+msgid "Italic"
+msgstr "Kursiv"
+
+msgid "Regular"
+msgstr "Normal"
+
+msgid "Size"
+msgstr "Storlek"
+
+msgid "Word Wrap"
+msgstr "Automatiskt radbyte"
+
+msgid "Options"
+msgstr "Alternativ"
+
+msgid "Customize"
+msgstr "Anpassa"
+
+msgid "New Window"
+msgstr "Nytt fönster"
+
+#: src/controls.c:99
+msgid "New Tab"
+msgstr ""
+
+msgid "Close Window"
+msgstr "Stäng fönster"
+
+#: src/controls.c:101
+msgid "Close Tab"
+msgstr ""
+
+#: src/controls.c:105
+msgid "Help Topics"
+msgstr ""
+
+msgid "About %s"
+msgstr "Om %s"
+
+msgid "..."
+msgstr "..."
+
+msgid ":"
+msgstr ":"
+
+msgid "Application Data"
+msgstr "Application Data"
+
+msgid "Desktop"
+msgstr "Skrivbord"
+
+msgid "Downloads"
+msgstr "Hämtning"
+
+msgid "Favorites"
+msgstr "Favoriter"
+
+msgid "My Documents"
+msgstr "Mina dokument"
+
+msgid "My Music"
+msgstr "Min musik"
+
+msgid "My Pictures"
+msgstr "Mina bilder"
+
+msgid "My Recent Documents"
+msgstr "Senast använda dokument"
+
+msgid "Recycle Bin"
+msgstr "Papperskorgen"
+
+msgid "My Video"
+msgstr "Mina videoklipp"
+
+#: src/places.c:22
+msgid "Adminstrative Tools"
+msgstr ""
+
+msgid "My Computer"
+msgstr "Den här datorn"
+
+msgid "My Network Places"
+msgstr "Mina nätverksplatser"
+
+msgid "Control Panel"
+msgstr "Kontrollpanelen"
+
+msgid "Network Connections"
+msgstr "Nätverksanslutningar"
+
+msgid "Printers and Faxes"
+msgstr "Skrivare och fax"

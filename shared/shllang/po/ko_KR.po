@@ -1,0 +1,267 @@
+# Korean translations for PACKAGE package.
+# Copyright (C) 2022 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Automatically generated, 2022.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-04-24 23:23+0100\n"
+"PO-Revision-Date: 2022-07-13 22:39+0100\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: ko\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Poedit 2.4.2\n"
+
+msgid "OK"
+msgstr "확인"
+
+msgid "Cancel"
+msgstr "취소"
+
+msgid "Yes"
+msgstr "예(Y)"
+
+msgid "No"
+msgstr "아니오(N)"
+
+msgid "Abort"
+msgstr "중단(A)"
+
+msgid "Retry"
+msgstr "다시 시도(R)"
+
+msgid "Ignore"
+msgstr "무시(I)"
+
+msgid "Help"
+msgstr "도움말(H)"
+
+msgid "File"
+msgstr "파일"
+
+msgid "Edit"
+msgstr "편집(E)"
+
+msgid "View"
+msgstr "보기(V)"
+
+msgid "Insert"
+msgstr "삽입(I)"
+
+msgid "Format"
+msgstr "서식(O)"
+
+msgid "Tools"
+msgstr "도구"
+
+msgid "Window"
+msgstr "Windows"
+
+msgid "New"
+msgstr "새로 만들기(N)"
+
+msgid "Browse"
+msgstr "찾아보기"
+
+msgid "Open"
+msgstr "열기(O)"
+
+msgid "Save"
+msgstr "저장"
+
+msgid "Save As"
+msgstr "다른 이름으로 저장"
+
+#: src/controls.c:42
+msgid "Save All"
+msgstr ""
+
+msgid "Close"
+msgstr "닫기"
+
+msgid "Close All"
+msgstr "모두 닫기(L)"
+
+msgid "Properties"
+msgstr "속성(R)"
+
+msgid "Print"
+msgstr "인쇄"
+
+#: src/controls.c:48
+msgid "Print Preview"
+msgstr ""
+
+msgid "Page Setup"
+msgstr "페이지 설정"
+
+msgid "Exit"
+msgstr "끝내기(X)"
+
+msgid "Undo"
+msgstr "실행 취소(U)"
+
+msgid "Redo"
+msgstr "다시 실행"
+
+msgid "Cut"
+msgstr "잘라내기"
+
+msgid "Copy"
+msgstr "복사"
+
+msgid "Paste"
+msgstr "붙여넣기"
+
+msgid "Delete"
+msgstr "삭제(D)"
+
+msgid "Find"
+msgstr "찾기"
+
+msgid "Find Next"
+msgstr "다음 찾기(F)"
+
+msgid "Replace"
+msgstr "바꾸기"
+
+#: src/controls.c:66
+msgid "Replace All"
+msgstr ""
+
+msgid "Go To"
+msgstr "이동(O)"
+
+msgid "Select All"
+msgstr "모두 선택(A)"
+
+msgid "Zoom"
+msgstr "확대/축소"
+
+msgid "Zoom In"
+msgstr "확대(I)"
+
+msgid "Zoom Out"
+msgstr "축소(O)"
+
+msgid "Best Fit"
+msgstr "자동 맞춤(B)"
+
+#: src/controls.c:77
+msgid "Actual Size"
+msgstr ""
+
+msgid "Full Screen"
+msgstr "전체 화면"
+
+msgid "Status Bar"
+msgstr "상태 표시줄(S)"
+
+msgid "Font"
+msgstr "글꼴(N)"
+
+msgid "Font style"
+msgstr "글꼴 스타일(Y)"
+
+msgid "Bold"
+msgstr "굵게"
+
+msgid "Italic"
+msgstr "기울임꼴"
+
+msgid "Regular"
+msgstr "보통"
+
+msgid "Size"
+msgstr "크기"
+
+msgid "Word Wrap"
+msgstr "자동 줄 바꿈(W)"
+
+msgid "Options"
+msgstr "옵션"
+
+msgid "Customize"
+msgstr "사용자 지정"
+
+msgid "New Window"
+msgstr "새 창(N)"
+
+#: src/controls.c:99
+msgid "New Tab"
+msgstr ""
+
+msgid "Close Window"
+msgstr "창 닫기"
+
+#: src/controls.c:101
+msgid "Close Tab"
+msgstr ""
+
+#: src/controls.c:105
+msgid "Help Topics"
+msgstr ""
+
+msgid "About %s"
+msgstr "%s 정보"
+
+msgid "..."
+msgstr "..."
+
+msgid ":"
+msgstr ":"
+
+msgid "Application Data"
+msgstr "Application Data"
+
+msgid "Desktop"
+msgstr "바탕 화면"
+
+msgid "Downloads"
+msgstr "다운로드"
+
+msgid "Favorites"
+msgstr "즐겨찾기(A)"
+
+msgid "My Documents"
+msgstr "My Documents"
+
+msgid "My Music"
+msgstr "My Music"
+
+msgid "My Pictures"
+msgstr "My Pictures"
+
+msgid "My Recent Documents"
+msgstr "내 최근 문서"
+
+msgid "Recycle Bin"
+msgstr "휴지통"
+
+msgid "My Video"
+msgstr "내 비디오"
+
+#: src/places.c:22
+msgid "Adminstrative Tools"
+msgstr ""
+
+msgid "My Computer"
+msgstr "내 컴퓨터"
+
+msgid "My Network Places"
+msgstr "내 네트워크 환경"
+
+msgid "Control Panel"
+msgstr "제어판"
+
+msgid "Network Connections"
+msgstr "네트워크 연결"
+
+msgid "Printers and Faxes"
+msgstr "프린터 및 팩스"

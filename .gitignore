@@ -3,6 +3,8 @@
 *.swp
 *.kra
 *~
+*.pot
 [Bb]uild/
 .sass-cache/
+mui-stuff/
 resources.c

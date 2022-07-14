@@ -1,0 +1,274 @@
+# Bulgarian translations for PACKAGE package.
+# Copyright (C) 2022 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Automatically generated, 2022.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-04-24 23:23+0100\n"
+"PO-Revision-Date: 2022-07-13 22:36+0100\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: bg\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 2.4.2\n"
+
+msgid "OK"
+msgstr "OK"
+
+msgid "Cancel"
+msgstr "Отказ"
+
+msgid "Yes"
+msgstr "Да"
+
+msgid "No"
+msgstr "Не"
+
+#: src/controls.c:19
+msgid "Abort"
+msgstr ""
+
+msgid "Retry"
+msgstr "Опитай пак"
+
+msgid "Ignore"
+msgstr "Игнорирай"
+
+msgid "Help"
+msgstr "Помощ"
+
+msgid "File"
+msgstr "Файл"
+
+msgid "Edit"
+msgstr "Редактиране"
+
+msgid "View"
+msgstr "Изглед"
+
+msgid "Insert"
+msgstr "Вмъкни"
+
+msgid "Format"
+msgstr "Формат"
+
+msgid "Tools"
+msgstr "Инструменти"
+
+msgid "Window"
+msgstr "Windows"
+
+msgid "New"
+msgstr "Създай"
+
+msgid "Browse"
+msgstr "Преглед"
+
+msgid "Open"
+msgstr "Отвори"
+
+msgid "Save"
+msgstr "Запиши"
+
+msgid "Save As"
+msgstr "Запиши като"
+
+#: src/controls.c:42
+msgid "Save All"
+msgstr ""
+
+msgid "Close"
+msgstr "Затвори"
+
+#: src/controls.c:44
+msgid "Close All"
+msgstr ""
+
+msgid "Properties"
+msgstr "Свойства"
+
+msgid "Print"
+msgstr "Печат"
+
+#: src/controls.c:48
+msgid "Print Preview"
+msgstr ""
+
+msgid "Page Setup"
+msgstr "Настройка на страница"
+
+msgid "Exit"
+msgstr "Изход"
+
+msgid "Undo"
+msgstr "Отмени"
+
+msgid "Redo"
+msgstr "Върни"
+
+msgid "Cut"
+msgstr "Изрежи"
+
+msgid "Copy"
+msgstr "Копирай"
+
+msgid "Paste"
+msgstr "Постави"
+
+msgid "Delete"
+msgstr "Изтрий"
+
+msgid "Find"
+msgstr "Търсене"
+
+msgid "Find Next"
+msgstr "Следващ"
+
+msgid "Replace"
+msgstr "Заместване"
+
+#: src/controls.c:66
+msgid "Replace All"
+msgstr ""
+
+msgid "Go To"
+msgstr "Отиди на"
+
+msgid "Select All"
+msgstr "Избери всички"
+
+#: src/controls.c:73
+msgid "Zoom"
+msgstr ""
+
+#: src/controls.c:74
+msgid "Zoom In"
+msgstr ""
+
+#: src/controls.c:75
+msgid "Zoom Out"
+msgstr ""
+
+msgid "Best Fit"
+msgstr "Най-добро съвпадение"
+
+#: src/controls.c:77
+msgid "Actual Size"
+msgstr ""
+
+msgid "Full Screen"
+msgstr "Цял екран"
+
+msgid "Status Bar"
+msgstr "Лента на състоянието"
+
+msgid "Font"
+msgstr "Шрифтове"
+
+msgid "Font style"
+msgstr "Шрифтов стил"
+
+msgid "Bold"
+msgstr "Bold"
+
+msgid "Italic"
+msgstr "Italic"
+
+msgid "Regular"
+msgstr "Regular"
+
+msgid "Size"
+msgstr "Размер"
+
+msgid "Word Wrap"
+msgstr "На повече редове"
+
+msgid "Options"
+msgstr "Опции"
+
+msgid "Customize"
+msgstr "Персонализиране"
+
+#: src/controls.c:98
+msgid "New Window"
+msgstr ""
+
+#: src/controls.c:99
+msgid "New Tab"
+msgstr ""
+
+msgid "Close Window"
+msgstr "Затвори прозореца"
+
+#: src/controls.c:101
+msgid "Close Tab"
+msgstr ""
+
+#: src/controls.c:105
+msgid "Help Topics"
+msgstr ""
+
+msgid "About %s"
+msgstr "За %s"
+
+msgid "..."
+msgstr "..."
+
+#: src/controls.c:111
+msgid ":"
+msgstr ""
+
+msgid "Application Data"
+msgstr "Application Data"
+
+msgid "Desktop"
+msgstr "Desktop"
+
+msgid "Downloads"
+msgstr "Изтегляния"
+
+msgid "Favorites"
+msgstr "Предпочитани"
+
+msgid "My Documents"
+msgstr "Моите документи"
+
+msgid "My Music"
+msgstr "My Music"
+
+msgid "My Pictures"
+msgstr "My Pictures"
+
+msgid "My Recent Documents"
+msgstr "Моите последни документи"
+
+msgid "Recycle Bin"
+msgstr "Кошче"
+
+msgid "My Video"
+msgstr "Моето видео"
+
+#: src/places.c:22
+msgid "Adminstrative Tools"
+msgstr ""
+
+msgid "My Computer"
+msgstr "Моят компютър"
+
+msgid "My Network Places"
+msgstr "Моите места в мрежата"
+
+msgid "Control Panel"
+msgstr "Контролен панел"
+
+msgid "Network Connections"
+msgstr "Мрежови връзки"
+
+msgid "Printers and Faxes"
+msgstr "Принтери и факсове"

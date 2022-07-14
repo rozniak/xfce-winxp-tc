@@ -1,0 +1,268 @@
+# Russian translations for PACKAGE package.
+# Copyright (C) 2022 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Automatically generated, 2022.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-04-24 23:23+0100\n"
+"PO-Revision-Date: 2022-07-13 22:42+0100\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Poedit 2.4.2\n"
+
+msgid "OK"
+msgstr "ОК"
+
+msgid "Cancel"
+msgstr "Отмена"
+
+msgid "Yes"
+msgstr "Да"
+
+msgid "No"
+msgstr "Нет"
+
+msgid "Abort"
+msgstr "Прервать"
+
+msgid "Retry"
+msgstr "Повторить"
+
+msgid "Ignore"
+msgstr "Пропустить"
+
+msgid "Help"
+msgstr "Справка"
+
+msgid "File"
+msgstr "Файл"
+
+msgid "Edit"
+msgstr "Изменить"
+
+msgid "View"
+msgstr "Вид"
+
+msgid "Insert"
+msgstr "Вставка"
+
+msgid "Format"
+msgstr "Формат"
+
+msgid "Tools"
+msgstr "Сервис"
+
+msgid "Window"
+msgstr "Windows"
+
+msgid "New"
+msgstr "Создать"
+
+msgid "Browse"
+msgstr "Обзор"
+
+msgid "Open"
+msgstr "Открыть"
+
+msgid "Save"
+msgstr "Сохранение"
+
+msgid "Save As"
+msgstr "Сохранить как"
+
+#: src/controls.c:42
+msgid "Save All"
+msgstr ""
+
+msgid "Close"
+msgstr "Закрыть"
+
+msgid "Close All"
+msgstr "Закрыть все"
+
+msgid "Properties"
+msgstr "Свойства"
+
+msgid "Print"
+msgstr "Печать"
+
+#: src/controls.c:48
+msgid "Print Preview"
+msgstr ""
+
+msgid "Page Setup"
+msgstr "Параметры страницы"
+
+msgid "Exit"
+msgstr "Выход"
+
+msgid "Undo"
+msgstr "Отменить"
+
+msgid "Redo"
+msgstr "Вернуть"
+
+msgid "Cut"
+msgstr "Вырезать"
+
+msgid "Copy"
+msgstr "Копировать"
+
+msgid "Paste"
+msgstr "Вставить"
+
+msgid "Delete"
+msgstr "Удалить"
+
+msgid "Find"
+msgstr "Найти"
+
+msgid "Find Next"
+msgstr "Найти далее"
+
+msgid "Replace"
+msgstr "Замена"
+
+#: src/controls.c:66
+msgid "Replace All"
+msgstr ""
+
+msgid "Go To"
+msgstr "Переход"
+
+msgid "Select All"
+msgstr "Выделить все"
+
+msgid "Zoom"
+msgstr "Увеличение"
+
+msgid "Zoom In"
+msgstr "Крупнее"
+
+msgid "Zoom Out"
+msgstr "Мельче"
+
+msgid "Best Fit"
+msgstr "По содержимому"
+
+#: src/controls.c:77
+msgid "Actual Size"
+msgstr ""
+
+msgid "Full Screen"
+msgstr "Во весь экран"
+
+msgid "Status Bar"
+msgstr "Строка состояния"
+
+msgid "Font"
+msgstr "Шрифт"
+
+msgid "Font style"
+msgstr "Начертание"
+
+msgid "Bold"
+msgstr "Жирный"
+
+msgid "Italic"
+msgstr "Курсив"
+
+msgid "Regular"
+msgstr "Обычный"
+
+msgid "Size"
+msgstr "Размер"
+
+msgid "Word Wrap"
+msgstr "Перенос по словам"
+
+msgid "Options"
+msgstr "Настройка печати"
+
+msgid "Customize"
+msgstr "Настройка"
+
+msgid "New Window"
+msgstr "Новое"
+
+#: src/controls.c:99
+msgid "New Tab"
+msgstr ""
+
+msgid "Close Window"
+msgstr "Закрыть окно"
+
+#: src/controls.c:101
+msgid "Close Tab"
+msgstr ""
+
+#: src/controls.c:105
+msgid "Help Topics"
+msgstr ""
+
+msgid "About %s"
+msgstr "О программе \"%s\""
+
+msgid "..."
+msgstr "..."
+
+msgid ":"
+msgstr ":"
+
+msgid "Application Data"
+msgstr "Application Data"
+
+msgid "Desktop"
+msgstr "Рабочий стол"
+
+msgid "Downloads"
+msgstr "Загрузка"
+
+msgid "Favorites"
+msgstr "Избранное"
+
+msgid "My Documents"
+msgstr "Мои документы"
+
+msgid "My Music"
+msgstr "Моя музыка"
+
+msgid "My Pictures"
+msgstr "Мои рисунки"
+
+msgid "My Recent Documents"
+msgstr "Недавние документы"
+
+msgid "Recycle Bin"
+msgstr "Корзина"
+
+msgid "My Video"
+msgstr "Мои видео"
+
+#: src/places.c:22
+msgid "Adminstrative Tools"
+msgstr ""
+
+msgid "My Computer"
+msgstr "Мой компьютер"
+
+msgid "My Network Places"
+msgstr "Сетевое окружение"
+
+msgid "Control Panel"
+msgstr "Панель управления"
+
+msgid "Network Connections"
+msgstr "Сетевые подключения"
+
+msgid "Printers and Faxes"
+msgstr "Принтеры и факсы"

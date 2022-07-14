@@ -19,6 +19,7 @@ REQUIRED_PACKAGES=(
     'cmake'
     'fakeroot'
     'make'
+    'gettext'
 )
 SCRIPTDIR=`dirname "$0"`
 
@@ -119,6 +120,7 @@ do
     pkg_debian_dir="${PKG_DIR}/DEBIAN"
     pkg_include_dir="${PKG_DIR}${includedir}"
     pkg_lib_dir="${PKG_DIR}${libdir}"
+    pkg_locale_dir="${PKG_DIR}/usr/share/locale"
     pkg_pkgconfig_dir="${PKG_DIR}${pkgconfigdir}"
 
     if [[ -d "${PKG_DIR}" ]]
@@ -131,6 +133,7 @@ do
     mkdir -p "${pkg_debian_dir}"
     mkdir -p "${pkg_include_dir}"
     mkdir -p "${pkg_lib_dir}"
+    mkdir -p "${pkg_locale_dir}"
     mkdir -p "${pkg_pkgconfig_dir}"
 
     # Copy files
@@ -148,6 +151,25 @@ do
 
     cp "${build_dir}/"*.pc "${pkg_pkgconfig_dir}" >> "${log_path}" 2>&1
     ((pkg_setup_result+=$?))
+
+    # Include translations if present
+    #
+    if [[ -d "${lib_dir}/po" ]]
+    then
+        for pofile in "${lib_dir}/po"/*
+        do
+            if [[ "${pofile}" =~ /([a-z]{2}(_[A-Z]{2})?)\.po$ ]]
+            then
+                po_language="${BASH_REMATCH[1]}"
+                locale_dir="${pkg_locale_dir}/${po_language}/LC_MESSAGES"
+
+                mkdir -p "${locale_dir}"
+
+                msgfmt -o "${locale_dir}/wintc-${libstr}.mo" "${pofile}" >> "${log_path}" 2>&1
+                ((pkg_setup_result+=$?))
+            fi
+        done
+    fi
 
     # Check package setup good
     #

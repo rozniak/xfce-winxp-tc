@@ -8,11 +8,12 @@ project(
 
 find_package(PkgConfig REQUIRED)
 
-pkg_check_modules(GDK          REQUIRED gdk-3.0)
-pkg_check_modules(GLIB         REQUIRED glib-2.0)
-pkg_check_modules(GTK3         REQUIRED gtk+-3.0)
-pkg_check_modules(WINTC_COMGTK REQUIRED wintc-comgtk)
-pkg_check_modules(WINTC_EXEC   REQUIRED wintc-exec)
+pkg_check_modules(GDK           REQUIRED gdk-3.0)
+pkg_check_modules(GLIB          REQUIRED glib-2.0)
+pkg_check_modules(GTK3          REQUIRED gtk+-3.0)
+pkg_check_modules(WINTC_COMGTK  REQUIRED wintc-comgtk)
+pkg_check_modules(WINTC_EXEC    REQUIRED wintc-exec)
+pkg_check_modules(WINTC_SHLLANG REQUIRED wintc-shllang)
 
 add_executable(
     run
@@ -23,6 +24,7 @@ add_executable(
     src/history.h
     src/history.c
     src/main.c
+    src/meta.h
 )
 
 target_compile_options(
@@ -38,6 +40,7 @@ target_include_directories(
     PRIVATE ${GTK3_INCLUDE_DIRS}
     PRIVATE ${WINTC_COMGTK_INCLUDE_DIRS}
     PRIVATE ${WINTC_EXEC_INCLUDE_DIRS}
+    PRIVATE ${WINTC_SHLLANG_INCLUDE_DIRS}
 )
 
 target_link_directories(
@@ -47,6 +50,7 @@ target_link_directories(
     PRIVATE ${GTK3_LIBRARY_DIRS}
     PRIVATE ${WINTC_COMGTK_LIBRARY_DIRS}
     PRIVATE ${WINTC_EXEC_LIBRARY_DIRS}
+    PRIVATE ${WINTC_SHLLANG_LIBRARY_DIRS}
 )
 
 target_link_libraries(
@@ -56,4 +60,5 @@ target_link_libraries(
     PRIVATE ${GTK3_LIBRARIES}
     PRIVATE ${WINTC_COMGTK_LIBRARIES}
     PRIVATE ${WINTC_EXEC_LIBRARIES}
+    PRIVATE ${WINTC_SHLLANG_LIBRARIES}
 )

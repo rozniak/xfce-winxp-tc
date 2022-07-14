@@ -1,0 +1,267 @@
+# Greek translations for PACKAGE package.
+# Copyright (C) 2022 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Automatically generated, 2022.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-04-24 23:23+0100\n"
+"PO-Revision-Date: 2022-07-13 22:37+0100\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: el\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 2.4.2\n"
+
+msgid "OK"
+msgstr "ΟΚ"
+
+msgid "Cancel"
+msgstr "Άκυρο"
+
+msgid "Yes"
+msgstr "Ναι"
+
+msgid "No"
+msgstr "Όχι"
+
+msgid "Abort"
+msgstr "Ματαίωση"
+
+msgid "Retry"
+msgstr "Επανάληψη"
+
+msgid "Ignore"
+msgstr "Παράβλεψη"
+
+msgid "Help"
+msgstr "Βοήθεια"
+
+msgid "File"
+msgstr "Αρχείο"
+
+msgid "Edit"
+msgstr "Επεξεργασία"
+
+msgid "View"
+msgstr "Προβολή"
+
+msgid "Insert"
+msgstr "Εισαγωγή"
+
+msgid "Format"
+msgstr "Μορφή"
+
+msgid "Tools"
+msgstr "Εργαλεία"
+
+msgid "Window"
+msgstr "Windows"
+
+msgid "New"
+msgstr "Δημιουργία"
+
+msgid "Browse"
+msgstr "Αναζήτηση"
+
+msgid "Open"
+msgstr "Άνοιγμα"
+
+msgid "Save"
+msgstr "Αποθήκευση"
+
+msgid "Save As"
+msgstr "Αποθήκευση ως"
+
+#: src/controls.c:42
+msgid "Save All"
+msgstr ""
+
+msgid "Close"
+msgstr "Kλείσιμο"
+
+msgid "Close All"
+msgstr "Κλείσιμο όλων"
+
+msgid "Properties"
+msgstr "Ιδιότητες"
+
+msgid "Print"
+msgstr "Εκτύπωση"
+
+#: src/controls.c:48
+msgid "Print Preview"
+msgstr ""
+
+msgid "Page Setup"
+msgstr "Διαμόρφωση σελίδας"
+
+msgid "Exit"
+msgstr "Έξοδος"
+
+msgid "Undo"
+msgstr "Αναίρεση"
+
+msgid "Redo"
+msgstr "Επανάληψη"
+
+msgid "Cut"
+msgstr "Αποκοπή"
+
+msgid "Copy"
+msgstr "Αντιγραφή"
+
+msgid "Paste"
+msgstr "Επικόλληση"
+
+msgid "Delete"
+msgstr "Διαγραφή"
+
+msgid "Find"
+msgstr "Εύρεση"
+
+msgid "Find Next"
+msgstr "Εύρεση επόμενου"
+
+msgid "Replace"
+msgstr "Αντικατάσταση"
+
+#: src/controls.c:66
+msgid "Replace All"
+msgstr ""
+
+msgid "Go To"
+msgstr "Μετάβαση"
+
+msgid "Select All"
+msgstr "Επιλογή όλων"
+
+msgid "Zoom"
+msgstr "Ζουμ"
+
+msgid "Zoom In"
+msgstr "Μεγέθυνση"
+
+msgid "Zoom Out"
+msgstr "Σμίκρυνση"
+
+msgid "Best Fit"
+msgstr "Βέλτιστη προσαρμογή"
+
+#: src/controls.c:77
+msgid "Actual Size"
+msgstr ""
+
+msgid "Full Screen"
+msgstr "Πλήρης οθόνη"
+
+msgid "Status Bar"
+msgstr "Γραμμή κατάστασης"
+
+msgid "Font"
+msgstr "Γραμματοσειρές"
+
+msgid "Font style"
+msgstr "Στυλ"
+
+msgid "Bold"
+msgstr "Έντονη γραφή"
+
+msgid "Italic"
+msgstr "Πλάγια γραφή"
+
+msgid "Regular"
+msgstr "Κανονική"
+
+msgid "Size"
+msgstr "Μέγεθος"
+
+msgid "Word Wrap"
+msgstr "Αναδίπλωση λέξεων"
+
+msgid "Options"
+msgstr "Επιλογές"
+
+msgid "Customize"
+msgstr "Προσαρμογή"
+
+msgid "New Window"
+msgstr "Νέο παράθυρο"
+
+#: src/controls.c:99
+msgid "New Tab"
+msgstr ""
+
+msgid "Close Window"
+msgstr "Κλείσιμο παραθύρου"
+
+#: src/controls.c:101
+msgid "Close Tab"
+msgstr ""
+
+#: src/controls.c:105
+msgid "Help Topics"
+msgstr ""
+
+msgid "About %s"
+msgstr "Πληροφορίες: %s"
+
+msgid "..."
+msgstr "..."
+
+msgid ":"
+msgstr ":"
+
+msgid "Application Data"
+msgstr "Application Data"
+
+msgid "Desktop"
+msgstr "Επιφάνεια εργασίας"
+
+msgid "Downloads"
+msgstr "Λήψεις"
+
+msgid "Favorites"
+msgstr "Αγαπημένα"
+
+msgid "My Documents"
+msgstr "Τα έγγραφά μου"
+
+msgid "My Music"
+msgstr "Η μουσική μου"
+
+msgid "My Pictures"
+msgstr "Οι εικόνες μου"
+
+msgid "My Recent Documents"
+msgstr "Πρόσφατα έγγραφα"
+
+msgid "Recycle Bin"
+msgstr "Κάδος Ανακύκλωσης"
+
+msgid "My Video"
+msgstr "Τοπική εικόνα βίντεο"
+
+#: src/places.c:22
+msgid "Adminstrative Tools"
+msgstr ""
+
+msgid "My Computer"
+msgstr "Ο Υπολογιστής μου"
+
+msgid "My Network Places"
+msgstr "Θέσεις δικτύου"
+
+msgid "Control Panel"
+msgstr "Πίνακας Ελέγχου"
+
+msgid "Network Connections"
+msgstr "Συνδέσεις Δικτύου"
+
+msgid "Printers and Faxes"
+msgstr "Εκτυπωτές και φαξ"

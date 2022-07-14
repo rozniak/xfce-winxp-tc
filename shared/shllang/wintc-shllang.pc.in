@@ -1,0 +1,13 @@
+prefix=/usr
+exec_prefix=${prefix}
+libdir=${exec_prefix}/@ARCH_DIR@
+includedir=${exec_prefix}/include
+pkgconfigdir=/@ARCH_DIR@/pkgconfig
+
+Name: @PROJECT_NAME@
+Description: @PROJECT_DESCRIPTION@
+Version: @PROJECT_VERSION
+
+Requires:
+Libs: -L${libdir} -lwintc-shllang
+Cflags: -I${includedir}

@@ -1,0 +1,267 @@
+# Finnish translations for PACKAGE package.
+# Copyright (C) 2022 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Automatically generated, 2022.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-04-24 23:23+0100\n"
+"PO-Revision-Date: 2022-07-13 22:37+0100\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: fi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 2.4.2\n"
+
+msgid "OK"
+msgstr "OK"
+
+msgid "Cancel"
+msgstr "Peruuta"
+
+msgid "Yes"
+msgstr "Kyllä"
+
+msgid "No"
+msgstr "Ei"
+
+msgid "Abort"
+msgstr "Hylkää"
+
+msgid "Retry"
+msgstr "Yritä uudelleen"
+
+msgid "Ignore"
+msgstr "Ohita"
+
+msgid "Help"
+msgstr "Ohje"
+
+msgid "File"
+msgstr "Tiedosto"
+
+msgid "Edit"
+msgstr "Muokkaa"
+
+msgid "View"
+msgstr "Näytä"
+
+msgid "Insert"
+msgstr "Lisää"
+
+msgid "Format"
+msgstr "Alusta"
+
+msgid "Tools"
+msgstr "Työkalut"
+
+msgid "Window"
+msgstr "Windows"
+
+msgid "New"
+msgstr "Uusi"
+
+msgid "Browse"
+msgstr "Selaa"
+
+msgid "Open"
+msgstr "Avaa"
+
+msgid "Save"
+msgstr "Tallenna"
+
+msgid "Save As"
+msgstr "Tallenna nimellä"
+
+#: src/controls.c:42
+msgid "Save All"
+msgstr ""
+
+msgid "Close"
+msgstr "Sulje"
+
+msgid "Close All"
+msgstr "Sulje kaikki"
+
+msgid "Properties"
+msgstr "Ominaisuudet"
+
+msgid "Print"
+msgstr "Tulosta"
+
+#: src/controls.c:48
+msgid "Print Preview"
+msgstr ""
+
+msgid "Page Setup"
+msgstr "Sivun asetukset"
+
+msgid "Exit"
+msgstr "Lopeta"
+
+msgid "Undo"
+msgstr "Kumoa"
+
+msgid "Redo"
+msgstr "Tee uudelleen"
+
+msgid "Cut"
+msgstr "Leikkaa"
+
+msgid "Copy"
+msgstr "Kopioi"
+
+msgid "Paste"
+msgstr "Liitä"
+
+msgid "Delete"
+msgstr "Poista"
+
+msgid "Find"
+msgstr "Etsi"
+
+msgid "Find Next"
+msgstr "Etsi seuraava"
+
+msgid "Replace"
+msgstr "Korvaa"
+
+#: src/controls.c:66
+msgid "Replace All"
+msgstr ""
+
+msgid "Go To"
+msgstr "Siirry"
+
+msgid "Select All"
+msgstr "Valitse kaikki"
+
+msgid "Zoom"
+msgstr "Zoomaa"
+
+msgid "Zoom In"
+msgstr "Lähennä"
+
+msgid "Zoom Out"
+msgstr "Loitonna"
+
+msgid "Best Fit"
+msgstr "Sovita näyttöön"
+
+#: src/controls.c:77
+msgid "Actual Size"
+msgstr ""
+
+msgid "Full Screen"
+msgstr "Koko näyttö"
+
+msgid "Status Bar"
+msgstr "Tilarivi"
+
+msgid "Font"
+msgstr "Fontit"
+
+msgid "Font style"
+msgstr "Fonttityyli"
+
+msgid "Bold"
+msgstr "Lihavoitu"
+
+msgid "Italic"
+msgstr "Kursivoitu"
+
+msgid "Regular"
+msgstr "Normaali"
+
+msgid "Size"
+msgstr "Koko"
+
+msgid "Word Wrap"
+msgstr "Automaattinen rivitys"
+
+msgid "Options"
+msgstr "Asetukset"
+
+msgid "Customize"
+msgstr "Mukauta"
+
+msgid "New Window"
+msgstr "Uusi ikkuna"
+
+#: src/controls.c:99
+msgid "New Tab"
+msgstr ""
+
+msgid "Close Window"
+msgstr "Sulje ikkuna"
+
+#: src/controls.c:101
+msgid "Close Tab"
+msgstr ""
+
+#: src/controls.c:105
+msgid "Help Topics"
+msgstr ""
+
+msgid "About %s"
+msgstr "Tietoja: %s"
+
+msgid "..."
+msgstr "..."
+
+msgid ":"
+msgstr ":"
+
+msgid "Application Data"
+msgstr "Application Data"
+
+msgid "Desktop"
+msgstr "Työpöytä"
+
+msgid "Downloads"
+msgstr "Lataaminen"
+
+msgid "Favorites"
+msgstr "Suosikit"
+
+msgid "My Documents"
+msgstr "Omat tiedostot"
+
+msgid "My Music"
+msgstr "Omat musiikkitiedostot"
+
+msgid "My Pictures"
+msgstr "Omat kuvatiedostot"
+
+msgid "My Recent Documents"
+msgstr "Viimeisimmät tiedostot"
+
+msgid "Recycle Bin"
+msgstr "Roskakori"
+
+msgid "My Video"
+msgstr "Omat videot"
+
+#: src/places.c:22
+msgid "Adminstrative Tools"
+msgstr ""
+
+msgid "My Computer"
+msgstr "Oma tietokone"
+
+msgid "My Network Places"
+msgstr "Verkkoympäristö"
+
+msgid "Control Panel"
+msgstr "Ohjauspaneeli"
+
+msgid "Network Connections"
+msgstr "Verkkoyhteydet"
+
+msgid "Printers and Faxes"
+msgstr "Tulostimet ja faksit"

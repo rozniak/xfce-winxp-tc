@@ -1,0 +1,52 @@
+# Chinese translations for PACKAGE package.
+# Copyright (C) 2022 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Automatically generated, 2022.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-07-14 18:37+0100\n"
+"PO-Revision-Date: 2022-07-14 18:37+0100\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: zh_TW\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Run"
+msgstr "執行"
+
+msgid ""
+"Type the name of a program, folder, document, or Internet resource, and "
+"Windows will open it for you."
+msgstr "輸入程式、資料夾、文件或網際網路資源的名稱，Windows 會自動開啟。"
+
+msgid "All Files"
+msgstr "所有檔案"
+
+msgid "Programs"
+msgstr "程式"
+
+msgid ""
+"Windows cannot find '%s'. Make sure you typed the name correctly, and then "
+"try again. To search for a file, click the Start button, and then click "
+"Search."
+msgstr ""
+"Windows 找不到檔案或項目 '%s'。請檢查鍵入的名稱是否正確，再試一次。要搜尋檔"
+"案，請按 [開始] 按鈕，然後按 [搜尋]。"
+
+#: src/dialog.c:480
+#, c-format
+msgid ""
+"%s\n"
+"\n"
+"The parameter is incorrect"
+msgstr ""
+
+#: src/dialog.c:489
+#, c-format
+msgid "Execution of '%s' failed."
+msgstr ""

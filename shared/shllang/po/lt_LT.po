@@ -1,0 +1,275 @@
+# Lithuanian translations for PACKAGE package.
+# Copyright (C) 2022 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Automatically generated, 2022.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-04-24 23:23+0100\n"
+"PO-Revision-Date: 2022-07-13 22:40+0100\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: lt\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n"
+"%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Poedit 2.4.2\n"
+
+msgid "OK"
+msgstr "Gerai"
+
+msgid "Cancel"
+msgstr "Atšaukti"
+
+msgid "Yes"
+msgstr "Taip"
+
+msgid "No"
+msgstr "Ne"
+
+#: src/controls.c:19
+msgid "Abort"
+msgstr ""
+
+msgid "Retry"
+msgstr "Kartoti"
+
+msgid "Ignore"
+msgstr "Nepaisyti"
+
+msgid "Help"
+msgstr "Žinynas"
+
+msgid "File"
+msgstr "Failas"
+
+msgid "Edit"
+msgstr "Redaguoti"
+
+msgid "View"
+msgstr "Rodymas"
+
+msgid "Insert"
+msgstr "Įterpti"
+
+msgid "Format"
+msgstr "Formatas"
+
+msgid "Tools"
+msgstr "Įrankiai"
+
+msgid "Window"
+msgstr "Windows"
+
+msgid "New"
+msgstr "Naujas"
+
+msgid "Browse"
+msgstr "Naršyti"
+
+msgid "Open"
+msgstr "Atidaryti"
+
+msgid "Save"
+msgstr "Įrašyti"
+
+msgid "Save As"
+msgstr "Įrašyti kaip"
+
+#: src/controls.c:42
+msgid "Save All"
+msgstr ""
+
+msgid "Close"
+msgstr "Uždaryti"
+
+#: src/controls.c:44
+msgid "Close All"
+msgstr ""
+
+msgid "Properties"
+msgstr "Ypatybės"
+
+msgid "Print"
+msgstr "Spausdinti"
+
+#: src/controls.c:48
+msgid "Print Preview"
+msgstr ""
+
+msgid "Page Setup"
+msgstr "Puslapio sąranka"
+
+msgid "Exit"
+msgstr "Baigti"
+
+msgid "Undo"
+msgstr "Anuliuoti"
+
+msgid "Redo"
+msgstr "Perdaryti"
+
+msgid "Cut"
+msgstr "Iškirpti"
+
+msgid "Copy"
+msgstr "Kopijuoti"
+
+msgid "Paste"
+msgstr "Įklijuoti"
+
+msgid "Delete"
+msgstr "Naikinti"
+
+msgid "Find"
+msgstr "Rasti"
+
+msgid "Find Next"
+msgstr "Rasti kitą"
+
+msgid "Replace"
+msgstr "Pakeisti"
+
+#: src/controls.c:66
+msgid "Replace All"
+msgstr ""
+
+msgid "Go To"
+msgstr "Pereiti į"
+
+msgid "Select All"
+msgstr "Žymėti viską"
+
+#: src/controls.c:73
+msgid "Zoom"
+msgstr ""
+
+#: src/controls.c:74
+msgid "Zoom In"
+msgstr ""
+
+#: src/controls.c:75
+msgid "Zoom Out"
+msgstr ""
+
+msgid "Best Fit"
+msgstr "Geriausias talpinimas"
+
+#: src/controls.c:77
+msgid "Actual Size"
+msgstr ""
+
+msgid "Full Screen"
+msgstr "Visas ekranas"
+
+msgid "Status Bar"
+msgstr "Būsenos juosta"
+
+msgid "Font"
+msgstr "Šriftai"
+
+msgid "Font style"
+msgstr "Šrifto stilius"
+
+msgid "Bold"
+msgstr "Paryškintasis"
+
+msgid "Italic"
+msgstr "Pasvirasis"
+
+msgid "Regular"
+msgstr "Paprastas"
+
+msgid "Size"
+msgstr "Dydis"
+
+msgid "Word Wrap"
+msgstr "Žodžių laužymas"
+
+msgid "Options"
+msgstr "Pasirinktys"
+
+msgid "Customize"
+msgstr "Tinkinti"
+
+#: src/controls.c:98
+msgid "New Window"
+msgstr ""
+
+#: src/controls.c:99
+msgid "New Tab"
+msgstr ""
+
+msgid "Close Window"
+msgstr "Uždaryti langą"
+
+#: src/controls.c:101
+msgid "Close Tab"
+msgstr ""
+
+#: src/controls.c:105
+msgid "Help Topics"
+msgstr ""
+
+msgid "About %s"
+msgstr "Apie %s"
+
+msgid "..."
+msgstr "..."
+
+#: src/controls.c:111
+msgid ":"
+msgstr ""
+
+msgid "Application Data"
+msgstr "Application Data"
+
+msgid "Desktop"
+msgstr "Desktop"
+
+msgid "Downloads"
+msgstr "Atsisiuntimai"
+
+msgid "Favorites"
+msgstr "Parankiniai"
+
+msgid "My Documents"
+msgstr "Mano dokumentai"
+
+msgid "My Music"
+msgstr "My Music"
+
+msgid "My Pictures"
+msgstr "My Pictures"
+
+msgid "My Recent Documents"
+msgstr "Mano naujausi dokumentai"
+
+msgid "Recycle Bin"
+msgstr "Šiukšlinė"
+
+msgid "My Video"
+msgstr "Mano vaizdai"
+
+#: src/places.c:22
+msgid "Adminstrative Tools"
+msgstr ""
+
+msgid "My Computer"
+msgstr "Mano kompiuteris"
+
+msgid "My Network Places"
+msgstr "Mano tinklo vietos"
+
+msgid "Control Panel"
+msgstr "Valdymo skydas"
+
+msgid "Network Connections"
+msgstr "Tinklo ryšiai"
+
+msgid "Printers and Faxes"
+msgstr "Spausdintuvai ir faksai"

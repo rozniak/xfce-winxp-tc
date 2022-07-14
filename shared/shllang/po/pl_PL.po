@@ -1,0 +1,268 @@
+# Polish translations for PACKAGE package.
+# Copyright (C) 2022 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Automatically generated, 2022.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-04-24 23:23+0100\n"
+"PO-Revision-Date: 2022-07-13 22:40+0100\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: pl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
+"|| n%100>=20) ? 1 : 2);\n"
+"X-Generator: Poedit 2.4.2\n"
+
+msgid "OK"
+msgstr "OK"
+
+msgid "Cancel"
+msgstr "Anuluj"
+
+msgid "Yes"
+msgstr "Tak"
+
+msgid "No"
+msgstr "Nie"
+
+msgid "Abort"
+msgstr "Przerwij"
+
+msgid "Retry"
+msgstr "Ponów próbę"
+
+msgid "Ignore"
+msgstr "Ignoruj"
+
+msgid "Help"
+msgstr "Pomoc"
+
+msgid "File"
+msgstr "Plik"
+
+msgid "Edit"
+msgstr "Edytuj"
+
+msgid "View"
+msgstr "Widok"
+
+msgid "Insert"
+msgstr "Wstaw"
+
+msgid "Format"
+msgstr "Format"
+
+msgid "Tools"
+msgstr "Narzędzia"
+
+msgid "Window"
+msgstr "System Windows"
+
+msgid "New"
+msgstr "Nowy"
+
+msgid "Browse"
+msgstr "Przeglądanie"
+
+msgid "Open"
+msgstr "Otwórz"
+
+msgid "Save"
+msgstr "Zapisz"
+
+msgid "Save As"
+msgstr "Zapisywanie jako"
+
+#: src/controls.c:42
+msgid "Save All"
+msgstr ""
+
+msgid "Close"
+msgstr "Zamknij"
+
+msgid "Close All"
+msgstr "Zamknij wszystko"
+
+msgid "Properties"
+msgstr "Właściwości"
+
+msgid "Print"
+msgstr "Drukuj"
+
+#: src/controls.c:48
+msgid "Print Preview"
+msgstr ""
+
+msgid "Page Setup"
+msgstr "Ustawienia strony"
+
+msgid "Exit"
+msgstr "Zakończ"
+
+msgid "Undo"
+msgstr "Cofnij"
+
+msgid "Redo"
+msgstr "Wykonaj ponownie"
+
+msgid "Cut"
+msgstr "Wytnij"
+
+msgid "Copy"
+msgstr "Kopiuj"
+
+msgid "Paste"
+msgstr "Wklejenie"
+
+msgid "Delete"
+msgstr "Usuń"
+
+msgid "Find"
+msgstr "Znajdowanie"
+
+msgid "Find Next"
+msgstr "Znajdź następny"
+
+msgid "Replace"
+msgstr "Zamienianie"
+
+#: src/controls.c:66
+msgid "Replace All"
+msgstr ""
+
+msgid "Go To"
+msgstr "Przejdź do"
+
+msgid "Select All"
+msgstr "Zaznacz wszystko"
+
+msgid "Zoom"
+msgstr "Powiększenie"
+
+msgid "Zoom In"
+msgstr "Powiększ"
+
+msgid "Zoom Out"
+msgstr "Pomniejsz"
+
+msgid "Best Fit"
+msgstr "Dopasuj optymalnie"
+
+#: src/controls.c:77
+msgid "Actual Size"
+msgstr ""
+
+msgid "Full Screen"
+msgstr "Pełny ekran"
+
+msgid "Status Bar"
+msgstr "Pasek stanu"
+
+msgid "Font"
+msgstr "Czcionki"
+
+msgid "Font style"
+msgstr "Styl czcionki"
+
+msgid "Bold"
+msgstr "Pogrubienie"
+
+msgid "Italic"
+msgstr "Kursywa"
+
+msgid "Regular"
+msgstr "Regularne"
+
+msgid "Size"
+msgstr "Rozmiar"
+
+msgid "Word Wrap"
+msgstr "Zawijanie wierszy"
+
+msgid "Options"
+msgstr "Opcje"
+
+msgid "Customize"
+msgstr "Dostosowywanie"
+
+msgid "New Window"
+msgstr "Nowe okno"
+
+#: src/controls.c:99
+msgid "New Tab"
+msgstr ""
+
+msgid "Close Window"
+msgstr "Zamknij okno"
+
+#: src/controls.c:101
+msgid "Close Tab"
+msgstr ""
+
+#: src/controls.c:105
+msgid "Help Topics"
+msgstr ""
+
+msgid "About %s"
+msgstr "%s - informacje"
+
+msgid "..."
+msgstr "..."
+
+msgid ":"
+msgstr ":"
+
+msgid "Application Data"
+msgstr "Dane aplikacji"
+
+msgid "Desktop"
+msgstr "Pulpit"
+
+msgid "Downloads"
+msgstr "Pobieranie"
+
+msgid "Favorites"
+msgstr "Ulubione"
+
+msgid "My Documents"
+msgstr "Moje dokumenty"
+
+msgid "My Music"
+msgstr "Moja muzyka"
+
+msgid "My Pictures"
+msgstr "Moje obrazy"
+
+msgid "My Recent Documents"
+msgstr "Moje bieżące dokumenty"
+
+msgid "Recycle Bin"
+msgstr "Kosz"
+
+msgid "My Video"
+msgstr "Moje wideo"
+
+#: src/places.c:22
+msgid "Adminstrative Tools"
+msgstr ""
+
+msgid "My Computer"
+msgstr "Mój komputer"
+
+msgid "My Network Places"
+msgstr "Moje miejsca sieciowe"
+
+msgid "Control Panel"
+msgstr "Panel sterowania"
+
+msgid "Network Connections"
+msgstr "Połączenia sieciowe"
+
+msgid "Printers and Faxes"
+msgstr "Drukarki i faksy"

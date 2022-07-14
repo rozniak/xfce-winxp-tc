@@ -1,0 +1,267 @@
+# Hungarian translations for PACKAGE package.
+# Copyright (C) 2022 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Automatically generated, 2022.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-04-24 23:23+0100\n"
+"PO-Revision-Date: 2022-07-13 22:39+0100\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: hu\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 2.4.2\n"
+
+msgid "OK"
+msgstr "OK"
+
+msgid "Cancel"
+msgstr "Mégse"
+
+msgid "Yes"
+msgstr "Igen"
+
+msgid "No"
+msgstr "Nem"
+
+msgid "Abort"
+msgstr "Megszakítás"
+
+msgid "Retry"
+msgstr "Újra"
+
+msgid "Ignore"
+msgstr "Kihagyás"
+
+msgid "Help"
+msgstr "Súgó"
+
+msgid "File"
+msgstr "Fájl"
+
+msgid "Edit"
+msgstr "Szerkesztés"
+
+msgid "View"
+msgstr "Nézet"
+
+msgid "Insert"
+msgstr "Beszúrás"
+
+msgid "Format"
+msgstr "Formátum"
+
+msgid "Tools"
+msgstr "Eszközök"
+
+msgid "Window"
+msgstr "Windows"
+
+msgid "New"
+msgstr "Új"
+
+msgid "Browse"
+msgstr "Tallózás"
+
+msgid "Open"
+msgstr "Megnyitás"
+
+msgid "Save"
+msgstr "Mentés"
+
+msgid "Save As"
+msgstr "Mentés másként"
+
+#: src/controls.c:42
+msgid "Save All"
+msgstr ""
+
+msgid "Close"
+msgstr "Bezárás"
+
+msgid "Close All"
+msgstr "Az összes bezárása"
+
+msgid "Properties"
+msgstr "Tulajdonságok"
+
+msgid "Print"
+msgstr "Nyomtatás"
+
+#: src/controls.c:48
+msgid "Print Preview"
+msgstr ""
+
+msgid "Page Setup"
+msgstr "Oldalbeállítás"
+
+msgid "Exit"
+msgstr "Kilépés"
+
+msgid "Undo"
+msgstr "Visszavonás"
+
+msgid "Redo"
+msgstr "Ismét"
+
+msgid "Cut"
+msgstr "Kivágás"
+
+msgid "Copy"
+msgstr "Másolás"
+
+msgid "Paste"
+msgstr "Beillesztés"
+
+msgid "Delete"
+msgstr "Törlés"
+
+msgid "Find"
+msgstr "Keresés"
+
+msgid "Find Next"
+msgstr "Következő keresése"
+
+msgid "Replace"
+msgstr "Csere"
+
+#: src/controls.c:66
+msgid "Replace All"
+msgstr ""
+
+msgid "Go To"
+msgstr "Ugrás"
+
+msgid "Select All"
+msgstr "Az összes kijelölése"
+
+msgid "Zoom"
+msgstr "Nagyítás"
+
+msgid "Zoom In"
+msgstr "Nagyítás"
+
+msgid "Zoom Out"
+msgstr "Kicsinyítés"
+
+msgid "Best Fit"
+msgstr "Legjobb kitöltés"
+
+#: src/controls.c:77
+msgid "Actual Size"
+msgstr ""
+
+msgid "Full Screen"
+msgstr "Teljes képernyő"
+
+msgid "Status Bar"
+msgstr "Állapotsor"
+
+msgid "Font"
+msgstr "Betűtípusok"
+
+msgid "Font style"
+msgstr "Betűstílus"
+
+msgid "Bold"
+msgstr "Félkövér"
+
+msgid "Italic"
+msgstr "Dőlt"
+
+msgid "Regular"
+msgstr "Normál"
+
+msgid "Size"
+msgstr "Méret"
+
+msgid "Word Wrap"
+msgstr "Hosszú sorok tördelése"
+
+msgid "Options"
+msgstr "Beállítások"
+
+msgid "Customize"
+msgstr "Testreszabás"
+
+msgid "New Window"
+msgstr "Új ablak"
+
+#: src/controls.c:99
+msgid "New Tab"
+msgstr ""
+
+msgid "Close Window"
+msgstr "Ablak bezárása"
+
+#: src/controls.c:101
+msgid "Close Tab"
+msgstr ""
+
+#: src/controls.c:105
+msgid "Help Topics"
+msgstr ""
+
+msgid "About %s"
+msgstr "%s névjegye"
+
+msgid "..."
+msgstr "..."
+
+msgid ":"
+msgstr ":"
+
+msgid "Application Data"
+msgstr "Application Data"
+
+msgid "Desktop"
+msgstr "Asztal"
+
+msgid "Downloads"
+msgstr "Letöltések"
+
+msgid "Favorites"
+msgstr "Kedvencek"
+
+msgid "My Documents"
+msgstr "Dokumentumok"
+
+msgid "My Music"
+msgstr "Zene"
+
+msgid "My Pictures"
+msgstr "Képek"
+
+msgid "My Recent Documents"
+msgstr "Legutóbbi dokumentumok"
+
+msgid "Recycle Bin"
+msgstr "Lomtár"
+
+msgid "My Video"
+msgstr "Videók"
+
+#: src/places.c:22
+msgid "Adminstrative Tools"
+msgstr ""
+
+msgid "My Computer"
+msgstr "Sajátgép"
+
+msgid "My Network Places"
+msgstr "Hálózati helyek"
+
+msgid "Control Panel"
+msgstr "Vezérlőpult"
+
+msgid "Network Connections"
+msgstr "Hálózati kapcsolatok"
+
+msgid "Printers and Faxes"
+msgstr "Nyomtatók és faxok"

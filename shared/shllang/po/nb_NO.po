@@ -1,0 +1,267 @@
+# Norwegian Bokmal translations for PACKAGE package.
+# Copyright (C) 2022 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Automatically generated, 2022.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-04-24 23:23+0100\n"
+"PO-Revision-Date: 2022-07-13 22:40+0100\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: nb\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 2.4.2\n"
+
+msgid "OK"
+msgstr "OK"
+
+msgid "Cancel"
+msgstr "Avbryt"
+
+msgid "Yes"
+msgstr "Ja"
+
+msgid "No"
+msgstr "Nei"
+
+msgid "Abort"
+msgstr "Avbryt"
+
+msgid "Retry"
+msgstr "Prøv på nytt"
+
+msgid "Ignore"
+msgstr "Ignorer"
+
+msgid "Help"
+msgstr "Hjelp"
+
+msgid "File"
+msgstr "Fil"
+
+msgid "Edit"
+msgstr "Rediger"
+
+msgid "View"
+msgstr "Vis"
+
+msgid "Insert"
+msgstr "Sett inn"
+
+msgid "Format"
+msgstr "Format"
+
+msgid "Tools"
+msgstr "Verktøy"
+
+msgid "Window"
+msgstr "Windows"
+
+msgid "New"
+msgstr "Ny"
+
+msgid "Browse"
+msgstr "Bla gjennom"
+
+msgid "Open"
+msgstr "Åpne"
+
+msgid "Save"
+msgstr "Lagre"
+
+msgid "Save As"
+msgstr "Lagre som"
+
+#: src/controls.c:42
+msgid "Save All"
+msgstr ""
+
+msgid "Close"
+msgstr "Lukk"
+
+msgid "Close All"
+msgstr "Lukk alle"
+
+msgid "Properties"
+msgstr "Egenskaper"
+
+msgid "Print"
+msgstr "Skriv ut"
+
+#: src/controls.c:48
+msgid "Print Preview"
+msgstr ""
+
+msgid "Page Setup"
+msgstr "Utskriftsformat"
+
+msgid "Exit"
+msgstr "Avslutt"
+
+msgid "Undo"
+msgstr "Angre"
+
+msgid "Redo"
+msgstr "Gjør om"
+
+msgid "Cut"
+msgstr "Klipp ut"
+
+msgid "Copy"
+msgstr "Kopier"
+
+msgid "Paste"
+msgstr "Lim inn"
+
+msgid "Delete"
+msgstr "Slett"
+
+msgid "Find"
+msgstr "Søk etter"
+
+msgid "Find Next"
+msgstr "Søk etter neste"
+
+msgid "Replace"
+msgstr "Erstatt"
+
+#: src/controls.c:66
+msgid "Replace All"
+msgstr ""
+
+msgid "Go To"
+msgstr "Gå til"
+
+msgid "Select All"
+msgstr "Merk alt"
+
+msgid "Zoom"
+msgstr "Zoom"
+
+msgid "Zoom In"
+msgstr "Zoom inn"
+
+msgid "Zoom Out"
+msgstr "Zoom ut"
+
+msgid "Best Fit"
+msgstr "Beste tilpassing"
+
+#: src/controls.c:77
+msgid "Actual Size"
+msgstr ""
+
+msgid "Full Screen"
+msgstr "Full skjerm"
+
+msgid "Status Bar"
+msgstr "Statuslinje"
+
+msgid "Font"
+msgstr "Skrifter"
+
+msgid "Font style"
+msgstr "Skriftstil"
+
+msgid "Bold"
+msgstr "Fet"
+
+msgid "Italic"
+msgstr "Kursiv"
+
+msgid "Regular"
+msgstr "Vanlig"
+
+msgid "Size"
+msgstr "Størrelse"
+
+msgid "Word Wrap"
+msgstr "Tekstbryting"
+
+msgid "Options"
+msgstr "Alternativer"
+
+msgid "Customize"
+msgstr "Tilpass"
+
+msgid "New Window"
+msgstr "Nytt vindu"
+
+#: src/controls.c:99
+msgid "New Tab"
+msgstr ""
+
+msgid "Close Window"
+msgstr "Lukk vindu"
+
+#: src/controls.c:101
+msgid "Close Tab"
+msgstr ""
+
+#: src/controls.c:105
+msgid "Help Topics"
+msgstr ""
+
+msgid "About %s"
+msgstr "Om %s"
+
+msgid "..."
+msgstr "..."
+
+msgid ":"
+msgstr ":"
+
+msgid "Application Data"
+msgstr "Programdata"
+
+msgid "Desktop"
+msgstr "Skrivebord"
+
+msgid "Downloads"
+msgstr "Nedlastinger"
+
+msgid "Favorites"
+msgstr "Favoritter"
+
+msgid "My Documents"
+msgstr "Mine dokumenter"
+
+msgid "My Music"
+msgstr "Min musikk"
+
+msgid "My Pictures"
+msgstr "Mine bilder"
+
+msgid "My Recent Documents"
+msgstr "Mine siste dokumenter"
+
+msgid "Recycle Bin"
+msgstr "Papirkurv"
+
+msgid "My Video"
+msgstr "Intern video"
+
+#: src/places.c:22
+msgid "Adminstrative Tools"
+msgstr ""
+
+msgid "My Computer"
+msgstr "Min datamaskin"
+
+msgid "My Network Places"
+msgstr "Mine nettverkssteder"
+
+msgid "Control Panel"
+msgstr "Kontrollpanel"
+
+msgid "Network Connections"
+msgstr "Nettverkstilkoblinger"
+
+msgid "Printers and Faxes"
+msgstr "Skrivere og telefakser"

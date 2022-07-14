@@ -1,0 +1,275 @@
+# Romanian translations for PACKAGE package.
+# Copyright (C) 2022 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Automatically generated, 2022.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-04-24 23:23+0100\n"
+"PO-Revision-Date: 2022-07-13 22:41+0100\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: ro\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < "
+"20)) ? 1 : 2;\n"
+"X-Generator: Poedit 2.4.2\n"
+
+msgid "OK"
+msgstr "OK"
+
+msgid "Cancel"
+msgstr "Revocare"
+
+msgid "Yes"
+msgstr "Da"
+
+msgid "No"
+msgstr "Nu"
+
+#: src/controls.c:19
+msgid "Abort"
+msgstr ""
+
+msgid "Retry"
+msgstr "Reîncercare"
+
+msgid "Ignore"
+msgstr "Ignorare"
+
+msgid "Help"
+msgstr "Ajutor"
+
+msgid "File"
+msgstr "Fişier"
+
+msgid "Edit"
+msgstr "Editare"
+
+msgid "View"
+msgstr "Vizualizare"
+
+msgid "Insert"
+msgstr "Inserare"
+
+msgid "Format"
+msgstr "Format"
+
+msgid "Tools"
+msgstr "Instrumente"
+
+msgid "Window"
+msgstr "Windows"
+
+msgid "New"
+msgstr "Nou"
+
+msgid "Browse"
+msgstr "Răsfoire"
+
+msgid "Open"
+msgstr "Deschidere"
+
+msgid "Save"
+msgstr "Salvare"
+
+msgid "Save As"
+msgstr "Salvare ca"
+
+#: src/controls.c:42
+msgid "Save All"
+msgstr ""
+
+msgid "Close"
+msgstr "Închidere"
+
+#: src/controls.c:44
+msgid "Close All"
+msgstr ""
+
+msgid "Properties"
+msgstr "Proprietăţi"
+
+msgid "Print"
+msgstr "Imprimare"
+
+#: src/controls.c:48
+msgid "Print Preview"
+msgstr ""
+
+msgid "Page Setup"
+msgstr "Iniţializare pagină"
+
+msgid "Exit"
+msgstr "Ieşire"
+
+msgid "Undo"
+msgstr "Anulare"
+
+msgid "Redo"
+msgstr "Refacere"
+
+msgid "Cut"
+msgstr "Decupare"
+
+msgid "Copy"
+msgstr "Copiere"
+
+msgid "Paste"
+msgstr "Lipire"
+
+msgid "Delete"
+msgstr "Ştergere"
+
+msgid "Find"
+msgstr "Găsire"
+
+msgid "Find Next"
+msgstr "Următorul găsit"
+
+msgid "Replace"
+msgstr "Înlocuire"
+
+#: src/controls.c:66
+msgid "Replace All"
+msgstr ""
+
+msgid "Go To"
+msgstr "Salt la"
+
+msgid "Select All"
+msgstr "Selectare totală"
+
+#: src/controls.c:73
+msgid "Zoom"
+msgstr ""
+
+#: src/controls.c:74
+msgid "Zoom In"
+msgstr ""
+
+#: src/controls.c:75
+msgid "Zoom Out"
+msgstr ""
+
+msgid "Best Fit"
+msgstr "Cea mai bună potrivire"
+
+#: src/controls.c:77
+msgid "Actual Size"
+msgstr ""
+
+msgid "Full Screen"
+msgstr "Ecran complet"
+
+msgid "Status Bar"
+msgstr "Bară de stare"
+
+msgid "Font"
+msgstr "Fonturi"
+
+msgid "Font style"
+msgstr "Stil font"
+
+msgid "Bold"
+msgstr "Aldin"
+
+msgid "Italic"
+msgstr "Cursiv"
+
+msgid "Regular"
+msgstr "Obişnuit"
+
+msgid "Size"
+msgstr "Dimensiune"
+
+msgid "Word Wrap"
+msgstr "Încadrare cuvânt"
+
+msgid "Options"
+msgstr "Opţiuni"
+
+msgid "Customize"
+msgstr "Particularizare"
+
+#: src/controls.c:98
+msgid "New Window"
+msgstr ""
+
+#: src/controls.c:99
+msgid "New Tab"
+msgstr ""
+
+msgid "Close Window"
+msgstr "Închidere fereastră"
+
+#: src/controls.c:101
+msgid "Close Tab"
+msgstr ""
+
+#: src/controls.c:105
+msgid "Help Topics"
+msgstr ""
+
+msgid "About %s"
+msgstr "Despre %s"
+
+msgid "..."
+msgstr "..."
+
+#: src/controls.c:111
+msgid ":"
+msgstr ""
+
+msgid "Application Data"
+msgstr "Application Data"
+
+msgid "Desktop"
+msgstr "Desktop"
+
+msgid "Downloads"
+msgstr "Descărcări"
+
+msgid "Favorites"
+msgstr "Preferinţe"
+
+msgid "My Documents"
+msgstr "Documentele mele"
+
+msgid "My Music"
+msgstr "My Music"
+
+msgid "My Pictures"
+msgstr "My Pictures"
+
+msgid "My Recent Documents"
+msgstr "Documente recente"
+
+msgid "Recycle Bin"
+msgstr "Coş de reciclare"
+
+msgid "My Video"
+msgstr "Imaginile mele video"
+
+#: src/places.c:22
+msgid "Adminstrative Tools"
+msgstr ""
+
+msgid "My Computer"
+msgstr "Computerul meu"
+
+msgid "My Network Places"
+msgstr "Locurile mele din reţea"
+
+msgid "Control Panel"
+msgstr "Panou de control"
+
+msgid "Network Connections"
+msgstr "Conexiuni în reţea"
+
+msgid "Printers and Faxes"
+msgstr "Imprimante şi faxuri"

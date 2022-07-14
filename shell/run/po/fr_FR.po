@@ -1,0 +1,56 @@
+# French translations for PACKAGE package.
+# Copyright (C) 2022 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Automatically generated, 2022.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-07-14 18:37+0100\n"
+"PO-Revision-Date: 2022-07-14 18:37+0100\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+msgid "Run"
+msgstr "Exécuter"
+
+msgid ""
+"Type the name of a program, folder, document, or Internet resource, and "
+"Windows will open it for you."
+msgstr ""
+"Entrez le nom d'un programme, dossier, document ou d'une ressource Internet, "
+"et Windows l'ouvrira pour vous."
+
+msgid "All Files"
+msgstr "Tous les fichiers"
+
+msgid "Programs"
+msgstr "Programmes"
+
+msgid ""
+"Windows cannot find '%s'. Make sure you typed the name correctly, and then "
+"try again. To search for a file, click the Start button, and then click "
+"Search."
+msgstr ""
+"Windows ne trouve pas '%s'. Vérifiez que vous avez entré le nom correctement "
+"et essayez à nouveau. Pour rechercher un fichier, cliquez sur le bouton "
+"Démarrer, puis sur Rechercher."
+
+#: src/dialog.c:480
+#, c-format
+msgid ""
+"%s\n"
+"\n"
+"The parameter is incorrect"
+msgstr ""
+
+#: src/dialog.c:489
+#, c-format
+msgid "Execution of '%s' failed."
+msgstr ""

@@ -1,0 +1,267 @@
+# Spanish translations for PACKAGE package.
+# Copyright (C) 2022 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Automatically generated, 2022.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-04-24 23:23+0100\n"
+"PO-Revision-Date: 2022-07-13 22:35+0100\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 2.4.2\n"
+
+msgid "OK"
+msgstr "Aceptar"
+
+msgid "Cancel"
+msgstr "Cancelar"
+
+msgid "Yes"
+msgstr "Sí"
+
+msgid "No"
+msgstr "No"
+
+msgid "Abort"
+msgstr "Anular"
+
+msgid "Retry"
+msgstr "Reintentar"
+
+msgid "Ignore"
+msgstr "Omitir"
+
+msgid "Help"
+msgstr "Ayuda"
+
+msgid "File"
+msgstr "Archivo"
+
+msgid "Edit"
+msgstr "Edición"
+
+msgid "View"
+msgstr "Ver"
+
+msgid "Insert"
+msgstr "Insertar"
+
+msgid "Format"
+msgstr "Formato"
+
+msgid "Tools"
+msgstr "Herramientas"
+
+msgid "Window"
+msgstr "Windows"
+
+msgid "New"
+msgstr "Nuevo"
+
+msgid "Browse"
+msgstr "Examinar"
+
+msgid "Open"
+msgstr "Abrir"
+
+msgid "Save"
+msgstr "Guardar"
+
+msgid "Save As"
+msgstr "Guardar como"
+
+#: src/controls.c:42
+msgid "Save All"
+msgstr ""
+
+msgid "Close"
+msgstr "Cerrar"
+
+msgid "Close All"
+msgstr "Cerrar todo"
+
+msgid "Properties"
+msgstr "Propiedades"
+
+msgid "Print"
+msgstr "Imprimir"
+
+#: src/controls.c:48
+msgid "Print Preview"
+msgstr ""
+
+msgid "Page Setup"
+msgstr "Configurar página"
+
+msgid "Exit"
+msgstr "Salir"
+
+msgid "Undo"
+msgstr "Deshacer"
+
+msgid "Redo"
+msgstr "Rehacer"
+
+msgid "Cut"
+msgstr "Cortar"
+
+msgid "Copy"
+msgstr "Copiar"
+
+msgid "Paste"
+msgstr "Pegar"
+
+msgid "Delete"
+msgstr "Eliminar"
+
+msgid "Find"
+msgstr "Buscar"
+
+msgid "Find Next"
+msgstr "Buscar siguiente"
+
+msgid "Replace"
+msgstr "Reemplazar"
+
+#: src/controls.c:66
+msgid "Replace All"
+msgstr ""
+
+msgid "Go To"
+msgstr "Ir a"
+
+msgid "Select All"
+msgstr "Seleccionar todo"
+
+msgid "Zoom"
+msgstr "Zoom"
+
+msgid "Zoom In"
+msgstr "Acercar"
+
+msgid "Zoom Out"
+msgstr "Alejar"
+
+msgid "Best Fit"
+msgstr "Ajuste perfecto"
+
+#: src/controls.c:77
+msgid "Actual Size"
+msgstr ""
+
+msgid "Full Screen"
+msgstr "Pantalla completa"
+
+msgid "Status Bar"
+msgstr "Barra de estado"
+
+msgid "Font"
+msgstr "Fuentes"
+
+msgid "Font style"
+msgstr "Estilo de fuente"
+
+msgid "Bold"
+msgstr "Negrita"
+
+msgid "Italic"
+msgstr "Cursiva"
+
+msgid "Regular"
+msgstr "Normal"
+
+msgid "Size"
+msgstr "Tamaño"
+
+msgid "Word Wrap"
+msgstr "Ajuste de línea"
+
+msgid "Options"
+msgstr "Opciones"
+
+msgid "Customize"
+msgstr "Personalizar"
+
+msgid "New Window"
+msgstr "Nueva ventana"
+
+#: src/controls.c:99
+msgid "New Tab"
+msgstr ""
+
+msgid "Close Window"
+msgstr "Cerrar ventana"
+
+#: src/controls.c:101
+msgid "Close Tab"
+msgstr ""
+
+#: src/controls.c:105
+msgid "Help Topics"
+msgstr ""
+
+msgid "About %s"
+msgstr "Acerca de %s"
+
+msgid "..."
+msgstr "..."
+
+msgid ":"
+msgstr ":"
+
+msgid "Application Data"
+msgstr "Datos de programa"
+
+msgid "Desktop"
+msgstr "Escritorio"
+
+msgid "Downloads"
+msgstr "Descargas"
+
+msgid "Favorites"
+msgstr "Favoritos"
+
+msgid "My Documents"
+msgstr "Mis documentos"
+
+msgid "My Music"
+msgstr "Mi música"
+
+msgid "My Pictures"
+msgstr "Mis imágenes"
+
+msgid "My Recent Documents"
+msgstr "Documentos recientes"
+
+msgid "Recycle Bin"
+msgstr "Papelera de reciclaje"
+
+msgid "My Video"
+msgstr "Vídeo local"
+
+#: src/places.c:22
+msgid "Adminstrative Tools"
+msgstr ""
+
+msgid "My Computer"
+msgstr "Mi PC"
+
+msgid "My Network Places"
+msgstr "Mis sitios de red"
+
+msgid "Control Panel"
+msgstr "Panel de control"
+
+msgid "Network Connections"
+msgstr "Conexiones de red"
+
+msgid "Printers and Faxes"
+msgstr "Impresoras y faxes"

@@ -1,0 +1,267 @@
+# Japanese translations for PACKAGE package.
+# Copyright (C) 2022 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Automatically generated, 2022.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-04-24 23:23+0100\n"
+"PO-Revision-Date: 2022-07-13 22:39+0100\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: ja\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Poedit 2.4.2\n"
+
+msgid "OK"
+msgstr "OK"
+
+msgid "Cancel"
+msgstr "キャンセル"
+
+msgid "Yes"
+msgstr "はい(Y)"
+
+msgid "No"
+msgstr "いいえ(N)"
+
+msgid "Abort"
+msgstr "中止(A)"
+
+msgid "Retry"
+msgstr "再試行(R)"
+
+msgid "Ignore"
+msgstr "無視(I)"
+
+msgid "Help"
+msgstr "ヘルプ(H)"
+
+msgid "File"
+msgstr "ファイル"
+
+msgid "Edit"
+msgstr "編集(E)"
+
+msgid "View"
+msgstr "表示(V)"
+
+msgid "Insert"
+msgstr "挿入(I)"
+
+msgid "Format"
+msgstr "書式(O)"
+
+msgid "Tools"
+msgstr "ツール"
+
+msgid "Window"
+msgstr "Windows"
+
+msgid "New"
+msgstr "新規作成(N)"
+
+msgid "Browse"
+msgstr "ファイルの参照"
+
+msgid "Open"
+msgstr "開く(O)"
+
+msgid "Save"
+msgstr "上書き保存"
+
+msgid "Save As"
+msgstr "名前を付けて保存"
+
+#: src/controls.c:42
+msgid "Save All"
+msgstr ""
+
+msgid "Close"
+msgstr "閉じる"
+
+msgid "Close All"
+msgstr "すべて閉じる(L)"
+
+msgid "Properties"
+msgstr "プロパティ(R)"
+
+msgid "Print"
+msgstr "印刷"
+
+#: src/controls.c:48
+msgid "Print Preview"
+msgstr ""
+
+msgid "Page Setup"
+msgstr "ページ設定"
+
+msgid "Exit"
+msgstr "終了(X)"
+
+msgid "Undo"
+msgstr "元に戻す(U)"
+
+msgid "Redo"
+msgstr "繰り返し"
+
+msgid "Cut"
+msgstr "切り取り"
+
+msgid "Copy"
+msgstr "コピー"
+
+msgid "Paste"
+msgstr "貼り付け"
+
+msgid "Delete"
+msgstr "削除(D)"
+
+msgid "Find"
+msgstr "検索"
+
+msgid "Find Next"
+msgstr "次を検索(F)"
+
+msgid "Replace"
+msgstr "置換"
+
+#: src/controls.c:66
+msgid "Replace All"
+msgstr ""
+
+msgid "Go To"
+msgstr "移動(O)"
+
+msgid "Select All"
+msgstr "すべて選択(A)"
+
+msgid "Zoom"
+msgstr "拡大"
+
+msgid "Zoom In"
+msgstr "拡大(I)"
+
+msgid "Zoom Out"
+msgstr "縮小(O)"
+
+msgid "Best Fit"
+msgstr "ウィンドウに合わせる(B)"
+
+#: src/controls.c:77
+msgid "Actual Size"
+msgstr ""
+
+msgid "Full Screen"
+msgstr "全画面表示"
+
+msgid "Status Bar"
+msgstr "ステータス バー(S)"
+
+msgid "Font"
+msgstr "フォント(N)"
+
+msgid "Font style"
+msgstr "スタイル(Y)"
+
+msgid "Bold"
+msgstr "太字"
+
+msgid "Italic"
+msgstr "斜体"
+
+msgid "Regular"
+msgstr "標準"
+
+msgid "Size"
+msgstr "サイズ"
+
+msgid "Word Wrap"
+msgstr "右端で折り返す(W)"
+
+msgid "Options"
+msgstr "オプション"
+
+msgid "Customize"
+msgstr "カスタマイズ"
+
+msgid "New Window"
+msgstr "新しいウィンドウ(N)"
+
+#: src/controls.c:99
+msgid "New Tab"
+msgstr ""
+
+msgid "Close Window"
+msgstr "ウィンドウを閉じる"
+
+#: src/controls.c:101
+msgid "Close Tab"
+msgstr ""
+
+#: src/controls.c:105
+msgid "Help Topics"
+msgstr ""
+
+msgid "About %s"
+msgstr "%s のバージョン情報"
+
+msgid "..."
+msgstr "..."
+
+msgid ":"
+msgstr ":"
+
+msgid "Application Data"
+msgstr "Application Data"
+
+msgid "Desktop"
+msgstr "デスクトップ"
+
+msgid "Downloads"
+msgstr "ダウンロード"
+
+msgid "Favorites"
+msgstr "お気に入り(A)"
+
+msgid "My Documents"
+msgstr "My Documents"
+
+msgid "My Music"
+msgstr "My Music"
+
+msgid "My Pictures"
+msgstr "My Pictures"
+
+msgid "My Recent Documents"
+msgstr "最近使ったファイル"
+
+msgid "Recycle Bin"
+msgstr "ごみ箱"
+
+msgid "My Video"
+msgstr "マイ ビデオ"
+
+#: src/places.c:22
+msgid "Adminstrative Tools"
+msgstr ""
+
+msgid "My Computer"
+msgstr "マイ コンピュータ"
+
+msgid "My Network Places"
+msgstr "マイ ネットワーク"
+
+msgid "Control Panel"
+msgstr "コントロール パネル"
+
+msgid "Network Connections"
+msgstr "ネットワーク接続"
+
+msgid "Printers and Faxes"
+msgstr "プリンタと FAX"

@@ -1,0 +1,56 @@
+# Japanese translations for PACKAGE package.
+# Copyright (C) 2022 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Automatically generated, 2022.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-07-14 18:37+0100\n"
+"PO-Revision-Date: 2022-07-14 18:37+0100\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: ja\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgid "Run"
+msgstr "実行"
+
+msgid ""
+"Type the name of a program, folder, document, or Internet resource, and "
+"Windows will open it for you."
+msgstr ""
+"実行するプログラム名、または開くフォルダやドキュメント名、インターネット リ"
+"ソース名を入力してください。"
+
+msgid "All Files"
+msgstr "すべてのファイル"
+
+msgid "Programs"
+msgstr "プログラム"
+
+msgid ""
+"Windows cannot find '%s'. Make sure you typed the name correctly, and then "
+"try again. To search for a file, click the Start button, and then click "
+"Search."
+msgstr ""
+"'%s' が見つかりません。名前を正しく入力したかどうかを確認してから、やり直して"
+"ください。ファイルを検索するには、 [スタート] ボタンをクリックしてから、[検"
+"索] をクリックしてください。"
+
+#: src/dialog.c:480
+#, c-format
+msgid ""
+"%s\n"
+"\n"
+"The parameter is incorrect"
+msgstr ""
+
+#: src/dialog.c:489
+#, c-format
+msgid "Execution of '%s' failed."
+msgstr ""

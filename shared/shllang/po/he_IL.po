@@ -1,0 +1,272 @@
+# Hebrew translations for PACKAGE package.
+# Copyright (C) 2022 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Automatically generated, 2022.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-04-24 23:23+0100\n"
+"PO-Revision-Date: 2022-07-13 22:38+0100\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: he\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 2.4.2\n"
+
+msgid "OK"
+msgstr "אישור"
+
+msgid "Cancel"
+msgstr "ביטול"
+
+msgid "Yes"
+msgstr "כן"
+
+msgid "No"
+msgstr "לא"
+
+msgid "Abort"
+msgstr "בטל"
+
+msgid "Retry"
+msgstr "נסה שנית"
+
+msgid "Ignore"
+msgstr "התעלם"
+
+msgid "Help"
+msgstr "עזרה"
+
+msgid "File"
+msgstr "קובץ"
+
+msgid "Edit"
+msgstr "ערוך"
+
+msgid "View"
+msgstr "תצוגה"
+
+msgid "Insert"
+msgstr "הוספה"
+
+msgid "Format"
+msgstr "עיצוב"
+
+msgid "Tools"
+msgstr "כלים"
+
+msgid "Window"
+msgstr "Windows"
+
+msgid "New"
+msgstr "חדש"
+
+msgid "Browse"
+msgstr "עיון"
+
+msgid "Open"
+msgstr "פתח"
+
+msgid "Save"
+msgstr "שמור"
+
+msgid "Save As"
+msgstr "שמירה בשם"
+
+#: src/controls.c:42
+msgid "Save All"
+msgstr ""
+
+msgid "Close"
+msgstr "סגור"
+
+msgid "Close All"
+msgstr "סגור הכל"
+
+msgid "Properties"
+msgstr "מאפיינים"
+
+msgid "Print"
+msgstr "הדפס"
+
+#: src/controls.c:48
+msgid "Print Preview"
+msgstr ""
+
+msgid "Page Setup"
+msgstr "הגדרת עמוד"
+
+msgid "Exit"
+msgstr "יציאה"
+
+msgid "Undo"
+msgstr "בטל"
+
+msgid "Redo"
+msgstr "בצע שוב"
+
+msgid "Cut"
+msgstr "גזור"
+
+msgid "Copy"
+msgstr "העתק"
+
+msgid "Paste"
+msgstr "הדבקה"
+
+msgid "Delete"
+msgstr "מחק"
+
+#: src/controls.c:63
+msgid "Find"
+msgstr ""
+
+#: src/controls.c:64
+msgid "Find Next"
+msgstr ""
+
+#: src/controls.c:65
+msgid "Replace"
+msgstr ""
+
+#: src/controls.c:66
+msgid "Replace All"
+msgstr ""
+
+msgid "Go To"
+msgstr "עבור אל"
+
+msgid "Select All"
+msgstr "בחר הכל"
+
+msgid "Zoom"
+msgstr "שינוי גודל התצוגה"
+
+msgid "Zoom In"
+msgstr "הגדל תצוגה"
+
+msgid "Zoom Out"
+msgstr "הקטן תצוגה"
+
+msgid "Best Fit"
+msgstr "התאמה מיטבית"
+
+#: src/controls.c:77
+msgid "Actual Size"
+msgstr ""
+
+msgid "Full Screen"
+msgstr "מסך מלא"
+
+msgid "Status Bar"
+msgstr "שורת מצב"
+
+msgid "Font"
+msgstr "גופנים"
+
+#: src/controls.c:84
+msgid "Font style"
+msgstr ""
+
+msgid "Bold"
+msgstr "מודגש"
+
+msgid "Italic"
+msgstr "נטוי"
+
+#: src/controls.c:87
+msgid "Regular"
+msgstr ""
+
+msgid "Size"
+msgstr "גודל"
+
+msgid "Word Wrap"
+msgstr "גלישת שורות"
+
+msgid "Options"
+msgstr "אפשרויות"
+
+msgid "Customize"
+msgstr "התאמה אישית"
+
+msgid "New Window"
+msgstr "חלון חדש"
+
+#: src/controls.c:99
+msgid "New Tab"
+msgstr ""
+
+msgid "Close Window"
+msgstr "סגור חלון"
+
+#: src/controls.c:101
+msgid "Close Tab"
+msgstr ""
+
+#: src/controls.c:105
+msgid "Help Topics"
+msgstr ""
+
+msgid "About %s"
+msgstr "אודות ‎%s‎"
+
+msgid "..."
+msgstr "..."
+
+msgid ":"
+msgstr ":"
+
+msgid "Application Data"
+msgstr "Application Data"
+
+msgid "Desktop"
+msgstr "שולחן העבודה"
+
+msgid "Downloads"
+msgstr "הורדות"
+
+msgid "Favorites"
+msgstr "מועדפים"
+
+msgid "My Documents"
+msgstr "My Documents"
+
+msgid "My Music"
+msgstr "My Music"
+
+msgid "My Pictures"
+msgstr "My Pictures"
+
+msgid "My Recent Documents"
+msgstr "המסמכים האחרונים שלי"
+
+msgid "Recycle Bin"
+msgstr "סל המיחזור"
+
+msgid "My Video"
+msgstr "הווידיאו שלי"
+
+#: src/places.c:22
+msgid "Adminstrative Tools"
+msgstr ""
+
+msgid "My Computer"
+msgstr "המחשב שלי"
+
+msgid "My Network Places"
+msgstr "מיקומי הרשת שלי"
+
+msgid "Control Panel"
+msgstr "לוח הבקרה"
+
+msgid "Network Connections"
+msgstr "חיבורי רשת"
+
+msgid "Printers and Faxes"
+msgstr "מדפסות ופקסים"
