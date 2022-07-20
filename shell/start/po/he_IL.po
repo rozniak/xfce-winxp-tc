@@ -1,0 +1,141 @@
+# Hebrew translations for PACKAGE package.
+# Copyright (C) 2022 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Automatically generated, 2022.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-07-20 21:28+0100\n"
+"PO-Revision-Date: 2022-07-20 21:28+0100\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: he\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "All Programs"
+msgstr "כל התוכניות"
+
+msgid "Opens your Internet browser."
+msgstr "פתיחת דפדפן האינטרנט שלך."
+
+msgid "Opens your e-mail program so you can send or read a message."
+msgstr "פתיחת תוכנית הדואר האלקטרוני שלך כדי שתוכל לשלוח או לקרוא הודעה."
+
+msgid "Internet"
+msgstr "אינטרנט"
+
+msgid "E-mail"
+msgstr "דואר אלקטרוני"
+
+msgid "start"
+msgstr " התחל"
+
+msgid "Click here to begin"
+msgstr "לחץ כאן כדי להתחיל"
+
+msgid "Log Off"
+msgstr "צא"
+
+msgid ""
+"Provides options for closing your programs and logging off, or for leaving "
+"your programs running and switching to another user."
+msgstr ""
+"מתן אפשרויות לסגירת התוכניות וניתוק, או להשארת התוכניות פתוחות ומעבר למשתמש "
+"אחר."
+
+msgid "Turn Off Computer"
+msgstr "כבה את המחשב"
+
+msgid ""
+"Provides options for turning off or restarting your computer, or for "
+"activating Stand By or Hibernate modes."
+msgstr ""
+"מתן אפשרויות לכיבוי או להפעלה מחדש של המחשב, או להפעלת מצבי המתנה או שנת "
+"חורף."
+
+msgid ""
+"Opens the My Documents folder, where you can store letters, reports, notes, "
+"and other kinds of documents."
+msgstr ""
+"פתיחת התיקיה 'המסמכים שלי', בה ניתן לאחסן מכתבים, דו\"חות, רשימות וסוגי "
+"מסמכים אחרים."
+
+msgid "Displays recently opened documents and folders."
+msgstr "הצגת המסמכים והתיקיות שפתחת לאחרונה."
+
+msgid ""
+"Opens the My Pictures folder, where you can store digital photos, images, "
+"and graphics files."
+msgstr ""
+"פתיחת התיקיה התמונות שלי, בה ניתן לאחסן צילומים דיגיטליים, תמונות וקבצי "
+"גרפיקה."
+
+msgid ""
+"Opens the My Music folder, where you can store music and other audio files."
+msgstr "פתיחת התיקיה המוסיקה שלי, בה ניתן לאחסן קבצי מוסיקה וקבצי שמע אחרים."
+
+msgid ""
+"Gives access to, and information about, the disk drives, cameras, scanners, "
+"and other hardware connected to your computer."
+msgstr ""
+"מתן גישה אל כונני הדיסקים, המצלמות, הסורקים והתקני חומרה אחרים המחוברים "
+"למחשב שלך, והצגת מידע אודותיהם."
+
+msgid ""
+"Provides options for you to customize the appearance and functionality of "
+"your computer, add or remove programs, and set up network connections and "
+"user accounts."
+msgstr ""
+"מתן אפשרויות להתאמה אישית של המראה והפונקציונליות של המחשב, להוספה או הסרה "
+"של תוכניות ולהגדרת חיבורי רשת וחשבונות משתמשים."
+
+msgid ""
+"Chooses default programs for certain activities, such as Web browsing or "
+"sending e-mail, and specifies which programs are accessible from the Start "
+"menu, desktop, and other locations."
+msgstr ""
+"בוחר בתוכנות ברירת מחדל עבור פעילויות מסויימות כמו גלישה באינטרנט או שליחת "
+"דואר אלקטרוני, וקובע איזה תוכניות נגישות מתפריט התחל, שולחן העבודה ומיקומים "
+"אחרים."
+
+msgid "Set Program Access and Defaults"
+msgstr "הגדר גישה לתכניות וברירות מחדל"
+
+msgid "Connects to other computers, networks, and the Internet."
+msgstr "חיבור למחשבים אחרים, לרשתות ולאינטרנט"
+
+msgid "Connect To"
+msgstr "התחבר אל"
+
+msgid "Shows installed printers and fax printers and helps you add new ones."
+msgstr ""
+"הצגת המדפסות הרגילות ומדפסות הפקס המותקנות ומתן עזרה להוספת מדפסות חדשות"
+
+msgid ""
+"Opens a central location for Help topics, tutorials, troubleshooting, and "
+"other support services."
+msgstr ""
+"פתיחת מיקום מרכזי הכולל נושאי עזרה, ערכות לימוד, כלי פתרון בעיות ושירותי "
+"תמיכה נוספים."
+
+msgid "Help and Support"
+msgstr "עזרה ותמיכה"
+
+msgid ""
+"Opens a window where you can pick search options and work with search "
+"results."
+msgstr "פתיחת חלון בו באפשרותך לבחור אפשרויות חיפוש ולעבוד עם תוצאות חיפוש."
+
+msgid "Search"
+msgstr "חיפוש"
+
+msgid "Opens a program, folder, document, or Web site."
+msgstr "פתיחת תוכנית, תיקיה, מסמך או אתר אינטרנט."
+
+msgid "Run..."
+msgstr "הפעלה..."

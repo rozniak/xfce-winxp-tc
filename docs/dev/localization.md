@@ -111,7 +111,7 @@ For libraries you must do the following:
 ...more includes...
 ```
 
-## Tip: Use `_()` vs. `N_()`
+## Tip: `_()` vs. `N_()`
 If you ever look at the source code for `wintc-shllang` you might notice some usage of `_()` and some of `N_()`.
 
 `N_()` does not cause any translation at runtime, it is basically just a marker to say, "hey, put this string in the POT file". This is useful if you have strings in an array or something, composed dynamically (in which case `_()` wouldn't work because you'd need a translation for every possible composed string).

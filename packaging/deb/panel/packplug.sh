@@ -120,6 +120,7 @@ do
     #
     pkg_debian_dir="${PKG_DIR}/DEBIAN"
     pkg_desktop_dir="${PKG_DIR}/usr/share/xfce4/panel/plugins"
+    pkg_locale_dir="${PKG_DIR}/usr/share/locale"
     pkg_plug_dir="${PKG_DIR}/usr/lib/x86_64-linux-gnu/xfce4/panel/plugins"
     pkg_res_dir="${PKG_DIR}/usr/share/winxp/shell-res"
 
@@ -139,6 +140,7 @@ do
     mkdir -p "${PKG_DIR}"
     mkdir -p "${pkg_debian_dir}"
     mkdir -p "${pkg_desktop_dir}"
+    mkdir -p "${pkg_locale_dir}"
     mkdir -p "${pkg_plug_dir}"
 
     # Copy files
@@ -160,6 +162,25 @@ do
 
         cp "${plug_dir}/res/"* "${pkg_res_dir}" >> "${log_path}" 2>&1
         ((pkg_setup_result+=$?))
+    fi
+
+    # Include translations if present
+    #
+    if [[ -d "${plug_dir}/po" ]]
+    then
+        for pofile in "${plug_dir}/po"/*
+        do
+            if [[ "${pofile}" =~ /([a-z]{2}(_[A-Z]{2})?)\.po$ ]]
+            then
+                po_language="${BASH_REMATCH[1]}"
+                locale_dir="${pkg_locale_dir}/${po_language}/LC_MESSAGES"
+
+                mkdir -p "${locale_dir}"
+
+                msgfmt -o "${locale_dir}/wintc-${plug_safename}.mo" "${pofile}" >> "${log_path}" 2>&1
+                ((pkg_setup_result+=$?))
+            fi
+        done
     fi
 
     # Check package setup good

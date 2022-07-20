@@ -86,7 +86,7 @@ fi
 #
 
 # The argument passed to this script is a Windows MUI code (not the numeric kind), we
-# just translate it to an ISO 639-1 code in the standard output.
+# just translate it to an ISO 639-1 code in the standard output
 #
 mui_code="${1}"
 

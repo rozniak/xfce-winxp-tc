@@ -249,7 +249,7 @@ safe_string="${safe_string//\?/\\?}"
 #
 # Accelerators are removed in the translations though as a reversal of this process
 #
-short_string_len=10
+short_string_len=15
 string_len="${#1}"
 
 if [[ "${string_len}" -le "${short_string_len}" ]]

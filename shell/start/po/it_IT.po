@@ -1,0 +1,149 @@
+# Italian translations for PACKAGE package.
+# Copyright (C) 2022 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Automatically generated, 2022.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-07-20 21:28+0100\n"
+"PO-Revision-Date: 2022-07-20 21:28+0100\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: it\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "All Programs"
+msgstr "Tutti i programmi"
+
+msgid "Opens your Internet browser."
+msgstr "Apre il browser Internet."
+
+msgid "Opens your e-mail program so you can send or read a message."
+msgstr ""
+"Apre il programma di posta elettronica per l'invio o la lettura dei messaggi."
+
+msgid "Internet"
+msgstr "Internet"
+
+msgid "E-mail"
+msgstr "Posta elettronica"
+
+msgid "start"
+msgstr "start"
+
+msgid "Click here to begin"
+msgstr "Fare clic per iniziare."
+
+msgid "Log Off"
+msgstr "Disconnetti"
+
+msgid ""
+"Provides options for closing your programs and logging off, or for leaving "
+"your programs running and switching to another user."
+msgstr ""
+"Fornisce opzioni per chiudere i programmi e disconnettersi o per lasciare i "
+"propri programmi in esecuzione e cambiare utente."
+
+msgid "Turn Off Computer"
+msgstr "Spegni computer"
+
+msgid ""
+"Provides options for turning off or restarting your computer, or for "
+"activating Stand By or Hibernate modes."
+msgstr ""
+"Fornisce opzioni per spegnere o riavviare il computer o per attivare le "
+"modalità Standby o Sospendi."
+
+msgid ""
+"Opens the My Documents folder, where you can store letters, reports, notes, "
+"and other kinds of documents."
+msgstr ""
+"Apre la cartella Documenti, dove è possibile archiviare lettere, rapporti, "
+"note e altri tipi di documenti."
+
+msgid "Displays recently opened documents and folders."
+msgstr "Visualizza documenti e cartelle aperti di recente."
+
+msgid ""
+"Opens the My Pictures folder, where you can store digital photos, images, "
+"and graphics files."
+msgstr ""
+"Apre la cartella Immagini, dove è possibile archiviare foto digitali, "
+"immagini e file di grafica."
+
+msgid ""
+"Opens the My Music folder, where you can store music and other audio files."
+msgstr ""
+"Apre la cartella Musica, dove è possibile archiviare musica e altri file "
+"audio."
+
+msgid ""
+"Gives access to, and information about, the disk drives, cameras, scanners, "
+"and other hardware connected to your computer."
+msgstr ""
+"Fornisce informazioni relative a unità disco, videocamere, scanner e altro "
+"hardware collegato al computer e consente di accedervi."
+
+msgid ""
+"Provides options for you to customize the appearance and functionality of "
+"your computer, add or remove programs, and set up network connections and "
+"user accounts."
+msgstr ""
+"Fornisce opzioni per personalizzare l'aspetto e la funzionalità del "
+"computer, aggiungere o rimuovere programmi, impostare connessioni di rete e "
+"account utente."
+
+msgid ""
+"Chooses default programs for certain activities, such as Web browsing or "
+"sending e-mail, and specifies which programs are accessible from the Start "
+"menu, desktop, and other locations."
+msgstr ""
+"Consente di scegliere i programmi predefiniti per alcune attività come "
+"l'esplorazione del Web o l'invio di messaggi di posta elettronica e di "
+"specificare i programmi accessibili dal menu di avvio, dal desktop e da "
+"altri percorsi."
+
+msgid "Set Program Access and Defaults"
+msgstr "Impostazioni accesso ai programmi"
+
+msgid "Connects to other computers, networks, and the Internet."
+msgstr "Connette a altri computer, reti o a Internet."
+
+msgid "Connect To"
+msgstr "Connetti a"
+
+msgid "Shows installed printers and fax printers and helps you add new ones."
+msgstr ""
+"Mostra le stampanti e le stampanti fax installate e consente di aggiungerne "
+"di nuove."
+
+msgid ""
+"Opens a central location for Help topics, tutorials, troubleshooting, and "
+"other support services."
+msgstr ""
+"Apre una pagina contenente argomenti della Guida in linea, esercitazioni, "
+"risoluzione problemi, e altri servizi di supporto tecnico."
+
+msgid "Help and Support"
+msgstr "Guida in linea e supporto tecnico"
+
+msgid ""
+"Opens a window where you can pick search options and work with search "
+"results."
+msgstr ""
+"Apre la finestra di selezione delle opzioni di ricerca al cui interno è "
+"possibile utilizzare i risultati della ricerca."
+
+msgid "Search"
+msgstr "Cerca"
+
+msgid "Opens a program, folder, document, or Web site."
+msgstr "Apre un programma, una cartella, un documento o un sito."
+
+msgid "Run..."
+msgstr "Esegui..."

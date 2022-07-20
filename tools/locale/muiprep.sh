@@ -18,8 +18,17 @@ REQUIRED_PACKAGES=(
 )
 SCRIPTDIR=`dirname "$0"`
 
-MUI_DIR="${SCRIPTDIR}/mui-stuff"
 LOG_PATH="${CURDIR}/preperr.log"
+MUI_DIR="${SCRIPTDIR}/mui-stuff"
+SH_LCID2MUI="${SCRIPTDIR}/lcid2mui.sh"
+TMP_SP_DIR="${CURDIR}/spmv.tmp"
+
+declare -A SPDLL_NAMES=(
+    [SPRA]='xpsp1res.dll.mui'
+    [SPRB]='xpsp2res.dll.mui'
+    [SPRC]='xpsp3res.dll.mui'
+    [OBRB]='xpob2res.dll.mui'
+)
 
 
 
@@ -147,8 +156,48 @@ find "${mui_search_base}" -type d -wholename "*/I386" | while read i386_dir; do
 
         echo "Windows XP files detected in ${i386_dir}"
 
+        # Check that this is an SP3 disc...
+        #
+        if ! compgen -G "${i386_dir}/SPRC*.DL_" > /dev/null
+        then
+            echo "This does not appear to be Service Pack 3! Aborting."
+            exit 1
+        fi
+
+        # All good, continue
+        #
         mkdir -p "${xp_expand_dir}"
 
+        # Handle the MUI service pack message DLLs
+        #
+        mkdir -p "${TMP_SP_DIR}"
+
+        mv "${i386_dir}/"SPR*.DL_ "${TMP_SP_DIR}" >/dev/null 2>>"${LOG_PATH}"
+        mv "${i386_dir}/"OBRB* "${TMP_SP_DIR}" >/dev/null 2>>"${LOG_PATH}"
+
+        for spres_file in "${TMP_SP_DIR}/"*; do
+            sp_basename=`basename "${spres_file}"`
+            sp_kind=`echo "${sp_basename}" | head -c 4`
+            sp_lcid=`echo "${sp_basename}" | head -c 8 | tail -c 4`
+
+            target_filename="${SPDLL_NAMES[$sp_kind]}"
+            target_mui=`${SH_LCID2MUI} "${sp_lcid}"`
+
+            target_dir="${MUI_DIR}/${target_mui}"
+
+            mkdir -p "${target_dir}"
+
+            cabextract -p "${spres_file}" > "${target_dir}/${target_filename}" 2>>"${LOG_PATH}"
+
+            if [[ $? -gt 0 ]]
+            then
+                echo "Failed to expand files, see ${LOG_PATH} for output."
+                exit 1
+            fi
+        done
+
+        # Handle the actual disc contents we're interested in
+        #
         for ext in "${exts[@]}"
         do
             find "${i386_dir}" -type f        \
@@ -161,6 +210,11 @@ find "${mui_search_base}" -type d -wholename "*/I386" | while read i386_dir; do
                 exit 1
             fi
         done
+
+        # Tidy up
+        #
+        mv "${TMP_SP_DIR}/"* "${i386_dir}" >/dev/null 2>>"${LOG_PATH}"
+        rmdir "${TMP_SP_DIR}"
 
         echo 'Windows XP files prepared.'
     fi

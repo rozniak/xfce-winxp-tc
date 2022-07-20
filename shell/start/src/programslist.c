@@ -1,7 +1,10 @@
+#include "config.h"
+
 #include <garcon/garcon.h>
 #include <garcon-gtk/garcon-gtk.h>
 #include <gio/gdesktopappinfo.h>
 #include <glib.h>
+#include <glib/gi18n-lib.h>
 #include <gtk/gtk.h>
 #include <wintc-comgtk.h>
 #include <wintc-exec.h>
@@ -126,9 +129,7 @@ static void programs_list_append_all_programs_item(
 
     // All programs text
     // 
-    // FIXME: Localize
-    //
-    GtkWidget* all_programs_label = gtk_label_new("All Programs");
+    GtkWidget* all_programs_label = gtk_label_new(_("All Programs"));
 
     // 'Arrow' box
     //
@@ -160,10 +161,8 @@ static void programs_list_append_default_items(
     ProgramsList* programs_list
 )
 {
-    // FIXME: Localize these
-    //
-    const gchar* imsg = "Opens your Internet browser.";
-    const gchar* emsg = "Opens your e-mail program so you can send or read a message.";
+    const gchar* imsg = _("Opens your Internet browser.");
+    const gchar* emsg = _("Opens your e-mail program so you can send or read a message.");
 
     // Load desktop entries and create menu items
     //
@@ -187,12 +186,12 @@ static void programs_list_append_default_items(
 
     GtkWidget* internet_item = start_menu_item_new_from_desktop_entry(
                                    internet_entry,
-                                   "Internet",
+                                   _("Internet"),
                                    imsg
                                );
     GtkWidget* email_item    = start_menu_item_new_from_desktop_entry(
                                    email_entry,
-                                   "E-mail",
+                                   _("E-mail"),
                                    emsg
                                );
 

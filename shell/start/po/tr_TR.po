@@ -1,0 +1,144 @@
+# Turkish translations for PACKAGE package.
+# Copyright (C) 2022 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Automatically generated, 2022.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-07-20 21:28+0100\n"
+"PO-Revision-Date: 2022-07-20 21:28+0100\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: tr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "All Programs"
+msgstr "Tüm Programlar"
+
+msgid "Opens your Internet browser."
+msgstr "Internet tarayıcınızı açar."
+
+msgid "Opens your e-mail program so you can send or read a message."
+msgstr "İleti okuyabilmeniz ve gönderebilmeniz için e-posta programınızı açar."
+
+msgid "Internet"
+msgstr "Internet"
+
+msgid "E-mail"
+msgstr "E-posta"
+
+msgid "start"
+msgstr "Başlat"
+
+msgid "Click here to begin"
+msgstr "Başlamak için burayı tıklatın"
+
+msgid "Log Off"
+msgstr "Oturumu Kapat"
+
+msgid ""
+"Provides options for closing your programs and logging off, or for leaving "
+"your programs running and switching to another user."
+msgstr ""
+"Programlarınızı kapatıp oturumu kapatmak veya programları açık bırakıp başka "
+"bir kullanıcıya geçiş yapmak için seçenekler sağlar."
+
+msgid "Turn Off Computer"
+msgstr "Bilgisayarı Kapat"
+
+msgid ""
+"Provides options for turning off or restarting your computer, or for "
+"activating Stand By or Hibernate modes."
+msgstr ""
+"Bilgisayarınızı kapatma, yeniden başlatma ya da Bekleme ve Hazırda Bekleme "
+"modlarını etkinleştirme seçenekleri sunar."
+
+msgid ""
+"Opens the My Documents folder, where you can store letters, reports, notes, "
+"and other kinds of documents."
+msgstr ""
+"Mektupları, raporları, notları, ve diğer belgeleri saklayabileceğiniz "
+"Belgelerim klasörünü açar."
+
+msgid "Displays recently opened documents and folders."
+msgstr "Son açoan belge ve klasörleri gösterir."
+
+msgid ""
+"Opens the My Pictures folder, where you can store digital photos, images, "
+"and graphics files."
+msgstr ""
+"Dijital fotoğrafları, resimleri ve grafik dosyalarını saklayabileceğiniz "
+"Resimlerim klasörünü açar."
+
+msgid ""
+"Opens the My Music folder, where you can store music and other audio files."
+msgstr ""
+"Müzik ve diğer ses dosyalarınızı saklayabileceğiniz Müziğim klasörünü açar."
+
+msgid ""
+"Gives access to, and information about, the disk drives, cameras, scanners, "
+"and other hardware connected to your computer."
+msgstr ""
+"Bilgisayarınıza bağlı disk sürücüleri, kameralar, tarayıcılar ve diğer "
+"donanımla ilgili bilgi ve erişim sağlar."
+
+msgid ""
+"Provides options for you to customize the appearance and functionality of "
+"your computer, add or remove programs, and set up network connections and "
+"user accounts."
+msgstr ""
+"Programlarınızı eklemeniz veya kaldırmanız, ağ ve kullanıcı hesapları "
+"kurmanız, görünüm ve çalışma özelliklerini özelleştirmeniz için seçenekler "
+"sağlar."
+
+msgid ""
+"Chooses default programs for certain activities, such as Web browsing or "
+"sending e-mail, and specifies which programs are accessible from the Start "
+"menu, desktop, and other locations."
+msgstr ""
+"Web taraması, e-posta gönderme gibi belli etkinlikler için varsayılan "
+"programları seçer ve Başlat menüsü, masaüstü ve diğer yerlerden erişilebilen "
+"programları belirtir."
+
+msgid "Set Program Access and Defaults"
+msgstr "Program Erişim ve Varsayılanlarını Ayarla"
+
+msgid "Connects to other computers, networks, and the Internet."
+msgstr "Diğer bilgisayarlara, ağa ve Internete bağlar."
+
+msgid "Connect To"
+msgstr "Bağlan"
+
+msgid "Shows installed printers and fax printers and helps you add new ones."
+msgstr "Yüklü faks ve yazıcıları gösterip yenilerini eklemenize yardımcı olur."
+
+msgid ""
+"Opens a central location for Help topics, tutorials, troubleshooting, and "
+"other support services."
+msgstr ""
+"Yardım konuları, öğreticiler, sorun giderme ve destek hizmetleri için "
+"merkezi bir konum açar."
+
+msgid "Help and Support"
+msgstr "Yardım ve Destek"
+
+msgid ""
+"Opens a window where you can pick search options and work with search "
+"results."
+msgstr ""
+"Arama seçeneklerini seçebileceğiniz ve arama sonuçları ile çalışabileceğiniz "
+"bir pencere açar."
+
+msgid "Search"
+msgstr "Ara"
+
+msgid "Opens a program, folder, document, or Web site."
+msgstr "Bir program, klasör, belge veya Web sitesi açar."
+
+msgid "Run..."
+msgstr "Çalıştır..."

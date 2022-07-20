@@ -1,11 +1,15 @@
+#include "config.h"
+
 #include <garcon/garcon.h>
 #include <gdk/gdk.h>
 #include <glib.h>
+#include <glib/gi18n-lib.h>
 #include <gio/gdesktopappinfo.h>
 #include <gio/gio.h>
 #include <gtk/gtk.h>
 #include <wintc-comgtk.h>
 #include <wintc-exec.h>
+#include <wintc-shllang.h>
 
 #include "action.h"
 #include "startmenuitem.h"
@@ -120,80 +124,78 @@ GtkWidget* start_menu_item_new_from_action(
     const gchar* name;
     GtkWidget*   start_menu_item;
 
-    // FIXME: Localize the names and comments for these
-    //
     switch (action)
     {
         case WINTC_ACTION_MYDOCS:
-            comment   = "Opens the My Documents folder, where you can store letters, reports, notes, and other kinds of documents.";
+            comment   = _("Opens the My Documents folder, where you can store letters, reports, notes, and other kinds of documents.");
             icon_name = "folder-documents";
-            name      = "My Documents";
+            name      = wintc_get_place_name(WINTC_PLACE_DOCUMENTS);
             break;
 
         case WINTC_ACTION_MYRECENTS:
-            comment   = "Displays recently opened documents and folders.";
+            comment   = _("Displays recently opened documents and folders.");
             icon_name = "document-open-recent";
-            name      = "My Recent Documents";
+            name      = wintc_get_place_name(WINTC_PLACE_RECENTS);
             break;
 
         case WINTC_ACTION_MYPICS:
-            comment   = "Opens the My Pictures folder, where you can store digital photos, images, and graphics files.";
+            comment   = _("Opens the My Pictures folder, where you can store digital photos, images, and graphics files.");
             icon_name = "folder-pictures";
-            name      = "My Pictures";
+            name      = wintc_get_place_name(WINTC_PLACE_PICTURES);
             break;
 
         case WINTC_ACTION_MYMUSIC:
-            comment   = "Opens the My Music folder, where you can store music and other audio files.";
+            comment   = _("Opens the My Music folder, where you can store music and other audio files.");
             icon_name = "folder-music";
-            name      = "My Music";
+            name      = wintc_get_place_name(WINTC_PLACE_MUSIC);
             break;
 
         case WINTC_ACTION_MYCOMP:
-            comment   = "Gives access to, and information about, the disk drives, cameras, scanners, and other hardware connected to your computer.";
+            comment   = _("Gives access to, and information about, the disk drives, cameras, scanners, and other hardware connected to your computer.");
             icon_name = "computer";
-            name      = "My Computer";
+            name      = wintc_get_place_name(WINTC_PLACE_DRIVES);
             break;
 
         case WINTC_ACTION_CONTROL:
-            comment   = "Provides options for you to customize the appearance and functionality of your computer, add or remove programs, and set up network connections and user accounts.";
+            comment   = _("Provides options for you to customize the appearance and functionality of your computer, add or remove programs, and set up network connections and user accounts.");
             icon_name = "preferences-other";
-            name      = "Control Panel";
+            name      = wintc_get_place_name(WINTC_PLACE_CONTROLPANEL);
             break;
 
         case WINTC_ACTION_MIMEMGMT:
-            comment   = "Chooses default programs for certain activities, such as Web browsing or sending e-mail, and specifies which programs are accessible from the Start menu, desktop, and other locations.";
+            comment   = _("Chooses default programs for certain activities, such as Web browsing or sending e-mail, and specifies which programs are accessible from the Start menu, desktop, and other locations.");
             icon_name = "preferences-desktop-default-applications";
-            name      = "Set Program Access and Defaults";
+            name      = _("Set Program Access and Defaults");
             break;
 
         case WINTC_ACTION_CONNECTTO:
-            comment   = "Connects to other computers, networks, and the Internet.";
+            comment   = _("Connects to other computers, networks, and the Internet.");
             icon_name = "preferences-system-network";
-            name      = "Connect To";
+            name      = _("Connect To");
             break;
 
         case WINTC_ACTION_PRINTERS:
-            comment   = "Shows installed printers and fax printers and helps you add new ones.";
+            comment   = _("Shows installed printers and fax printers and helps you add new ones.");
             icon_name = "printer";
-            name      = "Printers and Faxes";
+            name      = wintc_get_place_name(WINTC_PLACE_PRINTERS);
             break;
 
         case WINTC_ACTION_HELP:
-            comment   = "Opens a central location for Help topics, tutorials, troubleshooting, and other support services.";
+            comment   = _("Opens a central location for Help topics, tutorials, troubleshooting, and other support services.");
             icon_name = "help-browser";
-            name      = "Help and Support";
+            name      = _("Help and Support");
             break;
 
         case WINTC_ACTION_SEARCH:
-            comment   = "Opens a window where you can pick search options and work with search results.";
+            comment   = _("Opens a window where you can pick search options and work with search results.");
             icon_name = "system-search";
-            name      = "Search";
+            name      = _("Search");
             break;
 
         case WINTC_ACTION_RUN:
-            comment   = "Opens a program, folder, document or Web site.";
+            comment   = _("Opens a program, folder, document, or Web site.");
             icon_name = "system-run";
-            name      = "Run...";
+            name      = _("Run...");
             break;
 
         default:

@@ -1,4 +1,7 @@
+#include "config.h"
+
 #include <glib.h>
+#include <glib/gi18n-lib.h>
 #include <gtk/gtk.h>
 #include <libxfce4panel/xfce-panel-plugin.h>
 #include <libxfce4util/libxfce4util.h>
@@ -77,7 +80,7 @@ static void start_button_init(
 
     // Start text
     //
-    GtkWidget* start_label = gtk_label_new("start"); // FIXME: Use localized string
+    GtkWidget* start_label = gtk_label_new(_("start"));
 
     gtk_box_pack_start(GTK_BOX(outer_box), icon_box, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(outer_box), start_label, FALSE, FALSE, 0);
@@ -86,7 +89,7 @@ static void start_button_init(
 
     // FIXME: Use localized string
     //
-    gtk_widget_set_tooltip_text(GTK_WIDGET(self), "Click here to begin");
+    gtk_widget_set_tooltip_text(GTK_WIDGET(self), _("Click here to begin"));
 
     // Add style class
     //

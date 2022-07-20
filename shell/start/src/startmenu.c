@@ -1,5 +1,8 @@
+#include "config.h"
+
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <glib.h>
+#include <glib/gi18n-lib.h>
 #include <gtk/gtk.h>
 #include <libxfce4panel/xfce-panel-plugin.h>
 #include <libxfce4util/libxfce4util.h>
@@ -222,7 +225,7 @@ static void create_logoffpane_structure(
                                    "system-log-out",
                                    GTK_ICON_SIZE_LARGE_TOOLBAR
                                );
-    GtkWidget* logoff_label  = gtk_label_new("Log Off"); // FIXME: Use localized string
+    GtkWidget* logoff_label  = gtk_label_new(_("Log Off"));
 
     gtk_box_pack_start(GTK_BOX(logoff_box), logoff_icon, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(logoff_box), logoff_label, FALSE, FALSE, 0);
@@ -235,11 +238,9 @@ static void create_logoffpane_structure(
         GINT_TO_POINTER(WINTC_ACTION_LOGOFF)
     );
 
-    // FIXME: Localize
-    //
     gtk_widget_set_tooltip_text(
         logoff_button,
-        "Provides options for closing your programs and logging off, or for leaving your programs running and switching to another user."
+        _("Provides options for closing your programs and logging off, or for leaving your programs running and switching to another user.")
     );
 
     // Shut down button
@@ -250,7 +251,7 @@ static void create_logoffpane_structure(
                                      "system-shutdown",
                                      GTK_ICON_SIZE_LARGE_TOOLBAR
                                  );
-    GtkWidget* shutdown_label  = gtk_label_new("Turn Off Computer"); // FIXME: Localize
+    GtkWidget* shutdown_label  = gtk_label_new(_("Turn Off Computer"));
 
     gtk_box_pack_start(GTK_BOX(shutdown_box), shutdown_icon, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(shutdown_box), shutdown_label, FALSE, FALSE, 0);
@@ -263,11 +264,9 @@ static void create_logoffpane_structure(
         GINT_TO_POINTER(WINTC_ACTION_SHUTDOWN)
     );
 
-    // FIXME: Localize
-    //
     gtk_widget_set_tooltip_text(
         shutdown_button,
-        "Provides options for turning off or restarting your computer, or for activating Stand By or Hibernate modes."
+        _("Provides options for turning off or restarting your computer, or for activating Stand By or Hibernate modes.")
     );
 
     // Pack box
