@@ -1,0 +1,12 @@
+/**
+ * insensitive.scss - Professional Style Insensitive State Colour Constants
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+$insensitive_fg_color: #808080;
+$insensitive_bg_color: $bg_color;
+$insensitive_borders_color: $insensitive_fg_color;
