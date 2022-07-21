@@ -7,10 +7,10 @@
  * Author(s): Rory Fewell <roryf@oddmatics.uk>
  */
 
-$base_color: #FFFFFF !default;
-$text_color: #000000 !default;
-$bg_color:   #ECE9D8 !default;
-$fg_color:   #000000 !default;
+$base_color: #FFFFFF        !default;
+$text_color: $threed_objects_fg !default;
+$bg_color:   $threed_objects_bg !default;
+$fg_color:   $threed_objects_fg !default;
 
 $base_hover_color:  transparentize($fg_color, 0.95) !default;
 $drop_target_color: #4E9A06 !default;
