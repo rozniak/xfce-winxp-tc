@@ -1,5 +1,5 @@
 /**
- * misc.scss - Professional Style Assorted Colour Constants
+ * checkradio.scss - Theme Base Check Box and Radio Button Style Constants
  *
  * This source-code is part of Windows XP stuff for XFCE:
  * <<https://www.oddmatics.uk>>
@@ -7,4 +7,4 @@
  * Author(s): Rory Fewell <roryf@oddmatics.uk>
  */
 
-// TODO: Investigate the purpose of this in gtk3-base
+$checkradio_size: 13px !default;

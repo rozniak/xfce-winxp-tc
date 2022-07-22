@@ -1,5 +1,5 @@
 /**
- * start-menu.scss - Professional Style Start Button and Menu Style Constants
+ * start-menu.scss - Theme Base Start Button and Menu Style Constants
  *
  * This source-code is part of Windows XP stuff for XFCE:
  * <<https://www.oddmatics.uk>>
@@ -7,92 +7,84 @@
  * Author(s): Rory Fewell <roryf@oddmatics.uk>
  */
 
-$start_flag_size: 21px;
+$start_flag_size: 20px !default;
 
 $start_flag_styles:
     wintc_define_props_bg(
         $start_flag_styles,
-        false,
+        true,
         undefined,
         undefined,
-        default,
-        0px -1px,
-        default
+        no-repeat,
+        0px 3px,
+        url('../Resources/gtk-3.0/start_flag.png')
     );
-$start_flag_styles: // FIXME: May need adjusting when native is default
+$start_flag_styles:
     wintc_define_props_box(
         $start_flag_styles,
-        false,
+        true,
         margin,
         undefined,
-        0,
+        4,
         undefined,
-        0
+        5
     );
 
 $start_button_styles:
     wintc_define_props_bg(
         $start_button_styles,
-        false,
+        true,
+        undefined,
+        100% 100%,
         undefined,
         undefined,
-        undefined,
-        undefined,
-        linear-gradient(180deg, rgba(240,242,236,1) 0%, rgba(222,224,218,1) 100%)
+        url('../Resources/gtk-3.0/start_button_body.png'),
+        linear-gradient(179deg, rgba(150,196,150,1) 0%, rgba(54,143,55,1) 15%, rgba(54,143,55,1) 35%, rgba(61,159,62,1) 60%, rgba(61,152,61,1) 100%)
     );
 $start_button_styles:
     wintc_define_props_borders(
         $start_button_styles,
-        false,
+        true,
         solid,
         2,
-        2,
-        2,
-        2,
+        13,
+        3,
+        5,
         undefined,
         url('../Resources/gtk-3.0/start_button_border.png')
     );
 $start_button_styles:
-    wintc_define_props_box(
-        $start_button_styles,
-        false,
-        margin,
-        4,
-        0,
-        3,
-        2
-    );
-$start_button_styles: // FIXME: This should be unnecessary once native becomes default
     wintc_define_props_fg(
         $start_button_styles,
-        false,
+        true,
         undefined,
-        undefined
+        1px 1px 2px #152404
     );
-$start_button_styles: // FIXME: As above, native should have these values by default
+$start_button_styles:
     wintc_define_props_font(
         $start_button_styles,
-        false,
-        "sans-serif",
-        8pt,
-        normal,
-        bold
+        true,
+        "Franklin Gothic Medium",
+        14pt,
+        italic,
+        undefined,
     );
 
 $start_button_hover_styles:
     wintc_define_props_bg(
         $start_button_hover_styles,
-        false,
+        true,
         undefined,
         undefined,
         undefined,
         undefined,
-        linear-gradient(180deg, rgba(177,206,239,1) 0%, rgba(155,188,229,1) 100%)
+        url('../Resources/gtk-3.0/start_button_hover_body.png'),
+        linear-gradient(179deg, rgba(146,207,145,1) 0%, rgba(65,174,66,1) 15%, rgba(65,180,65,1) 50%, rgba(64,173,65,1) 95%, rgba(64,166,65,1) 100%),
     );
 $start_button_hover_styles:
     wintc_define_props_borders(
         $start_button_hover_styles,
-        false,
+        true,
         undefined,
         undefined,
         undefined,
@@ -105,17 +97,18 @@ $start_button_hover_styles:
 $start_button_press_styles:
     wintc_define_props_bg(
         $start_button_press_styles,
-        false,
+        true,
         undefined,
         undefined,
         undefined,
         undefined,
-        linear-gradient(180deg, rgba(143,173,211,1) 0%, rgba(157,185,217,1) 90%, rgba(163,190,220,1) 100%)
+        url('../Resources/gtk-3.0/start_button_press_body.png'),
+        linear-gradient(179deg, rgba(43,91,43,1) 0%, rgba(43,91,43,1) 10%, rgba(29,129,29,1) 15%, rgba(29,129,29,1) 35%, rgba(29,145,29,1) 55%, rgba(29,145,29,1) 100%)
     );
 $start_button_press_styles:
     wintc_define_props_borders(
         $start_button_press_styles,
-        false,
+        true,
         undefined,
         undefined,
         undefined,
@@ -128,10 +121,10 @@ $start_button_press_styles:
 $start_button_text_styles:
     wintc_define_props_box(
         $start_button_text_styles,
-        false,
+        true,
         margin,
-        3,
-        1,
         0,
-        1
+        14,
+        0,
+        0
     );

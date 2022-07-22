@@ -1,5 +1,5 @@
 /**
- * button.scss - Professional Style Button Style Constants
+ * button.scss - Luna (Blue) Style Button Style Constants
  *
  * This source-code is part of Windows XP stuff for XFCE:
  * <<https://www.oddmatics.uk>>
@@ -12,33 +12,35 @@ $button_styles:
         $button_styles,
         false,
         undefined,
+        100% 100%,
         undefined,
         undefined,
-        undefined,
-        linear-gradient(180deg, rgba(240,242,236,1) 0%, rgba(222,224,218,1) 100%)
+        url('../Resources/gtk-3.0/button_body.png'),
+        linear-gradient(170deg, rgba(252,252,252,1) 0%, rgba(233,232,225,1) 100%)
     );
 $button_styles:
     wintc_define_props_borders(
         $button_styles,
         false,
         solid,
-        4,
-        4,
-        4,
-        4,
+        3,
+        3,
+        3,
+        3,
         undefined,
-        url('../Resources/gtk-3.0/button_border.png')
+        url('../Resources/gtk-3.0/button_border.png'),
     );
 
 $button_focused_styles:
     wintc_define_props_bg(
         $button_focused_styles,
-        false,
+        false
         undefined,
         undefined,
         undefined,
         undefined,
-        linear-gradient(180deg, rgba(237,237,233,1) 0%, rgba(228,231,225,1) 100%)
+        url('../Resources/gtk-3.0/button_body.png'),
+        linear-gradient(170deg, rgba(252,252,252,1) 0%, rgba(233,232,225,1) 100%)
     );
 $button_focused_styles:
     wintc_define_props_borders(
@@ -61,7 +63,8 @@ $button_hover_styles:
         undefined,
         undefined,
         undefined,
-        linear-gradient(180deg, rgba(177,206,239,1) 0%, rgba(155,188,229,1) 100%)
+        url('../Resources/gtk-3.0/button_body.png'),
+        linear-gradient(170deg, rgba(252,252,252,1) 0%, rgba(233,232,225,1) 100%)
     );
 $button_hover_styles:
     wintc_define_props_borders(
@@ -84,7 +87,8 @@ $button_press_styles:
         undefined,
         undefined,
         undefined,
-        linear-gradient(180deg, rgba(143,173,211,1) 0%, rgba(163,190,220,1) 100%)
+        url('../Resources/gtk-3.0/button_press_body.png'),
+        linear-gradient(170deg, rgba(228,227,220,1) 0%, rgba(226,225,217,1) 5%, rgba(226,225,217,1) 95%, rgba(228,227,220,1) 100%),
     );
 $button_press_styles:
     wintc_define_props_borders(
@@ -103,11 +107,11 @@ $button_inactive_styles:
     wintc_define_props_bg(
         $button_inactive_styles,
         false,
+        #F5F4EA,
         undefined,
         undefined,
         undefined,
-        undefined,
-        linear-gradient(180deg, rgba(237,238,234,1) 0%, rgba(225,227,221,1) 100%)
+        undefined
     );
 $button_inactive_styles:
     wintc_define_props_borders(

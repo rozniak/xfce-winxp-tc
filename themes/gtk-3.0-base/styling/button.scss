@@ -11,36 +11,34 @@ $button_styles:
     wintc_define_props_bg(
         $button_styles,
         true,
+        $threed_objects_bg,
         undefined,
-        100% 100%,
         undefined,
         undefined,
-        url('../Resources/gtk-3.0/button_body.png'),
-        linear-gradient(170deg, rgba(252,252,252,1) 0%, rgba(233,232,225,1) 100%)
+        undefined
     );
 $button_styles:
     wintc_define_props_borders(
         $button_styles,
         true,
-        solid,
-        3,
-        3,
-        3,
-        3,
-        undefined,
-        url('../Resources/gtk-3.0/button_border.png'),
+        outset,
+        1,
+        2,
+        2,
+        1,
+        #FFF darken($threed_objects_bg, 45%) darken($threed_objects_bg, 45%) #FFF,
+        undefined
     );
 
 $button_focused_styles:
     wintc_define_props_bg(
         $button_focused_styles,
-        true
+        true,
         undefined,
         undefined,
         undefined,
         undefined,
-        url('../Resources/gtk-3.0/button_body.png'),
-        linear-gradient(170deg, rgba(252,252,252,1) 0%, rgba(233,232,225,1) 100%)
+        undefined
     );
 $button_focused_styles:
     wintc_define_props_borders(
@@ -51,8 +49,8 @@ $button_focused_styles:
         undefined,
         undefined,
         undefined,
-        undefined,
-        url('../Resources/gtk-3.0/button_active_border.png')
+        darken($threed_objects_bg, 65%),
+        undefined
     );
 
 $button_hover_styles:
@@ -63,8 +61,7 @@ $button_hover_styles:
         undefined,
         undefined,
         undefined,
-        url('../Resources/gtk-3.0/button_body.png'),
-        linear-gradient(170deg, rgba(252,252,252,1) 0%, rgba(233,232,225,1) 100%)
+        undefined
     );
 $button_hover_styles:
     wintc_define_props_borders(
@@ -76,7 +73,7 @@ $button_hover_styles:
         undefined,
         undefined,
         undefined,
-        url('../Resources/gtk-3.0/button_hover_border.png')
+        undefined
     );
 
 $button_press_styles:
@@ -87,27 +84,26 @@ $button_press_styles:
         undefined,
         undefined,
         undefined,
-        url('../Resources/gtk-3.0/button_press_body.png'),
-        linear-gradient(170deg, rgba(228,227,220,1) 0%, rgba(226,225,217,1) 5%, rgba(226,225,217,1) 95%, rgba(228,227,220,1) 100%),
+        undefined
     );
 $button_press_styles:
     wintc_define_props_borders(
         $button_press_styles,
         true,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        url('../Resources/gtk-3.0/button_press_border.png')
+        inset,
+        2,
+        2,
+        2,
+        2,
+        darken($threed_objects_bg, 30%),
+        undefined
     );
 
 $button_inactive_styles:
     wintc_define_props_bg(
         $button_inactive_styles,
         true,
-        #F5F4EA,
+        undefined,
         undefined,
         undefined,
         undefined,
@@ -123,7 +119,7 @@ $button_inactive_styles:
         undefined,
         undefined,
         undefined,
-        url('../Resources/gtk-3.0/button_inactive_border.png')
+        undefined
     );
 
 /**

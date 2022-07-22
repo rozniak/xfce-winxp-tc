@@ -1,0 +1,41 @@
+/**
+ * systray.scss - Theme Base Notification Area Style Constants
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+$systray_styles:
+    wintc_define_props_bg(
+        $systray_styles,
+        true,
+        undefined,
+        1px 100%,
+        repeat-x,
+        undefined,
+        url('../Resources/gtk-3.0/taskband_tray_horz_body.png')
+    );
+$systray_styles:
+    wintc_define_props_borders(
+        $systray_styles,
+        true,
+        solid,
+        5,
+        0,
+        3,
+        16,
+        undefined,
+        url('../Resources/gtk-3.0/taskband_tray_horz.png')
+    );
+$systray_styles:
+    wintc_define_props_box(
+        $systray_styles,
+        true,
+        padding,
+        undefined,
+        14,
+        undefined,
+        undefined
+    );
