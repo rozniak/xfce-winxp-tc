@@ -14,7 +14,7 @@
 # Text/base
 gtk-color-scheme = "text_color:#000000\nbase_color:#FFFFFF"
 # Foreground/background
-gtk-color-scheme = "fg_color:#000000\nbg_color:#EBEBE4"
+gtk-color-scheme = "fg_color:#000000\nbg_color:#D4D0C8"
 # Selected foreground/background
 gtk-color-scheme = "selected_fg_color:#ffffff\nselected_bg_color:#5296F7"
 # Insensitive foreground/background

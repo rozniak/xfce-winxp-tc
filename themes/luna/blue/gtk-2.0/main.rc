@@ -1985,8 +1985,8 @@ style "button" {
     image {
       function = BOX
       state    = NORMAL
-      file     = "../Resources/gtk-2.0/button.png"
-      border   = {4, 4, 4, 4}
+      file     = "../Resources/button_border.png"
+      border   = {1, 2, 1, 2}
       stretch  = TRUE
     }
 
@@ -1994,16 +1994,16 @@ style "button" {
       function = BOX
       state    = PRELIGHT
       shadow   = OUT
-      file     = "../Resources/gtk-2.0/button_hover.png"
-      border   = {4, 4, 4, 4}
+      file     = "../Resources/button_border.png"
+      border   = {1, 2, 1, 2}
       stretch  = TRUE
     }
 
     image {
       function = BOX
       state    = SELECTED
-      file     = "../Resources/gtk-2.0/button_active.png"
-      border   = {4, 4, 4, 4}
+      file     = "../Resources/button_active_border.png"
+      border   = {2, 3, 2, 3}
       stretch  = TRUE
     }
 
@@ -2012,24 +2012,24 @@ style "button" {
       function = BOX
       state    = PRELIGHT
       shadow   = IN
-      file     = "../Resources/gtk-2.0/button_press.png"
-      border   = {4, 4, 4, 4}
+      file     = "../Resources/button_press_border.png"
+      border   = {2, 2, 2, 2}
       stretch  = TRUE
     }
 
     image {
       function = BOX
       state    = ACTIVE
-      file     = "../Resources/gtk-2.0/button_press.png"
-      border   = {4, 4, 4, 4}
+      file     = "../Resources/button_press_border.png"
+      border   = {2, 2, 2, 2}
       stretch  = TRUE
     }
 
     image {
       function = BOX
       state    = INSENSITIVE
-      file     = "../Resources/gtk-2.0/button_inactive.png"
-      border   = {4, 4, 4, 4}
+      file     = "../Resources/button_border.png"
+      border   = {1, 2, 1, 2}
       stretch  = TRUE
     }
   }
