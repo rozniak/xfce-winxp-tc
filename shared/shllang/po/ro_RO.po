@@ -23,7 +23,7 @@ msgid "OK"
 msgstr "OK"
 
 msgid "Cancel"
-msgstr "Revocare"
+msgstr "Revocă"
 
 msgid "Yes"
 msgstr "Da"
@@ -33,13 +33,13 @@ msgstr "Nu"
 
 #: src/controls.c:19
 msgid "Abort"
-msgstr ""
+msgstr "Anulează"
 
 msgid "Retry"
-msgstr "Reîncercare"
+msgstr "Reîncearcă"
 
 msgid "Ignore"
-msgstr "Ignorare"
+msgstr "Ignoră"
 
 msgid "Help"
 msgstr "Ajutor"
@@ -63,7 +63,7 @@ msgid "Tools"
 msgstr "Instrumente"
 
 msgid "Window"
-msgstr "Windows"
+msgstr "Fereastră"
 
 msgid "New"
 msgstr "Nou"
@@ -82,14 +82,14 @@ msgstr "Salvare ca"
 
 #: src/controls.c:42
 msgid "Save All"
-msgstr ""
+msgstr "Salvează tot"
 
 msgid "Close"
 msgstr "Închidere"
 
 #: src/controls.c:44
 msgid "Close All"
-msgstr ""
+msgstr "Închide tot"
 
 msgid "Properties"
 msgstr "Proprietăţi"
@@ -99,7 +99,7 @@ msgstr "Imprimare"
 
 #: src/controls.c:48
 msgid "Print Preview"
-msgstr ""
+msgstr "Previzualizare a imprimării"
 
 msgid "Page Setup"
 msgstr "Iniţializare pagină"
@@ -136,7 +136,7 @@ msgstr "Înlocuire"
 
 #: src/controls.c:66
 msgid "Replace All"
-msgstr ""
+msgstr "Înlocuiește tot"
 
 msgid "Go To"
 msgstr "Salt la"
@@ -146,22 +146,22 @@ msgstr "Selectare totală"
 
 #: src/controls.c:73
 msgid "Zoom"
-msgstr ""
+msgstr "Zoom"
 
 #: src/controls.c:74
 msgid "Zoom In"
-msgstr ""
+msgstr "Mărește"
 
 #: src/controls.c:75
 msgid "Zoom Out"
-msgstr ""
+msgstr "Micșorează"
 
 msgid "Best Fit"
 msgstr "Cea mai bună potrivire"
 
 #: src/controls.c:77
 msgid "Actual Size"
-msgstr ""
+msgstr "Dimensiune actuală"
 
 msgid "Full Screen"
 msgstr "Ecran complet"
@@ -198,22 +198,22 @@ msgstr "Particularizare"
 
 #: src/controls.c:98
 msgid "New Window"
-msgstr ""
+msgstr "Fereastră nouă"
 
 #: src/controls.c:99
 msgid "New Tab"
-msgstr ""
+msgstr "Filă nouă"
 
 msgid "Close Window"
-msgstr "Închidere fereastră"
+msgstr "Închide fereastra"
 
 #: src/controls.c:101
 msgid "Close Tab"
-msgstr ""
+msgstr "Închide fila"
 
 #: src/controls.c:105
 msgid "Help Topics"
-msgstr ""
+msgstr "Ajutor"
 
 msgid "About %s"
 msgstr "Despre %s"
@@ -223,10 +223,10 @@ msgstr "..."
 
 #: src/controls.c:111
 msgid ":"
-msgstr ""
+msgstr ":"
 
 msgid "Application Data"
-msgstr "Application Data"
+msgstr "Date despre aplicație"
 
 msgid "Desktop"
 msgstr "Desktop"
@@ -241,10 +241,10 @@ msgid "My Documents"
 msgstr "Documentele mele"
 
 msgid "My Music"
-msgstr "My Music"
+msgstr "Muzică"
 
 msgid "My Pictures"
-msgstr "My Pictures"
+msgstr "Fotografii"
 
 msgid "My Recent Documents"
 msgstr "Documente recente"
@@ -257,7 +257,7 @@ msgstr "Imaginile mele video"
 
 #: src/places.c:22
 msgid "Adminstrative Tools"
-msgstr ""
+msgstr "Unelte de administrație"
 
 msgid "My Computer"
 msgstr "Computerul meu"
@@ -272,4 +272,4 @@ msgid "Network Connections"
 msgstr "Conexiuni în reţea"
 
 msgid "Printers and Faxes"
-msgstr "Imprimante şi faxuri"
+msgstr "Imprimante şi fax-uri"

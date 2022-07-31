@@ -50,8 +50,11 @@ msgid ""
 "\n"
 "The parameter is incorrect"
 msgstr ""
+"%s\n"
+"\n"
+"Parametrul este incorect"
 
 #: src/dialog.c:489
 #, c-format
 msgid "Execution of '%s' failed."
-msgstr ""
+msgstr "Execuția '%s' a eșuat."
