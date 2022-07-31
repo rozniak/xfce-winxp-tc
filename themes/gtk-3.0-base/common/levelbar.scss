@@ -64,7 +64,7 @@ levelbar
         &.low
         {
             background-color: $warning_color;
-            border-color:     if($variant == 'light', darken($warning_color, 20%), $warning_color);
+            border-color:     darken($warning_color, 20%);
             
             &:backdrop
             {
@@ -76,7 +76,7 @@ levelbar
         &:not(.empty)
         {
             background-color: $progress_bg_color;
-            border-color:     if($variant == 'light', darken($progress_bg_color, 20%), $progress_bg_color);
+            border-color:     darken($progress_bg_color, 20%);
             
             &:backdrop
             {
@@ -87,7 +87,7 @@ levelbar
         &.full
         {
             background-color: $success_color;
-            border-color:     if($variant == 'light', darken($success_color, 20%), $success_color);
+            border-color:     darken($success_color, 20%);
             
             &:backdrop
             {
@@ -98,7 +98,7 @@ levelbar
         &.empty
         {
             background-color: transparent;
-            border-color:     if($variant == 'light', transparentize($fg_color,0.8), transparentize($fg_color, 0.9));
+            border-color:     transparentize($fg_color,0.8);
             
             &:backdrop
             {

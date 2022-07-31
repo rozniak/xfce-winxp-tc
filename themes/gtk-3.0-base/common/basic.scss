@@ -131,19 +131,19 @@ flowbox
 
 .content-view .tile
 {
-    background-color: if($variant == 'light', transparent, black);
+    background-color: transparent;
     border-radius:    0;
     margin:           2px;
     padding:          0;
 
     &:active, &:selected
     {
-        background-color: if($variant == 'light', transparent, $selected_bg_color);
+        background-color: transparent;
     }
 
     &:disabled
     {
-        background-color: if($variant == 'light', transparent, $insensitive_bg_color);
+        background-color: transparent;
     }
 }
 

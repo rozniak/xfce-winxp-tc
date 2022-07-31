@@ -45,7 +45,7 @@ row
         &.has-open-popup, // This is for indicating which row generated a popover see https://bugzilla.gnome.org/show_bug.cgi?id=754411        
         &:hover
         {
-            background-color: if($variant == light, transparentize($fg_color, 0.9), transparentize($fg_color, 0.95));
+            background-color: transparentize($fg_color, 0.9);
         }
         
         &:active

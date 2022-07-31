@@ -7,14 +7,6 @@
  * Author(s): Rory Fewell <roryf@oddmatics.uk>
  */
 
-// Define the 'variant' here (light or dark)
-//
-$variant: 'light';
-
-// Import color definition constants
-//
-@import "colors/all";
-
 // Import styling definition constants
 //
 @import "styling/all";

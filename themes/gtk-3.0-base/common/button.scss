@@ -9,8 +9,8 @@
 
 // Stuff for .needs-attention
 //
-$_dot_color: if($variant == 'light', $selected_bg_color,
-                                      lighten($selected_bg_color,15%));
+$_dot_color: $selected_bg_color;
+
 @keyframes needs_attention
 {
     from {
@@ -137,10 +137,7 @@ button
     {
         row:selected &
         {
-            @if $variant == 'light'
-            {
-                border-color: $selected_borders_color;
-            }
+            border-color: $selected_borders_color;
         }
 
         @at-root %button_selected_flat, &.flat
@@ -154,7 +151,7 @@ button
 
                     &:backdrop
                     {
-                        color: if($variant == 'light', $backdrop_base_color, $backdrop_fg_color);
+                        color: $backdrop_base_color;
                     }
                 }
             }
@@ -432,7 +429,7 @@ button
 {
     animation:         needs_attention 150ms ease-in;
     $_dot_shadow:      _text_shadow_color();
-    $_dot_shadow_r:    if($variant == 'light', 0.5, 0.45);
+    $_dot_shadow_r:    0.5;
     background-image:  -gtk-gradient(
                            radial,
                            center center, 0,
@@ -449,15 +446,7 @@ button
                        );
     background-size:   6px 6px, 6px 6px;
     background-repeat: no-repeat;
-
-    @if $variant == 'light'
-    {
-        background-position: right 3px, right 4px;
-    }
-    @else
-    {
-        background-position: right 3px, right 2px;
-    }
+    background-position: right 3px, right 4px;
 
     &:backdrop
     {
@@ -466,14 +455,7 @@ button
 
     &:dir(rtl)
     {
-        @if $variant == 'light'
-        {
-            background-position: left 3px, left 4px;
-        }
-        @else
-        {
-            background-position: left 3px, left 2px;
-        }
+        background-position: left 3px, left 4px;
     }
 }
 
@@ -713,30 +695,24 @@ button.color
             border-radius: 0;
         }
 
-        @if $variant == 'light'
-        {
-            box-shadow: 0 1px _text_shadow_color();
+        box-shadow: 0 1px _text_shadow_color();
 
-            .osd &
-            {
-                box-shadow: none;
-            }
+        .osd &
+        {
+            box-shadow: none;
         }
     }
 
-    @if $variant == 'light'
+    .osd &, &
     {
-        .osd &, &
+        &:disabled,
+        &:backdrop,
+        &:active,
+        &:checked
         {
-            &:disabled,
-            &:backdrop,
-            &:active,
-            &:checked
+            colorswatch:only-child
             {
-                colorswatch:only-child
-                {
-                    box-shadow: none;
-                }
+                box-shadow: none;
             }
         }
     }

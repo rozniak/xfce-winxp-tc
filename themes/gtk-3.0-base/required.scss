@@ -9,8 +9,12 @@
 
 // Import the WinTC mixins
 //
-@import "tc-mixins/_all";
+@import "tc-mixins/all";
 
 // Import theme part maps
 //
-@import "init/_all";
+@import "init/all";
+
+// Import default colour constants
+//
+@import "colors/all";

@@ -306,10 +306,10 @@ treeview entry
 
     border-style: none;
 
-    $_entry_tag_color: if($variant=='light', $selected_fg_color, $base_color);
+    $_entry_tag_color: $selected_fg_color;
     color:             $_entry_tag_color;
 
-    $_entry_tag_bg:   if($variant=='light', $selected_bg_color, mix($fg_color, $base_color, 50%));
+    $_entry_tag_bg:   $selected_bg_color;
     background-color: $_entry_tag_bg;
 
     &:hover

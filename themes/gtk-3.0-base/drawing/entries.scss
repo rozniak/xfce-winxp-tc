@@ -9,14 +9,7 @@
 
 @function entry_focus_border($fc:$selected_bg_color)
 {
-    @if $variant == 'light'
-    {
-        @return $fc;
-    }
-    @else
-    {
-        @return if($fc == $selected_bg_color, $selected_borders_color, darken($fc, 35%));
-    }
+    @return $fc;
 }
 
 @function entry_focus_shadow($fc:$selected_bg_color)

@@ -9,7 +9,7 @@
 
 // SASS gets mad if this is done directly in the color definition
 //
-$_wm_highlight: if($variant == 'light', $top_hilight, transparentize(#000000, 1.0));
+$_wm_highlight: $top_hilight;
 
 // These colors are exported for the window manager and shouldn't be used in applications,
 // read if you used those and something break with a version upgrade you're on your own...

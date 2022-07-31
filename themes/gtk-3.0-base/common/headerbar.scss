@@ -464,14 +464,6 @@ window.devel
                    linear-gradient(to right, transparent 65%, transparentize($selected_bg_color, 0.8)),
                    linear-gradient(to top, darken($c, 3%), $c 3px, lighten($c, 6%));
 
-        @if $variant == 'dark'
-        {
-            $gradient: cross-fade(10% -gtk-icontheme("system-run-symbolic"),
-                       image(transparent)) 90% 0/256px 256px no-repeat,
-                       linear-gradient(to right, transparent 65%, transparentize($selected_bg_color, 0.9)),
-                       linear-gradient(to top, lighten($c, 3%) 3px, lighten($c, 5%));
-        }
-
         background: $bg_color $gradient;
     }
 }

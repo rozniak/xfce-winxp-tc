@@ -9,6 +9,7 @@
 
 // Taskband itself
 //
+/**
 $taskband_styles:
     wintc_define_props_bg(
         $taskband_styles,
@@ -19,6 +20,7 @@ $taskband_styles:
         undefined,
         undefined
     );
+**/
 /**
 FIXME: Figure out borders on the panel one day
 
@@ -35,6 +37,7 @@ $taskband_styles:
         url('../Resources/gtk-3.0/taskband_horz_border.png')
     );
 **/
+/**
 $taskband_styles:
     wintc_define_props_fg(
         $taskband_styles,
@@ -42,7 +45,7 @@ $taskband_styles:
         $fg_color,
         undefined
     );
-
+**/
 // Taskband buttons
 //
 $taskband_button_styles:

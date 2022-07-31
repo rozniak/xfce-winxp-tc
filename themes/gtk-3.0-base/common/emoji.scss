@@ -42,7 +42,7 @@ button.emoji-section
     &:last-child  { margin-right: 7px; }
     
     &:backdrop:not(:checked) { border-color: transparent; }
-    &:hover   { border-color: if($variant == 'light', $borders_color, transparentize($fg_color, 0.9)); }
+    &:hover   { border-color: $borders_color; }
     &:checked { border-color: $selected_bg_color;                                                       }
     
     label

@@ -17,11 +17,6 @@
     //
     $gradient: linear-gradient(to top, darken($c, 2%), lighten($c, 1%));
 
-    @if $variant == 'dark'
-    {
-        $gradient: linear-gradient(to top, lighten($c, 4%), lighten($c, 6%));
-    }
-
     @if $ov != none
     {
         background: $c $ov, $gradient;

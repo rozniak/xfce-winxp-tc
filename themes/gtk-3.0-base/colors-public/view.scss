@@ -12,4 +12,4 @@
 
 // Very contrasty background for text views (@theme_text_color foreground)
 //
-@define-color text_view_bg #{"" + if($variant == 'light', $base_color, darken($base_color,6%))};
+@define-color text_view_bg #{"" + $base_color};
