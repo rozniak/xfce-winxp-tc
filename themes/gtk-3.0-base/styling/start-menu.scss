@@ -31,100 +31,18 @@ $start_flag_styles:
     );
 
 $start_button_styles:
-    wintc_define_props_bg(
-        $start_button_styles,
-        true,
-        undefined,
-        100% 100%,
-        undefined,
-        undefined,
-        url('../Resources/gtk-3.0/start_button_body.png'),
-        linear-gradient(179deg, rgba(150,196,150,1) 0%, rgba(54,143,55,1) 15%, rgba(54,143,55,1) 35%, rgba(61,159,62,1) 60%, rgba(61,152,61,1) 100%)
-    );
-$start_button_styles:
-    wintc_define_props_borders(
-        $start_button_styles,
-        true,
-        solid,
-        2,
-        13,
-        3,
-        5,
-        undefined,
-        url('../Resources/gtk-3.0/start_button_border.png')
-    );
-$start_button_styles:
     wintc_define_props_fg(
         $start_button_styles,
         true,
-        undefined,
-        1px 1px 2px #152404
+        $threed_objects_fg,
+        undefined
     );
 $start_button_styles:
     wintc_define_props_font(
         $start_button_styles,
         true,
-        "Franklin Gothic Medium",
-        14pt,
-        italic,
-        undefined,
-    );
-
-$start_button_hover_styles:
-    wintc_define_props_bg(
-        $start_button_hover_styles,
-        true,
         undefined,
         undefined,
         undefined,
-        undefined,
-        url('../Resources/gtk-3.0/start_button_hover_body.png'),
-        linear-gradient(179deg, rgba(146,207,145,1) 0%, rgba(65,174,66,1) 15%, rgba(65,180,65,1) 50%, rgba(64,173,65,1) 95%, rgba(64,166,65,1) 100%),
-    );
-$start_button_hover_styles:
-    wintc_define_props_borders(
-        $start_button_hover_styles,
-        true,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        url('../Resources/gtk-3.0/start_button_hover_border.png')
-    );
-
-$start_button_press_styles:
-    wintc_define_props_bg(
-        $start_button_press_styles,
-        true,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        url('../Resources/gtk-3.0/start_button_press_body.png'),
-        linear-gradient(179deg, rgba(43,91,43,1) 0%, rgba(43,91,43,1) 10%, rgba(29,129,29,1) 15%, rgba(29,129,29,1) 35%, rgba(29,145,29,1) 55%, rgba(29,145,29,1) 100%)
-    );
-$start_button_press_styles:
-    wintc_define_props_borders(
-        $start_button_press_styles,
-        true,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        url('../Resources/gtk-3.0/start_button_press_border.png')
-    );
-
-$start_button_text_styles:
-    wintc_define_props_box(
-        $start_button_text_styles,
-        true,
-        margin,
-        0,
-        14,
-        0,
-        0
+        bold
     );

@@ -44,11 +44,11 @@ $button_focused_styles:
     wintc_define_props_borders(
         $button_focused_styles,
         true,
-        solid,
-        3,
-        3,
-        3,
-        3,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
         undefined,
         url('../Resources/button_active_border.png')
     );
@@ -67,11 +67,11 @@ $button_hover_styles:
     wintc_define_props_borders(
         $button_hover_styles,
         true,
-        solid,
-        3,
-        3,
-        3,
-        3,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
         undefined,
         url('../Resources/button_border.png')
     );
@@ -90,11 +90,11 @@ $button_press_styles:
     wintc_define_props_borders(
         $button_press_styles,
         true,
-        solid,
-        3,
-        3,
-        3,
-        3,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
         undefined,
         url('../Resources/button_press_border.png')
     );

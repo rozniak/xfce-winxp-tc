@@ -23,27 +23,21 @@
     //
     //       Got to love GTK sometimes...
     //
-    background: $taskband_background;
 
-    & *
+    & > *
     {
-        color: $taskband_fg_color;
+        @include __wintc_apply_specific_props(
+            $taskband_styles,
+            "color"
+        );
     }
 
     & menuitem
     {
         color: $fg_color;
     }
-    
-    @if $taskband_border_size == 0px
-    {
-        border: none;
-    }
-    @else
-    {
-        border: $taskband_border_size solid #000000;
-        border-image: $taskband_border_image;
-    }
+
+    @include __wintc_apply_props($taskband_styles);
 
     //border: none; // This does nothing really - the panel overrides it currently
 }

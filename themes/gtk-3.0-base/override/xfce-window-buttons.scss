@@ -21,42 +21,26 @@
 
     button
     {
-        background:      $taskband_button_background;
-        background-size: 100% 100%;
-        border:          $taskband_button_border;
-        border-image:    $taskband_button_border_image;
-        margin:          3px 0px 2px;
+        @include __wintc_apply_props($taskband_button_styles);
 
         &:hover
         {
-            background:      $taskband_button_hover_background;
-            background-size: 100% 100%;
-            border:          $taskband_button_hover_border;
-            border-image:    $taskband_button_hover_border_image;
+            @include __wintc_apply_props($taskband_button_hover_styles);
         }
 
         &:checked
         {
-            background:      $taskband_button_selected_background;
-            background-size: 100% 100%;
-            border:          $taskband_button_selected_border;
-            border-image:    $taskband_button_selected_border_image;
+            @include __wintc_apply_props($taskband_button_selected_styles);
         }
 
         &:checked:hover
         {
-            background:      $taskband_button_selected_hover_background;
-            background-size: 100% 100%;
-            border:          $taskband_button_selected_hover_border;
-            border-image:    $taskband_button_selected_hover_border_image;
+            @include __wintc_apply_props($taskband_button_selected_hover_styles);
         }
 
         &:active
         {
-            background:      $taskband_button_press_background;
-            background-size: 100% 100%;
-            border:          $taskband_button_press_border;
-            border-image:    $taskband_button_press_border_image;
+            @include __wintc_apply_props($taskband_button_press_styles);
         }
     }
 }
