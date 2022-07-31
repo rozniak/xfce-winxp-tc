@@ -7,7 +7,7 @@
  * Author(s): Rory Fewell <roryf@oddmatics.uk>
  */
 
-$borders_color:          #7f9db9 !default;
+$borders_color:          darken($active_window_border_bg, 15%) !default;
 $selected_borders_color: $borders_color !default;
 $alt_borders_color:      $borders_color !default;
 $borders_edge:           $borders_color !default;

@@ -9,5 +9,5 @@
 
 $warning_color:     #F57900;
 $error_color:       #CC0000;
-$success_color:     if($variant == 'light', #33D17A, darken(#33D17A, 10%));
-$destructive_color: if($variant == 'light', #E01B24, darken(#E01B24, 10%));
+$success_color:     #33D17A;
+$destructive_color: #E01B24;

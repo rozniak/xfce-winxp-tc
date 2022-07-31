@@ -7,6 +7,6 @@
  * Author(s): Rory Fewell <roryf@oddmatics.uk>
  */
 
-$insensitive_fg_color: #ACA899 !default;
+$insensitive_fg_color: lighten(desaturate($fg_color, 30%), 20%) !default;
 $insensitive_bg_color: $bg_color !default;
-$insensitive_borders_color: #C9C7BA !default;
+$insensitive_borders_color: $borders_color !default;

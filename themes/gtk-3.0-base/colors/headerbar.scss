@@ -7,4 +7,4 @@
  * Author(s): Rory Fewell <roryf@oddmatics.uk>
  */
 
-$headerbar_color: if($variant == 'light', lighten($bg_color, 5%), darken(bg_color, 3%));
+$headerbar_color: lighten($bg_color, 5%);

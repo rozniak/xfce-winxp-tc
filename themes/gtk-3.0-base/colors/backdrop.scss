@@ -7,13 +7,13 @@
  * Author(s): Rory Fewell <roryf@oddmatics.uk>
  */
 
-$backdrop_base_color: if($variant == 'light', darken($base_color, 1%), lighten($base_color, 1%));
+$backdrop_base_color: darken($base_color, 1%);
 $backdrop_text_color: mix($text_color, $backdrop_base_color, 80%);
 $backdrop_bg_color:   $bg_color;
 $backdrop_fg_color:   mix($fg_color, $backdrop_bg_color, 50%);
 
-$backdrop_insensitive_color: if($variant == 'light', darken($backdrop_bg_color, 15%), lighten($backdrop_bg_color, 15%));
-$backdrop_selected_fg_color: if($variant == 'light', $backdrop_base_color, $backdrop_text_color);
+$backdrop_insensitive_color: darken($backdrop_bg_color, 15%);
+$backdrop_selected_fg_color: $backdrop_base_color;
 $backdrop_borders_color:     mix($borders_color,          $bg_color,            80%);
 $backdrop_dark_fill:         mix($backdrop_borders_color, $backdrop_bg_color,   35%);
 $backdrop_sidebar_bg_color:  mix($backdrop_bg_color,      $backdrop_base_color, 50%);
@@ -21,4 +21,4 @@ $backdrop_sidebar_bg_color:  mix($backdrop_bg_color,      $backdrop_base_color, 
 $backdrop_scrollbar_bg_color:     darken($backdrop_bg_color, 3%);
 $backdrop_scrollbar_slider_color: mix($backdrop_fg_color, $backdrop_bg_color, 40%);
 
-$backdrop_menu_color: if($variant == 'light', $backdrop_base_color, mix($backdrop_bg_color, $backdrop_base_color, 20%));
+$backdrop_menu_color: $backdrop_base_color;

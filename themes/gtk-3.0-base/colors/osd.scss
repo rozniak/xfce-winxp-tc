@@ -9,7 +9,7 @@
 
 $osd_fg_color:   #F57900;
 $osd_text_color: #FFFFFF;
-$osd_bg_color: if($variant == 'light', transparentize(darken(desaturate(#3D3846, 100%), 4%), 0.1), transparentize(darken(desaturate(#3D3846, 100%), 10%), 0.1));
+$osd_bg_color: transparentize(darken(desaturate(#3D3846, 100%), 4%), 0.1);
 $osd_insensitive_bg_color: transparentize(mix($osd_fg_color, opacify($osd_bg_color, 1), 10%), 0.5);
 $osd_insensitive_fg_color: mix($osd_fg_color, opacify($osd_bg_color, 1), 50%);
 $osd_borders_color: transparentize(#000000, 0.3);
