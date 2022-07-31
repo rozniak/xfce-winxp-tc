@@ -8,26 +8,26 @@
  */
 
 $systray_styles:
-    wintc_define_props_bg(
-        $systray_styles,
-        true,
-        undefined,
-        1px 100%,
-        repeat-x,
-        undefined,
-        url('../Resources/gtk-3.0/taskband_tray_horz_body.png')
-    );
-$systray_styles:
     wintc_define_props_borders(
         $systray_styles,
         true,
-        solid,
-        5,
-        0,
+        inset,
+        1,
+        1,
+        1,
+        1,
+        $borders_color,
+        undefined
+    );
+$systray_styles:
+    wintc_define_props_box(
+        $systray_styles,
+        true,
+        margin,
         3,
-        16,
-        undefined,
-        url('../Resources/gtk-3.0/taskband_tray_horz.png')
+        2,
+        2,
+        undefined
     );
 $systray_styles:
     wintc_define_props_box(
@@ -35,7 +35,7 @@ $systray_styles:
         true,
         padding,
         undefined,
-        14,
+        7,
         undefined,
-        undefined
+        7
     );

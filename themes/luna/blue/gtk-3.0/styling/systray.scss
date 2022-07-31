@@ -10,7 +10,7 @@
 $systray_styles:
     wintc_define_props_bg(
         $systray_styles,
-        true,
+        false,
         undefined,
         1px 100%,
         repeat-x,
@@ -20,7 +20,7 @@ $systray_styles:
 $systray_styles:
     wintc_define_props_borders(
         $systray_styles,
-        true,
+        false,
         solid,
         5,
         0,
@@ -32,7 +32,17 @@ $systray_styles:
 $systray_styles:
     wintc_define_props_box(
         $systray_styles,
-        true,
+        false,
+        margin,
+        0,
+        0,
+        0,
+        0
+    );
+$systray_styles:
+    wintc_define_props_box(
+        $systray_styles,
+        false,
         padding,
         undefined,
         14,
