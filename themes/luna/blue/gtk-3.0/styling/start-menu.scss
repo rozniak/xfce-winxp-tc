@@ -12,7 +12,7 @@ $start_flag_size: 20px !default;
 $start_flag_styles:
     wintc_define_props_bg(
         $start_flag_styles,
-        true,
+        false,
         undefined,
         undefined,
         no-repeat,
@@ -22,7 +22,7 @@ $start_flag_styles:
 $start_flag_styles:
     wintc_define_props_box(
         $start_flag_styles,
-        true,
+        false,
         margin,
         undefined,
         4,
@@ -33,7 +33,7 @@ $start_flag_styles:
 $start_button_styles:
     wintc_define_props_bg(
         $start_button_styles,
-        true,
+        false,
         undefined,
         100% 100%,
         undefined,
@@ -44,7 +44,7 @@ $start_button_styles:
 $start_button_styles:
     wintc_define_props_borders(
         $start_button_styles,
-        true,
+        false,
         solid,
         2,
         13,
@@ -54,16 +54,36 @@ $start_button_styles:
         url('../Resources/gtk-3.0/start_button_border.png')
     );
 $start_button_styles:
+    wintc_define_props_box(
+        $start_button_styles,
+        false,
+        margin,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
+$start_button_styles:
+    wintc_define_props_box(
+        $start_button_styles,
+        false,
+        padding,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
+$start_button_styles:
     wintc_define_props_fg(
         $start_button_styles,
-        true,
+        false,
         undefined,
         1px 1px 2px #152404
     );
 $start_button_styles:
     wintc_define_props_font(
         $start_button_styles,
-        true,
+        false,
         "Franklin Gothic Medium",
         14pt,
         italic,
@@ -73,7 +93,7 @@ $start_button_styles:
 $start_button_hover_styles:
     wintc_define_props_bg(
         $start_button_hover_styles,
-        true,
+        false,
         undefined,
         undefined,
         undefined,
@@ -84,7 +104,7 @@ $start_button_hover_styles:
 $start_button_hover_styles:
     wintc_define_props_borders(
         $start_button_hover_styles,
-        true,
+        false,
         undefined,
         undefined,
         undefined,
@@ -97,7 +117,7 @@ $start_button_hover_styles:
 $start_button_press_styles:
     wintc_define_props_bg(
         $start_button_press_styles,
-        true,
+        false,
         undefined,
         undefined,
         undefined,
@@ -108,7 +128,7 @@ $start_button_press_styles:
 $start_button_press_styles:
     wintc_define_props_borders(
         $start_button_press_styles,
-        true,
+        false,
         undefined,
         undefined,
         undefined,
@@ -121,7 +141,7 @@ $start_button_press_styles:
 $start_button_text_styles:
     wintc_define_props_box(
         $start_button_text_styles,
-        true,
+        false,
         margin,
         0,
         14,

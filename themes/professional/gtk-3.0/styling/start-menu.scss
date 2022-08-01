@@ -62,21 +62,15 @@ $start_button_styles:
         3,
         2
     );
-$start_button_styles: // FIXME: This should be unnecessary once native becomes default
-    wintc_define_props_fg(
+$start_button_styles:
+    wintc_define_props_box(
         $start_button_styles,
         false,
+        padding,
+        undefined,
+        undefined,
         undefined,
         undefined
-    );
-$start_button_styles: // FIXME: As above, native should have these values by default
-    wintc_define_props_font(
-        $start_button_styles,
-        false,
-        "sans-serif",
-        8pt,
-        normal,
-        bold
     );
 
 $start_button_hover_styles:
@@ -130,8 +124,8 @@ $start_button_text_styles:
         $start_button_text_styles,
         false,
         margin,
-        3,
         1,
-        0,
+        1,
+        undefined,
         1
     );
