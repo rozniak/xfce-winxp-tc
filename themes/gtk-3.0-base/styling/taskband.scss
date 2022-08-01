@@ -14,6 +14,18 @@ $taskband_horz_margins: 7px !default;
 // Taskband buttons
 //
 $taskband_button_styles:
+    wintc_define_props_borders(
+        $taskband_button_styles,
+        true,
+        solid,
+        2,
+        2,
+        2,
+        2,
+        default,
+        default
+    );
+$taskband_button_styles:
     wintc_define_props_box(
         $taskband_button_styles,
         true,
