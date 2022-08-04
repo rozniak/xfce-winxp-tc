@@ -32,10 +32,6 @@ entry
             "padding-left"
         );
 
-        //border:        1px solid;
-        //padding-left:  3px;
-        //padding-right: 3px;
-
         min-height: $_entry_height; // Leftover for Adwaita compat
 
         @include entry(normal);

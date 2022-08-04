@@ -63,10 +63,6 @@
             "padding-left"
         );
 
-        //color:            $text_color;
-        //border-color:     $borders_color;
-        //background-color: $base_color;
-
         // For the transition to work the number of shadows in different states needs
         // to match, hence the shadow here
         //
@@ -91,11 +87,6 @@
             "padding-bottom",
             "padding-left"
         );
-
-        //background-color: $insensitive_bg_color;
-        //border-color:     $insensitive_borders_color;
-        //box-shadow:       $_entry_edge;
-        //color:            $insensitive_fg_color;
     }
 
     @if $t == backdrop
