@@ -69,16 +69,14 @@
     $_blank_edge:    if($edge == none, none, _widget_edge(transparentize($edge, 1)));
     $_button_shadow: 0 1px 2px transparentize($shadow_color, 0.03);
     
-    //color: $tc;
-
-    @include __wintc_apply_specific_props(
-        $button_styles,
-        "border-style",
-        "border-top-width",
-        "border-right-width",
-        "border-bottom-width",
-        "border-left-width"
-    );
+    //
+    // NOTE: XP THEME STUFF!
+    //
+    //       We define everything other than the box-model props here (aka really we
+    //       only care about colours)
+    //
+    //       The box-model stuff is in common/button.scss, as Adwaita does it this way
+    //
 
     @if $t == normal     or
         $t == normal-alt or
@@ -88,8 +86,21 @@
         //
         // Normal Button
         //
-        @include __wintc_apply_props(
-            $button_styles
+        @include __wintc_apply_props_excluding(
+            $button_styles,
+            "border-style",
+            "border-top-width",
+            "border-right-width",
+            "border-bottom-width",
+            "border-left-width",
+            "margin-top",
+            "margin-right",
+            "margin-bottom",
+            "margin-left",
+            "padding-top",
+            "padding-right",
+            "padding-bottom",
+            "padding-left"
         );
     }
     @else if $t == focus
@@ -97,8 +108,21 @@
         //
         // Focused Button
         //
-        @include __wintc_apply_props(
-            $button_focused_styles
+        @include __wintc_apply_props_excluding(
+            $button_focused_styles,
+            "border-style",
+            "border-top-width",
+            "border-right-width",
+            "border-bottom-width",
+            "border-left-width",
+            "margin-top",
+            "margin-right",
+            "margin-bottom",
+            "margin-left",
+            "padding-top",
+            "padding-right",
+            "padding-bottom",
+            "padding-left"
         );
     }
     @else if $t == hover     or
@@ -108,8 +132,21 @@
         //
         // Hovered Button
         //
-        @include __wintc_apply_props(
-            $button_hover_styles
+        @include __wintc_apply_props_excluding(
+            $button_hover_styles,
+            "border-style",
+            "border-top-width",
+            "border-right-width",
+            "border-bottom-width",
+            "border-left-width",
+            "margin-top",
+            "margin-right",
+            "margin-bottom",
+            "margin-left",
+            "padding-top",
+            "padding-right",
+            "padding-bottom",
+            "padding-left"
         );
     }
     @else if $t == active          or
@@ -119,8 +156,21 @@
         //
         // Pushed Button
         //
-        @include __wintc_apply_props(
-            $button_press_styles
+        @include __wintc_apply_props_excluding(
+            $button_press_styles,
+            "border-style",
+            "border-top-width",
+            "border-right-width",
+            "border-bottom-width",
+            "border-left-width",
+            "margin-top",
+            "margin-right",
+            "margin-bottom",
+            "margin-left",
+            "padding-top",
+            "padding-right",
+            "padding-bottom",
+            "padding-left"
         );
     }
     @else if $t == insensitive                 or
@@ -132,10 +182,21 @@
         //
         // Insensitive Button
         //
-        color: $insensitive_fg_color;
-
-        @include __wintc_apply_props(
-            $button_inactive_styles
+        @include __wintc_apply_props_excluding(
+            $button_inactive_styles,
+            "border-style",
+            "border-top-width",
+            "border-right-width",
+            "border-bottom-width",
+            "border-left-width",
+            "margin-top",
+            "margin-right",
+            "margin-bottom",
+            "margin-left",
+            "padding-top",
+            "padding-right",
+            "padding-bottom",
+            "padding-left"
         );
     }
     @else if $t == flat-hover

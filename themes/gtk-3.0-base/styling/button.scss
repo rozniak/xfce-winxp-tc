@@ -121,6 +121,13 @@ $button_inactive_styles:
         undefined,
         undefined
     );
+$button_inactive_styles:
+    wintc_define_props_fg(
+        $button_inactive_styles,
+        true,
+        $insensitive_fg_color,
+        undefined
+    );
 
 /**
 $button_flat_focused_background: ;

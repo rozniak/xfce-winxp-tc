@@ -40,12 +40,36 @@ button
 {
     @at-root %button_basic, &
     {
-        border:        1px solid;
-        border-radius: $button_radius;
-        min-height:    15px;
-        min-width:     16px;
-        padding:       $_btn_pad;
-        transition:    $button_transition;
+        // NOTE: Adwaita only defines box-model stuff here, colours are done in the
+        //       corresponding drawing/buttons.scss file (so we do the same)
+        //
+        @include __wintc_apply_specific_props(
+            $button_styles,
+            "border-style",
+            "border-top-width",
+            "border-right-width",
+            "border-bottom-width",
+            "border-left-width",
+            "margin-top",
+            "margin-right",
+            "margin-bottom",
+            "margin-left",
+            "padding-top",
+            "padding-right",
+            "padding-bottom",
+            "padding-left"
+        );
+
+        padding: 0px;
+        min-height: 0px;
+        min-width: 0px;
+
+        //border:        1px solid;
+        //border-radius: $button_radius;
+        //min-height:    15px;
+        //min-width:     16px;
+        //padding:       $_btn_pad;
+        //transition:    $button_transition;
 
         @include button(normal);
 
