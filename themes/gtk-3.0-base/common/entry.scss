@@ -32,7 +32,10 @@ entry
             "padding-left"
         );
 
-        min-height: $_entry_height; // Leftover for Adwaita compat
+        $l_border_bottom: __wintc_get_prop($entry_styles, "border-bottom-width");
+        $l_border_top:    __wintc_get_prop($entry_styles, "border-top-width");
+
+        min-height: calc(#{$_entry_height} - #{$l_border_bottom} - #{$l_border_top});
 
         @include entry(normal);
 
