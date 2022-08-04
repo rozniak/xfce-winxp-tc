@@ -35,11 +35,37 @@
     $_blank_edge: if($edge == none, none, 0 1px transparentize($edge, 1));
     $_entry_edge: if($edge == none, none, _widget_edge($edge));
 
+    //
+    // NOTE: XP THEME STUFF!
+    //
+    //       We define everything other than the box-model props here (aka really we
+    //       only care about colours)
+    //
+    //       The box-model stuff is in common/entry.scss, as Adwaita does it this way
+    //
+
     @if $t == normal
     {
-        color:            $text_color;
-        border-color:     $borders_color;
-        background-color: $base_color;
+        @include __wintc_apply_props_excluding(
+            $entry_styles,
+            "border-style",
+            "border-top-width",
+            "border-right-width",
+            "border-bottom-width",
+            "border-left-width",
+            "margin-top",
+            "margin-right",
+            "margin-bottom",
+            "margin-left",
+            "padding-top",
+            "padding-right",
+            "padding-bottom",
+            "padding-left"
+        );
+
+        //color:            $text_color;
+        //border-color:     $borders_color;
+        //background-color: $base_color;
 
         // For the transition to work the number of shadows in different states needs
         // to match, hence the shadow here
@@ -49,10 +75,27 @@
 
     @if $t == insensitive
     {
-        background-color: $insensitive_bg_color;
-        border-color:     $insensitive_borders_color;
-        box-shadow:       $_entry_edge;
-        color:            $insensitive_fg_color;
+        @include __wintc_apply_props_excluding(
+            $entry_inactive_styles,
+            "border-style",
+            "border-top-width",
+            "border-right-width",
+            "border-bottom-width",
+            "border-left-width",
+            "margin-top",
+            "margin-right",
+            "margin-bottom",
+            "margin-left",
+            "padding-top",
+            "padding-right",
+            "padding-bottom",
+            "padding-left"
+        );
+
+        //background-color: $insensitive_bg_color;
+        //border-color:     $insensitive_borders_color;
+        //box-shadow:       $_entry_edge;
+        //color:            $insensitive_fg_color;
     }
 
     @if $t == backdrop

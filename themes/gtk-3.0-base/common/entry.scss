@@ -12,10 +12,31 @@ entry
 {
     %entry_basic, &
     {
-        border:        1px solid;
-        min-height:    $_entry_height;
-        padding-left:  3px;
-        padding-right: 3px;
+        // NOTE: Adwaita only defines box-model stuff here, colours are done in the
+        //       corresponding drawing/entries.scss file (so we do the same)
+        //
+        @include __wintc_apply_specific_props(
+            $entry_styles,
+            "border-style",
+            "border-top-width",
+            "border-right-width",
+            "border-bottom-width",
+            "border-left-width",
+            "margin-top",
+            "margin-right",
+            "margin-bottom",
+            "margin-left",
+            "padding-top",
+            "padding-right",
+            "padding-bottom",
+            "padding-left"
+        );
+
+        //border:        1px solid;
+        //padding-left:  3px;
+        //padding-right: 3px;
+
+        min-height: $_entry_height; // Leftover for Adwaita compat
 
         @include entry(normal);
 
