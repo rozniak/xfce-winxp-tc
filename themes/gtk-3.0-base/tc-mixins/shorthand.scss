@@ -1,0 +1,60 @@
+/**
+ * shorthand.scss - WinTC Shorthand Convenience Mixins
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+@mixin __wintc_apply_props_for_category(
+    $theme_part_map,
+    $ruleset
+)
+{
+    @if $ruleset == box-model
+    {
+        @include __wintc_apply_specific_props(
+            $theme_part_map,
+            "border-style",
+            "border-top-width",
+            "border-right-width",
+            "border-bottom-width",
+            "border-left-width",
+            "margin-top",
+            "margin-right",
+            "margin-bottom",
+            "margin-left",
+            "padding-top",
+            "padding-right",
+            "padding-bottom",
+            "padding-left"
+        );
+    }
+}
+
+@mixin __wintc_apply_props_not_in_category(
+    $theme_part_map,
+    $ruleset
+)
+{
+    @if $ruleset == box-model
+    {
+        @include __wintc_apply_props_excluding(
+            $theme_part_map,
+            "border-style",
+            "border-top-width",
+            "border-right-width",
+            "border-bottom-width",
+            "border-left-width",
+            "margin-top",
+            "margin-right",
+            "margin-bottom",
+            "margin-left",
+            "padding-top",
+            "padding-right",
+            "padding-bottom",
+            "padding-left"
+        );
+    }
+}

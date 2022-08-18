@@ -7,8 +7,19 @@
  * Author(s): Rory Fewell <roryf@oddmatics.uk>
  */
 
-$button_styles:          ();
-$button_focused_styles:  ();
-$button_hover_styles:    ();
-$button_press_styles:    ();
-$button_inactive_styles: ();
+$button_styles:                          ();
+$button_focused_styles:                  ();
+$button_hover_styles:                    ();
+$button_press_styles:                    ();
+$button_inactive_styles:                 ();
+$toggle_button_styles:                   ();
+$toggle_button_focused_styles:           ();
+$toggle_button_hover_styles:             ();
+$toggle_button_selected_styles:          ();
+$toggle_button_selected_focused_styles:  ();
+$toggle_button_selected_hover_styles:    ();
+$toggle_button_press_styles:             ();
+$toggle_button_inactive_styles:          ();
+$toggle_button_inactive_selected_styles: ();
+$toolbar_button_hover_styles:            ();
+$toolbar_button_press_styles:            ();

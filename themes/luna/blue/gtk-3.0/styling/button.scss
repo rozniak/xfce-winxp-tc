@@ -7,6 +7,9 @@
  * Author(s): Rory Fewell <roryf@oddmatics.uk>
  */
 
+//
+// STANDARD BUTTONS
+//
 $button_styles:
     wintc_define_props_bg(
         $button_styles,
@@ -126,16 +129,34 @@ $button_inactive_styles:
         url('../Resources/gtk-3.0/button_inactive_border.png')
     );
 
-/**
-$button_flat_focused_background: ;
-$button_flat_focused_border_image: ;
 
-$button_flat_hover_background: ;
-$button_flat_hover_border_image: ;
+//
+// TOGGLE BUTTON
+//
+$toggle_button_styles: map-clone($button_styles);
+$toggle_button_styles:
+    wintc_define_props_box(
+        $toggle_button_styles,
+        false,
+        padding,
+        0,
+        0,
+        0,
+        0
+    );
 
-$button_flat_pressed_background: ;
-$button_flat_pressed_border_image: ;
+$toggle_button_press_styles: map-clone($button_press_styles);
+$toggle_button_press_styles:
+    wintc_define_props_box(
+        $toggle_button_press_styles,
+        false,
+        padding,
+        0,
+        0,
+        0,
+        0
+    );
 
-$button_flat_inactive_background: ;
-$button_flat_inactive_border_image: ;
-*/
+$toggle_button_hover_styles:          $button_hover_styles;
+$toggle_button_selected_styles:       $button_press_styles;
+$toggle_button_selected_hover_styles: $button_hover_styles;

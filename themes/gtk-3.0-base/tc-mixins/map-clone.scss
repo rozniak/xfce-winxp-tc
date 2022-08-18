@@ -1,0 +1,17 @@
+/**
+ * map-clone.scss - WinTC SASS Map Clone Function
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+@function map-clone(
+    $source_map
+)
+{
+    $new: ();
+
+    @return map-merge($new, $source_map);
+}

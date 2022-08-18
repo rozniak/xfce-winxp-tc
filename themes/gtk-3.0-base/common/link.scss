@@ -64,6 +64,7 @@ button:visited
     @extend %link;
 
     &,
+    &:focus,
     &:hover,
     &:active,
     &:checked

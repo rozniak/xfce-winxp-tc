@@ -7,6 +7,9 @@
  * Author(s): Rory Fewell <roryf@oddmatics.uk>
  */
 
+//
+// STANDARD BUTTONS
+//
 $button_styles:
     wintc_define_props_bg(
         $button_styles,
@@ -129,16 +132,115 @@ $button_inactive_styles:
         undefined
     );
 
-/**
-$button_flat_focused_background: ;
-$button_flat_focused_border_image: ;
 
-$button_flat_hover_background: ;
-$button_flat_hover_border_image: ;
+//
+// TOGGLE BUTTON
+//
+$toggle_button_styles:
+    wintc_define_props_borders(
+        $toggle_button_styles,
+        true,
+        solid,
+        2,
+        2,
+        2,
+        2,
+        undefined,
+        url('../Resources/button_border.png')
+    );
+$toggle_button_styles:
+    wintc_define_props_box(
+        $toggle_button_styles,
+        true,
+        padding,
+        1,
+        1,
+        1,
+        1
+    );
 
-$button_flat_pressed_background: ;
-$button_flat_pressed_border_image: ;
+$toggle_button_selected_styles:
+    wintc_define_props_borders(
+        $toggle_button_selected_styles,
+        true,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/toggle_button_selected_border.png')
+    );
+$toggle_button_selected_styles:
+    wintc_define_props_bg(
+        $toggle_button_selected_styles,
+        true,
+        undefined,
+        undefined,
+        repeat,
+        undefined,
+        url('../Resources/toggle_button_selected.png')
+    );
 
-$button_flat_inactive_background: ;
-$button_flat_inactive_border_image: ;
-*/
+$toggle_button_press_styles:
+    wintc_define_props_bg(
+        $toggle_button_press_styles,
+        true,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
+$toggle_button_press_styles:
+    wintc_define_props_borders(
+        $toggle_button_press_styles,
+        true,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/toggle_button_selected_border.png')
+    );
+$toggle_button_press_styles:
+    wintc_define_props_box(
+        $toggle_button_press_styles,
+        true,
+        padding,
+        2,
+        0,
+        0,
+        2
+    );
+
+
+//
+// FLAT/TOOLBAR BUTTONS
+//
+$toolbar_button_hover_styles:
+    wintc_define_props_borders(
+        $toolbar_button_hover_styles,
+        true,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/button_toolbar_hover_border.png')
+    );
+
+$toolbar_button_press_styles:
+    wintc_define_props_borders(
+        $toolbar_button_press_styles,
+        true,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/button_toolbar_press_border.png')
+    );

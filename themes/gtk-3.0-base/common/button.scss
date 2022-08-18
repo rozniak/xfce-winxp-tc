@@ -40,36 +40,10 @@ button
 {
     @at-root %button_basic, &
     {
-        // NOTE: Adwaita only defines box-model stuff here, colours are done in the
-        //       corresponding drawing/buttons.scss file (so we do the same)
-        //
-        @include __wintc_apply_specific_props(
+        @include __wintc_apply_props_for_category(
             $button_styles,
-            "border-style",
-            "border-top-width",
-            "border-right-width",
-            "border-bottom-width",
-            "border-left-width",
-            "margin-top",
-            "margin-right",
-            "margin-bottom",
-            "margin-left",
-            "padding-top",
-            "padding-right",
-            "padding-bottom",
-            "padding-left"
+            box-model
         );
-
-        padding: 0px;
-        min-height: 0px;
-        min-width: 0px;
-
-        //border:        1px solid;
-        //border-radius: $button_radius;
-        //min-height:    15px;
-        //min-width:     16px;
-        //padding:       $_btn_pad;
-        //transition:    $button_transition;
 
         @include button(normal);
 
@@ -97,6 +71,59 @@ button
             &:checked
             {
                 @include button(insensitive-active);
+            }
+        }
+
+        // NOTE: This is an addition for the TC, not part of Adwaita
+        //
+        &.toggle
+        {
+            @include __wintc_apply_props_for_category(
+                $toggle_button_styles,
+                box-model
+            );
+
+            @include button(toggle);
+
+            &:focus
+            {
+                @include button(toggle-focus);
+            }
+
+            &:hover
+            {
+                @include button(toggle-hover);
+            }
+
+            &:checked
+            {
+                @include button(toggle-checked);
+
+                &:focus
+                {
+                    @include button(toggle-checked-focus);
+                }
+
+                &:hover
+                {
+                    @include button(toggle-checked-hover);
+                }
+            }
+
+            &:active
+            {
+                @include button(toggle-active);
+            }
+
+            &:disabled
+            {
+                @include button(toggle-insensitive);
+
+                &:active,
+                &:checked
+                {
+                    @include button(toggle-insensitive-checked);
+                }
             }
         }
 
@@ -487,56 +514,34 @@ button
 // All the following is for the +|- buttons on inline toolbars, that way
 // should really be deprecated...
 //
-.inline-toolbar toolbutton > button
-{
+//.inline-toolbar toolbutton > button
+//{
     // Redefining the button look is needed since those are flat...
     //
-    @include button(normal);
+//    @include button(normal);
 
-    &:hover
-    {
-        @include button(hover);
-    }
+//    &:hover
+//    {
+//        @include button(hover);
+//    }
 
-    &:active,
-    &:checked
-    {
-        @include button(active);
-    }
+//    &:active,
+//    &:checked
+//    {
+//        @include button(active);
+//    }
 
-    &:disabled
-    {
-        @include button(insensitive);
+//    &:disabled
+//    {
+//        @include button(insensitive);
 
-        &:active,
-        &:checked
-        {
-            @include button(insensitive-active);
-        }
-    }
-
-    &:backdrop
-    {
-        @include button(backdrop);
-
-        &:active,
-        &:checked
-        {
-            @include button(backdrop-active);
-        }
-
-        &:disabled
-        {
-            @include button(backdrop-insensitive);
-
-            &:active,
-            &:checked
-            {
-                @include button(backdrop-insensitive-active);
-            }
-        }
-    }
-}
+//        &:active,
+//        &:checked
+//        {
+//            @include button(insensitive-active);
+//        }
+//    }
+//}
 
 // More inline toolbar buttons
 //

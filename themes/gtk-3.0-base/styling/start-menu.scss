@@ -16,7 +16,7 @@ $start_flag_styles:
         undefined,
         undefined,
         no-repeat,
-        0px 0px,
+        0px -1px,
         url('../Resources/gtk-3.0/start_flag.png')
     );
 $start_flag_styles:
@@ -53,16 +53,6 @@ $start_button_styles:
         2
     );
 $start_button_styles:
-    wintc_define_props_box(
-        $start_button_styles,
-        true,
-        padding,
-        undefined,
-        2,
-        undefined,
-        undefined
-    );
-$start_button_styles:
     wintc_define_props_fg(
         $start_button_styles,
         true,
@@ -79,15 +69,24 @@ $start_button_styles:
         bold
     );
 
-$start_button_press_styles:
-    wintc_define_props_borders(
-        $start_button_press_styles,
+$start_button_selected_styles:
+    wintc_define_props_box(
+        $start_button_selected_styles,
         true,
+        padding,
+        2,
+        0,
+        0,
+        2
+    );
+
+$start_button_text_styles:
+    wintc_define_props_box(
+        $start_button_text_styles,
+        true,
+        margin,
         undefined,
+        2,
         undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        url('../Resources/taskband_button_press_border.png')
+        undefined
     );

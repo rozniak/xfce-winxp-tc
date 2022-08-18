@@ -14,18 +14,6 @@ $taskband_horz_margins: 7px !default;
 // Taskband buttons
 //
 $taskband_button_styles:
-    wintc_define_props_borders(
-        $taskband_button_styles,
-        true,
-        solid,
-        2,
-        2,
-        2,
-        2,
-        default,
-        default
-    );
-$taskband_button_styles:
     wintc_define_props_box(
         $taskband_button_styles,
         true,
@@ -34,40 +22,4 @@ $taskband_button_styles:
         0,
         2,
         3
-    );
-
-$taskband_button_press_styles:
-    wintc_define_props_borders(
-        $taskband_button_press_styles,
-        true,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        url('../Resources/taskband_button_press_border.png')
-    );
-
-$taskband_button_selected_styles:
-    wintc_define_props_bg(
-        $taskband_button_selected_styles,
-        true,
-        undefined,
-        undefined,
-        repeat,
-        undefined,
-        url('../Resources/taskband_button_selected.png')
-    );
-$taskband_button_selected_styles:
-    wintc_define_props_borders(
-        $taskband_button_selected_styles,
-        true,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        url('../Resources/taskband_button_press_border.png')
     );

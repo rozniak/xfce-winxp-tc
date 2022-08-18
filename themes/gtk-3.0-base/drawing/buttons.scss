@@ -68,15 +68,6 @@
     $_button_edge:   if($edge == none, none, _widget_edge($edge));
     $_blank_edge:    if($edge == none, none, _widget_edge(transparentize($edge, 1)));
     $_button_shadow: 0 1px 2px transparentize($shadow_color, 0.03);
-    
-    //
-    // NOTE: XP THEME STUFF!
-    //
-    //       We define everything other than the box-model props here (aka really we
-    //       only care about colours)
-    //
-    //       The box-model stuff is in common/button.scss, as Adwaita does it this way
-    //
 
     @if $t == normal     or
         $t == normal-alt or
@@ -86,21 +77,9 @@
         //
         // Normal Button
         //
-        @include __wintc_apply_props_excluding(
+        @include __wintc_apply_props_not_in_category(
             $button_styles,
-            "border-style",
-            "border-top-width",
-            "border-right-width",
-            "border-bottom-width",
-            "border-left-width",
-            "margin-top",
-            "margin-right",
-            "margin-bottom",
-            "margin-left",
-            "padding-top",
-            "padding-right",
-            "padding-bottom",
-            "padding-left"
+            box-model
         );
     }
     @else if $t == focus
@@ -108,22 +87,7 @@
         //
         // Focused Button
         //
-        @include __wintc_apply_props_excluding(
-            $button_focused_styles,
-            "border-style",
-            "border-top-width",
-            "border-right-width",
-            "border-bottom-width",
-            "border-left-width",
-            "margin-top",
-            "margin-right",
-            "margin-bottom",
-            "margin-left",
-            "padding-top",
-            "padding-right",
-            "padding-bottom",
-            "padding-left"
-        );
+        @include __wintc_apply_props($button_focused_styles);
     }
     @else if $t == hover     or
              $t == hover-alt or
@@ -132,46 +96,16 @@
         //
         // Hovered Button
         //
-        @include __wintc_apply_props_excluding(
-            $button_hover_styles,
-            "border-style",
-            "border-top-width",
-            "border-right-width",
-            "border-bottom-width",
-            "border-left-width",
-            "margin-top",
-            "margin-right",
-            "margin-bottom",
-            "margin-left",
-            "padding-top",
-            "padding-right",
-            "padding-bottom",
-            "padding-left"
-        );
+        @include __wintc_apply_props($button_hover_styles);
     }
     @else if $t == active          or
              $t == backdrop-active or
              $t == osd-active
     {
         //
-        // Pushed Button
+        // Pressed Button
         //
-        @include __wintc_apply_props_excluding(
-            $button_press_styles,
-            "border-style",
-            "border-top-width",
-            "border-right-width",
-            "border-bottom-width",
-            "border-left-width",
-            "margin-top",
-            "margin-right",
-            "margin-bottom",
-            "margin-left",
-            "padding-top",
-            "padding-right",
-            "padding-bottom",
-            "padding-left"
-        );
+        @include __wintc_apply_props($button_press_styles);
     }
     @else if $t == insensitive                 or
              $t == insensitive-active          or
@@ -182,38 +116,87 @@
         //
         // Insensitive Button
         //
-        @include __wintc_apply_props_excluding(
-            $button_inactive_styles,
-            "border-style",
-            "border-top-width",
-            "border-right-width",
-            "border-bottom-width",
-            "border-left-width",
-            "margin-top",
-            "margin-right",
-            "margin-bottom",
-            "margin-left",
-            "padding-top",
-            "padding-right",
-            "padding-bottom",
-            "padding-left"
+        @include __wintc_apply_props($button_inactive_styles);
+    }
+    @else if $t == toggle
+    {
+        //
+        // Normal Toggle Button
+        //
+        @include __wintc_apply_props_not_in_category(
+            $toggle_button_styles,
+            box-model
         );
+    }
+    @else if $t == toggle-focus
+    {
+        //
+        // Focused Toggle Button
+        //
+        @include __wintc_apply_props($toggle_button_focused_styles);
+    }
+    @else if $t == toggle-hover
+    {
+        //
+        // Hovered Toggle Button
+        //
+        @include __wintc_apply_props($toggle_button_hover_styles);
+    }
+    @else if $t == toggle-checked
+    {
+        //
+        // Checked Toggle Button
+        //
+        @include __wintc_apply_props($toggle_button_selected_styles);
+    }
+    @else if $t == toggle-checked-focus
+    {
+        //
+        // Checked and Focused Toggle Button
+        //
+        @include __wintc_apply_props($toggle_button_selected_focused_styles);
+    }
+    @else if $t == toggle-checked-hover
+    {
+        //
+        // Checked and Hovered Toggle Button
+        //
+        @include __wintc_apply_props($toggle_button_selected_hover_styles);
+    }
+    @else if $t == toggle-active
+    {
+        //
+        // Pressed Toggle Button
+        //
+        @include __wintc_apply_props($toggle_button_press_styles);
+    }
+    @else if $t == toggle-insensitive
+    {
+        //
+        // Insensitive Toggle Button
+        //
+        @include __wintc_apply_props($toggle_button_inactive_styles);
+    }
+    @else if $t == toggle-insensitive-checked
+    {
+        //
+        // Insensitive Checked Toggle Button
+        //
+        @include __wintc_apply_props($toggle_button_inactive_selected_styles);
     }
     @else if $t == flat-hover
     {
         //
         // Hovered or Focused Flat Button
         //
-        background-image: url("../Resources/gtk-3.0/button_toolbar_hover_body.png"), linear-gradient(170deg, rgba(252,252,248,1) 0%, rgba(235,234,224,1) 100%);
-        border-image:     url("../Resources/gtk-3.0/button_toolbar_hover_border.png") 3 3 3 3 stretch;
+        @include __wintc_apply_props($toolbar_button_hover_styles);
     }
     @else if $t == flat-active
     {
         //
         // Pushed Flat Button
         //
-        background-image: url("../Resources/gtk-3.0/button_toolbar_press_body.png"), linear-gradient(170deg, rgba(229,228,222,1) 0%, rgba(226,225,217,1) 100%);
-        border-image:     url("../Resources/gtk-3.0/button_toolbar_press_border.png") 3 3 3 3 stretch;
+        @include __wintc_apply_props($toolbar_button_press_styles);
     }
     @else if $t == flat-insensitive
     {
@@ -228,12 +211,12 @@
         //
         // Reset
         //
-        background-color: transparent;
-        background-image: none;
-        border-color:     transparent;
-        border-image:     none;
-        text-shadow:      none;
-        -gtk-icon-shadow: none;
+        background-color:    transparent;
+        background-image:    none;
+        border-color:        transparent;
+        border-image-source: none;
+        text-shadow:         none;
+        -gtk-icon-shadow:    none;
 
         @include _shadows(inset 0 1px transparentize(white, 1), $_blank_edge);
     }

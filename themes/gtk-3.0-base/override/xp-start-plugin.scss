@@ -35,8 +35,13 @@ button.xp-start-button
         @include __wintc_apply_props($start_button_hover_styles);
     }
 
-    &:active,
-    &:checked
+    &:checked,
+    &:checked:hover
+    {
+        @include __wintc_apply_props($start_button_selected_styles);
+    }
+
+    &:active
     {
         @include __wintc_apply_props($start_button_press_styles);
     }
@@ -49,8 +54,8 @@ button.xp-start-button
             "min-width"
         );
 
-        min-height:          $start_flag_size;
-        min-width:           $start_flag_size;
+        min-height: $start_flag_size;
+        min-width:  $start_flag_size;
     }
 
     label

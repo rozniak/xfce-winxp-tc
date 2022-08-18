@@ -10,18 +10,6 @@
 // Taskband itself
 //
 /**
-$taskband_styles:
-    wintc_define_props_bg(
-        $taskband_styles,
-        false,
-        $bg_color,
-        undefined,
-        undefined,
-        undefined,
-        undefined
-    );
-**/
-/**
 FIXME: Figure out borders on the panel one day
 
 $taskband_styles:
@@ -46,18 +34,19 @@ $taskband_styles:
         undefined
     );
 **/
+
 // Taskband buttons
 //
-$taskband_button_styles:
-    wintc_define_props_bg(
-        $taskband_button_styles,
-        false,
-        $bg_color,
-        undefined,
-        undefined,
-        undefined,
-        none // Necessary to override standard button gradient
-    );
+//$taskband_button_styles:
+//    wintc_define_props_bg(
+//        $taskband_button_styles,
+//        false,
+//        $bg_color,
+//        undefined,
+//        undefined,
+//        undefined,
+//        none // Necessary to override standard button gradient
+//    );
 $taskband_button_styles:
     wintc_define_props_borders(
         $taskband_button_styles,
@@ -70,6 +59,16 @@ $taskband_button_styles:
         $bg_color,
         undefined
     );
+$taskband_button_styles:
+    wintc_define_props_bg(
+        $taskband_button_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        none
+    );
 
 $taskband_button_hover_styles:
     wintc_define_props_bg(
@@ -79,7 +78,7 @@ $taskband_button_hover_styles:
         undefined,
         undefined,
         undefined,
-        undefined
+        none
     );
 $taskband_button_hover_styles:
     wintc_define_props_borders(
@@ -102,7 +101,7 @@ $taskband_button_press_styles:
         undefined,
         undefined,
         undefined,
-        undefined
+        none
     );
 $taskband_button_press_styles:
     wintc_define_props_borders(
@@ -125,7 +124,7 @@ $taskband_button_selected_styles:
         undefined,
         undefined,
         undefined,
-        undefined
+        none
     );
 $taskband_button_selected_styles:
     wintc_define_props_borders(
@@ -148,7 +147,7 @@ $taskband_button_selected_hover_styles:
         undefined,
         undefined,
         undefined,
-        undefined
+        none
     );
 $taskband_button_selected_hover_styles:
     wintc_define_props_borders(

@@ -414,3 +414,64 @@
 
     @return $theme_part_map;
 }
+
+@function wintc_define_props_outline(
+    $theme_part_map,
+    $define_default,
+    $value_style,
+    $value_width,
+    $value_color
+)
+{
+    $theme_part_map:
+        __wintc_handle_define(
+            $theme_part_map,
+            $define_default,
+            "outline-style",
+            $value_style
+        );
+
+    $theme_part_map:
+        __wintc_handle_define(
+            $theme_part_map,
+            $define_default,
+            "outline-width",
+            __wintc_apply_units($value_width)
+        );
+
+    $theme_part_map:
+        __wintc_handle_define(
+            $theme_part_map,
+            $define_default,
+            "outline-color",
+            $value_color
+        );
+
+    // Deal with the radius
+    //
+    @if __wintc_has_value($value_style)
+    {
+        @if $value_style == "none"
+        {
+            $theme_part_map:
+                __wintc_handle_define(
+                    $theme_part_map,
+                    $define_default,
+                    "-gtk-outline-radius",
+                    undefined
+                );
+        }
+        @else
+        {
+            $theme_part_map:
+                __wintc_handle_define(
+                    $theme_part_map,
+                    $define_default,
+                    "-gtk-outline-radius",
+                    "#{$value_width}"
+                );
+        }
+    }
+
+    @return $theme_part_map;
+}

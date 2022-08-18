@@ -137,6 +137,18 @@ $start_button_press_styles:
         undefined,
         url('../Resources/gtk-3.0/start_button_press_border.png')
     );
+$start_button_press_styles:
+    wintc_define_props_box(
+        $start_button_press_styles,
+        false,
+        padding,
+        0,
+        0,
+        0,
+        0
+    );
+
+$start_button_selected_styles: $start_button_press_styles;
 
 $start_button_text_styles:
     wintc_define_props_box(
