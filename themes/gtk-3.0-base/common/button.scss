@@ -108,6 +108,11 @@ button
                 {
                     @include button(toggle-checked-hover);
                 }
+
+                &:active
+                {
+                    @include button(toggle-active);
+                }
             }
 
             &:active
