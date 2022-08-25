@@ -9,43 +9,36 @@
 
 combobox
 {
-    background-color: $base_color;
-    border:           1px solid $borders_color;
+    @include __wintc_apply_props($combobox_styles);
 
     &:disabled
     {
-        background-color: $insensitive_bg_color;
-        border-color:           $insensitive_borders_color;
+        @include __wintc_apply_props($combobox_inactive_styles);
     }
 
     // Override button styles
     //
     button.combo:last-child
     {
-        background-color:    transparent;
-        background-image:    url("../Resources/gtk-3.0/combobox_button.png");
-        background-position: right;
-        background-repeat:   no-repeat;
-        background-size:     contain;
-        border-width:        0px;
-        margin:              1px;
-        min-height:          18px;
-        min-width:           15px;
-        padding-right:       18px;
+        @include __wintc_apply_props($combobox_button_styles);
 
-        &:active
-        {
-            background-image: url("../Resources/gtk-3.0/combobox_button_press.png");
-        }
+        min-height:    $combobox_button_height;
+        min-width:     $combobox_button_width;
+        padding-right: $combobox_button_width;
 
         &:hover
         {
-            background-image: url("../Resources/gtk-3.0/combobox_button_hover.png");
+            @include __wintc_apply_props($combobox_button_hover_styles);
+        }
+
+        &:checked
+        {
+            @include __wintc_apply_props($combobox_button_press_styles);
         }
 
         &:disabled
         {
-            background-image: url("../Resources/gtk-3.0/combobox_button_inactive.png");
+            @include __wintc_apply_props($combobox_button_inactive_styles);
         }
     }
 
@@ -55,6 +48,14 @@ combobox
     entry
     {
         border-width: 0px;
+    }
+
+    // HACK: This ensures the minimum height of a typical combobox drop down
+    //       is 17px for native
+    //
+    cellview
+    {
+        margin-bottom: -1px; // This is AWFUL but I don't see any other way
     }
 
     // FIXME: Untested
