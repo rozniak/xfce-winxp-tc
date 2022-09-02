@@ -22,12 +22,14 @@
 menubar,
 .menubar
 {
-    padding:       0px;
+    @include __wintc_apply_props($menustrip_styles);
+
     -GtkWidget-window-dragging: true;
 
     > menuitem
     {
-        padding: 2px 6px 3px;
+        @include __wintc_apply_props($menustrip_menuitem_styles);
+
 
         // Remove padding and rounding from menubar submenus
         //
@@ -47,8 +49,7 @@ menubar,
         //
         &:hover
         {
-            background-color: $selected_bg_color;
-            color:            $selected_fg_color;
+            @include __wintc_apply_props($menustrip_menuitem_hover_styles);
         }
     }
 
@@ -74,24 +75,22 @@ menu,
 .menu,
 .context-menu
 {
-    background-color:   $menu_color;
-    border:             1px solid $menu_borders_color;
+    @include __wintc_apply_props($popup_menu_styles);
 
     menuitem
     {
-        margin:     2px 4px 2px;
-        min-height: 16px;
-        padding:    2px 6px;
+        @include __wintc_apply_props($popup_menu_menuitem_styles);
+
+        min-height: $popup_menu_menuitem_height;
 
         &:hover
         {
-            background-color: $selected_bg_color;
-            color:            $selected_fg_color;
+            @include __wintc_apply_props($popup_menu_menuitem_hover_styles);
         }
 
         &:disabled
         {
-            color: $insensitive_fg_color;
+            @include __wintc_apply_props($popup_menu_menuitem_inactive_styles);
         }
 
         &:first-child
@@ -108,8 +107,8 @@ menu,
         //
         arrow
         {
-            min-height: 16px;
-            min-width: 16px;
+            min-height: $popup_menu_menuitem_height;
+            min-width:  $popup_menu_menuitem_height;
 
             &:dir(ltr)
             {
@@ -185,9 +184,9 @@ menu,
     //
     > separator
     {
-        background-color: $menu_borders_color;
-        margin:           2px 4px;
-        min-height:       1px;
+        @include __wintc_apply_props($menu_separator_styles);
+
+        min-height: $menu_separator_height;
     }
 }
 
@@ -201,8 +200,8 @@ menuitem
     check,
     radio
     {
-        min-height: 16px;
-        min-width:  16px;
+        min-height: $popup_menu_menuitem_height;
+        min-width:  $popup_menu_menuitem_height;
 
         &:dir(ltr) { margin-right: 7px; }
         &:dir(rtl) { margin-left: 7px;  }
@@ -223,28 +222,31 @@ menuitem
 // I couldn't resolve this inconsistency so have chosen to instead drop the sub-menu
 // anims for the time being
 //
-.context-menu
+@if $popup_menu_fadein == true
 {
-    animation-duration: 300ms;
-    animation-name:     menu-fadein;
-}
-
-menubar,
-.menubar
-{
-    & > menuitem
+    .context-menu
     {
-        & > * > menu,
-        & > * > .menu
+        animation-duration: 300ms;
+        animation-name:     menu-fadein;
+    }
+
+    menubar,
+    .menubar
+    {
+        & > menuitem
         {
-            animation-name: empty;
-        }
-        
-        &:hover > * > menu,
-        &:hover > * > .menu
-        {
-            animation-duration: 300ms;
-            animation-name:     menu-fadein;
+            & > * > menu,
+            & > * > .menu
+            {
+                animation-name: empty;
+            }
+
+            &:hover > * > menu,
+            &:hover > * > .menu
+            {
+                animation-duration: 300ms;
+                animation-name:     menu-fadein;
+            }
         }
     }
 }

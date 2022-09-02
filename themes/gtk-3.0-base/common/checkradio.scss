@@ -262,7 +262,11 @@ radio
         &:checked,
         &:indeterminate
         {
-            -gtk-icon-source: url("../Resources/checkbox_check_glyph_menu.png");
+            &,
+            &:disabled
+            {
+                -gtk-icon-source: url("../Resources/checkbox_check_glyph_menu.png");
+            }
 
             &:hover
             {
