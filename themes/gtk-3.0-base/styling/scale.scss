@@ -1,0 +1,195 @@
+/**
+ * scale.scss - Theme Base Scale Style Constants
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+$scale_mark_color:       $borders_color !default;
+$scale_mark_length:      3px !default;
+$scale_mark_thickness:   1px !default;
+$scale_end_mark_length:  4px !default;
+$scale_slider_length:    21px !default;
+$scale_slider_thickness: 11px !default;
+
+
+//
+// ALL SCALES
+//
+$scale_styles:
+    wintc_define_props_box(
+        $scale_styles,
+        true,
+        "padding",
+        6,
+        6,
+        6,
+        6
+    );
+$scale_slider_styles:
+    wintc_define_props_bg(
+        $scale_slider_styles,
+        true,
+        $bg_color,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
+$scale_trough_styles:
+    wintc_define_props_borders(
+        $scale_trough_styles,
+        true,
+        solid,
+        1,
+        2,
+        2,
+        1,
+        undefined,
+        url('../Resources/scale_trough.png')
+    );
+
+
+//
+// HORIZONTAL SCALES
+//
+$scale_horz_marks_styles:
+    wintc_define_props_box(
+        $scale_horz_marks_styles,
+        true,
+        margin,
+        11,
+        undefined,
+        undefined,
+        undefined
+    );
+
+$scale_horz_arrow_styles:
+    wintc_define_props_bg(
+        $scale_horz_arrow_styles,
+        true,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/scale_horz_slider_arrow.png')
+    );
+$scale_horz_arrow_press_styles:
+    wintc_define_props_bg(
+        $scale_horz_arrow_press_styles,
+        true,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/scale_horz_slider_arrow_press.png')
+    );
+$scale_horz_arrow_inactive_styles:
+    wintc_define_props_bg(
+        $scale_horz_arrow_inactive_styles,
+        true,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/scale_horz_slider_arrow_inactive.png')
+    );
+
+$scale_horz_thumb_styles:
+    wintc_define_props_bg(
+        $scale_horz_thumb_styles,
+        true,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/scale_horz_slider_thumb.png')
+    );
+$scale_horz_thumb_press_styles:
+    wintc_define_props_bg(
+        $scale_horz_thumb_press_styles,
+        true,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/scale_horz_slider_thumb_press.png')
+    );
+$scale_horz_thumb_inactive_styles:
+    wintc_define_props_bg(
+        $scale_horz_thumb_inactive_styles,
+        true,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/scale_horz_slider_thumb_inactive.png')
+    );
+
+
+//
+// VERTICAL SCALES
+//
+$scale_vert_arrow_styles:
+    wintc_define_props_bg(
+        $scale_vert_arrow_styles,
+        true,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/scale_vert_slider_arrow.png')
+    );
+$scale_vert_arrow_press_styles:
+    wintc_define_props_bg(
+        $scale_vert_arrow_press_styles,
+        true,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/scale_vert_slider_arrow_press.png')
+    );
+$scale_vert_arrow_inactive_styles:
+    wintc_define_props_bg(
+        $scale_vert_arrow_inactive_styles,
+        true,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/scale_vert_slider_arrow_inactive.png')
+    );
+
+$scale_vert_thumb_styles:
+    wintc_define_props_bg(
+        $scale_vert_thumb_styles,
+        true,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/scale_vert_slider_thumb.png')
+    );
+$scale_vert_thumb_press_styles:
+    wintc_define_props_bg(
+        $scale_vert_thumb_press_styles,
+        true,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/scale_vert_slider_thumb_press.png')
+    );
+$scale_vert_thumb_inactive_styles:
+    wintc_define_props_bg(
+        $scale_vert_thumb_inactive_styles,
+        true,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/scale_vert_slider_thumb_inactive.png')
+    );

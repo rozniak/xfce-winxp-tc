@@ -9,59 +9,111 @@
 
 scale
 {
-    padding: 6px;
+    @include __wintc_apply_props($scale_styles);
+
+    marks
+    {
+        @include __wintc_apply_props($scale_marks_styles);
+    }
+
+    indicator
+    {
+        color: $scale_mark_color;
+    }
+
+    slider
+    {
+        @include __wintc_apply_props($scale_slider_styles);
+    }
+    
+    trough
+    {
+        @include __wintc_apply_props($scale_trough_styles);
+    }
+    
+    value
+    {
+        padding-bottom: 6px;
+    }
 
     &.horizontal
     {
-        min-height: 21px;
+        @include __wintc_apply_props($scale_horz_styles);
+
+        min-height: $scale_slider_length;
         
         
         marks
         {
-            margin-top: 11px;
+            @include __wintc_apply_props($scale_horz_marks_styles);
             
             mark
             {
                 indicator
                 {
-                    min-width: 1px;
-                    min-height: 3px;
+                    min-width: $scale_mark_thickness;
+                    min-height: $scale_mark_length;
                 }
-                
-                &:first-child indicator,
-                &:last-child indicator
+
+                @if $scale_end_mark_length != $scale_mark_length
                 {
-                    min-height: 4px;
+                    &:first-child indicator,
+                    &:last-child indicator
+                    {
+                        min-height: $scale_end_mark_length;
+                    }
                 }
             }
         }
         
         slider
         {
-            background-image: url("../Resources/gtk-3.0/scale_horz_slider.png");
-            margin: -11px -6px -10px -5px;
-            min-height: 4px;
+            @include __wintc_apply_props_excluding(
+                $scale_horz_thumb_styles,
+                "margin-bottom",
+                "margin-left",
+                "margin-right",
+                "margin-top",
+                "min-height"
+            );
+
+            $l_margin_bottom: floor($scale_slider_length    / 2) * -1;
+            $l_margin_left:   floor($scale_slider_thickness / 2) * -1;
+            $l_margin_right:  ceil($scale_slider_thickness  / 2) * -1;
+            $l_margin_top:    ceil($scale_slider_length     / 2) * -1;
+
+            margin: $l_margin_top $l_margin_right $l_margin_bottom $l_margin_left;
+            min-height: __wintc_get_prop_with_fallbacks(
+                            "border-top-width",
+                            $scale_horz_trough_styles,
+                            $scale_trough_styles
+                        ) +
+                        __wintc_get_prop_with_fallbacks(
+                            "border-bottom-width"
+                            $scale_horz_trough_styles,
+                            $scale_trough_styles
+                        );
             
             
             &:hover
             {
-                background-image: url("../Resources/gtk-3.0/scale_horz_slider_hover.png");
+                @include __wintc_apply_props($scale_horz_thumb_hover_styles);
             }
         
             &:active
             {
-                background-image: url("../Resources/gtk-3.0/scale_horz_slider_active.png");
+                @include __wintc_apply_props($scale_horz_thumb_press_styles);
             }
         
             &:disabled
             {
-                background-image: url("../Resources/gtk-3.0/scale_horz_slider_inactive.png");
+                @include __wintc_apply_props($scale_horz_thumb_inactive_styles);
             }
         }
         
         trough
         {
-            border-image: url("../Resources/gtk-3.0/scale_horz_trough.png") 2 2 2 2 stretch;
+            @include __wintc_apply_props($scale_horz_trough_styles);
         }
         
         &.marks-after,
@@ -72,22 +124,22 @@ scale
             
             slider
             {
-                background-image: url("../Resources/gtk-3.0/scale_horz_slider_arrow.png");
+                @include __wintc_apply_props($scale_horz_arrow_styles);
             
-            
+
                 &:hover
                 {
-                    background-image: url("../Resources/gtk-3.0/scale_horz_slider_arrow_hover.png");
+                    @include __wintc_apply_props($scale_horz_arrow_hover_styles);
                 }
         
                 &:active
                 {
-                    background-image: url("../Resources/gtk-3.0/scale_horz_slider_arrow_active.png");
+                    @include __wintc_apply_props($scale_horz_arrow_press_styles);
                 }
         
                 &:disabled
                 {
-                    background-image: url("../Resources/gtk-3.0/scale_horz_slider_arrow_inactive.png");
+                    @include __wintc_apply_props($scale_horz_arrow_inactive_styles);
                 }
             }
         }
@@ -95,53 +147,80 @@ scale
     
     &.vertical
     {
-        min-width: 21px;
+        min-width: $scale_slider_length;
         
         
         marks
         {
+            @include __wintc_apply_props($scale_vert_marks_styles);
+
             mark
             {
                 indicator
                 {
-                    min-height: 1px;
-                    min-width: 3px;
+                    min-height: $scale_mark_thickness;
+                    min-width: $scale_mark_length;
                 }
                 
-                &:first-child indicator,
-                &:last-child indicator
+                @if $scale_end_mark_length != $scale_mark_length
                 {
-                    min-width: 4px;
+                    &:first-child indicator,
+                    &:last-child indicator
+                    {
+                        min-width: $scale_end_mark_length;
+                    }
                 }
             }
         }
         
         slider
         {
-            background-image: url("../Resources/gtk-3.0/scale_vert_slider.png");
-            margin: -6px -11px -5px -10px;
-            min-width: 4px;
+            @include __wintc_apply_props_excluding(
+                $scale_vert_thumb_styles,
+                "margin-bottom",
+                "margin-left",
+                "margin-right",
+                "margin-top",
+                "min-height"
+            );
+
+            $l_margin_bottom: floor($scale_slider_thickness / 2) * -1;
+            $l_margin_left:   floor($scale_slider_length    / 2) * -1;
+            $l_margin_right:  ceil($scale_slider_length     / 2) * -1;
+            $l_margin_top:    ceil($scale_slider_thickness  / 2) * -1;
+
+            margin: $l_margin_top $l_margin_right $l_margin_bottom $l_margin_left;
+            min-width: __wintc_get_prop_with_fallbacks(
+                            "border-left-width",
+                            $scale_vert_trough_styles,
+                            $scale_trough_styles
+                        ) +
+                        __wintc_get_prop_with_fallbacks(
+                            "border-right-width"
+                            $scale_vert_trough_styles,
+                            $scale_trough_styles
+                        );
             
             
             &:hover
             {
-                background-image: url("../Resources/gtk-3.0/scale_vert_slider_hover.png");
+                @include __wintc_apply_props($scale_vert_thumb_hover_styles);
             }
         
             &:active
             {
-                background-image: url("../Resources/gtk-3.0/scale_vert_slider_active.png");
+                @include __wintc_apply_props($scale_vert_thumb_press_styles);
             }
         
             &:disabled
             {
-                background-image: url("../Resources/gtk-3.0/scale_vert_slider_inactive.png");
+                @include __wintc_apply_props($scale_vert_thumb_inactive_styles);
             }
         }
         
         trough
         {
-            border-image: url("../Resources/gtk-3.0/scale_vert_trough.png") 2 2 2 2 stretch;
+            @include __wintc_apply_props($scale_vert_trough_styles);
         }
         
         &.marks-after,
@@ -152,40 +231,24 @@ scale
             
             slider
             {
-                background-image: url("../Resources/gtk-3.0/scale_vert_slider_arrow.png");
+                @include __wintc_apply_props($scale_vert_arrow_styles);
             
             
                 &:hover
                 {
-                    background-image: url("../Resources/gtk-3.0/scale_vert_slider_arrow_hover.png");
+                    @include __wintc_apply_props($scale_vert_arrow_hover_styles);
                 }
         
                 &:active
                 {
-                    background-image: url("../Resources/gtk-3.0/scale_vert_slider_arrow_active.png");
+                    @include __wintc_apply_props($scale_vert_arrow_press_styles);
                 }
         
                 &:disabled
                 {
-                    background-image: url("../Resources/gtk-3.0/scale_vert_slider_arrow_inactive.png");
+                    @include __wintc_apply_props($scale_vert_arrow_inactive_styles);
                 }
             }
         }
-    }
-    
-    indicator
-    {
-        color: #A1A192;
-    }
-    
-    trough
-    {
-        border-style: solid;
-        border-width: 2px;
-    }
-    
-    value
-    {
-        padding-bottom: 6px;
     }
 }

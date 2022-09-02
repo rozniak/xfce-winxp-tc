@@ -1,0 +1,88 @@
+/**
+ * scale.scss - Professional Style Scale Style Constants
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+$scale_mark_color:    #A1A192;
+$scale_slider_length: 22px;
+
+
+//
+// ALL SCALES
+//
+$scale_slider_styles:
+    wintc_define_props_bg(
+        $scale_slider_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
+$scale_trough_styles:
+    wintc_define_props_box(
+        $scale_trough_styles,
+        false,
+        padding,
+        1,
+        undefined,
+        undefined,
+        undefined
+    );
+
+
+//
+// HORIZONTAL SCALES
+//
+$scale_horz_arrow_hover_styles:
+    wintc_define_props_bg(
+        $scale_horz_arrow_hover_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/scale_horz_slider_arrow_hover.png')
+    );
+
+$scale_horz_thumb_hover_styles:
+    wintc_define_props_bg(
+        $scale_horz_thumb_hover_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/scale_horz_slider_thumb_hover.png')
+    );
+
+
+//
+// HORIZONTAL SCALES
+//
+$scale_vert_arrow_hover_styles:
+    wintc_define_props_bg(
+        $scale_vert_arrow_hover_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/scale_vert_slider_arrow_hover.png')
+    );
+
+$scale_vert_thumb_hover_styles:
+    wintc_define_props_bg(
+        $scale_vert_thumb_hover_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/scale_vert_slider_thumb_hover.png')
+    );
