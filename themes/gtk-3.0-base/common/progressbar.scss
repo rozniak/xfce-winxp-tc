@@ -9,6 +9,18 @@
 
 progressbar
 {
+    progress
+    {
+        @include __wintc_apply_props($progressbar_progress_styles);
+    }
+
+    trough
+    {
+        @include __wintc_apply_props($progressbar_trough_styles);
+        //background-color: #FFF;
+        //border-style:     solid;
+    }
+
     // Sizing
     //
     &.horizontal
@@ -16,7 +28,7 @@ progressbar
         trough,
         progress
         {
-            min-height: 12px;
+            min-height: $progressbar_size;
         }
     }
 
@@ -25,7 +37,7 @@ progressbar
         trough,
         progress
         {
-            min-width: 12px;
+            min-width: $progressbar_size;
         }
     }
 
@@ -35,13 +47,15 @@ progressbar
     {
         progress
         {
-            background-image: url("../Resources/gtk-3.0/progress_horz_chunk.png");
+            @include __wintc_apply_props($progressbar_horz_progress_styles);
+            //background-image: url("../Resources/gtk-3.0/progress_horz_chunk.png");
         }
 
         trough
         {
-            border-image: url("../Resources/gtk-3.0/progress_horz.png") 3 4 3 4 stretch;
-            border-width: 3px 4px;
+            @include __wintc_apply_props($progressbar_horz_trough_styles);
+            //border-image: url("../Resources/gtk-3.0/progress_horz.png") 3 4 3 4 stretch;
+            //border-width: 3px 4px;
         }
     }
 
@@ -49,22 +63,18 @@ progressbar
     {
         progress
         {
-            background-image: url("../Resources/gtk-3.0/progress_vert_chunk.png");
+            @include __wintc_apply_props($progressbar_vert_progress_styles);
+            //background-image: url("../Resources/gtk-3.0/progress_vert_chunk.png");
         }
 
         trough
         {
-            border-image: url("../Resources/gtk-3.0/progress_vert.png") 4 3 4 3 stretch;
-            border-width: 4px 3px;
+            @include __wintc_apply_props($progressbar_vert_trough_styles);
+            //border-image: url("../Resources/gtk-3.0/progress_vert.png") 4 3 4 3 stretch;
+            //border-width: 4px 3px;
         }
     }
 
-    trough
-    {
-        background-color: #FFF;
-        border-style:     solid;
-    }
-    
     // The progress node is positioned after the trough border this moves it over it
     //
 //    &.horizontal progress { margin:  0   -1px; }
