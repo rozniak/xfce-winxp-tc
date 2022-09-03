@@ -24,6 +24,16 @@ $menustrip_menuitem_styles:
         transparent,
         undefined
     );
+$menustrip_menuitem_styles:
+    wintc_define_props_box(
+        $menustrip_menuitem_styles,
+        false,
+        padding,
+        1,
+        5,
+        2,
+        5
+    );
 
 $menustrip_menuitem_hover_styles:
     wintc_define_props_bg(
