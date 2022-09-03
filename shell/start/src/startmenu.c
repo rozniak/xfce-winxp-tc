@@ -65,6 +65,10 @@ static void create_userpane_structure(
     StartMenu* start_menu,
     GtkBox*    box
 );
+static void create_vertical_userpane_structure(
+    StartMenu* start_menu,
+    GtkBox*    box
+);
 
 static void on_action_button_clicked(
     GtkButton* button,
@@ -389,6 +393,7 @@ static void create_taskcolumns_structure(
     //
     GtkWidget* columns_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 
+    create_vertical_userpane_structure(start_menu, GTK_BOX(columns_box));
     create_programs_structure(start_menu, GTK_BOX(columns_box));
     create_places_structure(start_menu, GTK_BOX(columns_box));
 
@@ -470,6 +475,32 @@ static void create_userpane_structure(
     // Add style class
     //
     wintc_widget_add_style_class(userpane_box, "xp-start-userpane");
+}
+
+static void create_vertical_userpane_structure(
+    WINTC_UNUSED(StartMenu* start_menu),
+    GtkBox* box
+)
+{
+    GtkWidget* userpane_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+
+    // Username display
+    //
+    struct passwd* user_pwd = getpwuid(getuid());
+
+    GtkWidget* username_label = gtk_label_new(user_pwd->pw_name);
+
+    gtk_label_set_angle(GTK_LABEL(username_label), 90);
+
+    // Construct box
+    //
+    gtk_box_pack_end(GTK_BOX(userpane_box), username_label, FALSE, FALSE, 0);
+
+    gtk_box_pack_start(box, userpane_box, FALSE, FALSE, 0);
+
+    // Add style class
+    //
+    wintc_widget_add_style_class(userpane_box, "xp-start-vuserpane");
 }
 
 //

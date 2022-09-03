@@ -49,3 +49,8 @@ separator.xp-start-all-programs
 {
     font-size: 16pt;
 }
+
+.xp-start-vuserpane label
+{
+    font-size: 0pt;
+}
