@@ -7,46 +7,8 @@
  * Author(s): Rory Fewell <roryf@oddmatics.uk>
  */
 
-// Taskband itself
-//
-/**
-FIXME: Figure out borders on the panel one day
-
-$taskband_styles:
-    wintc_define_props_borders(
-        $taskband_styles,
-        false,
-        solid,
-        3,
-        0,
-        1,
-        0,
-        undefined,
-        url('../Resources/gtk-3.0/taskband_horz_border.png')
-    );
-**/
-/**
-$taskband_styles:
-    wintc_define_props_fg(
-        $taskband_styles,
-        false,
-        $fg_color,
-        undefined
-    );
-**/
-
 // Taskband buttons
 //
-//$taskband_button_styles:
-//    wintc_define_props_bg(
-//        $taskband_button_styles,
-//        false,
-//        $bg_color,
-//        undefined,
-//        undefined,
-//        undefined,
-//        none // Necessary to override standard button gradient
-//    );
 $taskband_button_styles:
     wintc_define_props_borders(
         $taskband_button_styles,
@@ -68,6 +30,16 @@ $taskband_button_styles:
         undefined,
         undefined,
         none
+    );
+$taskband_button_styles:
+    wintc_define_props_box(
+        $taskband_button_styles,
+        false,
+        margin,
+        4,
+        0,
+        3,
+        3
     );
 
 $taskband_button_hover_styles:

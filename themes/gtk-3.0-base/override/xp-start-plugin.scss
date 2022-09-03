@@ -58,9 +58,32 @@ button.xp-start-button
         min-width:  $start_flag_size;
     }
 
-    label
+    // The Start button contains both 'Start' and 'start' labels, so that themes can
+    // choose which casing they would like
+    //
+    // It defaults to 'Start', so when showing the lowercase version we need to set
+    // the uppercase to 0pt
+    //
+    @if $start_text_case == upper
     {
-        @include __wintc_apply_props($start_button_text_styles);
+        .upper
+        {
+            @include __wintc_apply_props($start_button_text_styles);
+        }
+    }
+    @else
+    {
+        .lower
+        {
+            font-size: inherit;
+
+            @include __wintc_apply_props($start_button_text_styles);
+        }
+
+        .upper
+        {
+            font-size: 0pt;
+        }
     }
 }
 

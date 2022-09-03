@@ -9,7 +9,18 @@
 
 // Taskband itself
 //
-$taskband_horz_margins: 7px !default;
+$taskband_horz_margins: 4px !default;
+
+$taskband_styles:
+    wintc_define_props_bg(
+        $taskband_styles,
+        true,
+        undefined,
+        undefined,
+        repeat-x,
+        top,
+        url('../Resources/taskband_border_top.png')
+    );
 
 // Taskband buttons
 //
@@ -18,8 +29,8 @@ $taskband_button_styles:
         $taskband_button_styles,
         true,
         margin,
-        3,
+        4,
         0,
-        2,
+        4,
         3
     );

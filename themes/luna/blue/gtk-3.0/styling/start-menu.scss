@@ -7,7 +7,8 @@
  * Author(s): Rory Fewell <roryf@oddmatics.uk>
  */
 
-$start_flag_size: 20px !default;
+$start_flag_size: 20px;
+$start_text_case: lower;
 
 $start_flag_styles:
     wintc_define_props_bg(
@@ -156,7 +157,7 @@ $start_button_text_styles:
         false,
         margin,
         0,
-        14,
+        13,
         0,
         0
     );

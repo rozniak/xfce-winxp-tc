@@ -7,14 +7,15 @@
  * Author(s): Rory Fewell <roryf@oddmatics.uk>
  */
 
-$start_flag_size: 20px !default;
+$start_flag_size: 16px !default;
+$start_text_case: upper !default;
 
 $start_flag_styles:
     wintc_define_props_bg(
         $start_flag_styles,
         true,
         undefined,
-        undefined,
+        contain,
         no-repeat,
         0px -1px,
         url('../Resources/gtk-3.0/start_flag.png')
@@ -27,7 +28,7 @@ $start_flag_styles:
         undefined,
         2,
         undefined,
-        1
+        -1
     );
 
 $start_button_styles:
@@ -47,9 +48,9 @@ $start_button_styles:
         $start_button_styles,
         true,
         margin,
-        3,
+        4,
         undefined,
-        2,
+        4,
         2
     );
 $start_button_styles:
@@ -86,7 +87,7 @@ $start_button_text_styles:
         true,
         margin,
         undefined,
-        2,
+        undefined,
         undefined,
         undefined
     );
