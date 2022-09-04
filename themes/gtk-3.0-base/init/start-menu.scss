@@ -7,9 +7,80 @@
  * Author(s): Rory Fewell <roryf@oddmatics.uk>
  */
 
+//
+// START BUTTON
+//
 $start_flag_styles:            ();
+
 $start_button_styles:          ();
 $start_button_hover_styles:    ();
 $start_button_selected_styles: ();
 $start_button_press_styles:    ();
+
 $start_button_text_styles:     ();
+
+//
+// START MENU
+//
+$start_menu_styles:                    ();
+$start_menu_menustrip_styles:          ();
+$start_menu_menustrip_menuitem_styles: ();
+
+//
+// START MENU LOGOFF PANE
+//
+$start_menu_logoff_pane_styles:  ();
+$start_menu_button_styles:       ();
+$start_menu_button_hover_styles: ();
+$start_menu_button_press_styles: ();
+$start_menu_button_icon_styles:  ();
+
+//
+// START MENU PLACES COLUMN
+//
+$start_menu_places_column_styles:        ();
+$start_menu_places_menuitem_styles:      ();
+$start_menu_places_menuitem_top_styles:  ();
+$start_menu_places_menuitem_icon_styles: ();
+$start_menu_places_separator_styles:     ();
+
+//
+// START MENU PROGRAMS COLUMN
+//
+$start_menu_programs_column_styles:               ();
+$start_menu_programs_menuitem_styles:             ();
+$start_menu_programs_menuitem_icon_styles:        ();
+$start_menu_programs_menuitem_mime_styles:        ();
+$start_menu_programs_menuitem_mime_cattxt_styles: ();
+$start_menu_programs_menuitem_mime_prgtxt_styles: ();
+$start_menu_programs_menuitem_mime_hover_styles:  ();
+$start_menu_programs_separator_styles:            ();
+
+//
+// 'ALL PROGRAMS' MENU ITEM
+//
+$start_menu_allprograms_menuitem_styles:    ();
+$start_menu_allprograms_arrow_styles:       ();
+$start_menu_allprograms_arrow_hover_styles: ();
+
+//
+// START MENU POPUP MENU
+//
+$start_menu_popup_menu_styles:               ();
+$start_menu_popup_menu_menuitem_styles:      ();
+$start_menu_popup_menu_menuitem_icon_styles: ();
+$start_menu_popup_menu_separator_styles:     ();
+
+//
+// START MENU HORIZONTAL USER PANE
+//
+$start_menu_horz_userpane_styles: ();
+$start_menu_userpic_box_styles:   ();
+$start_menu_userpic_styles:       ();
+$start_menu_horz_username_styles: ();
+
+//
+// START MENU VERTICAL USER PANE
+//
+$start_menu_vert_userpane_styles: ();
+$start_menu_vert_username_styles: ();
