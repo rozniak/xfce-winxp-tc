@@ -7,7 +7,8 @@
  * Author(s): Rory Fewell <roryf@oddmatics.uk>
  */
 
-$menu_separator_height:      2px  !default;
+$menu_separator_thickness: $separator_thickness !default;
+
 $popup_menu_fadein:          true !default;
 $popup_menu_menuitem_height: 16px !default;
 
@@ -129,16 +130,6 @@ $popup_menu_menuitem_inactive_styles:
         undefined
     );
 
-$menu_separator_styles:
-    wintc_define_props_bg(
-        $menu_separator_styles,
-        true,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        url('../Resources/menu_separator.png')
-    );
 $menu_separator_styles:
     wintc_define_props_box(
         $menu_separator_styles,

@@ -252,7 +252,7 @@ $start_menu_programs_menuitem_mime_cattxt_styles:
         bold
     );
 
-$start_menu_programs_separator_styles: map-clone($menu_separator_styles);
+//$start_menu_programs_separator_styles: map-clone($menu_separator_styles);
 $start_menu_programs_separator_styles:
     wintc_define_props_box(
         $start_menu_programs_separator_styles,

@@ -7,6 +7,9 @@
  * Author(s): Rory Fewell <roryf@oddmatics.uk>
  */
 
+//
+// START BUTTON
+//
 button.xp-start-button
 {
     // HACK: Slight hack going on here - in Windows XP, the window buttons has a margin
@@ -29,6 +32,7 @@ button.xp-start-button
     );
 
     margin-right: $taskband_horz_margins + __wintc_get_prop($start_button_styles, "margin-right");
+
 
     &:hover
     {
@@ -87,6 +91,10 @@ button.xp-start-button
     }
 }
 
+
+//
+// START MENU
+//
 window.csd.xp-start-menu // Specificity hack -_-
 {
     @include __wintc_apply_props($start_menu_styles);
@@ -124,113 +132,56 @@ window.csd.xp-start-menu // Specificity hack -_-
         }
     }
 
-    @at-root .xp-start-logoffpane
+    @at-root .xp-start-userpane
     {
-        @include __wintc_apply_props($start_menu_logoff_pane_styles);
+        @include __wintc_apply_props($start_menu_horz_userpane_styles);
 
-        //background-image:     url("../Resources/gtk-3.0/start_logoffpane_body.png");
-        //background-position: -2px 0px;
+        //background-image:     url("../Resources/gtk-3.0/start_userpane_body.png");
         //background-size:      101% 100%;
-        //border-image:         url("../Resources/gtk-3.0/start_logoffpane_border.png") 0 4 0 4 stretch;
+        //background-position: -2px 0px;
+        //border-image:         url("../Resources/gtk-3.0/start_userpane_border.png") 5 6 0 6 stretch;
         //border-style:         solid;
-        //border-width:         0px 4px;
+        //border-width:         5px 6px 0px;
+        //min-width:            380px;
 
-        button
+        box
         {
-            @include __wintc_apply_props($start_menu_button_styles);
+            @include __wintc_apply_props($start_menu_userpic_box_styles);
 
-            //margin-bottom: 6px;
-            //margin-top:    4px;
-            //padding:       2px 8px 2px 2px;
-
-            &:last-child
-            {
-                // FIXME: Figure out usage in Luna
-                //
-                //margin-right: -3px;
-            }
-
-            // Ensure we get rid of any previously defined button styles...
-            //
-            &,
-            &:active,
-            &:checked,
-            &:focus,
-            &:hover
-            {
-                @include button(undecorated);
-                
-                border: none;
-            }
-
-            &:hover
-            {
-                @include __wintc_apply_props($start_menu_button_hover_styles);
-
-                //background: $selected_bg_color;
-                //color:      $selected_fg_color;
-            }
-
-            &:active
-            {
-                @include __wintc_apply_props($start_menu_button_press_styles);
-
-                //padding: 3px 7px 1px 3px;
-                //background: $selected_bg_color;
-                //color:      $selected_fg_color;
-            }
-
+            //border-image: url("../Resources/gtk-3.0/user_tile_border.png") 2 5 5 2 stretch;
+            //border-style: solid;
+            //border-width: 2px 5px 5px 2px;
+            //margin:       2px 0px 2px 1px;
+            
             image
             {
-                @include __wintc_apply_props($start_menu_button_icon_styles);
+                @include __wintc_apply_props($start_menu_userpic_styles);
 
-                //margin-right: 4px;
+                //background: #CCD6EB;
+                //box-shadow: none;
+                //margin: 0px;
             }
+        }
+        
+        label
+        {
+            @include __wintc_apply_props($start_menu_horz_username_styles);
+
+            //color:       #FFFFFF;
+            //font-family: 'Franklin Gothic Medium';
+            //font-size:   14pt;
+            //margin-left: 5px;
+            //text-shadow: 0px 1px 2px #000000;
         }
     }
 
-    @at-root .xp-start-places-column
+    @at-root .xp-start-vuserpane
     {
-        @include __wintc_apply_props($start_menu_places_column_styles);
+        @include __wintc_apply_props($start_menu_vert_userpane_styles);
 
-        //background:   #D3E5FA;
-        //border-image: url("../Resources/gtk-3.0/start_places_border.png") 3 6 1 1 stretch;
-        //border-style: solid;
-        //border-width: 3px 6px 1px 1px;
-        //color:        #0A246A;
-
-        min-width: $start_menu_places_column_width;
-        
-        menuitem
+        label
         {
-            @include __wintc_apply_props($start_menu_places_menuitem_styles);
-
-            //padding: 0px;
-
-            &.significant
-            {
-                @include __wintc_apply_props($start_menu_places_menuitem_top_styles);
-
-                //font-weight: bold;
-            }
-
-            image
-            {
-                @include __wintc_apply_props($start_menu_places_menuitem_icon_styles);
-
-                //margin-right: 2px;
-            }
-        }
-
-        separator
-        {
-            @include __wintc_apply_props($start_menu_places_separator_styles);
-
-            // FIXME: Shift up
-            //
-            min-height: $start_menu_separator_height;
-
-            //background: linear-gradient(90deg, rgba(211,229,250,1) 0%, rgba(129,182,255,1) 35%, rgba(129,182,255,1) 50%, rgba(129,182,255,1) 65%, rgba(211,229,250,1) 100%);
+            @include __wintc_apply_props($start_menu_vert_username_styles);
         }
     }
 
@@ -247,38 +198,6 @@ window.csd.xp-start-menu // Specificity hack -_-
 
         min-width: $start_menu_programs_column_width;
 
-        box.xp-start-all-programs
-        {
-            @include __wintc_apply_props($start_menu_allprograms_menuitem_styles);
-
-            //font-weight: bold;
-            min-height:  $start_menu_allprograms_height;
-
-
-            .arrow
-            {
-                @include __wintc_apply_props($start_menu_allprograms_arrow_styles);
-
-                //background-image:    url("../Resources/gtk-3.0/all_programs_arrow.png");
-                //background-position: right center;
-                //background-repeat:   no-repeat;
-                //margin-left:         10px;
-                //min-height:          24px;
-                //min-width:           16px;
-
-                min-width: $start_menu_allprograms_arrow_width;
-                
-                &:hover
-                {
-                    @include __wintc_apply_props(
-                        $start_menu_allprograms_arrow_hover_styles
-                    );
-
-                    //background-image: url("../Resources/gtk-3.0/all_programs_arrow_hot.png");
-                }
-            }
-        }
-        
         menu
         {
             @include __wintc_apply_props($start_menu_popup_menu_styles);
@@ -396,6 +315,44 @@ window.csd.xp-start-menu // Specificity hack -_-
                 }
             }
         }
+
+        menuitem:last-child
+        {
+            margin: 0px;
+        }
+
+        box.xp-start-all-programs
+        {
+            @include __wintc_apply_props($start_menu_allprograms_menuitem_styles);
+
+            //font-weight: bold;
+            min-height:  $start_menu_allprograms_height;
+
+
+            .arrow
+            {
+                @include __wintc_apply_props($start_menu_allprograms_arrow_styles);
+
+                //background-image:    url("../Resources/gtk-3.0/all_programs_arrow.png");
+                //background-position: right center;
+                //background-repeat:   no-repeat;
+                //margin-left:         10px;
+                //min-height:          24px;
+                //min-width:           16px;
+
+                min-width: $start_menu_allprograms_arrow_width;
+                
+                &:hover
+                {
+                    @include __wintc_apply_props(
+                        $start_menu_allprograms_arrow_hover_styles
+                    );
+
+                    //background-image: url("../Resources/gtk-3.0/all_programs_arrow_hot.png");
+                }
+            }
+        }
+        
         
         separator
         {
@@ -416,56 +373,113 @@ window.csd.xp-start-menu // Specificity hack -_-
         }
     }
 
-    @at-root .xp-start-userpane
+    @at-root .xp-start-places-column
     {
-        @include __wintc_apply_props($start_menu_horz_userpane_styles);
+        @include __wintc_apply_props($start_menu_places_column_styles);
 
-        //background-image:     url("../Resources/gtk-3.0/start_userpane_body.png");
-        //background-size:      101% 100%;
-        //background-position: -2px 0px;
-        //border-image:         url("../Resources/gtk-3.0/start_userpane_border.png") 5 6 0 6 stretch;
-        //border-style:         solid;
-        //border-width:         5px 6px 0px;
-        //min-width:            380px;
+        //background:   #D3E5FA;
+        //border-image: url("../Resources/gtk-3.0/start_places_border.png") 3 6 1 1 stretch;
+        //border-style: solid;
+        //border-width: 3px 6px 1px 1px;
+        //color:        #0A246A;
 
-        box
+        min-width: $start_menu_places_column_width;
+        
+        menuitem
         {
-            @include __wintc_apply_props($start_menu_userpic_box_styles);
+            @include __wintc_apply_props($start_menu_places_menuitem_styles);
 
-            //border-image: url("../Resources/gtk-3.0/user_tile_border.png") 2 5 5 2 stretch;
-            //border-style: solid;
-            //border-width: 2px 5px 5px 2px;
-            //margin:       2px 0px 2px 1px;
-            
+            //padding: 0px;
+
+            &.significant
+            {
+                @include __wintc_apply_props($start_menu_places_menuitem_top_styles);
+
+                //font-weight: bold;
+            }
+
             image
             {
-                @include __wintc_apply_props($start_menu_userpic_styles);
+                @include __wintc_apply_props($start_menu_places_menuitem_icon_styles);
 
-                //background: #CCD6EB;
-                //box-shadow: none;
-                //margin: 0px;
+                //margin-right: 2px;
             }
         }
-        
-        label
-        {
-            @include __wintc_apply_props($start_menu_horz_username_styles);
 
-            //color:       #FFFFFF;
-            //font-family: 'Franklin Gothic Medium';
-            //font-size:   14pt;
-            //margin-left: 5px;
-            //text-shadow: 0px 1px 2px #000000;
+        separator
+        {
+            @include __wintc_apply_props($start_menu_places_separator_styles);
+
+            // FIXME: Shift up
+            //
+            min-height: $start_menu_separator_height;
+
+            //background: linear-gradient(90deg, rgba(211,229,250,1) 0%, rgba(129,182,255,1) 35%, rgba(129,182,255,1) 50%, rgba(129,182,255,1) 65%, rgba(211,229,250,1) 100%);
         }
     }
 
-    @at-root .xp-start-vuserpane
+    @at-root .xp-start-logoffpane
     {
-        @include __wintc_apply_props($start_menu_vert_userpane_styles);
+        @include __wintc_apply_props($start_menu_logoff_pane_styles);
 
-        label
+        //background-image:     url("../Resources/gtk-3.0/start_logoffpane_body.png");
+        //background-position: -2px 0px;
+        //background-size:      101% 100%;
+        //border-image:         url("../Resources/gtk-3.0/start_logoffpane_border.png") 0 4 0 4 stretch;
+        //border-style:         solid;
+        //border-width:         0px 4px;
+
+        button
         {
-            @include __wintc_apply_props($start_menu_vert_username_styles);
+            @include __wintc_apply_props($start_menu_button_styles);
+
+            //margin-bottom: 6px;
+            //margin-top:    4px;
+            //padding:       2px 8px 2px 2px;
+
+            &:last-child
+            {
+                // FIXME: Figure out usage in Luna
+                //
+                //margin-right: -3px;
+            }
+
+            // Ensure we get rid of any previously defined button styles...
+            //
+            &,
+            &:active,
+            &:checked,
+            &:focus,
+            &:hover
+            {
+                @include button(undecorated);
+                
+                border: none;
+            }
+
+            &:hover
+            {
+                @include __wintc_apply_props($start_menu_button_hover_styles);
+
+                //background: $selected_bg_color;
+                //color:      $selected_fg_color;
+            }
+
+            &:active
+            {
+                @include __wintc_apply_props($start_menu_button_press_styles);
+
+                //padding: 3px 7px 1px 3px;
+                //background: $selected_bg_color;
+                //color:      $selected_fg_color;
+            }
+
+            image
+            {
+                @include __wintc_apply_props($start_menu_button_icon_styles);
+
+                //margin-right: 4px;
+            }
         }
     }
 }

@@ -1,0 +1,25 @@
+/**
+ * frame.scss - Theme Base Frame Style Constants
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+$separator_thickness: 2px !default;
+
+
+//
+// SEPARATOR
+//
+$separator_styles:
+    wintc_define_props_bg(
+        $separator_styles,
+        true,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/separator.png')
+    );

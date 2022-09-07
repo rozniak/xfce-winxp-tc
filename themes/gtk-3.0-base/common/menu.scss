@@ -186,7 +186,10 @@ menu,
     {
         @include __wintc_apply_props($menu_separator_styles);
 
-        min-height: $menu_separator_height;
+        @if $menu_separator_thickness != $separator_thickness
+        {
+            min-height: $menu_separator_thickness;
+        }
     }
 }
 

@@ -127,7 +127,7 @@ scrolledwindow
 //
 separator
 {
-    background: transparentize(black, 0.9);
-    min-height: 1px;
-    min-width:  1px;
+    @include __wintc_apply_props($separator_styles);
+
+    min-height: $separator_thickness;
 }
