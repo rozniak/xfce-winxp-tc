@@ -159,13 +159,23 @@ $start_menu_horz_userpane_styles:
     );
 
 $start_menu_horz_username_styles:
+    wintc_define_props_box(
+        $start_menu_horz_username_styles,
+        true,
+        margin,
+        8,
+        8,
+        8,
+        8
+    );
+$start_menu_horz_username_styles:
     wintc_define_props_font(
         $start_menu_horz_username_styles,
         true,
         undefined,
-        undefined,
+        14pt,
         italic,
-        undefined
+        bold
     );
 $start_menu_horz_username_styles:
     wintc_define_props_fg(
