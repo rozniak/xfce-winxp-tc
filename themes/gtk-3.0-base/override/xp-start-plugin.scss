@@ -130,6 +130,14 @@ window.csd.xp-start-menu // Specificity hack -_-
                 //margin-bottom: 4px;
             }
         }
+
+        separator
+        {
+            @if $start_menu_separator_thickness != $separator_thickness
+            {
+                min-height: $start_menu_separator_thickness
+            }
+        }
     }
 
     @at-root .xp-start-userpane
@@ -356,22 +364,19 @@ window.csd.xp-start-menu // Specificity hack -_-
             }
         }
         
-        
         separator
         {
             @include __wintc_apply_props($start_menu_programs_separator_styles);
-
-            // FIXME: Shift up
-            //
-            min-height: $start_menu_separator_height;
 
             //background: linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(211,211,200,1) 25%, rgba(211,211,200,1) 50%, rgba(211,211,200,1) 75%, rgba(255,255,255,1) 100%);
             
             &:nth-last-child(2)
             {
-                // FIXME: Maybe turn into theme part constant?
-                //
-                margin-top: 10px;
+                @include __wintc_apply_props(
+                    $start_menu_allprograms_separator_styles
+                );
+
+                //margin-top: 10px;
             }
         }
     }
@@ -412,10 +417,6 @@ window.csd.xp-start-menu // Specificity hack -_-
         separator
         {
             @include __wintc_apply_props($start_menu_places_separator_styles);
-
-            // FIXME: Shift up
-            //
-            min-height: $start_menu_separator_height;
 
             //background: linear-gradient(90deg, rgba(211,229,250,1) 0%, rgba(129,182,255,1) 35%, rgba(129,182,255,1) 50%, rgba(129,182,255,1) 65%, rgba(211,229,250,1) 100%);
         }

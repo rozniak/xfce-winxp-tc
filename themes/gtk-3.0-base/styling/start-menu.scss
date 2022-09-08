@@ -20,7 +20,7 @@ $start_menu_places_column_width: 187px !default;
 
 $start_menu_popup_menu_vmargin: 3px !default;
 
-$start_menu_separator_height: 2px !default;
+$start_menu_separator_thickness: $separator_thickness !default;
 
 //
 // START BUTTON
@@ -270,7 +270,7 @@ $start_menu_programs_separator_styles:
         $start_menu_programs_separator_styles,
         true,
         margin,
-        3,
+        7,
         undefined,
         0,
         undefined
@@ -330,6 +330,17 @@ $start_menu_allprograms_arrow_hover_styles:
         undefined,
         undefined,
         url('../Resources/all_programs_arrow_hover.png')
+    );
+
+$start_menu_allprograms_separator_styles:
+    wintc_define_props_box(
+        $start_menu_allprograms_separator_styles,
+        true,
+        margin,
+        20,
+        undefined,
+        undefined,
+        undefined
     );
 
 
@@ -426,7 +437,6 @@ $start_menu_places_menuitem_top_styles:
         bold
     );
 
-$start_menu_places_separator_styles: map-clone($menu_separator_styles);
 $start_menu_places_separator_styles:
     wintc_define_props_box(
         $start_menu_places_separator_styles,
@@ -434,7 +444,7 @@ $start_menu_places_separator_styles:
         margin,
         7,
         undefined,
-        0,
+        -1,
         undefined
     );
 
