@@ -23,7 +23,8 @@ struct _StartMenuPrivate
 {
     StartMenu* menu;
 
-    GtkWidget* main_box;
+    GtkWidget*        main_box;
+    GtkStyleProvider* userpic_style_provider;
 };
 
 struct _StartMenuClass
@@ -69,6 +70,9 @@ static void create_vertical_userpane_structure(
     StartMenu* start_menu,
     GtkBox*    box
 );
+static void update_userpic(
+    StartMenu* start_menu
+);
 
 static void on_action_button_clicked(
     GtkButton* button,
@@ -82,6 +86,10 @@ static gboolean on_focus_out(
 static void on_selection_done(
     GtkWidget* widget,
     StartMenu* start_menu
+);
+static void on_userpic_clicked(
+    GtkWidget*       userpic,
+    GdkEventButton*  event
 );
 
 //
@@ -405,59 +413,40 @@ static void create_taskcolumns_structure(
 }
 
 static void create_userpane_structure(
-    WINTC_UNUSED(StartMenu* start_menu),
-    GtkBox* box
+    StartMenu* start_menu,
+    GtkBox*    box
 )
 {
     GtkWidget* userpane_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
     
     // User profile picture
     //
-    // NOTE:
-    //     We store the image widget inside an events box so that in future we can
-    //     make use of the click event to change the user profile picture (this is
-    //     what Windows XP does)
-    //
-    //     The events box is in the larger outside box so it can be styled with a
-    //     frame via CSS
-    //
-    //
-    // TODO: For now, we just use a placeholder image for the user's display picture
-    //       -- perhaps there is a freedesktop.org standard for this we can use
-    //
-    // FIXME: Shift 48, 48px size out to a constant somewhere
-    //
-    GError*    load_error    = NULL;
-    GdkPixbuf* pic           = gdk_pixbuf_new_from_file(
-                                   "/usr/share/winxp/shell-res/fpo-userpic.png",
-                                   &load_error
-                               );
-    GtkWidget* pic_box       = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-    GtkWidget* pic_event_box = gtk_event_box_new();
-    GtkWidget* pic_image     = gtk_image_new();
+    GtkStyleContext* context;
+    GtkWidget*       pic_box       = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+    GtkWidget*       pic_event_box = gtk_event_box_new();
 
-    if (pic != NULL)
-    {
-        GdkPixbuf* scaled_pic =
-            gdk_pixbuf_scale_simple(
-                pic,
-                48,
-                48,
-                GDK_INTERP_BILINEAR
-            );
+    start_menu->priv->userpic_style_provider =
+        GTK_STYLE_PROVIDER(gtk_css_provider_new());
 
-        g_clear_object(&pic);
+    context = gtk_widget_get_style_context(pic_box);
 
-        gtk_image_set_from_pixbuf(GTK_IMAGE(pic_image), scaled_pic);
-    }
-    else
-    {
-        wintc_log_error_and_clear(&load_error);
-        gtk_widget_set_size_request(pic_image, 48, 48);
-    }
+    gtk_style_context_add_provider(
+        context,
+        start_menu->priv->userpic_style_provider,
+        GTK_STYLE_PROVIDER_PRIORITY_APPLICATION
+    );
 
-    gtk_container_add(GTK_CONTAINER(pic_event_box), pic_image);
-    gtk_container_add(GTK_CONTAINER(pic_box),       pic_event_box);
+    update_userpic(start_menu);
+
+    gtk_widget_set_events(pic_event_box, GDK_BUTTON_PRESS_MASK);
+    gtk_box_pack_start(GTK_BOX(pic_box), pic_event_box, TRUE, TRUE, 0);
+
+    g_signal_connect(
+        pic_event_box,
+        "button-press-event",
+        G_CALLBACK(on_userpic_clicked),
+        NULL
+    );
 
     // Username display
     //
@@ -503,6 +492,30 @@ static void create_vertical_userpane_structure(
     wintc_widget_add_style_class(userpane_box, "xp-start-vuserpane");
 }
 
+static void update_userpic(
+    StartMenu* start_menu
+)
+{
+    static gchar* css = NULL;
+
+    if (css == NULL)
+    {
+        // FIXME: This should read from whatever the XDG path is, probably needs a
+        //        g_strdup_printf for the username
+        //
+        css = "* { background-image: url('/usr/share/winxp/shell-res/fpo-userpic.png'); }";
+    }
+
+    // Give GTK a bump that we want to update the pic
+    //
+    gtk_css_provider_load_from_data(
+        GTK_CSS_PROVIDER(start_menu->priv->userpic_style_provider),
+        css,
+        -1,
+        NULL
+    );
+}
+
 //
 // CALLBACKS
 //
@@ -530,4 +543,29 @@ static void on_selection_done(
 )
 {
     gtk_widget_hide(GTK_WIDGET(start_menu));
+}
+
+static void on_userpic_clicked(
+    WINTC_UNUSED(GtkWidget* userpic),
+    GdkEventButton* event
+)
+{
+    //
+    // FIXME: Implement this when the user pic cpl is done!
+    //
+    if (event->button > 1)
+    {
+        return;
+    }
+
+    GError* error = NULL;
+
+    g_set_error(
+        &error,
+        WINTC_GENERAL_ERROR,
+        WINTC_GENERAL_ERROR_NOTIMPL,
+        "Cannot edit user pic yet!"
+    );
+
+    wintc_nice_error_and_clear(&error);
 }

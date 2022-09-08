@@ -39,10 +39,13 @@ separator.xp-start-all-programs
     margin-right: 4px;
 }
 
-.xp-start-userpane image
+.xp-start-userpane box
 {
+    background-size: 100% 100%;
     box-shadow: 0px 0px 2px 0px rgba(0,0,0,0.75);
     margin: 10px;
+    min-height: 48px;
+    min-width: 48px;
 }
 
 .xp-start-userpane label
