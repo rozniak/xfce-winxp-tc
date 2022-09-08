@@ -146,20 +146,23 @@ window.csd.xp-start-menu // Specificity hack -_-
 
         box
         {
-            @include __wintc_apply_props($start_menu_userpic_box_styles);
+            @include __wintc_apply_props($start_menu_userpic_styles);
 
             //border-image: url("../Resources/gtk-3.0/user_tile_border.png") 2 5 5 2 stretch;
             //border-style: solid;
             //border-width: 2px 5px 5px 2px;
             //margin:       2px 0px 2px 1px;
+            //background-color: #CCD6EB;
+            //box-shadow: none;
             
-            image
+            @if not $start_menu_display_userpic
             {
-                @include __wintc_apply_props($start_menu_userpic_styles);
-
-                //background: #CCD6EB;
-                //box-shadow: none;
-                //margin: 0px;
+                box-shadow: 0px;
+                margin:     0px;
+                min-height: 0px;
+                min-width:  0px;
+                opacity:    0.0; // Also set the opacity because the alloc'd size is
+                                 // not quite zero
             }
         }
         
