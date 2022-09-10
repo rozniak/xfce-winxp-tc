@@ -264,7 +264,6 @@ $start_menu_programs_menuitem_mime_cattxt_styles:
         bold
     );
 
-//$start_menu_programs_separator_styles: map-clone($menu_separator_styles);
 $start_menu_programs_separator_styles:
     wintc_define_props_box(
         $start_menu_programs_separator_styles,
@@ -352,9 +351,20 @@ $start_menu_popup_menu_menuitem_styles:
         $start_menu_popup_menu_menuitem_styles,
         true,
         margin,
-        0,
+        undefined,
         3,
-        0,
+        undefined,
+        3
+    );
+
+$start_menu_popup_menu_menuitem_icon_styles:
+    wintc_define_props_box(
+        $start_menu_popup_menu_menuitem_icon_styles,
+        true,
+        margin,
+        undefined,
+        undefined,
+        undefined,
         3
     );
 

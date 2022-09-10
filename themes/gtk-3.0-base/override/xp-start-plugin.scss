@@ -112,8 +112,8 @@ window.csd.xp-start-menu // Specificity hack -_-
         @include __wintc_apply_props($start_menu_menustrip_styles);
         //padding: 6px;
         
-        menuitem,
-        separator
+        > menuitem,
+        > separator
         {
             @include __wintc_apply_props_excluding(
                 $start_menu_menustrip_menuitem_styles,
@@ -131,7 +131,7 @@ window.csd.xp-start-menu // Specificity hack -_-
             }
         }
 
-        separator
+        > separator
         {
             @if $start_menu_separator_thickness != $separator_thickness
             {
@@ -231,6 +231,12 @@ window.csd.xp-start-menu // Specificity hack -_-
                 {
                     margin-top: $start_menu_popup_menu_vmargin;
                     //margin-top: 1px;
+
+
+                    image
+                    {
+                        margin-bottom: -1px;
+                    }
                 }
 
                 &:last-child
@@ -244,8 +250,6 @@ window.csd.xp-start-menu // Specificity hack -_-
                     @include __wintc_apply_props(
                         $start_menu_popup_menu_menuitem_icon_styles
                     );
-
-                    //margin-right: 2px;
                 }
             }
 
@@ -257,126 +261,128 @@ window.csd.xp-start-menu // Specificity hack -_-
             }
         }
 
-        menuitem
+        menubar
         {
-            @include __wintc_apply_props($start_menu_programs_menuitem_styles);
-
-            //padding: 2px;
-
-            image
+            > menuitem
             {
-                @include __wintc_apply_props(
-                    $start_menu_programs_menuitem_icon_styles
-                );
+                @include __wintc_apply_props($start_menu_programs_menuitem_styles);
 
-                //margin-right: 6px;
-            }
+                //padding: 2px;
 
-            &.xp-start-default-item
-            {
-                @include __wintc_apply_props(
-                    $start_menu_programs_menuitem_mime_styles
-                );
-
-                label
-                {
-                    &:first-child
-                    {
-                        @include __wintc_apply_props(
-                            $start_menu_programs_menuitem_mime_cattxt_styles
-                        );
-
-                        //font-weight: bold;
-                    }
-
-                    &:last-child
-                    {
-                        @include __wintc_apply_props(
-                            $start_menu_programs_menuitem_mime_prgtxt_styles
-                        );
-
-                        //color: #808080;
-                    }
-                }
-
-                &:hover
+                image
                 {
                     @include __wintc_apply_props(
-                        $start_menu_programs_menuitem_mime_hover_styles
+                        $start_menu_programs_menuitem_icon_styles
+                    );
+
+                    //margin-right: 6px;
+                }
+
+                &.xp-start-default-item
+                {
+                    @include __wintc_apply_props(
+                        $start_menu_programs_menuitem_mime_styles
                     );
 
                     label
                     {
-                        // FIXME: We should really use the apply props category feature
-                        //        to apply all except font stuff in the control, and
-                        //        then apply ONLY font stuff to the label
-                        //
-                        //        It would be useful in a few places... like here! And
-                        //        the Start button with its text
-                        //
-                        @include __wintc_apply_specific_props(
-                            $start_menu_programs_menuitem_mime_hover_styles,
-                            "color",
-                            "font-size",
-                            "text-decoration"
+                        &:first-child
+                        {
+                            @include __wintc_apply_props(
+                                $start_menu_programs_menuitem_mime_cattxt_styles
+                            );
+
+                            //font-weight: bold;
+                        }
+
+                        &:last-child
+                        {
+                            @include __wintc_apply_props(
+                                $start_menu_programs_menuitem_mime_prgtxt_styles
+                            );
+
+                            //color: #808080;
+                        }
+                    }
+
+                    &:hover
+                    {
+                        @include __wintc_apply_props(
+                            $start_menu_programs_menuitem_mime_hover_styles
                         );
 
-                        //color: $selected_fg_color;
+                        label
+                        {
+                            // FIXME: We should really use the apply props category feature
+                            //        to apply all except font stuff in the control, and
+                            //        then apply ONLY font stuff to the label
+                            //
+                            //        It would be useful in a few places... like here! And
+                            //        the Start button with its text
+                            //
+                            @include __wintc_apply_specific_props(
+                                $start_menu_programs_menuitem_mime_hover_styles,
+                                "color",
+                                "font-size",
+                                "text-decoration"
+                            );
+
+                            //color: $selected_fg_color;
+                        }
                     }
                 }
             }
-        }
 
-        menuitem:last-child
-        {
-            margin: 0px;
-        }
-
-        box.xp-start-all-programs
-        {
-            @include __wintc_apply_props($start_menu_allprograms_menuitem_styles);
-
-            //font-weight: bold;
-            min-height:  $start_menu_allprograms_height;
-
-
-            .arrow
+            > menuitem:last-child
             {
-                @include __wintc_apply_props($start_menu_allprograms_arrow_styles);
+                margin: 0px;
+            }
 
-                //background-image:    url("../Resources/gtk-3.0/all_programs_arrow.png");
-                //background-position: right center;
-                //background-repeat:   no-repeat;
-                //margin-left:         10px;
-                //min-height:          24px;
-                //min-width:           16px;
+            box.xp-start-all-programs
+            {
+                @include __wintc_apply_props($start_menu_allprograms_menuitem_styles);
 
-                min-width: $start_menu_allprograms_arrow_width;
-                
-                &:hover
+                //font-weight: bold;
+                min-height:  $start_menu_allprograms_height;
+
+                .arrow
                 {
-                    @include __wintc_apply_props(
-                        $start_menu_allprograms_arrow_hover_styles
-                    );
+                    @include __wintc_apply_props($start_menu_allprograms_arrow_styles);
 
-                    //background-image: url("../Resources/gtk-3.0/all_programs_arrow_hot.png");
+                    //background-image:    url("../Resources/gtk-3.0/all_programs_arrow.png");
+                    //background-position: right center;
+                    //background-repeat:   no-repeat;
+                    //margin-left:         10px;
+                    //min-height:          24px;
+                    //min-width:           16px;
+
+                    min-width: $start_menu_allprograms_arrow_width;
+
+                    &:hover
+                    {
+                        @include __wintc_apply_props(
+                            $start_menu_allprograms_arrow_hover_styles
+                        );
+
+                        //background-image: url("../Resources/gtk-3.0/all_programs_arrow_hot.png");
+                    }
                 }
             }
-        }
-        
-        separator
-        {
-            @include __wintc_apply_props($start_menu_programs_separator_styles);
 
-            //background: linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(211,211,200,1) 25%, rgba(211,211,200,1) 50%, rgba(211,211,200,1) 75%, rgba(255,255,255,1) 100%);
-            
-            &:nth-last-child(2)
+            > separator
             {
-                @include __wintc_apply_props(
-                    $start_menu_allprograms_separator_styles
-                );
+                @include __wintc_apply_props($start_menu_programs_separator_styles);
 
-                //margin-top: 10px;
+                //background: linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(211,211,200,1) 25%, rgba(211,211,200,1) 50%, rgba(211,211,200,1) 75%, rgba(255,255,255,1) 100%);
+
+                &:nth-last-child(2)
+                {
+                    @include __wintc_apply_props(
+                        $start_menu_allprograms_separator_styles
+                    );
+
+                    //margin-top: 10px;
+                }
             }
         }
     }
@@ -393,32 +399,35 @@ window.csd.xp-start-menu // Specificity hack -_-
 
         min-width: $start_menu_places_column_width;
         
-        menuitem
+        menubar
         {
-            @include __wintc_apply_props($start_menu_places_menuitem_styles);
-
-            //padding: 0px;
-
-            &.significant
+            > menuitem
             {
-                @include __wintc_apply_props($start_menu_places_menuitem_top_styles);
+                @include __wintc_apply_props($start_menu_places_menuitem_styles);
 
-                //font-weight: bold;
+                //padding: 0px;
+
+                &.significant
+                {
+                    @include __wintc_apply_props($start_menu_places_menuitem_top_styles);
+
+                    //font-weight: bold;
+                }
+
+                image
+                {
+                    @include __wintc_apply_props($start_menu_places_menuitem_icon_styles);
+
+                    //margin-right: 2px;
+                }
             }
 
-            image
+            > separator
             {
-                @include __wintc_apply_props($start_menu_places_menuitem_icon_styles);
+                @include __wintc_apply_props($start_menu_places_separator_styles);
 
-                //margin-right: 2px;
+                //background: linear-gradient(90deg, rgba(211,229,250,1) 0%, rgba(129,182,255,1) 35%, rgba(129,182,255,1) 50%, rgba(129,182,255,1) 65%, rgba(211,229,250,1) 100%);
             }
-        }
-
-        separator
-        {
-            @include __wintc_apply_props($start_menu_places_separator_styles);
-
-            //background: linear-gradient(90deg, rgba(211,229,250,1) 0%, rgba(129,182,255,1) 35%, rgba(129,182,255,1) 50%, rgba(129,182,255,1) 65%, rgba(211,229,250,1) 100%);
         }
     }
 
