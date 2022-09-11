@@ -16,7 +16,7 @@ $start_menu_allprograms_arrow_width: 16px;
 $start_menu_display_userpic: true;
 
 $start_menu_programs_column_width: 176px;
-//$start_menu_places_column_width: ;
+$start_menu_places_column_width: 176px;
 
 $start_menu_popup_menu_vmargin: 0px;
 
@@ -440,6 +440,27 @@ $start_menu_places_separator_styles:
 //
 // START MENU LOGOFF PANE
 //
+$start_menu_button_styles:
+    wintc_define_props_box(
+        $start_menu_button_styles,
+        false,
+        margin,
+        4,
+        -2,
+        6,
+        0
+    );
+$start_menu_button_styles:
+    wintc_define_props_box(
+        $start_menu_button_styles,
+        false,
+        padding,
+        3,
+        10,
+        3,
+        3
+    );
+
 $start_menu_logoff_pane_styles:
     wintc_define_props_bg(
         $start_menu_logoff_pane_styles,

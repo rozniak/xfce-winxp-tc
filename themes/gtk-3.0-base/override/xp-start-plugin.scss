@@ -107,7 +107,6 @@ window.csd.xp-start-menu // Specificity hack -_-
     menubar
     {
         @include __wintc_apply_props($start_menu_menustrip_styles);
-        //padding: 6px;
         
         > menuitem,
         > separator
@@ -123,8 +122,6 @@ window.csd.xp-start-menu // Specificity hack -_-
                     $start_menu_menustrip_menuitem_styles,
                     "margin-bottom"
                 );
-
-                //margin-bottom: 4px;
             }
         }
 
@@ -238,15 +235,11 @@ window.csd.xp-start-menu // Specificity hack -_-
             {
                 @include __wintc_apply_props($start_menu_programs_menuitem_styles);
 
-                //padding: 2px;
-
                 image
                 {
                     @include __wintc_apply_props(
                         $start_menu_programs_menuitem_icon_styles
                     );
-
-                    //margin-right: 6px;
                 }
 
                 @at-root .xp-start-default-item
@@ -262,8 +255,6 @@ window.csd.xp-start-menu // Specificity hack -_-
                             @include __wintc_apply_props(
                                 $start_menu_programs_menuitem_mime_cattxt_styles
                             );
-
-                            //font-weight: bold;
                         }
 
                         &:last-child
@@ -271,8 +262,6 @@ window.csd.xp-start-menu // Specificity hack -_-
                             @include __wintc_apply_props(
                                 $start_menu_programs_menuitem_mime_prgtxt_styles
                             );
-
-                            //color: #808080;
                         }
                     }
 
@@ -297,8 +286,6 @@ window.csd.xp-start-menu // Specificity hack -_-
                                 "font-size",
                                 "text-decoration"
                             );
-
-                            //color: $selected_fg_color;
                         }
                     }
                 }
@@ -330,13 +317,6 @@ window.csd.xp-start-menu // Specificity hack -_-
                 {
                     @include __wintc_apply_props($start_menu_allprograms_arrow_styles);
 
-                    //background-image:    url("../Resources/gtk-3.0/all_programs_arrow.png");
-                    //background-position: right center;
-                    //background-repeat:   no-repeat;
-                    //margin-left:         10px;
-                    //min-height:          24px;
-                    //min-width:           16px;
-
                     min-width: $start_menu_allprograms_arrow_width;
                 }
 
@@ -357,8 +337,6 @@ window.csd.xp-start-menu // Specificity hack -_-
                     @include __wintc_apply_props(
                         $start_menu_allprograms_separator_styles
                     );
-
-                    //margin-top: 10px;
                 }
             }
         }
@@ -368,12 +346,6 @@ window.csd.xp-start-menu // Specificity hack -_-
     {
         @include __wintc_apply_props($start_menu_places_column_styles);
 
-        //background:   #D3E5FA;
-        //border-image: url("../Resources/gtk-3.0/start_places_border.png") 3 6 1 1 stretch;
-        //border-style: solid;
-        //border-width: 3px 6px 1px 1px;
-        //color:        #0A246A;
-
         min-width: $start_menu_places_column_width;
         
         menubar
@@ -382,20 +354,14 @@ window.csd.xp-start-menu // Specificity hack -_-
             {
                 @include __wintc_apply_props($start_menu_places_menuitem_styles);
 
-                //padding: 0px;
-
                 &.significant
                 {
                     @include __wintc_apply_props($start_menu_places_menuitem_top_styles);
-
-                    //font-weight: bold;
                 }
 
                 image
                 {
                     @include __wintc_apply_props($start_menu_places_menuitem_icon_styles);
-
-                    //margin-right: 2px;
                 }
             }
 
@@ -410,26 +376,13 @@ window.csd.xp-start-menu // Specificity hack -_-
     {
         @include __wintc_apply_props($start_menu_logoff_pane_styles);
 
-        //background-image:     url("../Resources/gtk-3.0/start_logoffpane_body.png");
-        //background-position: -2px 0px;
-        //background-size:      101% 100%;
-        //border-image:         url("../Resources/gtk-3.0/start_logoffpane_border.png") 0 4 0 4 stretch;
-        //border-style:         solid;
-        //border-width:         0px 4px;
-
         button
         {
             @include __wintc_apply_props($start_menu_button_styles);
 
-            //margin-bottom: 6px;
-            //margin-top:    4px;
-            //padding:       2px 8px 2px 2px;
-
-            &:last-child
+            &:first-child
             {
-                // FIXME: Figure out usage in Luna
-                //
-                //margin-right: -3px;
+                margin-right: 0px;
             }
 
             // Ensure we get rid of any previously defined button styles...
@@ -448,25 +401,16 @@ window.csd.xp-start-menu // Specificity hack -_-
             &:hover
             {
                 @include __wintc_apply_props($start_menu_button_hover_styles);
-
-                //background: $selected_bg_color;
-                //color:      $selected_fg_color;
             }
 
             &:active
             {
                 @include __wintc_apply_props($start_menu_button_press_styles);
-
-                //padding: 3px 7px 1px 3px;
-                //background: $selected_bg_color;
-                //color:      $selected_fg_color;
             }
 
             image
             {
                 @include __wintc_apply_props($start_menu_button_icon_styles);
-
-                //margin-right: 4px;
             }
         }
     }
