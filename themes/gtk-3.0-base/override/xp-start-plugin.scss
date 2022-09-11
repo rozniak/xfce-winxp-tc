@@ -278,7 +278,7 @@ window.csd.xp-start-menu // Specificity hack -_-
                     //margin-right: 6px;
                 }
 
-                &.xp-start-default-item
+                @at-root .xp-start-default-item
                 {
                     @include __wintc_apply_props(
                         $start_menu_programs_menuitem_mime_styles
@@ -338,7 +338,7 @@ window.csd.xp-start-menu // Specificity hack -_-
                 margin: 0px;
             }
 
-            box.xp-start-all-programs
+            @at-root box.xp-start-all-programs
             {
                 @include __wintc_apply_props($start_menu_allprograms_menuitem_styles);
 
@@ -358,15 +358,16 @@ window.csd.xp-start-menu // Specificity hack -_-
 
                     min-width: $start_menu_allprograms_arrow_width;
 
-                    &:hover
-                    {
-                        @include __wintc_apply_props(
-                            $start_menu_allprograms_arrow_hover_styles
-                        );
-
-                        //background-image: url("../Resources/gtk-3.0/all_programs_arrow_hot.png");
-                    }
                 }
+            }
+
+            @at-root menuitem:hover .arrow
+            {
+                @include __wintc_apply_props(
+                    $start_menu_allprograms_arrow_hover_styles
+                );
+
+                //background-image: url("../Resources/gtk-3.0/all_programs_arrow_hot.png");
             }
 
             > separator
