@@ -15,7 +15,7 @@ $start_menu_allprograms_arrow_width: 16px;
 
 $start_menu_display_userpic: true;
 
-$start_menu_programs_column_width: 182px;
+$start_menu_programs_column_width: 176px;
 //$start_menu_places_column_width: ;
 
 $start_menu_popup_menu_vmargin: 0px;
@@ -308,6 +308,16 @@ $start_menu_programs_column_styles:
         undefined
     );
 $start_menu_programs_column_styles:
+    wintc_define_props_box(
+        $start_menu_programs_column_styles,
+        false,
+        padding,
+        2,
+        6,
+        undefined,
+        6
+    );
+$start_menu_programs_column_styles:
     wintc_define_props_fg(
         $start_menu_programs_column_styles,
         false,
@@ -351,6 +361,15 @@ $start_menu_allprograms_menuitem_styles:
         0,
         undefined
     );
+$start_menu_allprograms_menuitem_styles:
+    wintc_define_props_font(
+        $start_menu_allprograms_menuitem_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        bold
+    );
 
 
 //
@@ -387,6 +406,16 @@ $start_menu_places_column_styles:
         undefined,
         undefined,
         undefined
+    );
+$start_menu_places_column_styles:
+    wintc_define_props_box(
+        $start_menu_places_column_styles,
+        false,
+        padding,
+        2,
+        2,
+        undefined,
+        5
     );
 $start_menu_places_column_styles:
     wintc_define_props_fg(
