@@ -218,7 +218,7 @@ window.csd.xp-start-menu // Specificity hack -_-
             //border-width: 1px 1px 1px 6px;
 
             
-            menuitem:not(.something):not(.somethingelse) // FIXME: Specificity hack
+            menuitem
             {
                 @include __wintc_apply_props(
                     $start_menu_popup_menu_menuitem_styles
@@ -229,19 +229,19 @@ window.csd.xp-start-menu // Specificity hack -_-
 
                 &:first-child
                 {
-                    margin-top: $start_menu_popup_menu_vmargin;
+                    //margin-top: $start_menu_popup_menu_vmargin;
                     //margin-top: 1px;
 
 
                     image
                     {
-                        margin-bottom: -1px;
+                        //margin-bottom: -1px;
                     }
                 }
 
                 &:last-child
                 {
-                    margin-bottom: $start_menu_popup_menu_vmargin;
+                    //margin-bottom: $start_menu_popup_menu_vmargin;
                     //margin-bottom: 1px;
                 }
 

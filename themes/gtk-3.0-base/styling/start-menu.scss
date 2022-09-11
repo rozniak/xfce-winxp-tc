@@ -344,32 +344,6 @@ $start_menu_allprograms_separator_styles:
 
 
 //
-// START MENU POPUP MENU
-//
-$start_menu_popup_menu_menuitem_styles:
-    wintc_define_props_box(
-        $start_menu_popup_menu_menuitem_styles,
-        true,
-        margin,
-        undefined,
-        3,
-        undefined,
-        3
-    );
-
-$start_menu_popup_menu_menuitem_icon_styles:
-    wintc_define_props_box(
-        $start_menu_popup_menu_menuitem_icon_styles,
-        true,
-        margin,
-        undefined,
-        undefined,
-        undefined,
-        3
-    );
-
-
-//
 // START MENU PLACES COLUMN
 //
 $start_menu_places_column_styles:
