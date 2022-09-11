@@ -99,9 +99,6 @@ window.csd.xp-start-menu // Specificity hack -_-
 {
     @include __wintc_apply_props($start_menu_styles);
 
-    //background: transparent;
-    //border:     none;
-
     decoration
     {
         box-shadow: 6px 6px 2px -3px rgba(0, 0, 0, 0.4);
@@ -144,24 +141,11 @@ window.csd.xp-start-menu // Specificity hack -_-
     {
         @include __wintc_apply_props($start_menu_horz_userpane_styles);
 
-        //background-image:     url("../Resources/gtk-3.0/start_userpane_body.png");
-        //background-size:      101% 100%;
-        //background-position: -2px 0px;
-        //border-image:         url("../Resources/gtk-3.0/start_userpane_border.png") 5 6 0 6 stretch;
-        //border-style:         solid;
-        //border-width:         5px 6px 0px;
-        //min-width:            380px;
-
         box
         {
             @include __wintc_apply_props($start_menu_userpic_styles);
 
-            //border-image: url("../Resources/gtk-3.0/user_tile_border.png") 2 5 5 2 stretch;
-            //border-style: solid;
-            //border-width: 2px 5px 5px 2px;
-            //margin:       2px 0px 2px 1px;
-            //background-color: #CCD6EB;
-            //box-shadow: none;
+            box-shadow: none; // FIXME: Should be a wintc_define!
             
             @if not $start_menu_display_userpic
             {
@@ -177,12 +161,6 @@ window.csd.xp-start-menu // Specificity hack -_-
         label
         {
             @include __wintc_apply_props($start_menu_horz_username_styles);
-
-            //color:       #FFFFFF;
-            //font-family: 'Franklin Gothic Medium';
-            //font-size:   14pt;
-            //margin-left: 5px;
-            //text-shadow: 0px 1px 2px #000000;
         }
     }
 
@@ -199,13 +177,6 @@ window.csd.xp-start-menu // Specificity hack -_-
     @at-root .xp-start-programs-column
     {
         @include __wintc_apply_props($start_menu_programs_column_styles);
-
-        //background:   #FFFFFF;
-        //border-image: url("../Resources/gtk-3.0/start_programs_border.png") 3 0 1 2 stretch;
-        //border-style: solid;
-        //border-width: 3px 0px 1px 2px;
-        //color:        #373737;
-        //min-width:    182px;
 
         min-width: $start_menu_programs_column_width;
 
@@ -342,7 +313,6 @@ window.csd.xp-start-menu // Specificity hack -_-
             {
                 @include __wintc_apply_props($start_menu_allprograms_menuitem_styles);
 
-                //font-weight: bold;
                 min-height:  $start_menu_allprograms_height;
 
                 .arrow
@@ -366,15 +336,11 @@ window.csd.xp-start-menu // Specificity hack -_-
                 @include __wintc_apply_props(
                     $start_menu_allprograms_arrow_hover_styles
                 );
-
-                //background-image: url("../Resources/gtk-3.0/all_programs_arrow_hot.png");
             }
 
             > separator
             {
                 @include __wintc_apply_props($start_menu_programs_separator_styles);
-
-                //background: linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(211,211,200,1) 25%, rgba(211,211,200,1) 50%, rgba(211,211,200,1) 75%, rgba(255,255,255,1) 100%);
 
                 &:nth-last-child(2)
                 {
@@ -426,8 +392,6 @@ window.csd.xp-start-menu // Specificity hack -_-
             > separator
             {
                 @include __wintc_apply_props($start_menu_places_separator_styles);
-
-                //background: linear-gradient(90deg, rgba(211,229,250,1) 0%, rgba(129,182,255,1) 35%, rgba(129,182,255,1) 50%, rgba(129,182,255,1) 65%, rgba(211,229,250,1) 100%);
             }
         }
     }

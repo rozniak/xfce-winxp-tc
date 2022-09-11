@@ -7,7 +7,7 @@
  * Author(s): Rory Fewell <roryf@oddmatics.uk>
  */
 
-$menu_separator_height: 1px;
+$menu_separator_thickness: $separator_thickness;
 
 //
 // POPUP MENUS
@@ -22,16 +22,5 @@ $popup_menu_styles:
         1,
         1,
         $menu_borders_color,
-        undefined
-    );
-
-$menu_separator_styles:
-    wintc_define_props_bg(
-        $menu_separator_styles,
-        false,
-        $menu_borders_color,
-        undefined,
-        undefined,
-        undefined,
         undefined
     );
