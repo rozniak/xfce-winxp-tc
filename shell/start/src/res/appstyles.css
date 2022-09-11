@@ -13,10 +13,14 @@ box > menubar > separator
     margin: 4px 0px;
 }
 
-box.xp-start-all-programs
+menuitem.xp-start-all-programs
+{
+    min-height: 32px;
+}
+
+menuitem.xp-start-all-programs > box
 {
     font-weight: bold;
-    min-height:  32px;
 }
 
 separator.xp-start-all-programs

@@ -331,6 +331,26 @@ $start_menu_programs_separator_styles:
 //
 // 'ALL PROGRAMS' MENU ITEM
 //
+$start_menu_allprograms_menuitem_styles:
+    wintc_define_props_box(
+        $start_menu_allprograms_menuitem_styles,
+        false,
+        margin,
+        6,
+        undefined,
+        5,
+        undefined
+    );
+$start_menu_allprograms_menuitem_styles:
+    wintc_define_props_box(
+        $start_menu_allprograms_menuitem_styles,
+        false,
+        padding,
+        0,
+        undefined,
+        0,
+        undefined
+    );
 
 
 //

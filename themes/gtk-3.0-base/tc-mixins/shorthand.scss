@@ -31,6 +31,17 @@
             "padding-left"
         );
     }
+    @else if $ruleset == font
+    {
+        @include __wintc_apply_specific_props(
+            $theme_part_map,
+            "font-family",
+            "font-size",
+            "font-style",
+            "font-weight",
+            "text-decoration"
+        );
+    }
 }
 
 @mixin __wintc_apply_props_not_in_category(
@@ -55,6 +66,17 @@
             "padding-right",
             "padding-bottom",
             "padding-left"
+        );
+    }
+    @else if $ruleset == font
+    {
+        @include __wintc_apply_props_excluding(
+            $theme_part_map,
+            "font-family",
+            "font-size",
+            "font-style",
+            "font-weight",
+            "text-decoration"
         );
     }
 }

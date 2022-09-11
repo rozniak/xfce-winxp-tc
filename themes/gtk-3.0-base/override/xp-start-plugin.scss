@@ -309,11 +309,22 @@ window.csd.xp-start-menu // Specificity hack -_-
                 margin: 0px;
             }
 
-            @at-root box.xp-start-all-programs
+            menuitem.xp-start-all-programs
             {
-                @include __wintc_apply_props($start_menu_allprograms_menuitem_styles);
+                @include __wintc_apply_props_not_in_category(
+                    $start_menu_allprograms_menuitem_styles,
+                    font
+                );
 
-                min-height:  $start_menu_allprograms_height;
+                min-height: $start_menu_allprograms_height;
+
+                > box
+                {
+                    @include __wintc_apply_props_for_category(
+                        $start_menu_allprograms_menuitem_styles,
+                        font
+                    );
+                }
 
                 .arrow
                 {
@@ -327,15 +338,14 @@ window.csd.xp-start-menu // Specificity hack -_-
                     //min-width:           16px;
 
                     min-width: $start_menu_allprograms_arrow_width;
-
                 }
-            }
 
-            @at-root menuitem:hover .arrow
-            {
-                @include __wintc_apply_props(
-                    $start_menu_allprograms_arrow_hover_styles
-                );
+                &:hover .arrow
+                {
+                    @include __wintc_apply_props(
+                        $start_menu_allprograms_arrow_hover_styles
+                    );
+                }
             }
 
             > separator
