@@ -166,7 +166,26 @@ $start_menu_styles:
 //
 // START MENU HORIZONTAL USER PANE
 //
-$start_menu_horz_userpane_styles: ();
+$start_menu_horz_userpane_styles:
+    wintc_define_props_bg(
+        $start_menu_horz_userpane_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
+$start_menu_horz_userpane_styles:
+    wintc_define_props_box(
+        $start_menu_horz_userpane_styles,
+        false,
+        margin,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
 
 $start_menu_horz_username_styles: ();
 $start_menu_horz_username_styles:
@@ -201,7 +220,7 @@ $start_menu_vert_username_styles:
         margin,
         undefined,
         7,
-        undefined,
+        8,
         7
     );
 $start_menu_vert_username_styles:
@@ -223,8 +242,112 @@ $start_menu_vert_username_styles:
 
 
 //
+// START MENU PROGRAMS COLUMN
+//
+$start_menu_programs_column_styles:
+    wintc_define_props_bg(
+        $start_menu_programs_column_styles,
+        false,
+        #FFFFFF,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
+$start_menu_programs_column_styles:
+    wintc_define_props_borders(
+        $start_menu_programs_column_styles,
+        false,
+        solid,
+        9,
+        12,
+        11,
+        9,
+        undefined,
+        url('../Resources/start_programs_border.png')
+    );
+$start_menu_programs_column_styles:
+    wintc_define_props_box(
+        $start_menu_programs_column_styles,
+        false,
+        margin,
+        10,
+        undefined,
+        undefined,
+        undefined
+    );
+
+
+//
+// 'ALL PROGRAMS' MENU ITEM
+//
+$start_menu_allprograms_menuitem_styles:
+    wintc_define_props_font(
+        $start_menu_allprograms_menuitem_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        bold
+    );
+
+
+//
+// START MENU PLACES COLUMN
+//
+$start_menu_places_column_styles:
+    wintc_define_props_borders(
+        $start_menu_places_column_styles,
+        false,
+        solid,
+        0,
+        6,
+        14,
+        0,
+        undefined,
+        url('../Resources/start_places_border.png')
+    );
+$start_menu_places_column_styles:
+    wintc_define_props_box(
+        $start_menu_places_column_styles,
+        false,
+        margin,
+        10,
+        undefined,
+        undefined,
+        undefined
+    );
+
+$start_menu_places_menuitem_styles:
+    wintc_define_props_fg(
+        $start_menu_places_menuitem_styles,
+        false,
+        #FFFFFF,
+        undefined
+    );
+
+$start_menu_places_menuitem_top_styles:
+    wintc_define_props_font(
+        $start_menu_places_menuitem_top_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        normal
+    );
+
+
+//
 // START MENU LOGOFF PANE
 //
+$start_menu_button_styles:
+    wintc_define_props_fg(
+        $start_menu_button_styles,
+        false,
+        #FFFFFF,
+        undefined
+    );
+
 $start_menu_logoff_pane_styles:
     wintc_define_props_bg(
         $start_menu_logoff_pane_styles,
