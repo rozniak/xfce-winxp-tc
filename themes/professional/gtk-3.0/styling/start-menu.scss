@@ -9,6 +9,10 @@
 
 $start_flag_size: 21px;
 
+
+//
+// START BUTTON
+//
 $start_flag_styles:
     wintc_define_props_bg(
         $start_flag_styles,
@@ -140,4 +144,94 @@ $start_button_text_styles:
         2,
         undefined,
         1
+    );
+
+
+//
+// START MENU
+//
+$start_menu_styles: ();
+$start_menu_styles:
+    wintc_define_props_bg(
+        $start_menu_styles,
+        false,
+        #3070D0,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
+
+
+//
+// START MENU HORIZONTAL USER PANE
+//
+$start_menu_horz_userpane_styles: ();
+
+$start_menu_horz_username_styles: ();
+$start_menu_horz_username_styles:
+    wintc_define_props_font(
+        $start_menu_horz_userpane_styles,
+        false,
+        undefined,
+        0pt,
+        undefined,
+        undefined
+    );
+
+
+//
+// START MENU VERTICAL USER PANE
+//
+$start_menu_vert_userpane_styles:
+    wintc_define_props_bg(
+        $start_menu_vert_userpane_styles,
+        false,
+        #5096F8,
+        undefined,
+        no-repeat,
+        top center,
+        url('../Resources/start_vert_userpane_body.png')
+    );
+
+$start_menu_vert_username_styles:
+    wintc_define_props_box(
+        $start_menu_vert_username_styles,
+        false,
+        margin,
+        undefined,
+        7,
+        undefined,
+        7
+    );
+$start_menu_vert_username_styles:
+    wintc_define_props_fg(
+        $start_menu_vert_username_styles,
+        false,
+        #FFFFFF,
+        undefined
+    );
+$start_menu_vert_username_styles:
+    wintc_define_props_font(
+        $start_menu_vert_username_styles,
+        false,
+        undefined,
+        14pt,
+        italic,
+        bold
+    );
+
+
+//
+// START MENU LOGOFF PANE
+//
+$start_menu_logoff_pane_styles:
+    wintc_define_props_bg(
+        $start_menu_logoff_pane_styles,
+        false,
+        #5096F8,
+        undefined,
+        undefined,
+        undefined,
+        undefined
     );
