@@ -116,6 +116,13 @@ window.csd.xp-start-menu // Specificity hack -_-
                 "margin-bottom"
             );
 
+            &:hover
+            {
+                @include __wintc_apply_props(
+                    $start_menu_menustrip_menuitem_hover_styles
+                );
+            }
+
             &:not(:last-child)
             {
                 @include __wintc_apply_specific_props(
@@ -235,6 +242,13 @@ window.csd.xp-start-menu // Specificity hack -_-
             {
                 @include __wintc_apply_props($start_menu_programs_menuitem_styles);
 
+                &:hover
+                {
+                    @include __wintc_apply_props(
+                        $start_menu_programs_menuitem_hover_styles
+                    );
+                }
+
                 image
                 {
                     @include __wintc_apply_props(
@@ -353,6 +367,13 @@ window.csd.xp-start-menu // Specificity hack -_-
             > menuitem
             {
                 @include __wintc_apply_props($start_menu_places_menuitem_styles);
+
+                &:hover
+                {
+                    @include __wintc_apply_props(
+                        $start_menu_places_menuitem_hover_styles
+                    );
+                }
 
                 &.significant
                 {

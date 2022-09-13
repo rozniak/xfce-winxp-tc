@@ -162,6 +162,30 @@ $start_menu_styles:
         undefined
     );
 
+$start_menu_menustrip_menuitem_styles:
+    wintc_define_props_borders(
+        $start_menu_menustrip_menuitem_styles,
+        false,
+        none,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
+
+$start_menu_menustrip_menuitem_hover_styles:
+    wintc_define_props_bg(
+        $start_menu_menustrip_menuitem_hover_styles,
+        false,
+        transparent,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
+
 
 //
 // START MENU HORIZONTAL USER PANE

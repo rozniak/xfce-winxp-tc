@@ -22,9 +22,10 @@ $start_button_text_styles:     ();
 //
 // START MENU
 //
-$start_menu_styles:                    ();
-$start_menu_menustrip_styles:          ();
-$start_menu_menustrip_menuitem_styles: ();
+$start_menu_styles:                          ();
+$start_menu_menustrip_styles:                ();
+$start_menu_menustrip_menuitem_styles:       ();
+$start_menu_menustrip_menuitem_hover_styles: ();
 
 //
 // START MENU LOGOFF PANE
@@ -38,17 +39,19 @@ $start_menu_button_icon_styles:  ();
 //
 // START MENU PLACES COLUMN
 //
-$start_menu_places_column_styles:        ();
-$start_menu_places_menuitem_styles:      ();
-$start_menu_places_menuitem_top_styles:  ();
-$start_menu_places_menuitem_icon_styles: ();
-$start_menu_places_separator_styles:     ();
+$start_menu_places_column_styles:         ();
+$start_menu_places_menuitem_styles:       ();
+$start_menu_places_menuitem_hover_styles: ();
+$start_menu_places_menuitem_icon_styles:  ();
+$start_menu_places_menuitem_top_styles:   ();
+$start_menu_places_separator_styles:      ();
 
 //
 // START MENU PROGRAMS COLUMN
 //
 $start_menu_programs_column_styles:               ();
 $start_menu_programs_menuitem_styles:             ();
+$start_menu_programs_menuitem_hover_styles:       ();
 $start_menu_programs_menuitem_icon_styles:        ();
 $start_menu_programs_menuitem_mime_styles:        ();
 $start_menu_programs_menuitem_mime_cattxt_styles: ();
