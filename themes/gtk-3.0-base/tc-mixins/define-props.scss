@@ -377,7 +377,7 @@
     $value_family,
     $value_size,
     $value_style,
-    $value_weight,
+    $value_weight
 )
 {
     $theme_part_map:
@@ -472,6 +472,41 @@
                 );
         }
     }
+
+    @return $theme_part_map;
+}
+
+@function wintc_define_props_text_decoration(
+    $theme_part_map,
+    $define_default,
+    $value_line,
+    $value_color,
+    $value_style
+)
+{
+    $theme_part_map:
+        __wintc_handle_define(
+            $theme_part_map,
+            $define_default,
+            "text-decoration-line",
+            $value_line
+        );
+
+    $theme_part_map:
+        __wintc_handle_define(
+            $theme_part_map,
+            $define_default,
+            "text-decoration-color",
+            $value_color
+        );
+
+    $theme_part_map:
+        __wintc_handle_define(
+            $theme_part_map,
+            $define_default,
+            "text-decoration-style",
+            $value_style
+        );
 
     @return $theme_part_map;
 }

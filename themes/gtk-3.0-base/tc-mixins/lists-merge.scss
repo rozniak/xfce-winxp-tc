@@ -1,0 +1,22 @@
+/**
+ * merge-lists.scss - WinTC SASS Merge Lists Function
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+@function lists-merge(
+    $lists...
+)
+{
+    $l_ret: ();
+
+    @each $list in $lists
+    {
+        $l_ret: join($l_ret, $list);
+    }
+
+    @return $l_ret;
+}

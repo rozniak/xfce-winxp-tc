@@ -113,7 +113,10 @@ window.csd.xp-start-menu // Specificity hack -_-
         {
             @include __wintc_apply_props_excluding(
                 $start_menu_menustrip_menuitem_styles,
-                "margin-bottom"
+                lists-merge(
+                    __wintc_get_category_props(font),
+                    "margin-bottom"
+                )
             );
 
             &:hover
@@ -130,6 +133,14 @@ window.csd.xp-start-menu // Specificity hack -_-
                     "margin-bottom"
                 );
             }
+        }
+
+        > menuitem:hover > box > label
+        {
+            @include __wintc_apply_props_for_category(
+                $start_menu_menustrip_menuitem_hover_styles,
+                font
+            );
         }
 
         > separator
@@ -370,7 +381,7 @@ window.csd.xp-start-menu // Specificity hack -_-
 
                 &:hover
                 {
-                    @include __wintc_apply_props(
+                    @include __wintc_apply_props_excluding(
                         $start_menu_places_menuitem_hover_styles
                     );
                 }
