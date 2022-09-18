@@ -111,20 +111,13 @@ window.csd.xp-start-menu // Specificity hack -_-
         > menuitem,
         > separator
         {
-            @include __wintc_apply_props_excluding(
+            @include __wintc_apply_specific_props(
                 $start_menu_menustrip_menuitem_styles,
-                lists-merge(
-                    __wintc_get_category_props(font),
+                __wintc_get_category_props(
+                    box-model,
                     "margin-bottom"
-                )
+                )...
             );
-
-            &:hover
-            {
-                @include __wintc_apply_props(
-                    $start_menu_menustrip_menuitem_hover_styles
-                );
-            }
 
             &:not(:last-child)
             {
@@ -135,12 +128,41 @@ window.csd.xp-start-menu // Specificity hack -_-
             }
         }
 
-        > menuitem:hover > box > label
+        > menuitem
         {
-            @include __wintc_apply_props_for_category(
-                $start_menu_menustrip_menuitem_hover_styles,
-                font
+            @include __wintc_apply_props_excluding(
+                $start_menu_menustrip_menuitem_styles,
+                lists-merge(
+                    __wintc_get_category_props(box-model),
+                    __wintc_get_category_props(font)
+                )...
             );
+
+
+            > box label
+            {
+                @include __wintc_apply_props_for_category(
+                    $start_menu_menustrip_menuitem_styles,
+                    font
+                );
+            }
+
+            &:hover
+            {
+                @include __wintc_apply_props_not_in_category(
+                    $start_menu_menustrip_menuitem_hover_styles,
+                    font
+                );
+
+
+                > box label
+                {
+                    @include __wintc_apply_props_for_category(
+                        $start_menu_menustrip_menuitem_hover_styles,
+                        font
+                    );
+                }
+            }
         }
 
         > separator

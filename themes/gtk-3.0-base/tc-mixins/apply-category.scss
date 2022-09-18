@@ -86,7 +86,7 @@
 {
     @include __wintc_apply_specific_props(
         $theme_part_map,
-        __wintc_get_category_props($ruleset)
+        __wintc_get_category_props($ruleset)...
     );
 }
 
@@ -97,6 +97,6 @@
 {
     @include __wintc_apply_props_excluding(
         $theme_part_map,
-        __wintc_get_category_props($ruleset)
+        __wintc_get_category_props($ruleset)...
     );
 }
