@@ -229,17 +229,23 @@ static void create_logoffpane_structure(
 {
     GtkWidget* logoffpane_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 
+    //
+    // These are a couple ordinary buttons, except we have an extra box before the
+    // label so that themes can add an icon
+    //
+    // The reason for not using the gtk-icon-theme here is because the themes need
+    // to be able to override the image, AND they need to provide a 'hot' graphic for
+    // when the buttons are hovered
+    //
+
     // Log off button
     //
-    GtkWidget* logoff_button = gtk_button_new();
-    GtkWidget* logoff_box    = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-    GtkWidget* logoff_icon   = gtk_image_new_from_icon_name(
-                                   "system-log-out",
-                                   GTK_ICON_SIZE_LARGE_TOOLBAR
-                               );
-    GtkWidget* logoff_label  = gtk_label_new(_("Log Off"));
+    GtkWidget* logoff_button   = gtk_button_new();
+    GtkWidget* logoff_box      = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+    GtkWidget* logoff_icon_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+    GtkWidget* logoff_label    = gtk_label_new(_("Log Off"));
 
-    gtk_box_pack_start(GTK_BOX(logoff_box), logoff_icon, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(logoff_box), logoff_icon_box, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(logoff_box), logoff_label, FALSE, FALSE, 0);
     gtk_container_add(GTK_CONTAINER(logoff_button), logoff_box);
 
@@ -255,17 +261,16 @@ static void create_logoffpane_structure(
         _("Provides options for closing your programs and logging off, or for leaving your programs running and switching to another user.")
     );
 
+    wintc_widget_add_style_class(logoff_icon_box, "logoff-icon");
+
     // Shut down button
     //
-    GtkWidget* shutdown_button = gtk_button_new();
-    GtkWidget* shutdown_box    = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-    GtkWidget* shutdown_icon   = gtk_image_new_from_icon_name(
-                                     "system-shutdown",
-                                     GTK_ICON_SIZE_LARGE_TOOLBAR
-                                 );
-    GtkWidget* shutdown_label  = gtk_label_new(_("Turn Off Computer"));
+    GtkWidget* shutdown_button   = gtk_button_new();
+    GtkWidget* shutdown_box      = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+    GtkWidget* shutdown_icon_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+    GtkWidget* shutdown_label    = gtk_label_new(_("Turn Off Computer"));
 
-    gtk_box_pack_start(GTK_BOX(shutdown_box), shutdown_icon, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(shutdown_box), shutdown_icon_box, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(shutdown_box), shutdown_label, FALSE, FALSE, 0);
     gtk_container_add(GTK_CONTAINER(shutdown_button), shutdown_box);
 
@@ -280,6 +285,8 @@ static void create_logoffpane_structure(
         shutdown_button,
         _("Provides options for turning off or restarting your computer, or for activating Stand By or Hibernate modes.")
     );
+
+    wintc_widget_add_style_class(shutdown_icon_box, "shutdown-icon");
 
     // Pack box
     //

@@ -34,7 +34,12 @@ $start_menu_logoff_pane_styles:  ();
 $start_menu_button_styles:       ();
 $start_menu_button_hover_styles: ();
 $start_menu_button_press_styles: ();
-$start_menu_button_icon_styles:  ();
+
+$start_menu_button_icon_styles:                ();
+$start_menu_button_logoff_icon_styles:         ();
+$start_menu_button_logoff_icon_hover_styles:   ();
+$start_menu_button_shutdown_icon_styles:       ();
+$start_menu_button_shutdown_icon_hover_styles: ();
 
 //
 // START MENU PLACES COLUMN

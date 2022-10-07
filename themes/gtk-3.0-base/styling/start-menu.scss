@@ -22,6 +22,8 @@ $start_menu_popup_menu_vmargin: 0px !default;
 
 $start_menu_separator_thickness: $separator_thickness !default;
 
+$start_menu_power_button_icon_size: 24px !default;
+
 //
 // START BUTTON
 //
@@ -505,4 +507,45 @@ $start_menu_button_icon_styles:
         4,
         undefined,
         undefined
+    );
+
+$start_menu_button_logoff_icon_styles:
+    wintc_define_props_bg(
+        $start_menu_button_logoff_icon_styles,
+        true,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/logoff_button.png')
+    );
+$start_menu_button_logoff_icon_hover_styles:
+    wintc_define_props_bg(
+        $start_menu_button_logoff_icon_hover_styles,
+        true,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/logoff_button_hover.png')
+    );
+$start_menu_button_shutdown_icon_styles:
+    wintc_define_props_bg(
+        $start_menu_button_shutdown_icon_styles,
+        true,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/shutdown_button.png')
+    );
+$start_menu_button_shutdown_icon_hover_styles:
+    wintc_define_props_bg(
+        $start_menu_button_shutdown_icon_hover_styles,
+        true,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/shutdown_button_hover.png')
     );

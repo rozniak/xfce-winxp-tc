@@ -462,9 +462,38 @@ window.csd.xp-start-menu // Specificity hack -_-
                 @include __wintc_apply_props($start_menu_button_press_styles);
             }
 
-            image
+            // Button icons
+            //
+            .logoff-icon,
+            .shutdown-icon
             {
+                min-height: $start_menu_power_button_icon_size;
+                min-width: $start_menu_power_button_icon_size;
+
                 @include __wintc_apply_props($start_menu_button_icon_styles);
+            }
+
+            .logoff-icon
+            {
+                @include __wintc_apply_props($start_menu_button_logoff_icon_styles);
+            }
+
+            .shutdown-icon
+            {
+                @include __wintc_apply_props($start_menu_button_shutdown_icon_styles);
+            }
+
+            &:hover
+            {
+                .logoff-icon
+                {
+                    @include __wintc_apply_props($start_menu_button_logoff_icon_hover_styles);
+                }
+
+                .shutdown-icon
+                {
+                    @include __wintc_apply_props($start_menu_button_shutdown_icon_hover_styles);
+                }
             }
         }
     }
