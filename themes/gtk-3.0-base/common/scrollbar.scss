@@ -9,171 +9,296 @@
 
 scrollbar
 {
+    @include __wintc_apply_props($scrollbar_trough_styles);
+
+    button
+    {
+        @include __wintc_apply_props($scrollbar_button_styles);
+
+        $l_btn_border_bottom: __wintc_get_prop_with_fallbacks(
+                                  "border-bottom-width",
+                                  $scrollbar_button_styles,
+                                  $button_styles
+                              );
+        $l_btn_border_left:   __wintc_get_prop_with_fallbacks(
+                                  "border-left-width",
+                                  $scrollbar_button_styles,
+                                  $button_styles
+                              );
+        $l_btn_border_right:  __wintc_get_prop_with_fallbacks(
+                                  "border-right-width",
+                                  $scrollbar_button_styles,
+                                  $button_styles
+                              );
+        $l_btn_border_top:    __wintc_get_prop_with_fallbacks(
+                                  "border-top-width",
+                                  $scrollbar_button_styles,
+                                  $button_styles
+                              );
+
+        -gtk-icon-source: none;
+
+        min-height: calc(#{$scrollbar_thickness} - #{$l_btn_border_bottom} - #{$l_btn_border_top});
+        min-width: calc(#{$scrollbar_thickness} - #{$l_btn_border_left} - #{$l_btn_border_right});
+
+        &:hover
+        {
+            @include __wintc_apply_props($scrollbar_button_hover_styles);
+        }
+
+        &:active
+        {
+            @include __wintc_apply_props($scrollbar_button_press_styles);
+        }
+
+        &:disabled
+        {
+            @include __wintc_apply_props($scrollbar_button_inactive_styles);
+        }
+    }
+
+    slider
+    {
+        @include __wintc_apply_props($scrollbar_slider_styles);
+
+        &:hover
+        {
+            @include __wintc_apply_props($scrollbar_slider_hover_styles);
+        }
+
+        &:active
+        {
+            @include __wintc_apply_props($scrollbar_slider_press_styles);
+        }
+    }
+
     &.horizontal
     {
-        background-image: url("../Resources/scrollbar_horz_track.png");
+        @include __wintc_apply_props($scrollbar_horz_trough_styles);
 
         button
         {
-            background-image: url("../Resources/scrollbar_horz_button.png");
-            min-height:       17px;
-            min-width:        17px;
+            @include __wintc_apply_props($scrollbar_horz_button_styles);
+
+            $l_btn_border_bottom: __wintc_get_prop($scrollbar_horz_button_styles, "border-bottom-width");
+            $l_btn_border_left:   __wintc_get_prop($scrollbar_horz_button_styles, "border-left-width");
+            $l_btn_border_right:  __wintc_get_prop($scrollbar_horz_button_styles, "border-right-width");
+            $l_btn_border_top:    __wintc_get_prop($scrollbar_horz_button_styles, "border-top-width");
+
+            @if $l_btn_border_bottom > 0px
+            {
+                min-height: calc(#{$scrollbar_thickness} - #{$l_btn_border_bottom} - #{$l_btn_border_top});
+                min-width: calc(#{$scrollbar_thickness} - #{$l_btn_border_left} - #{$l_btn_border_right});
+            }
 
             &:hover
             {
-                background-image: url("../Resources/scrollbar_horz_button_hover.png");
+                @include __wintc_apply_props($scrollbar_horz_button_hover_styles);
             }
 
             &:active
             {
-                background-image: url("../Resources/scrollbar_horz_button_press.png");
+                @include __wintc_apply_props($scrollbar_horz_button_press_styles);
             }
 
             &:disabled
             {
-                background-image: url("../Resources/scrollbar_horz_button_inactive.png");
+                @include __wintc_apply_props($scrollbar_horz_button_inactive_styles);
             }
 
             &.down
             {
-                -gtk-icon-source: url("../Resources/scrollbar_right_glyph.png");
+                @include __wintc_apply_props($scrollbar_button_right_styles);
+
+                &:hover
+                {
+                    @include __wintc_apply_props($scrollbar_button_right_hover_styles);
+                }
+
+                &:active
+                {
+                    @include __wintc_apply_props($scrollbar_button_right_press_styles);
+                }
 
                 &:disabled
                 {
-                    -gtk-icon-source: url("../Resources/scrollbar_right_glyph_inactive.png");
+                    @include __wintc_apply_props($scrollbar_button_right_inactive_styles);
                 }
             }
 
             &.up
             {
-                -gtk-icon-source: url("../Resources/scrollbar_left_glyph.png");
+                @include __wintc_apply_props($scrollbar_button_left_styles);
+
+                &:hover
+                {
+                    @include __wintc_apply_props($scrollbar_button_left_hover_styles);
+                }
+
+                &:active
+                {
+                    @include __wintc_apply_props($scrollbar_button_left_press_styles);
+                }
 
                 &:disabled
                 {
-                    -gtk-icon-source: url("../Resources/scrollbar_left_glyph_inactive.png");
+                    @include __wintc_apply_props($scrollbar_button_left_inactive_styles);
                 }
             }
         }
 
         slider
         {
-            background-image: url("../Resources/scrollbar_horz_gripper.png");
-            background-size:  8px 7px;
-            border-image:     url("../Resources/scrollbar_horz_slider.png") 3 3 3 3 stretch;
-            min-height:       11px;
-            min-width:        50px;
+            @include __wintc_apply_props($scrollbar_horz_slider_styles);
+
+            $l_sldr_border_bottom: __wintc_get_prop_with_fallbacks(
+                                       "border-bottom-width",
+                                       $scrollbar_horz_slider_styles,
+                                       $scrollbar_slider_styles
+                                   );
+            $l_sldr_border_left:   __wintc_get_prop_with_fallbacks(
+                                       "border-left-width",
+                                       $scrollbar_horz_slider_styles,
+                                       $scrollbar_slider_styles
+                                   );
+            $l_sldr_border_right:  __wintc_get_prop_with_fallbacks(
+                                       "border-right-width",
+                                       $scrollbar_horz_slider_styles,
+                                       $scrollbar_slider_styles
+                                   );
+            $l_sldr_border_top:    __wintc_get_prop_with_fallbacks(
+                                       "border-top-width",
+                                       $scrollbar_horz_slider_styles,
+                                       $scrollbar_slider_styles
+                                   );
+
+            min-height: calc(#{$scrollbar_thickness} - #{$l_sldr_border_left} - #{$l_sldr_border_right});
+            min-width: calc(#{$scrollbar_slider_min_length} - #{$l_sldr_border_bottom} - #{$l_sldr_border_top});
 
             &:hover
             {
-                background-image: url("../Resources/scrollbar_horz_gripper_hover.png");
-                border-image:     url("../Resources/scrollbar_horz_slider_hover.png") 3 3 3 3 stretch;
+                @include __wintc_apply_props($scrollbar_horz_slider_hover_styles);
             }
 
             &:active
             {
-                background-image: url("../Resources/scrollbar_horz_gripper_press.png");
-                border-image:     url("../Resources/scrollbar_horz_slider_press.png") 3 3 3 3 stretch;
+                @include __wintc_apply_props($scrollbar_horz_slider_press_styles);
             }
         }
     }
 
     &.vertical
     {
-        background-image: url("../Resources/scrollbar_vert_track.png");
+        @include __wintc_apply_props($scrollbar_vert_trough_styles);
 
         button
         {
-            background-image: url("../Resources/scrollbar_vert_button.png");
-            min-height:       17px;
-            min-width:        17px;
+            @include __wintc_apply_props($scrollbar_vert_button_styles);
 
-            &:disabled
+            $l_btn_border_bottom: __wintc_get_prop($scrollbar_vert_button_styles, "border-bottom-width");
+            $l_btn_border_left:   __wintc_get_prop($scrollbar_vert_button_styles, "border-left-width");
+            $l_btn_border_right:  __wintc_get_prop($scrollbar_vert_button_styles, "border-right-width");
+            $l_btn_border_top:    __wintc_get_prop($scrollbar_vert_button_styles, "border-top-width");
+
+            @if $l_btn_border_bottom > 0px
             {
-                background-image: url("../Resources/scrollbar_vert_button_inactive.png");
+                min-height: calc(#{$scrollbar_thickness} - #{$l_btn_border_bottom} - #{$l_btn_border_top});
+                min-width: calc(#{$scrollbar_thickness} - #{$l_btn_border_left} - #{$l_btn_border_right});
             }
 
             &:hover
             {
-                background-image: url("../Resources/scrollbar_vert_button_hover.png");
+                @include __wintc_apply_props($scrollbar_vert_button_hover_styles);
             }
 
             &:active
             {
-                background-image: url("../Resources/scrollbar_vert_button_press.png");
+                @include __wintc_apply_props($scrollbar_vert_button_press_styles);
+            }
+
+            &:disabled
+            {
+                @include __wintc_apply_props($scrollbar_vert_button_inactive_styles);
             }
 
             &.down
             {
-                -gtk-icon-source: url("../Resources/scrollbar_down_glyph.png");
+                @include __wintc_apply_props($scrollbar_button_down_styles);
+
+                &:hover
+                {
+                    @include __wintc_apply_props($scrollbar_button_down_hover_styles);
+                }
+
+                &:active
+                {
+                    @include __wintc_apply_props($scrollbar_button_down_press_styles);
+                }
 
                 &:disabled
                 {
-                    -gtk-icon-source: url("../Resources/scrollbar_down_glyph_inactive.png");
+                    @include __wintc_apply_props($scrollbar_button_down_inactive_styles);
                 }
             }
 
             &.up
             {
-                -gtk-icon-source: url("../Resources/scrollbar_up_glyph.png");
+                @include __wintc_apply_props($scrollbar_button_up_styles);
+
+                &:hover
+                {
+                    @include __wintc_apply_props($scrollbar_button_up_hover_styles);
+                }
+
+                &:active
+                {
+                    @include __wintc_apply_props($scrollbar_button_up_press_styles);
+                }
 
                 &:disabled
                 {
-                    -gtk-icon-source: url("../Resources/scrollbar_up_glyph_inactive.png");
+                    @include __wintc_apply_props($scrollbar_button_up_inactive_styles);
                 }
             }
         }
 
         slider
         {
-            background-image: url("../Resources/scrollbar_vert_gripper.png");
-            background-size:  7px 8px;
-            border-image:     url("../Resources/scrollbar_vert_slider.png") 3 3 3 3 stretch;
-            min-height:       50px;
-            min-width:        11px;
+            @include __wintc_apply_props($scrollbar_vert_slider_styles);
+
+            $l_sldr_border_bottom: __wintc_get_prop_with_fallbacks(
+                                       "border-bottom-width",
+                                       $scrollbar_vert_slider_styles,
+                                       $scrollbar_slider_styles
+                                   );
+            $l_sldr_border_left:   __wintc_get_prop_with_fallbacks(
+                                       "border-left-width",
+                                       $scrollbar_vert_slider_styles,
+                                       $scrollbar_slider_styles
+                                   );
+            $l_sldr_border_right:  __wintc_get_prop_with_fallbacks(
+                                       "border-right-width",
+                                       $scrollbar_vert_slider_styles,
+                                       $scrollbar_slider_styles
+                                   );
+            $l_sldr_border_top:    __wintc_get_prop_with_fallbacks(
+                                       "border-top-width",
+                                       $scrollbar_vert_slider_styles,
+                                       $scrollbar_slider_styles
+                                   );
+
+            min-height: calc(#{$scrollbar_slider_min_length} - #{$l_sldr_border_left} - #{$l_sldr_border_right});
+            min-width: calc(#{$scrollbar_thickness} - #{$l_sldr_border_bottom} - #{$l_sldr_border_top});
 
             &:hover
             {
-                background-image: url("../Resources/scrollbar_vert_gripper_hover.png");
-                border-image:     url("../Resources/scrollbar_vert_slider_hover.png") 3 3 3 3 stretch;
+                @include __wintc_apply_props($scrollbar_vert_slider_hover_styles);
             }
 
             &:active
             {
-                background-image: url("../Resources/scrollbar_vert_gripper_press.png");
-                border-image:     url("../Resources/scrollbar_vert_slider_press.png") 3 3 3 3 stretch;
+                @include __wintc_apply_props($scrollbar_vert_slider_press_styles);
             }
-        }
-    }
-
-    button
-    {
-        background-size: 100%;
-
-        &,
-        &:active,
-        &:disabled,
-        &:hover
-        {
-            border: 0px;
-        }
-    }
-
-    slider
-    {
-        background-color:    #C3D5FD;
-        background-position: center;
-        background-repeat:   no-repeat;
-        border-style:        solid;
-        border-width:        3;
-
-        &:hover
-        {
-            background-color: #D8E8FF;
-        }
-
-        &:active
-        {
-            background-color: #A5BEFB;
         }
     }
 }
