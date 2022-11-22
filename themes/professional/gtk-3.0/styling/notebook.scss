@@ -1,5 +1,5 @@
 /**
- * taskband.scss - Professional Style Taskband Style Constants
+ * notebook.scss - Professional Style Notebook Style Constants
  *
  * This source-code is part of Windows XP stuff for XFCE:
  * <<https://www.oddmatics.uk>>
@@ -7,129 +7,219 @@
  * Author(s): Rory Fewell <roryf@oddmatics.uk>
  */
 
-// Taskband buttons
 //
-$taskband_button_styles:
+// NOTEBOOK HEADER
+//
+$notebook_header_styles:
     wintc_define_props_borders(
-        $taskband_button_styles,
+        $notebook_header_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
+
+$notebook_header_bottom_styles:
+    wintc_define_props_borders(
+        $notebook_header_bottom_styles,
         false,
         solid,
-        1,
-        1,
-        1,
-        1,
-        $bg_color,
+        2,
+        0,
+        0,
+        0,
+        undefined,
+        url('../Resources/notebook_header_bottom_border.png')
+    );
+$notebook_header_left_styles:
+    wintc_define_props_borders(
+        $notebook_header_left_styles,
+        false,
+        solid,
+        0,
+        2,
+        0,
+        0,
+        undefined,
+        url('../Resources/notebook_header_left_border.png')
+    );
+$notebook_header_right_styles:
+    wintc_define_props_borders(
+        $notebook_header_right_styles,
+        false,
+        solid,
+        0,
+        0,
+        0,
+        2,
+        undefined,
+        url('../Resources/notebook_header_right_border.png')
+    );
+$notebook_header_top_styles:
+    wintc_define_props_borders(
+        $notebook_header_top_styles,
+        false,
+        solid,
+        0,
+        0,
+        2,
+        0,
+        undefined,
+        url('../Resources/notebook_header_top_border.png')
+    );
+
+
+//
+// NOTEBOOK TAB
+//
+$notebook_tab_styles:
+    wintc_define_props_bg(
+        $notebook_tab_styles,
+        false,
+        #DBDBCE,
+        undefined,
+        undefined,
+        undefined,
         undefined
     );
-$taskband_button_styles:
+$notebook_tab_hover_styles:
     wintc_define_props_bg(
-        $taskband_button_styles,
+        $notebook_tab_hover_styles,
         false,
+        #C7DCF6,
         undefined,
         undefined,
         undefined,
-        undefined,
-        none
+        undefined
     );
-$taskband_button_styles:
-    wintc_define_props_box(
-        $taskband_button_styles,
+$notebook_tab_selected_styles:
+    wintc_define_props_bg(
+        $notebook_tab_selected_styles,
         false,
-        margin,
-        4,
+        #F3F3EF,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
+
+$notebook_tab_bottom_styles:
+    wintc_define_props_borders(
+        $notebook_tab_bottom_styles,
+        false,
+        solid,
         0,
         3,
-        3
+        3,
+        2,
+        undefined,
+        default
+    );
+$notebook_tab_bottom_hover_styles:
+    wintc_define_props_borders(
+        $notebook_tab_bottom_hover_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/notebook_tab_bottom_hover_border.png')
     );
 
-$taskband_button_hover_styles:
-    wintc_define_props_bg(
-        $taskband_button_hover_styles,
-        false,
-        #D9E8FA,
-        undefined,
-        undefined,
-        undefined,
-        none
-    );
-$taskband_button_hover_styles:
+$notebook_tab_left_styles:
     wintc_define_props_borders(
-        $taskband_button_hover_styles,
+        $notebook_tab_left_styles,
+        false,
+        solid,
+        2,
+        0,
+        3,
+        3,
+        undefined,
+        default
+    );
+$notebook_tab_left_hover_styles:
+    wintc_define_props_borders(
+        $notebook_tab_left_hover_styles,
         false,
         undefined,
         undefined,
         undefined,
         undefined,
         undefined,
-        #BBC3D7,
-        undefined
+        undefined,
+        url('../Resources/notebook_tab_left_hover_border.png')
     );
 
-$taskband_button_press_styles:
-    wintc_define_props_bg(
-        $taskband_button_press_styles,
-        false,
-        #2469BF,
-        undefined,
-        undefined,
-        undefined,
-        none
-    );
-$taskband_button_press_styles:
+$notebook_tab_right_styles:
     wintc_define_props_borders(
-        $taskband_button_press_styles,
+        $notebook_tab_right_styles,
+        false,
+        solid,
+        2,
+        3,
+        3,
+        0,
+        undefined,
+        default
+    );
+$notebook_tab_right_hover_styles:
+    wintc_define_props_borders(
+        $notebook_tab_right_hover_styles,
         false,
         undefined,
         undefined,
         undefined,
         undefined,
         undefined,
-        #2160AF,
-        undefined
+        undefined,
+        url('../Resources/notebook_tab_right_hover_border.png')
     );
 
-$taskband_button_selected_styles:
-    wintc_define_props_bg(
-        $taskband_button_selected_styles,
-        false,
-        #AACFFE,
-        undefined,
-        undefined,
-        undefined,
-        none
-    );
-$taskband_button_selected_styles:
+$notebook_tab_top_styles:
     wintc_define_props_borders(
-        $taskband_button_selected_styles,
+        $notebook_tab_top_styles,
+        false,
+        solid,
+        3,
+        3,
+        0,
+        2,
+        undefined,
+        default
+    );
+$notebook_tab_top_hover_styles:
+    wintc_define_props_borders(
+        $notebook_tab_top_hover_styles,
         false,
         undefined,
         undefined,
         undefined,
         undefined,
         undefined,
-        #92AED4,
-        undefined
+        undefined,
+        url('../Resources/notebook_tab_top_hover_border.png')
     );
 
-$taskband_button_selected_hover_styles:
-    wintc_define_props_bg(
-        $taskband_button_selected_hover_styles,
-        false,
-        #2469BF,
-        undefined,
-        undefined,
-        undefined,
-        none
-    );
-$taskband_button_selected_hover_styles:
+
+//
+// NOTEBOOK ITSELF
+//
+$notebook_styles:
     wintc_define_props_borders(
-        $taskband_button_selected_hover_styles,
+        $notebook_styles,
         false,
+        solid,
+        2,
+        3,
+        4,
+        2,
         undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        #2160AF,
-        undefined
+        default
     );
