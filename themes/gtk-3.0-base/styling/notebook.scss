@@ -20,72 +20,70 @@ $notebook_header_styles:
         undefined,
         undefined
     );
-$notebook_header_styles:
-    wintc_define_props_borders(
-        $notebook_header_styles,
-        true,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        $notebook_borders_color,
-        undefined
-    );
 
 $notebook_header_bottom_styles:
     wintc_define_props_borders(
         $notebook_header_bottom_styles,
         true,
         solid,
+        2,
+        2,
+        0,
         1,
         undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined
+        url('../Resources/notebook_header_bottom_border.png')
     );
 $notebook_header_left_styles:
     wintc_define_props_borders(
         $notebook_header_left_styles,
         true,
         solid,
-        undefined,
         1,
+        2,
+        2,
+        0,
         undefined,
-        undefined,
-        undefined,
-        undefined
+        url('../Resources/notebook_header_left_border.png')
     );
 $notebook_header_right_styles:
     wintc_define_props_borders(
         $notebook_header_right_styles,
         true,
         solid,
-        undefined,
-        undefined,
-        undefined,
         1,
+        0,
+        2,
+        2,
         undefined,
-        undefined
+        url('../Resources/notebook_header_right_border.png')
     );
 $notebook_header_top_styles:
     wintc_define_props_borders(
         $notebook_header_top_styles,
         true,
         solid,
-        undefined,
-        undefined,
+        0,
+        2,
+        2,
         1,
         undefined,
-        undefined,
-        undefined
+        url('../Resources/notebook_header_top_border.png')
     );
 
 
 //
 // NOTEBOOK TAB
 //
+$notebook_tab_styles:
+    wintc_define_props_bg(
+        $notebook_tab_styles,
+        true,
+        $bg_color,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
 $notebook_tab_styles:
     wintc_define_props_box(
         $notebook_tab_styles,

@@ -23,53 +23,29 @@ $notebook_header_styles:
         undefined
     );
 
-$notebook_header_bottom_styles:
-    wintc_define_props_borders(
-        $notebook_header_bottom_styles,
-        false,
-        solid,
-        2,
-        0,
-        0,
-        0,
-        undefined,
-        url('../Resources/notebook_header_bottom_border.png')
-    );
 $notebook_header_left_styles:
     wintc_define_props_borders(
         $notebook_header_left_styles,
         false,
         solid,
-        0,
+        1,
         2,
-        0,
+        3,
         0,
         undefined,
-        url('../Resources/notebook_header_left_border.png')
+        default
     );
 $notebook_header_right_styles:
     wintc_define_props_borders(
         $notebook_header_right_styles,
         false,
         solid,
+        1,
         0,
-        0,
-        0,
+        3,
         2,
         undefined,
-        url('../Resources/notebook_header_right_border.png')
-    );
-$notebook_header_top_styles:
-    wintc_define_props_borders(
-        $notebook_header_top_styles,
-        false,
-        solid,
-        0,
-        0,
-        2,
-        0,
-        undefined,
-        url('../Resources/notebook_header_top_border.png')
+        default
     );
 
 

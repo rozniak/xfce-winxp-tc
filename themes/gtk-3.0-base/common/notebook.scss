@@ -9,8 +9,6 @@
 
 notebook
 {
-    //background-color: $notebook_bg_color;
-
     // Shared style
     //
     &
@@ -19,30 +17,17 @@ notebook
         {
             @include __wintc_apply_props($notebook_header_styles);
 
-            //background-color: $bg_color;
-
             &.top
             {
                 @include __wintc_apply_props($notebook_header_top_styles);
-
-                //border-bottom: 1px solid $notebook_borders_color;
 
                 > tabs > tab
                 {
                     @include __wintc_apply_props($notebook_tab_top_styles);
 
-                    //background-image: url("../Resources/gtk-3.0/tab_top_body.png");
-                    //border-image:     url("../Resources/gtk-3.0/tab_top_border.png") 5 3 0 3 stretch;
-                    //border-width:     5px 3px 0px 3px;
-                    //margin-right:     1px;
-                    //padding:          0px 5px;
-
                     &:hover:not(:checked)
                     {
                         @include __wintc_apply_props($notebook_tab_top_hover_styles);
-
-                        //background-image: url("../Resources/gtk-3.0/tab_top_hover_body.png");
-                        //border-image:     url("../Resources/gtk-3.0/tab_top_hover_border.png") 5 3 0 3 stretch;
                     }
                     
                     &:checked
@@ -62,10 +47,6 @@ notebook
 
                             margin-bottom: $neg_margin;
                         }
-
-                        //border-image:      url("../Resources/gtk-3.0/tab_top_active_border.png") 3 3 0 3 stretch;
-                        //border-top-width:  3px;
-                        //margin-bottom:    -1px;
                     }
 
                     &:checked:hover
@@ -79,24 +60,13 @@ notebook
             {
                 @include __wintc_apply_props($notebook_header_bottom_styles);
 
-                //border-top:   1px solid $notebook_borders_color;
-
                 > tabs > tab
                 {
                     @include __wintc_apply_props($notebook_tab_bottom_styles);
 
-                    //background-image: url("../Resources/gtk-3.0/tab_bottom_body.png");
-                    //border-image:     url("../Resources/gtk-3.0/tab_bottom_border.png") 0 3 5 3 stretch;
-                    //border-width:     0px 3px 5px 3px;
-                    //margin-right:     1px;
-                    //padding:          0px 5px;
-
                     &:hover:not(:checked)
                     {
                         @include __wintc_apply_props($notebook_tab_bottom_hover_styles);
-
-                        //background-image: url("../Resources/gtk-3.0/tab_bottom_hover_body.png");
-                        //border-image:     url("../Resources/gtk-3.0/tab_bottom_hover_border.png") 0 3 5 3 stretch;
                     }
 
                     &:checked
@@ -116,11 +86,6 @@ notebook
 
                             margin-top: $neg_margin;
                         }
-
-                        //border-image:         url("../Resources/gtk-3.0/tab_bottom_active_border.png") 0 3 3 3 stretch;
-                        //border-bottom-width:  3px;
-                        //margin-top:          -1px;
-                        //padding-top:          1px;
                     }
 
                     &:checked:hover
@@ -134,24 +99,13 @@ notebook
             {
                 @include __wintc_apply_props($notebook_header_left_styles);
 
-                //border-right:   1px solid $notebook_borders_color;
-
                 > tabs > tab
                 {
                     @include __wintc_apply_props($notebook_tab_left_styles);
 
-                    //background-image: url("../Resources/gtk-3.0/tab_left_body.png");
-                    //border-image:     url("../Resources/gtk-3.0/tab_left_border.png") 3 0 3 5 stretch;
-                    //border-width:     3px 0px 3px 5px;
-                    //margin-bottom:    1px;
-                    //padding:          2px 5px;
-
                     &:hover:not(:checked)
                     {
                         @include __wintc_apply_props($notebook_tab_left_hover_styles);
-
-                        //background-image: url("../Resources/gtk-3.0/tab_left_hover_body.png");
-                        //border-image:     url("../Resources/gtk-3.0/tab_left_hover_border.png") 3 0 3 5 stretch;
                     }
 
                     &:checked
@@ -171,10 +125,6 @@ notebook
 
                             margin-right: $neg_margin;
                         }
-
-                        //border-image:       url("../Resources/gtk-3.0/tab_left_active_border.png") 3 0 3 3 stretch;
-                        //border-left-width:  3px;
-                        //margin-right:      -1px;
                     }
 
                     &:checked:hover
@@ -188,24 +138,13 @@ notebook
             {
                 @include __wintc_apply_props($notebook_header_right_styles);
 
-                //border-left:    1px solid $notebook_borders_color;
-
                 > tabs > tab
                 {
                     @include __wintc_apply_props($notebook_tab_right_styles);
 
-                    //background-image: url("../Resources/gtk-3.0/tab_right_body.png");
-                    //border-image:     url("../Resources/gtk-3.0/tab_right_border.png") 3 5 3 0 stretch;
-                    //border-width:     3px 5px 3px 0px;
-                    //margin-bottom:    1px;
-                    //padding:          2px 5px;
-
                     &:hover:not(:checked)
                     {
                         @include __wintc_apply_props($notebook_tab_right_hover_styles);
-
-                        //background-image: url("../Resources/gtk-3.0/tab_right_hover_body.png");
-                        //border-image:     url("../Resources/gtk-3.0/tab_right_hover_border.png") 3 5 3 0 stretch;
                     }
 
                     &:checked
@@ -225,11 +164,6 @@ notebook
 
                             margin-left: $neg_margin;
                         }
-
-                        //border-image:        url("../Resources/gtk-3.0/tab_right_active_border.png") 3 3 3 0 stretch;
-                        //border-right-width:  3px;
-                        //margin-left:        -1px;
-                        //padding-left:        6px;
                     }
 
                     &:checked:hover
@@ -243,10 +177,6 @@ notebook
             {
                 @include __wintc_apply_props($notebook_tab_styles);
 
-                //background-position: center;
-                //background-size:     120%;
-                //border-style:        solid;
-
                 &:hover:not(:checked)
                 {
                     @include __wintc_apply_props($notebook_tab_hover_styles);
@@ -255,8 +185,6 @@ notebook
                 &:checked
                 {
                     @include __wintc_apply_props($notebook_tab_selected_styles);
-
-                    //background: $notebook_selected_bg_color;
                 }
 
                 &:checked:hover
@@ -311,10 +239,6 @@ notebook
         $neg_border_right:  calc(#{$l_border_right}  * -1);
         $neg_border_top:    calc(#{$l_border_top}    * -1);
 
-        //border-image: url("../Resources/gtk-3.0/tab_edge_box.png") 2 4 4 2 stretch;
-        //border-style: solid;
-        //border-width: 2px 4px 4px 2px;
-
         > header
         {
             @include __wintc_apply_props($notebook_frame_header_styles);
@@ -324,9 +248,6 @@ notebook
                 @include __wintc_apply_props($notebook_frame_header_top_styles);
 
                 margin: $neg_border_top $neg_border_right 0px $neg_border_left;
-
-                //border-right:  3px solid $bg_color;
-                //margin: -2px -4px 0px -2px;
             }
 
             &.bottom
@@ -334,9 +255,6 @@ notebook
                 @include __wintc_apply_props($notebook_frame_header_bottom_styles);
 
                 margin: 0px $neg_border_right $neg_border_bottom $neg_border_left;
-
-                //border-right: 3px solid $bg_color;
-                //margin: 0px -4px -4px -2px;
             }
 
             &.left
@@ -344,9 +262,6 @@ notebook
                 @include __wintc_apply_props($notebook_frame_header_left_styles);
 
                 margin: $neg_border_top 0px $neg_border_bottom $neg_border_left;
-
-                //border-bottom:  3px solid $bg_color;
-                //margin: -2px 0px -4px -2px;
             }
 
             &.right
@@ -354,9 +269,6 @@ notebook
                 @include __wintc_apply_props($notebook_frame_header_right_styles);
 
                 margin: $neg_border_top $neg_border_right $neg_border_bottom 0px;
-
-                //border-bottom:  3px solid $bg_color;
-                //margin: -2px -4px -4px 0px;
             }
         }
     }
