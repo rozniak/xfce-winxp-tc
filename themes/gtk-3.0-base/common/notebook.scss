@@ -49,6 +49,20 @@ notebook
                     {
                         @include __wintc_apply_props($notebook_tab_top_selected_styles);
 
+                        $l_border_size:
+                            __wintc_get_prop_with_fallbacks(
+                                "border-bottom-width",
+                                $notebook_header_top_styles,
+                                $notebook_header_styles
+                            );
+
+                        @if $l_border_size > 0px
+                        {
+                            $neg_margin: calc(#{$l_border_size} * -1);
+
+                            margin-bottom: $neg_margin;
+                        }
+
                         //border-image:      url("../Resources/gtk-3.0/tab_top_active_border.png") 3 3 0 3 stretch;
                         //border-top-width:  3px;
                         //margin-bottom:    -1px;
@@ -88,6 +102,20 @@ notebook
                     &:checked
                     {
                         @include __wintc_apply_props($notebook_tab_bottom_selected_styles);
+
+                        $l_border_size:
+                            __wintc_get_prop_with_fallbacks(
+                                "border-top-width",
+                                $notebook_header_bottom_styles,
+                                $notebook_header_styles
+                            );
+
+                        @if $l_border_size > 0px
+                        {
+                            $neg_margin: calc(#{$l_border_size} * -1);
+
+                            margin-top: $neg_margin;
+                        }
 
                         //border-image:         url("../Resources/gtk-3.0/tab_bottom_active_border.png") 0 3 3 3 stretch;
                         //border-bottom-width:  3px;
@@ -130,6 +158,20 @@ notebook
                     {
                         @include __wintc_apply_props($notebook_tab_left_selected_styles);
 
+                        $l_border_size:
+                            __wintc_get_prop_with_fallbacks(
+                                "border-right-width",
+                                $notebook_header_left_styles,
+                                $notebook_header_styles
+                            );
+
+                        @if $l_border_size > 0px
+                        {
+                            $neg_margin: calc(#{$l_border_size} * -1);
+
+                            margin-right: $neg_margin;
+                        }
+
                         //border-image:       url("../Resources/gtk-3.0/tab_left_active_border.png") 3 0 3 3 stretch;
                         //border-left-width:  3px;
                         //margin-right:      -1px;
@@ -169,6 +211,20 @@ notebook
                     &:checked
                     {
                         @include __wintc_apply_props($notebook_tab_right_selected_styles);
+
+                        $l_border_size:
+                            __wintc_get_prop_with_fallbacks(
+                                "border-left-width",
+                                $notebook_header_right_styles,
+                                $notebook_header_styles
+                            );
+
+                        @if $l_border_size > 0px
+                        {
+                            $neg_margin: calc(#{$l_border_size} * -1);
+
+                            margin-left: $neg_margin;
+                        }
 
                         //border-image:        url("../Resources/gtk-3.0/tab_right_active_border.png") 3 3 3 0 stretch;
                         //border-right-width:  3px;
