@@ -361,6 +361,13 @@ notebook
         }
     }
 
+    // Notebook page background (taken from Adwaita)
+    //
+    > stack:not(:only-child)
+    { 
+        @include __wintc_apply_props($notebook_page_styles);
+    }
+
     // Some default Adwaita stuff
     //
     > header
@@ -467,12 +474,5 @@ notebook
                 }
             }
         }
-    }
-
-    // The :not(:only-child) is for "hidden" notebooks
-    //
-    > stack:not(:only-child)
-    { 
-        background-color: $base_color;
     }
 }

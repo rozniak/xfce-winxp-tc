@@ -223,3 +223,14 @@ $notebook_styles:
         undefined,
         default
     );
+
+$notebook_page_styles:
+    wintc_define_props_bg(
+        $notebook_page_styles,
+        false,
+        #F3F3EF,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
