@@ -82,21 +82,21 @@ decoration
 
 // Window close button
 //
-button.titlebutton
-{
-    @extend %button_basic;
-    
-    @extend %button_basic_flat;
-    
-    @include _button_text_shadow;
-    
-    .selection-mode &
-    {
-        @extend %selection_mode_button_flat;
-        
-        @extend %nobg_selected_items;
-    }
-}
+//button.titlebutton
+//{
+//    @extend %button_basic;
+//    
+//    @extend %button_basic_flat;
+//    
+//    @include _button_text_shadow;
+//    
+//    .selection-mode &
+//    {
+//        @extend %selection_mode_button_flat;
+//        
+//        @extend %nobg_selected_items;
+//    }
+//}
 
 .selection-mode headerbar button.titlebutton,
 .selection-mode .titlebar button.titlebutton,
@@ -150,13 +150,28 @@ headerbar.selection-mode button.titlebutton,
 //
 .csd:not(tooltip):not(.popup)
 {
-    border-image: url("../Resources/gtk-3.0/csd-window-border.png") 30 5 5 5 stretch;
-    border-style: solid;
-    border-width: 0px 5px 5px;
+    @include __wintc_apply_props($csd_window_styles);
+
+    //border-image: url("../Resources/gtk-3.0/csd-window-border.png") 30 5 5 5 stretch;
+    //border-style: solid;
+    //border-width: 0px 5px 5px;
+
+    $l_border_bottom: __wintc_get_prop($csd_window_styles, "border-bottom-width");
+    $l_border_left:   __wintc_get_prop($csd_window_styles, "border-left-width");
+    $l_border_right:  __wintc_get_prop($csd_window_styles, "border-right-width");
+    $l_border_top:    __wintc_get_prop($csd_window_styles, "border-top-width");
+
+    $l_bd_border_bottom: __wintc_get_prop($csd_window_backdrop_styles, "border-bottom-width");
+    $l_bd_border_left:   __wintc_get_prop($csd_window_backdrop_styles, "border-left-width");
+    $l_bd_border_right:  __wintc_get_prop($csd_window_backdrop_styles, "border-right-width");
+    $l_bd_border_top:    __wintc_get_prop($csd_window_backdrop_styles, "border-top-width");
+
 
     &:backdrop
     {
-        border-image: url("../Resources/gtk-3.0/csd-window-border-backdrop.png") 30 5 5 5 stretch;
+        @include __wintc_apply_props($csd_window_backdrop_styles);
+
+        //border-image: url("../Resources/gtk-3.0/csd-window-border-backdrop.png") 30 5 5 5 stretch;
     }
 
     &.tiled,
@@ -183,13 +198,23 @@ headerbar.selection-mode button.titlebutton,
     //
     > box > searchbar > revealer > box
     {
-        border-image: url("../Resources/gtk-3.0/csd-window-border.png") 30 5 5 5 stretch;
-        border-style: solid;
-        border-width: 0px 5px;
+        @include __wintc_apply_props_for_category($csd_window_styles, "borders");
+
+        border-top: 0px;
+        border-bottom: 0px;
+
+        //border-image: url("../Resources/gtk-3.0/csd-window-border.png") 30 5 5 5 stretch;
+        //border-style: solid;
+        //border-width: 0px 5px;
 
         &:backdrop
         {
-            border-image: url("../Resources/gtk-3.0/csd-window-border-backdrop.png") 30 5 5 5 stretch;
+            @include __wintc_apply_props_for_category($csd_window_backdrop_styles, "borders");
+
+            border-top: 0px;
+            border-bottom: 0px;
+
+            //border-image: url("../Resources/gtk-3.0/csd-window-border-backdrop.png") 30 5 5 5 stretch;
         }
     }
 
@@ -198,7 +223,12 @@ headerbar.selection-mode button.titlebutton,
     //
     decoration
     {
-        border-radius: 5px;
+        @if $csd_window_hack_border_radius > 0px
+        {
+            border-radius: $csd_window_hack_border_radius;
+        }
+
+        //border-radius: 5px;
     }
 
     // FIXME: This bodge fixes GLADE, which uses a stack - padding to the window
@@ -208,6 +238,11 @@ headerbar.selection-mode button.titlebutton,
     //
     > stack
     {
-        padding: 0px 5px 5px;
+        padding: 0px $l_border_right $l_border_bottom $l_border_left;
+    }
+
+    &:backdrop > stack
+    {
+        padding: 0px $l_bd_border_right $l_bd_border_bottom $l_bd_border_left;
     }
 }

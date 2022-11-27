@@ -15,7 +15,20 @@
     $l_rules: ();
     $l_ret:   ();
 
-    @if $ruleset == box-model
+    @if $ruleset == borders
+    {
+        $l_rules: (
+            "border-style",
+            "border-color",
+            "border-image-source",
+            "border-image-slice",
+            "border-top-width",
+            "border-right-width",
+            "border-bottom-width",
+            "border-left-width"
+        );
+    }
+    @else if $ruleset == box-model
     {
         $l_rules: (
             "border-style",
@@ -31,6 +44,13 @@
             "padding-right",
             "padding-bottom",
             "padding-left"
+        );
+    }
+    @else if $ruleset == fg
+    {
+        $l_rules: (
+            "color",
+            "text-shadow"
         );
     }
     @else if $ruleset == font
