@@ -23,7 +23,12 @@ $csd_window_styles:
         url('../Resources/csd_window_border.png')
     );
 
-$csd_window_backdrop_styles: map-clone($csd_window_styles);
+$csd_window_backdrop_styles:
+    map-clone-into(
+        $csd_window_backdrop_styles,
+        $csd_window_styles,
+        true
+    );
 
 
 //
