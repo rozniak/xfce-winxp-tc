@@ -301,7 +301,8 @@ headerbar
 
      button,
      button.flat,
-     button.titlebutton
+     button.titlebutton,
+     button.toggle
      {
          @include __wintc_apply_props($caption_button_styles);
 
