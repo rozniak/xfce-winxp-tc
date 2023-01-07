@@ -142,7 +142,7 @@ $caption_button_hover_styles:
         undefined,
         undefined,
         #CCDCF5,
-        undefined
+        none
     );
 $caption_button_hover_styles:
     wintc_define_props_fg(
@@ -181,6 +181,31 @@ $caption_button_press_styles:
         $caption_button_press_styles,
         false,
         #FFFFFF,
+        undefined
+    );
+
+$caption_button_selected_styles: map-clone($caption_button_press_styles);
+
+$caption_button_selected_hover_styles:
+    wintc_define_props_bg(
+        $caption_button_selected_hover_styles,
+        false,
+        #2469BF,
+        undefined,
+        undefined,
+        undefined,
+        none
+    );
+$caption_button_selected_hover_styles:
+    wintc_define_props_borders(
+        $caption_button_selected_hover_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        #2160AF,
         undefined
     );
 
