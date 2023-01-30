@@ -21,7 +21,7 @@ $csd_window_styles:
         $csd_window_styles,
         false,
         solid,
-        0
+        0,
         5,
         5,
         5,
@@ -54,7 +54,7 @@ $headerbar_styles:
         undefined,
         undefined,
         undefined,
-        linear-gradient(180deg, rgba(35,133,255,1) 0%, rgba(0,85,234,1) 5%, rgba(0,58,217,1) 26%, rgba(0,58,217,1) 64%, rgba(0,85,244,1) 95%, rgba(0,71,239,1) 100%)
+        linear-gradient(180deg, rgba(35,133,255,1) 0%, rgba(35,133,255,1) 5%, rgba(0,85,234,1) 10%, rgba(0,58,217,1) 25%, rgba(0,58,217,1) 56%, rgba(0,85,244,1) 80%, rgba(0,85,241,1) 93%, rgba(0,58,217,1) 100%)
     );
 $headerbar_styles:
     wintc_define_props_borders(
@@ -107,7 +107,7 @@ $headerbar_maximized_styles:
 
 $headerbar_maximized_backdrop_styles:
     wintc_define_props_borders(
-        $header_maximized_backdrop_styles,
+        $headerbar_maximized_backdrop_styles,
         false,
         undefined,
         undefined,
@@ -131,7 +131,7 @@ $caption_button_styles:
         undefined,
         undefined,
         url('../Resources/caption_button.png'),
-        ##GRADIENT##
+        linear-gradient(170deg, rgba(154,183,250,1) 0%, rgba(49,107,244,1) 15%, rgba(19,105,244,1) 65%, rgba(2,90,240,1) 100%)
     );
 $caption_button_styles:
     wintc_define_props_borders(
@@ -164,7 +164,7 @@ $caption_button_hover_styles:
         undefined,
         undefined,
         url('../Resources/caption_button_hover.png'),
-        ##GRADIENT##
+        linear-gradient(170deg, rgba(164,194,255,1) 0%, rgba(56,121,252,1) 15%, rgba(31,151,253,1) 80%, rgba(17,132,250,1) 100%)
     );
 $caption_button_hover_styles:
     wintc_define_props_borders(
@@ -188,7 +188,7 @@ $caption_button_press_styles:
         undefined,
         undefined,
         url('../Resources/caption_button_press.png'),
-        ##GRADIENT##
+        linear-gradient(170deg, rgba(0,56,130,1) 0%, rgba(0,77,178,1) 20%, rgba(0,94,195,1) 80%, rgba(0,91,192,1) 100%)
     );
 $caption_button_press_styles:
     wintc_define_props_borders(
