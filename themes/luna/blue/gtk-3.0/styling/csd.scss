@@ -93,6 +93,16 @@ $headerbar_backdrop_styles:
     );
 
 $headerbar_maximized_styles:
+    wintc_define_props_bg(
+        $headerbar_maximized_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        linear-gradient(180deg, rgba(35,133,255,1) 0%, rgba(35,133,255,1) 3%, rgba(0,85,234,1) 6%, rgba(0,67,211,1) 15%, rgba(0,58,217,1) 56%, rgba(0,85,244,1) 80%, rgba(0,85,241,1) 93%, rgba(0,58,217,1) 100%)
+    );
+$headerbar_maximized_styles:
     wintc_define_props_borders(
         $headerbar_maximized_styles,
         false,
