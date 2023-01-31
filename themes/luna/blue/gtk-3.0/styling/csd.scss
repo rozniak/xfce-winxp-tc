@@ -232,6 +232,13 @@ $caption_button_press_styles:
         undefined,
         url('../Resources/caption_button_press_border.png')
     );
+$caption_button_press_styles:
+    wintc_define_props_fg(
+        $caption_button_press_styles,
+        false,
+        #78A2D8,
+        undefined
+    );
 
 $caption_button_selected_styles: map-clone($caption_button_press_styles);
 
@@ -256,6 +263,13 @@ $caption_button_inactive_styles:
         undefined,
         undefined,
         url('../Resources/caption_button_inactive_border.png')
+    );
+$caption_button_inactive_styles:
+    wintc_define_props_fg(
+        $caption_button_inactive_styles,
+        false,
+        #8C9DE7,
+        undefined
     );
 
 $caption_button_backdrop_styles:
@@ -326,6 +340,13 @@ $caption_button_backdrop_press_styles:
         undefined,
         url('../Resources/caption_button_backdrop_press_border.png')
     );
+$caption_button_backdrop_press_styles:
+    wintc_define_props_fg(
+        $caption_button_backdrop_press_styles,
+        false,
+        #97B0E2,
+        undefined
+    );
 
 $caption_button_backdrop_selected_styles: map-clone($caption_button_backdrop_press_styles);
 
@@ -350,6 +371,13 @@ $caption_button_backdrop_inactive_styles:
         undefined,
         undefined,
         url('../Resources/caption_button_backdrop_inactive_border.png')
+    );
+$caption_button_backdrop_inactive_styles:
+    wintc_define_props_fg(
+        $caption_button_backdrop_inactive_styles,
+        false,
+        #919FE6,
+        undefined
     );
 
 $close_button_styles:
@@ -422,6 +450,13 @@ $close_button_press_styles:
         undefined,
         url('../Resources/close_button_press_border.png')
     );
+$close_button_press_styles:
+    wintc_define_props_fg(
+        $close_button_press_styles,
+        false,
+        #DF9A88,
+        undefined
+    );
 
 $close_button_inactive_styles:
     wintc_define_props_bg(
@@ -444,6 +479,13 @@ $close_button_inactive_styles:
         undefined,
         undefined,
         url('../Resources/close_button_inactive_border.png')
+    );
+$close_button_inactive_styles:
+    wintc_define_props_fg(
+        $close_button_inactive_styles,
+        false,
+        #9598CC,
+        undefined
     );
 
 $close_button_backdrop_styles:
@@ -516,6 +558,13 @@ $close_button_backdrop_press_styles:
         undefined,
         url('../Resources/close_button_backdrop_press_border.png')
     );
+$close_button_backdrop_press_styles:
+    wintc_define_props_fg(
+        $close_button_backdrop_press_styles,
+        false,
+        #CBADBA,
+        undefined
+    );
 
 $close_button_backdrop_inactive_styles:
     wintc_define_props_bg(
@@ -538,4 +587,11 @@ $close_button_backdrop_inactive_styles:
         undefined,
         undefined,
         url('../Resources/close_button_backdrop_inactive_border.png')
+    );
+$close_button_backdrop_inactive_styles:
+    wintc_define_props_fg(
+        $close_button_backdrop_inactive_styles,
+        false,
+        #A0A2D8,
+        undefined
     );
