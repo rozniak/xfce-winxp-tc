@@ -68,6 +68,16 @@ $headerbar_styles:
         undefined,
         default
     );
+$headerbar_styles:
+    wintc_define_props_box(
+        $headerbar_styles,
+        false,
+        padding,
+        1,
+        0,
+        0,
+        0
+    );
 
 $headerbar_backdrop_styles:
     wintc_define_props_bg(
@@ -173,8 +183,6 @@ $caption_button_styles:
         undefined
     );
 
-$caption_button_focused_styles: map-clone($caption_button_styles);
-
 $caption_button_hover_styles:
     wintc_define_props_bg(
         $caption_button_hover_styles,
@@ -198,6 +206,8 @@ $caption_button_hover_styles:
         undefined,
         url('../Resources/caption_button_hover_border.png')
     );
+
+$caption_button_focused_styles: map-clone($caption_button_hover_styles);
 
 $caption_button_press_styles:
     wintc_define_props_bg(
@@ -340,4 +350,192 @@ $caption_button_backdrop_inactive_styles:
         undefined,
         undefined,
         url('../Resources/caption_button_backdrop_inactive_border.png')
+    );
+
+$close_button_styles:
+    wintc_define_props_bg(
+        $close_button_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/close_button.png')
+    );
+$close_button_styles:
+    wintc_define_props_borders(
+        $close_button_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/close_button_border.png')
+    );
+
+$close_button_hover_styles:
+    wintc_define_props_bg(
+        $close_button_hover_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/close_button_hover.png')
+    );
+$close_button_hover_styles:
+    wintc_define_props_borders(
+        $close_button_hover_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/close_button_hover_border.png')
+    );
+
+$close_button_focused_styles: map-clone($close_button_hover_styles);
+
+$close_button_press_styles:
+    wintc_define_props_bg(
+        $close_button_press_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/close_button_press.png')
+    );
+$close_button_press_styles:
+    wintc_define_props_borders(
+        $close_button_press_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/close_button_press_border.png')
+    );
+
+$close_button_inactive_styles:
+    wintc_define_props_bg(
+        $close_button_inactive_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/close_button_inactive.png')
+    );
+$close_button_inactive_styles:
+    wintc_define_props_borders(
+        $close_button_inactive_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/close_button_inactive_border.png')
+    );
+
+$close_button_backdrop_styles:
+    wintc_define_props_bg(
+        $close_button_backdrop_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/close_button_backdrop.png')
+    );
+$close_button_backdrop_styles:
+    wintc_define_props_borders(
+        $close_button_backdrop_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/close_button_backdrop_border.png')
+    );
+
+$close_button_backdrop_hover_styles:
+    wintc_define_props_bg(
+        $close_button_backdrop_hover_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/close_button_backdrop_hover.png')
+    );
+$close_button_backdrop_hover_styles:
+    wintc_define_props_borders(
+        $close_button_backdrop_hover_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/close_button_backdrop_hover_border.png')
+    );
+
+$close_button_backdrop_focused_styles: map-clone($close_button_backdrop_hover_styles);
+
+$close_button_backdrop_press_styles:
+    wintc_define_props_bg(
+        $close_button_backdrop_press_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/close_button_backdrop_press.png')
+    );
+$close_button_backdrop_press_styles:
+    wintc_define_props_borders(
+        $close_button_backdrop_press_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/close_button_backdrop_press_border.png')
+    );
+
+$close_button_backdrop_inactive_styles:
+    wintc_define_props_bg(
+        $close_button_backdrop_inactive_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/close_button_backdrop_inactive.png')
+    );
+$close_button_backdrop_inactive_styles:
+    wintc_define_props_borders(
+        $close_button_backdrop_inactive_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/close_button_backdrop_inactive_border.png')
     );
