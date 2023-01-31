@@ -35,7 +35,8 @@ headerbar
     //padding:             0 6px;
 
     .title,
-    .subtitle
+    .subtitle,
+    & > box > label // Selector for 'Name:' label in FileChooserDialog
     {
         @include __wintc_apply_props_for_category($headerbar_styles, "fg");
     }
