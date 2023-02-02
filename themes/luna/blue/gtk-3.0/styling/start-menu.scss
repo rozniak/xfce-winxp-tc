@@ -461,6 +461,17 @@ $start_menu_button_styles:
         3
     );
 
+$start_menu_button_press_styles:
+    wintc_define_props_box(
+        $start_menu_button_press_styles,
+        false,
+        padding,
+        4,
+        9,
+        2,
+        4
+    );
+
 $start_menu_logoff_pane_styles:
     wintc_define_props_bg(
         $start_menu_logoff_pane_styles,
