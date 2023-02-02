@@ -160,10 +160,12 @@ button
             min-width: 24px;
         }
 
-        &.text-button
+        // NOTE: WinTC addition
+        //
+        &:not(.text-button)
         {
-            padding-left: 8px;
-            padding-right: 8px;
+            padding-left:  0px;
+            padding-right: 0px;
         }
 
         @at-root %button_basic_drop_active,

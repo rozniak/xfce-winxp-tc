@@ -32,6 +32,16 @@ $button_styles:
         undefined,
         url('../Resources/button_border.png')
     );
+$button_styles:
+    wintc_define_props_box(
+        $button_styles,
+        true,
+        padding,
+        0,
+        8,
+        0,
+        8
+    );
 
 $button_focused_styles:
     wintc_define_props_bg(
@@ -154,9 +164,9 @@ $toggle_button_styles:
         true,
         padding,
         1,
+        9,
         1,
-        1,
-        1
+        9
     );
 
 $toggle_button_selected_styles:
@@ -210,9 +220,9 @@ $toggle_button_press_styles:
         true,
         padding,
         2,
+        8,
         0,
-        0,
-        2
+        10
     );
 
 

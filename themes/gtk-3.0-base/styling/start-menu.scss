@@ -42,9 +42,9 @@ $start_flag_styles:
         $start_flag_styles,
         true,
         margin,
-        undefined,
+        0,
         2,
-        undefined,
+        0,
         -1
     );
 
@@ -66,9 +66,19 @@ $start_button_styles:
         true,
         margin,
         4,
-        undefined,
+        0,
         4,
         2
+    );
+$start_button_styles:
+    wintc_define_props_box(
+        $start_button_styles,
+        true,
+        padding,
+        1,
+        1,
+        1,
+        1
     );
 $start_button_styles:
     wintc_define_props_fg(
@@ -87,9 +97,9 @@ $start_button_styles:
         bold
     );
 
-$start_button_selected_styles:
+$start_button_press_styles:
     wintc_define_props_box(
-        $start_button_selected_styles,
+        $start_button_press_styles,
         true,
         padding,
         2,
@@ -98,13 +108,25 @@ $start_button_selected_styles:
         2
     );
 
+$start_button_selected_styles: map-clone($start_button_press_styles);
+$start_button_selected_styles:
+    wintc_define_props_bg(
+        $start_button_selected_styles,
+        true,
+        $threed_objects_bg,
+        undefined,
+        undefined,
+        undefined,
+        none
+    );
+
 $start_button_text_styles:
     wintc_define_props_box(
         $start_button_text_styles,
         true,
         margin,
         undefined,
-        undefined,
+        1,
         undefined,
         undefined
     );

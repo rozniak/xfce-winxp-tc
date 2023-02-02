@@ -130,28 +130,8 @@ $button_inactive_styles:
 // TOGGLE BUTTONS
 //
 $toggle_button_styles: map-clone($button_styles);
-$toggle_button_styles:
-    wintc_define_props_box(
-        $toggle_button_styles,
-        false,
-        padding,
-        0,
-        0,
-        0,
-        0
-    );
 
 $toggle_button_press_styles: map-clone($button_press_styles);
-$toggle_button_press_styles:
-    wintc_define_props_box(
-        $toggle_button_press_styles,
-        false,
-        padding,
-        0,
-        0,
-        0,
-        0
-    );
 
 $toggle_button_hover_styles:          $button_hover_styles;
 $toggle_button_selected_styles:       $button_press_styles;

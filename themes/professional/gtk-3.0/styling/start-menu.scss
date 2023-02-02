@@ -25,15 +25,15 @@ $start_flag_styles:
         0px -1px,
         default
     );
-$start_flag_styles: // FIXME: May need adjusting when native is default
+$start_flag_styles:
     wintc_define_props_box(
         $start_flag_styles,
         false,
         margin,
         undefined,
-        0,
         undefined,
-        0
+        undefined,
+        undefined
     );
 
 $start_button_styles:
@@ -73,10 +73,10 @@ $start_button_styles:
         $start_button_styles,
         false,
         padding,
-        undefined,
-        undefined,
-        undefined,
-        undefined
+        0,
+        0,
+        0,
+        0
     );
 
 $start_button_hover_styles:
