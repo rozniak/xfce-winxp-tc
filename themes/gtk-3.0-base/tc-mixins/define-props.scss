@@ -173,6 +173,23 @@
     @return $theme_part_map;
 }
 
+@function wintc_define_props_border_radius(
+    $theme_part_map,
+    $define_default,
+    $value_radius
+)
+{
+    $theme_part_map:
+        __wintc_handle_define(
+            $theme_part_map,
+            $define_default,
+            "border-radius",
+            __wintc_apply_units($value_radius)
+        );
+
+    @return $theme_part_map;
+}
+
 @function wintc_define_props_borders(
     $theme_part_map,
     $define_default,
