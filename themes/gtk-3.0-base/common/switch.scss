@@ -53,11 +53,6 @@ switch
             //background: linear-gradient(139deg, rgba(255,240,207,1) 0%, rgba(250,197,90,1) 100%);
         }
 
-        &:active
-        {
-            @include __wintc_apply_props($switch_slider_press_styles);
-        }
-
         &:disabled
         {
             @include __wintc_apply_props($switch_slider_inactive_styles);
