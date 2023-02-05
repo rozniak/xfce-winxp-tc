@@ -1,0 +1,44 @@
+/**
+ * treeview.scss - Theme Base Tree-view Style Constants
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+$treeview_header_styles:
+    wintc_define_props_borders(
+        $treeview_header_styles,
+        true,
+        solid,
+        2,
+        2,
+        2,
+        2,
+        undefined,
+        url('../Resources/treeview_header_button_border.png')
+    );
+$treeview_header_styles:
+    wintc_define_props_box(
+        $treeview_header_styles,
+        true,
+        padding,
+        0,
+        4,
+        0,
+        3
+    );
+
+$treeview_header_press_styles:
+    wintc_define_props_borders(
+        $treeview_header_press_styles,
+        true,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/treeview_header_button_press_border.png')
+    );

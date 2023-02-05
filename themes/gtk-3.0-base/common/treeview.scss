@@ -126,31 +126,37 @@ treeview.view
     {
         button
         {
-            background:    $treeview_header_color;
-            border:        none;
-            border-radius: 0;
-            border-style:  none solid solid none;
-            border-width:  0px 2px 3px 0px;
-            border-image:  url("../Resources/gtk-3.0/treeview_header_border.png") 0 2 3 0 stretch;
-            padding:       3px 7px 0px;
+            @include __wintc_apply_props($treeview_header_styles);
+
+            //background:    $treeview_header_color;
+            //border:        none;
+            //border-radius: 0;
+            //border-style:  none solid solid none;
+            //border-width:  0px 2px 3px 0px;
+            //border-image:  url("../Resources/gtk-3.0/treeview_header_border.png") 0 2 3 0 stretch;
+            //padding:       3px 7px 0px;
             
             &:hover
             {
-                background:    $treeview_header_hover_color;
-                border-image:  url("../Resources/gtk-3.0/treeview_header_border_hover.png") 0 7 3 7 stretch;
-                border-style:  none solid solid;
-                border-width:  0px 7px 3px;
-                padding-left:  0px;
-                padding-right: 2px;
+                @include __wintc_apply_props($treeview_header_hover_styles);
+
+                //background:    $treeview_header_hover_color;
+                //border-image:  url("../Resources/gtk-3.0/treeview_header_border_hover.png") 0 7 3 7 stretch;
+                //border-style:  none solid solid;
+                //border-width:  0px 7px 3px;
+                //padding-left:  0px;
+                //padding-right: 2px;
             }
 
             &:active
             {
-                background:   $treeview_header_active_color;
-                border-image: url("../Resources/gtk-3.0/treeview_header_border_press.png") 2 1 1 3 stretch;
-                border-style: solid;
-                border-width: 2px 1px 1px 3px;
-                padding:      1px 6px 2px 4px;
+                @include __wintc_apply_props($treeview_header_press_styles);
+
+                //background:   $treeview_header_active_color;
+                //border-image: url("../Resources/gtk-3.0/treeview_header_border_press.png") 2 1 1 3 stretch;
+                //border-style: solid;
+                //border-width: 2px 1px 1px 3px;
+                //padding:      1px 6px 2px 4px;
             }
         }
     }
