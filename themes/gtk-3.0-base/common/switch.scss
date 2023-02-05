@@ -11,23 +11,14 @@ switch
 {
     @include __wintc_apply_props($switch_styles);
 
-    //background:    linear-gradient(140deg, rgba(180,180,171,1) 0%, rgba(238,236,221,1) 100%);
-    //border:        1px solid #1C5180;
-    //border-radius: 14px;
-
     &:checked
     {
         @include __wintc_apply_props($switch_selected_styles);
-
-        //background: linear-gradient(140deg, rgba(93,234,89,1) 0%, rgba(21,147,18,1) 100%);
     }
 
     &:disabled
     {
         @include __wintc_apply_props($switch_inactive_styles);
-
-        //background:   transparent;
-        //border-color: #C0BFB5;
 
         &:checked
         {
@@ -39,26 +30,17 @@ switch
     {
         @include __wintc_apply_props($switch_slider_styles);
 
-        //background:     linear-gradient(140deg, rgba(229,229,226,1) 0%, rgba(251,251,251,1) 100%);
-        //border:         1px solid #1C5180;
-        //border-radius:  50%;
-        //margin:        -1px;
-        //min-height:     15px;
-        //min-width:      15px;
+        min-height: 15px;
+        min-width:  15px;
 
         &:hover
         {
             @include __wintc_apply_props($switch_slider_hover_styles);
-
-            //background: linear-gradient(139deg, rgba(255,240,207,1) 0%, rgba(250,197,90,1) 100%);
         }
 
         &:disabled
         {
             @include __wintc_apply_props($switch_slider_inactive_styles);
-
-            //background:   transparent;
-            //border-color: #C0BFB5;
         }
     }
 
