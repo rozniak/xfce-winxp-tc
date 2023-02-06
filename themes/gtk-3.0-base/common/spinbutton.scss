@@ -9,6 +9,26 @@
 
 spinbutton
 {
+    button
+    {
+        @include __wintc_apply_props($spinbutton_button_styles);
+
+        &:hover
+        {
+            @include __wintc_apply_props($spinbutton_button_hover_styles);
+        }
+
+        &:active
+        {
+            @include __wintc_apply_props($spinbutton_button_press_styles);
+        }
+
+        &:disabled
+        {
+            @include __wintc_apply_props($spinbutton_button_inactive_styles);
+        }
+    }
+
     &:not(.vertical)
     {
         // In this horizontal configuration, the whole spinbutton
@@ -17,12 +37,12 @@ spinbutton
         //
         @extend %entry;
 
-        padding: 0;
+        padding: 0px;
+
+        @include __wintc_apply_props($spinbutton_styles);
 
         %spinbutton_horz_entry
         {
-            min-width: 28px;
-
             // Reset all the other props since the spinbutton node is styled here
             //
             background:       none;
@@ -31,74 +51,11 @@ spinbutton
             border-radius:    0;
             box-shadow:       none;
             margin:           0;
-
-            &:backdrop:disabled
-            {
-                background-color: transparent;
-            }
         }
 
         entry
         {
             @extend %spinbutton_horz_entry;
-        }
-
-        button
-        {
-            background-image: none;
-            border-color:     transparentize($borders_color, 0.7);
-            border-radius:    0;
-            border-style:     none none none solid;
-            box-shadow:       none;
-            color:            mix($fg_color, $base_color, 90%);
-            margin:           0;
-            min-height:       16px;
-            padding-bottom:   0;
-            padding-top:      0;
-
-            &:dir(rtl)
-            {
-                border-style: none solid none none;
-            }
-
-            &:hover
-            {
-                background-color: $base_hover_color;
-                color:            $fg_color;
-            }
-
-            &:disabled
-            {
-                background-color: transparent;
-                color:            transparentize($insensitive_fg_color, 0.7);
-            }
-
-            &:active
-            {
-                background-color: transparentize(black, 0.9);
-                box-shadow:       inset 0 2px 3px -1px transparentize(black, 0.8);
-            }
-
-            &:backdrop
-            {
-                background-color: transparent;
-                border-color:     transparentize($backdrop_borders_color, 0.7);
-                color:            mix($backdrop_fg_color, $backdrop_base_color, 90%);
-                transition:       $backdrop_transition;
-            }
-
-            &:backdrop:disabled
-            {
-                background-color: transparent;
-                background-image: none;
-                border-style:     none none none solid; // It is needed or it gets overridden
-                color:            transparentize($backdrop_insensitive_color,0.7);
-
-                &:dir(rtl) { border-style: none solid none none; }
-            }
-
-            &:dir(ltr):last-child  { border-radius: 0 $button_radius $button_radius 0; }
-            &:dir(rtl):first-child { border-radius: $button_radius 0 0 $button_radius; }
         }
     }
 
@@ -172,54 +129,9 @@ spinbutton
         // as a box, and tweak the style of the entry in the middle
         // so that it's linked
         //
-
-        // FIXME: this should not be set at all, but otherwise it gets the wrong
-        // color
-        //
-        &:disabled
-        {
-            color: $insensitive_fg_color;
-        }
-
-        &:backdrop:disabled
-        {
-            color: $backdrop_insensitive_color;
-        }
-
-        &:drop(active)
-        {
-            border-color: transparent;
-            box-shadow:   none;
-        }
-
         entry
         {
-            border-radius: 0;
-            min-height:    32px;
-            min-width:     32px;
-            padding:       0;
-        }
-
-        button
-        {
-            min-height: 32px;
-            min-width: 32px;
-            padding: 0;
-
-            &.up   { @extend %top_button;    }
-            &.down { @extend %bottom_button; }
-        }
-
-        %top_button
-        {
-            border-radius: $button_radius $button_radius 0 0;
-            border-style:  solid solid none solid;
-        }
-
-        %bottom_button
-        {
-            border-radius: 0 0 $button_radius $button_radius;
-            border-style:  none solid solid solid;
+            @include __wintc_apply_props($spinbutton_styles);
         }
     }
 
