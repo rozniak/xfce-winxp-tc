@@ -164,8 +164,11 @@ button
         //
         &:not(.text-button)
         {
-            padding-left:  0px;
-            padding-right: 0px;
+            &, &:active
+            {
+                padding-left:  0px;
+                padding-right: 0px;
+            }
         }
 
         @at-root %button_basic_drop_active,
