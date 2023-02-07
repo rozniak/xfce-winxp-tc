@@ -11,7 +11,10 @@ spinbutton
 {
     button
     {
-        @include __wintc_apply_props($spinbutton_button_styles);
+        &, &:focus
+        {
+            @include __wintc_apply_props($spinbutton_button_styles);
+        }
 
         &:hover
         {
@@ -39,7 +42,7 @@ spinbutton
 
         padding: 0px;
 
-        @include __wintc_apply_props($spinbutton_styles);
+        @include __wintc_apply_props($spinbutton_horz_box_styles);
 
         %spinbutton_horz_entry
         {
@@ -56,6 +59,8 @@ spinbutton
         entry
         {
             @extend %spinbutton_horz_entry;
+
+            @include __wintc_apply_props($spinbutton_horz_entry_styles);
         }
     }
 
@@ -125,13 +130,15 @@ spinbutton
     //
     &.vertical
     {
+        @include __wintc_apply_props($spinbutton_vert_box_styles);
+
         // In the vertical configuration, we treat the spinbutton
         // as a box, and tweak the style of the entry in the middle
         // so that it's linked
         //
         entry
         {
-            @include __wintc_apply_props($spinbutton_styles);
+            @include __wintc_apply_props($spinbutton_vert_entry_styles);
         }
     }
 

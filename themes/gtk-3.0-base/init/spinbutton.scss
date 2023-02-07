@@ -7,8 +7,18 @@
  * Author(s): Rory Fewell <roryf@oddmatics.uk>
  */
 
-$spinbutton_styles: ();
+//
+// SPINBUTTON ITSELF
+//
+$spinbutton_horz_box_styles:            ();
+$spinbutton_horz_entry_styles:          ();
+$spinbutton_vert_box_styles:            ();
+$spinbutton_vert_entry_styles:          ();
 
+
+//
+// SPINBUTTON UP/DOWN BUTTONS
+//
 $spinbutton_button_styles:          ();
 $spinbutton_button_hover_styles:    ();
 $spinbutton_button_press_styles:    ();

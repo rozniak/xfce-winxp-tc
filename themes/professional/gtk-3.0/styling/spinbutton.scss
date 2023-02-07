@@ -1,0 +1,147 @@
+/**
+ * spinbutton.scss - Professional Style Spin Button Style Constants
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+//
+// SPINBUTTON ITSELF
+//
+$spinbutton_vert_box_styles:
+    wintc_define_props_borders(
+        $spinbutton_vert_box_styles,
+        false,
+        solid,
+        1,
+        1,
+        1,
+        1,
+        $borders_color,
+        undefined
+    );
+
+$spinbutton_vert_entry_styles:
+    wintc_define_props_borders(
+        $spinbutton_vert_entry_styles,
+        false,
+        none,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
+
+
+//
+// SPINBUTTON UP/DOWN BUTTONS
+//
+$spinbutton_button_styles:
+    wintc_define_props_bg(
+        $spinbutton_button_styles,
+        false,
+        #EBEBE4,
+        undefined,
+        undefined,
+        undefined,
+        none
+    );
+$spinbutton_button_styles:
+    wintc_define_props_borders(
+        $spinbutton_button_styles,
+        false,
+        solid,
+        1,
+        1,
+        1,
+        1,
+        #EBEBE4,
+        none
+    );
+
+$spinbutton_button_hover_styles:
+    wintc_define_props_bg(
+        $spinbutton_button_hover_styles,
+        false,
+        #C7DCF6,
+        undefined,
+        undefined,
+        undefined,
+        none
+    );
+$spinbutton_button_hover_styles:
+    wintc_define_props_borders(
+        $spinbutton_button_hover_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        #FFFFFF,
+        none
+    );
+
+$spinbutton_button_press_styles:
+    wintc_define_props_bg(
+        $spinbutton_button_press_styles,
+        false,
+        #9DC9D9,
+        undefined,
+        undefined,
+        undefined,
+        none
+    );
+$spinbutton_button_press_styles:
+    wintc_define_props_borders(
+        $spinbutton_button_press_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        #FFFFFF,
+        none
+    );
+$spinbutton_button_press_styles:
+    wintc_define_props_fg(
+        $spinbutton_button_press_styles,
+        false,
+        #FFFFFF,
+        undefined
+    );
+
+$spinbutton_button_inactive_styles:
+    wintc_define_props_bg(
+        $spinbutton_button_inactive_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        none
+    );
+$spinbutton_button_inactive_styles:
+    wintc_define_props_borders(
+        $spinbutton_button_inactive_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        none
+    );
+$spinbutton_button_inactive_styles:
+    wintc_define_props_fg(
+        $spinbutton_button_inactive_styles,
+        false,
+        #A1A192,
+        undefined
+    );
