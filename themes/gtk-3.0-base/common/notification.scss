@@ -14,15 +14,8 @@
     
     background-color: $osd_bg_color;
     background-clip:  padding-box;
-    background-image: linear-gradient(to bottom, transparentize(black, 0.8), transparent 2px);
-    border-radius:    0 0 5px 5px;
+    border:           1px solid $borders_color;
     padding:          10px;
-    
-    &:backdrop
-    {
-        background-image: none;
-        transition:       $backdrop_transition;
-    }
     
     button
     {
