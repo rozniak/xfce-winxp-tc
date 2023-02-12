@@ -66,6 +66,19 @@ $notebook_header_top_styles:
 //
 // NOTEBOOK TAB
 //
+$notebook_tab_styles:
+    wintc_define_props_borders(
+        $notebook_tab_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
+
 $notebook_tab_selected_styles:
     wintc_define_props_bg(
         $notebook_tab_selected_styles,
@@ -92,12 +105,22 @@ $notebook_tab_bottom_styles:
         $notebook_tab_bottom_styles,
         false,
         solid,
-        0,
+        1,
         3,
-        5,
+        3,
         3,
         undefined,
         default
+    );
+$notebook_tab_bottom_styles:
+    wintc_define_props_box(
+        $notebook_tab_bottom_styles,
+        false,
+        margin,
+        -1,
+        undefined,
+        default,
+        undefined
     );
 $notebook_tab_bottom_hover_styles:
     wintc_define_props_borders(
@@ -128,9 +151,19 @@ $notebook_tab_left_styles:
         false,
         solid,
         3,
-        0,
+        1,
         3,
-        5,
+        3,
+        undefined,
+        default
+    );
+$notebook_tab_left_styles:
+    wintc_define_props_box(
+        $notebook_tab_left_styles,
+        false,
+        margin,
+        undefined,
+        -1,
         undefined,
         default
     );
@@ -163,11 +196,21 @@ $notebook_tab_right_styles:
         false,
         solid,
         3,
-        5,
         3,
-        0,
+        3,
+        1,
         undefined,
         default
+    );
+$notebook_tab_right_styles:
+    wintc_define_props_box(
+        $notebook_tab_right_styles,
+        false,
+        margin,
+        undefined,
+        default,
+        undefined,
+        -1
     );
 $notebook_tab_right_hover_styles:
     wintc_define_props_borders(
@@ -197,12 +240,22 @@ $notebook_tab_top_styles:
         $notebook_tab_top_styles,
         false,
         solid,
-        5,
         3,
-        0,
+        3,
+        1,
         3,
         undefined,
         default
+    );
+$notebook_tab_top_styles:
+    wintc_define_props_box(
+        $notebook_tab_top_styles,
+        false,
+        margin,
+        default,
+        undefined,
+        -1,
+        undefined
     );
 $notebook_tab_top_hover_styles:
     wintc_define_props_borders(
