@@ -62,6 +62,18 @@ $notebook_tab_styles:
         undefined,
         undefined
     );
+$notebook_tab_styles:
+    wintc_define_props_borders(
+        $notebook_tab_styles,
+        false,
+        solid,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
 $notebook_tab_hover_styles:
     wintc_define_props_bg(
         $notebook_tab_hover_styles,
@@ -88,7 +100,7 @@ $notebook_tab_bottom_styles:
         $notebook_tab_bottom_styles,
         false,
         solid,
-        0,
+        2,
         3,
         3,
         2,
@@ -114,7 +126,7 @@ $notebook_tab_left_styles:
         false,
         solid,
         2,
-        0,
+        2,
         3,
         3,
         undefined,
@@ -141,7 +153,7 @@ $notebook_tab_right_styles:
         2,
         3,
         3,
-        0,
+        2,
         undefined,
         default
     );
@@ -165,7 +177,7 @@ $notebook_tab_top_styles:
         solid,
         3,
         3,
-        0,
+        2,
         2,
         undefined,
         default
