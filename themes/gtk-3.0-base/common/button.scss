@@ -430,46 +430,9 @@ button
         @extend %linked_vertical;
     }
 
-    // Circular button
     //
-    &.circular
-    {
-        border-radius:       9999px;
-        padding:             $_circ_btn_pad;
-        -gtk-outline-radius: 9999px;
-
-        label
-        {
-            padding: 0;
-        }
-
-        // The following code is needed since we use a darker bottom border on
-        // buttons, which looks pretty bad with a 100% border radius
-        //     (see https://bugzilla.gnome.org/show_bug.cgi?id=771205 for details)
-        //
-        // On relevant states we an additional background-image with a gradient
-        // clipped on the border-box, so setting a transparent border would reveal
-        // it
-        //
-        $_border_bg: linear-gradient(to top, $alt-borders-color 25%, $borders-color 50%);
-
-        &:not(.flat):not(.osd):not(:checked):not(:active):not(:disabled):not(:backdrop)
-        {
-            @include button(normal, $backimage: $_border_bg);
-
-            border-color: transparent;
-        }
-
-        &:hover:not(.osd):not(:checked):not(:active):not(:disabled):not(:backdrop)
-        {
-            @include button(hover, $backimage: $_border_bg);
-
-            border-color: transparent;
-        }
-
-        background-origin: padding-box, border-box;
-        background-clip:   padding-box, border-box;
-    }
+    // NOTE: WinTC - removed circular button class styling
+    //
 }
 
 %needs_attention
