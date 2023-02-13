@@ -17,8 +17,6 @@ progressbar
     trough
     {
         @include __wintc_apply_props($progressbar_trough_styles);
-        //background-color: #FFF;
-        //border-style:     solid;
     }
 
     // Sizing
@@ -48,14 +46,11 @@ progressbar
         progress
         {
             @include __wintc_apply_props($progressbar_horz_progress_styles);
-            //background-image: url("../Resources/gtk-3.0/progress_horz_chunk.png");
         }
 
         trough
         {
             @include __wintc_apply_props($progressbar_horz_trough_styles);
-            //border-image: url("../Resources/gtk-3.0/progress_horz.png") 3 4 3 4 stretch;
-            //border-width: 3px 4px;
         }
     }
 
@@ -64,24 +59,14 @@ progressbar
         progress
         {
             @include __wintc_apply_props($progressbar_vert_progress_styles);
-            //background-image: url("../Resources/gtk-3.0/progress_vert_chunk.png");
         }
 
         trough
         {
             @include __wintc_apply_props($progressbar_vert_trough_styles);
-            //border-image: url("../Resources/gtk-3.0/progress_vert.png") 4 3 4 3 stretch;
-            //border-width: 4px 3px;
         }
     }
 
-    // The progress node is positioned after the trough border this moves it over it
-    //
-//    &.horizontal progress { margin:  0   -1px; }
-//    &.vertical   progress { margin: -1px  0;   }
-
-    // FIXME: insensitive state missing and some other state should be set probably
-    //
     font-size: smaller;
     font-feature-settings: "tnum";
     
