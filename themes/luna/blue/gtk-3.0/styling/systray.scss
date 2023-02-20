@@ -15,7 +15,7 @@ $systray_styles:
         1px 100%,
         repeat-x,
         undefined,
-        url('../Resources/gtk-3.0/taskband_tray_horz_body.png')
+        url('../Resources/taskband_tray_horz_body.png')
     );
 $systray_styles:
     wintc_define_props_borders(
@@ -27,7 +27,7 @@ $systray_styles:
         3,
         16,
         undefined,
-        url('../Resources/gtk-3.0/taskband_tray_horz.png')
+        url('../Resources/taskband_tray_horz.png')
     );
 $systray_styles:
     wintc_define_props_box(

@@ -152,10 +152,6 @@ headerbar.selection-mode button.titlebutton,
 {
     @include __wintc_apply_props($csd_window_styles);
 
-    //border-image: url("../Resources/gtk-3.0/csd-window-border.png") 30 5 5 5 stretch;
-    //border-style: solid;
-    //border-width: 0px 5px 5px;
-
     $l_border_bottom: __wintc_get_prop($csd_window_styles, "border-bottom-width");
     $l_border_left:   __wintc_get_prop($csd_window_styles, "border-left-width");
     $l_border_right:  __wintc_get_prop($csd_window_styles, "border-right-width");
@@ -170,8 +166,6 @@ headerbar.selection-mode button.titlebutton,
     &:backdrop
     {
         @include __wintc_apply_props($csd_window_backdrop_styles);
-
-        //border-image: url("../Resources/gtk-3.0/csd-window-border-backdrop.png") 30 5 5 5 stretch;
     }
 
     &.tiled,
@@ -203,18 +197,12 @@ headerbar.selection-mode button.titlebutton,
         border-top: 0px;
         border-bottom: 0px;
 
-        //border-image: url("../Resources/gtk-3.0/csd-window-border.png") 30 5 5 5 stretch;
-        //border-style: solid;
-        //border-width: 0px 5px;
-
         &:backdrop
         {
             @include __wintc_apply_props_for_category($csd_window_backdrop_styles, "borders");
 
             border-top: 0px;
             border-bottom: 0px;
-
-            //border-image: url("../Resources/gtk-3.0/csd-window-border-backdrop.png") 30 5 5 5 stretch;
         }
     }
 
@@ -227,8 +215,6 @@ headerbar.selection-mode button.titlebutton,
         {
             border-radius: $csd_window_hack_border_radius;
         }
-
-        //border-radius: 5px;
     }
 
     // FIXME: This bodge fixes GLADE, which uses a stack - padding to the window

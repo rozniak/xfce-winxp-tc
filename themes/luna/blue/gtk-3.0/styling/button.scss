@@ -18,7 +18,7 @@ $button_styles:
         100% 100%,
         undefined,
         undefined,
-        url('../Resources/gtk-3.0/button_body.png'),
+        url('../Resources/button_body.png'),
         linear-gradient(170deg, rgba(252,252,252,1) 0%, rgba(233,232,225,1) 100%)
     );
 $button_styles:
@@ -31,7 +31,7 @@ $button_styles:
         3,
         3,
         undefined,
-        url('../Resources/gtk-3.0/button_border.png'),
+        url('../Resources/button_border.png'),
     );
 
 $button_focused_styles:
@@ -42,7 +42,7 @@ $button_focused_styles:
         undefined,
         undefined,
         undefined,
-        url('../Resources/gtk-3.0/button_body.png'),
+        url('../Resources/button_body.png'),
         linear-gradient(170deg, rgba(252,252,252,1) 0%, rgba(233,232,225,1) 100%)
     );
 $button_focused_styles:
@@ -55,7 +55,7 @@ $button_focused_styles:
         undefined,
         undefined,
         undefined,
-        url('../Resources/gtk-3.0/button_active_border.png')
+        url('../Resources/button_active_border.png')
     );
 
 $button_hover_styles:
@@ -66,7 +66,7 @@ $button_hover_styles:
         undefined,
         undefined,
         undefined,
-        url('../Resources/gtk-3.0/button_body.png'),
+        url('../Resources/button_body.png'),
         linear-gradient(170deg, rgba(252,252,252,1) 0%, rgba(233,232,225,1) 100%)
     );
 $button_hover_styles:
@@ -79,7 +79,7 @@ $button_hover_styles:
         undefined,
         undefined,
         undefined,
-        url('../Resources/gtk-3.0/button_hover_border.png')
+        url('../Resources/button_hover_border.png')
     );
 
 $button_press_styles:
@@ -90,7 +90,7 @@ $button_press_styles:
         undefined,
         undefined,
         undefined,
-        url('../Resources/gtk-3.0/button_press_body.png'),
+        url('../Resources/button_press_body.png'),
         linear-gradient(170deg, rgba(228,227,220,1) 0%, rgba(226,225,217,1) 5%, rgba(226,225,217,1) 95%, rgba(228,227,220,1) 100%),
     );
 $button_press_styles:
@@ -103,7 +103,7 @@ $button_press_styles:
         undefined,
         undefined,
         undefined,
-        url('../Resources/gtk-3.0/button_press_border.png')
+        url('../Resources/button_press_border.png')
     );
 
 $button_inactive_styles:
@@ -126,7 +126,7 @@ $button_inactive_styles:
         undefined,
         undefined,
         undefined,
-        url('../Resources/gtk-3.0/button_inactive_border.png')
+        url('../Resources/button_inactive_border.png')
     );
 
 

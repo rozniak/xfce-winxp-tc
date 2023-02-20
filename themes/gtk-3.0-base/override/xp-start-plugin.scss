@@ -221,37 +221,11 @@ window.csd.xp-start-menu // Specificity hack -_-
         {
             @include __wintc_apply_props($start_menu_popup_menu_styles);
 
-            //border-image: url("../Resources/gtk-3.0/start_menu_item.png") 1 1 1 6 stretch;
-            //border-style: solid;
-            //border-width: 1px 1px 1px 6px;
-
-            
             menuitem
             {
                 @include __wintc_apply_props(
                     $start_menu_popup_menu_menuitem_styles
                 );
-
-                //margin:  0px 1px 0px 6px;
-                //padding: 3px 0px 2px 12px;
-
-                &:first-child
-                {
-                    //margin-top: $start_menu_popup_menu_vmargin;
-                    //margin-top: 1px;
-
-
-                    image
-                    {
-                        //margin-bottom: -1px;
-                    }
-                }
-
-                &:last-child
-                {
-                    //margin-bottom: $start_menu_popup_menu_vmargin;
-                    //margin-bottom: 1px;
-                }
 
                 image
                 {
@@ -264,8 +238,6 @@ window.csd.xp-start-menu // Specificity hack -_-
             separator
             {
                 @include __wintc_apply_props($start_menu_popup_menu_separator_styles);
-
-                //margin-left: 12px;
             }
         }
 

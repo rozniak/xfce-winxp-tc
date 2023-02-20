@@ -39,7 +39,7 @@ $taskband_button_styles:
         undefined,
         undefined,
         undefined,
-        url("../Resources/gtk-3.0/taskband_button_body.png"), linear-gradient(162deg, rgba(112,170,250,1) 0%, rgba(57,123,242,1) 10%, rgba(57,123,242,1) 100%)
+        url("../Resources/taskband_button_body.png"), linear-gradient(162deg, rgba(112,170,250,1) 0%, rgba(57,123,242,1) 10%, rgba(57,123,242,1) 100%)
     );
 $taskband_button_styles:
     wintc_define_props_borders(
@@ -51,7 +51,7 @@ $taskband_button_styles:
         2,
         2,
         undefined,
-        url("../Resources/gtk-3.0/taskband_button_border.png")
+        url("../Resources/taskband_button_border.png")
     );
 $taskband_button_styles:
     wintc_define_props_box(
@@ -72,7 +72,7 @@ $taskband_button_hover_styles:
         undefined,
         undefined,
         undefined,
-        url("../Resources/gtk-3.0/taskband_button_hover_body.png"), linear-gradient(126deg, rgba(145,201,255,1) 0%, rgba(145,201,255,1) 90%, rgba(49,132,255,1) 98%, rgba(49,132,255,1) 100%)
+        url("../Resources/taskband_button_hover_body.png"), linear-gradient(126deg, rgba(145,201,255,1) 0%, rgba(145,201,255,1) 90%, rgba(49,132,255,1) 98%, rgba(49,132,255,1) 100%)
     );
 $taskband_button_hover_styles:
     wintc_define_props_borders(
@@ -84,7 +84,7 @@ $taskband_button_hover_styles:
         undefined,
         undefined,
         undefined,
-        url("../Resources/gtk-3.0/taskband_button_hover_border.png")
+        url("../Resources/taskband_button_hover_border.png")
     );
 
 $taskband_button_press_styles:
@@ -95,7 +95,7 @@ $taskband_button_press_styles:
         undefined,
         undefined,
         undefined,
-        url("../Resources/gtk-3.0/taskband_button_press_body.png"), linear-gradient(126deg, rgba(22,76,168,1) 0%, rgba(42,93,182,1) 10%, rgba(42,93,182,1) 100%)
+        url("../Resources/taskband_button_press_body.png"), linear-gradient(126deg, rgba(22,76,168,1) 0%, rgba(42,93,182,1) 10%, rgba(42,93,182,1) 100%)
     );
 $taskband_button_press_styles:
     wintc_define_props_borders(
@@ -107,7 +107,7 @@ $taskband_button_press_styles:
         undefined,
         undefined,
         undefined,
-        url("../Resources/gtk-3.0/taskband_button_press_border.png")
+        url("../Resources/taskband_button_press_border.png")
     );
 
 $taskband_button_selected_styles: $taskband_button_press_styles;
@@ -120,7 +120,7 @@ $taskband_button_selected_hover_styles:
         undefined,
         undefined,
         undefined,
-        url("../Resources/gtk-3.0/taskband_button_press_hover_body.png"), linear-gradient(126deg, rgba(51,106,222,1) 0%, rgba(54,116,232,1) 10%, rgba(54,116,232,1) 100%)
+        url("../Resources/taskband_button_press_hover_body.png"), linear-gradient(126deg, rgba(51,106,222,1) 0%, rgba(54,116,232,1) 10%, rgba(54,116,232,1) 100%)
     );
 $taskband_button_selected_hover_styles:
     wintc_define_props_borders(
@@ -132,5 +132,5 @@ $taskband_button_selected_hover_styles:
         undefined,
         undefined,
         undefined,
-        url("../Resources/gtk-3.0/taskband_button_press_hover_border.png")
+        url("../Resources/taskband_button_press_hover_border.png")
     );
