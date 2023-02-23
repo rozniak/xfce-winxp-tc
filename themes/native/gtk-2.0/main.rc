@@ -103,7 +103,7 @@ style "default" {
 
   GtkExpander::expander-size = 16
 
-  GtkNotebook::tab-overlap = 4
+  GtkNotebook::tab-overlap = 2
 
   ##########
   # Colors #
@@ -149,7 +149,7 @@ style "default" {
       function        = CHECK
       state           = NORMAL
       shadow          = OUT
-      overlay_file    = "../Resources/checkbox_unchecked.png"
+      overlay_file    = "../Resources/composed/checkbox_unchecked.png"
       overlay_stretch = FALSE
     }
 
@@ -157,7 +157,7 @@ style "default" {
       function        = CHECK
       state           = PRELIGHT
       shadow          = OUT
-      overlay_file    = "../Resources/checkbox_unchecked_hover.png"
+      overlay_file    = "../Resources/composed/checkbox_unchecked.png"
       overlay_stretch = FALSE
     }
 
@@ -165,7 +165,7 @@ style "default" {
       function        = CHECK
       state           = ACTIVE
       shadow          = OUT
-      overlay_file    = "../Resources/checkbox_unchecked_press.png"
+      overlay_file    = "../Resources/composed/checkbox_unchecked_press.png"
       overlay_stretch = FALSE
     }
 
@@ -173,7 +173,7 @@ style "default" {
       function        = CHECK
       state           = SELECTED
       shadow          = OUT
-      overlay_file    = "../Resources/checkbox_unchecked_hover.png"
+      overlay_file    = "../Resources/composed/checkbox_unchecked.png"
       overlay_stretch = FALSE
     }
 
@@ -181,7 +181,7 @@ style "default" {
       function        = CHECK
       state           = INSENSITIVE
       shadow          = OUT
-      overlay_file    = "../Resources/checkbox-unchecked-inactive.png"
+      overlay_file    = "../Resources/composed/checkbox_unchecked_press.png"
       overlay_stretch = FALSE
     }
 
@@ -189,7 +189,7 @@ style "default" {
       function        = CHECK
       state           = NORMAL
       shadow          = IN
-      overlay_file    = "../Resources/checkbox_checked.png"
+      overlay_file    = "../Resources/composed/checkbox_checked.png"
       overlay_stretch = FALSE
     }
 
@@ -197,7 +197,7 @@ style "default" {
       function        = CHECK
       state           = PRELIGHT
       shadow          = IN
-      overlay_file    = "../Resources/checkbox_checked_hover.png"
+      overlay_file    = "../Resources/composed/checkbox_checked.png"
       overlay_stretch = FALSE
     }
 
@@ -205,7 +205,7 @@ style "default" {
       function        = CHECK
       state           = ACTIVE
       shadow          = IN
-      overlay_file    = "../Resources/checkbox_checked_press.png"
+      overlay_file    = "../Resources/composed/checkbox_checked_press.png"
       overlay_stretch = FALSE
     }
 
@@ -213,7 +213,7 @@ style "default" {
       function        = CHECK
       state           = SELECTED
       shadow          = IN
-      overlay_file    = "../Resources/checkbox_checked_hover.png"
+      overlay_file    = "../Resources/composed/checkbox_checked.png"
       overlay_stretch = FALSE
     }
 
@@ -221,7 +221,7 @@ style "default" {
       function        = CHECK
       state           = INSENSITIVE
       shadow          = IN
-      overlay_file    = "../Resources/checkbox_checked_inactive.png"
+      overlay_file    = "../Resources/composed/checkbox_checked_inactive.png"
       overlay_stretch = FALSE
     }
 
@@ -229,7 +229,7 @@ style "default" {
       function        = CHECK
       state           = NORMAL
       shadow          = ETCHED_IN
-      overlay_file    = "../Resources/checkbox_indecisive.png"
+      overlay_file    = "../Resources/composed/checkbox_indecisive.png"
       overlay_stretch = FALSE
     }
 
@@ -237,7 +237,7 @@ style "default" {
       function        = CHECK
       state           = PRELIGHT
       shadow          = ETCHED_IN
-      overlay_file    = "../Resources/checkbox_indecisive_hover.png"
+      overlay_file    = "../Resources/composed/checkbox_indecisive.png"
       overlay_stretch = FALSE
     }
 
@@ -245,7 +245,7 @@ style "default" {
       function        = CHECK
       state           = ACTIVE
       shadow          = ETCHED_IN
-      overlay_file    = "../Resources/checkbox_indecisive_press.png"
+      overlay_file    = "../Resources/composed/checkbox_indecisive_press.png"
       overlay_stretch = FALSE
     }
 
@@ -253,7 +253,7 @@ style "default" {
       function        = CHECK
       state           = SELECTED
       shadow          = ETCHED_IN
-      overlay_file    = "../Resources/checkbox_indecisive_hover.png"
+      overlay_file    = "../Resources/composed/checkbox_indecisive.png"
       overlay_stretch = FALSE
     }
 
@@ -261,7 +261,7 @@ style "default" {
       function        = CHECK
       state           = INSENSITIVE
       shadow          = ETCHED_IN
-      overlay_file    = "../Resources/checkbox_indecisive_inactive.png"
+      overlay_file    = "../Resources/composed/checkbox_indecisive_inactive.png"
       overlay_stretch = FALSE
     }
 
@@ -273,7 +273,7 @@ style "default" {
       function        = OPTION
       state           = NORMAL
       shadow          = OUT
-      overlay_file    = "../Resources/radio_unchecked.png"
+      overlay_file    = "../Resources/composed/radio_unchecked.png"
       overlay_stretch = FALSE
     }
 
@@ -281,7 +281,7 @@ style "default" {
       function        = OPTION
       state           = PRELIGHT
       shadow          = OUT
-      overlay_file    = "../Resources/radio_unchecked_hover.png"
+      overlay_file    = "../Resources/composed/radio_unchecked.png"
       overlay_stretch = FALSE
     }
 
@@ -289,7 +289,7 @@ style "default" {
       function        = OPTION
       state           = ACTIVE
       shadow          = OUT
-      overlay_file    = "../Resources/radio_unchecked_press.png"
+      overlay_file    = "../Resources/composed/radio_unchecked_press.png"
       overlay_stretch = FALSE
     }
 
@@ -297,7 +297,7 @@ style "default" {
       function        = OPTION
       state           = SELECTED
       shadow          = OUT
-      overlay_file    = "../Resources/radio_unchecked_hover.png"
+      overlay_file    = "../Resources/composed/radio_unchecked.png"
       overlay_stretch = FALSE
     }
 
@@ -305,7 +305,7 @@ style "default" {
       function        = OPTION
       state           = INSENSITIVE
       shadow          = OUT
-      overlay_file    = "../Resources/radio_unchecked_inactive.png"
+      overlay_file    = "../Resources/composed/radio_unchecked_press.png"
       overlay_stretch = FALSE
     }
 
@@ -313,7 +313,7 @@ style "default" {
       function        = OPTION
       state           = NORMAL
       shadow          = IN
-      overlay_file    = "../Resources/radio_checked.png"
+      overlay_file    = "../Resources/composed/radio_checked.png"
       overlay_stretch = FALSE
     }
 
@@ -321,7 +321,7 @@ style "default" {
       function        = OPTION
       state           = PRELIGHT
       shadow          = IN
-      overlay_file    = "../Resources/radio_checked_hover.png"
+      overlay_file    = "../Resources/composed/radio_checked.png"
       overlay_stretch = FALSE
     }
 
@@ -329,7 +329,7 @@ style "default" {
       function        = OPTION
       state           = ACTIVE
       shadow          = IN
-      overlay_file    = "../Resources/radio_checked_press.png"
+      overlay_file    = "../Resources/composed/radio_checked_press.png"
       overlay_stretch = FALSE
     }
 
@@ -337,7 +337,7 @@ style "default" {
       function        = OPTION
       state           = SELECTED
       shadow          = IN
-      overlay_file    = "../Resources/radio_checked_hover.png"
+      overlay_file    = "../Resources/composed/radio_checked.png"
       overlay_stretch = FALSE
     }
 
@@ -345,7 +345,7 @@ style "default" {
       function        = OPTION
       state           = INSENSITIVE
       shadow          = IN
-      overlay_file    = "../Resources/radio_checked_inactive.png"
+      overlay_file    = "../Resources/composed//radio_checked_inactive.png"
       overlay_stretch = FALSE
     }
 
@@ -353,7 +353,7 @@ style "default" {
       function        = OPTION
       state           = NORMAL
       shadow          = ETCHED_IN
-      overlay_file    = "../Resources/radio_checked.png"
+      overlay_file    = "../Resources/composed/radio_checked.png"
       overlay_stretch = FALSE
     }
 
@@ -361,7 +361,7 @@ style "default" {
       function        = OPTION
       state           = PRELIGHT
       shadow          = ETCHED_IN
-      overlay_file    = "../Resources/radio_checked_hover.png"
+      overlay_file    = "../Resources/composed/radio_checked.png"
       overlay_stretch = FALSE
     }
 
@@ -369,7 +369,7 @@ style "default" {
       function        = OPTION
       state           = ACTIVE
       shadow          = ETCHED_IN
-      overlay_file    = "../Resources/radio_checked_press.png"
+      overlay_file    = "../Resources/composed/radio_checked_press.png"
       overlay_stretch = FALSE
     }
 
@@ -377,7 +377,7 @@ style "default" {
       function        = OPTION
       state           = SELECTED
       shadow          = ETCHED_IN
-      overlay_file    = "../Resources/radio_checked_hover.png"
+      overlay_file    = "../Resources/composed/radio_checked.png"
       overlay_stretch = FALSE
     }
 
@@ -385,7 +385,7 @@ style "default" {
       function        = OPTION
       state           = INSENSITIVE
       shadow          = ETCHED_IN
-      overlay_file    = "../Resources/radio_checked_inactive.png"
+      overlay_file    = "../Resources/composed/radio_checked_inactive.png"
       overlay_stretch = FALSE
     }
 
@@ -417,7 +417,7 @@ style "default" {
       function        = ARROW
       state           = NORMAL
       detail          = "menuitem"
-      overlay_file    = "../Resources/gtk-2.0/pan_left_arrow.png"
+      overlay_file    = "../Resources/composed/pan_left_arrow.png"
       overlay_stretch = FALSE
       arrow_direction = LEFT
     }
@@ -426,7 +426,7 @@ style "default" {
       function        = ARROW
       state           = PRELIGHT
       detail          = "menuitem"
-      overlay_file    = "../Resources/gtk-2.0/pan_left_arrow_hover.png"
+      overlay_file    = "../Resources/composed/pan_left_arrow_hover.png"
       overlay_stretch = FALSE
       arrow_direction = LEFT
     }
@@ -435,7 +435,7 @@ style "default" {
       function        = ARROW
       state           = INSENSITIVE
       detail          = "menuitem"
-      overlay_file    = "../Resources/gtk-2.0/pan_left_arrow_inactive.png"
+      overlay_file    = "../Resources/composed/pan_left_arrow_inactive.png"
       overlay_stretch = FALSE
       arrow_direction = LEFT
     }
@@ -444,7 +444,7 @@ style "default" {
       function        = ARROW
       state           = NORMAL
       detail          = "menuitem"
-      overlay_file    = "../Resources/gtk-2.0/pan_right_arrow.png"
+      overlay_file    = "../Resources/composed/pan_right_arrow.png"
       overlay_stretch = FALSE
       arrow_direction = RIGHT
     }
@@ -453,7 +453,7 @@ style "default" {
       function        = ARROW
       state           = PRELIGHT
       detail          = "menuitem"
-      overlay_file    = "../Resources/gtk-2.0/pan_right_arrow_hover.png"
+      overlay_file    = "../Resources/composed/pan_right_arrow_hover.png"
       overlay_stretch = FALSE
       arrow_direction = RIGHT
     }
@@ -462,7 +462,7 @@ style "default" {
       function        = ARROW
       state           = INSENSITIVE
       detail          = "menuitem"
-      overlay_file    = "../Resources/gtk-2.0/pan_right_arrow_inactive.png"
+      overlay_file    = "../Resources/composed/pan_right_arrow_inactive.png"
       overlay_stretch = FALSE
       arrow_direction = RIGHT
     }
@@ -471,14 +471,14 @@ style "default" {
       function        = ARROW
       state           = INSENSITIVE
       detail          = "menu_scroll_arrow_up"
-      overlay_file    = "../Resources/gtk-2.0/pan_up_arrow_inactive.png"
+      overlay_file    = "../Resources/composed/pan_up_arrow_inactive.png"
       overlay_stretch = FALSE
     }
 
     image {
       function        = ARROW
       detail          = "menu_scroll_arrow_up"
-      overlay_file    = "../Resources/gtk-2.0/pan_up_arrow.png"
+      overlay_file    = "../Resources/composed/pan_up_arrow.png"
       overlay_stretch = FALSE
     }
 
@@ -486,14 +486,14 @@ style "default" {
       function        = ARROW
       state           = INSENSITIVE
       detail          = "menu_scroll_arrow_down"
-      overlay_file    = "../Resources/gtk-2.0/pan_down_arrow_inactive.png"
+      overlay_file    = "../Resources/composed/pan_down_arrow_inactive.png"
       overlay_stretch = FALSE
     }
 
     image {
       function        = ARROW
       detail          = "menu_scroll_arrow_down"
-      overlay_file    = "../Resources/gtk-2.0/pan_down_arrow.png"
+      overlay_file    = "../Resources/composed/pan_down_arrow.png"
       overlay_stretch = FALSE
     }
 
@@ -502,7 +502,7 @@ style "default" {
     image {
       function        = ARROW
       state           = NORMAL
-      overlay_file    = "../Resources/gtk-2.0/pan_up_arrow.png"
+      overlay_file    = "../Resources/composed/pan_up_arrow.png"
       overlay_stretch = FALSE
       arrow_direction = UP
     }
@@ -510,7 +510,7 @@ style "default" {
     image {
       function        = ARROW
       state           = PRELIGHT
-      overlay_file    = "../Resources/gtk-2.0/pan_up_arrow.png"
+      overlay_file    = "../Resources/composed/pan_up_arrow.png"
       overlay_stretch = FALSE
       arrow_direction = UP
     }
@@ -518,7 +518,7 @@ style "default" {
     image {
       function        = ARROW
       state           = ACTIVE
-      overlay_file    = "../Resources/gtk-2.0/pan_up_arrow.png"
+      overlay_file    = "../Resources/composed/pan_up_arrow.png"
       overlay_stretch = FALSE
       arrow_direction = UP
     }
@@ -526,7 +526,7 @@ style "default" {
     image {
       function        = ARROW
       state           = INSENSITIVE
-      overlay_file    = "../Resources/gtk-2.0/pan_up_arrow_inactive.png"
+      overlay_file    = "../Resources/composed/pan_up_arrow_inactive.png"
       overlay_stretch = FALSE
       arrow_direction = UP
     }
@@ -534,7 +534,7 @@ style "default" {
     image {
       function        = ARROW
       state           = NORMAL
-      overlay_file    = "../Resources/gtk-2.0/pan_down_arrow.png"
+      overlay_file    = "../Resources/composed/pan_down_arrow.png"
       overlay_stretch = FALSE
       arrow_direction = DOWN
     }
@@ -542,7 +542,7 @@ style "default" {
     image {
       function        = ARROW
       state           = PRELIGHT
-      overlay_file    = "../Resources/gtk-2.0/pan_down_arrow.png"
+      overlay_file    = "../Resources/composed/pan_down_arrow.png"
       overlay_stretch = FALSE
       arrow_direction = DOWN
     }
@@ -550,7 +550,7 @@ style "default" {
     image {
       function        = ARROW
       state           = ACTIVE
-      overlay_file    = "../Resources/gtk-2.0/pan_down_arrow.png"
+      overlay_file    = "../Resources/composed/pan_down_arrow.png"
       overlay_stretch = FALSE
       arrow_direction = DOWN
     }
@@ -558,7 +558,7 @@ style "default" {
     image {
       function        = ARROW
       state           = INSENSITIVE
-      overlay_file    = "../Resources/gtk-2.0/pan_down_arrow_inactive.png"
+      overlay_file    = "../Resources/composed/pan_down_arrow_inactive.png"
       overlay_stretch = FALSE
       arrow_direction = DOWN
     }
@@ -566,7 +566,7 @@ style "default" {
     image {
       function        = ARROW
       state           = NORMAL
-      overlay_file    = "../Resources/gtk-2.0/pan_left_arrow.png"
+      overlay_file    = "../Resources/composed/pan_left_arrow.png"
       overlay_stretch = FALSE
       arrow_direction = LEFT
     }
@@ -574,7 +574,7 @@ style "default" {
     image {
       function        = ARROW
       state           = PRELIGHT
-      overlay_file    = "../Resources/gtk-2.0/pan_left_arrow.png"
+      overlay_file    = "../Resources/composed/pan_left_arrow.png"
       overlay_stretch = FALSE
       arrow_direction = LEFT
     }
@@ -582,7 +582,7 @@ style "default" {
     image {
       function        = ARROW
       state           = ACTIVE
-      overlay_file    = "../Resources/gtk-2.0/pan_left_arrow.png"
+      overlay_file    = "../Resources/composed/pan_left_arrow.png"
       overlay_stretch = FALSE
       arrow_direction = LEFT
     }
@@ -590,7 +590,7 @@ style "default" {
     image {
       function        = ARROW
       state           = INSENSITIVE
-      overlay_file    = "../Resources/gtk-2.0/pan_left_arrow_inactive.png"
+      overlay_file    = "../Resources/composed/pan_left_arrow_inactive.png"
       overlay_stretch = FALSE
       arrow_direction = LEFT
     }
@@ -598,7 +598,7 @@ style "default" {
     image {
       function        = ARROW
       state           = NORMAL
-      overlay_file    = "../Resources/gtk-2.0/pan_right_arrow.png"
+      overlay_file    = "../Resources/composed/pan_right_arrow.png"
       overlay_stretch = FALSE
       arrow_direction = RIGHT
     }
@@ -606,7 +606,7 @@ style "default" {
     image {
       function        = ARROW
       state           = PRELIGHT
-      overlay_file    = "../Resources/gtk-2.0/pan_right_arrow.png"
+      overlay_file    = "../Resources/composed/pan_right_arrow.png"
       overlay_stretch = FALSE
       arrow_direction = RIGHT
     }
@@ -614,7 +614,7 @@ style "default" {
     image {
       function        = ARROW
       state           = ACTIVE
-      overlay_file    = "../Resources/gtk-2.0/pan_right_arrow.png"
+      overlay_file    = "../Resources/composed/pan_right_arrow.png"
       overlay_stretch = FALSE
       arrow_direction = RIGHT
     }
@@ -622,7 +622,7 @@ style "default" {
     image {
       function        = ARROW
       state           = INSENSITIVE
-      overlay_file    = "../Resources/gtk-2.0/pan_right_arrow_inactive.png"
+      overlay_file    = "../Resources/composed/pan_right_arrow_inactive.png"
       overlay_stretch = FALSE
       arrow_direction = RIGHT
     }
@@ -634,28 +634,28 @@ style "default" {
     image {
       function        = TAB
       state           = NORMAL
-      overlay_file    = "../Resources/gtk-2.0/pan_down_arrow.png"
+      overlay_file    = "../Resources/composed/pan_down_arrow.png"
       overlay_stretch = FALSE
     }
 
     image {
       function        = TAB
       state           = PRELIGHT
-      overlay_file    = "../Resources/gtk-2.0/pan_down_arrow_hover.png"
+      overlay_file    = "../Resources/composed/pan_down_arrow_hover.png"
       overlay_stretch = FALSE
     }
 
     image {
       function        = TAB
       state           = ACTIVE
-      overlay_file    = "../Resources/gtk-2.0/pan_down_arrow.png"
+      overlay_file    = "../Resources/composed/pan_down_arrow.png"
       overlay_stretch = FALSE
     }
 
     image {
       function        = TAB
       state           = INSENSITIVE
-      overlay_file    = "../Resources/gtk-2.0/pan_down_arrow_inactive.png"
+      overlay_file    = "../Resources/composed/pan_down_arrow_inactive.png"
       overlay_stretch = FALSE
     }
 
@@ -665,13 +665,13 @@ style "default" {
 
     image {
       function = VLINE
-      file     = "../Resources/gtk-2.0/line.png"
+      file     = "../Resources/composed/line.png"
       border   = {1, 0, 0, 0}
     }
 
     image {
       function = HLINE
-      file     = "../Resources/gtk-2.0/line.png"
+      file     = "../Resources/composed/line.png"
       border   = {0, 0, 1, 0}
     }
 
@@ -682,20 +682,20 @@ style "default" {
     image {
       function        = HANDLE
       detail          = "handlebox"
-      overlay_file    = "../Resources/gtk-2.0/gripper.png"
+      overlay_file    = "../Resources/composed/gripper.png"
       overlay_stretch = FALSE
     }
 
     image {
       function    = HANDLE
-      file        = "../Resources/gtk-2.0/gripper_horz.png"
+      file        = "../Resources/composed/gripper_horz.png"
       border      = {0, 0, 4, 4}
       orientation = HORIZONTAL
     }
 
     image {
       function    = HANDLE
-      file        = "../Resources/gtk-2.0/gripper_vert.png"
+      file        = "../Resources/composed/gripper_vert.png"
       border      = {4, 4, 0, 0}
       orientation = VERTICAL
     }
@@ -711,7 +711,7 @@ style "default" {
     image {
       function       = EXPANDER
       expander_style = EXPANDED
-      file           = "../Resources/gtk-2.0/pan_down_arrow.png"
+      file           = "../Resources/composed/pan_down_arrow.png"
     }
 
     # LTR
@@ -719,21 +719,21 @@ style "default" {
     image {
       function       = EXPANDER
       expander_style = COLLAPSED
-      file           = "../Resources/gtk-2.0/pan_right_arrow.png"
+      file           = "../Resources/composed/pan_right_arrow.png"
       direction      = LTR
     }
 
     image {
       function       = EXPANDER
       expander_style = SEMI_COLLAPSED
-      file           = "../Resources/gtk-2.0/pan_se_arrow.png"
+      file           = "../Resources/composed/pan_se_arrow.png"
       direction      = LTR
     }
 
     image {
       function       = EXPANDER
       expander_style = SEMI_EXPANDED
-      file           = "../Resources/gtk-2.0/pan_se_arrow.png"
+      file           = "../Resources/composed/pan_se_arrow.png"
       direction      = LTR
     }
 
@@ -742,21 +742,21 @@ style "default" {
     image {
       function       = EXPANDER
       expander_style = COLLAPSED
-      file           = "../Resources/gtk-2.0/pan_left_arrow.png"
+      file           = "../Resources/composed/pan_left_arrow.png"
       direction      = RTL
     }
 
     image {
       function       = EXPANDER
       expander_style = SEMI_COLLAPSED
-      file           = "../Resources/gtk-2.0/pan_sw_arrow.png"
+      file           = "../Resources/composed/pan_sw_arrow.png"
       direction      = RTL
     }
 
     image {
       function       = EXPANDER
       expander_style = SEMI_EXPANDED
-      file           = "../Resources/gtk-2.0/pan_sw_arrow.png"
+      file           = "../Resources/composed/pan_sw_arrow.png"
       direction      = RTL
     }
 
@@ -768,17 +768,8 @@ style "default" {
 
     image {
       function = EXTENSION
-      state    = NORMAL
-      file     = "../Resources/gtk-2.0/tab_left_active.png"
-      border   = {3, 0, 3, 3}
-      stretch  = TRUE
-      gap_side = RIGHT
-    }
-
-    image {
-      function = EXTENSION
-      file     = "../Resources/gtk-2.0/tab_left.png"
-      border   = {3, 0, 3, 3}
+      file     = "../Resources/composed/notebook_tab_left.png"
+      border   = {2, 0, 2, 2}
       stretch  = TRUE
       gap_side = RIGHT
     }
@@ -787,17 +778,8 @@ style "default" {
 
     image {
       function = EXTENSION
-      state    = NORMAL
-      file     = "../Resources/gtk-2.0/tab_right_active.png"
-      border   = {0, 3, 3, 3}
-      stretch  = TRUE
-      gap_side = LEFT
-    }
-
-    image {
-      function = EXTENSION
-      file     = "../Resources/gtk-2.0/tab_right.png"
-      border   = {0, 3, 3, 3}
+      file     = "../Resources/composed/notebook_tab_right.png"
+      border   = {0, 2, 2, 2}
       stretch  = TRUE
       gap_side = LEFT
     }
@@ -806,26 +788,8 @@ style "default" {
 
     image {
       function = EXTENSION
-      state    = NORMAL
-      file     = "../Resources/gtk-2.0/tab_top_active.png"
-      border   = {3, 3, 3, 0}
-      stretch  = TRUE
-      gap_side = BOTTOM
-    }
-
-    image {
-      function = EXTENSION
-      state    = PRELIGHT
-      file     = "../Resources/gtk-2.0/tab_top_hover.png"
-      border   = {3, 3, 3, 0}
-      stretch  = TRUE
-      gap_side = BOTTOM
-    }
-
-    image {
-      function = EXTENSION
-      file     = "../Resources/gtk-2.0/tab_top.png"
-      border   = {3, 3, 3, 0}
+      file     = "../Resources/composed/notebook_tab_top.png"
+      border   = {2, 2, 2, 0}
       stretch  = TRUE
       gap_side = BOTTOM
     }
@@ -834,17 +798,8 @@ style "default" {
 
     image {
       function = EXTENSION
-      state    = NORMAL
-      file     = "../Resources/gtk-2.0/tab_bottom_active.png"
-      border   = {3, 3, 0, 3}
-      stretch  = TRUE
-      gap_side = TOP
-    }
-
-    image {
-      function = EXTENSION
-      file     = "../Resources/gtk-2.0/tab_bottom.png"
-      border   = {3, 3, 0, 3}
+      file     = "../Resources/composed/notebook_tab_bottom.png"
+      border   = {2, 2, 0, 2}
       stretch  = TRUE
       gap_side = TOP
     }
