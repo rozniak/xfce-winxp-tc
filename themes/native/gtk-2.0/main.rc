@@ -809,10 +809,10 @@ style "default" {
     image {
       function   = BOX_GAP
       detail     = "notebook"
-      file       = "../Resources/gtk-2.0/frame_tabs.png"
-      border     = {1, 1, 1, 1}
+      file       = "../Resources/composed/notebook_frame_border.png"
+      border     = {1, 2, 1, 2}
       stretch    = TRUE
-      gap_file   = "../Resources/gtk-2.0/tab_vert_gap.png"
+      gap_file   = "../Resources/composed/tab_vert_gap.png"
       gap_border = {1, 0, 1, 1}
       gap_side   = LEFT
     }
@@ -820,10 +820,10 @@ style "default" {
     image {
       function   = BOX_GAP
       detail     = "notebook"
-      file       = "../Resources/gtk-2.0/frame_tabs.png"
-      border     = {1, 1, 1, 1}
+      file       = "../Resources/composed/notebook_frame_border.png"
+      border     = {1, 2, 1, 2}
       stretch    = TRUE
-      gap_file   = "../Resources/gtk-2.0/tab_vert_gap.png"
+      gap_file   = "../Resources/composed/tab_vert_gap.png"
       gap_border = {0, 1, 1, 1}
       gap_side   = RIGHT
     }
@@ -831,10 +831,10 @@ style "default" {
     image {
       function   = BOX_GAP
       detail     = "notebook"
-      file       = "../Resources/gtk-2.0/frame_tabs.png"
-      border     = {1, 1, 1, 1}
+      file       = "../Resources/composed/notebook_frame_border.png"
+      border     = {1, 2, 1, 2}
       stretch    = TRUE
-      gap_file   = "../Resources/gtk-2.0/tab_horz_gap.png"
+      gap_file   = "../Resources/composed/tab_horz_gap.png"
       gap_border = {1, 1, 1, 0}
       gap_side   = TOP
     }
@@ -842,10 +842,10 @@ style "default" {
     image {
       function   = BOX_GAP
       detail     = "notebook"
-      file       = "../Resources/gtk-2.0/frame_tabs.png"
-      border     = {1, 1, 1, 1}
+      file       = "../Resources/composed/notebook_frame_border.png"
+      border     = {1, 2, 1, 2}
       stretch    = TRUE
-      gap_file   = "../Resources/gtk-2.0/tab_horz_gap.png"
+      gap_file   = "../Resources/composed/tab_horz_gap.png"
       gap_border = {1, 1, 0, 1}
       gap_side   = BOTTOM
     }
@@ -854,8 +854,8 @@ style "default" {
     image {
       function = BOX
       detail   = "notebook"
-      file     = "../Resources/gtk-2.0/frame_tabs.png"
-      border   = {1, 1, 1, 1}
+      file     = "../Resources/composed/notebook_frame_border.png"
+      border     = {1, 2, 1, 2}
       stretch  = TRUE
     }
 
