@@ -59,8 +59,8 @@ style "default" {
   GtkScrollbar::has-backward-stepper         = 1
   GtkScrollbar::has-forward-stepper          = 1
   GtkScrollbar::min-slider-length            = 22
-  GtkScrollbar::slider-width                 = 17
-  GtkScrollbar::stepper-size                 = 17
+  GtkScrollbar::slider-width                 = 16
+  GtkScrollbar::stepper-size                 = 16
   GtkScrolledWindow::scrollbar-spacing       = 0
   GtkScrolledWindow::scrollbars-within-bevel = 1
 
@@ -866,27 +866,27 @@ style "default" {
     image {
       function    = BOX
       detail      = "trough"
-      file        = "../Resources/scrollbar_horz_track.png"
-      border      = {0, 0, 1, 1}
+      file        = "../Resources/composed/scrollbar_trough.png"
       orientation = HORIZONTAL
+      stretch     = FALSE
     }
 
     image {
       function    = BOX
       detail      = "trough"
-      file        = "../Resources/scrollbar_vert_track.png"
-      border      = {1, 1, 0, 0}
+      file        = "../Resources/composed/scrollbar_trough.png"
       orientation = VERTICAL
       direction   = LTR
+      stretch     = FALSE
     }
 
     image {
       function    = BOX
       detail      = "trough"
-      file        = "../Resources/scrollbar_vert_track_rtl.png"
-      border      = {1, 1, 0, 0}
+      file        = "../Resources/composed/scrollbar_trough.png"
       orientation = VERTICAL
       direction   = RTL
+      stretch     = FALSE
     }
 
 
