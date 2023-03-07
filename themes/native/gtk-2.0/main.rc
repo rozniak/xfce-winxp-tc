@@ -904,36 +904,10 @@ style "default" {
       function        = SLIDER
       state           = NORMAL
       detail          = "slider"
-      file            = "../Resources/scrollbar_horz_slider.png"
-      border          = {3, 3, 3, 3}
+      file            = "../Resources/composed/scrollbar_slider_border.png"
+      border          = {2, 2, 2, 2}
       stretch         = TRUE
       orientation     = HORIZONTAL
-      overlay_file    = "../Resources/scrollbar_horz_gripper.png"
-      overlay_stretch = FALSE
-    }
-
-    image {
-      function        = SLIDER
-      state           = PRELIGHT
-      detail          = "slider"
-      file            = "../Resources/scrollbar_horz_slider_hover.png"
-      border          = {3, 3, 3, 3}
-      stretch         = TRUE
-      orientation     = HORIZONTAL
-      overlay_file    = "../Resources/scrollbar_horz_gripper_hover.png"
-      overlay_stretch = FALSE
-    }
-
-    image {
-      function        = SLIDER
-      state           = ACTIVE
-      detail          = "slider"
-      file            = "../Resources/scrollbar_horz_slider_press.png"
-      border          = {3, 4, 5, 4}
-      stretch         = TRUE
-      orientation     = HORIZONTAL
-      overlay_file    = "../Resources/scrollbar_horz_gripper_press.png"
-      overlay_stretch = FALSE
     }
 
     # Vertical sliders
@@ -942,80 +916,11 @@ style "default" {
       function        = SLIDER
       state           = NORMAL
       detail          = "slider"
-      file            = "../Resources/scrollbar_vert_slider.png"
-      border          = {3, 3, 3, 3}
+      file            = "../Resources/composed/scrollbar_slider_border.png"
+      border          = {2, 2, 2, 2}
       stretch         = TRUE
       orientation     = VERTICAL
-      overlay_file    = "../Resources/scrollbar_vert_gripper.png"
-      overlay_stretch = FALSE
       direction       = LTR
-    }
-
-    image {
-      function        = SLIDER
-      state           = PRELIGHT
-      detail          = "slider"
-      file            = "../Resources/scrollbar_vert_slider_hover.png"
-      border          = {3, 3, 3, 3}
-      stretch         = TRUE
-      orientation     = VERTICAL
-      overlay_file    = "../Resources/scrollbar_vert_gripper_hover.png"
-      overlay_stretch = FALSE
-      direction       = LTR
-    }
-
-    image {
-      function        = SLIDER
-      state           = ACTIVE
-      detail          = "slider"
-      file            = "../Resources/scrollbar_vert_slider_press.png"
-      border          = {4, 3, 4, 3}
-      stretch         = TRUE
-      orientation     = VERTICAL
-      overlay_file    = "../Resources/scrollbar_vert_gripper_press.png"
-      overlay_stretch = FALSE
-      direction       = LTR
-    }
-
-    # RTL
-
-    image {
-      function        = SLIDER
-      state           = NORMAL
-      detail          = "slider"
-      file            = "../Resources/scrollbar_vert_slider_rtl.png"
-      border          = {3, 3, 3, 3}
-      stretch         = TRUE
-      orientation     = VERTICAL
-      overlay_file    = "../Resources/scrollbar_vert_gripper_rtl.png"
-      overlay_stretch = FALSE
-      direction       = RTL
-    }
-
-    image {
-      function        = SLIDER
-      state           = PRELIGHT
-      detail          = "slider"
-      file            = "../Resources/scrollbar_vert_slider_hover_rtl.png"
-      border          = {3, 3, 3, 3}
-      stretch         = TRUE
-      orientation     = VERTICAL
-      overlay_file    = "../Resources/scrollbar_vert_gripper_hover_rtl.png"
-      overlay_stretch = FALSE
-      direction       = RTL
-    }
-
-    image {
-      function        = SLIDER
-      state           = ACTIVE
-      detail          = "slider"
-      file            = "../Resources/scrollbar_vert_slider_press_rtl.png"
-      border          = {3, 4, 3, 4}
-      stretch         = TRUE
-      orientation     = VERTICAL
-      overlay_file    = "../Resources/scrollbar_vert_gripper_press_rtl.png"
-      overlay_stretch = FALSE
-      direction       = RTL
     }
 
     # Up stepper
@@ -1023,21 +928,10 @@ style "default" {
     image {
       function        = STEPPER
       state           = NORMAL
-      file            = "../Resources/scrollbar_vert_button.png"
-      border          = {3, 3, 3, 3}
+      file            = "../Resources/composed/scrollbar_button_border.png"
+      border          = {2, 2, 2, 2}
       stretch         = TRUE
-      overlay_file    = "../Resources/scrollbar_up_glyph.png"
-      overlay_stretch = FALSE
-      arrow_direction = UP
-    }
-
-    image {
-      function        = STEPPER
-      state           = PRELIGHT
-      file            = "../Resources/scrollbar_vert_button_hover.png"
-      border          = {3, 3, 3, 3}
-      stretch         = TRUE
-      overlay_file    = "../Resources/scrollbar_up_glyph.png"
+      overlay_file    = "../Resources/composed/pan_up_arrow.png"
       overlay_stretch = FALSE
       arrow_direction = UP
     }
@@ -1045,10 +939,10 @@ style "default" {
     image {
       function        = STEPPER
       state           = ACTIVE
-      file            = "../Resources/scrollbar_vert_button_press.png"
-      border          = {3, 3, 3, 3}
+      file            = "../Resources/composed/scrollbar_button_press_border.png"
+      border          = {2, 2, 2, 2}
       stretch         = TRUE
-      overlay_file    = "../Resources/scrollbar_up_glyph.png"
+      overlay_file    = "../Resources/composed/pan_up_arrow.png"
       overlay_stretch = FALSE
       arrow_direction = UP
     }
@@ -1056,10 +950,10 @@ style "default" {
     image {
       function        = STEPPER
       state           = INSENSITIVE
-      file            = "../Resources/scrollbar_vert_button_inactive.png"
-      border          = {3, 3, 3, 3}
+      file            = "../Resources/composed/scrollbar_button_border.png"
+      border          = {2, 2, 2, 2}
       stretch         = TRUE
-      overlay_file    = "../Resources/scrollbar_up_glyph_inactive.png"
+      overlay_file    = "../Resources/composed/pan_up_arrow_inactive.png"
       overlay_stretch = FALSE
       arrow_direction = UP
     }
@@ -1069,21 +963,10 @@ style "default" {
     image {
       function        = STEPPER
       state           = NORMAL
-      file            = "../Resources/scrollbar_vert_button.png"
-      border          = {3, 3, 3, 3}
+      file            = "../Resources/composed/scrollbar_button_border.png"
+      border          = {2, 2, 2, 2}
       stretch         = TRUE
-      overlay_file    = "../Resources/scrollbar_down_glyph.png"
-      overlay_stretch = FALSE
-      arrow_direction = DOWN
-    }
-
-    image {
-      function        = STEPPER
-      state           = PRELIGHT
-      file            = "../Resources/scrollbar_vert_button_hover.png"
-      border          = {3, 3, 3, 3}
-      stretch         = TRUE
-      overlay_file    = "../Resources/scrollbar_down_glyph.png"
+      overlay_file    = "../Resources/composed/pan_down_arrow.png"
       overlay_stretch = FALSE
       arrow_direction = DOWN
     }
@@ -1091,10 +974,10 @@ style "default" {
     image {
       function        = STEPPER
       state           = ACTIVE
-      file            = "../Resources/scrollbar_vert_button_press.png"
-      border          = {3, 3, 3, 3}
+      file            = "../Resources/composed/scrollbar_button_press_border.png"
+      border          = {2, 2, 2, 2}
       stretch         = TRUE
-      overlay_file    = "../Resources/scrollbar_down_glyph.png"
+      overlay_file    = "../Resources/composed/pan_down_arrow.png"
       overlay_stretch = FALSE
       arrow_direction = DOWN
     }
@@ -1102,10 +985,10 @@ style "default" {
     image {
       function        = STEPPER
       state           = INSENSITIVE
-      file            = "../Resources/scrollbar_vert_button_inactive.png"
-      border          = {3, 3, 3, 3}
+      file            = "../Resources/composed/scrollbar_button_border.png"
+      border          = {2, 2, 2, 2}
       stretch         = TRUE
-      overlay_file    = "../Resources/scrollbar_down_glyph_inactive.png"
+      overlay_file    = "../Resources/composed/pan_down_arrow_inactive.png"
       overlay_stretch = FALSE
       arrow_direction = DOWN
     }
@@ -1115,91 +998,34 @@ style "default" {
     image {
       function        = STEPPER
       state           = NORMAL
-      file            = "../Resources/scrollbar_horz_button.png"
-      border          = {3, 3, 3, 3}
+      file            = "../Resources/composed/scrollbar_button_border.png"
+      border          = {2, 2, 2, 2}
       stretch         = TRUE
-      overlay_file    = "../Resources/scrollbar_left_glyph.png"
+      overlay_file    = "../Resources/composed/pan_left_arrow.png"
       overlay_stretch = FALSE
       arrow_direction = LEFT
     }
 
     image {
       function        = STEPPER
-      state           = PRELIGHT
-      file            = "../Resources/scrollbar_horz_button_hover.png"
-      border          = {3, 3, 3, 3}
-      stretch         = TRUE
-      overlay_file    = "../Resources/scrollbar_left_glyph.png"
-      overlay_stretch = FALSE
-      arrow_direction = DOWN
-    }
-
-    image {
-      function        = STEPPER
       state           = ACTIVE
-      file            = "../Resources/scrollbar_horz_button_press.png"
-      border          = {3, 3, 3, 3}
+      file            = "../Resources/composed/scrollbar_button_press_border.png"
+      border          = {2, 2, 2, 2}
       stretch         = TRUE
-      overlay_file    = "../Resources/scrollbar_left_glyph.png"
-      overlay_stretch = FALSE
-      arrow_direction = DOWN
-    }
-
-    image {
-      function        = STEPPER
-      state           = INSENSITIVE
-      file            = "../Resources/scrollbar_horz_button_inactive.png"
-      border          = {3, 3, 3, 3}
-      stretch         = TRUE
-      overlay_file    = "../Resources/scrollbar_left_glyph_inactive.png"
-      overlay_stretch = FALSE
-      arrow_direction = DOWN
-    }
-
-    # Left stepper
-
-    image {
-      function        = STEPPER
-      state           = NORMAL
-      file            = "../Resources/scrollbar_horz_button.png"
-      border          = {3, 3, 3, 3}
-      stretch         = TRUE
-      overlay_file    = "../Resources/scrollbar_left_glyph.png"
+      overlay_file    = "../Resources/composed/pan_left_arrow.png"
       overlay_stretch = FALSE
       arrow_direction = LEFT
     }
 
     image {
       function        = STEPPER
-      state           = PRELIGHT
-      file            = "../Resources/scrollbar_horz_button_hover.png"
-      border          = {3, 3, 3, 3}
-      stretch         = TRUE
-      overlay_file    = "../Resources/scrollbar_left_glyph.png"
-      overlay_stretch = FALSE
-      arrow_direction = DOWN
-    }
-
-    image {
-      function        = STEPPER
-      state           = ACTIVE
-      file            = "../Resources/scrollbar_horz_button_press.png"
-      border          = {3, 3, 3, 3}
-      stretch         = TRUE
-      overlay_file    = "../Resources/scrollbar_left_glyph.png"
-      overlay_stretch = FALSE
-      arrow_direction = DOWN
-    }
-
-    image {
-      function        = STEPPER
       state           = INSENSITIVE
-      file            = "../Resources/scrollbar_horz_button_inactive.png"
-      border          = {3, 3, 3, 3}
+      file            = "../Resources/composed/scrollbar_button_border.png"
+      border          = {2, 2, 2, 2}
       stretch         = TRUE
-      overlay_file    = "../Resources/scrollbar_left_glyph_inactive.png"
+      overlay_file    = "../Resources/composed/pan_left_arrow_inactive.png"
       overlay_stretch = FALSE
-      arrow_direction = DOWN
+      arrow_direction = LEFT
     }
 
     # Right stepper
@@ -1207,21 +1033,10 @@ style "default" {
     image {
       function        = STEPPER
       state           = NORMAL
-      file            = "../Resources/scrollbar_horz_button.png"
-      border          = {3, 3, 3, 3}
+      file            = "../Resources/composed/scrollbar_button_border.png"
+      border          = {2, 2, 2, 2}
       stretch         = TRUE
-      overlay_file    = "../Resources/scrollbar_right_glyph.png"
-      overlay_stretch = FALSE
-      arrow_direction = RIGHT
-    }
-
-    image {
-      function        = STEPPER
-      state           = PRELIGHT
-      file            = "../Resources/scrollbar_horz_button_hover.png"
-      border          = {3, 3, 3, 3}
-      stretch         = TRUE
-      overlay_file    = "../Resources/scrollbar_right_glyph.png"
+      overlay_file    = "../Resources/composed/pan_right_arrow.png"
       overlay_stretch = FALSE
       arrow_direction = RIGHT
     }
@@ -1229,10 +1044,10 @@ style "default" {
     image {
       function        = STEPPER
       state           = ACTIVE
-      file            = "../Resources/scrollbar_horz_button_press.png"
-      border          = {3, 3, 3, 3}
+      file            = "../Resources/composed/scrollbar_button_press_border.png"
+      border          = {2, 2, 2, 2}
       stretch         = TRUE
-      overlay_file    = "../Resources/scrollbar_right_glyph.png"
+      overlay_file    = "../Resources/composed/pan_right_arrow.png"
       overlay_stretch = FALSE
       arrow_direction = RIGHT
     }
@@ -1240,10 +1055,10 @@ style "default" {
     image {
       function        = STEPPER
       state           = INSENSITIVE
-      file            = "../Resources/scrollbar_horz_button_inactive.png"
-      border          = {3, 3, 3, 3}
+      file            = "../Resources/composed/scrollbar_button_border.png"
+      border          = {2, 2, 2, 2}
       stretch         = TRUE
-      overlay_file    = "../Resources/scrollbar_right_glyph_inactive.png"
+      overlay_file    = "../Resources/composed/pan_right_arrow_inactive.png"
       overlay_stretch = FALSE
       arrow_direction = RIGHT
     }
