@@ -973,7 +973,7 @@ style "default" {
       file            = "../Resources/composed/scrollbar_button_border.png"
       border          = {2, 2, 2, 2}
       stretch         = TRUE
-      overlay_file    = "../Resources/composed/pan_up_arrow.png"
+      overlay_file    = "../Resources/composed/scrollbar_button_up_glyph.png"
       overlay_stretch = FALSE
       arrow_direction = UP
     }
@@ -984,7 +984,7 @@ style "default" {
       file            = "../Resources/composed/scrollbar_button_border.png"
       border          = {2, 2, 2, 2}
       stretch         = TRUE
-      overlay_file    = "../Resources/composed/pan_up_arrow.png"
+      overlay_file    = "../Resources/composed/scrollbar_button_up_glyph.png"
       overlay_stretch = FALSE
       arrow_direction = UP
     }
@@ -995,7 +995,7 @@ style "default" {
       file            = "../Resources/composed/scrollbar_button_press_border.png"
       border          = {2, 2, 2, 2}
       stretch         = TRUE
-      overlay_file    = "../Resources/composed/pan_up_arrow.png"
+      overlay_file    = "../Resources/composed/scrollbar_button_up_glyph.png"
       overlay_stretch = FALSE
       arrow_direction = UP
     }
@@ -1006,7 +1006,7 @@ style "default" {
       file            = "../Resources/composed/scrollbar_button_border.png"
       border          = {2, 2, 2, 2}
       stretch         = TRUE
-      overlay_file    = "../Resources/composed/pan_up_arrow_inactive.png"
+      overlay_file    = "../Resources/composed/scrollbar_button_up_glyph_inactive.png"
       overlay_stretch = FALSE
       arrow_direction = UP
     }
@@ -1019,7 +1019,7 @@ style "default" {
       file            = "../Resources/composed/scrollbar_button_border.png"
       border          = {2, 2, 2, 2}
       stretch         = TRUE
-      overlay_file    = "../Resources/composed/pan_down_arrow.png"
+      overlay_file    = "../Resources/composed/scrollbar_button_down_glyph.png"
       overlay_stretch = FALSE
       arrow_direction = DOWN
     }
@@ -1030,7 +1030,7 @@ style "default" {
       file            = "../Resources/composed/scrollbar_button_border.png"
       border          = {2, 2, 2, 2}
       stretch         = TRUE
-      overlay_file    = "../Resources/composed/pan_down_arrow.png"
+      overlay_file    = "../Resources/composed/scrollbar_button_down_glyph.png"
       overlay_stretch = FALSE
       arrow_direction = DOWN
     }
@@ -1041,7 +1041,7 @@ style "default" {
       file            = "../Resources/composed/scrollbar_button_press_border.png"
       border          = {2, 2, 2, 2}
       stretch         = TRUE
-      overlay_file    = "../Resources/composed/pan_down_arrow.png"
+      overlay_file    = "../Resources/composed/scrollbar_button_down_glyph.png"
       overlay_stretch = FALSE
       arrow_direction = DOWN
     }
@@ -1052,7 +1052,7 @@ style "default" {
       file            = "../Resources/composed/scrollbar_button_border.png"
       border          = {2, 2, 2, 2}
       stretch         = TRUE
-      overlay_file    = "../Resources/composed/pan_down_arrow_inactive.png"
+      overlay_file    = "../Resources/composed/scrollbar_button_down_glyph_inactive.png"
       overlay_stretch = FALSE
       arrow_direction = DOWN
     }
@@ -1065,7 +1065,7 @@ style "default" {
       file            = "../Resources/composed/scrollbar_button_border.png"
       border          = {2, 2, 2, 2}
       stretch         = TRUE
-      overlay_file    = "../Resources/composed/pan_left_arrow.png"
+      overlay_file    = "../Resources/composed/scrollbar_button_left_glyph.png"
       overlay_stretch = FALSE
       arrow_direction = LEFT
     }
@@ -1076,7 +1076,7 @@ style "default" {
       file            = "../Resources/composed/scrollbar_button_border.png"
       border          = {2, 2, 2, 2}
       stretch         = TRUE
-      overlay_file    = "../Resources/composed/pan_left_arrow.png"
+      overlay_file    = "../Resources/composed/scrollbar_button_left_glyph.png"
       overlay_stretch = FALSE
       arrow_direction = LEFT
     }
@@ -1087,7 +1087,7 @@ style "default" {
       file            = "../Resources/composed/scrollbar_button_press_border.png"
       border          = {2, 2, 2, 2}
       stretch         = TRUE
-      overlay_file    = "../Resources/composed/pan_left_arrow.png"
+      overlay_file    = "../Resources/composed/scrollbar_button_left_glyph.png"
       overlay_stretch = FALSE
       arrow_direction = LEFT
     }
@@ -1098,7 +1098,7 @@ style "default" {
       file            = "../Resources/composed/scrollbar_button_border.png"
       border          = {2, 2, 2, 2}
       stretch         = TRUE
-      overlay_file    = "../Resources/composed/pan_left_arrow_inactive.png"
+      overlay_file    = "../Resources/composed/scrollbar_button_left_glyph_inactive.png"
       overlay_stretch = FALSE
       arrow_direction = LEFT
     }
@@ -1111,7 +1111,7 @@ style "default" {
       file            = "../Resources/composed/scrollbar_button_border.png"
       border          = {2, 2, 2, 2}
       stretch         = TRUE
-      overlay_file    = "../Resources/composed/pan_right_arrow.png"
+      overlay_file    = "../Resources/composed/scrollbar_button_right_glyph.png"
       overlay_stretch = FALSE
       arrow_direction = RIGHT
     }
@@ -1122,7 +1122,7 @@ style "default" {
       file            = "../Resources/composed/scrollbar_button_border.png"
       border          = {2, 2, 2, 2}
       stretch         = TRUE
-      overlay_file    = "../Resources/composed/pan_right_arrow.png"
+      overlay_file    = "../Resources/composed/scrollbar_button_right_glyph.png"
       overlay_stretch = FALSE
       arrow_direction = RIGHT
     }
@@ -1133,7 +1133,7 @@ style "default" {
       file            = "../Resources/composed/scrollbar_button_press_border.png"
       border          = {2, 2, 2, 2}
       stretch         = TRUE
-      overlay_file    = "../Resources/composed/pan_right_arrow.png"
+      overlay_file    = "../Resources/composed/scrollbar_button_right_glyph.png"
       overlay_stretch = FALSE
       arrow_direction = RIGHT
     }
@@ -1144,7 +1144,7 @@ style "default" {
       file            = "../Resources/composed/scrollbar_button_border.png"
       border          = {2, 2, 2, 2}
       stretch         = TRUE
-      overlay_file    = "../Resources/composed/pan_right_arrow_inactive.png"
+      overlay_file    = "../Resources/composed/scrollbar_button_right_glyph_inactive.png"
       overlay_stretch = FALSE
       arrow_direction = RIGHT
     }
