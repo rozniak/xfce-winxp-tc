@@ -1159,7 +1159,7 @@ style "default" {
     image {
       function    = BOX
       detail      = "trough-upper"
-      file        = "../Resources/gtk-2.0/scale_horz_trough_upper.png"
+      file        = "../Resources/composed/scale_horz_trough_upper.png"
       border      = {0, 2, 0, 0}
       stretch     = TRUE
       orientation = HORIZONTAL
@@ -1168,7 +1168,7 @@ style "default" {
     image {
       function    = BOX
       detail      = "trough-lower"
-      file        = "../Resources/gtk-2.0/scale_horz_trough_lower.png"
+      file        = "../Resources/composed/scale_horz_trough_lower.png"
       border      = {2, 0, 0, 0}
       stretch     = TRUE
       orientation = HORIZONTAL
@@ -1177,7 +1177,7 @@ style "default" {
     image {
       function    = BOX
       detail      = "trough-upper"
-      file        = "../Resources/gtk-2.0/scale_vert_trough_upper.png"
+      file        = "../Resources/composed/scale_vert_trough_upper.png"
       border      = {0, 0, 2, 0}
       stretch     = TRUE
       orientation = VERTICAL
@@ -1186,7 +1186,7 @@ style "default" {
     image {
       function    = BOX
       detail      = "trough-lower"
-      file        = "../Resources/gtk-2.0/scale_vert_trough_lower.png"
+      file        = "../Resources/composed/scale_vert_trough_lower.png"
       border      = {0, 0, 0, 2}
       stretch     = TRUE
       orientation = VERTICAL
@@ -1198,55 +1198,55 @@ style "default" {
       function = SLIDER
       state    = NORMAL
       detail   = "hscale"
-      file     = "../Resources/gtk-2.0/scale_horz_slider.png"
+      file     = "../Resources/composed/scale_horz_slider.png"
     }
 
     image {
       function = SLIDER
       state    = PRELIGHT
       detail   = "hscale"
-      file     = "../Resources/gtk-2.0/scale_horz_slider_hover.png"
+      file     = "../Resources/composed/scale_horz_slider.png"
     }
 
     image {
       function = SLIDER
       state    = ACTIVE
       detail   = "hscale"
-      file     = "../Resources/gtk-2.0/scale_horz_slider_press.png"
+      file     = "../Resources/composed/scale_horz_slider_press.png"
     }
 
     image {
       function = SLIDER
       state    = INSENSITIVE
       detail   = "hscale"
-      file     = "../Resources/gtk-2.0/scale_horz_slider_inactive.png"
+      file     = "../Resources/composed/scale_horz_slider_inactive.png"
     }
     image {
       function = SLIDER
       state    = NORMAL
       detail   = "vscale"
-      file     = "../Resources/gtk-2.0/scale_vert_slider.png"
+      file     = "../Resources/composed/scale_vert_slider.png"
     }
 
     image {
       function = SLIDER
       state    = PRELIGHT
       detail   = "vscale"
-      file     = "../Resources/gtk-2.0/scale_vert_slider_hover.png"
+      file     = "../Resources/composed/scale_vert_slider.png"
     }
 
     image {
       function = SLIDER
       state    = ACTIVE
       detail   = "vscale"
-      file     = "../Resources/gtk-2.0/scale_vert_slider_press.png"
+      file     = "../Resources/composed/scale_vert_slider_press.png"
     }
 
     image {
       function = SLIDER
       state    = INSENSITIVE
       detail   = "vscale"
-      file     = "../Resources/gtk-2.0/scale_vert_slider_inactive.png"
+      file     = "../Resources/composed/scale_vert_slider_inactive.png"
     }
 
     ###########
