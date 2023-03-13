@@ -1256,7 +1256,7 @@ style "default" {
     image {
       function = BOX
       detail   = "menubar"
-      file     = "../Resources/gtk-2.0/line.png"
+      file     = "../Resources/composed/line.png"
       border   = {0, 0, 0, 1}
     }
 
@@ -1268,13 +1268,13 @@ style "default" {
       function = BOX
       state    = PRELIGHT
       detail   = "menu_scroll_arrow_up"
-      file     = "../Resources/gtk-2.0/line.png"
+      file     = "../Resources/composed/line.png"
     }
 
     image {
       function = BOX
       detail   = "menu_scroll_arrow_up"
-      file     = "../Resources/gtk-2.0/line.png"
+      file     = "../Resources/composed/line.png"
       border   = {0, 0, 0, 1}
     }
 
@@ -1282,13 +1282,13 @@ style "default" {
       function = BOX
       state    = PRELIGHT
       detail   = "menu_scroll_arrow_down"
-      file     = "../Resources/gtk-2.0/line.png"
+      file     = "../Resources/composed/line.png"
     }
 
     image {
       function = BOX
       detail   = "menu_scroll_arrow_down"
-      file     = "../Resources/gtk-2.0/line.png"
+      file     = "../Resources/composed/line.png"
       border   = {0, 0, 1, 0}
     }
 
