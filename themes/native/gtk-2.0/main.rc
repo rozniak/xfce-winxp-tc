@@ -1353,10 +1353,10 @@ style "default" {
       function        = BOX
       state           = NORMAL
       detail          = "spinbutton_up"
-      file            = "../Resources/gtk-2.0/spin_button_up_background.png"
-      border          = {3, 4, 5, 0}
+      file            = "../Resources/composed/button.png"
+      border          = {2, 2, 2, 2}
       stretch         = TRUE
-      overlay_file    = "../Resources/gtk-2.0/spin_button_up_glyph.png"
+      overlay_file    = "../Resources/composed/spinbutton_up_glyph.png"
       overlay_stretch = FALSE
       direction       = LTR
     }
@@ -1365,10 +1365,10 @@ style "default" {
       function        = BOX
       state           = PRELIGHT
       detail          = "spinbutton_up"
-      file            = "../Resources/gtk-2.0/spin_button_up_hover_background.png"
-      border          = {3, 4, 5, 0}
+      file            = "../Resources/composed/button.png"
+      border          = {2, 2, 2, 2}
       stretch         = TRUE
-      overlay_file    = "../Resources/gtk-2.0/spin_button_up_hover_glyph.png"
+      overlay_file    = "../Resources/composed/spinbutton_up_glyph.png"
       overlay_stretch = FALSE
       direction       = LTR
     }
@@ -1377,10 +1377,10 @@ style "default" {
       function        = BOX
       state           = ACTIVE
       detail          = "spinbutton_up"
-      file            = "../Resources/gtk-2.0/spin_button_up_press_background.png"
-      border          = {3, 4, 5, 0}
+      file            = "../Resources/composed/button_press.png"
+      border          = {2, 2, 2, 2}
       stretch         = TRUE
-      overlay_file    = "../Resources/gtk-2.0/spin_button_up_press_glyph.png"
+      overlay_file    = "../Resources/composed/spinbutton_up_glyph.png"
       overlay_stretch = FALSE
       direction       = LTR
     }
@@ -1389,10 +1389,10 @@ style "default" {
       function        = BOX
       state           = INSENSITIVE
       detail          = "spinbutton_up"
-      file            = "../Resources/gtk-2.0/spin_button_up_inactive_background.png"
-      border          = {3, 4, 5, 0}
+      file            = "../Resources/composed/button.png"
+      border          = {2, 2, 2, 2}
       stretch         = TRUE
-      overlay_file    = "../Resources/gtk-2.0/spin_button_up_inactive_glyph.png"
+      overlay_file    = "../Resources/composed/spinbutton_up_glyph_inactive.png"
       overlay_stretch = FALSE
       direction       = LTR
     }
@@ -1403,10 +1403,10 @@ style "default" {
       function        = BOX
       state           = NORMAL
       detail          = "spinbutton_up"
-      file            = "../Resources/gtk-2.0/spin_button_up_background_rtl.png"
-      border          = {4, 3, 5, 0}
+      file            = "../Resources/composed/button.png"
+      border          = {2, 2, 2, 2}
       stretch         = TRUE
-      overlay_file    = "../Resources/gtk-2.0/spin_button_up_glyph.png"
+      overlay_file    = "../Resources/composed/spinbutton_up_glyph.png"
       overlay_stretch = FALSE
       direction       = RTL
     }
@@ -1415,10 +1415,10 @@ style "default" {
       function        = BOX
       state           = PRELIGHT
       detail          = "spinbutton_up"
-      file            = "../Resources/gtk-2.0/spin_button_up_hover_background_rtl.png"
-      border          = {4, 3, 5, 0}
+      file            = "../Resources/composed/button.png"
+      border          = {2, 2, 2, 2}
       stretch         = TRUE
-      overlay_file    = "../Resources/gtk-2.0/spin_button_up_hover_glyph.png"
+      overlay_file    = "../Resources/composed/spinbutton_up_glyph.png"
       overlay_stretch = FALSE
       direction       = RTL
     }
@@ -1427,10 +1427,10 @@ style "default" {
       function        = BOX
       state           = ACTIVE
       detail          = "spinbutton_up"
-      file            = "../Resources/gtk-2.0/spin_button_up_press_background_rtl.png"
-      border          = {4, 3, 5, 0}
+      file            = "../Resources/composed/button_press.png"
+      border          = {2, 2, 2, 2}
       stretch         = TRUE
-      overlay_file    = "../Resources/gtk-2.0/spin_button_up_press_glyph.png"
+      overlay_file    = "../Resources/composed/spinbutton_up_glyph.png"
       overlay_stretch = FALSE
       direction       = RTL
     }
@@ -1439,10 +1439,10 @@ style "default" {
       function        = BOX
       state           = INSENSITIVE
       detail          = "spinbutton_up"
-      file            = "../Resources/gtk-2.0/spin_button_up_inactive_background_rtl.png"
-      border          = {4, 3, 5, 0}
+      file            = "../Resources/composed/button.png"
+      border          = {2, 2, 2, 2}
       stretch         = TRUE
-      overlay_file    = "../Resources/gtk-2.0/spin_button_up_inactive_glyph.png"
+      overlay_file    = "../Resources/composed/spinbutton_up_glyph_inactive.png"
       overlay_stretch = FALSE
       direction       = RTL
     }
@@ -1453,10 +1453,10 @@ style "default" {
       function        = BOX
       state           = NORMAL
       detail          = "spinbutton_down"
-      file            = "../Resources/gtk-2.0/spin_button_down_background.png"
-      border          = {3, 4, 0, 5}
+      file            = "../Resources/composed/button.png"
+      border          = {2, 2, 2, 2}
       stretch         = TRUE
-      overlay_file    = "../Resources/gtk-2.0/spin_button_down_glyph.png"
+      overlay_file    = "../Resources/composed/spinbutton_down_glyph.png"
       overlay_stretch = FALSE
       direction       = LTR
     }
@@ -1465,10 +1465,10 @@ style "default" {
       function        = BOX
       state           = PRELIGHT
       detail          = "spinbutton_down"
-      file            = "../Resources/gtk-2.0/spin_button_down_hover_background.png"
-      border          = {3, 4, 0, 5}
+      file            = "../Resources/composed/button.png"
+      border          = {2, 2, 2, 2}
       stretch         = TRUE
-      overlay_file    = "../Resources/gtk-2.0/spin_button_down_hover_glyph.png"
+      overlay_file    = "../Resources/composed/spinbutton_down_glyph.png"
       overlay_stretch = FALSE
       direction       = LTR
     }
@@ -1477,10 +1477,10 @@ style "default" {
       function        = BOX
       state           = ACTIVE
       detail          = "spinbutton_down"
-      file            = "../Resources/gtk-2.0/spin_button_down_press_background.png"
-      border          = {3, 4, 0, 5}
+      file            = "../Resources/composed/button_press.png"
+      border          = {2, 2, 2, 2}
       stretch         = TRUE
-      overlay_file    = "../Resources/gtk-2.0/spin_button_down_press_glyph.png"
+      overlay_file    = "../Resources/composed/spinbutton_down_glyph.png"
       overlay_stretch = FALSE
       direction       = LTR
     }
@@ -1489,10 +1489,10 @@ style "default" {
       function        = BOX
       state           = INSENSITIVE
       detail          = "spinbutton_down"
-      file            = "../Resources/gtk-2.0/spin_button_down_inactive_background.png"
-      border          = {3, 4, 0, 5}
+      file            = "../Resources/composed/button.png"
+      border          = {2, 2, 2, 2}
       stretch         = TRUE
-      overlay_file    = "../Resources/gtk-2.0/spin_button_down_inactive_glyph.png"
+      overlay_file    = "../Resources/composed/spinbutton_down_glyph_inactive.png"
       overlay_stretch = FALSE
       direction       = LTR
     }
@@ -1503,10 +1503,10 @@ style "default" {
       function        = BOX
       state           = NORMAL
       detail          = "spinbutton_down"
-      file            = "../Resources/gtk-2.0/spin_button_down_background_rtl.png"
-      border          = {4, 3, 0, 5}
+      file            = "../Resources/composed/button.png"
+      border          = {2, 2, 2, 2}
       stretch         = TRUE
-      overlay_file    = "../Resources/gtk-2.0/spin_button_down_glyph.png"
+      overlay_file    = "../Resources/composed/spinbutton_down_glyph.png"
       overlay_stretch = FALSE
       direction       = RTL
     }
@@ -1515,10 +1515,10 @@ style "default" {
       function        = BOX
       state           = PRELIGHT
       detail          = "spinbutton_down"
-      file            = "../Resources/gtk-2.0/spin_button_down_hover_background_rtl.png"
-      border          = {4, 3, 0, 5}
+      file            = "../Resources/compsoed/button.png"
+      border          = {2, 2, 2, 2}
       stretch         = TRUE
-      overlay_file    = "../Resources/gtk-2.0/spin_button_down_hover_glyph.png"
+      overlay_file    = "../Resources/composed/spinbutton_down_glyph.png"
       overlay_stretch = FALSE
       direction       = RTL
     }
@@ -1527,10 +1527,10 @@ style "default" {
       function        = BOX
       state           = ACTIVE
       detail          = "spinbutton_down"
-      file            = "../Resources/gtk-2.0/spin_button_down_press_background_rtl.png"
-      border          = {4, 3, 0, 5}
+      file            = "../Resources/composed/button_press.png"
+      border          = {2, 2, 2, 2}
       stretch         = TRUE
-      overlay_file    = "../Resources/gtk-2.0/spin_button_down_press_glyph.png"
+      overlay_file    = "../Resources/composed/spinbutton_down_glyph.png"
       overlay_stretch = FALSE
       direction       = RTL
     }
@@ -1539,10 +1539,10 @@ style "default" {
       function        = BOX
       state           = INSENSITIVE
       detail          = "spinbutton_down"
-      file            = "../Resources/gtk-2.0/spin_button_down_inactive_background_rtl.png"
-      border          = {4, 3, 0, 5}
+      file            = "../Resources/composed/button.png"
+      border          = {2, 2, 2, 2}
       stretch         = TRUE
-      overlay_file    = "../Resources/gtk-2.0/spin_button_down_inactive_glyph.png"
+      overlay_file    = "../Resources/composed/spinbutton_down_glyph_inactive.png"
       overlay_stretch = FALSE
       direction       = RTL
     }
