@@ -1554,7 +1554,7 @@ style "default" {
     image {
       function    = BOX
       detail      = "bar"
-      file        = "../Resources/gtk-2.0/progress_horz_bar.png"
+      file        = "../Resources/composed/progress.png"
       stretch     = TRUE
       border      = {0, 0, 0, 0}
       orientation = HORIZONTAL
@@ -1563,7 +1563,7 @@ style "default" {
     image {
       function    = BOX
       detail      = "bar"
-      file        = "../Resources/gtk-2.0/progress_vert_bar.png"
+      file        = "../Resources/composed/progress.png"
       stretch     = TRUE
       border      = {0, 0, 0, 0}
       orientation = VERTICAL
