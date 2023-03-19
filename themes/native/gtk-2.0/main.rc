@@ -1941,8 +1941,8 @@ style "combobox_entry" {
       function  = SHADOW
       state     = NORMAL
       detail    = "entry"
-      file      = "../Resources/gtk-2.0/entry_borders.png"
-      border    = {1, 1, 1, 1}
+      file      = "../Resources/composed/entry_borders.png"
+      border    = {2, 2, 2, 2}
       stretch   = TRUE
       direction = LTR
     }
@@ -1951,8 +1951,8 @@ style "combobox_entry" {
       function  = SHADOW
       state     = ACTIVE
       detail    = "entry"
-      file      = "../Resources/gtk-2.0/entry_borders.png"
-      border    = {1, 1, 1, 1}
+      file      = "../Resources/composed/entry_borders.png"
+      border    = {2, 2, 2, 2}
       stretch   = TRUE
       direction = LTR
     }
@@ -1961,8 +1961,8 @@ style "combobox_entry" {
       function  = SHADOW
       state     = INSENSITIVE
       detail    = "entry"
-      file      = "../Resources/gtk-2.0/entry_inactive_borders.png"
-      border    = {1, 1, 1, 1}
+      file      = "../Resources/composed/entry_inactive_borders.png"
+      border    = {2, 2, 2, 2}
       stretch   = TRUE
       direction = LTR
     }
@@ -1975,8 +1975,8 @@ style "combobox_entry" {
       function  = SHADOW
       state     = NORMAL
       detail    = "entry"
-      file      = "../Resources/gtk-2.0/entry_borders.png"
-      border    = {1, 1, 1, 1}
+      file      = "../Resources/composed/entry_borders.png"
+      border    = {2, 2, 2, 2}
       stretch   = TRUE
       direction = RTL
     }
@@ -1985,8 +1985,8 @@ style "combobox_entry" {
       function  = SHADOW
       state     = ACTIVE
       detail    = "entry"
-      file      = "../Resources/gtk-2.0/entry_borders.png"
-      border    = {1, 1, 1, 1}
+      file      = "../Resources/composed/entry_borders.png"
+      border    = {2, 2, 2, 2}
       stretch   = TRUE
       direction = RTL
     }
@@ -1995,8 +1995,8 @@ style "combobox_entry" {
       function  = SHADOW
       state     = INSENSITIVE
       detail    = "entry"
-      file      = "../Resources/gtk-2.0/entry_inactive_borders.png"
-      border    = {1, 1, 1, 1}
+      file      = "../Resources/composed/entry_inactive_borders.png"
+      border    = {2, 2, 2, 2}
       stretch   = TRUE
       direction = RTL
     }
