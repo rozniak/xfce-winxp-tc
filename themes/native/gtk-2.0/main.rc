@@ -1842,7 +1842,7 @@ style "button" {
     image {
       function = BOX
       state    = NORMAL
-      file     = "../Resources/button_border.png"
+      file     = "../Resources/composed/button.png"
       border   = {3, 3, 3, 3}
       stretch  = TRUE
     }
@@ -1851,7 +1851,7 @@ style "button" {
       function = BOX
       state    = PRELIGHT
       shadow   = OUT
-      file     = "../Resources/button_border.png"
+      file     = "../Resources/composed/button.png"
       border   = {3, 3, 3, 3}
       stretch  = TRUE
     }
@@ -1859,7 +1859,7 @@ style "button" {
     image {
       function = BOX
       state    = SELECTED
-      file     = "../Resources/button_active_border.png"
+      file     = "../Resources/composed/button_active.png"
       border   = {3, 3, 3, 3}
       stretch  = TRUE
     }
@@ -1869,7 +1869,7 @@ style "button" {
       function = BOX
       state    = PRELIGHT
       shadow   = IN
-      file     = "../Resources/button_press_border.png"
+      file     = "../Resources/composed/button_press.png"
       border   = {3, 3, 3, 3}
       stretch  = TRUE
     }
@@ -1877,7 +1877,7 @@ style "button" {
     image {
       function = BOX
       state    = ACTIVE
-      file     = "../Resources/button_press_border.png"
+      file     = "../Resources/composed/button_press.png"
       border   = {3, 3, 3, 3}
       stretch  = TRUE
     }
@@ -1885,7 +1885,7 @@ style "button" {
     image {
       function = BOX
       state    = INSENSITIVE
-      file     = "../Resources/button_border.png"
+      file     = "../Resources/composed/button.png"
       border   = {3, 3, 3, 3}
       stretch  = TRUE
     }
