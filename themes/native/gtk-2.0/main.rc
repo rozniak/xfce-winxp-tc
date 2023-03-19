@@ -1667,7 +1667,7 @@ style "menu_item" {
       function        = CHECK
       state           = NORMAL
       shadow          = IN
-      overlay_file    = "../Resources/checkbox_check_glyph_menu.png"
+      overlay_file    = "../Resources/composed/checkbox_check_glyph_menu.png"
       overlay_stretch = FALSE
     }
 
@@ -1675,7 +1675,7 @@ style "menu_item" {
       function        = CHECK
       state           = PRELIGHT
       shadow          = IN
-      overlay_file    = "../Resources/checkbox_check_glyph_menu_hover.png"
+      overlay_file    = "../Resources/composed/checkbox_check_glyph_menu_hover.png"
       overlay_stretch = FALSE
     }
 
@@ -1683,7 +1683,7 @@ style "menu_item" {
       function        = CHECK
       state           = ACTIVE
       shadow          = IN
-      overlay_file    = "../Resources/checkbox_check_glyph_menu_hover.png"
+      overlay_file    = "../Resources/composed/checkbox_check_glyph_menu_hover.png"
       overlay_stretch = FALSE
     }
 
@@ -1691,7 +1691,7 @@ style "menu_item" {
       function        = CHECK
       state           = INSENSITIVE
       shadow          = IN
-      overlay_file    = "../Resources/checkbox_check_glyph_menu.png"
+      overlay_file    = "../Resources/composed/checkbox_check_glyph_menu.png"
       overlay_stretch = FALSE
     }
 
@@ -1699,7 +1699,7 @@ style "menu_item" {
       function        = CHECK
       state           = NORMAL
       shadow          = ETCHED_IN
-      overlay_file    = "../Resources/checkbox_check_glyph_menu.png"
+      overlay_file    = "../Resources/composed/checkbox_check_glyph_menu.png"
       overlay_stretch = FALSE
     }
 
@@ -1707,7 +1707,7 @@ style "menu_item" {
       function        = CHECK
       state           = PRELIGHT
       shadow          = ETCHED_IN
-      overlay_file    = "../Resources/checkbox_check_glyph_menu_hover.png"
+      overlay_file    = "../Resources/composed/checkbox_check_glyph_menu_hover.png"
       overlay_stretch = FALSE
     }
 
@@ -1715,7 +1715,7 @@ style "menu_item" {
       function        = CHECK
       state           = ACTIVE
       shadow          = ETCHED_IN
-      overlay_file    = "../Resources/checkbox_check_glyph_menu_hover.png"
+      overlay_file    = "../Resources/composed/checkbox_check_glyph_menu_hover.png"
       overlay_stretch = FALSE
     }
 
@@ -1723,7 +1723,7 @@ style "menu_item" {
       function        = CHECK
       state           = INSENSITIVE
       shadow          = ETCHED_IN
-      overlay_file    = "../Resources/checkbox_check_glyph_menu.png"
+      overlay_file    = "../Resources/composed/checkbox_check_glyph_menu.png"
       overlay_stretch = FALSE
     }
 
@@ -1747,7 +1747,7 @@ style "menu_item" {
       function        = OPTION
       state           = NORMAL
       shadow          = IN
-      overlay_file    = "../Resources/checkbox_check_glyph_menu.png"
+      overlay_file    = "../Resources/composed/checkbox_check_glyph_menu.png"
       overlay_stretch = FALSE
     }
 
@@ -1755,7 +1755,7 @@ style "menu_item" {
       function        = OPTION
       state           = PRELIGHT
       shadow          = IN
-      overlay_file    = "../Resources/checkbox_check_glyph_menu_hover.png"
+      overlay_file    = "../Resources/composed/checkbox_check_glyph_menu_hover.png"
       overlay_stretch = FALSE
     }
 
@@ -1763,7 +1763,7 @@ style "menu_item" {
       function        = OPTION
       state           = ACTIVE
       shadow          = IN
-      overlay_file    = "../Resources/checkbox_check_glyph_menu_hover.png"
+      overlay_file    = "../Resources/composed/checkbox_check_glyph_menu_hover.png"
       overlay_stretch = FALSE
     }
 
@@ -1771,7 +1771,7 @@ style "menu_item" {
       function        = OPTION
       state           = INSENSITIVE
       shadow          = IN
-      overlay_file    = "../Resources/checkbox_check_glyph_menu.png"
+      overlay_file    = "../Resources/composed/checkbox_check_glyph_menu.png"
       overlay_stretch = FALSE
     }
 
@@ -1779,7 +1779,7 @@ style "menu_item" {
       function        = OPTION
       state           = NORMAL
       shadow          = ETCHED_IN
-      overlay_file    = "../Resources/checkbox_check_glyph_menu.png"
+      overlay_file    = "../Resources/composed/checkbox_check_glyph_menu.png"
       overlay_stretch = FALSE
     }
 
@@ -1787,7 +1787,7 @@ style "menu_item" {
       function        = OPTION
       state           = PRELIGHT
       shadow          = ETCHED_IN
-      overlay_file    = "../Resources/checkbox_check_glyph_menu_hover.png"
+      overlay_file    = "../Resources/composed/checkbox_check_glyph_menu_hover.png"
       overlay_stretch = FALSE
     }
 
@@ -1795,7 +1795,7 @@ style "menu_item" {
       function        = OPTION
       state           = ACTIVE
       shadow          = ETCHED_IN
-      overlay_file    = "../Resources/checkbox_check_glyph_menu_hover.png"
+      overlay_file    = "../Resources/composed/checkbox_check_glyph_menu_hover.png"
       overlay_stretch = FALSE
     }
 
@@ -1803,7 +1803,7 @@ style "menu_item" {
       function        = OPTION
       state           = INSENSITIVE
       shadow          = ETCHED_IN
-      overlay_file    = "../Resources/checkbox_check_glyph_menu.png"
+      overlay_file    = "../Resources/composed/checkbox_check_glyph_menu.png"
       overlay_stretch = FALSE
     }
 
@@ -1821,7 +1821,7 @@ style "separator_menu_item" {
   engine "pixmap" {
     image {
       function = BOX
-      file     = "../Resources/gtk-2.0/line.png"
+      file     = "../Resources/composed/line.png"
     }
   }
 
