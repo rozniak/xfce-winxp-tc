@@ -1941,7 +1941,7 @@ style "combobox_entry" {
       function  = SHADOW
       state     = NORMAL
       detail    = "entry"
-      file      = "../Resources/composed/entry_borders.png"
+      file      = "../Resources/composed/entry_border.png"
       border    = {2, 2, 2, 2}
       stretch   = TRUE
       direction = LTR
@@ -1951,7 +1951,7 @@ style "combobox_entry" {
       function  = SHADOW
       state     = ACTIVE
       detail    = "entry"
-      file      = "../Resources/composed/entry_borders.png"
+      file      = "../Resources/composed/entry_border.png"
       border    = {2, 2, 2, 2}
       stretch   = TRUE
       direction = LTR
@@ -1961,7 +1961,7 @@ style "combobox_entry" {
       function  = SHADOW
       state     = INSENSITIVE
       detail    = "entry"
-      file      = "../Resources/composed/entry_inactive_borders.png"
+      file      = "../Resources/composed/entry_inactive_border.png"
       border    = {2, 2, 2, 2}
       stretch   = TRUE
       direction = LTR
@@ -1975,7 +1975,7 @@ style "combobox_entry" {
       function  = SHADOW
       state     = NORMAL
       detail    = "entry"
-      file      = "../Resources/composed/entry_borders.png"
+      file      = "../Resources/composed/entry_border.png"
       border    = {2, 2, 2, 2}
       stretch   = TRUE
       direction = RTL
@@ -1985,7 +1985,7 @@ style "combobox_entry" {
       function  = SHADOW
       state     = ACTIVE
       detail    = "entry"
-      file      = "../Resources/composed/entry_borders.png"
+      file      = "../Resources/composed/entry_border.png"
       border    = {2, 2, 2, 2}
       stretch   = TRUE
       direction = RTL
@@ -1995,99 +1995,12 @@ style "combobox_entry" {
       function  = SHADOW
       state     = INSENSITIVE
       detail    = "entry"
-      file      = "../Resources/composed/entry_inactive_borders.png"
+      file      = "../Resources/composed/entry_inactive_border.png"
       border    = {2, 2, 2, 2}
       stretch   = TRUE
       direction = RTL
     }
 
-    ##############
-    # LTR button #
-    ##############
-
-    #image {
-    #  function  = BOX
-    #  state     = NORMAL
-    #  detail    = "button"
-    #  file      = "assets/combo-entry-ltr-button.png"
-    #  border    = {0, 4, 4, 4}
-    #  stretch   = TRUE
-    #  direction = LTR
-    #}
-
-    #image {
-    #  function  = BOX
-    #  state     = PRELIGHT
-    #  detail    = "button"
-    #  file      = "assets/combo-entry-ltr-button-hover.png"
-    #  border    = {0, 4, 4, 4}
-    #  stretch   = TRUE
-    #  direction = LTR
-    #}
-
-    #image {
-    #  function  = BOX
-    #  state     = ACTIVE
-    #  detail    = "button"
-    #  file      = "assets/combo-entry-ltr-button-active.png"
-    #  border    = {0, 4, 4, 4}
-    #  stretch   = TRUE
-    #  direction = LTR
-    #}
-
-    #image {
-    #  function  = BOX
-    #  state     = INSENSITIVE
-    #  detail    = "button"
-    #  file      = "assets/combo-entry-ltr-button-insensitive.png"
-    #  border    = {0, 4, 4, 4}
-    #  stretch   = TRUE
-    #  direction = LTR
-    #}
-
-    ##############
-    # RTL button #
-    ##############
-
-    #image {
-    #  function  = BOX
-    #  state     = NORMAL
-    #  detail    = "button"
-    #  file      = "assets/combo-entry-rtl-button.png"
-    #  border    = {4, 0, 4, 4}
-    #  stretch   = TRUE
-    #  direction = RTL
-    #}
-
-    #image {
-    #  function  = BOX
-    #  state     = PRELIGHT
-    #  detail    = "button"
-    #  file      = "assets/combo-entry-rtl-button-hover.png"
-    #  border    = {4, 0, 4, 4}
-    #  stretch   = TRUE
-    #  direction = RTL
-    #}
-
-    #image {
-    #  function  = BOX
-    #  state     = ACTIVE
-    #  detail    = "button"
-    #  file      = "assets/combo-entry-rtl-button-active.png"
-    #  border    = {4, 0, 4, 4}
-    #  stretch   = TRUE
-    #  direction = RTL
-    #}
-
-    #image {
-    #  function  = BOX
-    #  state     = INSENSITIVE
-    #  detail    = "button"
-    #  file      = "assets/combo-entry-rtl-button-insensitive.png"
-    #  border    = {4, 0, 4, 4}
-    #  stretch   = TRUE
-    #  direction = RTL
-    #}
 
   }
 
@@ -2128,8 +2041,8 @@ style "notebook_entry" {
       function = SHADOW
       state    = ACTIVE
       detail   = "entry"
-      file     = "../Resources/gtk-2.0/enrty_borders.png"
-      border   = {1, 1, 1, 1}
+      file     = "../Resources/composed/enrty_border.png"
+      border   = {2, 2, 2, 2}
       stretch  = TRUE
     }
 
@@ -2137,16 +2050,16 @@ style "notebook_entry" {
       function = SHADOW
       state    = INSENSITIVE
       detail   = "entry"
-      file     = "../Resources/gtk-2.0/entry_inactive_borders.png"
-      border   = {1, 1, 1, 1}
+      file     = "../Resources/composed/entry_inactive_border.png"
+      border   = {2, 2, 2, 2}
       stretch  = TRUE
     }
 
     image {
       function = SHADOW
       detail   = "entry"
-      file     = "../Resources/gtk-2.0/entry_borders.png"
-      border   = {1, 1, 1, 1}
+      file     = "../Resources/composed/entry_border.png"
+      border   = {2, 2, 2, 2}
       stretch  = TRUE
     }
   }
@@ -2166,8 +2079,8 @@ style "normal_entry" {
       function = SHADOW
       state    = ACTIVE
       detail   = "entry"
-      file     = "../Resources/entry_borders.png"
-      border   = {1, 1, 1, 1}
+      file     = "../Resources/composed/entry_border.png"
+      border   = {2, 2, 2, 2}
       stretch  = TRUE
     }
 
@@ -2175,16 +2088,16 @@ style "normal_entry" {
       function = SHADOW
       state    = INSENSITIVE
       detail   = "entry"
-      file     = "../Resources/entry_inactive_borders.png"
-      border   = {1, 1, 1, 1}
+      file     = "../Resources/composed/entry_inactive_border.png"
+      border   = {2, 2, 2, 2}
       stretch  = TRUE
     }
 
     image {
       function = SHADOW
       detail   = "entry"
-      file     = "../Resources/entry_borders.png"
-      border   = {1, 1, 1, 1}
+      file     = "../Resources/composed/entry_border.png"
+      border   = {2, 2, 2, 2}
       stretch  = TRUE
     }
   }
@@ -2202,8 +2115,8 @@ style "notebook_combo" {
       function  = SHADOW
       state     = NORMAL
       detail    = "entry"
-      file      = "../Resources/gtk-2.0/entry_borders.png"
-      border    = {1, 1, 1, 1}
+      file      = "../Resources/composed/entry_border.png"
+      border    = {2, 2, 2, 2}
       stretch   = TRUE
       direction = LTR
     }
@@ -2212,8 +2125,8 @@ style "notebook_combo" {
       function  = SHADOW
       state     = ACTIVE
       detail    = "entry"
-      file      = "../Resources/gtk-2.0/entry_borders.png"
-      border    = {1, 1, 1, 1}
+      file      = "../Resources/composed/entry_border.png"
+      border    = {2, 2, 2, 2}
       stretch   = TRUE
       direction = LTR
     }
@@ -2222,8 +2135,8 @@ style "notebook_combo" {
       function  = SHADOW
       state     = INSENSITIVE
       detail    = "entry"
-      file      = "../Resources/gtk-2.0/entry_inactive_borders.png"
-      border    = {1, 1, 1, 1}
+      file      = "../Resources/composed/entry_inactive_border.png"
+      border    = {2, 2, 2, 2}
       stretch   = TRUE
       direction = LTR
     }
@@ -2236,7 +2149,7 @@ style "notebook_combo" {
       function  = SHADOW
       state     = NORMAL
       detail    = "entry"
-      file      = "../Resources/gtk-2.0/entry_borders.png"
+      file      = "../Resources/composed/entry_border.png"
       border    = {1, 1, 1, 1}
       stretch   = TRUE
       direction = RTL
@@ -2246,8 +2159,8 @@ style "notebook_combo" {
       function  = SHADOW
       state     = ACTIVE
       detail    = "entry"
-      file      = "../Resources/gtk-2.0/entry_borders.png"
-      border    = {1, 1, 1, 1}
+      file      = "../Resources/composed/entry_border.png"
+      border    = {2, 2, 2, 2}
       stretch   = TRUE
       direction = RTL
     }
@@ -2256,8 +2169,8 @@ style "notebook_combo" {
       function  = SHADOW
       state     = INSENSITIVE
       detail    = "entry"
-      file      = "../Resources/gtk-2.0/entry_inactive_borders.png"
-      border    = {1, 1, 1, 1}
+      file      = "../Resources/composed/entry_inactive_border.png"
+      border    = {2, 2, 2, 2}
       stretch   = TRUE
       direction = RTL
     }
@@ -2277,7 +2190,7 @@ style "scale_horz" {
     image {
       function    = BOX
       detail      = "trough-upper"
-      file        = "../Resources/gtk-2.0/scale_horz_trough_upper.png"
+      file        = "../Resources/composed/scale_horz_trough_upper.png"
       border      = {0, 2, 0, 0}
       stretch     = TRUE
     }
@@ -2285,7 +2198,7 @@ style "scale_horz" {
     image {
       function    = BOX
       detail      = "trough-lower"
-      file        = "../Resources/gtk-2.0/scale_horz_trough_lower.png"
+      file        = "../Resources/composed/scale_horz_trough_lower.png"
       border      = {2, 0, 0, 0}
       stretch     = TRUE
     }
@@ -2301,7 +2214,7 @@ style "scale_vert" {
     image {
       function    = BOX
       detail      = "trough-upper"
-      file        = "../Resources/gtk-2.0/scale_vert_trough_upper.png"
+      file        = "../Resources/composed/scale_vert_trough_upper.png"
       border      = {0, 0, 2, 0}
       stretch     = TRUE
     }
@@ -2309,7 +2222,7 @@ style "scale_vert" {
     image {
       function    = BOX
       detail      = "trough-lower"
-      file        = "../Resources/gtk-2.0/scale_vert_trough_lower.png"
+      file        = "../Resources/composed/scale_vert_trough_lower.png"
       border      = {0, 0, 0, 2}
       stretch     = TRUE
     }
@@ -2328,8 +2241,8 @@ style "progressbar" {
     image {
       function    = BOX
       detail      = "trough"
-      file        = "../Resources/gtk-2.0/progress_horz_trough.png"
-      border      = {4, 3, 4, 3}
+      file        = "../Resources/composed/progress_trough.png"
+      border      = {1, 1, 1, 1}
       stretch     = TRUE
       orientation = HORIZONTAL
     }
@@ -2337,8 +2250,8 @@ style "progressbar" {
     image {
       function    = BOX
       detail      = "trough"
-      file        = "../Resources/gtk-2.0/progress_vert_trough.png"
-      border      = {4, 3, 4, 3}
+      file        = "../Resources/composed/progress_trough.png"
+      border      = {1, 1, 1, 1}
       stretch     = TRUE
       orientation = VERTICAL
     }
