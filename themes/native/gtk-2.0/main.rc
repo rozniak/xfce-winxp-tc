@@ -2276,7 +2276,7 @@ style "treeview_header" {
 
     image {
       function  = BOX
-      file      = "../Resources/gtk-2.0/treeview_separator.png"
+      file      = "../Resources/composed/treeview_separator.png"
       border    = {0, 1, 0, 1}
       stretch   = TRUE
       direction = LTR
@@ -2284,7 +2284,7 @@ style "treeview_header" {
 
     image {
       function  = BOX
-      file      = "../Resources/gtk-2.0/treeview_separator_rtl.png"
+      file      = "../Resources/composed/treeview_separator_rtl.png"
       border    = {1, 0, 0, 1}
       stretch   = TRUE
       direction = RTL
@@ -2293,7 +2293,7 @@ style "treeview_header" {
     image {
       function        = ARROW
       state           = NORMAL
-      overlay_file    = "../Resources/gtk-2.0/pan_up_arrow.png"
+      overlay_file    = "../Resources/composed/pan_up_arrow.png"
       overlay_stretch = FALSE
       arrow_direction = UP
     }
@@ -2301,7 +2301,7 @@ style "treeview_header" {
     image {
       function        = ARROW
       state           = PRELIGHT
-      overlay_file    = "../Resources/gtk-2.0/pan_up_arrow_hover.png"
+      overlay_file    = "../Resources/composed/pan_up_arrow_hover.png"
       overlay_stretch = FALSE
       arrow_direction = UP
     }
@@ -2309,7 +2309,7 @@ style "treeview_header" {
     image {
       function        = ARROW
       state           = ACTIVE
-      overlay_file    = "../Resources/gtk-2.0/pan_up_arrow.png"
+      overlay_file    = "../Resources/composed/pan_up_arrow.png"
       overlay_stretch = FALSE
       arrow_direction = UP
     }
@@ -2317,7 +2317,7 @@ style "treeview_header" {
     image {
       function        = ARROW
       state           = NORMAL
-      overlay_file    = "../Resources/gtk-2.0/pan_down_arrow.png.png"
+      overlay_file    = "../Resources/composed/pan_down_arrow.png.png"
       overlay_stretch = FALSE
       arrow_direction = DOWN
     }
@@ -2325,7 +2325,7 @@ style "treeview_header" {
     image {
       function        = ARROW
       state           = PRELIGHT
-      overlay_file    = "../Resources/gtk-2.0/pan_down_arrow_hover.png"
+      overlay_file    = "../Resources/composed/pan_down_arrow_hover.png"
       overlay_stretch = FALSE
       arrow_direction = DOWN
     }
@@ -2333,7 +2333,7 @@ style "treeview_header" {
     image {
       function        = ARROW
       state           = ACTIVE
-      overlay_file    = "../Resources/gtk-2.0/pan_down_arrow.png"
+      overlay_file    = "../Resources/composed/pan_down_arrow.png"
       overlay_stretch = FALSE
       arrow_direction = DOWN
     }
@@ -2347,7 +2347,7 @@ style "scrolled_window" {
   engine "pixmap" {
     image {
       function = SHADOW
-      file     = "../Resources/gtk-2.0/frame.png"
+      file     = "../Resources/composed/frame.png"
       border   = {1, 1, 1, 1}
       stretch  = TRUE
     }
@@ -2366,18 +2366,18 @@ style "frame" {
 
     image {
       function = SHADOW
-      file     = "../Resources/gtk-2.0/frame.png"
+      file     = "../Resources/composed/frame.png"
       border   = {1, 1, 1, 1}
       stretch  = TRUE
     }
 
     image {
       function       = SHADOW_GAP
-      file           = "../Resources/gtk-2.0/frame.png"
+      file           = "../Resources/composed/frame.png"
       border         = {1, 1, 1, 1}
       stretch        = TRUE
-      gap_start_file = "../Resources/gtk-2.0/border.png"
-      gap_end_file   = "../Resources/gtk-2.0/border.png"
+      gap_start_file = "../Resources/composed/border.png"
+      gap_end_file   = "../Resources/composed/border.png"
     }
 
   }
@@ -2394,8 +2394,8 @@ style "toolbar_button" {
       function = BOX
       state    = PRELIGHT
       shadow   = OUT
-      file     = "../Resources/gtk-2.0/button_toolbar_hover.png"
-      border   = {4, 4, 4, 4}
+      file     = "../Resources/composed/button_toolbar_hover.png"
+      border   = {3, 3, 3, 3}
       stretch  = TRUE
     }
 
@@ -2403,16 +2403,16 @@ style "toolbar_button" {
       function = BOX
       state    = PRELIGHT
       shadow   = IN
-      file     = "../Resources/gtk-2.0/button_toolbar_press.png"
-      border   = {4, 4, 4, 4}
+      file     = "../Resources/composed/button_toolbar_press.png"
+      border   = {3, 3, 3, 3}
       stretch  = TRUE
     }
 
     image {
       function = BOX
       state    = ACTIVE
-      file     = "../Resources/gtk-2.0/button_toolbar_press.png"
-      border   = {4, 4, 4, 4}
+      file     = "../Resources/composed/button_toolbar_press.png"
+      border   = {3, 3, 3, 3}
       stretch  = TRUE
     }
   }
@@ -2428,7 +2428,7 @@ style "toolbar_separator" {
   engine "pixmap" {
     image {
       function = BOX
-      file     = "../Resources/gtk-2.0/line.png"
+      file     = "../Resources/composed/line.png"
     }
   }
 
@@ -2441,8 +2441,8 @@ style "inline_toolbar" {
   engine "pixmap" {
     image {
       function = SHADOW
-      file     = "../Resources/gtk-2.0/frame_inline.png"
-      border   = {1, 1, 0, 1}
+      file     = "../Resources/composed/frame.png"
+      border   = {1, 1, 1, 1}
       stretch  = TRUE
     }
   }
