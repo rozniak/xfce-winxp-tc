@@ -21,6 +21,12 @@ notebook
             {
                 @include __wintc_apply_props($notebook_header_top_styles);
 
+                $l_border_left:  __wintc_get_prop($notebook_header_top_styles, "border-left-width");
+                $l_border_right: __wintc_get_prop($notebook_header_top_styles, "border-right-width");
+
+                padding-left:  calc(#{$l_border_left}  * -1);
+                padding-right: calc(#{$l_border_right} * -1);
+
                 > tabs > tab
                 {
                     @include __wintc_apply_props($notebook_tab_top_styles);
@@ -45,6 +51,12 @@ notebook
             &.bottom
             {
                 @include __wintc_apply_props($notebook_header_bottom_styles);
+
+                $l_border_left:  __wintc_get_prop($notebook_header_bottom_styles, "border-left-width");
+                $l_border_right: __wintc_get_prop($notebook_header_bottom_styles, "border-right-width");
+
+                padding-left:  calc(#{$l_border_left}  * -1);
+                padding-right: calc(#{$l_border_right} * -1);
 
                 > tabs > tab
                 {
@@ -71,6 +83,12 @@ notebook
             {
                 @include __wintc_apply_props($notebook_header_left_styles);
 
+                $l_border_bottom: __wintc_get_prop($notebook_header_left_styles, "border-bottom-width");
+                $l_border_top:    __wintc_get_prop($notebook_header_left_styles, "border-top-width");
+
+                padding-bottom: calc(#{$l_border_bottom} * -1);
+                padding-top:    calc(#{$l_border_top}    * -1);
+
                 > tabs > tab
                 {
                     @include __wintc_apply_props($notebook_tab_left_styles);
@@ -95,6 +113,12 @@ notebook
             &.right
             {
                 @include __wintc_apply_props($notebook_header_right_styles);
+
+                $l_border_bottom: __wintc_get_prop($notebook_header_right_styles, "border-bottom-width");
+                $l_border_top:    __wintc_get_prop($notebook_header_right_styles, "border-top-width");
+
+                padding-bottom: calc(#{$l_border_bottom} * -1);
+                padding-top:    calc(#{$l_border_top}    * -1);
 
                 > tabs > tab
                 {
