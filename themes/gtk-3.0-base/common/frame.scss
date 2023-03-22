@@ -18,9 +18,7 @@ frame > border,
 
     &.flat
     {
-        border-image: url("../Resources/frame_border.png") 3 stretch;
-        border-style: solid;
-        border-width: 3px;
+        border-style: none;
     }
 }
 
@@ -28,8 +26,7 @@ frame
 {
     > label
     {
-        color:   $frame_label_color;
-        padding: 0px 5px;
+        @include __wintc_apply_props($frame_label_styles);
     }
 }
 

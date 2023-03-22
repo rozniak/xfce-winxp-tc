@@ -11,6 +11,21 @@ $separator_thickness: 2px !default;
 
 
 //
+// FRAME
+//
+$frame_label_styles:
+    wintc_define_props_box(
+        $frame_label_styles,
+        true,
+        padding,
+        0,
+        5,
+        0,
+        5
+    );
+
+
+//
 // SEPARATOR
 //
 $separator_styles:
