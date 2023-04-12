@@ -54,7 +54,15 @@ static void wintc_npwrdlg_dialog_init(
     WinTCNewPwrDlgDialog* self
 )
 {
+    gtk_window_set_decorated(GTK_WINDOW(self), FALSE);
     gtk_window_set_title(GTK_WINDOW(self), _("Shutdown Windows"));
+
+    // Populate window
+    //
+    GtkBuilder* builder = gtk_builder_new_from_resource("/uk/oddmatics/wintc/npwrdlg/pwropts.ui");
+    GtkWidget*  main_box = GTK_WIDGET(gtk_builder_get_object(builder, "main-box"));
+
+    gtk_container_add(GTK_CONTAINER(self), main_box);
 }
 
 //
