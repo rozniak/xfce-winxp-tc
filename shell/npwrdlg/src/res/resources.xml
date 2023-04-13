@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
   <gresource prefix="/uk/oddmatics/wintc/npwrdlg">
-    <file>pwropts.ui</file>
     <file>appstyles.css</file>
+    <file>pwropts.ui</file>
+    <file>usropts.ui</file>
   </gresource>
 </gresources>

@@ -32,7 +32,7 @@
           <object class="GtkLabel">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
-            <property name="label" translatable="yes">Turn off computer</property>
+            <property name="label" translatable="yes">Log Off Windows</property>
             <style>
               <class name="title"/>
             </style>
@@ -82,12 +82,12 @@
             <property name="can-focus">False</property>
             <child>
               <object class="GtkButton">
-                <property name="label" translatable="yes">Stand By</property>
+                <property name="label" translatable="yes">Switch User</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
                 <style>
-                  <class name="standby"/>
+                  <class name="switch-user"/>
                 </style>
               </object>
               <packing>
@@ -98,34 +98,18 @@
             </child>
             <child>
               <object class="GtkButton">
-                <property name="label" translatable="yes">Turn Off</property>
+                <property name="label" translatable="yes">Log Off</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
                 <style>
-                  <class name="turn-off"/>
+                  <class name="log-off"/>
                 </style>
               </object>
               <packing>
                 <property name="expand">True</property>
                 <property name="fill">False</property>
                 <property name="position">1</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkButton">
-                <property name="label" translatable="yes">Restart</property>
-                <property name="visible">True</property>
-                <property name="can-focus">True</property>
-                <property name="receives-default">True</property>
-                <style>
-                  <class name="restart"/>
-                </style>
-              </object>
-              <packing>
-                <property name="expand">True</property>
-                <property name="fill">False</property>
-                <property name="position">2</property>
               </packing>
             </child>
           </object>

@@ -23,7 +23,11 @@ GType wintc_npwrdlg_dialog_get_type(void) G_GNUC_CONST;
 //
 // PUBLIC FUNCTIONS
 //
-GtkWidget* wintc_npwrdlg_dialog_new(
+GtkWidget* wintc_npwrdlg_dialog_new_for_power_options(
+    WinTCNewPwrDlgApplication* app
+);
+
+GtkWidget* wintc_npwrdlg_dialog_new_for_user_options(
     WinTCNewPwrDlgApplication* app
 );
 

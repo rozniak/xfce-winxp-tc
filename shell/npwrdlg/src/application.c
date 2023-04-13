@@ -136,7 +136,7 @@ static void wintc_npwrdlg_application_startup(
 
     // Spawn dialog
     //
-    GtkWidget* wnd = wintc_npwrdlg_dialog_new(pwr_app);
+    GtkWidget* wnd = wintc_npwrdlg_dialog_new_for_power_options(pwr_app);
 
     gtk_widget_show_all(wnd);
 }
