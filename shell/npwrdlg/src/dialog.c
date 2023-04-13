@@ -1,5 +1,6 @@
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
+#include <wintc-comgtk.h>
 
 #include "application.h"
 #include "dialog.h"
@@ -57,10 +58,16 @@ static void wintc_npwrdlg_dialog_init(
     gtk_window_set_decorated(GTK_WINDOW(self), FALSE);
     gtk_window_set_title(GTK_WINDOW(self), _("Shutdown Windows"));
 
+    wintc_widget_add_style_class(GTK_WIDGET(self), "npwrdlg");
+
     // Populate window
     //
-    GtkBuilder* builder = gtk_builder_new_from_resource("/uk/oddmatics/wintc/npwrdlg/pwropts.ui");
-    GtkWidget*  main_box = GTK_WIDGET(gtk_builder_get_object(builder, "main-box"));
+    GtkBuilder* builder  = gtk_builder_new_from_resource(
+                               "/uk/oddmatics/wintc/npwrdlg/pwropts.ui"
+                           );
+    GtkWidget*  main_box = GTK_WIDGET(
+                               gtk_builder_get_object(builder, "main-box")
+                           );
 
     gtk_container_add(GTK_CONTAINER(self), main_box);
 }

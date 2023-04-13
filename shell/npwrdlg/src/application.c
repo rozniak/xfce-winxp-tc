@@ -119,6 +119,23 @@ static void wintc_npwrdlg_application_startup(
 
     (G_APPLICATION_CLASS(wintc_npwrdlg_application_parent_class))->startup(application);
 
+    // Add CSS to screen
+    //
+    GtkCssProvider* styles = gtk_css_provider_new();
+
+    gtk_css_provider_load_from_resource(
+        styles,
+        "/uk/oddmatics/wintc/npwrdlg/appstyles.css"
+    );
+
+    gtk_style_context_add_provider_for_screen(
+        gdk_screen_get_default(),
+        GTK_STYLE_PROVIDER(styles),
+        GTK_STYLE_PROVIDER_PRIORITY_FALLBACK
+    );
+
+    // Spawn dialog
+    //
     GtkWidget* wnd = wintc_npwrdlg_dialog_new(pwr_app);
 
     gtk_widget_show_all(wnd);

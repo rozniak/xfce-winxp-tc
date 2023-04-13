@@ -2,5 +2,6 @@
 <gresources>
   <gresource prefix="/uk/oddmatics/wintc/npwrdlg">
     <file>pwropts.ui</file>
+    <file>appstyles.css</file>
   </gresource>
 </gresources>
