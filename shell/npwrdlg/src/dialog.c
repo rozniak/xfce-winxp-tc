@@ -1,3 +1,4 @@
+#include <gio/gio.h>
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
 #include <wintc-comgtk.h>
@@ -54,6 +55,15 @@ static void wintc_npwrdlg_dialog_set_property(
     GParamSpec*   pspec
 );
 
+static void on_cancel_button_clicked(
+    GtkButton* button,
+    gpointer   user_data
+);
+static void on_window_destroyed(
+    GtkWidget* widget,
+    gpointer   user_data
+);
+
 //
 // GTK TYPE DEFINITION & CTORS
 //
@@ -96,6 +106,13 @@ static void wintc_npwrdlg_dialog_init(
     gtk_window_set_title(GTK_WINDOW(self), _("Shutdown Windows"));
 
     wintc_widget_add_style_class(GTK_WIDGET(self), "npwrdlg");
+
+    g_signal_connect(
+        GTK_WIDGET(self),
+        "destroy",
+        G_CALLBACK(on_window_destroyed),
+        NULL
+    );
 
     //
     // Window population is done via set_property as we need to determine
@@ -149,6 +166,18 @@ static void wintc_npwrdlg_dialog_set_property(
                     break;
             }
 
+            gtk_builder_add_callback_symbols(
+                builder,
+                "on_cancel_button_clicked",
+                G_CALLBACK(on_cancel_button_clicked),
+                NULL
+            );
+
+            gtk_builder_connect_signals(
+                builder,
+                NULL
+            );
+
             main_box = GTK_WIDGET(gtk_builder_get_object(builder, "main-box"));
 
             gtk_container_add(GTK_CONTAINER(dlg), main_box);
@@ -192,4 +221,30 @@ GtkWidget* wintc_npwrdlg_dialog_new_for_user_options(
             NULL
         )
     );
+}
+
+//
+// CALLBACKS
+//
+static void on_cancel_button_clicked(
+    GtkButton* button,
+    WINTC_UNUSED(gpointer user_data)
+)
+{
+    GtkWidget* toplevel = gtk_widget_get_toplevel(GTK_WIDGET(button));
+
+    if (GTK_IS_WINDOW(toplevel))
+    {
+        gtk_window_close(GTK_WINDOW(toplevel));
+    }
+}
+
+static void on_window_destroyed(
+    GtkWidget* widget,
+    WINTC_UNUSED(gpointer user_data)
+)
+{
+    GtkApplication* app = gtk_window_get_application(GTK_WINDOW(widget));
+
+    g_application_quit(G_APPLICATION(app));
 }

@@ -8,6 +8,7 @@ project(
 
 find_package(PkgConfig REQUIRED)
 
+pkg_check_modules(GIO          REQUIRED gio-2.0)
 pkg_check_modules(GLIB         REQUIRED glib-2.0)
 pkg_check_modules(GTK3         REQUIRED gtk+-3.0)
 pkg_check_modules(WINTC_COMGTK REQUIRED wintc-comgtk)
@@ -69,6 +70,7 @@ target_compile_options(
 target_include_directories(
     npwrdlg
     SYSTEM
+    PRIVATE ${GIO_INCLUDE_DIRS}
     PRIVATE ${GLIB_INCLUDE_DIRS}
     PRIVATE ${GTK3_INCLUDE_DIRS}
     PRIVATE ${WINTC_COMGTK_INCLUDE_DIRS}
@@ -76,6 +78,7 @@ target_include_directories(
 
 target_link_directories(
     npwrdlg
+    PRIVATE ${GIO_LIBRARY_DIRS}
     PRIVATE ${GLIB_LIBRARY_DIRS}
     PRIVATE ${GTK3_LIBRARY_DIRS}
     PRIVATE ${WINTC_COMGTK_LIBRARY_DIRS}
@@ -83,6 +86,7 @@ target_link_directories(
 
 target_link_libraries(
     npwrdlg
+    PRIVATE ${GIO_LIBRARIES}
     PRIVATE ${GLIB_LIBRARIES}
     PRIVATE ${GTK3_LIBRARIES}
     PRIVATE ${WINTC_COMGTK_LIBRARIES}
