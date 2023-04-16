@@ -1,9 +1,38 @@
 #include <glib.h>
+#include <glib/gi18n.h>
 #include <gtk/gtk.h>
 #include <wintc-comgtk.h>
 
 #include "application.h"
 #include "dialog.h"
+
+//
+// STATIC DATA
+//
+static gboolean s_cmd_pwropts = FALSE;
+static gboolean s_cmd_usropts = FALSE;
+
+static const GOptionEntry s_option_entries[] = {
+    {
+        "power-options",
+        'p',
+        G_OPTION_FLAG_NONE,
+        G_OPTION_ARG_NONE,
+        &s_cmd_pwropts,
+        N_("Display power options dialog"),
+        NULL
+    },
+    {
+        "user-options",
+        'u',
+        G_OPTION_FLAG_NONE,
+        G_OPTION_ARG_NONE,
+        &s_cmd_usropts,
+        N_("Display user options dialog"),
+        NULL
+    },
+    { NULL }
+};
 
 //
 // GTK OOP CLASS/INSTANCE DEFINITIONS
@@ -65,8 +94,14 @@ static void wintc_npwrdlg_application_class_init(
 }
 
 static void wintc_npwrdlg_application_init(
-    WINTC_UNUSED(WinTCNewPwrDlgApplication* self)
-) {}
+    WinTCNewPwrDlgApplication* self
+)
+{
+    g_application_add_main_option_entries(
+        G_APPLICATION(self),
+        s_option_entries
+    );
+}
 
 //
 // FINALIZE
@@ -136,7 +171,16 @@ static void wintc_npwrdlg_application_startup(
 
     // Spawn dialog
     //
-    GtkWidget* wnd = wintc_npwrdlg_dialog_new_for_power_options(pwr_app);
+    GtkWidget* wnd;
+
+    if (s_cmd_usropts)
+    {
+        wnd = wintc_npwrdlg_dialog_new_for_user_options(pwr_app);
+    }
+    else
+    {
+        wnd = wintc_npwrdlg_dialog_new_for_power_options(pwr_app);
+    }
 
     gtk_widget_show_all(wnd);
 }
