@@ -337,6 +337,20 @@ $start_menu_programs_separator_styles:
         linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(211,211,200,1) 25%, rgba(211,211,200,1) 50%, rgba(211,211,200,1) 75%, rgba(255,255,255,1) 100%)
     );
 
+$start_menu_programs_menuitem_mime_prgtxt_styles:
+    wintc_define_props_fg(
+        $start_menu_programs_menuitem_mime_prgtxt_styles,
+        false,
+        #808080,
+        undefined
+    );
+$start_menu_programs_menuitem_mime_hover_styles:
+    wintc_define_props_fg(
+        $start_menu_programs_menuitem_mime_hover_styles,
+        false,
+        $selected_fg_color,
+        undefined
+    );
 
 //
 // 'ALL PROGRAMS' MENU ITEM
