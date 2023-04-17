@@ -387,6 +387,44 @@ $start_menu_allprograms_menuitem_styles:
 
 
 //
+// START MENU POPUP MENU
+//
+$start_menu_popup_menu_styles:
+    wintc_define_props_borders(
+        $start_menu_popup_menu_styles,
+        false,
+        solid,
+        1,
+        1,
+        1,
+        6,
+        undefined,
+        url('../Resources/start_menu_item.png')
+    );
+
+$start_menu_popup_menu_menuitem_styles:
+    wintc_define_props_box(
+        $start_menu_popup_menu_menuitem_styles,
+        false,
+        margin,
+        0,
+        1,
+        0,
+        6
+    );
+$start_menu_popup_menu_menuitem_styles:
+    wintc_define_props_box(
+        $start_menu_popup_menu_menuitem_styles,
+        false,
+        padding,
+        3,
+        0,
+        2,
+        12
+    );
+
+
+//
 // START MENU PLACES COLUMN
 //
 $start_menu_places_column_styles:
