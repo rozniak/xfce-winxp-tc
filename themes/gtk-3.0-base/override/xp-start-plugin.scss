@@ -221,33 +221,23 @@ window.csd.xp-start-menu // Specificity hack -_-
         {
             @include __wintc_apply_props($start_menu_popup_menu_styles);
 
-            $l_border_bottom:
-                __wintc_get_prop_with_fallbacks(
-                    "border-bottom-width",
-                    $start_menu_popup_menu_styles,
-                    $popup_menu_styles
-                );
-            $l_border_top:
-                __wintc_get_prop_with_fallbacks(
-                    "border-top-width",
-                    $start_menu_popup_menu_styles,
-                    $popup_menu_styles
-                );
-
             menuitem
             {
                 @include __wintc_apply_props(
                     $start_menu_popup_menu_menuitem_styles
                 );
 
-                &:first-child
+                @if $start_menu_popup_menu_vmargin != "novalue"
                 {
-                    margin-top: $l_border_top;
-                }
+                    &:first-child
+                    {
+                        margin-top: $start_menu_popup_menu_vmargin;
+                    }
 
-                &:last-child
-                {
-                    margin-bottom: $l_border_bottom;
+                    &:last-child
+                    {
+                        margin-bottom: $start_menu_popup_menu_vmargin;
+                    }
                 }
 
                 image
