@@ -1,10 +1,22 @@
-*.deb
-*.log
+# Temporary files
+#
+.sass-cache/
+mui-stuff/
 *.swp
 *.kra
 *~
-*.pot
+
+# Log files
+#
+*.log
+
+# Python venv
+#
+.venv/
+
+# Build output
+#
 [Bb]uild/
-.sass-cache/
-mui-stuff/
 resources.c
+*.deb
+*.pot
