@@ -251,7 +251,7 @@ headerbar
 
      button.titlebutton:last-child
      {
-         @if $close_button_spacing != 0
+         @if $close_button_spacing != 0px
          {
              margin-left: $close_button_spacing;
          }
