@@ -970,7 +970,7 @@ style "default" {
     image {
       function        = STEPPER
       state           = NORMAL
-      file            = "../Resources/composed/scrollbar_button_border.png"
+      file            = "../Resources/composed/scrollbar_button.png"
       border          = {2, 2, 2, 2}
       stretch         = TRUE
       overlay_file    = "../Resources/composed/scrollbar_button_up_glyph.png"
@@ -981,7 +981,7 @@ style "default" {
     image {
       function        = STEPPER
       state           = PRELIGHT
-      file            = "../Resources/composed/scrollbar_button_border.png"
+      file            = "../Resources/composed/scrollbar_button.png"
       border          = {2, 2, 2, 2}
       stretch         = TRUE
       overlay_file    = "../Resources/composed/scrollbar_button_up_glyph.png"
@@ -992,7 +992,7 @@ style "default" {
     image {
       function        = STEPPER
       state           = ACTIVE
-      file            = "../Resources/composed/scrollbar_button_press_border.png"
+      file            = "../Resources/composed/scrollbar_button_press.png"
       border          = {2, 2, 2, 2}
       stretch         = TRUE
       overlay_file    = "../Resources/composed/scrollbar_button_up_glyph.png"
@@ -1003,7 +1003,7 @@ style "default" {
     image {
       function        = STEPPER
       state           = INSENSITIVE
-      file            = "../Resources/composed/scrollbar_button_border.png"
+      file            = "../Resources/composed/scrollbar_button.png"
       border          = {2, 2, 2, 2}
       stretch         = TRUE
       overlay_file    = "../Resources/composed/scrollbar_button_up_glyph_inactive.png"
@@ -1016,7 +1016,7 @@ style "default" {
     image {
       function        = STEPPER
       state           = NORMAL
-      file            = "../Resources/composed/scrollbar_button_border.png"
+      file            = "../Resources/composed/scrollbar_button.png"
       border          = {2, 2, 2, 2}
       stretch         = TRUE
       overlay_file    = "../Resources/composed/scrollbar_button_down_glyph.png"
@@ -1027,7 +1027,7 @@ style "default" {
     image {
       function        = STEPPER
       state           = PRELIGHT
-      file            = "../Resources/composed/scrollbar_button_border.png"
+      file            = "../Resources/composed/scrollbar_button.png"
       border          = {2, 2, 2, 2}
       stretch         = TRUE
       overlay_file    = "../Resources/composed/scrollbar_button_down_glyph.png"
@@ -1038,7 +1038,7 @@ style "default" {
     image {
       function        = STEPPER
       state           = ACTIVE
-      file            = "../Resources/composed/scrollbar_button_press_border.png"
+      file            = "../Resources/composed/scrollbar_button_press.png"
       border          = {2, 2, 2, 2}
       stretch         = TRUE
       overlay_file    = "../Resources/composed/scrollbar_button_down_glyph.png"
@@ -1049,7 +1049,7 @@ style "default" {
     image {
       function        = STEPPER
       state           = INSENSITIVE
-      file            = "../Resources/composed/scrollbar_button_border.png"
+      file            = "../Resources/composed/scrollbar_button.png"
       border          = {2, 2, 2, 2}
       stretch         = TRUE
       overlay_file    = "../Resources/composed/scrollbar_button_down_glyph_inactive.png"
@@ -1062,7 +1062,7 @@ style "default" {
     image {
       function        = STEPPER
       state           = NORMAL
-      file            = "../Resources/composed/scrollbar_button_border.png"
+      file            = "../Resources/composed/scrollbar_button.png"
       border          = {2, 2, 2, 2}
       stretch         = TRUE
       overlay_file    = "../Resources/composed/scrollbar_button_left_glyph.png"
@@ -1073,7 +1073,7 @@ style "default" {
     image {
       function        = STEPPER
       state           = PRELIGHT
-      file            = "../Resources/composed/scrollbar_button_border.png"
+      file            = "../Resources/composed/scrollbar_button.png"
       border          = {2, 2, 2, 2}
       stretch         = TRUE
       overlay_file    = "../Resources/composed/scrollbar_button_left_glyph.png"
@@ -1084,7 +1084,7 @@ style "default" {
     image {
       function        = STEPPER
       state           = ACTIVE
-      file            = "../Resources/composed/scrollbar_button_press_border.png"
+      file            = "../Resources/composed/scrollbar_button_press.png"
       border          = {2, 2, 2, 2}
       stretch         = TRUE
       overlay_file    = "../Resources/composed/scrollbar_button_left_glyph.png"
@@ -1095,7 +1095,7 @@ style "default" {
     image {
       function        = STEPPER
       state           = INSENSITIVE
-      file            = "../Resources/composed/scrollbar_button_border.png"
+      file            = "../Resources/composed/scrollbar_button.png"
       border          = {2, 2, 2, 2}
       stretch         = TRUE
       overlay_file    = "../Resources/composed/scrollbar_button_left_glyph_inactive.png"
@@ -1108,7 +1108,7 @@ style "default" {
     image {
       function        = STEPPER
       state           = NORMAL
-      file            = "../Resources/composed/scrollbar_button_border.png"
+      file            = "../Resources/composed/scrollbar_button.png"
       border          = {2, 2, 2, 2}
       stretch         = TRUE
       overlay_file    = "../Resources/composed/scrollbar_button_right_glyph.png"
@@ -1119,7 +1119,7 @@ style "default" {
     image {
       function        = STEPPER
       state           = PRELIGHT
-      file            = "../Resources/composed/scrollbar_button_border.png"
+      file            = "../Resources/composed/scrollbar_button.png"
       border          = {2, 2, 2, 2}
       stretch         = TRUE
       overlay_file    = "../Resources/composed/scrollbar_button_right_glyph.png"
@@ -1130,7 +1130,7 @@ style "default" {
     image {
       function        = STEPPER
       state           = ACTIVE
-      file            = "../Resources/composed/scrollbar_button_press_border.png"
+      file            = "../Resources/composed/scrollbar_button_press.png"
       border          = {2, 2, 2, 2}
       stretch         = TRUE
       overlay_file    = "../Resources/composed/scrollbar_button_right_glyph.png"
@@ -1141,7 +1141,7 @@ style "default" {
     image {
       function        = STEPPER
       state           = INSENSITIVE
-      file            = "../Resources/composed/scrollbar_button_border.png"
+      file            = "../Resources/composed/scrollbar_button.png"
       border          = {2, 2, 2, 2}
       stretch         = TRUE
       overlay_file    = "../Resources/composed/scrollbar_button_right_glyph_inactive.png"
