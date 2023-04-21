@@ -1,0 +1,6 @@
+Testing using prefix and destdir:
+
+cmake -DCMAKE_INSTALL_PREFIX=/usr ..
+make DESTDIR=./out all install
+
+Will need to reference the above to update Debian build
