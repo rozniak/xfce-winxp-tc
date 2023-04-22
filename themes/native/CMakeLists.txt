@@ -48,3 +48,7 @@ add_custom_target(
 )
 
 install(FILES ${CMAKE_BINARY_DIR}/gtk.css DESTINATION share/themes/native/gtk-3.0)
+
+# XFWM4 Theme Generation
+#
+install(DIRECTORY xfwm4 DESTINATION share/themes/native)
