@@ -13,6 +13,12 @@ set(THEMES_BLDTHEME_TOOL_DIR ${REPO_ROOT}/tools/bldtheme)
 #
 file(GLOB THEMES_BUILD_GTK2_FILES ${THEMES_BUILD_COMMON_GTK2_DIR}/*rc)
 
+# Function to define constants for default build scope
+#
+function(wintc_define_theme_dirs)
+    set(THEME_PROJECT_INSTALL_PATH share/themes/${THEME_DISPLAYNAME} PARENT_SCOPE)
+endfunction()
+
 # Set up venv for bldtheme tool
 #
 find_package(PythonInterp 3.0 REQUIRED)

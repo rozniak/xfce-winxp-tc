@@ -16,12 +16,16 @@ include(../../packaging/cmake-inc/themes/CMakeLists.txt)
 source_vars(scheme)
 source_vars(theme)
 
+# Import dir constants
+#
+wintc_define_theme_dirs()
+
 # GTK2 Theme Generation
 #
 configure_file(${THEMES_BUILD_COMMON_GTK2_DIR}/scheme.rc.in scheme.rc @ONLY)
 
-install(FILES ${THEMES_BUILD_GTK2_FILES}    DESTINATION share/themes/native/gtk-2.0)
-install(FILES ${CMAKE_BINARY_DIR}/scheme.rc DESTINATION share/themes/native/gtk-2.0)
+install(FILES ${THEMES_BUILD_GTK2_FILES}    DESTINATION ${THEME_PROJECT_INSTALL_PATH}/gtk-2.0)
+install(FILES ${CMAKE_BINARY_DIR}/scheme.rc DESTINATION ${THEME_PROJECT_INSTALL_PATH}/gtk-2.0)
 
 # GTK3 Theme Generation
 #
@@ -50,7 +54,7 @@ add_custom_target(
         ${CMAKE_BINARY_DIR}/gtk.css
 )
 
-install(FILES ${CMAKE_BINARY_DIR}/gtk.css DESTINATION share/themes/native/gtk-3.0)
+install(FILES ${CMAKE_BINARY_DIR}/gtk.css DESTINATION ${THEME_PROJECT_INSTALL_PATH}/gtk-3.0)
 
 # XFWM4 Theme Generation
 #
@@ -58,5 +62,5 @@ install(DIRECTORY xfwm4 DESTINATION share/themes/native)
 
 # Resources Generation
 #
-install(DIRECTORY Resources                    DESTINATION share/themes/native)
-install(DIRECTORY ${CMAKE_BINARY_DIR}/composed DESTINATION share/themes/native/Resources)
+install(DIRECTORY Resources                    DESTINATION ${THEME_PROJECT_INSTALL_PATH})
+install(DIRECTORY ${CMAKE_BINARY_DIR}/composed DESTINATION ${THEME_PROJECT_INSTALL_PATH}/Resources)
