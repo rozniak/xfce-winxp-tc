@@ -8,5 +8,5 @@
  */
 
 @import "scheme";
-@import "../../gtk-3.0-base/required";
-@import "../../gtk-3.0-base/main";
+@import "@THEMES_BUILD_COMMON_GTK3_DIR@/required";
+@import "@THEMES_BUILD_COMMON_GTK3_DIR@/main";
