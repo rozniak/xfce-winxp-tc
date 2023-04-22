@@ -58,7 +58,7 @@ install(FILES ${CMAKE_BINARY_DIR}/gtk.css DESTINATION ${THEME_PROJECT_INSTALL_PA
 
 # XFWM4 Theme Generation
 #
-install(DIRECTORY xfwm4 DESTINATION share/themes/native)
+install(DIRECTORY xfwm4 DESTINATION ${THEME_PROJECT_INSTALL_PATH})
 
 # Resources Generation
 #
