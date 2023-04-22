@@ -13,8 +13,8 @@ include(../../packaging/cmake-inc/themes/CMakeLists.txt)
 
 # Import colour scheme and theme metadata
 #
-source_vars(scheme)
-source_vars(theme)
+wintc_source_vars(scheme)
+wintc_source_vars(theme)
 
 # Import dir constants
 #
