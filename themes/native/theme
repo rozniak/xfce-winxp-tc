@@ -1,0 +1,6 @@
+THEME_BASENAME="Windows Classic style"
+THEME_DESCRIPTION="Windows Classic visual style for XFCE."
+THEME_DISPLAYNAME="Windows Classic style"
+THEME_MAINTAINER="Rory Fewell <roryf@oddmatics.uk>"
+THEME_RAWNAME="native"
+THEME_VARIANT="Default"

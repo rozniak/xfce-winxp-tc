@@ -6,12 +6,15 @@ project(
     DESCRIPTION "Windows Total Conversion Windows Classic theme."
 )
 
+set(PROJECT_ROOT ${CMAKE_CURRENT_LIST_DIR})
+
 include(../../packaging/cmake-inc/common/CMakeLists.txt)
 include(../../packaging/cmake-inc/themes/CMakeLists.txt)
 
-# Import colour scheme
+# Import colour scheme and theme metadata
 #
 source_vars(scheme)
+source_vars(theme)
 
 # GTK2 Theme Generation
 #
@@ -52,3 +55,8 @@ install(FILES ${CMAKE_BINARY_DIR}/gtk.css DESTINATION share/themes/native/gtk-3.
 # XFWM4 Theme Generation
 #
 install(DIRECTORY xfwm4 DESTINATION share/themes/native)
+
+# Resources Generation
+#
+install(DIRECTORY Resources                    DESTINATION share/themes/native)
+install(DIRECTORY ${CMAKE_BINARY_DIR}/composed DESTINATION share/themes/native/Resources)
