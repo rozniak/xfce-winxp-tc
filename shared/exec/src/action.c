@@ -12,39 +12,68 @@ gboolean wintc_launch_action(
     GError**    out_error
 )
 {
-    const gchar* cmdline;
+    gchar*   cmdline;
+    gboolean ret;
 
     switch (action_id)
     {
         case WINTC_ACTION_MYDOCS:
-            cmdline = "exo-open --launch FileManager Documents";
+            cmdline =
+                g_strdup_printf(
+                    "exo-open --launch FileManager %s",
+                    g_get_user_special_dir(G_USER_DIRECTORY_DOCUMENTS)
+                );
             break;
 
         case WINTC_ACTION_MYPICS:
-            cmdline = "exo-open --launch FileManager Pictures";
+            cmdline =
+                g_strdup_printf(
+                    "exo-open --launch FileManager %s",
+                    g_get_user_special_dir(G_USER_DIRECTORY_PICTURES)
+                );
             break;
 
         case WINTC_ACTION_MYMUSIC:
-            cmdline = "exo-open --launch FileManager Music";
+            cmdline =
+                g_strdup_printf(
+                    "exo-open --launch FileManager %s",
+                    g_get_user_special_dir(G_USER_DIRECTORY_MUSIC)
+                );
             break;
 
         // TODO: There isn't really a good option for this at the moment, maybe if we
         //       implement an Explorer replica we can have it open a view of disks
         //
         case WINTC_ACTION_MYCOMP:
-            cmdline = "exo-open --launch FileManager /";
+            cmdline =
+                g_strdup_printf(
+                    "%s",
+                    "exo-open --launch FileManager /"
+                );
             break;
 
         case WINTC_ACTION_CONTROL:
-            cmdline = "xfce4-settings-manager";
+            cmdline =
+                g_strdup_printf(
+                    "%s",
+                    "xfce4-settings-manager"
+                );
             break;
 
         case WINTC_ACTION_MIMEMGMT:
-            cmdline = "xfce4-mime-settings";
+            cmdline =
+                g_strdup_printf(
+                    "%s",
+                    "xfce4-mime-settings"
+                );
             break;
 
         case WINTC_ACTION_PRINTERS:
-            cmdline = "system-config-printer";
+            cmdline =
+                g_strdup_printf(
+                    "%s",
+                    "system-config-printer"
+                );
             break;
 
         case WINTC_ACTION_RUN:
@@ -53,7 +82,11 @@ gboolean wintc_launch_action(
             //
             //       See issue #134 for details
             //
-            cmdline = "run";
+            cmdline =
+                g_strdup_printf(
+                    "%s",
+                    "run"
+                );
             break;
 
         // TODO: One day write our own log off and shut down dialogs, and execute
@@ -61,7 +94,11 @@ gboolean wintc_launch_action(
         //
         case WINTC_ACTION_LOGOFF:
         case WINTC_ACTION_SHUTDOWN:
-            cmdline = "xfce4-session-logout";
+            cmdline =
+                g_strdup_printf(
+                    "%s",
+                    "xfce4-session-logout"
+                );
             break;
 
         // Default to 'not implemented' error
@@ -78,5 +115,9 @@ gboolean wintc_launch_action(
             return FALSE;
     }
 
-    return wintc_launch_command(cmdline, out_error);
+    ret = wintc_launch_command(cmdline, out_error);
+
+    g_free(cmdline);
+
+    return ret;
 }
