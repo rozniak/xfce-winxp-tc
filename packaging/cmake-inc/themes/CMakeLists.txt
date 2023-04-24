@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.0)
 # Define some constants for comm build paths
 #
 set(THEMES_BUILD_COMMON_DIR           ${REPO_ROOT}/themes/build-common)
+set(THEMES_BUILD_COMMON_CMAKE_DIR     ${THEMES_BUILD_COMMON_DIR}/cmake)
 set(THEMES_BUILD_COMMON_GTK2_DIR      ${THEMES_BUILD_COMMON_DIR}/gtk-2.0-base)
 set(THEMES_BUILD_COMMON_GTK3_DIR      ${THEMES_BUILD_COMMON_DIR}/gtk-3.0-base)
 set(THEMES_BUILD_COMMON_RESOURCES_DIR ${THEMES_BUILD_COMMON_DIR}/native-resources)
@@ -18,6 +19,10 @@ file(GLOB THEMES_BUILD_GTK2_FILES ${THEMES_BUILD_COMMON_GTK2_DIR}/*rc)
 function(wintc_define_theme_dirs)
     set(THEME_PROJECT_INSTALL_PATH share/themes/${THEME_DISPLAYNAME} PARENT_SCOPE)
 endfunction()
+
+# Ensure SASS program available for GTK3 build
+#
+find_program(SASS scss)
 
 # Set up venv for bldtheme tool
 #

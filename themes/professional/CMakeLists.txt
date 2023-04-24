@@ -11,56 +11,6 @@ set(PROJECT_ROOT ${CMAKE_CURRENT_LIST_DIR})
 include(../../packaging/cmake-inc/common/CMakeLists.txt)
 include(../../packaging/cmake-inc/themes/CMakeLists.txt)
 
-# Import colour scheme and theme metadata
+# Use standard theme build process
 #
-wintc_source_vars(scheme)
-wintc_source_vars(theme)
-
-# Import dir constants
-#
-wintc_define_theme_dirs()
-
-# GTK2 Theme Generation
-#
-configure_file(${THEMES_BUILD_COMMON_GTK2_DIR}/scheme.rc.in scheme.rc @ONLY)
-
-install(FILES ${THEMES_BUILD_GTK2_FILES}    DESTINATION ${THEME_PROJECT_INSTALL_PATH}/gtk-2.0)
-install(FILES ${CMAKE_BINARY_DIR}/scheme.rc DESTINATION ${THEME_PROJECT_INSTALL_PATH}/gtk-2.0)
-
-# GTK3 Theme Generation
-#
-find_program(SASS scss)
-
-configure_file(${THEMES_BUILD_COMMON_GTK3_DIR}/scheme.scss.in scheme.scss @ONLY)
-configure_file(gtk-3.0/main.scss.in                           main.scss   @ONLY)
-
-add_custom_command(
-    OUTPUT ${CMAKE_BINARY_DIR}/gtk.css
-    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-    COMMAND ${SASS}
-    ARGS
-        ${CMAKE_BINARY_DIR}/main.scss
-        ${CMAKE_BINARY_DIR}/gtk.css
-        --sourcemap=none
-    VERBATIM
-    MAIN_DEPENDENCY ${CMAKE_BINARY_DIR}/main.scss
-    DEPENDS
-        ${CMAKE_BINARY_DIR}/scheme.scss
-)
-
-add_custom_target(
-    theme-gtk3 ALL
-    DEPENDS
-        ${CMAKE_BINARY_DIR}/gtk.css
-)
-
-install(FILES ${CMAKE_BINARY_DIR}/gtk.css DESTINATION ${THEME_PROJECT_INSTALL_PATH}/gtk-3.0)
-
-# XFWM4 Theme Generation
-#
-install(DIRECTORY xfwm4 DESTINATION ${THEME_PROJECT_INSTALL_PATH})
-
-# Resources Generation
-#
-install(DIRECTORY Resources                    DESTINATION ${THEME_PROJECT_INSTALL_PATH})
-install(DIRECTORY ${CMAKE_BINARY_DIR}/composed DESTINATION ${THEME_PROJECT_INSTALL_PATH}/Resources)
+include(${THEMES_BUILD_COMMON_CMAKE_DIR}/CMakeLists.txt)
