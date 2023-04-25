@@ -1,0 +1,151 @@
+/**
+ * entries.scss - Theme Base Entry Functions/Mixins
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+@function entry_focus_border($fc:$selected_bg_color)
+{
+    @return $fc;
+}
+
+@function entry_focus_shadow($fc:$selected_bg_color)
+{
+    @return inset 0 0 0 1px $fc;
+}
+
+@mixin entry($t, $fc:$selected_bg_color, $edge: none)
+{
+    //
+    // Entries drawing function
+    //
+    // $t:    entry type
+    // $fc:   focus color
+    // $edge: set to none to not draw the bottom edge or specify a color to not
+    //        use the default one
+    //
+    // Possible $t values:
+    // normal, focus, insensitive, backdrop, backdrop-insensitive, osd, osd-focus,
+    // osd-backdrop
+    //
+
+    $_blank_edge: if($edge == none, none, 0 1px transparentize($edge, 1));
+    $_entry_edge: if($edge == none, none, _widget_edge($edge));
+
+    //
+    // NOTE: XP THEME STUFF!
+    //
+    //       We define everything other than the box-model props here (aka really we
+    //       only care about colours)
+    //
+    //       The box-model stuff is in common/entry.scss, as Adwaita does it this way
+    //
+
+    @if $t == normal
+    {
+        @include __wintc_apply_props_excluding(
+            $entry_styles,
+            "border-style",
+            "border-top-width",
+            "border-right-width",
+            "border-bottom-width",
+            "border-left-width",
+            "margin-top",
+            "margin-right",
+            "margin-bottom",
+            "margin-left",
+            "padding-top",
+            "padding-right",
+            "padding-bottom",
+            "padding-left"
+        );
+
+        // For the transition to work the number of shadows in different states needs
+        // to match, hence the shadow here
+        //
+        @include _shadows(entry_focus_shadow(transparentize($fc, 1)), $_entry_edge);
+    }
+
+    @if $t == insensitive
+    {
+        @include __wintc_apply_props_excluding(
+            $entry_inactive_styles,
+            "border-style",
+            "border-top-width",
+            "border-right-width",
+            "border-bottom-width",
+            "border-left-width",
+            "margin-top",
+            "margin-right",
+            "margin-bottom",
+            "margin-left",
+            "padding-top",
+            "padding-right",
+            "padding-bottom",
+            "padding-left"
+        );
+    }
+
+    @if $t == backdrop
+    {
+        background-color: $backdrop_base_color;
+        border-color:     $backdrop_borders_color;
+        box-shadow:       $_blank_edge;
+        color:            $backdrop_text_color;
+    }
+
+    @if $t == backdrop-insensitive
+    {
+        background-color: $backdrop_bg_color;
+        border-color:     $backdrop_borders_color;
+        box-shadow:       $_blank_edge;
+        color:            $backdrop_insensitive_color;
+    }
+
+    @if $t == osd
+    {
+        background-color: transparentize(opacify($osd_borders_color, 1), 0.5);
+        background-clip:  padding-box;
+        border-color:     $osd_borders_color;
+        box-shadow:       entry_focus_shadow($fc);
+        color:            $osd_text_color;
+        text-shadow:      0 1px #000000;
+        -gtk-icon-shadow: 0 1px #000000;
+    }
+
+    @if $t == osd-focus
+    {
+        background-color: transparentize(opacify($osd_borders_color, 1), 0.5);
+        background-clip:  padding-box;
+        border_color:     $selected_bg_color;
+        box-shadow:       entry_focus_shadow($fc);
+        color:            $osd_text_color;
+        text-shadow:      0 1px #000000;
+        -gtk-icon-shadow: 0 1px #000000;
+    }
+
+    @if $t == osd-insensitive
+    {
+        color: $osd_insensitive_fg_color;
+        border-color: $osd_borders_color;
+        background-color: $osd_insensitive_bg_color;
+        background-clip: padding-box;
+        box-shadow: none;
+        text-shadow: none;
+        -gtk-icon-shadow: none;
+    }
+
+    @if $t == osd-backdrop
+    {
+        background-color: transparentize(opacify($osd_borders_color, 1), 0.5);
+        background-clip: padding-box;
+        border-color: $osd_borders_color;
+        box-shadow: none;
+        color: $osd_text_color;
+        text-shadow: none;
+        -gtk-icon-shadow: none;
+    }
+}

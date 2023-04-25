@@ -1,0 +1,13 @@
+/**
+ * statuses.scss - Theme Base Status Contextual Colour Exports
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+@define-color warning_color #{"" + $warning_color};
+@define-color error_color   #{"" + $error_color};
+@define-color success_color #{"" + $success_color};
+// @define-color destructive_color #{$destructive_color}

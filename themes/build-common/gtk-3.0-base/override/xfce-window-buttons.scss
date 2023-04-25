@@ -1,0 +1,46 @@
+/**
+ * xfce-window-buttons.scss - Theme Base XFCE Window Buttons Styles
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+*
+{
+    -XfceTasklist-minimized-icon-lucency: 100;
+}
+
+.tasklist
+{
+    .label-hidden
+    {
+        opacity: 1.0;
+    }
+
+    button
+    {
+        @include __wintc_apply_props($taskband_button_styles);
+
+        &:hover
+        {
+            @include __wintc_apply_props($taskband_button_hover_styles);
+        }
+
+        &:checked
+        {
+            @include __wintc_apply_props($taskband_button_selected_styles);
+        }
+
+        &:checked:hover
+        {
+            @include __wintc_apply_props($taskband_button_selected_hover_styles);
+        }
+
+        &:active
+        {
+            @include __wintc_apply_props($taskband_button_press_styles);
+        }
+    }
+}

@@ -1,0 +1,73 @@
+/**
+ * switch.scss - Theme Base Switch Style Constants
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+//
+// SWITCH ITSELF
+//
+$switch_styles:
+    wintc_define_props_borders(
+        $switch_styles,
+        true,
+        solid,
+        2,
+        2,
+        2,
+        2,
+        undefined,
+        url('../Resources/switch_border.png')
+    );
+
+$switch_selected_styles:
+    wintc_define_props_bg(
+        $switch_selected_styles,
+        true,
+        $active_title_bar_bg1,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
+
+$switch_inactive_selected_styles:
+    wintc_define_props_bg(
+        $switch_inactive_selected_styles,
+        true,
+        $inactive_title_bar_bg1,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
+
+
+//
+// SWITCH SLIDER
+//
+$switch_slider_styles:
+    wintc_define_props_bg(
+        $switch_slider_styles,
+        true,
+        $threed_objects_bg,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
+$switch_slider_styles:
+    wintc_define_props_borders(
+        $switch_slider_styles,
+        true,
+        solid,
+        1,
+        2,
+        2,
+        1,
+        undefined,
+        url('../Resources/switch_slider_border.png')
+    );

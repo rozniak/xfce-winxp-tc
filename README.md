@@ -1,8 +1,9 @@
 # xfce-winxp-tc
 This is my little chipping-away spot for a Windows XP Total Conversion for XFCE.
 
-![desktop](https://user-images.githubusercontent.com/13258281/142736910-7393327e-5361-4347-a06e-783d23ab936c.png)
-
+![luna-blue-promo](https://user-images.githubusercontent.com/13258281/234408181-dc8222c1-81ac-4759-b6ac-84a515b0cb13.png)
+![professional-promo](https://user-images.githubusercontent.com/13258281/234408192-3b06b634-cff7-4d24-ba0d-d64b949272e8.png)
+![classic-promo](https://user-images.githubusercontent.com/13258281/234408198-ac3232c2-d00c-4eaf-8a0d-37d7e239293b.png)
 
 ## What?
 Essentially this repo is a 'project' to replicate the XP experience on XFCE / Linux in general. This includes everything from desktop themes, icons, cursors, all the way to programs and the shell itself.
@@ -35,15 +36,3 @@ This licence obviously does not cover the assets from Windows/Office (images, so
 I don't have a fancy looking roadmap document for this repo - there's too much to list really. Essentially, if something was in Windows XP, it's on my mind.
 
 As part of that, user-friendliness is always a target - besides themes and programs, I aim to one day have a nice setup application/process akin to XP's. And perhaps an OOBE if I can figure that out (mostly for the nostalgic music).
-
-## Screenshots?
-It's still early days, whilst I do use the in-progress `Luna (Blue)` theme as my daily, it is by no means complete. It's usable, but not 'pretty'.
-
-These screenshots are quite old, but generally reflect the current status of the desktop theme (due to working on things like the Start menu). I will be resuming the theming work shortly, so keep an eye out. 😉
-
-In any case, here are some screenshots of the current state (as of 2021-07-19):
-
-![image](https://user-images.githubusercontent.com/13258281/126234957-171b12a4-36c7-43ad-ba85-ddbfe4758acb.png)
-![image](https://user-images.githubusercontent.com/13258281/126234968-c641bd9f-2109-4777-bb79-63a26bd30609.png)
-![image](https://user-images.githubusercontent.com/13258281/126234983-1b1c0340-400e-4d98-9ea9-87fccde318cf.png)
-![image](https://user-images.githubusercontent.com/13258281/126234993-911cc8fa-623d-4901-80fc-ac581c0abfe6.png)

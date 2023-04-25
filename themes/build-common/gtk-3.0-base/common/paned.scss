@@ -1,0 +1,87 @@
+/**
+ * paned.scss - Theme Base Paned Widget Styles
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+paned
+{
+    > separator
+    {
+        background-color: transparent;
+        min-height:       1px;
+        min-width:        1px;
+        -gtk-icon-source: none; // Defeats the ugly default handle decoration
+        
+        // Workaround, using background istead of a border since the border will get
+        // rendered twice (?)
+        //
+        background-image: image($borders_color);
+        background-size:  1px 1px;
+        border-style:     none;
+        
+        &:selected { background-image: image($selected_bg_color);      } // FIXME is this needed?
+        &:backdrop { background-image: image($backdrop_borders_color); }
+        
+        &.wide
+        {
+            background-color: $bg_color;
+            background-image: image($borders_color), image($borders_color);
+            background-size:  1px 1px, 1px 1px;
+            min-height:       5px;
+            min-width:        5px;
+            
+            &:backdrop
+            {
+                background-color: $backdrop_bg_color;
+                background-image: image($backdrop_borders_color),
+                                  image($backdrop_borders_color);
+            }
+        }
+    }
+    
+    &.horizontal > separator
+    {
+        background-repeat: repeat-y;
+        
+        &:dir(ltr)
+        {
+            background-position: left;
+            margin:  0 -8px 0 0;
+            padding: 0  8px 0 0;
+        }
+        
+        &:dir(rtl) {
+            background-position: right;
+            margin:  0 0 0 -8px;
+            padding: 0 0 0  8px;
+        }
+        
+        &.wide
+        {
+            background-position: left,     right;
+            background-repeat:   repeat-y, repeat-y;
+            margin:  0;
+            padding: 0;
+        }
+    }
+    
+    &.vertical > separator
+    {
+        background-position: top;
+        background-repeat:   repeat-x;
+        margin:  0 0 -8px 0;
+        padding: 0 0  8px 0;
+        
+        &.wide
+        {
+            background-repeat:   repeat-x, repeat-x;
+            background-position: bottom,   top;
+            margin:  0;
+            padding: 0;
+        }
+    }
+}

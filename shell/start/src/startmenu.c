@@ -23,7 +23,8 @@ struct _StartMenuPrivate
 {
     StartMenu* menu;
 
-    GtkWidget* main_box;
+    GtkWidget*        main_box;
+    GtkStyleProvider* userpic_style_provider;
 };
 
 struct _StartMenuClass
@@ -65,6 +66,13 @@ static void create_userpane_structure(
     StartMenu* start_menu,
     GtkBox*    box
 );
+static void create_vertical_userpane_structure(
+    StartMenu* start_menu,
+    GtkBox*    box
+);
+static void update_userpic(
+    StartMenu* start_menu
+);
 
 static void on_action_button_clicked(
     GtkButton* button,
@@ -78,6 +86,10 @@ static gboolean on_focus_out(
 static void on_selection_done(
     GtkWidget* widget,
     StartMenu* start_menu
+);
+static void on_userpic_clicked(
+    GtkWidget*       userpic,
+    GdkEventButton*  event
 );
 
 //
@@ -217,17 +229,23 @@ static void create_logoffpane_structure(
 {
     GtkWidget* logoffpane_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 
+    //
+    // These are a couple ordinary buttons, except we have an extra box before the
+    // label so that themes can add an icon
+    //
+    // The reason for not using the gtk-icon-theme here is because the themes need
+    // to be able to override the image, AND they need to provide a 'hot' graphic for
+    // when the buttons are hovered
+    //
+
     // Log off button
     //
-    GtkWidget* logoff_button = gtk_button_new();
-    GtkWidget* logoff_box    = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-    GtkWidget* logoff_icon   = gtk_image_new_from_icon_name(
-                                   "system-log-out",
-                                   GTK_ICON_SIZE_LARGE_TOOLBAR
-                               );
-    GtkWidget* logoff_label  = gtk_label_new(_("Log Off"));
+    GtkWidget* logoff_button   = gtk_button_new();
+    GtkWidget* logoff_box      = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+    GtkWidget* logoff_icon_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+    GtkWidget* logoff_label    = gtk_label_new(_("Log Off"));
 
-    gtk_box_pack_start(GTK_BOX(logoff_box), logoff_icon, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(logoff_box), logoff_icon_box, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(logoff_box), logoff_label, FALSE, FALSE, 0);
     gtk_container_add(GTK_CONTAINER(logoff_button), logoff_box);
 
@@ -243,17 +261,16 @@ static void create_logoffpane_structure(
         _("Provides options for closing your programs and logging off, or for leaving your programs running and switching to another user.")
     );
 
+    wintc_widget_add_style_class(logoff_icon_box, "logoff-icon");
+
     // Shut down button
     //
-    GtkWidget* shutdown_button = gtk_button_new();
-    GtkWidget* shutdown_box    = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-    GtkWidget* shutdown_icon   = gtk_image_new_from_icon_name(
-                                     "system-shutdown",
-                                     GTK_ICON_SIZE_LARGE_TOOLBAR
-                                 );
-    GtkWidget* shutdown_label  = gtk_label_new(_("Turn Off Computer"));
+    GtkWidget* shutdown_button   = gtk_button_new();
+    GtkWidget* shutdown_box      = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+    GtkWidget* shutdown_icon_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+    GtkWidget* shutdown_label    = gtk_label_new(_("Turn Off Computer"));
 
-    gtk_box_pack_start(GTK_BOX(shutdown_box), shutdown_icon, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(shutdown_box), shutdown_icon_box, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(shutdown_box), shutdown_label, FALSE, FALSE, 0);
     gtk_container_add(GTK_CONTAINER(shutdown_button), shutdown_box);
 
@@ -268,6 +285,8 @@ static void create_logoffpane_structure(
         shutdown_button,
         _("Provides options for turning off or restarting your computer, or for activating Stand By or Hibernate modes.")
     );
+
+    wintc_widget_add_style_class(shutdown_icon_box, "shutdown-icon");
 
     // Pack box
     //
@@ -389,6 +408,7 @@ static void create_taskcolumns_structure(
     //
     GtkWidget* columns_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 
+    create_vertical_userpane_structure(start_menu, GTK_BOX(columns_box));
     create_programs_structure(start_menu, GTK_BOX(columns_box));
     create_places_structure(start_menu, GTK_BOX(columns_box));
 
@@ -400,59 +420,40 @@ static void create_taskcolumns_structure(
 }
 
 static void create_userpane_structure(
-    WINTC_UNUSED(StartMenu* start_menu),
-    GtkBox* box
+    StartMenu* start_menu,
+    GtkBox*    box
 )
 {
     GtkWidget* userpane_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
     
     // User profile picture
     //
-    // NOTE:
-    //     We store the image widget inside an events box so that in future we can
-    //     make use of the click event to change the user profile picture (this is
-    //     what Windows XP does)
-    //
-    //     The events box is in the larger outside box so it can be styled with a
-    //     frame via CSS
-    //
-    //
-    // TODO: For now, we just use a placeholder image for the user's display picture
-    //       -- perhaps there is a freedesktop.org standard for this we can use
-    //
-    // FIXME: Shift 48, 48px size out to a constant somewhere
-    //
-    GError*    load_error    = NULL;
-    GdkPixbuf* pic           = gdk_pixbuf_new_from_file(
-                                   "/usr/share/winxp/shell-res/fpo-userpic.png",
-                                   &load_error
-                               );
-    GtkWidget* pic_box       = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-    GtkWidget* pic_event_box = gtk_event_box_new();
-    GtkWidget* pic_image     = gtk_image_new();
+    GtkStyleContext* context;
+    GtkWidget*       pic_box       = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+    GtkWidget*       pic_event_box = gtk_event_box_new();
 
-    if (pic != NULL)
-    {
-        GdkPixbuf* scaled_pic =
-            gdk_pixbuf_scale_simple(
-                pic,
-                48,
-                48,
-                GDK_INTERP_BILINEAR
-            );
+    start_menu->priv->userpic_style_provider =
+        GTK_STYLE_PROVIDER(gtk_css_provider_new());
 
-        g_clear_object(&pic);
+    context = gtk_widget_get_style_context(pic_box);
 
-        gtk_image_set_from_pixbuf(GTK_IMAGE(pic_image), scaled_pic);
-    }
-    else
-    {
-        wintc_log_error_and_clear(&load_error);
-        gtk_widget_set_size_request(pic_image, 48, 48);
-    }
+    gtk_style_context_add_provider(
+        context,
+        start_menu->priv->userpic_style_provider,
+        GTK_STYLE_PROVIDER_PRIORITY_APPLICATION
+    );
 
-    gtk_container_add(GTK_CONTAINER(pic_event_box), pic_image);
-    gtk_container_add(GTK_CONTAINER(pic_box),       pic_event_box);
+    update_userpic(start_menu);
+
+    gtk_widget_set_events(pic_event_box, GDK_BUTTON_PRESS_MASK);
+    gtk_box_pack_start(GTK_BOX(pic_box), pic_event_box, TRUE, TRUE, 0);
+
+    g_signal_connect(
+        pic_event_box,
+        "button-press-event",
+        G_CALLBACK(on_userpic_clicked),
+        NULL
+    );
 
     // Username display
     //
@@ -470,6 +471,56 @@ static void create_userpane_structure(
     // Add style class
     //
     wintc_widget_add_style_class(userpane_box, "xp-start-userpane");
+}
+
+static void create_vertical_userpane_structure(
+    WINTC_UNUSED(StartMenu* start_menu),
+    GtkBox* box
+)
+{
+    GtkWidget* userpane_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+
+    // Username display
+    //
+    struct passwd* user_pwd = getpwuid(getuid());
+
+    GtkWidget* username_label = gtk_label_new(user_pwd->pw_name);
+
+    gtk_label_set_angle(GTK_LABEL(username_label), 90);
+
+    // Construct box
+    //
+    gtk_box_pack_end(GTK_BOX(userpane_box), username_label, FALSE, FALSE, 0);
+
+    gtk_box_pack_start(box, userpane_box, FALSE, FALSE, 0);
+
+    // Add style class
+    //
+    wintc_widget_add_style_class(userpane_box, "xp-start-vuserpane");
+}
+
+static void update_userpic(
+    StartMenu* start_menu
+)
+{
+    static gchar* css = NULL;
+
+    if (css == NULL)
+    {
+        // FIXME: This should read from whatever the XDG path is, probably needs a
+        //        g_strdup_printf for the username
+        //
+        css = "* { background-image: url('/usr/share/winxp/shell-res/fpo-userpic.png'); }";
+    }
+
+    // Give GTK a bump that we want to update the pic
+    //
+    gtk_css_provider_load_from_data(
+        GTK_CSS_PROVIDER(start_menu->priv->userpic_style_provider),
+        css,
+        -1,
+        NULL
+    );
 }
 
 //
@@ -499,4 +550,29 @@ static void on_selection_done(
 )
 {
     gtk_widget_hide(GTK_WIDGET(start_menu));
+}
+
+static void on_userpic_clicked(
+    WINTC_UNUSED(GtkWidget* userpic),
+    GdkEventButton* event
+)
+{
+    //
+    // FIXME: Implement this when the user pic cpl is done!
+    //
+    if (event->button > 1)
+    {
+        return;
+    }
+
+    GError* error = NULL;
+
+    g_set_error(
+        &error,
+        WINTC_GENERAL_ERROR,
+        WINTC_GENERAL_ERROR_NOTIMPL,
+        "Cannot edit user pic yet!"
+    );
+
+    wintc_nice_error_and_clear(&error);
 }

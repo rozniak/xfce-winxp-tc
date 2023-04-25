@@ -1,0 +1,255 @@
+/**
+ * menu.scss - Theme Base Menu Styles
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+// Define the menu fade in anim
+//
+@keyframes menu-fadein
+{
+    from { opacity: 0.0; }
+    to   { opacity: 1.0; }
+}
+
+@keyframes empty {}
+
+// Menu strip styles
+//
+menubar,
+.menubar
+{
+    @include __wintc_apply_props($menustrip_styles);
+
+    -GtkWidget-window-dragging: true;
+
+    > menuitem
+    {
+        @include __wintc_apply_props($menustrip_menuitem_styles);
+
+
+        // Remove padding and rounding from menubar submenus
+        //
+        menu
+        {
+            // Specificity bump
+            //
+            &:dir(rtl),
+            &:dir(ltr)
+            {
+                //border-radius: 0;
+                //padding: 0;
+            }
+        }
+
+        // Seems like it :hover even with keyboard focus
+        //
+        &:hover
+        {
+            @include __wintc_apply_props($menustrip_menuitem_hover_styles);
+        }
+    }
+
+    // Remove padding and rounding from menubar submenu decoration
+    //
+    .csd.popup decoration
+    {
+        border-radius: 0;
+    }
+}
+
+// Needed to make the border-radius of menus work
+// otherwise the background bleeds out of the menu edges
+//
+.background.popup
+{
+    background-color: transparent;
+}
+
+// Menu list styles
+//
+menu,
+.menu,
+.context-menu
+{
+    @include __wintc_apply_props($popup_menu_styles);
+
+    menuitem
+    {
+        @include __wintc_apply_props($popup_menu_menuitem_styles);
+
+        min-height: $popup_menu_menuitem_height;
+
+        &:hover
+        {
+            @include __wintc_apply_props($popup_menu_menuitem_hover_styles);
+        }
+
+        &:disabled
+        {
+            @include __wintc_apply_props($popup_menu_menuitem_inactive_styles);
+        }
+
+        &:first-child
+        {
+            margin-top: 4px;
+        }
+
+        &:last-child
+        {
+            margin-bottom: 4px;
+        }
+
+        // Submenu indicators
+        //
+        arrow
+        {
+            min-height: $popup_menu_menuitem_height;
+            min-width:  $popup_menu_menuitem_height;
+
+            &:dir(ltr)
+            {
+                margin-left: 10px;
+                -gtk-icon-source: -gtk-icontheme('pan-end-symbolic');
+            }
+
+            &:dir(rtl)
+            {
+                -gtk-icon-source:-gtk-icontheme('pan-end-symbolic-rtl');
+                margin-right: 10px;
+            }
+        }
+
+        // Avoids labels color being overridden, see
+        // https://bugzilla.gnome.org/show_bug.cgi?id=767058
+        //
+        label
+        {
+            &:dir(rtl),
+            &:dir(ltr)
+            {
+                color: inherit; 
+            }
+        }
+    }
+
+    // Overflow arrows
+    //
+    > arrow
+    {
+        @include button(undecorated);
+
+        background-color: $menu_color;
+        border-radius:    0;
+        min-height:       16px;
+        min-width:        16px;
+        padding:          4px;
+
+        &.top
+        {
+            border-bottom:           1px solid mix($fg_color, $base_color, 10%);
+            border-top-right-radius: $menu_radius;
+            border-top-left-radius:  $menu_radius;
+            margin-top:              -4px;
+            -gtk-icon-source: -gtk-icontheme('pan-up-symbolic');
+        }
+
+        &.bottom
+        {
+            border-bottom-left-radius:  $menu_radius;
+            border-bottom-right-radius: $menu_radius;
+            border-top:                 1px solid mix($fg_color, $base_color, 10%);
+            margin-bottom:              -12px;
+            margin-top:                 8px;
+            -gtk-icon-source: -gtk-icontheme('pan-down-symbolic');
+        }
+
+        &:hover
+        {
+            background-color: mix($fg_color, $base_color, 10%);
+        }
+
+        &:disabled
+        {
+            background-color: transparent;
+            border-color:     transparent;
+            color:            transparent;
+        }
+    }
+
+    // Separators
+    //
+    > separator
+    {
+        @include __wintc_apply_props($menu_separator_styles);
+
+        @if $menu_separator_thickness != $separator_thickness
+        {
+            min-height: $menu_separator_thickness;
+        }
+    }
+}
+
+menuitem
+{
+    accelerator
+    {
+        color: gtkalpha(currentColor, 0.55);
+    }
+
+    check,
+    radio
+    {
+        min-height: $popup_menu_menuitem_height;
+        min-width:  $popup_menu_menuitem_height;
+
+        &:dir(ltr) { margin-right: 7px; }
+        &:dir(rtl) { margin-left: 7px;  }
+    }
+
+    &:disabled
+    {
+        -gtk-icon-effect: dim;
+    }
+}
+
+// Animation stuffs (fade-in, like on XP)
+//
+// For now we only have animation on context menus and top level menus, the reason
+// being is that for some reason sub-menus only seemed to animate once (subsequent
+// popups were not animated)
+//
+// I couldn't resolve this inconsistency so have chosen to instead drop the sub-menu
+// anims for the time being
+//
+@if $popup_menu_fadein == true
+{
+    .context-menu
+    {
+        animation-duration: 300ms;
+        animation-name:     menu-fadein;
+    }
+
+    menubar,
+    .menubar
+    {
+        & > menuitem
+        {
+            & > * > menu,
+            & > * > .menu
+            {
+                animation-name: empty;
+            }
+
+            &:hover > * > menu,
+            &:hover > * > .menu
+            {
+                animation-duration: 300ms;
+                animation-name:     menu-fadein;
+            }
+        }
+    }
+}

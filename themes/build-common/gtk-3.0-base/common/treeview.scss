@@ -1,0 +1,171 @@
+/**
+ * treeview.scss - Theme Base Tree-view Styles
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+$_treeview_borders_color: mix($borders_color, $base_color,80%);
+
+treeview.view
+{
+    @at-root *
+    {
+        -GtkTreeView-expander-size:        20;
+        -GtkTreeView-grid-line-pattern:    '';
+        -GtkTreeView-grid-line-width:      1;
+        -GtkTreeView-horizontal-separator: 4;
+        -GtkTreeView-tree-line-pattern:    '';
+        -GtkTreeView-tree-line-width:      1;
+    }
+
+    border-left-color: mix($fg_color, $base_color, 50%); // This is actually the tree lines color,
+    border-top-color:  $bg_color;                        // While this is the grid lines color, better then nothing
+
+    rubberband
+    {
+        @extend rubberband; // To avoid borders being overridden by the previously
+                            // set props
+    }
+
+    &:selected
+    {
+        &:focus, &
+        {
+            border-radius: 0;
+
+            @extend %selected_items;
+        }
+
+        &:backdrop, &
+        {
+            border-left-color: mix($selected_fg_color, $selected_bg_color, 50%);
+            border-top-color:  transparentize($fg_color, 0.9); // doesn't work unfortunatelly
+        }
+    }
+
+    &:disabled
+    {
+        color: $insensitive_fg_color;
+
+        &:selected
+        {
+            color: mix($selected_fg_color, $selected_bg_color, 40%);
+        }
+    }
+
+    &.separator
+    {
+        color:      $bg_color;
+        min-height: 2px;
+
+        &:backdrop
+        {
+            color: transparentize($bg_color, 0.9);
+        }
+    }
+
+    &:drop(active)
+    {
+        border-color: $selected_borders_color;
+        border-style: solid none;
+        border-width: 1px;
+
+        &.after  { border-top-style:    none; }
+        &.before { border-bottom-style: none; }
+    }
+
+    &.expander
+    {
+        -gtk-icon-source: url("../Resources/treeview_expander_expand.png");
+
+        &:checked
+        {
+            -gtk-icon-source: url("../Resources/treeview_expander_collapse.png");
+        }
+    }
+
+    // Progress bar in treeviews
+    //
+    &.progressbar
+    {
+        background-color: $progress_bg_color;
+        background-image: image($progress_bg_color);
+        box-shadow:       none;
+        color:            $base_color;
+
+        &:selected
+        {
+            &:focus, &
+            {
+                background-image: image($base_color);
+                color: $selected_bg_color;
+            }
+        }
+    }
+
+    // Progress bar trough in treeviews
+    //
+    &.trough
+    {
+        background-color: transparentize($fg_color,0.9);
+
+        &:selected
+        {
+            &:focus, &
+            {
+                background-color: transparentize($selected_fg_color, 0.7);
+
+            }
+        }
+    }
+
+    header
+    {
+        button
+        {
+            @include __wintc_apply_props($treeview_header_styles);
+            
+            &:hover
+            {
+                @include __wintc_apply_props($treeview_header_hover_styles);
+            }
+
+            &:active
+            {
+                @include __wintc_apply_props($treeview_header_press_styles);
+            }
+        }
+    }
+
+    // For treeview-like derivative widgets
+    //
+    button.dnd,
+    header.button.dnd
+    {
+        &:active,
+        &:selected,
+        &:hover,
+        &
+        {
+            background-color: $selected_bg_color;
+            background-image: none;
+            border-radius:    0;
+            border-style:     none;
+            box-shadow:       inset 0 0 0 1px $base_color;
+            color:            $base_color;
+            padding:          0 6px;
+            text-shadow:      none;
+            transition:       none;
+        }
+    }
+
+    // See tests/testaccel to test
+    //
+    acceleditor > label
+    {
+        background-color: $selected_bg_color;
+    }
+}

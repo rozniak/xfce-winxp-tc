@@ -1,0 +1,53 @@
+/**
+ * switch.scss - Theme Base Switch Styles
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+switch
+{
+    @include __wintc_apply_props($switch_styles);
+
+    &:checked
+    {
+        @include __wintc_apply_props($switch_selected_styles);
+    }
+
+    &:disabled
+    {
+        @include __wintc_apply_props($switch_inactive_styles);
+
+        &:checked
+        {
+            @include __wintc_apply_props($switch_inactive_selected_styles);
+        }
+    }
+
+    slider
+    {
+        @include __wintc_apply_props($switch_slider_styles);
+
+        min-height: 15px;
+        min-width:  15px;
+
+        &:hover
+        {
+            @include __wintc_apply_props($switch_slider_hover_styles);
+        }
+
+        &:disabled
+        {
+            @include __wintc_apply_props($switch_slider_inactive_styles);
+        }
+    }
+
+    // Only show i / o for the accessible theme
+    //
+    image
+    {
+        color: transparent;
+    }
+}

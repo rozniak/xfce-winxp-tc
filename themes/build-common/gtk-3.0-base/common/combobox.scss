@@ -1,0 +1,72 @@
+/**
+ * combobox.scss - Theme Base Combobox Styles
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+combobox
+{
+    @include __wintc_apply_props($combobox_styles);
+
+    &:disabled
+    {
+        @include __wintc_apply_props($combobox_inactive_styles);
+    }
+
+    // Override button styles
+    //
+    button.combo:last-child
+    {
+        @include __wintc_apply_props($combobox_button_styles);
+
+        min-height:    $combobox_button_height;
+        min-width:     $combobox_button_width;
+        padding-right: $combobox_button_width;
+
+        &:hover
+        {
+            @include __wintc_apply_props($combobox_button_hover_styles);
+        }
+
+        &:checked
+        {
+            @include __wintc_apply_props($combobox_button_press_styles);
+        }
+
+        &:disabled
+        {
+            @include __wintc_apply_props($combobox_button_inactive_styles);
+        }
+    }
+
+    // Necessary to prevent "double border", because the entry widget also defines
+    // a border of its own
+    //
+    entry
+    {
+        border-width: 0px;
+    }
+
+    // HACK: This ensures the minimum height of a typical combobox drop down
+    //       is 17px for native
+    //
+    cellview
+    {
+        margin-bottom: -1px; // This is AWFUL but I don't see any other way
+    }
+
+    // FIXME: Untested
+    //
+    &:drop(active)
+    {
+        box-shadow: none;
+
+        button.combo
+        {
+            @extend %button_basic_drop_active;
+        }
+    }
+}

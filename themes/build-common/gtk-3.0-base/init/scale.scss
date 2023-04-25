@@ -1,0 +1,52 @@
+/**
+ * scale.scss - WinTC Scale Theme Part Definitions
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+//
+// ALL SCALES
+//
+$scale_styles:        ();
+$scale_marks_styles:  ();
+$scale_slider_styles: ();
+$scale_trough_styles: ();
+
+
+//
+// HORIZONTAL SCALES
+//
+$scale_horz_styles:        ();
+$scale_horz_marks_styles:  ();
+$scale_horz_trough_styles: ();
+
+$scale_horz_arrow_styles:          ();
+$scale_horz_arrow_hover_styles:    ();
+$scale_horz_arrow_press_styles:    ();
+$scale_horz_arrow_inactive_styles: ();
+
+$scale_horz_thumb_styles:          ();
+$scale_horz_thumb_hover_styles:    ();
+$scale_horz_thumb_press_styles:    ();
+$scale_horz_thumb_inactive_styles: ();
+
+
+//
+// VERTICAL SCALES
+//
+$scale_vert_styles:        ();
+$scale_vert_marks_styles:  ();
+$scale_vert_trough_styles: ();
+
+$scale_vert_arrow_styles:          ();
+$scale_vert_arrow_hover_styles:    ();
+$scale_vert_arrow_press_styles:    ();
+$scale_vert_arrow_inactive_styles: ();
+
+$scale_vert_thumb_styles:          ();
+$scale_vert_thumb_hover_styles:    ();
+$scale_vert_thumb_press_styles:    ();
+$scale_vert_thumb_inactive_styles: ();

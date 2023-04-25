@@ -1,0 +1,310 @@
+/**
+ * scrollbar.scss - Theme Base Scrollbar Styles
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+scrollbar
+{
+    @include __wintc_apply_props($scrollbar_trough_styles);
+
+    button
+    {
+        @include __wintc_apply_props($scrollbar_button_styles);
+
+        $l_btn_border_bottom: __wintc_get_prop_with_fallbacks(
+                                  "border-bottom-width",
+                                  $scrollbar_button_styles,
+                                  $button_styles
+                              );
+        $l_btn_border_left:   __wintc_get_prop_with_fallbacks(
+                                  "border-left-width",
+                                  $scrollbar_button_styles,
+                                  $button_styles
+                              );
+        $l_btn_border_right:  __wintc_get_prop_with_fallbacks(
+                                  "border-right-width",
+                                  $scrollbar_button_styles,
+                                  $button_styles
+                              );
+        $l_btn_border_top:    __wintc_get_prop_with_fallbacks(
+                                  "border-top-width",
+                                  $scrollbar_button_styles,
+                                  $button_styles
+                              );
+
+        -gtk-icon-source: none;
+
+        min-height: calc(#{$scrollbar_thickness} - #{$l_btn_border_bottom} - #{$l_btn_border_top});
+        min-width: calc(#{$scrollbar_thickness} - #{$l_btn_border_left} - #{$l_btn_border_right});
+
+        &:hover
+        {
+            @include __wintc_apply_props($scrollbar_button_hover_styles);
+        }
+
+        &:active
+        {
+            @include __wintc_apply_props($scrollbar_button_press_styles);
+        }
+
+        &:disabled
+        {
+            @include __wintc_apply_props($scrollbar_button_inactive_styles);
+        }
+    }
+
+    slider
+    {
+        @include __wintc_apply_props($scrollbar_slider_styles);
+
+        &:hover
+        {
+            @include __wintc_apply_props($scrollbar_slider_hover_styles);
+        }
+
+        &:active
+        {
+            @include __wintc_apply_props($scrollbar_slider_press_styles);
+        }
+    }
+
+    &.horizontal
+    {
+        @include __wintc_apply_props($scrollbar_horz_trough_styles);
+
+        button
+        {
+            @include __wintc_apply_props($scrollbar_horz_button_styles);
+
+            $l_btn_border_bottom: __wintc_get_prop($scrollbar_horz_button_styles, "border-bottom-width");
+            $l_btn_border_left:   __wintc_get_prop($scrollbar_horz_button_styles, "border-left-width");
+            $l_btn_border_right:  __wintc_get_prop($scrollbar_horz_button_styles, "border-right-width");
+            $l_btn_border_top:    __wintc_get_prop($scrollbar_horz_button_styles, "border-top-width");
+
+            @if $l_btn_border_bottom > 0px
+            {
+                min-height: calc(#{$scrollbar_thickness} - #{$l_btn_border_bottom} - #{$l_btn_border_top});
+                min-width: calc(#{$scrollbar_thickness} - #{$l_btn_border_left} - #{$l_btn_border_right});
+            }
+
+            &:hover
+            {
+                @include __wintc_apply_props($scrollbar_horz_button_hover_styles);
+            }
+
+            &:active
+            {
+                @include __wintc_apply_props($scrollbar_horz_button_press_styles);
+            }
+
+            &:disabled
+            {
+                @include __wintc_apply_props($scrollbar_horz_button_inactive_styles);
+            }
+
+            &.down
+            {
+                @include __wintc_apply_props($scrollbar_button_right_styles);
+
+                &:hover
+                {
+                    @include __wintc_apply_props($scrollbar_button_right_hover_styles);
+                }
+
+                &:active
+                {
+                    @include __wintc_apply_props($scrollbar_button_right_press_styles);
+                }
+
+                &:disabled
+                {
+                    @include __wintc_apply_props($scrollbar_button_right_inactive_styles);
+                }
+            }
+
+            &.up
+            {
+                @include __wintc_apply_props($scrollbar_button_left_styles);
+
+                &:hover
+                {
+                    @include __wintc_apply_props($scrollbar_button_left_hover_styles);
+                }
+
+                &:active
+                {
+                    @include __wintc_apply_props($scrollbar_button_left_press_styles);
+                }
+
+                &:disabled
+                {
+                    @include __wintc_apply_props($scrollbar_button_left_inactive_styles);
+                }
+            }
+        }
+
+        slider
+        {
+            @include __wintc_apply_props($scrollbar_horz_slider_styles);
+
+            $l_sldr_border_bottom: __wintc_get_prop_with_fallbacks(
+                                       "border-bottom-width",
+                                       $scrollbar_horz_slider_styles,
+                                       $scrollbar_slider_styles
+                                   );
+            $l_sldr_border_left:   __wintc_get_prop_with_fallbacks(
+                                       "border-left-width",
+                                       $scrollbar_horz_slider_styles,
+                                       $scrollbar_slider_styles
+                                   );
+            $l_sldr_border_right:  __wintc_get_prop_with_fallbacks(
+                                       "border-right-width",
+                                       $scrollbar_horz_slider_styles,
+                                       $scrollbar_slider_styles
+                                   );
+            $l_sldr_border_top:    __wintc_get_prop_with_fallbacks(
+                                       "border-top-width",
+                                       $scrollbar_horz_slider_styles,
+                                       $scrollbar_slider_styles
+                                   );
+
+            min-height: calc(#{$scrollbar_thickness} - #{$l_sldr_border_left} - #{$l_sldr_border_right});
+            min-width: calc(#{$scrollbar_slider_min_length} - #{$l_sldr_border_bottom} - #{$l_sldr_border_top});
+
+            &:hover
+            {
+                @include __wintc_apply_props($scrollbar_horz_slider_hover_styles);
+            }
+
+            &:active
+            {
+                @include __wintc_apply_props($scrollbar_horz_slider_press_styles);
+            }
+        }
+    }
+
+    &.vertical
+    {
+        @include __wintc_apply_props($scrollbar_vert_trough_styles);
+
+        button
+        {
+            @include __wintc_apply_props($scrollbar_vert_button_styles);
+
+            $l_btn_border_bottom: __wintc_get_prop($scrollbar_vert_button_styles, "border-bottom-width");
+            $l_btn_border_left:   __wintc_get_prop($scrollbar_vert_button_styles, "border-left-width");
+            $l_btn_border_right:  __wintc_get_prop($scrollbar_vert_button_styles, "border-right-width");
+            $l_btn_border_top:    __wintc_get_prop($scrollbar_vert_button_styles, "border-top-width");
+
+            @if $l_btn_border_bottom > 0px
+            {
+                min-height: calc(#{$scrollbar_thickness} - #{$l_btn_border_bottom} - #{$l_btn_border_top});
+                min-width: calc(#{$scrollbar_thickness} - #{$l_btn_border_left} - #{$l_btn_border_right});
+            }
+
+            &:hover
+            {
+                @include __wintc_apply_props($scrollbar_vert_button_hover_styles);
+            }
+
+            &:active
+            {
+                @include __wintc_apply_props($scrollbar_vert_button_press_styles);
+            }
+
+            &:disabled
+            {
+                @include __wintc_apply_props($scrollbar_vert_button_inactive_styles);
+            }
+
+            &.down
+            {
+                @include __wintc_apply_props($scrollbar_button_down_styles);
+
+                &:hover
+                {
+                    @include __wintc_apply_props($scrollbar_button_down_hover_styles);
+                }
+
+                &:active
+                {
+                    @include __wintc_apply_props($scrollbar_button_down_press_styles);
+                }
+
+                &:disabled
+                {
+                    @include __wintc_apply_props($scrollbar_button_down_inactive_styles);
+                }
+            }
+
+            &.up
+            {
+                @include __wintc_apply_props($scrollbar_button_up_styles);
+
+                &:hover
+                {
+                    @include __wintc_apply_props($scrollbar_button_up_hover_styles);
+                }
+
+                &:active
+                {
+                    @include __wintc_apply_props($scrollbar_button_up_press_styles);
+                }
+
+                &:disabled
+                {
+                    @include __wintc_apply_props($scrollbar_button_up_inactive_styles);
+                }
+            }
+        }
+
+        slider
+        {
+            @include __wintc_apply_props($scrollbar_vert_slider_styles);
+
+            $l_sldr_border_bottom: __wintc_get_prop_with_fallbacks(
+                                       "border-bottom-width",
+                                       $scrollbar_vert_slider_styles,
+                                       $scrollbar_slider_styles
+                                   );
+            $l_sldr_border_left:   __wintc_get_prop_with_fallbacks(
+                                       "border-left-width",
+                                       $scrollbar_vert_slider_styles,
+                                       $scrollbar_slider_styles
+                                   );
+            $l_sldr_border_right:  __wintc_get_prop_with_fallbacks(
+                                       "border-right-width",
+                                       $scrollbar_vert_slider_styles,
+                                       $scrollbar_slider_styles
+                                   );
+            $l_sldr_border_top:    __wintc_get_prop_with_fallbacks(
+                                       "border-top-width",
+                                       $scrollbar_vert_slider_styles,
+                                       $scrollbar_slider_styles
+                                   );
+
+            min-height: calc(#{$scrollbar_slider_min_length} - #{$l_sldr_border_left} - #{$l_sldr_border_right});
+            min-width: calc(#{$scrollbar_thickness} - #{$l_sldr_border_bottom} - #{$l_sldr_border_top});
+
+            &:hover
+            {
+                @include __wintc_apply_props($scrollbar_vert_slider_hover_styles);
+            }
+
+            &:active
+            {
+                @include __wintc_apply_props($scrollbar_vert_slider_press_styles);
+            }
+        }
+    }
+}
+
+treeview ~ scrollbar.vertical
+{
+    border-top:  1px solid $borders_color;
+    margin-top: -1px;
+}

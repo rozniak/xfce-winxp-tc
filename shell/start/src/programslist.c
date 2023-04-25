@@ -146,7 +146,7 @@ static void programs_list_append_all_programs_item(
 
     // Set style
     //
-    wintc_widget_add_style_class(outer_box, "xp-start-all-programs");
+    wintc_widget_add_style_class(item,      "xp-start-all-programs");
     wintc_widget_add_style_class(arrow_box, "arrow");
 
     // Box up

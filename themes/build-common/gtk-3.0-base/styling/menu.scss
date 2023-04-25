@@ -1,0 +1,142 @@
+/**
+ * menu.scss - Theme Base Menu Style Constants
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+$menu_separator_thickness: $separator_thickness !default;
+
+$popup_menu_fadein:          true !default;
+$popup_menu_menuitem_height: 16px !default;
+
+
+//
+// MENUSTRIP
+//
+$menustrip_styles:
+    wintc_define_props_box(
+        $menustrip_styles,
+        true,
+        padding,
+        0,
+        0,
+        0,
+        0
+    );
+
+$menustrip_menuitem_styles:
+    wintc_define_props_box(
+        $menustrip_menuitem_styles,
+        true,
+        padding,
+        2,
+        6,
+        3,
+        6
+    );
+
+$menustrip_menuitem_hover_styles:
+    wintc_define_props_bg(
+        $menustrip_menuitem_hover_styles,
+        true,
+        $selected_bg_color,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
+$menustrip_menuitem_hover_styles:
+    wintc_define_props_fg(
+        $menustrip_menuitem_hover_styles,
+        true,
+        $selected_fg_color,
+        undefined
+    );
+
+
+//
+// POPUP MENUS
+//
+$popup_menu_styles:
+    wintc_define_props_bg(
+        $popup_menu_styles,
+        true,
+        $menu_color,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
+$popup_menu_styles:
+    wintc_define_props_borders(
+        $popup_menu_styles,
+        true,
+        solid,
+        2,
+        2,
+        2,
+        2,
+        undefined,
+        url('../Resources/popup_menu_border.png')
+    );
+
+$popup_menu_menuitem_styles:
+    wintc_define_props_box(
+        $popup_menu_menuitem_styles,
+        true,
+        margin,
+        2,
+        4,
+        2,
+        4
+    );
+$popup_menu_menuitem_styles:
+    wintc_define_props_box(
+        $popup_menu_menuitem_styles,
+        true,
+        padding,
+        2,
+        6,
+        2,
+        6
+    );
+
+$popup_menu_menuitem_hover_styles:
+    wintc_define_props_bg(
+        $popup_menu_menuitem_hover_styles,
+        true,
+        $selected_bg_color,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
+$popup_menu_menuitem_hover_styles:
+    wintc_define_props_fg(
+        $popup_menu_menuitem_hover_styles,
+        true,
+        $selected_fg_color,
+        undefined
+    );
+
+$popup_menu_menuitem_inactive_styles:
+    wintc_define_props_fg(
+        $popup_menu_menuitem_inactive_styles,
+        true,
+        $insensitive_fg_color,
+        undefined
+    );
+
+$menu_separator_styles:
+    wintc_define_props_box(
+        $menu_separator_styles,
+        true,
+        margin,
+        2,
+        4,
+        2,
+        4
+    );

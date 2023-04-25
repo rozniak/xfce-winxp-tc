@@ -1,0 +1,26 @@
+/**
+ * menu.scss - Luna (Blue) Style Menu Style Constants
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+$menu_separator_thickness: $separator_thickness;
+
+//
+// POPUP MENUS
+//
+$popup_menu_styles:
+    wintc_define_props_borders(
+        $popup_menu_styles,
+        false,
+        solid,
+        1,
+        1,
+        1,
+        1,
+        $menu_borders_color,
+        undefined
+    );

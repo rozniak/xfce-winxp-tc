@@ -1,0 +1,97 @@
+notes on wintc mixins and functions
+-----------------------------------
+
+special values:
+  - undefined - override default with no define
+  
+  - default - theme doesnt define a value, uses default
+  
+mixin/func list:
+
+@include wintc_define_props_bg(
+    theme-part-map,
+    default?
+    bg-color,
+    bg-size,
+    bg-repeat,
+    bg-position,
+    bg-images...
+)
+
+@include wintc_define_props_borders(
+    theme-part-map,
+    default?,
+    has borders? (solid, none, default, undefine),
+    top-size,
+    right-size,
+    bottom-size,
+    left-size,
+    color,
+    image
+)
+
+@include wintc_define_props_box(
+    theme-part-map,
+    default?,
+    margin or padding,
+    top-size,
+    right-size,
+    bottom-size,
+    left-size
+)
+
+@include wintc_define_props_fg(
+    theme-part-map,
+    default?
+    color,
+    text-shadow
+)
+
+@include wintc_define_props_font(
+    theme-part-map,
+    default?,
+    family,
+    size,
+    style,
+    weight
+)
+
+@include __wintc_handle_define(
+    theme-part-map,
+    default?,
+    rule,
+    value
+)
+
+@include __wintc_handle_define_box(
+    theme-part-map,
+    default?,
+    box-part,
+    top-size,
+    right-size,
+    bottom-size,
+    left-size
+)
+
+@include __wintc_apply_props(
+    theme-part-map
+)
+
+@include __wintc_apply_specific_props(
+    theme-part-map,
+    rules...
+)
+
+@include __wintc_apply_props_excluding(
+    theme-part-map,
+    exclude-rules...
+)
+
+@include __wintc_get_prop(
+    theme-part-map,
+    rule-name
+)
+
+@include __wintc_has_value(
+    values...
+)

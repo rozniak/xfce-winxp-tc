@@ -1,0 +1,21 @@
+/**
+ * xp-systray-plugin.scss - Theme Base Notification Area Styles
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+.xp-systray
+{
+    // HACK: This bit here to do with margin-left has to do with the taskband, and is
+    //       described in override/xp-start-plugin.scss
+    //
+    @include __wintc_apply_props_excluding(
+        $systray_styles,
+        "margin-left"
+    );
+
+    margin-left: $taskband_horz_margins + __wintc_get_prop($systray_styles, "margin-left");
+}

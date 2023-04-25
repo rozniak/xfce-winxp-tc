@@ -1,0 +1,14 @@
+/**
+ * treeview.scss - Theme Base Tree-view Colour Constants
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+// FIXME: Check these, are they background colours?
+$treeview_header_color:              #EBEADB !default;
+$treeview_header_hover_color:        #FFFFFF !default;
+$treeview_header_active_color:       #DEDFDA !default;
+$treeview_header_border_color:       #000000 !default; // FIXME: Unused atm

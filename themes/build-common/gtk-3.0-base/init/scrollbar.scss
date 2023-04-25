@@ -1,0 +1,76 @@
+/**
+ * scrollbar.scss - WinTC Scrollbar Theme Part Definitions
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+//
+// ALL SCROLLBARS
+//
+$scrollbar_trough_styles: ();
+
+$scrollbar_slider_styles: ();
+$scrollbar_slider_hover_styles: ();
+$scrollbar_slider_press_styles: ();
+
+$scrollbar_button_styles: ();
+$scrollbar_button_hover_styles:    ();
+$scrollbar_button_press_styles:    ();
+$scrollbar_button_inactive_styles: ();
+
+
+//
+// DIRECTIONAL BUTTONS
+//
+$scrollbar_button_down_styles:          ();
+$scrollbar_button_down_hover_styles:    ();
+$scrollbar_button_down_press_styles:    ();
+$scrollbar_button_down_inactive_styles: ();
+
+$scrollbar_button_left_styles:          ();
+$scrollbar_button_left_hover_styles:    ();
+$scrollbar_button_left_press_styles:    ();
+$scrollbar_button_left_inactive_styles: ();
+
+$scrollbar_button_right_styles:          ();
+$scrollbar_button_right_hover_styles:    ();
+$scrollbar_button_right_press_styles:    ();
+$scrollbar_button_right_inactive_styles: ();
+
+$scrollbar_button_up_styles:          ();
+$scrollbar_button_up_hover_styles:    ();
+$scrollbar_button_up_press_styles:    ();
+$scrollbar_button_up_inactive_styles: ();
+
+
+//
+// HORIZONTAL SCROLLBARS
+//
+$scrollbar_horz_trough_styles: ();
+
+$scrollbar_horz_slider_styles: ();
+$scrollbar_horz_slider_hover_styles: ();
+$scrollbar_horz_slider_press_styles: ();
+
+$scrollbar_horz_button_styles:          ();
+$scrollbar_horz_button_hover_styles:    ();
+$scrollbar_horz_button_press_styles:    ();
+$scrollbar_horz_button_inactive_styles: ();
+
+
+//
+// VERTICAL SCROLLBARS
+//
+$scrollbar_vert_trough_styles: ();
+
+$scrollbar_vert_slider_styles:       ();
+$scrollbar_vert_slider_hover_styles: ();
+$scrollbar_vert_slider_press_styles: ();
+
+$scrollbar_vert_button_styles:          ();
+$scrollbar_vert_button_hover_styles:    ();
+$scrollbar_vert_button_press_styles:    ();
+$scrollbar_vert_button_inactive_styles: ();

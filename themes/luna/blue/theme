@@ -1,0 +1,6 @@
+THEME_BASENAME=Windows XP style
+THEME_DESCRIPTION=Windows XP (Blue) visual style for XFCE.
+THEME_DISPLAYNAME=Windows XP style (Blue)
+THEME_MAINTAINER=Rory Fewell <roryf@oddmatics.uk>
+THEME_RAWNAME=luna-blue
+THEME_VARIANT=Blue

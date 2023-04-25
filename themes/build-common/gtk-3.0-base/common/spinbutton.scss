@@ -1,0 +1,173 @@
+/**
+ * spinbutton.scss - Theme Base Spin Button Styles
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+spinbutton
+{
+    button
+    {
+        &, &:focus
+        {
+            @include __wintc_apply_props($spinbutton_button_styles);
+        }
+
+        &:hover
+        {
+            @include __wintc_apply_props($spinbutton_button_hover_styles);
+        }
+
+        &:active
+        {
+            @include __wintc_apply_props($spinbutton_button_press_styles);
+        }
+
+        &:disabled
+        {
+            @include __wintc_apply_props($spinbutton_button_inactive_styles);
+        }
+    }
+
+    &:not(.vertical)
+    {
+        // In this horizontal configuration, the whole spinbutton
+        // behaves as the entry, so we extend the entry styling
+        // and nuke the style on the internal entry
+        //
+        @extend %entry;
+
+        padding: 0px;
+
+        @include __wintc_apply_props($spinbutton_horz_box_styles);
+
+        %spinbutton_horz_entry
+        {
+            // Reset all the other props since the spinbutton node is styled here
+            //
+            background:       none;
+            background-color: transparent;
+            border:           none;
+            border-radius:    0;
+            box-shadow:       none;
+            margin:           0;
+        }
+
+        entry
+        {
+            @extend %spinbutton_horz_entry;
+
+            @include __wintc_apply_props($spinbutton_horz_entry_styles);
+        }
+    }
+
+    // OSD horizontal
+    //
+    .osd &:not(.vertical)
+    {
+        entry
+        {
+            @extend %spinbutton_horz_entry;
+        }
+
+        button
+        {
+            @include button(undecorated);
+
+            border-style:     none none none solid;
+            border-color:     transparentize($osd_borders_color, 0.3);
+            border-radius:    0;
+            box-shadow:       none;
+            color:            $osd_fg_color;
+            -gtk-icon-shadow: 0 1px black;
+
+            &:dir(rtl)
+            {
+                border-style: none solid none none;
+            }
+
+            &:hover
+            {
+                @include button(undecorated);
+
+                background-color: transparentize($osd_fg_color, 0.9);
+                border-color:     transparentize(opacify($osd_borders_color, 1), 0.5);
+                box-shadow:       none;
+                color:            $osd_fg_color;
+                -gtk-icon-shadow: 0 1px black;
+            }
+
+            &:backdrop
+            {
+                @include button(undecorated);
+
+                border-color:     transparentize(opacify($osd_borders_color, 1), 0.5);
+                box-shadow:       none;
+                color:            $osd_fg_color;
+                -gtk-icon-shadow: none;
+            }
+
+            &:disabled
+            {
+                @include button(undecorated);
+
+                border-color:     transparentize(opacify($osd_borders_color, 1), 0.5);
+                box-shadow:       none;
+                color:            $osd_insensitive_fg_color;
+                -gtk-icon-shadow: none;
+
+            }
+            
+            &:dir(ltr):last-child  { border-radius: 0 $button_radius $button_radius 0; }
+            &:dir(rtl):first-child { border-radius: $button_radius 0 0 $button_radius; }
+        }
+    }
+
+    // Vertical
+    //
+    &.vertical
+    {
+        @include __wintc_apply_props($spinbutton_vert_box_styles);
+
+        // In the vertical configuration, we treat the spinbutton
+        // as a box, and tweak the style of the entry in the middle
+        // so that it's linked
+        //
+        entry
+        {
+            @include __wintc_apply_props($spinbutton_vert_entry_styles);
+        }
+    }
+
+    // OSD vertical
+    //
+    .osd &.vertical button:first-child
+    {
+        @include button(osd);
+
+        &:hover    { @include button(osd-hover);       }
+        &:active   { @include button(osd-active);      }
+        &:disabled { @include button(osd-insensitive); }
+        &:backdrop { @include button(osd-backdrop);    }
+    }
+
+    // Misc
+    //
+    treeview &:not(.vertical)
+    {
+        border-radius: 0;
+        border-style: none;
+        min-height: 0;
+
+        entry
+        {
+            min-height: 0;
+            padding: 1px 2px;
+        }
+    }
+
+    font-feature-settings: "tnum";
+}

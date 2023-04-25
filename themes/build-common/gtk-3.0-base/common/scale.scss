@@ -1,0 +1,254 @@
+/**
+ * scale.scss - (Blue) Scale Styles
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+scale
+{
+    @include __wintc_apply_props($scale_styles);
+
+    marks
+    {
+        @include __wintc_apply_props($scale_marks_styles);
+    }
+
+    indicator
+    {
+        color: $scale_mark_color;
+    }
+
+    slider
+    {
+        @include __wintc_apply_props($scale_slider_styles);
+    }
+    
+    trough
+    {
+        @include __wintc_apply_props($scale_trough_styles);
+    }
+    
+    value
+    {
+        padding-bottom: 6px;
+    }
+
+    &.horizontal
+    {
+        @include __wintc_apply_props($scale_horz_styles);
+
+        min-height: $scale_slider_length;
+        
+        
+        marks
+        {
+            @include __wintc_apply_props($scale_horz_marks_styles);
+            
+            mark
+            {
+                indicator
+                {
+                    min-width: $scale_mark_thickness;
+                    min-height: $scale_mark_length;
+                }
+
+                @if $scale_end_mark_length != $scale_mark_length
+                {
+                    &:first-child indicator,
+                    &:last-child indicator
+                    {
+                        min-height: $scale_end_mark_length;
+                    }
+                }
+            }
+        }
+        
+        slider
+        {
+            @include __wintc_apply_props_excluding(
+                $scale_horz_thumb_styles,
+                "margin-bottom",
+                "margin-left",
+                "margin-right",
+                "margin-top",
+                "min-height"
+            );
+
+            $l_margin_bottom: floor($scale_slider_length    / 2) * -1;
+            $l_margin_left:   floor($scale_slider_thickness / 2) * -1;
+            $l_margin_right:  ceil($scale_slider_thickness  / 2) * -1;
+            $l_margin_top:    ceil($scale_slider_length     / 2) * -1;
+
+            margin: $l_margin_top $l_margin_right $l_margin_bottom $l_margin_left;
+            min-height: __wintc_get_prop_with_fallbacks(
+                            "border-top-width",
+                            $scale_horz_trough_styles,
+                            $scale_trough_styles
+                        ) +
+                        __wintc_get_prop_with_fallbacks(
+                            "border-bottom-width"
+                            $scale_horz_trough_styles,
+                            $scale_trough_styles
+                        );
+            
+            
+            &:hover
+            {
+                @include __wintc_apply_props($scale_horz_thumb_hover_styles);
+            }
+        
+            &:active
+            {
+                @include __wintc_apply_props($scale_horz_thumb_press_styles);
+            }
+        
+            &:disabled
+            {
+                @include __wintc_apply_props($scale_horz_thumb_inactive_styles);
+            }
+        }
+        
+        trough
+        {
+            @include __wintc_apply_props($scale_horz_trough_styles);
+        }
+        
+        &.marks-after,
+        &.marks-before
+        {
+            margin-top: 2px;
+            
+            
+            slider
+            {
+                @include __wintc_apply_props($scale_horz_arrow_styles);
+            
+
+                &:hover
+                {
+                    @include __wintc_apply_props($scale_horz_arrow_hover_styles);
+                }
+        
+                &:active
+                {
+                    @include __wintc_apply_props($scale_horz_arrow_press_styles);
+                }
+        
+                &:disabled
+                {
+                    @include __wintc_apply_props($scale_horz_arrow_inactive_styles);
+                }
+            }
+        }
+    }
+    
+    &.vertical
+    {
+        min-width: $scale_slider_length;
+        
+        
+        marks
+        {
+            @include __wintc_apply_props($scale_vert_marks_styles);
+
+            mark
+            {
+                indicator
+                {
+                    min-height: $scale_mark_thickness;
+                    min-width: $scale_mark_length;
+                }
+                
+                @if $scale_end_mark_length != $scale_mark_length
+                {
+                    &:first-child indicator,
+                    &:last-child indicator
+                    {
+                        min-width: $scale_end_mark_length;
+                    }
+                }
+            }
+        }
+        
+        slider
+        {
+            @include __wintc_apply_props_excluding(
+                $scale_vert_thumb_styles,
+                "margin-bottom",
+                "margin-left",
+                "margin-right",
+                "margin-top",
+                "min-height"
+            );
+
+            $l_margin_bottom: floor($scale_slider_thickness / 2) * -1;
+            $l_margin_left:   floor($scale_slider_length    / 2) * -1;
+            $l_margin_right:  ceil($scale_slider_length     / 2) * -1;
+            $l_margin_top:    ceil($scale_slider_thickness  / 2) * -1;
+
+            margin: $l_margin_top $l_margin_right $l_margin_bottom $l_margin_left;
+            min-width: __wintc_get_prop_with_fallbacks(
+                            "border-left-width",
+                            $scale_vert_trough_styles,
+                            $scale_trough_styles
+                        ) +
+                        __wintc_get_prop_with_fallbacks(
+                            "border-right-width"
+                            $scale_vert_trough_styles,
+                            $scale_trough_styles
+                        );
+            
+            
+            &:hover
+            {
+                @include __wintc_apply_props($scale_vert_thumb_hover_styles);
+            }
+        
+            &:active
+            {
+                @include __wintc_apply_props($scale_vert_thumb_press_styles);
+            }
+        
+            &:disabled
+            {
+                @include __wintc_apply_props($scale_vert_thumb_inactive_styles);
+            }
+        }
+        
+        trough
+        {
+            @include __wintc_apply_props($scale_vert_trough_styles);
+        }
+        
+        &.marks-after,
+        &.marks-before,
+        {
+            margin-left: 2px;
+            
+            
+            slider
+            {
+                @include __wintc_apply_props($scale_vert_arrow_styles);
+            
+            
+                &:hover
+                {
+                    @include __wintc_apply_props($scale_vert_arrow_hover_styles);
+                }
+        
+                &:active
+                {
+                    @include __wintc_apply_props($scale_vert_arrow_press_styles);
+                }
+        
+                &:disabled
+                {
+                    @include __wintc_apply_props($scale_vert_arrow_inactive_styles);
+                }
+            }
+        }
+    }
+}

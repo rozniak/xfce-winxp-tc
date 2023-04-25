@@ -1,0 +1,486 @@
+/**
+ * xp-start-plugin.scss - Theme Base Start Button/Menu Styles
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+//
+// START BUTTON
+//
+button.xp-start-button
+{
+    // HACK: Slight hack going on here - in Windows XP, the window buttons has a margin
+    //       either side of it, however it doesn't seem like the custom widget in XFCE
+    //       applies the margin property at all
+    //
+    //       As a result, we have to apply a margin on the Start button here, and on
+    //       the notification area as well - this does make the assumption that the
+    //       user has everything set up in the same order as XP unfortunately:
+    //
+    //       Start - window buttons - systray
+    //
+    //       Maybe if a custom window buttons plugin is developed using a simple GtkBox
+    //       this problem could be avoided so we could directly apply margin on the
+    //       box rather the surrounding widgets
+    //
+    @include __wintc_apply_props_excluding(
+        $start_button_styles,
+        "margin-right"
+    );
+
+    margin-right: $taskband_horz_margins + __wintc_get_prop($start_button_styles, "margin-right");
+
+
+    &:hover
+    {
+        @include __wintc_apply_props($start_button_hover_styles);
+    }
+
+    &:checked,
+    &:checked:hover
+    {
+        @include __wintc_apply_props($start_button_selected_styles);
+    }
+
+    &:active
+    {
+        @include __wintc_apply_props($start_button_press_styles);
+    }
+
+    @at-root .xp-flag
+    {
+        @include __wintc_apply_props_excluding(
+            $start_flag_styles,
+            "min-height",
+            "min-width"
+        );
+
+        min-height: $start_flag_size;
+        min-width:  $start_flag_size;
+    }
+
+    // The Start button contains both 'Start' and 'start' labels, so that themes can
+    // choose which casing they would like
+    //
+    // It defaults to 'Start', so when showing the lowercase version we need to set
+    // the uppercase to 0pt
+    //
+    @if $start_text_case == upper
+    {
+        .upper
+        {
+            @include __wintc_apply_props($start_button_text_styles);
+        }
+    }
+    @else
+    {
+        .lower
+        {
+            font-size: inherit;
+
+            @include __wintc_apply_props($start_button_text_styles);
+        }
+
+        .upper
+        {
+            font-size: 0pt;
+        }
+    }
+}
+
+
+//
+// START MENU
+//
+window.csd.xp-start-menu // Specificity hack -_-
+{
+    @include __wintc_apply_props($start_menu_styles);
+
+    decoration
+    {
+        box-shadow: 6px 6px 2px -3px rgba(0, 0, 0, 0.4);
+    }
+
+    menubar
+    {
+        @include __wintc_apply_props($start_menu_menustrip_styles);
+        
+        > menuitem,
+        > separator
+        {
+            @include __wintc_apply_specific_props(
+                $start_menu_menustrip_menuitem_styles,
+                __wintc_get_category_props(
+                    box-model,
+                    "margin-bottom"
+                )...
+            );
+
+            &:not(:last-child)
+            {
+                @include __wintc_apply_specific_props(
+                    $start_menu_menustrip_menuitem_styles,
+                    "margin-bottom"
+                );
+            }
+        }
+
+        > menuitem
+        {
+            @include __wintc_apply_props_excluding(
+                $start_menu_menustrip_menuitem_styles,
+                lists-merge(
+                    __wintc_get_category_props(box-model),
+                    __wintc_get_category_props(font)
+                )...
+            );
+
+
+            > box label
+            {
+                @include __wintc_apply_props_for_category(
+                    $start_menu_menustrip_menuitem_styles,
+                    font
+                );
+            }
+
+            &:hover
+            {
+                @include __wintc_apply_props_not_in_category(
+                    $start_menu_menustrip_menuitem_hover_styles,
+                    font
+                );
+
+
+                > box label
+                {
+                    @include __wintc_apply_props_for_category(
+                        $start_menu_menustrip_menuitem_hover_styles,
+                        font
+                    );
+                }
+            }
+        }
+
+        > separator
+        {
+            @if $start_menu_separator_thickness != $separator_thickness
+            {
+                min-height: $start_menu_separator_thickness
+            }
+        }
+    }
+
+    @at-root .xp-start-userpane
+    {
+        @include __wintc_apply_props($start_menu_horz_userpane_styles);
+
+        box
+        {
+            @include __wintc_apply_props($start_menu_userpic_styles);
+
+            box-shadow: none; // FIXME: Should be a wintc_define!
+            
+            @if not $start_menu_display_userpic
+            {
+                box-shadow: 0px;
+                margin:     0px;
+                min-height: 0px;
+                min-width:  0px;
+                opacity:    0.0; // Also set the opacity because the alloc'd size is
+                                 // not quite zero
+            }
+        }
+        
+        label
+        {
+            @include __wintc_apply_props($start_menu_horz_username_styles);
+        }
+    }
+
+    @at-root .xp-start-vuserpane
+    {
+        @include __wintc_apply_props($start_menu_vert_userpane_styles);
+
+        label
+        {
+            @include __wintc_apply_props($start_menu_vert_username_styles);
+        }
+    }
+
+    @at-root .xp-start-programs-column
+    {
+        @include __wintc_apply_props($start_menu_programs_column_styles);
+
+        min-width: $start_menu_programs_column_width;
+
+        menu
+        {
+            @include __wintc_apply_props($start_menu_popup_menu_styles);
+
+            menuitem
+            {
+                @include __wintc_apply_props(
+                    $start_menu_popup_menu_menuitem_styles
+                );
+
+                @if $start_menu_popup_menu_vmargin != "novalue"
+                {
+                    &:first-child
+                    {
+                        margin-top: $start_menu_popup_menu_vmargin;
+                    }
+
+                    &:last-child
+                    {
+                        margin-bottom: $start_menu_popup_menu_vmargin;
+                    }
+                }
+
+                image
+                {
+                    @include __wintc_apply_props(
+                        $start_menu_popup_menu_menuitem_icon_styles
+                    );
+                }
+            }
+
+            separator
+            {
+                @include __wintc_apply_props($start_menu_popup_menu_separator_styles);
+            }
+        }
+
+        menubar
+        {
+            > menuitem
+            {
+                @include __wintc_apply_props($start_menu_programs_menuitem_styles);
+
+                &:hover
+                {
+                    @include __wintc_apply_props(
+                        $start_menu_programs_menuitem_hover_styles
+                    );
+                }
+
+                image
+                {
+                    @include __wintc_apply_props(
+                        $start_menu_programs_menuitem_icon_styles
+                    );
+                }
+
+                @at-root .xp-start-default-item
+                {
+                    @include __wintc_apply_props(
+                        $start_menu_programs_menuitem_mime_styles
+                    );
+
+                    label
+                    {
+                        &:first-child
+                        {
+                            @include __wintc_apply_props(
+                                $start_menu_programs_menuitem_mime_cattxt_styles
+                            );
+                        }
+
+                        &:last-child
+                        {
+                            @include __wintc_apply_props(
+                                $start_menu_programs_menuitem_mime_prgtxt_styles
+                            );
+                        }
+                    }
+
+                    &:hover
+                    {
+                        @include __wintc_apply_props(
+                            $start_menu_programs_menuitem_mime_hover_styles
+                        );
+
+                        label
+                        {
+                            // FIXME: We should really use the apply props category feature
+                            //        to apply all except font stuff in the control, and
+                            //        then apply ONLY font stuff to the label
+                            //
+                            //        It would be useful in a few places... like here! And
+                            //        the Start button with its text
+                            //
+                            @include __wintc_apply_specific_props(
+                                $start_menu_programs_menuitem_mime_hover_styles,
+                                "color",
+                                "font-size",
+                                "text-decoration"
+                            );
+                        }
+                    }
+                }
+            }
+
+            > menuitem:last-child
+            {
+                margin: 0px;
+            }
+
+            menuitem.xp-start-all-programs
+            {
+                @include __wintc_apply_props_not_in_category(
+                    $start_menu_allprograms_menuitem_styles,
+                    font
+                );
+
+                min-height: $start_menu_allprograms_height;
+
+                > box
+                {
+                    @include __wintc_apply_props_for_category(
+                        $start_menu_allprograms_menuitem_styles,
+                        font
+                    );
+                }
+
+                .arrow
+                {
+                    @include __wintc_apply_props($start_menu_allprograms_arrow_styles);
+
+                    min-width: $start_menu_allprograms_arrow_width;
+                }
+
+                &:hover .arrow
+                {
+                    @include __wintc_apply_props(
+                        $start_menu_allprograms_arrow_hover_styles
+                    );
+                }
+            }
+
+            > separator
+            {
+                @include __wintc_apply_props($start_menu_programs_separator_styles);
+
+                &:nth-last-child(2)
+                {
+                    @include __wintc_apply_props(
+                        $start_menu_allprograms_separator_styles
+                    );
+                }
+            }
+        }
+    }
+
+    @at-root .xp-start-places-column
+    {
+        @include __wintc_apply_props($start_menu_places_column_styles);
+
+        min-width: $start_menu_places_column_width;
+        
+        menubar
+        {
+            > menuitem
+            {
+                @include __wintc_apply_props($start_menu_places_menuitem_styles);
+
+                &:hover
+                {
+                    @include __wintc_apply_props_excluding(
+                        $start_menu_places_menuitem_hover_styles
+                    );
+                }
+
+                &.significant
+                {
+                    @include __wintc_apply_props($start_menu_places_menuitem_top_styles);
+                }
+
+                image
+                {
+                    @include __wintc_apply_props($start_menu_places_menuitem_icon_styles);
+                }
+            }
+
+            > separator
+            {
+                @include __wintc_apply_props($start_menu_places_separator_styles);
+            }
+        }
+    }
+
+    @at-root .xp-start-logoffpane
+    {
+        @include __wintc_apply_props($start_menu_logoff_pane_styles);
+
+        button
+        {
+            @include __wintc_apply_props($start_menu_button_styles);
+
+            &:first-child
+            {
+                margin-right: 0px;
+            }
+
+            // Ensure we get rid of any previously defined button styles...
+            //
+            &,
+            &:active,
+            &:checked,
+            &:focus,
+            &:hover
+            {
+                @include button(undecorated);
+                
+                border: none;
+            }
+
+            &:hover
+            {
+                @include __wintc_apply_props($start_menu_button_hover_styles);
+            }
+
+            &:active
+            {
+                @include __wintc_apply_props($start_menu_button_press_styles);
+            }
+
+            // Button icons
+            //
+            .logoff-icon,
+            .shutdown-icon
+            {
+                min-height: $start_menu_power_button_icon_size;
+                min-width: $start_menu_power_button_icon_size;
+
+                @include __wintc_apply_props($start_menu_button_icon_styles);
+            }
+
+            .logoff-icon
+            {
+                @include __wintc_apply_props($start_menu_button_logoff_icon_styles);
+            }
+
+            .shutdown-icon
+            {
+                @include __wintc_apply_props($start_menu_button_shutdown_icon_styles);
+            }
+
+            &:hover
+            {
+                .logoff-icon
+                {
+                    @include __wintc_apply_props($start_menu_button_logoff_icon_hover_styles);
+                }
+
+                .shutdown-icon
+                {
+                    @include __wintc_apply_props($start_menu_button_shutdown_icon_hover_styles);
+                }
+            }
+        }
+    }
+}
+

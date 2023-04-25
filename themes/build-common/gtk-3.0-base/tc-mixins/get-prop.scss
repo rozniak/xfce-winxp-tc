@@ -1,0 +1,59 @@
+/**
+ * get-prop.scss - WinTC Read Property SCSS Mixins
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+@function __wintc_try_get_prop(
+    $theme_part_map,
+    $rule_name
+)
+{
+    @if map-has-key($theme_part_map, $rule_name)
+    {
+        $rule_value: map-get($theme_part_map, $rule_name);
+
+        @if __wintc_has_value($rule_value)
+        {
+            @return $rule_value;
+        }
+    }
+
+    @return novalue;
+}
+
+@function __wintc_get_prop(
+    $theme_part_map,
+    $rule_name
+)
+{
+    $found: __wintc_try_get_prop($theme_part_map, $rule_name);
+
+    @if $found == novalue
+    {
+        @return 0px;
+    }
+
+    @return $found;
+}
+
+@function __wintc_get_prop_with_fallbacks(
+    $rule_name,
+    $theme_part_maps...
+)
+{
+    @each $theme_part_map in $theme_part_maps
+    {
+        $found: __wintc_try_get_prop($theme_part_map, $rule_name);
+
+        @if $found != novalue
+        {
+            @return $found;
+        }
+    }
+
+    @return 0px;
+}

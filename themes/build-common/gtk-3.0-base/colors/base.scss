@@ -1,0 +1,19 @@
+/**
+ * base.scss - Theme Base Base Colour Constants
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+$base_color: #FFFFFF            !default;
+$text_color: $threed_objects_fg !default;
+$bg_color:   $threed_objects_bg !default;
+$fg_color:   $threed_objects_fg !default;
+
+$focus_color: lighten($fg_color, 10%) !default;
+
+$base_hover_color:  transparentize($fg_color, 0.95) !default;
+$drop_target_color: #4E9A06 !default;
+$shadow_color:      transparentize(#000000,   0.9) !default;

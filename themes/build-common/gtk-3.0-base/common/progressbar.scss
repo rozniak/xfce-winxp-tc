@@ -1,0 +1,95 @@
+/**
+ * progressbar.scss - Theme Base Progress Bar Styles
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+progressbar
+{
+    progress
+    {
+        @include __wintc_apply_props($progressbar_progress_styles);
+    }
+
+    trough
+    {
+        @include __wintc_apply_props($progressbar_trough_styles);
+    }
+
+    // Sizing
+    //
+    &.horizontal
+    {
+        trough,
+        progress
+        {
+            min-height: $progressbar_size;
+        }
+    }
+
+    &.vertical
+    {
+        trough,
+        progress
+        {
+            min-width: $progressbar_size;
+        }
+    }
+
+    // Imagery
+    //
+    &.horizontal
+    {
+        progress
+        {
+            @include __wintc_apply_props($progressbar_horz_progress_styles);
+        }
+
+        trough
+        {
+            @include __wintc_apply_props($progressbar_horz_trough_styles);
+        }
+    }
+
+    &.vertical
+    {
+        progress
+        {
+            @include __wintc_apply_props($progressbar_vert_progress_styles);
+        }
+
+        trough
+        {
+            @include __wintc_apply_props($progressbar_vert_trough_styles);
+        }
+    }
+
+    font-size: smaller;
+    font-feature-settings: "tnum";
+    
+    // progressbar.osd used for epiphany page loading process
+    //
+    &.osd
+    { 
+        background-color: transparent;
+        min-height:       3px;
+        min-width:        3px;
+        
+        trough
+        {
+            background-color: transparent;
+            border-radius:    0;
+            border-style:     none;
+            box-shadow:       none;
+        }
+
+        progress
+        {
+            border-radius: 0;
+            border-style:  none;
+        }
+    }
+}

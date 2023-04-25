@@ -1,0 +1,62 @@
+/**
+ * notebook.scss - WinTC Notebook Theme Part Definitions
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+//
+// NOTEBOOK HEADER
+//
+$notebook_header_styles: ();
+
+$notebook_header_bottom_styles:      ();
+$notebook_header_left_styles:        ();
+$notebook_header_right_styles:       ();
+$notebook_header_top_styles:         ();
+
+
+//
+// NOTEBOOK TAB
+//
+$notebook_tab_styles:                ();
+$notebook_tab_hover_styles:          ();
+$notebook_tab_selected_styles:       ();
+$notebook_tab_selected_hover_styles: ();
+
+$notebook_tab_bottom_styles:                ();
+$notebook_tab_bottom_hover_styles:          ();
+$notebook_tab_bottom_selected_styles:       ();
+$notebook_tab_bottom_selected_hover_styles: ();
+
+$notebook_tab_left_styles:                ();
+$notebook_tab_left_hover_styles:          ();
+$notebook_tab_left_selected_styles:       ();
+$notebook_tab_left_selected_hover_styles: ();
+
+$notebook_tab_right_styles:                ();
+$notebook_tab_right_hover_styles:          ();
+$notebook_tab_right_selected_styles:       ();
+$notebook_tab_right_selected_hover_styles: ();
+
+$notebook_tab_top_styles:                ();
+$notebook_tab_top_hover_styles:          ();
+$notebook_tab_top_selected_styles:       ();
+$notebook_tab_top_selected_hover_styles: ();
+
+
+//
+// NOTEBOOK ITSELF
+//
+$notebook_styles: ();
+
+$notebook_page_styles: ();
+
+$notebook_frame_header_styles: ();
+
+$notebook_frame_header_bottom_styles: ();
+$notebook_frame_header_left_styles:   ();
+$notebook_frame_header_right_styles:  ();
+$notebook_frame_header_top_styles:    ();

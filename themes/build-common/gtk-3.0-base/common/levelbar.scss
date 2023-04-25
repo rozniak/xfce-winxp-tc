@@ -1,0 +1,109 @@
+/**
+ * levelbar.scss - Theme Base Levelbar Styles
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+levelbar
+{
+    &.horizontal
+    {
+        block
+        {
+            min-height: 1px;
+        }
+        
+        &.discrete block
+        {
+            margin:    0 1px;
+            min-width: 32px;
+        }
+    }
+    
+    &.vertical
+    {
+        block
+        {
+            min-width: 1px;
+        }
+
+        &.discrete block
+        {
+            margin:     1px 0;
+            min-height: 32px;
+        }
+    }
+    
+    &:backdrop
+    {
+        transition: $backdrop_transition;
+    }
+    
+    trough
+    {
+        border:        1px solid;
+        border-radius: 3px;
+        padding:       2px;
+        
+        @include entry(normal);
+        
+        &:backdrop
+        {
+            @include entry(backdrop);
+        }
+    }
+    
+    block
+    {
+        border:        1px solid;
+        border-radius: 1px;
+
+        &.low
+        {
+            background-color: $warning_color;
+            border-color:     darken($warning_color, 20%);
+            
+            &:backdrop
+            {
+                border-color: $warning_color;
+            }
+        }
+        
+        &.high,
+        &:not(.empty)
+        {
+            background-color: $progress_bg_color;
+            border-color:     darken($progress_bg_color, 20%);
+            
+            &:backdrop
+            {
+                border-color: $progress_bg_color;
+            }
+        }
+        
+        &.full
+        {
+            background-color: $success_color;
+            border-color:     darken($success_color, 20%);
+            
+            &:backdrop
+            {
+                border-color: $success_color;
+            }
+        }
+        
+        &.empty
+        {
+            background-color: transparent;
+            border-color:     transparentize($fg_color,0.8);
+            
+            &:backdrop
+            {
+                border-color: transparentize($backdrop_fg_color, 0.85);
+            }
+        }
+    }
+}

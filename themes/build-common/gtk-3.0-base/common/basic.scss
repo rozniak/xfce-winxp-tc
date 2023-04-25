@@ -1,0 +1,238 @@
+/**
+ * basic.scss - Theme Base Basic Styles
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+.background
+{
+    background-color: $bg_color;
+    color:            $fg_color;
+}
+
+//
+// These wildcard seems unavoidable, need to investigate.
+// Wildcards are bad and troublesome, use them with care,
+// or better, just don't.
+//
+// Everytime a wildcard is used a kitten dies, painfully.
+//
+
+.gtkstyle-fallback
+{
+    background-color: $bg_color;
+    color:            $fg_color;
+
+    &:hover
+    {
+        background-color: lighten($bg_color, 10%);
+        color:            $fg_color;
+    }
+
+    &:active
+    {
+        background-color: darken($bg_color, 10%);
+        color:            $fg_color;
+    }
+
+    &:disabled
+    {
+        background-color: $insensitive_bg_color;
+        color:            $insensitive_fg_color;
+    }
+
+    &:selected
+    {
+        background-color: $selected_bg_color;
+        color:            $selected_fg_color;
+    }
+}
+
+.view,
+%view
+{
+    color:            $text_color;
+    background-color: $base_color;
+
+    &:disabled
+    {
+        background-color: $insensitive_bg_color;
+        color:            $insensitive_fg_color;
+    }
+
+    &:selected
+    {
+        &:focus, &
+        {
+            @extend %selected_items;
+
+            border-radius: 3px;
+        }
+    }
+}
+
+.view,
+textview
+{
+    text
+    {
+        @extend %view;
+
+        selection
+        {
+            &:focus,
+            &
+            {
+                @extend %selected_items;
+            }
+        }
+    }
+}
+
+textview border
+{
+    background-color: mix($bg_color, $base_color, 50%);
+}
+
+iconview
+{
+    @extend .view;
+}
+
+.rubberband,
+rubberband
+{
+    background-color: transparentize(darken($selected_bg_color, 10%), 0.8);
+    border:           1px solid darken($selected_bg_color, 10%);
+}
+
+flowbox
+{
+    rubberband
+    {
+        @extend rubberband;
+    }
+
+    flowboxchild
+    {
+        padding: 3px;
+
+        &:selected
+        {
+            @extend %selected_items;
+
+            outline-offset: -2px;
+        }
+    }
+}
+
+.content-view .tile
+{
+    background-color: transparent;
+    border-radius:    0;
+    margin:           2px;
+    padding:          0;
+
+    &:active, &:selected
+    {
+        background-color: transparent;
+    }
+
+    &:disabled
+    {
+        background-color: transparent;
+    }
+}
+
+label
+{
+    caret-color: currentColor; // This shouldn't be needed
+
+    &.separator
+    {
+        @extend .dim-label;
+    }
+
+    &:selected
+    {
+       @extend %nobg_selected_items;
+    }
+
+    selection
+    {
+        background-color: $selected_bg_color;
+        color:            $selected_fg_color;
+    }
+
+    &:disabled
+    {
+        color: $insensitive_fg_color;
+
+        button &
+        {
+            color: inherit;
+        }
+
+        selection
+        {
+            @extend %selected_items_disabled;
+        }
+    }
+
+    &.error
+    {
+        color: $error_color;
+
+        &:disabled
+        {
+            color: transparentize($error_color,0.5);
+        }
+
+        &:disabled:backdrop
+        {
+            color: transparentize($error_color,0.6);
+        }
+    }
+}
+
+.dim-label
+{
+    opacity:     0.55;
+    text-shadow: none;
+}
+
+assistant
+{
+    .sidebar
+    {
+        background-color: $base_color;
+        border-top:       1px solid $borders_color;
+    }
+
+    &.csd .sidebar
+    {
+        border-top-style: none;
+    }
+
+    .sidebar label
+    {
+        padding: 6px 12px;
+    }
+
+    .sidebar label.highlight
+    {
+        background-color: mix($bg_color, $fg_color, 80%);
+    }
+}
+
+%osd,
+.osd
+{
+    background-color: $osd_bg_color;
+    background-clip:  padding-box;
+    border:           none;
+    color:            $osd_fg_color;
+}

@@ -1,0 +1,147 @@
+/**
+ * scrollbar.scss - Theme Base Scrollbar Style Constants
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+$scrollbar_thickness:         16px !default;
+$scrollbar_slider_min_length: 50px !default;
+
+//
+// ALL SCROLLBARS
+//
+$scrollbar_trough_styles:
+    wintc_define_props_bg(
+        $scrollbar_trough_styles,
+        true,
+        $bg_color,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/scrollbar_trough.png')
+    );
+
+$scrollbar_slider_styles:
+    wintc_define_props_bg(
+        $scrollbar_slider_styles,
+        true,
+        $bg_color,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
+$scrollbar_slider_styles:
+    wintc_define_props_borders(
+        $scrollbar_slider_styles,
+        true,
+        solid,
+        1,
+        2,
+        2,
+        1,
+        undefined,
+        url('../Resources/scrollbar_slider_border.png')
+    );
+
+$scrollbar_button_styles:
+    wintc_define_props_bg(
+        $scrollbar_button_styles,
+        true,
+        undefined,
+        undefined,
+        no-repeat,
+        center,
+        undefined
+    );
+
+
+//
+// DIRECTIONAL BUTTONS
+//
+$scrollbar_button_down_styles:
+    wintc_define_props_bg(
+        $scrollbar_button_down_styles,
+        true,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/scrollbar_button_down_glyph.png')
+    );
+$scrollbar_button_down_inactive_styles:
+    wintc_define_props_bg(
+        $scrollbar_button_down_inactive_styles,
+        true,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/scrollbar_button_down_glyph_inactive.png')
+    );
+
+$scrollbar_button_left_styles:
+    wintc_define_props_bg(
+        $scrollbar_button_left_styles,
+        true,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/scrollbar_button_left_glyph.png')
+    );
+$scrollbar_button_left_inactive_styles:
+    wintc_define_props_bg(
+        $scrollbar_button_left_inactive_styles,
+        true,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/scrollbar_button_left_glyph_inactive.png')
+    );
+
+$scrollbar_button_right_styles:
+    wintc_define_props_bg(
+        $scrollbar_button_right_styles,
+        true,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/scrollbar_button_right_glyph.png')
+    );
+$scrollbar_button_right_inactive_styles:
+    wintc_define_props_bg(
+        $scrollbar_button_right_inactive_styles,
+        true,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/scrollbar_button_right_glyph_inactive.png')
+    );
+
+$scrollbar_button_up_styles:
+    wintc_define_props_bg(
+        $scrollbar_button_up_styles,
+        true,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/scrollbar_button_up_glyph.png')
+    );
+$scrollbar_button_up_inactive_styles:
+    wintc_define_props_bg(
+        $scrollbar_button_up_inactive_styles,
+        true,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/scrollbar_button_up_glyph_inactive.png')
+    );

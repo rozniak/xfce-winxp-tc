@@ -1,0 +1,224 @@
+/**
+ * notebook.scss - Professional Style Notebook Style Constants
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+//
+// NOTEBOOK HEADER
+//
+$notebook_header_styles:
+    wintc_define_props_borders(
+        $notebook_header_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
+
+$notebook_header_left_styles:
+    wintc_define_props_borders(
+        $notebook_header_left_styles,
+        false,
+        solid,
+        1,
+        2,
+        3,
+        0,
+        undefined,
+        default
+    );
+$notebook_header_right_styles:
+    wintc_define_props_borders(
+        $notebook_header_right_styles,
+        false,
+        solid,
+        1,
+        0,
+        3,
+        2,
+        undefined,
+        default
+    );
+
+
+//
+// NOTEBOOK TAB
+//
+$notebook_tab_styles:
+    wintc_define_props_bg(
+        $notebook_tab_styles,
+        false,
+        #DBDBCE,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
+$notebook_tab_styles:
+    wintc_define_props_borders(
+        $notebook_tab_styles,
+        false,
+        solid,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
+$notebook_tab_hover_styles:
+    wintc_define_props_bg(
+        $notebook_tab_hover_styles,
+        false,
+        #C7DCF6,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
+$notebook_tab_selected_styles:
+    wintc_define_props_bg(
+        $notebook_tab_selected_styles,
+        false,
+        #F3F3EF,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
+
+$notebook_tab_bottom_styles:
+    wintc_define_props_borders(
+        $notebook_tab_bottom_styles,
+        false,
+        solid,
+        2,
+        3,
+        3,
+        2,
+        undefined,
+        default
+    );
+$notebook_tab_bottom_hover_styles:
+    wintc_define_props_borders(
+        $notebook_tab_bottom_hover_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/notebook_tab_bottom_hover_border.png')
+    );
+
+$notebook_tab_left_styles:
+    wintc_define_props_borders(
+        $notebook_tab_left_styles,
+        false,
+        solid,
+        2,
+        2,
+        3,
+        3,
+        undefined,
+        default
+    );
+$notebook_tab_left_hover_styles:
+    wintc_define_props_borders(
+        $notebook_tab_left_hover_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/notebook_tab_left_hover_border.png')
+    );
+
+$notebook_tab_right_styles:
+    wintc_define_props_borders(
+        $notebook_tab_right_styles,
+        false,
+        solid,
+        2,
+        3,
+        3,
+        2,
+        undefined,
+        default
+    );
+$notebook_tab_right_hover_styles:
+    wintc_define_props_borders(
+        $notebook_tab_right_hover_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/notebook_tab_right_hover_border.png')
+    );
+
+$notebook_tab_top_styles:
+    wintc_define_props_borders(
+        $notebook_tab_top_styles,
+        false,
+        solid,
+        3,
+        3,
+        2,
+        2,
+        undefined,
+        default
+    );
+$notebook_tab_top_hover_styles:
+    wintc_define_props_borders(
+        $notebook_tab_top_hover_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/notebook_tab_top_hover_border.png')
+    );
+
+
+//
+// NOTEBOOK ITSELF
+//
+$notebook_styles:
+    wintc_define_props_borders(
+        $notebook_styles,
+        false,
+        solid,
+        2,
+        3,
+        4,
+        2,
+        undefined,
+        default
+    );
+
+$notebook_page_styles:
+    wintc_define_props_bg(
+        $notebook_page_styles,
+        false,
+        #F3F3EF,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );

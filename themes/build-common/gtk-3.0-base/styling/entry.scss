@@ -1,0 +1,78 @@
+/**
+ * entry.scss - Theme Base Entry Style Constants
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+$entry_styles:
+    wintc_define_props_bg(
+        $entry_styles,
+        true,
+        $window_bg,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
+$entry_styles:
+    wintc_define_props_borders(
+        $entry_styles,
+        true,
+        solid,
+        2,
+        2,
+        2,
+        2,
+        undefined,
+        url('../Resources/entry_border.png')
+    );
+$entry_styles:
+    wintc_define_props_box(
+        $entry_styles,
+        true,
+        padding,
+        undefined,
+        3,
+        undefined,
+        3
+    );
+$entry_styles:
+    wintc_define_props_fg(
+        $entry_styles,
+        true,
+        $window_fg,
+        undefined
+    );
+
+$entry_inactive_styles:
+    wintc_define_props_bg(
+        $entry_inactive_styles,
+        true,
+        $bg_color,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
+$entry_inactive_styles:
+    wintc_define_props_borders(
+        $entry_inactive_styles,
+        true,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/entry_inactive_border.png')
+    );
+$entry_inactive_styles:
+    wintc_define_props_fg(
+        $entry_inactive_styles,
+        true,
+        $insensitive_fg_color,
+        undefined
+    );

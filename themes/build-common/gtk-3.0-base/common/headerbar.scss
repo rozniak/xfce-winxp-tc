@@ -1,0 +1,490 @@
+/**
+ * headerbar.scss - Theme Base Headerbar Styles
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+
+// NOTE: The titlebuttons in the headerbar are stored in a GtkBox which has
+//       hardcoded child spacing of 6px - we store that here as a constant
+//       so we can hack in some negative margin to bring the buttons closer
+//       together
+//
+//       This is extremely naughty but GTK leaves me no choice...
+//
+$GTK_TITLEBUTTON_BOX_SPACING: 6px;
+
+
+%titlebar,
+headerbar
+{
+    // NOTE: We do not apply foreground styles here because 'color' would
+    //       affect the button text, so we apply fg specifically to the
+    //       title and subtitle labels below
+    //
+    @include __wintc_apply_props_not_in_category($headerbar_styles, "fg");
+
+    .title,
+    .subtitle,
+    & > box > label // Selector for 'Name:' label in FileChooserDialog
+    {
+        @include __wintc_apply_props_for_category($headerbar_styles, "fg");
+    }
+
+    .title
+    {
+        @include __wintc_apply_props($headerbar_title_styles);
+    }
+
+    .subtitle
+    {
+        @include __wintc_apply_props($headerbar_subtitle_styles);
+
+        @extend .dim-label;
+    }
+
+    &:backdrop
+    {
+        @include __wintc_apply_props_not_in_category($headerbar_backdrop_styles, "fg");
+
+        .title,
+        .subtitle
+        {
+            @include __wintc_apply_props_for_category($headerbar_backdrop_styles, "fg");
+        }
+
+        .title
+        {
+            @include __wintc_apply_props($headerbar_title_inactive_styles);
+        }
+
+        .subtitle
+        {
+            @include __wintc_apply_props($headerbar_subtitle_inactive_styles);
+        }
+    }
+
+    .selection-mode &,
+    &.selection-mode
+    {
+        $_hc: mix($top_hilight, $suggested_bg_color, 50%); // Hilight color
+
+        border-color: $suggested_border_color;
+        color:        $selected_fg_color;
+        text-shadow:  0 -1px transparentize(black, 0.5);
+
+        @include headerbar_fill($suggested_bg_color, $_hc);
+
+        .subtitle:link
+        {
+            @extend %link_selected;
+        }
+
+        button
+        {
+            @include button(normal, $suggested_bg_color, $selected_fg_color);
+
+            @at-root %selection_mode_button_flat,
+            &.flat
+            {
+                @include button(undecorated);
+            }
+
+            &:hover
+            {
+                @include button(hover, $suggested_bg_color, $selected_fg_color);
+            }
+
+            &:active,
+            &:checked,
+            &.toggle:checked,
+            &.toggle:active
+            {
+                @include button(active, $suggested_bg_color, $selected_fg_color);
+            }
+
+            @at-root %selection_mode_button_flat,
+            &.flat
+            {
+                &:backdrop,
+                &:disabled,
+                &:backdrop:disabled
+                {
+                    @include button(undecorated);
+                }
+            }
+
+            &:disabled
+            {
+                @include button(insensitive, $suggested_bg_color, $selected_fg_color);
+
+                &:active,
+                &:checked
+                {
+                    @include button(insensitive-active, $suggested_bg_color, $selected_fg_color);
+                }
+            }
+
+            &.suggested-action
+            {
+                @include button(normal);
+
+                border-color: $suggested_border_color;
+
+                &:hover
+                {
+                    @include button(hover);
+
+                    border-color: $suggested_border_color;
+                }
+
+                &:active
+                {
+                    @include button(active);
+
+                    border-color: $suggested_border_color;
+                }
+
+                &:disabled
+                {
+                    @include button(insensitive);
+
+                    border-color: $suggested_border_color;
+                }
+            }
+        }
+
+        .selection-menu
+        {
+            &
+            {
+                background-color: transparentize($suggested_bg_color, 1);
+                background-image: none;
+                border-color:     transparentize($suggested_bg_color, 1);
+                box-shadow:       none;
+                min-height:       20px;
+                padding:          $_sel_menu_pad;
+
+                arrow
+                {
+                    -GtkArrow-arrow-scaling: 1;
+                }
+
+                .arrow
+                {
+                    color: transparentize($selected_fg_color, 0.5);
+                    -gtk-icon-shadow: none;
+                    -gtk-icon-source: -gtk-icontheme('pan-down-symbolic');
+                }
+            }
+        }
+    }
+
+    // Squared corners when the window is maximized, tiled, or fullscreen
+    //
+    .tiled        &,
+    .tiled-top    &,
+    .tiled-right  &,
+    .tiled-bottom &,
+    .tiled-left   &,
+    .maximized    &,
+    .fullscreen   &
+    {
+        @include __wintc_apply_props($headerbar_maximized_styles);
+
+        &:backdrop
+        {
+            @include __wintc_apply_props($headerbar_maximized_backdrop_styles);
+        }
+    }
+
+    &.default-decoration
+    {
+        padding: 4px;
+    }
+
+    // Hide the close button separator
+    //
+    separator.titlebutton
+    {
+        opacity: 0;
+    }
+
+    .solid-csd &
+    {
+        &
+        {
+            // Specificity bump
+            //
+            &:dir(rtl), &:dir(ltr)
+            {
+                margin-left:   -1px;
+                margin-right:  -1px;
+                margin-top:    -1px;
+                border-radius: 0;
+                box-shadow:    none;
+            }
+        }
+     }
+
+     // NOTE: Applying our box-model bodgery here, there's a comment at the
+     //       top of this file about GTK_TITLEBUTTON_BOX_SPACING that explains
+     //       the margin hackery going on
+     //
+     //       For the close button we do some additional margin on the right
+     //       because for some reason the buttons get positioned on top of
+     //       the headerbar's border and padding... so we add some margin
+     //       to account for it here
+     //
+     button.titlebutton
+     {
+         $hack_margin: calc(#{$caption_button_spacing} - #{$GTK_TITLEBUTTON_BOX_SPACING});
+
+         @if $hack_margin != 0
+         {
+             margin-right: $hack_margin;
+         }
+     }
+
+     button.titlebutton:last-child
+     {
+         @if $close_button_spacing != 0px
+         {
+             margin-left: $close_button_spacing;
+         }
+
+         // Reset the margin back to 0px, don't need negative margin on the
+         // last member!
+         //
+         margin-right: 0px;
+     }
+
+     // Override button styles with caption buttons
+     //
+     button.flat
+     {
+         @include __wintc_apply_props_for_category($headerbar_styles, "fg");
+
+         border: none;
+     }
+
+     button,
+     button.flat,
+     button.titlebutton,
+     button.toggle
+     {
+         @include __wintc_apply_props($caption_button_styles);
+
+         &:focus
+         {
+             @include __wintc_apply_props($caption_button_focused_styles);
+         }
+
+         &:hover
+         {
+             @include __wintc_apply_props($caption_button_hover_styles);
+         }
+
+         &:checked
+         {
+             @include __wintc_apply_props($caption_button_selected_styles);
+
+             &:focus
+             {
+                 @include __wintc_apply_props($caption_button_selected_focused_styles);
+             }
+
+             &:hover
+             {
+                 @include __wintc_apply_props($caption_button_selected_hover_styles);
+             }
+         }
+
+         &:active
+         {
+             @include __wintc_apply_props($caption_button_press_styles);
+         }
+
+         &:disabled
+         {
+             @include __wintc_apply_props($caption_button_inactive_styles);
+
+             &:checked
+             {
+                 @include __wintc_apply_props($caption_button_inactive_selected_styles);
+             }
+         }
+
+         &:backdrop
+         {
+             @include __wintc_apply_props($caption_button_backdrop_styles);
+
+             &:hover
+             {
+                 @include __wintc_apply_props($caption_button_backdrop_hover_styles);
+             }
+
+             &:checked
+             {
+                 @include __wintc_apply_props($caption_button_backdrop_selected_styles);
+
+                 &:hover
+                 {
+                     @include __wintc_apply_props($caption_button_backdrop_selected_hover_styles);
+                 }
+             }
+
+             &:active
+             {
+                 @include __wintc_apply_props($caption_button_backdrop_press_styles);
+             }
+
+             &:disabled
+             {
+                 @include __wintc_apply_props($caption_button_backdrop_inactive_styles);
+
+                 &:checked
+                 {
+                     @include __wintc_apply_props($caption_button_backdrop_inactive_selected_styles);
+                 }
+             }
+         }
+     }
+
+     button.titlebutton:last-child
+     {
+         @include __wintc_apply_props($close_button_styles);
+
+         &:hover
+         {
+             @include __wintc_apply_props($close_button_hover_styles);
+         }
+
+         &:active
+         {
+             @include __wintc_apply_props($close_button_press_styles);
+         }
+
+         &:disabled
+         {
+             @include __wintc_apply_props($close_button_inactive_styles);
+         }
+
+         &:backdrop
+         {
+             @include __wintc_apply_props($close_button_backdrop_styles);
+
+             &:hover
+             {
+                 @include __wintc_apply_props($close_button_backdrop_hover_styles);
+             }
+
+             &:active
+             {
+                 @include __wintc_apply_props($close_button_backdrop_press_styles);
+             }
+
+             &:disabled
+             {
+                 @include __wintc_apply_props($close_button_backdrop_inactive_styles);
+             }
+         }
+     }
+
+     // FIXME: Not sure why this specificity hack is required - without this, disabled
+     //        buttons in the headerbar lose these background properties
+     //
+     //        Odd, for now use this BODGE to forcefully rectify things, but it would
+     //        be worthwhile to trudge through the source to identify why this is
+     //        happening in the first place
+     //
+     //        I noticed this issue in Glade originally
+     //
+     &,
+     buttonbox
+     {
+         & > button:disabled
+         {
+             background-position: center;
+             background-repeat:   no-repeat;
+             background-size:     110% 110%;
+         }
+     }
+}
+
+headerbar
+{
+    // Add vertical margins to common widget on the headerbar to avoid them spanning
+    // the whole height
+    //
+    > buttonbox,
+    > entry,
+    > separator:not(.sidebar),
+    > spinbutton
+    {
+        margin-bottom: 4px;
+        margin-top:    4px;
+    }
+
+    switch
+    {
+        margin-top:    $_switch_margin;
+        margin-bottom: $_switch_margin;
+    }
+
+    &.titlebar headerbar:not(.titlebar)
+    {
+        // Drop the background of non-titlebar nested headerbars. This is needed to
+        // work around headerbar sliding animation issues without refactoring
+        // Adwaita's support of titlebars and headerbars as it may break
+        // applications.
+        //
+        // See https://gitlab.gnome.org/GNOME/gtk/issues/1264 for more information.
+        //
+        background: none;
+        box-shadow: none;
+    }
+}
+
+.titlebar:not(headerbar)
+{
+    window.csd > &
+    {
+        // In csd we assume every titlebar is a headerbar so reset anything, this is
+        // needed for split toolbars cases
+        //
+        background-color: transparent;
+        background-image: none;
+        border-color:     transparent;
+        border-style:     none;
+        box-shadow:       none;
+        padding:          0;
+    }
+
+    separator
+    {
+        background-color: $borders_color; // FIXME: Use darker border?
+    }
+
+    @extend %titlebar;
+}
+
+//
+// Development versions of apps to use a differently styled headerbar
+//
+window.devel
+{
+    headerbar.titlebar:not(.selection-mode)
+    {
+        $c: darken($bg_color, 10%);
+        $gradient: cross-fade(10% -gtk-icontheme("system-run-symbolic"),
+                   image(transparent)) 90% 0/256px 256px no-repeat,
+                   linear-gradient(to right, transparent 65%, transparentize($selected_bg_color, 0.8)),
+                   linear-gradient(to top, darken($c, 3%), $c 3px, lighten($c, 6%));
+
+        background: $bg_color $gradient;
+    }
+}

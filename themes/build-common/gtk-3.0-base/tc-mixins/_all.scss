@@ -1,0 +1,17 @@
+/**
+ * _all.scss - WinTC Mixins SCSS Aggregation Document
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+@import "util";
+
+@import "apply-props";
+@import "apply-units";
+@import "define-props";
+@import "get-prop";
+
+@import "apply-category";

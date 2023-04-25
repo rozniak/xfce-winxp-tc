@@ -1,0 +1,90 @@
+/**
+ * scheme.scss.in - WinTC Scheme Constants Input File
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+$threed_objects_bg: @THREED_OBJECTS_BG@;
+$threed_objects_fg: @THREED_OBJECTS_FG@;
+
+$active_title_bar_bg1: @ACTIVE_TITLE_BAR_BG1@;
+$active_title_bar_bg2: @ACTIVE_TITLE_BAR_BG2@;
+$active_title_bar_fg: @ACTIVE_TITLE_BAR_FG@;
+$active_title_bar_font_family: @ACTIVE_TITLE_BAR_FONT_FAMILY@;
+$active_title_bar_font_size: @ACTIVE_TITLE_BAR_FONT_SIZE@;
+$active_title_bar_font_style: @ACTIVE_TITLE_BAR_FONT_STYLE@;
+$active_title_bar_font_weight: @ACTIVE_TITLE_BAR_FONT_WEIGHT@;
+$active_title_bar_size: @ACTIVE_TITLE_BAR_SIZE@;
+
+$active_window_border_bg: @ACTIVE_WINDOW_BORDER_BG@;
+$active_window_border_size: @ACTIVE_WINDOW_BORDER_SIZE@;
+
+$application_background_bg: @APPLICATION_BACKGROUND_BG@;
+
+$caption_buttons_size: @CAPTION_BUTTONS_SIZE@;
+
+$desktop_bg: @DESKTOP_BG@;
+
+$icon_font_family: @ICON_FONT_FAMILY@;
+$icon_font_size: @ICON_FONT_SIZE@;
+$icon_font_style: @ICON_FONT_STYLE@;
+$icon_font_weight: @ICON_FONT_WEIGHT@;
+$icon_size: @ICON_SIZE@;
+
+$icon_spacing_horz: @ICON_SPACING_HORZ@;
+$icon_spacing_vert: @ICON_SPACING_VERT@;
+
+$inactive_title_bar_bg1: @INACTIVE_TITLE_BAR_BG1@;
+$inactive_title_bar_bg2: @INACTIVE_TITLE_BAR_BG2@;
+$inactive_title_bar_fg: @INACTIVE_TITLE_BAR_FG@;
+$inactive_title_bar_font_family: @INACTIVE_TITLE_BAR_FONT_FAMILY@;
+$inactive_title_bar_font_size: @INACTIVE_TITLE_BAR_FONT_SIZE@;
+$inactive_title_bar_font_style: @INACTIVE_TITLE_BAR_FONT_STYLE@;
+$inactive_title_bar_font_weight: @INACTIVE_TITLE_BAR_FONT_WEIGHT@;
+$inactive_title_bar_size: @INACTIVE_TITLE_BAR_SIZE@;
+
+$inactive_window_border_bg: @INACTIVE_WINDOW_BORDER_BG@;
+$inactive_window_border_size: @INACTIVE_WINDOW_BORDER_SIZE@;
+
+$menu_bg: @MENU_BG@;
+$menu_fg: @MENU_FG@;
+$menu_font_family: @MENU_FONT_FAMILY@;
+$menu_font_size: @MENU_FONT_SIZE@;
+$menu_font_style: @MENU_FONT_STYLE@;
+$menu_font_weight: @MENU_FONT_WEIGHT@;
+$menu_size: @MENU_SIZE@;
+
+$message_box_fg: @MESSAGE_BOX_FG@;
+$message_box_font_family: @MESSAGE_BOX_FONT_FAMILY@;
+$message_box_font_size: @MESSAGE_BOX_FONT_SIZE@;
+$message_box_font_style: @MESSAGE_BOX_FONT_STYLE@;
+$message_box_font_weight: @MESSAGE_BOX_FONT_WEIGHT@;
+
+$palette_title_font_family: @PALETTE_TITLE_FONT_FAMILY@;
+$palette_title_font_size: @PALETTE_TITLE_FONT_SIZE@;
+$palette_title_font_style: @PALETTE_TITLE_FONT_STYLE@;
+$palette_title_font_weight: @PALETTE_TITLE_FONT_WEIGHT@;
+$palette_title_size: @PALETTE_TITLE_SIZE@;
+
+$scrollbar_size: @SCROLLBAR_SIZE@;
+
+$selected_items_bg: @SELECTED_ITEMS_BG@;
+$selected_items_fg: @SELECTED_ITEMS_FG@;
+$selected_items_font_family: @SELECTED_ITEMS_FONT_FAMILY@;
+$selected_items_font_size: @SELECTED_ITEMS_FONT_SIZE@;
+$selected_items_font_style: @SELECTED_ITEMS_FONT_STYLE@;
+$selected_items_font_weight: @SELECTED_ITEMS_FONT_WEIGHT@;
+$selected_items_size: @SELECTED_ITEMS_SIZE@;
+
+$tooltip_bg: @TOOLTIP_BG@;
+$tooltip_fg: @TOOLTIP_FG@;
+$tooltip_font_family: @TOOLTIP_FONT_FAMILY@;
+$tooltip_font_size: @TOOLTIP_FONT_SIZE@;
+$tooltip_font_style: @TOOLTIP_FONT_STYLE@;
+$tooltip_font_weight: @TOOLTIP_FONT_WEIGHT@;
+
+$window_bg: @WINDOW_BG@;
+$window_fg: @WINDOW_FG@;

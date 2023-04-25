@@ -1,0 +1,63 @@
+/**
+ * calendar.scss - Theme Base Calendar Styles
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+calendar
+{
+    border: 1px solid $borders_color;
+    color:  $text_color;
+    
+    &:selected
+    {
+        @extend %selected_items;
+        
+        border-radius: 3px;
+    }
+    
+    &.header
+    {
+        border-bottom-color: transparentize(black, 0.9);
+        
+        &:backdrop
+        {
+            border-bottom-color: transparentize(black, 0.9);
+        }
+    }
+    
+    &.button
+    {
+        @extend %undecorated_button;
+        
+        color: transparentize($fg_color, 0.55);
+        
+        &:hover    { color: $fg_color;                                  }
+        &:backdrop { color: transparentize($backdrop_fg_color,   0.55); }
+        &:disabled { color: transparentize($insensitive_fg_color,0.55); }
+    }
+    
+    &.highlight
+    {
+        color: $insensitive_fg_color;
+        
+        &:backdrop
+        {
+            color: $backdrop_insensitive_color;
+        }
+    }
+    
+    &:backdrop
+    {
+        border-color: $backdrop_borders_color;
+        color:        $backdrop_text_color;
+    }
+    
+    &:indeterminate
+    {
+        color: gtkalpha(currentColor, 0.1);
+    }
+}

@@ -1,0 +1,20 @@
+/**
+ * required.scss - WinTC Theming Prerequisities
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+// Import the WinTC mixins
+//
+@import "tc-mixins/all";
+
+// Import theme part maps
+//
+@import "init/all";
+
+// Import default colour constants
+//
+@import "colors/all";

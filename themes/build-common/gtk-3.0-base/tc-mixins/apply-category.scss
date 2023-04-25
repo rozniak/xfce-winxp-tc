@@ -1,0 +1,122 @@
+/**
+ * apply-category.scss - WinTC Apply Properties by Category Mixins
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+@function __wintc_get_category_props(
+    $ruleset,
+    $exclude_rules...
+)
+{
+    $l_rules: ();
+    $l_ret:   ();
+
+    @if $ruleset == borders
+    {
+        $l_rules: (
+            "border-style",
+            "border-color",
+            "border-image-source",
+            "border-image-slice",
+            "border-top-width",
+            "border-right-width",
+            "border-bottom-width",
+            "border-left-width"
+        );
+    }
+    @else if $ruleset == box-model
+    {
+        $l_rules: (
+            "border-style",
+            "border-top-width",
+            "border-right-width",
+            "border-bottom-width",
+            "border-left-width",
+            "margin-top",
+            "margin-right",
+            "margin-bottom",
+            "margin-left",
+            "padding-top",
+            "padding-right",
+            "padding-bottom",
+            "padding-left"
+        );
+    }
+    @else if $ruleset == fg
+    {
+        $l_rules: (
+            "color",
+            "text-shadow"
+        );
+    }
+    @else if $ruleset == font
+    {
+        $l_rules: (
+            "font-family",
+            "font-size",
+            "font-style",
+            "font-weight",
+            "text-decoration-line",
+            "text-decoration-color",
+            "text-decoration-style",
+            "text-shadow"
+        );
+    }
+    @else
+    {
+        @error "Unknown ruleset #{$ruleset}";
+    }
+
+    // Exclude rules if necessary
+    //
+    @if length($exclude_rules) == 0
+    {
+        @return $l_rules;
+    }
+
+    @each $rule in $l_rules
+    {
+        $l_excluded: false;
+
+        @each $exclusion in $exclude_rules
+        {
+            @if $rule == $exclusion
+            {
+                $l_excluded: true;
+            }
+        }
+
+        @if not $l_excluded
+        {
+            $l_ret: append($l_ret, $rule);
+        }
+    }
+
+    @return $l_ret;
+}
+
+@mixin __wintc_apply_props_for_category(
+    $theme_part_map,
+    $ruleset
+)
+{
+    @include __wintc_apply_specific_props(
+        $theme_part_map,
+        __wintc_get_category_props($ruleset)...
+    );
+}
+
+@mixin __wintc_apply_props_not_in_category(
+    $theme_part_map,
+    $ruleset
+)
+{
+    @include __wintc_apply_props_excluding(
+        $theme_part_map,
+        __wintc_get_category_props($ruleset)...
+    );
+}

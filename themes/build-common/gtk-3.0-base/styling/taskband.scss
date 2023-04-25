@@ -1,0 +1,36 @@
+/**
+ * taskband.scss - Theme Base Taskband Style Constants
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+// Taskband itself
+//
+$taskband_horz_margins: 4px !default;
+
+$taskband_styles:
+    wintc_define_props_bg(
+        $taskband_styles,
+        true,
+        undefined,
+        undefined,
+        repeat-x,
+        top,
+        url('../Resources/taskband_border_top.png')
+    );
+
+// Taskband buttons
+//
+$taskband_button_styles:
+    wintc_define_props_box(
+        $taskband_button_styles,
+        true,
+        margin,
+        4,
+        0,
+        4,
+        3
+    );

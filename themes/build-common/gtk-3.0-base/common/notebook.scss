@@ -1,0 +1,360 @@
+/**
+ * notebook.scss - Theme Base Notebook Styles
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+notebook
+{
+    // Shared style
+    //
+    &
+    {
+        > header
+        {
+            @include __wintc_apply_props($notebook_header_styles);
+
+            &.top
+            {
+                @include __wintc_apply_props($notebook_header_top_styles);
+
+                $l_border_left:  __wintc_get_prop($notebook_header_top_styles, "border-left-width");
+                $l_border_right: __wintc_get_prop($notebook_header_top_styles, "border-right-width");
+
+                padding-left:  calc(#{$l_border_left}  * -1);
+                padding-right: calc(#{$l_border_right} * -1);
+
+                > tabs > tab
+                {
+                    @include __wintc_apply_props($notebook_tab_top_styles);
+
+                    &:hover:not(:checked)
+                    {
+                        @include __wintc_apply_props($notebook_tab_top_hover_styles);
+                    }
+                    
+                    &:checked
+                    {
+                        @include __wintc_apply_props($notebook_tab_top_selected_styles);
+                    }
+
+                    &:checked:hover
+                    {
+                        @include __wintc_apply_props($notebook_tab_top_selected_hover_styles);
+                    }
+                }
+            }
+
+            &.bottom
+            {
+                @include __wintc_apply_props($notebook_header_bottom_styles);
+
+                $l_border_left:  __wintc_get_prop($notebook_header_bottom_styles, "border-left-width");
+                $l_border_right: __wintc_get_prop($notebook_header_bottom_styles, "border-right-width");
+
+                padding-left:  calc(#{$l_border_left}  * -1);
+                padding-right: calc(#{$l_border_right} * -1);
+
+                > tabs > tab
+                {
+                    @include __wintc_apply_props($notebook_tab_bottom_styles);
+
+                    &:hover:not(:checked)
+                    {
+                        @include __wintc_apply_props($notebook_tab_bottom_hover_styles);
+                    }
+
+                    &:checked
+                    {
+                        @include __wintc_apply_props($notebook_tab_bottom_selected_styles);
+                    }
+
+                    &:checked:hover
+                    {
+                        @include __wintc_apply_props($notebook_tab_bottom_selected_hover_styles);
+                    }
+                }
+            }
+
+            &.left
+            {
+                @include __wintc_apply_props($notebook_header_left_styles);
+
+                $l_border_bottom: __wintc_get_prop($notebook_header_left_styles, "border-bottom-width");
+                $l_border_top:    __wintc_get_prop($notebook_header_left_styles, "border-top-width");
+
+                padding-bottom: calc(#{$l_border_bottom} * -1);
+                padding-top:    calc(#{$l_border_top}    * -1);
+
+                > tabs > tab
+                {
+                    @include __wintc_apply_props($notebook_tab_left_styles);
+
+                    &:hover:not(:checked)
+                    {
+                        @include __wintc_apply_props($notebook_tab_left_hover_styles);
+                    }
+
+                    &:checked
+                    {
+                        @include __wintc_apply_props($notebook_tab_left_selected_styles);
+                    }
+
+                    &:checked:hover
+                    {
+                        @include __wintc_apply_props($notebook_tab_left_selected_hover_styles);
+                    }
+                }
+            }
+
+            &.right
+            {
+                @include __wintc_apply_props($notebook_header_right_styles);
+
+                $l_border_bottom: __wintc_get_prop($notebook_header_right_styles, "border-bottom-width");
+                $l_border_top:    __wintc_get_prop($notebook_header_right_styles, "border-top-width");
+
+                padding-bottom: calc(#{$l_border_bottom} * -1);
+                padding-top:    calc(#{$l_border_top}    * -1);
+
+                > tabs > tab
+                {
+                    @include __wintc_apply_props($notebook_tab_right_styles);
+
+                    &:hover:not(:checked)
+                    {
+                        @include __wintc_apply_props($notebook_tab_right_hover_styles);
+                    }
+
+                    &:checked
+                    {
+                        @include __wintc_apply_props($notebook_tab_right_selected_styles);
+                    }
+
+                    &:checked:hover
+                    {
+                        @include __wintc_apply_props($notebook_tab_right_selected_hover_styles);
+                    }
+                }
+            }
+            
+            > tabs > tab
+            {
+                @include __wintc_apply_props($notebook_tab_styles);
+
+                background-clip: padding-box;
+
+                &:hover:not(:checked)
+                {
+                    @include __wintc_apply_props($notebook_tab_hover_styles);
+                }
+
+                &:checked
+                {
+                    @include __wintc_apply_props($notebook_tab_selected_styles);
+                }
+
+                &:checked:hover
+                {
+                    @include __wintc_apply_props($notebook_tab_selected_hover_styles);
+                }
+            }
+        }
+    }
+
+    // Style when notebook has no border
+    //
+    &:not(.frame)
+    {
+        > header
+        {
+            &.bottom,
+            &.top
+            {
+                > tabs > tab
+                {
+                    &:first-child { margin-left:  1px; }
+                    &:last-child  { margin-right: 1px; }
+                }
+            }
+
+            &.left,
+            &.right
+            {
+                > tabs > tab
+                {
+                    &:first-child { margin-top:    1px; }
+                    &:last-child  { margin-bottom: 1px; }
+                }
+            }
+        }
+    }
+
+    // Style when notebook has a border
+    //
+    &.frame
+    {
+        @include __wintc_apply_props($notebook_styles);
+
+        $l_border_bottom: __wintc_get_prop($notebook_styles, "border-bottom-width");
+        $l_border_left:   __wintc_get_prop($notebook_styles, "border-left-width");
+        $l_border_right:  __wintc_get_prop($notebook_styles, "border-right-width");
+        $l_border_top:    __wintc_get_prop($notebook_styles, "border-top-width");
+
+        $neg_border_bottom: calc(#{$l_border_bottom} * -1);
+        $neg_border_left:   calc(#{$l_border_left}   * -1);
+        $neg_border_right:  calc(#{$l_border_right}  * -1);
+        $neg_border_top:    calc(#{$l_border_top}    * -1);
+
+        > header
+        {
+            @include __wintc_apply_props($notebook_frame_header_styles);
+
+            &.top
+            {
+                @include __wintc_apply_props($notebook_frame_header_top_styles);
+
+                margin: $neg_border_top $neg_border_right 0px $neg_border_left;
+            }
+
+            &.bottom
+            {
+                @include __wintc_apply_props($notebook_frame_header_bottom_styles);
+
+                margin: 0px $neg_border_right $neg_border_bottom $neg_border_left;
+            }
+
+            &.left
+            {
+                @include __wintc_apply_props($notebook_frame_header_left_styles);
+
+                margin: $neg_border_top 0px $neg_border_bottom $neg_border_left;
+            }
+
+            &.right
+            {
+                @include __wintc_apply_props($notebook_frame_header_right_styles);
+
+                margin: $neg_border_top $neg_border_right $neg_border_bottom 0px;
+            }
+        }
+    }
+
+    // Notebook page background (taken from Adwaita)
+    //
+    > stack:not(:only-child)
+    { 
+        @include __wintc_apply_props($notebook_page_styles);
+    }
+
+    // Some default Adwaita stuff
+    //
+    > header
+    {
+        // Default styles
+        //
+        &.top > tabs > arrow
+        {
+            @extend %notebook_vert_arrows;
+
+            border-top-style: none;
+        }
+
+        &.bottom > tabs > arrow
+        {
+            @extend %notebook_vert_arrows;
+
+            border-bottom-style: none;
+        }
+
+        @at-root %notebook_vert_arrows
+        {
+            margin-left:   -5px;
+            margin-right:  -5px;
+            padding-left:   4px;
+            padding-right:  4px;
+            
+            &.down { -gtk-icon-source: -gtk-icontheme('pan-start-symbolic'); }
+            &.up   { -gtk-icon-source: -gtk-icontheme('pan-end-symbolic');   }
+        }
+
+        &.left > tabs > arrow
+        {
+            @extend %notebook_horz_arrows;
+
+            border-left-style: none;
+        }
+
+        &.right > tabs > arrow
+        {
+            @extend %notebook_horz_arrows;
+            
+            border-right-style: none;
+        }
+
+        @at-root %notebook_horz_arrows
+        {
+            margin-bottom:  -5px;
+            margin-top:     -5px;
+            padding-bottom:  4px;
+            padding-top:     4px;
+
+            &.down { -gtk-icon-source: -gtk-icontheme('pan-up-symbolic');   }
+            &.up   { -gtk-icon-source: -gtk-icontheme('pan-down-symbolic'); }
+        }
+
+        > tabs > arrow
+        {
+            @extend %button_basic;
+
+            @extend %button_basic_flat;
+
+            border-radius: 0;
+            min-height:    16px;
+            min-width:     16px;
+
+            &:hover:not(:active):not(:backdrop)
+            {
+                background-clip:  padding-box;
+                background-color: transparentize(white, 0.7);
+                background-image: none;
+                border-color:     transparent;
+                box-shadow:       none;
+            }
+
+            &:disabled
+            {
+                @include button(undecorated);
+            }
+        }
+
+        tab
+        {
+            // Colors the button like the label, overridden otherwise
+            //
+            button.flat
+            {
+                margin-top:    2px;
+                margin-bottom: 2px;
+                min-width:     13px;
+                min-height:    13px;
+                padding:       0;
+
+                &:last-child
+                {
+                    margin-left:   5px;
+                    margin-right: -4px;
+                }
+
+                &:first-child
+                {
+                    margin-left:  -4px;
+                    margin-right:  5px;
+                }
+            }
+        }
+    }
+}

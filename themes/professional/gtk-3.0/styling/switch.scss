@@ -1,0 +1,140 @@
+/**
+ * switch.scss - Professional Style Switch Style Constants
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+//
+// SWITCH ITSELF
+//
+$switch_styles:
+    wintc_define_props_bg(
+        $switch_styles,
+        false,
+        #FFFFFF,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
+$switch_styles:
+    wintc_define_props_borders(
+        $switch_styles,
+        false,
+        solid,
+        1,
+        1,
+        1,
+        1,
+        $borders_color,
+        undefined
+    );
+
+$switch_selected_styles:
+    wintc_define_props_bg(
+        $switch_selected_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        linear-gradient(180deg, rgba(143,173,211,1) 0%, rgba(163,190,220,1) 100%)
+    );
+
+$switch_inactive_styles:
+    wintc_define_props_bg(
+        $switch_inactive_styles,
+        false,
+        transparent,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
+
+$switch_inactive_selected_styles:
+    wintc_define_props_bg(
+        $switch_inactive_selected_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        linear-gradient(180deg, rgba(237,238,234,1) 0%, rgba(225,227,221,1) 100%)
+    );
+
+
+//
+// SWITCH SLIDER
+//
+$switch_slider_styles:
+    wintc_define_props_bg(
+        $switch_slider_styles,
+        false,
+        #FAFAF7,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
+$switch_slider_styles:
+    wintc_define_props_borders(
+        $switch_slider_styles,
+        false,
+        solid,
+        2,
+        1,
+        2,
+        1,
+        #828276,
+        undefined
+    );
+
+$switch_slider_hover_styles:
+    wintc_define_props_bg(
+        $switch_slider_hover_styles,
+        false,
+        #C7DCF6,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
+$switch_slider_hover_styles:
+    wintc_define_props_borders(
+        $switch_slider_hover_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        #6F89B0,
+        undefined
+    );
+
+$switch_slider_inactive_styles:
+    wintc_define_props_bg(
+        $switch_slider_inactive_styles,
+        false,
+        #EBEBE4,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
+$switch_slider_inactive_styles:
+    wintc_define_props_borders(
+        $switch_slider_inactive_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        #CACAB7,
+        undefined
+    );

@@ -1,0 +1,76 @@
+/**
+ * csd.scss - WinTC GTK 3 CSD Theme Part Definitions
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+// NOTE: This value is kind of a 'hack' to fix a problem with the CSD where
+//       a phantom outline appears around rounded corners
+//
+//       If the theme is going to have rounded edges, adjust this so that
+//       the border-radius matches the radius of the graphics used to avoid
+//       the problem
+//
+$csd_window_hack_border_radius: 0px !default;
+
+$caption_button_spacing: 0px !default;
+$close_button_spacing: 2px !default;
+
+
+//
+// CSD WINDOW ITSELF
+//
+$csd_window_styles:          ();
+$csd_window_backdrop_styles: ();
+
+
+//
+// HEADERBAR
+//
+$headerbar_styles:          ();
+$headerbar_backdrop_styles: ();
+
+$headerbar_maximized_styles:          ();
+$headerbar_maximized_backdrop_styles: ();
+
+$headerbar_title_styles:             ();
+$headerbar_title_inactive_styles:    ();
+$headerbar_subtitle_styles:          ();
+$headerbar_subtitle_inactive_styles: ();
+
+
+//
+// CAPTION BUTTONS
+//
+$caption_button_styles:                   ();
+$caption_button_focused_styles:           ();
+$caption_button_hover_styles:             ();
+$caption_button_selected_styles:          ();
+$caption_button_selected_focused_styles:  ();
+$caption_button_selected_hover_styles:    ();
+$caption_button_press_styles:             ();
+$caption_button_inactive_styles:          ();
+$caption_button_inactive_selected_styles: ();
+
+$caption_button_backdrop_styles:                   ();
+$caption_button_backdrop_hover_styles:             ();
+$caption_button_backdrop_press_styles:             ();
+$caption_button_backdrop_selected_styles:          ();
+$caption_button_backdrop_selected_hover_styles:    ();
+$caption_button_backdrop_inactive_styles:          ();
+$caption_button_backdrop_inactive_selected_styles: ();
+
+$close_button_styles:          ();
+$close_button_focused_styles:  ();
+$close_button_hover_styles:    ();
+$close_button_press_styles:    ();
+$close_button_inactive_styles: ();
+
+$close_button_backdrop_styles:          ();
+$close_button_backdrop_focused_styles:  ();
+$close_button_backdrop_hover_styles:    ();
+$close_button_backdrop_press_styles:    ();
+$close_button_backdrop_inactive_styles: ();

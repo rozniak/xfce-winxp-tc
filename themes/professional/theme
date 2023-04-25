@@ -1,0 +1,6 @@
+THEME_BASENAME=Professional
+THEME_DESCRIPTION=Professional visual style for XFCE.
+THEME_DISPLAYNAME=Professional
+THEME_MAINTAINER=Rory Fewell <roryf@oddmatics.uk>
+THEME_RAWNAME=professional
+THEME_VARIANT=Default

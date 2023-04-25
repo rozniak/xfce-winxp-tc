@@ -1,3 +1,8 @@
+.xp-start-button .lower
+{
+    font-size: 0pt;
+}
+
 box > menubar > menuitem > box > image
 {
     margin: 0px 6px 0px 2px;
@@ -8,10 +13,14 @@ box > menubar > separator
     margin: 4px 0px;
 }
 
-box.xp-start-all-programs
+menuitem.xp-start-all-programs
+{
+    min-height: 32px;
+}
+
+menuitem.xp-start-all-programs > box
 {
     font-weight: bold;
-    min-height:  32px;
 }
 
 separator.xp-start-all-programs
@@ -29,18 +38,21 @@ separator.xp-start-all-programs
     margin-right: 8px;
 }
 
-.xp-start-logoffpane image
+.xp-start-userpane box
 {
-    margin-right: 4px;
-}
-
-.xp-start-userpane image
-{
+    background-size: 100% 100%;
     box-shadow: 0px 0px 2px 0px rgba(0,0,0,0.75);
-    margin: 10px;
+    margin: 10px 14px 10px 10px;
+    min-height: 48px;
+    min-width: 48px;
 }
 
 .xp-start-userpane label
 {
     font-size: 16pt;
+}
+
+.xp-start-vuserpane label
+{
+    font-size: 0pt;
 }

@@ -80,10 +80,15 @@ static void start_button_init(
 
     // Start text
     //
-    GtkWidget* start_label = gtk_label_new(_("start"));
+    // NOTE: We add two labels for uppercase and lowercase 'start' text, this is so
+    //       that themes can hide one or the other via font-size: 0pt
+    //
+    GtkWidget* start_label_l = gtk_label_new(_("start"));
+    GtkWidget* start_label_u = gtk_label_new(_("Start"));
 
-    gtk_box_pack_start(GTK_BOX(outer_box), icon_box, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(outer_box), start_label, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(outer_box), icon_box,      FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(outer_box), start_label_l, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(outer_box), start_label_u, FALSE, FALSE, 0);
 
     gtk_container_add(GTK_CONTAINER(self), outer_box);
 
@@ -95,6 +100,8 @@ static void start_button_init(
     //
     wintc_widget_add_style_class(GTK_WIDGET(self), "xp-start-button");
     wintc_widget_add_style_class(icon_box,         "xp-flag");
+    wintc_widget_add_style_class(start_label_l,    "lower");
+    wintc_widget_add_style_class(start_label_u,    "upper");
 }
 
 //

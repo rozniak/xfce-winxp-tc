@@ -1,0 +1,12 @@
+/**
+ * insensitive.scss - Theme Base Insensitive State Colour Constants
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+$insensitive_fg_color: transparentize($fg_color, 0.6) !default;
+$insensitive_bg_color: $bg_color !default;
+$insensitive_borders_color: $borders_color !default;

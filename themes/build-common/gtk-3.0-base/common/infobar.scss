@@ -1,0 +1,93 @@
+/**
+ * infobar.scss - Theme Base Infobar Styles
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+infobar
+{
+    border-style: none;
+    
+    &.action:hover > revealer > box
+    {
+        background-color: desaturate(lighten(invert($selected_bg_color), 47%), 30%);
+        border-bottom:    1px solid lighten($borders_color, 5%);
+    }
+    
+    &.info,
+    &.question,
+    &.warning,
+    &.error
+    {
+        &:backdrop > revealer > box,
+        & > revealer > box
+        {
+            label,
+            &
+            {
+                color: $fg_color;
+            }
+            
+            background-color: desaturate(lighten(invert($selected_bg_color), 45%), 30%);
+            border-bottom:    1px solid lighten($borders_color, 5%);
+        }
+        
+        text-shadow: none;
+        
+        &:backdrop
+        {
+            text-shadow: none;
+        }
+
+        button
+        {
+            // FIXME: extend selection mode buttons
+            //
+            @include button(normal, $bg_color, $fg_color, none);
+
+            &:hover    { @include button(hover,       $bg_color, $fg_color, none); }
+            
+            &:active,
+            &:checked  { @include button(active,      $bg_color, $fg_color, none); }
+
+            &:disabled { @include button(insensitive, $bg_color, $fg_color, none); }
+
+            &:backdrop
+            {
+                @include button(backdrop, $bg_color, $fg_color, none);
+
+                border-color: _border_color($bg_color);
+
+                &:disabled
+                {
+                    @include button(backdrop-insensitive, $bg_color, $fg_color, none);
+
+                    border-color: _border_color($bg_color);
+                }
+            }
+
+            &:backdrop,
+            &
+            {
+                label,
+                &
+                {
+                    color: $fg_color;
+                }
+            }
+        }
+
+        selection
+        {
+            background-color: darken($bg_color, 10%);
+        }
+
+        *:link
+        {
+            color: $link_color;
+        }
+    }
+}

@@ -1,0 +1,12 @@
+/**
+ * checkradio.scss - Theme Base Check Box and Radio Button Colour Constants
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+$checkradio_bg_color:      $selected_bg_color;
+$checkradio_fg_color:      $selected_fg_color;
+$checkradio_borders_color: darken($checkradio_bg_color, 20%);

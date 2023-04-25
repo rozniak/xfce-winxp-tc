@@ -1,0 +1,96 @@
+/**
+ * csd.scss - Theme Base GTK 3 CSD Style Constants
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+//
+// CSD WINDOW ITSELF
+//
+$csd_window_styles:
+    wintc_define_props_borders(
+        $csd_window_styles,
+        true,
+        solid,
+        0,
+        4,
+        4,
+        4,
+        undefined,
+        url('../Resources/csd_window_border.png')
+    );
+
+$csd_window_backdrop_styles:
+    map-clone-into(
+        $csd_window_backdrop_styles,
+        $csd_window_styles,
+        true
+    );
+
+
+//
+// HEADERBAR
+//
+$headerbar_styles:
+    wintc_define_props_bg(
+        $headerbar_styles,
+        true,
+        $active_title_bar_bg1,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
+$headerbar_styles:
+    wintc_define_props_borders(
+        $headerbar_styles,
+        true,
+        solid,
+        4,
+        4,
+        1,
+        4,
+        undefined,
+        url('../Resources/headerbar_border.png')
+    );
+$headerbar_styles:
+    wintc_define_props_box(
+        $headerbar_styles,
+        true,
+        padding,
+        2,
+        2,
+        2,
+        2
+    );
+$headerbar_styles:
+    wintc_define_props_fg(
+        $headerbar_styles,
+        true,
+        $active_title_bar_fg,
+        undefined
+    );
+
+$headerbar_backdrop_styles:
+    wintc_define_props_bg(
+        $headerbar_backdrop_styles,
+        true,
+        $inactive_title_bar_bg1,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
+
+$headerbar_title_styles:
+    wintc_define_props_font(
+        $headerbar_title_styles,
+        true,
+        undefined,
+        undefined,
+        undefined,
+        bold
+    );

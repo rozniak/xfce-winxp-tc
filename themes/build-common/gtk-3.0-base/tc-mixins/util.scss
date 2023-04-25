@@ -1,0 +1,87 @@
+/**
+ * util.scss - WinTC Utility SCSS Mixins and Functions
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+@function __wintc_has_value(
+    $values...
+)
+{
+    @each $value in $values
+    {
+        @if $value == undefined or
+            $value == default
+        {
+            @return false;
+        }
+    }
+
+    @return true;
+}
+
+@function lists-merge(
+    $lists...
+)
+{
+    $l_ret: ();
+
+    @each $list in $lists
+    {
+        $l_ret: join($l_ret, $list);
+    }
+
+    @return $l_ret;
+}
+
+@function map-clone(
+    $source_map
+)
+{
+    $new: ();
+
+    @return map-merge($new, $source_map);
+}
+
+@function map-set(
+    $map,
+    $key,
+    $value
+)
+{
+    $item: (
+        $key: $value
+    );
+
+    @return map-merge($map, $item);
+}
+
+@function map-clone-into(
+    $target_map,
+    $source_map,
+    $applying_defaults
+)
+{
+    @if $applying_defaults
+    {
+        $new: map-clone($target_map);
+
+        @each $rule_name, $rule_value in $source_map
+        {
+            @if not map-has-key($target_map, $rule_name)
+            {
+                $new: map-set($new, $rule_name, $rule_value);
+            }
+        }
+
+        @return $new;
+    }
+    @else
+    {
+        @return map-merge($target_map, $source_map);
+    }
+}
+

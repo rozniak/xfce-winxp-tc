@@ -1,0 +1,69 @@
+/**
+ * misc.scss - Theme Base Assorted Widget Styles
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+// Content view (grid/list)
+//
+.content-view
+{
+    background-color: darken($bg_color,7%);
+    
+    &:hover
+    {
+        -gtk-icon-effect: highlight;
+    }
+    
+    &:backdrop
+    {
+        background-color: darken($bg_color, 7%);
+    }
+    
+    rubberband, .rubberband
+    {
+        @extend rubberband;
+    }
+}
+
+.scale-popup
+{
+    .osd &
+    {
+        @extend %osd;
+    }
+    
+    // Quick hack, redo properly
+    //
+    .osd & button.flat
+    { 
+        border-radius: 5px;
+        border-style:  none;
+    }
+    
+    // +/- buttons on GtkVolumeButton popup
+    //
+    button
+    {
+        &:hover
+        {
+            @extend %undecorated_button;
+            
+            background-color: transparentize($fg_color,0.9);
+            border-radius:    5px;
+        }
+
+        &:backdrop
+        {
+            &:hover,
+            &:disabled,
+            &
+            {
+                @extend %undecorated_button;
+            }
+        }
+    }
+}
