@@ -34,8 +34,6 @@ def main():
         raise NotADirectoryError(f"{input_dir} is not a directory")
 
     if not output_dir.is_dir():
-        from warnings import warn
-        warn(f"{output_dir} is not a directory, attempting to create it")
         output_dir.mkdir(parents=True)
 
     for file_path in input_dir.glob("*.*.png"):
