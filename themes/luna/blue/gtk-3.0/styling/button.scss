@@ -140,3 +140,29 @@ $toggle_button_press_styles: map-clone($button_press_styles);
 $toggle_button_hover_styles:          $button_hover_styles;
 $toggle_button_selected_styles:       $button_press_styles;
 $toggle_button_selected_hover_styles: $button_hover_styles;
+
+
+//
+// FLAT/TOOLBAR BUTTONS
+//
+$toolbar_button_hover_styles:
+    wintc_define_props_bg(
+        $toolbar_button_hover_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        linear-gradient(180deg, rgba(251,251,248,1) 0%, rgba(240,239,232,1) 10%, rgba(240,239,232,1) 100%)
+    );
+
+$toolbar_button_press_styles:
+    wintc_define_props_bg(
+        $toolbar_button_press_styles,
+        false,
+        #E6E5DF,
+        undefined,
+        undefined,
+        undefined,
+        none
+    );
