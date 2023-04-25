@@ -6,9 +6,14 @@ project(
     DESCRIPTION "Windows Total Conversion Professional theme."
 )
 
+set(PROJECT_ANYARCH    true)
+set(PROJECT_FREESTATUS false)
+set(PROJECT_MAINTAINER "Rory Fewell <roryf@oddmatics.uk>")
+
 set(PROJECT_ROOT ${CMAKE_CURRENT_LIST_DIR})
 
 include(../../packaging/cmake-inc/common/CMakeLists.txt)
+include(../../packaging/cmake-inc/packaging/CMakeLists.txt)
 include(../../packaging/cmake-inc/themes/CMakeLists.txt)
 
 # Use standard theme build process
