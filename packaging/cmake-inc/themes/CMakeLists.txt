@@ -68,5 +68,6 @@ add_custom_command(
 add_custom_target(
     resources-gtk2 ALL
     DEPENDS
+        venv-setup
         ${CMAKE_BINARY_DIR}/composed
 )
