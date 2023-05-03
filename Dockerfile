@@ -1,8 +1,8 @@
 # Instructions:
 # 1. Build image: `docker build -t xfce-winxp-tc .`
 # 2. Run container: `docker run --rm -v ./out:/out xfce-winxp-tc`
-# 3. Package files will be copied `./out` directory
-# 4. For Arch Linux use `debtap` to install packages
+# 3. Package files will be copied to `./out` directory
+# 4. For Arch Linux use `debtap` to convert packages to `pacman` format
 
 FROM debian:11
 
@@ -42,6 +42,7 @@ RUN /xfce-winxp-tc/packaging/deb/libs/packlibs.sh shllang && dpkg -i libshllang.
 # Variable needed by dpkg to see installed packages
 ENV PKG_CONFIG_PATH='/lib/x86_64-linux-gnu/pkgconfig'
 
+# Compile and package all final components (comment out unnecessary components)
 RUN /xfce-winxp-tc/packaging/deb/panel/packplug.sh shell/start shell/systray
 RUN /xfce-winxp-tc/packaging/deb/programs/packprog.sh shell/run shell/winver
 RUN /xfce-winxp-tc/packaging/deb/cursors/packcurs.sh no-shadow/standard with-shadow/standard
