@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION 3.0)
 
 set(REPO_ROOT ${CMAKE_CURRENT_LIST_DIR}/../../..)
 
+set(WINTC_COMPILE_OPTIONS -Wall -Wextra -Wpedantic -Werror)
+set(WINTC_ASSETS_INSTALL_DIR share/wintc)
+
 function(wintc_source_vars SOURCE_PATH)
     file(STRINGS ${SOURCE_PATH} sourceLines)
 

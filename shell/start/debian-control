@@ -1,7 +1,0 @@
-Package: xfce4-start-menu-plugin
-Version: 0.0.1
-Maintainer: Rory Fewell <roryf@oddmatics.uk>
-Architecture: amd64
-Section: non-free
-Description: Windows XP Start menu for XFCE.
-Depends: exo-utils, libgarcon-1-0, libgarcon-gtk3-1-0, libglib2.0-0, libgtk-3-0, libxfce4panel-2.0-4, libxfce4util7, xfce4-panel

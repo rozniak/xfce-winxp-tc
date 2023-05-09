@@ -10,14 +10,9 @@ Within each directory (eg. `with-shadow/standard`), these are the contents:
 
 `res/` - contains the actual PNG images for each cursor, which are passed to `xcursorgen`
 
-`debian-control` - the `control` file used in Debian packaging to provide metadata about the package
-
 `index.theme` - the actual freedesktop theme config file (that gets deployed to `/usr/share/icons`)
 
 `mappings` - since there are lots of X cursors that are basically the same, the mappings file maps X cursor names to the cursor names found under `cfg/` and `res/` (formatted as `(xcursor name)-->(cusor filename minus extension)`)
-
-## Installation
-See the `README.MD` under `/packaging/deb/cursors` for packaging and installation.
 
 ## Developing a cursor theme
 Armed with the above info it should make sense to you how to create a cursor theme:

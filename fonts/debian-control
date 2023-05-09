@@ -1,6 +1,0 @@
-Package: wintc-fonts-xp
-Version: 0.0.1
-Maintainer: Rory Fewell <roryf@oddmatics.uk>
-Architecture: all
-Section: non-free
-Description: Windows XP system fonts.

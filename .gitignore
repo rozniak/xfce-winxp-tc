@@ -17,6 +17,8 @@ mui-stuff/
 # Build output
 #
 [Bb]uild/
+config.h
+meta.h
 resources.c
 *.deb
 *.pot

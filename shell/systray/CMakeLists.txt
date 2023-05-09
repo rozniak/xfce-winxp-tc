@@ -1,15 +1,34 @@
 cmake_minimum_required(VERSION 3.0)
 
 project(
-    xpsystray-plugin
+    libwintc-xpsystray-plugin
     VERSION 1.0
     DESCRIPTION "Windows Total Conversion notification area xfce-panel plugin."
 )
 
+set(PROJECT_ANYARCH    false)
+set(PROJECT_FREESTATUS true)
+set(PROJECT_MAINTAINER "Rory Fewell <roryf@oddmatics.uk>")
+
+set(
+    PROJECT_DEPENDENCIES
+    libglib2.0-0
+    libgtk-3-0
+    libwintc-comgtk
+    libxfce4panel-2.0-4
+    libxfce4util7
+)
+
+set(PROJECT_ROOT ${CMAKE_CURRENT_LIST_DIR})
+
+include(GNUInstallDirs)
+
+include(../../packaging/cmake-inc/common/CMakeLists.txt)
+include(../../packaging/cmake-inc/libraries/CMakeLists.txt)
+include(../../packaging/cmake-inc/packaging/CMakeLists.txt)
+
 find_package(PkgConfig REQUIRED)
 
-pkg_check_modules(GARCON       REQUIRED garcon-1)
-pkg_check_modules(GARCON_GTK3  REQUIRED garcon-gtk3-1)
 pkg_check_modules(GDK          REQUIRED gdk-3.0)
 pkg_check_modules(GIO          REQUIRED gio-2.0)
 pkg_check_modules(GLIB         REQUIRED glib-2.0)
@@ -19,7 +38,7 @@ pkg_check_modules(XFCE4PANEL   REQUIRED libxfce4panel-2.0)
 pkg_check_modules(XFCE4UTIL    REQUIRED libxfce4util-1.0)
 
 add_library(
-    xpsystray-plugin MODULE
+    libwintc-xpsystray-plugin MODULE
     src/clock.h
     src/clock.c
     src/plugin.h
@@ -27,15 +46,13 @@ add_library(
 )
 
 target_compile_options(
-    xpsystray-plugin
-    PRIVATE -Wall -Wextra -Wpedantic -Werror
+    libwintc-xpsystray-plugin
+    PRIVATE ${WINTC_COMPILE_OTPIONS}
 )
 
 target_include_directories(
-    xpsystray-plugin
+    libwintc-xpsystray-plugin
     SYSTEM
-    PRIVATE ${GARCON_INCLUDE_DIRS}
-    PRIVATE ${GARCON_GTK3_INCLUDE_DIRS}
     PRIVATE ${GDK_INCLUDE_DIRS}
     PRIVATE ${GIO_INCLUDE_DIRS}
     PRIVATE ${GLIB_INCLUDE_DIRS}
@@ -46,9 +63,7 @@ target_include_directories(
 )
 
 target_link_directories(
-    xpsystray-plugin
-    PRIVATE ${GARCON_LIBRARY_DIRS}
-    PRIVATE ${GARCON_GTK3_LIBRARY_DIRS}
+    libwintc-xpsystray-plugin
     PRIVATE ${GDK_LIBRARY_DIRS}
     PRIVATE ${GIO_LIBRARY_DIRS}
     PRIVATE ${GLIB_LIBRARY_DIRS}
@@ -59,9 +74,7 @@ target_link_directories(
 )
 
 target_link_libraries(
-    xpsystray-plugin
-    PRIVATE ${GARCON_LIBRARIES}
-    PRIVATE ${GARCON_GTK3_LIBRARIES}
+    libwintc-xpsystray-plugin
     PRIVATE ${GDK_LIBRARIES}
     PRIVATE ${GIO_LIBRARIES}
     PRIVATE ${GLIB_LIBRARIES}
@@ -69,4 +82,17 @@ target_link_libraries(
     PRIVATE ${WINTC_COMGTK_LIBRARIES}
     PRIVATE ${XFCE4PANEL_LIBRARIES}
     PRIVATE ${XFCE4UTIL_LIBRARIES}
+)
+
+# Installation
+#
+wintc_configure_and_install_packaging()
+
+install(
+    FILES xpsystray.desktop
+    DESTINATION share/xfce4/panel/plugins
+)
+install(
+    TARGETS libwintc-xpsystray-plugin
+    DESTINATION ${LIB_DIR}/xfce4/panel/plugins
 )

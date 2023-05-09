@@ -76,7 +76,7 @@ int main(
 
     // Create banner
     //
-    banner = gtk_image_new_from_file("/usr/share/winxp/shell-res/banner.png");
+    banner = gtk_image_new_from_file("/usr/share/wintc/shell-res/banner.png");
 
     // Get kernel info
     //

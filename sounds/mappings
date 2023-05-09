@@ -2,7 +2,7 @@ audio-volume-change-->ding
 battery-caution-->battery-low
 battery-low-->battery-critical
 bell-terminal-->ding
-bell-window-system->ding
+bell-window-system-->ding
 complete-media-burn-->print-complete
 complete-media-format-->print-complete
 complete-media-rip-->print-complete

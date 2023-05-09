@@ -3,17 +3,6 @@ This directory contains the source code for the *Run* application.
 
 ![image](https://user-images.githubusercontent.com/13258281/141702484-5c6698e3-63f2-4f53-a231-6e77aafcc8e0.png)
 
-## Installation
-See the `README.MD` under `/packaging/deb/programs` for packaging and installation.
-
-## Building
-Standard CMake build:
-- `mkdir build`
-- `cd build`
-- `cmake ..`
-  - (if you're missing libraries they will be mentioned here)
-- `make`
-
 ## Keyboard Shortcut
 You can add `run` to a keyboard shortcut on `Win`+`R`/`super`+`R` as follows:
 - Open *XFCE settings* (if using the Start menu, opening *Control Panel* will take you there)

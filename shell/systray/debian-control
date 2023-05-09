@@ -1,7 +1,0 @@
-Package: xfce4-xp-systray-plugin
-Version: 0.0.1
-Maintainer: Rory Fewell <roryf@oddmatics.uk>
-Architecture: amd64
-Section: non-free
-Description: Windows XP notification area for XFCE.
-Depends: libglib2.0-0, libgtk-3-0, libxfce4panel-2.0-4, libxfce4util7, xfce4-panel

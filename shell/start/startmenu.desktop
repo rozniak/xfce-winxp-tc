@@ -4,6 +4,6 @@ Encoding=UTF-8
 Name=Start button
 Comment=Windows XP Start menu
 Icon=start-logo
-X-XFCE-Module=startmenu-plugin
+X-XFCE-Module=wintc-startmenu-plugin
 X-XFCE-Internal=false
 X-XFCE-API=2.0

@@ -47,7 +47,9 @@ install(FILES ${CMAKE_BINARY_DIR}/gtk.css DESTINATION ${THEME_PROJECT_INSTALL_PA
 #
 install(DIRECTORY ${PROJECT_ROOT}/xfwm4 DESTINATION ${THEME_PROJECT_INSTALL_PATH})
 
-# Resources Generation
+# Resource generation
 #
 install(DIRECTORY ${PROJECT_ROOT}/Resources    DESTINATION ${THEME_PROJECT_INSTALL_PATH})
 install(DIRECTORY ${CMAKE_BINARY_DIR}/composed DESTINATION ${THEME_PROJECT_INSTALL_PATH}/Resources)
+
+wintc_configure_and_install_packaging()

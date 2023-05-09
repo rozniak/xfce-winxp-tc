@@ -1,21 +1,28 @@
 cmake_minimum_required(VERSION 3.0)
 
 project(
-    wintc-comgtk
+    libwintc-comgtk
     VERSION 1.0
     DESCRIPTION "Windows Total Conversion common GLib/GTK utilities."
 )
 
+set(PROJECT_ANYARCH    false)
+set(PROJECT_FREESTATUS true)
+set(PROJECT_MAINTAINER "Rory Fewell <roryf@oddmatics.uk>")
+
+set(
+    PROJECT_DEPENDENCIES
+    libglib2.0-dev
+    libgtk-3-dev
+)
+
+set(PROJECT_ROOT ${CMAKE_CURRENT_LIST_DIR})
+
 include(GNUInstallDirs)
 
-if (${CMAKE_SYSTEM_PROCESSOR} STREQUAL "x86_64")
-    set(ARCH_DIR "lib/x86_64-linux-gnu")
-    set(ARCH_NAME "amd64")
-else()
-    message(FATAL_ERROR "No install dir defined for ${CMAKE_SYSTEM_PROCESSOR}!")
-endif()
-
-set(DEB_DEPENDENCIES "libglib2.0-dev, libgtk-3-dev")
+include(../../packaging/cmake-inc/common/CMakeLists.txt)
+include(../../packaging/cmake-inc/libraries/CMakeLists.txt)
+include(../../packaging/cmake-inc/packaging/CMakeLists.txt)
 
 find_package(PkgConfig REQUIRED)
 
@@ -23,7 +30,7 @@ pkg_check_modules(GLIB REQUIRED glib-2.0)
 pkg_check_modules(GTK3 REQUIRED gtk+-3.0)
 
 add_library(
-    wintc-comgtk
+    libwintc-comgtk
     src/debug.h
     src/defprocs.c
     src/defprocs.h
@@ -48,7 +55,7 @@ add_library(
 )
 
 set_target_properties(
-    wintc-comgtk
+    libwintc-comgtk
     PROPERTIES
     PUBLIC_HEADER public/wintc-comgtk.h
     SOVERSION 1
@@ -56,40 +63,36 @@ set_target_properties(
 )
 
 target_compile_options(
-    wintc-comgtk
-    PRIVATE -Wall -Wextra -Wpedantic -Werror
+    libwintc-comgtk
+    PRIVATE ${WINTC_COMPILE_OPTIONS}
 )
 
 target_include_directories(
-    wintc-comgtk
+    libwintc-comgtk
     SYSTEM
     PRIVATE ${GLIB_INCLUDE_DIRS}
     PRIVATE ${GTK3_INCLUDE_DIRS}
 )
 
 target_link_directories(
-    wintc-comgtk
+    libwintc-comgtk
     PRIVATE ${GLIB_LIBRARY_DIRS}
     PRIVATE ${GTK3_LIBRARY_DIRS}
 )
 
 target_link_libraries(
-    wintc-comgtk
+    libwintc-comgtk
     PRIVATE ${GLIB_LIBRARIES}
     PRIVATE ${GTK3_LIBRARIES}
 )
 
-configure_file(../debian-control.in  debian-control  @ONLY)
-configure_file(wintc-comgtk.pc.in    wintc-comgtk.pc @ONLY)
-configure_file(public/wintc-comgtk.h wintc-comgtk.h  COPYONLY)
+# Installation
+#
+wintc_configure_and_install_packaging()
+wintc_add_pkgconfig_install()
 
 install(
-    TARGETS wintc-comgtk
-    LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    TARGETS libwintc-comgtk
+    LIBRARY       DESTINATION ${LIB_DIR}
     PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-)
-
-install(
-    FILES ${CMAKE_BINARY_DIR}/wintc-comgtk.pc
-    DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/pkgconfig
 )

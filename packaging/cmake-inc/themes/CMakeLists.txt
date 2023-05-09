@@ -8,7 +8,7 @@ set(THEMES_BUILD_COMMON_GTK2_DIR      ${THEMES_BUILD_COMMON_DIR}/gtk-2.0-base)
 set(THEMES_BUILD_COMMON_GTK3_DIR      ${THEMES_BUILD_COMMON_DIR}/gtk-3.0-base)
 set(THEMES_BUILD_COMMON_RESOURCES_DIR ${THEMES_BUILD_COMMON_DIR}/native-resources)
 
-set(THEMES_BLDTHEME_TOOL_DIR ${REPO_ROOT}/tools/bldtheme)
+set(THEMES_BLDTHEME_TOOL_DIR ${REPO_ROOT}/tools/bldutils/bldtheme)
 
 # Define source dependencies for GTK2 build
 #
@@ -46,7 +46,7 @@ add_custom_command(
 )
 
 add_custom_target(
-    venv-setup ALL
+    venv-setup
     DEPENDS
         ${THEMES_BLDTHEME_TOOL_DIR}/.venv
 )
@@ -63,6 +63,8 @@ add_custom_command(
         ${THEMES_BUILD_COMMON_RESOURCES_DIR}
         ${CMAKE_BINARY_DIR}/composed
     VERBATIM
+    DEPENDS
+        ${THEMES_BLDTHEME_TOOL_DIR}/.venv
 )
 
 add_custom_target(

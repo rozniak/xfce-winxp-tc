@@ -4,12 +4,7 @@ This directory contains source code for the shell components.
 ## Structure
 Generally the structure under each subdirectory is that of a typical CMake project. In addition there are the following files:
 
-`debian-control` - the `control` file used in Debian packaging to provide metadata about the package
-
 `<name>.desktop` - for programs this file is optional, if included it will be added to `/usr/share/applications` to appear in the application launcher (which isn't relevant for all programs, like `run`). For panel plugins this is required and will be deployed to `/usr/share/xfce4/panel/plugins` so that the plugin is available to use.
-
-## Installation
-This directory contains both XFCE panel plugins, and individual programs. Have a look in each directory, and check the `README.MD` on how to install the component.
 
 ## Developing Shell Components
 If you're planning to contribute by developing a program or plugin, then you should consider the following:

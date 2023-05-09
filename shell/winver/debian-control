@@ -1,7 +1,0 @@
-Package: wintc-shell-winver
-Version: 0.0.1
-Maintainer: Rory Fewell <roryf@oddmatics.uk>
-Architecture: amd64
-Section: non-free
-Description: Windows shell 'winver' application.
-Depends: libglib2.0-0, libgtk-3-0

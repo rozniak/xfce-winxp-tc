@@ -1,0 +1,12 @@
+prefix=/usr
+exec_prefix=${prefix}
+libdir=${prefix}/@LIB_DIR@
+includedir=${exec_prefix}/include
+
+Name: @PROJECT_NAME@
+Description: @PROJECT_DESCRIPTION@
+Version: @PROJECT_VERSION@
+
+Requires:
+Libs: -L${libdir} -l@LIB_NAME@
+Cflags: -I${includedir}

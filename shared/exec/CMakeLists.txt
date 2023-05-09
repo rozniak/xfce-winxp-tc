@@ -1,21 +1,29 @@
 cmake_minimum_required(VERSION 3.0)
 
 project(
-    wintc-exec
+    libwintc-exec
     VERSION 1.0
     DESCRIPTION "Windows Total Conversion launcher library."
 )
 
+set(PROJECT_ANYARCH    false)
+set(PROJECT_FREESTATUS true)
+set(PROJECT_MAINTAINER "Rory Fewell <roryf@oddmatics.uk>")
+
+set(
+    PROJECT_DEPENDENCIES
+    libglib2.0-dev
+    libgtk-3-dev
+    libwintc-comgtk
+)
+
+set(PROJECT_ROOT ${CMAKE_CURRENT_LIST_DIR})
+
 include(GNUInstallDirs)
 
-if (${CMAKE_SYSTEM_PROCESSOR} STREQUAL "x86_64")
-    set(ARCH_DIR "lib/x86_64-linux-gnu")
-    set(ARCH_NAME "amd64")
-else()
-    message(FATAL_ERROR "No install dir defined for ${CMAKE_SYSTEM_PROCESSOR}!")
-endif()
-
-set(DEB_DEPENDENCIES "libglib2.0-dev, libgtk-3-dev, libwintc-comgtk-1.0")
+include(../../packaging/cmake-inc/common/CMakeLists.txt)
+include(../../packaging/cmake-inc/libraries/CMakeLists.txt)
+include(../../packaging/cmake-inc/packaging/CMakeLists.txt)
 
 find_package(PkgConfig REQUIRED)
 
@@ -25,7 +33,7 @@ pkg_check_modules(GLIB REQUIRED glib-2.0)
 pkg_check_modules(GTK3 REQUIRED gtk+-3.0)
 
 add_library(
-    wintc-exec
+    libwintc-exec
     src/action.h
     src/action.c
     src/desktop.h
@@ -37,7 +45,7 @@ add_library(
 )
 
 set_target_properties(
-    wintc-exec
+    libwintc-exec
     PROPERTIES
     PUBLIC_HEADER public/wintc-exec.h
     SOVERSION 1
@@ -45,12 +53,12 @@ set_target_properties(
 )
 
 target_compile_options(
-    wintc-exec
-    PRIVATE -Wall -Wextra -Wpedantic -Werror
+    libwintc-exec
+    PRIVATE ${WINTC_COMPILE_OPTIONS}
 )
 
 target_include_directories(
-    wintc-exec
+    libwintc-exec
     SYSTEM
     PRIVATE ${GDK_INCLUDE_DIRS}
     PRIVATE ${GIO_INCLUDE_DIRS}
@@ -59,7 +67,7 @@ target_include_directories(
 )
 
 target_link_directories(
-    wintc-exec
+    libwintc-exec
     PRIVATE ${GDK_LIBRARY_DIRS}
     PRIVATE ${GIO_LIBRARY_DIRS}
     PRIVATE ${GLIB_LIBRARY_DIRS}
@@ -67,24 +75,20 @@ target_link_directories(
 )
 
 target_link_libraries(
-    wintc-exec
+    libwintc-exec
     PRIVATE ${GDK_LIBRARIES}
     PRIVATE ${GIO_LIBRARIES}
     PRIVATE ${GLIB_LIBRARIES}
     PRIVATE ${GTK3_LIBRARIES}
 )
 
-configure_file(../debian-control.in debian-control @ONLY)
-configure_file(wintc-exec.pc.in     wintc-exec.pc  @ONLY)
-configure_file(public/wintc-exec.h  wintc-exec.h   COPYONLY)
+# Installation
+#
+wintc_configure_and_install_packaging()
+wintc_add_pkgconfig_install()
 
 install(
-    TARGETS wintc-exec
-    LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    TARGETS libwintc-exec
+    LIBRARY       DESTINATION ${LIB_DIR}
     PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-)
-
-install(
-    FILES ${CMAKE_BINARY_DIR}/wintc-exec.pc
-    DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/pkgconfig
 )

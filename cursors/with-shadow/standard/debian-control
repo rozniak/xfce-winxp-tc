@@ -1,6 +1,0 @@
-Package: cursor-theme-standard-with-shadows
-Version: 0.0.1
-Maintainer: Rory Fewell <roryf@oddmatics.uk>
-Architecture: all
-Section: non-free
-Description: The standard Windows XP cursor theme, with pointer shadows.
