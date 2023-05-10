@@ -4,6 +4,8 @@
 #include "errors.h"
 #include "msgbox.h"
 
+#define RETURN_IF_NO_ERROR(e) if (e == NULL || *e == NULL) { return; }
+
 //
 // GLIB BOILERPLATE
 //
@@ -16,6 +18,8 @@ void wintc_display_error_and_clear(
     GError** error
 )
 {
+    RETURN_IF_NO_ERROR(error)
+
     wintc_messagebox_show(
         NULL,
         (*error)->message,
@@ -31,6 +35,8 @@ void wintc_log_error_and_clear(
     GError** error
 )
 {
+    RETURN_IF_NO_ERROR(error)
+
     g_message("%s", (*error)->message);
 
     g_clear_error(error);
@@ -40,6 +46,8 @@ void wintc_nice_error_and_clear(
     GError** error
 )
 {
+    RETURN_IF_NO_ERROR(error)
+
     const gchar* message = NULL;
 
     if ((*error)->domain == WINTC_GENERAL_ERROR)

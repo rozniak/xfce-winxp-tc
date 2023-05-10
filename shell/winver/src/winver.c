@@ -1,3 +1,4 @@
+#include <gdk-pixbuf/gdk-pixbuf.h>
 #include <glib.h>
 #include <glib/gprintf.h>
 #include <gtk/gtk.h>
@@ -6,6 +7,7 @@
 #include <unistd.h>
 #include <pwd.h>
 #include <wintc-comgtk.h>
+#include <wintc-winbrand.h>
 
 //
 // FORWARD DECLARATIONS
@@ -41,6 +43,7 @@ int main(
 )
 {
     GtkWidget* banner;
+    GtkWidget* banner_strip;
     GtkWidget* box;
     GtkWidget* box_buttons;
     GtkWidget* button_ok;
@@ -76,7 +79,32 @@ int main(
 
     // Create banner
     //
-    banner = gtk_image_new_from_file("/usr/share/wintc/shell-res/banner.png");
+    GError*    banner_error  = NULL;
+    GdkPixbuf* banner_pixbuf = NULL;
+    GError*    strip_error   = NULL;
+    GdkPixbuf* strip_pixbuf  = NULL;
+
+    banner_pixbuf = wintc_brand_get_banner(&banner_error);
+    strip_pixbuf  = wintc_brand_get_progress_strip(&strip_error);
+
+    if (banner_pixbuf != NULL)
+    {
+        banner = gtk_image_new_from_pixbuf(banner_pixbuf);
+
+        g_object_unref(banner_pixbuf);
+    }
+
+    if (strip_pixbuf != NULL)
+    {
+        banner_strip = gtk_image_new_from_pixbuf(strip_pixbuf);
+
+        apply_box_model_style(banner_strip, "margin", "bottom", 4);
+
+        g_object_unref(strip_pixbuf);
+    }
+
+    wintc_log_error_and_clear(&banner_error);
+    wintc_log_error_and_clear(&strip_error);
 
     // Get kernel info
     //
@@ -118,6 +146,7 @@ int main(
     apply_box_model_style(label_product,   "margin", "top",    4);
     apply_box_model_style(label_eula,      "margin", "top",    30);
     apply_box_model_style(label_eula_user, "margin", "left",   60);
+    apply_box_model_style(label_eula_user, "margin", "bottom", 16);
     apply_box_model_style(label_memory,    "margin", "top",    4);
 
     // Create separator
@@ -125,7 +154,6 @@ int main(
     separator = gtk_separator_new(GTK_ORIENTATION_HORIZONTAL);
 
     apply_box_model_style(separator, "margin", "right", 8);
-    apply_box_model_style(separator, "margin", "top",   14);
     apply_winver_margin_style(separator);
 
     // Create OK button
@@ -146,12 +174,13 @@ int main(
 
     // Build window contents
     //
-    box         = gtk_box_new(GTK_ORIENTATION_VERTICAL,   4);
+    box         = gtk_box_new(GTK_ORIENTATION_VERTICAL,   0);
     box_buttons = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 
     gtk_container_add(GTK_CONTAINER(window), box);
 
     gtk_box_pack_start(GTK_BOX(box), banner,          FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(box), banner_strip,    FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(box), label_product,   FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(box), label_version,   FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(box), label_copyright, FALSE, FALSE, 0);
@@ -221,7 +250,9 @@ static void apply_winver_margin_style(
     GtkWidget* widget
 )
 {
+    apply_box_model_style(widget, "margin", "bottom", 2);
     apply_box_model_style(widget, "margin", "left", 52);
+    apply_box_model_style(widget, "margin", "top", 2);
 }
 
 static GtkWidget* create_winver_label(

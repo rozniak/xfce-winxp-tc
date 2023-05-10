@@ -1,0 +1,27 @@
+#include <gdk-pixbuf/gdk-pixbuf.h>
+#include <glib.h>
+
+#include "brand.h"
+
+//
+// PUBLIC FUNCTIONS
+//
+GdkPixbuf* wintc_brand_get_banner(
+    GError** error
+)
+{
+    return gdk_pixbuf_new_from_file(
+        "@CMAKE_INSTALL_PREFIX@/@WINTC_ASSETS_INSTALL_DIR@/brand/banner.png",
+        error
+    );
+}
+
+GdkPixbuf* wintc_brand_get_progress_strip(
+    GError** error
+)
+{
+    return gdk_pixbuf_new_from_file(
+        "@CMAKE_INSTALL_PREFIX@/@WINTC_ASSETS_INSTALL_DIR@/brand/strip.png",
+        error
+    );
+}

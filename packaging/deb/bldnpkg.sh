@@ -84,7 +84,8 @@ do
     mkdir "${local_build_dir}"
     cd "${local_build_dir}"
 
-    cmake -DBUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_PREFIX=/usr -DWINTC_PKGMGR=deb "${full_component_dir}" > "${CMAKE_LOG_PATH}"
+    # Default to Pro SKU for now
+    cmake -DWINTC_SKU=xpclient-pro -DBUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_PREFIX=/usr -DWINTC_PKGMGR=deb "${full_component_dir}" > "${CMAKE_LOG_PATH}"
     ((build_result+=$?))
 
     cat "${CMAKE_LOG_PATH}" # So the output is still in stdout as well
