@@ -2,6 +2,7 @@
 #define __WINTC_SHLLANG_H__
 
 #include <glib.h>
+#include <gtk/gtk.h>
 
 //
 // Punctuation related
@@ -141,6 +142,13 @@ typedef enum {
 
 const gchar* wintc_get_place_name(
     WinTCShellPlace place
+);
+
+//
+// UI related
+//
+wintc_preprocess_builder_widget_text(
+    GtkBuilder* builder
 );
 
 #endif

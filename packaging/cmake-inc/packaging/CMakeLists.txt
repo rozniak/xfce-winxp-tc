@@ -133,3 +133,33 @@ function(wintc_configure_and_install_packaging)
         )
     endif()
 endfunction()
+
+# Define build for application icon deployment
+#
+set(
+    WINTC_ICON_SIZES
+    16x16
+    24x24
+    32x32
+    48x48
+)
+
+function(wintc_install_icons_into_package)
+    foreach(ICON_SIZE ${WINTC_ICON_SIZES})
+        set(CURRENT_ICON_SIZE_DIR ${PROJECT_ROOT}/icons/${ICON_SIZE})
+
+        if (
+            NOT EXISTS ${CURRENT_ICON_SIZE_DIR} OR
+            NOT IS_DIRECTORY ${CURRENT_ICON_SIZE_DIR}
+        )
+            continue()
+        endif()
+
+        file(GLOB ICONS_TO_DEPLOY ${CURRENT_ICON_SIZE_DIR}/*.png)
+
+        install(
+            FILES ${ICONS_TO_DEPLOY}
+            DESTINATION share/icons/hicolor/${ICON_SIZE}/apps
+        )
+    endforeach()
+endfunction()

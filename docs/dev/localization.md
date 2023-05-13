@@ -4,22 +4,25 @@ Here are some notes for how to go about localization in this repository.
 ## Programs - supporting translations
 For programs you will want to do the following:
 
-- First, create the file `meta.h` and provide the constant `PKG_NAME` with the package name of the program:
+- In the `CMakeLists.txt`, add a call to the `wintc_create_meta_h()` function, this will generate the `src/meta.h` file that defines the `PKG_NAME` constant based on the project name that we can include in a moment
 
-```c
-#ifndef __META_H__
-#define __META_H__
+```cmake
+... blah blah
+pkg_check_modules(...)
 
-#define PKG_NAME "wintc-run"
+wintc_create_meta_h() # <-- put it here!
 
-#endif
+add_executable(
+    ...
+)
 ```
 
-- Next, in `main.c`, you will need to add the `<locale.h>` header, and set up the environment locale in your main method:
+- Next, in `main.c`, you will need to add the `<glib/gi18n.h>` and `<locale.h>` headers, and set up the environment locale in your main method:
 
 ```c
 ...includes...
 
+#include <glib/gi18n.h>
 #include <locale.h>
 
 ...more includes...
@@ -88,15 +91,17 @@ example_method()
 ## Libraries - supporting translations
 For libraries you must do the following:
 
-- First, create the file `config.h` and provide the constant `GETTEXT_PACKAGE` with the package name of the program:
+- In the `CMakeLists.txt`, add a call to the `wintc_create_config_h()` function, this will generate the `src/config.h` file that defines the `GETTEXT_PACKAGE` constant based on the project name that we can include in a moment
 
-```c
-#ifndef __CONFIG_H__
-#define __CONFIG_H__
+```cmake
+... blah blah
+pkg_check_modules(...)
 
-#define GETTEXT_PACKAGE "wintc-shllang"
+wintc_create_config_h() # <-- put it here!
 
-#endif
+add_library(
+    ...
+)
 ```
 
 - Things are practically identical to programs, except you will want to use `config.h` (for the constant) and the `<glib/gi18n-lib.h>` header so that you use your library's translations rather than the host program's
@@ -109,6 +114,32 @@ For libraries you must do the following:
 #include <glib/gi18n-lib.h>
 
 ...more includes...
+```
+
+## Programs - use common control text and place names in GtkBuilder/GLADE XML
+Of course when developing programs it's much more convenient (and tidier) to define the UI layout in XML, and construct it using a `GtkBuilder`.
+
+**Do not use common text like 'OK', 'Cancel', or 'My Documents' in the XML**, instead you can access the constants defined in `libwintc-shllang` by using either `%CTL_<name>%` or `%PLACE_<name>%`. You can also add punctuation to control text by specifying a punctuation constant first with `%PUNC_<name>%`.
+
+For example:
+- `%CTL_BROWSE%` will be rewritten to `Browse`
+- `%PLACE_DOCUMENTS%` will be rewritten to `My Documents`
+- `%PUNC_MOREINPUT%%CTL_OPEN%` will be rewritten to `Open...`
+
+With this in your XML, call `wintc_preprocess_builder_widget_text()` (in `libwintc-shllang`) to have those placeholders rewritten.
+
+Here's an example from `notepad`:
+```c
+GtkBuilder* builder;
+
+builder =
+    gtk_builder_new_from_resource(
+        "/uk/oddmatics/wintc/notepad/notepad.ui"
+    );
+    
+wintc_preprocess_builder_widget_text(builder);
+
+... use the builder now ...
 ```
 
 ## Tip: `_()` vs. `N_()`
