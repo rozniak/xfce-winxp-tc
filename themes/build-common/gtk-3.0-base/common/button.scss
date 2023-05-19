@@ -164,7 +164,7 @@ button
         //
         &:not(.text-button)
         {
-            &, &:active
+            &, &:active, &:checked:active
             {
                 padding-left:  0px;
                 padding-right: 0px;

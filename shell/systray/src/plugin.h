@@ -17,7 +17,7 @@ typedef struct _SystrayPlugin      SystrayPlugin;
 #define TYPE_SYSTRAY_PLUGIN            (systray_plugin_get_type())
 #define SYSTRAY_PLUGIN(obj)            (G_TYPE_CHECK_INSTANCE_CAST((obj), TYPE_SYSTRAY_PLUGIN, SystrayPlugin))
 #define SYSTRAY_PLUGIN_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST((klass), TYPE_SYSTRAY_PLUGIN, SystrayPluginClass))
-#define IS_SYSTRAY_PLUGIN(obj)         (G_TYPE_CHECK_INSTNACE_TYPE((obj), TYPE_SYSTRAY_PLUGIN))
+#define IS_SYSTRAY_PLUGIN(obj)         (G_TYPE_CHECK_INSTANCE_TYPE((obj), TYPE_SYSTRAY_PLUGIN))
 #define IS_SYSTRAY_PLUGIN_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE((klass), TYPE_SYSTRAY_PLUGIN))
 #define SYSTRAY_PLUGIN_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS((obj), TYPE_SYSTRAY_PLUGIN, SystrayPluginClass))
 

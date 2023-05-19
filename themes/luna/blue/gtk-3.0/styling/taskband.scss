@@ -63,6 +63,16 @@ $taskband_button_styles:
         2,
         0
     );
+$taskband_button_styles:
+    wintc_define_props_box(
+        $taskband_button_styles,
+        false,
+        padding,
+        2,
+        8,
+        2,
+        8
+    );
 
 $taskband_button_hover_styles:
     wintc_define_props_bg(
@@ -108,6 +118,16 @@ $taskband_button_press_styles:
         undefined,
         undefined,
         url("../Resources/taskband_button_press_border.png")
+    );
+$taskband_button_press_styles:
+    wintc_define_props_box(
+        $taskband_button_press_styles,
+        false,
+        padding,
+        3,
+        7,
+        1,
+        9
     );
 
 $taskband_button_selected_styles: $taskband_button_press_styles;

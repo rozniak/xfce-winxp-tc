@@ -1,0 +1,9 @@
+[Xfce Panel]
+Type=X-XFCE-PanelPlugin
+Encoding=UTF-8
+Name=Task Buttons
+Comment=Windows XP task switcher buttons.
+Icon=start-logo
+X-XFCE-Module=wintc-taskbuttons-plugin
+X-XFCE-Internal=false
+X-XFCE-API=2.0

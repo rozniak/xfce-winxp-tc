@@ -11,6 +11,8 @@ $start_flag_size: 21px;
 
 $start_menu_allprograms_arrow_width: 24px;
 
+$start_menu_separator_thickness: $separator_thickness;
+
 
 //
 // START BUTTON
@@ -158,6 +160,18 @@ $start_menu_styles:
         $start_menu_styles,
         false,
         #3070D0,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
+$start_menu_styles:
+    wintc_define_props_borders(
+        $start_menu_styles,
+        false,
+        none,
+        undefined,
+        undefined,
         undefined,
         undefined,
         undefined,

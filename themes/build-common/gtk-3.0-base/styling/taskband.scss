@@ -34,3 +34,36 @@ $taskband_button_styles:
         4,
         3
     );
+$taskband_button_styles:
+    wintc_define_props_box(
+        $taskband_button_styles,
+        true,
+        padding,
+        1,
+        2,
+        1,
+        2
+    );
+
+$taskband_button_press_styles:
+    wintc_define_props_box(
+        $taskband_button_press_styles,
+        true,
+        padding,
+        2,
+        0,
+        0,
+        4
+    );
+$taskband_button_selected_styles: $taskband_button_press_styles;
+
+$taskband_button_icon_styles:
+    wintc_define_props_box(
+        $taskband_button_icon_styles,
+        true,
+        margin,
+        undefined,
+        4,
+        undefined,
+        undefined
+    );

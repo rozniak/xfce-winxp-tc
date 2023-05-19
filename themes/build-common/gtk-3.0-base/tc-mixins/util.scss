@@ -41,9 +41,9 @@
     $source_map
 )
 {
-    $new: ();
+    $new: map-merge((), $source_map);
 
-    @return map-merge($new, $source_map);
+    @return $new;
 }
 
 @function map-set(
