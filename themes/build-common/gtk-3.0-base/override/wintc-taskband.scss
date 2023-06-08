@@ -1,0 +1,43 @@
+/**
+ * wintc-taskband.scss - Theme Base XFCE Panel Styles
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+.wintc-taskband
+{
+    // NOTE: You would think that theming the panel is simple, right? Just stretch the
+    //       taskband texture to the full size of the panel...
+    //
+    //       ...except no, because we run into yet another GTK bug where for some
+    //       reason the filtering applied to stretched textures is blended with
+    //       transparency, so you get transparent blending on the edges
+    //
+    //       ...and even better than that! You'd think we could just repeat the texture
+    //       as-is along the x-axis, but NO! Another bug! The texture is repeated with
+    //       a transparent gap between each one, unless we downsize it (which is what
+    //       the 10px width is for)
+    //
+    //       Got to love GTK sometimes...
+    //
+
+    & > *
+    {
+        @include __wintc_apply_specific_props(
+            $taskband_styles,
+            "color"
+        );
+    }
+
+    & menuitem
+    {
+        color: $fg_color;
+    }
+
+    @include __wintc_apply_props($taskband_styles);
+
+    //border: none; // This does nothing really - the panel overrides it currently
+}

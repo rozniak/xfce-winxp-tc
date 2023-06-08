@@ -4,8 +4,13 @@ set(REPO_ROOT ${CMAKE_CURRENT_LIST_DIR}/../../..)
 
 # Define some constants used by builds
 #
-set(WINTC_COMPILE_OPTIONS -Wall -Wextra -Wpedantic -Werror -Wno-overlength-strings)
 set(WINTC_ASSETS_INSTALL_DIR share/wintc)
+
+if (DEFINED WINTC_NO_PEDANTIC_COMPILE)
+    set(WINTC_COMPILE_OPTIONS -Wall -Wextra -Werror -Wno-overlength-strings)
+else()
+    set(WINTC_COMPILE_OPTIONS -Wall -Wextra -Wpedantic -Werror -Wno-overlength-strings)
+endif()
 
 # Handle SKU stuff
 #
