@@ -1,0 +1,13 @@
+# You can comment out all components you don't want to be included in the package
+shell/run
+shell/taskband
+shell/winver
+windows/notepad
+themes/luna/blue
+themes/native
+themes/professional
+icons/luna
+cursors/no-shadow/standard
+cursors/with-shadow/standard
+sounds
+fonts
