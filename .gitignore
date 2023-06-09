@@ -22,3 +22,5 @@ meta.h
 resources.c
 *.deb
 *.pot
+*.pkg.tar.zst
+packaging/archpkg/*/

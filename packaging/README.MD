@@ -8,7 +8,11 @@ The contents of this directory is as follows:
 
 `deb/` - Debian (`.deb`) packaging
 
+`archpkg/` - Arch Linux (`pacman` format) packaging
+
 ## Support?
-At the moment you'll notice there is only a `deb` subdirectory. I personally use Debian, so I have got Debian packaging functional - if you're also a Debian user, or you use a derivative such as Ubuntu, then you should be good to go.
+I personally use Debian, so I have got Debian packaging functional - if you're also a Debian user, or you use a derivative such as Ubuntu, then you should be good to go.
+
+Package for Arch Linux can be installed directly from AUR ([`xfce-winxp-tc-git`](https://aur.archlinux.org/packages/xfce-winxp-tc-git)) or can be built manually (more details in `archpkg/`).
 
 For users on Linux distributions that use other package managers, I will get around to supporting those one day, it just takes a lot of work and a lot of testing. This `README` will be updated to reflect the status of package manager support when the work is done.
