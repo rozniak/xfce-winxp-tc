@@ -1,18 +1,18 @@
 # Maintainer: SelfRef <arch@selfref.dev>
-pkgbase=xfce-winxp-tc
+_basename=xfce-winxp-tc
 pkgname=('xfce-winxp-tc-git' 'libwintc-git')
-pkgver=r243.2811c5b
+pkgver=r246.2bd4bf3
 pkgrel=1
 pkgdesc="Windows XP Total Conversion for XFCE"
 arch=('x86_64')
 url="https://github.com/rozniak/xfce-winxp-tc"
 license=('GPL')
 makedepends=('git' 'cmake' 'python' 'xorg-xcursorgen' 'ruby-sass' 'garcon')
-source=("${pkgbase}"::"git+https://github.com/rozniak/xfce-winxp-tc.git")
+source=("${_basename}"::"git+https://github.com/rozniak/xfce-winxp-tc.git")
 md5sums=('SKIP')
 
 pkgver() {
-	cd "${pkgbase}"
+	cd "${_basename}"
 	( set -o pipefail
 		git describe --long --abbrev=7 2>/dev/null | sed 's/\([^-]*-g\)/r\1/;s/-/./g' ||
 		printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short=7 HEAD)"
@@ -20,8 +20,8 @@ pkgver() {
 }
 
 build() {
-	lib_list=$(find "${pkgbase}/shared/" -mindepth 1 -maxdepth 1 -type d | cut -sd / -f 2-)
-	comp_list=$(sed 's/#.*$//g' < "${pkgbase}/packaging/components.build")
+	lib_list=$(find "${_basename}/shared/" -mindepth 1 -maxdepth 1 -type d | cut -sd / -f 2-)
+	comp_list=$(sed 's/#.*$//g' < "${_basename}/packaging/components.build")
 
 	# Build shared libraries
 	for lib in $lib_list; do
@@ -36,11 +36,11 @@ build() {
 			-DWINTC_PKGMGR=archpkg \
 			-DCMAKE_INSTALL_LIBDIR=/usr/lib \
 			-DCMAKE_C_FLAGS="-w \
-				-I$srcdir/${pkgbase}/shared/comgtk/public \
-				-I$srcdir/${pkgbase}/shared/exec/public \
-				-I$srcdir/${pkgbase}/shared/shllang/public \
-				-I$srcdir/${pkgbase}/shared/winbrand/public" \
-			"$srcdir/${pkgbase}/$lib"
+				-I$srcdir/${_basename}/shared/comgtk/public \
+				-I$srcdir/${_basename}/shared/exec/public \
+				-I$srcdir/${_basename}/shared/shllang/public \
+				-I$srcdir/${_basename}/shared/winbrand/public" \
+			"$srcdir/${_basename}/$lib"
 		make
 		cd ..
 	done
@@ -57,16 +57,16 @@ build() {
 			-DCMAKE_INSTALL_PREFIX=/usr \
 			-DWINTC_PKGMGR=archpkg \
 			-DCMAKE_C_FLAGS="-w \
-				-I$srcdir/${pkgbase}/shared/comgtk/public \
-				-I$srcdir/${pkgbase}/shared/exec/public \
-				-I$srcdir/${pkgbase}/shared/shllang/public \
-				-I$srcdir/${pkgbase}/shared/winbrand/public" \
+				-I$srcdir/${_basename}/shared/comgtk/public \
+				-I$srcdir/${_basename}/shared/exec/public \
+				-I$srcdir/${_basename}/shared/shllang/public \
+				-I$srcdir/${_basename}/shared/winbrand/public" \
 			-DCMAKE_EXE_LINKER_FLAGS="\
 				-L$srcdir/shared_comgtk -lwintc-comgtk \
 				-L$srcdir/shared_shllang -lwintc-shllang \
 				-L$srcdir/shared_exec -lwintc-exec \
 				-L$srcdir/shared_winbrand -lwintc-winbrand" \
-			"$srcdir/${pkgbase}/$component"
+			"$srcdir/${_basename}/$component"
 		make
 		cd ..
 	done
@@ -78,7 +78,7 @@ package_libwintc-git() {
 	provides=("${pkgname%-git}")
 	conflicts=("${pkgname%-git}")
 
-	lib_list=$(find "${pkgbase}/shared/" -mindepth 1 -maxdepth 1 -type d | cut -sd / -f 2-)
+	lib_list=$(find "${_basename}/shared/" -mindepth 1 -maxdepth 1 -type d | cut -sd / -f 2-)
 	for component in $lib_list; do
 		build_dir=$(echo "$component" | sed 's/\//_/g')
 		cd "./$build_dir"
@@ -93,7 +93,7 @@ package_xfce-winxp-tc-git() {
 	provides=("${pkgname%-git}")
 	conflicts=("${pkgname%-git}")
 
-	comp_list=$(sed 's/#.*$//g' < "${pkgbase}/packaging/components.build")
+	comp_list=$(sed 's/#.*$//g' < "${_basename}/packaging/components.build")
 	for component in $comp_list; do
 		build_dir=$(echo "$component" | sed 's/\//_/g')
 		cd "./$build_dir"

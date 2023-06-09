@@ -7,6 +7,7 @@ if ! grep -q 'ID=arch' /etc/os-release; then
 fi
 
 if [ ! -L ./src/xfce-winxp-tc ]; then
+	rm -rf ./src
 	mkdir ./src
 	ln -sf ../../.. ./src/xfce-winxp-tc
 fi
