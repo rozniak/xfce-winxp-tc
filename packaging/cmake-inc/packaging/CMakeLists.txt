@@ -16,7 +16,8 @@ endif()
 #
 if (
     ${CMAKE_SYSTEM_PROCESSOR} STREQUAL "i686" OR
-    ${CMAKE_SYSTEM_PROCESSOR} STREQUAL "armv71"
+    ${CMAKE_SYSTEM_PROCESSOR} STREQUAL "armv71" OR
+    ${WINTC_PKGMGR} STREQUAL "archpkg"
 )
     set(LIB_DIR lib)
 elseif (
@@ -39,6 +40,8 @@ set(WINTC_DEBIAN_CONTROL_IN_PATH ${CMAKE_CURRENT_LIST_DIR}/debian-control.in)
 function(wintc_configure_and_install_packaging)
     if (${WINTC_PKGMGR} STREQUAL "raw")
         message(STATUS "Outputting raw build (no package manager)")
+    elseif (${WINTC_PKGMGR} STREQUAL "archpkg")
+        message(STATUS "Outputting build for Arch Linux packaging")
     elseif (${WINTC_PKGMGR} STREQUAL "deb")
         message(STATUS "Outputting build for Debian packaging")
 

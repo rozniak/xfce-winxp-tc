@@ -31,8 +31,10 @@ find_package(PkgConfig REQUIRED)
 
 pkg_check_modules(GLIB          REQUIRED glib-2.0)
 pkg_check_modules(GTK3          REQUIRED gtk+-3.0)
-pkg_check_modules(WINTC_COMGTK  REQUIRED wintc-comgtk)
-pkg_check_modules(WINTC_SHLLANG REQUIRED wintc-shllang)
+if (NOT ${WINTC_PKGMGR} STREQUAL "archpkg")
+    pkg_check_modules(WINTC_COMGTK  REQUIRED wintc-comgtk)
+    pkg_check_modules(WINTC_SHLLANG REQUIRED wintc-shllang)
+endif()
 
 wintc_compile_resources()
 wintc_create_meta_h()

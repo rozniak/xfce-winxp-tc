@@ -31,8 +31,10 @@ find_package(PkgConfig REQUIRED)
 pkg_check_modules(GDK_PIXBUF     REQUIRED gdk-pixbuf-2.0)
 pkg_check_modules(GLIB           REQUIRED glib-2.0)
 pkg_check_modules(GTK3           REQUIRED gtk+-3.0)
-pkg_check_modules(WINTC_COMGTK   REQUIRED wintc-comgtk)
-pkg_check_modules(WINTC_WINBRAND REQUIRED wintc-winbrand)
+if (NOT ${WINTC_PKGMGR} STREQUAL "archpkg")
+    pkg_check_modules(WINTC_COMGTK   REQUIRED wintc-comgtk)
+    pkg_check_modules(WINTC_WINBRAND REQUIRED wintc-winbrand)
+endif()
 
 add_executable(
     wintc-shell-winver
