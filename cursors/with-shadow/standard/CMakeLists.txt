@@ -4,6 +4,7 @@ project(
     wintc-cursor-theme-standard-with-shadow
     VERSION 1.0
     DESCRIPTION "Windows Total Conversion Windows XP standard cursor theme (with shadows)."
+    LANGUAGES C
 )
 
 set(PROJECT_ANYARCH    true)

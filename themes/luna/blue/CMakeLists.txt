@@ -4,6 +4,7 @@ project(
     wintc-theme-luna-blue
     VERSION 1.0
     DESCRIPTION "Windows Total Conversion Windows XP style (Blue) theme."
+    LANGUAGES C
 )
 
 set(PROJECT_ANYARCH    true)

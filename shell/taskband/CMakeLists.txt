@@ -4,24 +4,12 @@ project(
     wintc-taskband
     VERSION 1.0
     DESCRIPTION "Windows Total Conversion taskband application"
+    LANGUAGES C
 )
 
 set(PROJECT_ANYARCH    false)
 set(PROJECT_FREESTATUS true)
 set(PROJECT_MAINTAINER "Rory Fewell <roryf@oddmatics.uk>")
-
-set(
-    PROJECT_DEPENDENCIES
-    libgarcon-1-0
-    libgarcon-gtk3-1-0
-    libgdk-pixbuf-2.0-0
-    libglib2.0-0
-    libgtk-3-0
-    libwintc-comgtk
-    libwintc-exec
-    libwintc-shllang
-    xdg-utils
-)
 
 set(PROJECT_ROOT ${CMAKE_CURRENT_LIST_DIR})
 
@@ -30,21 +18,19 @@ set(WINTC_NO_PEDANTIC_COMPILE true) # Necessary because we use dlsym()
 include(GNUInstallDirs)
 
 include(../../packaging/cmake-inc/common/CMakeLists.txt)
+include(../../packaging/cmake-inc/linking/CMakeLists.txt)
 include(../../packaging/cmake-inc/locale/CMakeLists.txt)
 include(../../packaging/cmake-inc/packaging/CMakeLists.txt)
 include(../../packaging/cmake-inc/resources/CMakeLists.txt)
 
-find_package(PkgConfig REQUIRED)
-
-pkg_check_modules(GARCON          REQUIRED garcon-1)
-pkg_check_modules(GARCON_GTK3     REQUIRED garcon-gtk3-1)
-pkg_check_modules(GDK             REQUIRED gdk-3.0)
-pkg_check_modules(GDK_PIXBUF      REQUIRED gdk-pixbuf-2.0)
-pkg_check_modules(GLIB            REQUIRED glib-2.0)
-pkg_check_modules(GTK3            REQUIRED gtk+-3.0)
-pkg_check_modules(WINTC_COMGTK    REQUIRED wintc-comgtk)
-pkg_check_modules(WINTC_EXEC      REQUIRED wintc-exec)
-pkg_check_modules(WINTC_SHLLANG   REQUIRED wintc-shllang)
+wintc_resolve_library(garcon-1       GARCON)
+wintc_resolve_library(garcon-gtk3-1  GARCON_GTK3)
+wintc_resolve_library(gdk-pixbuf-2.0 GDK_PIXBUF)
+wintc_resolve_library(glib-2.0       GLIB)
+wintc_resolve_library(gtk+-3.0       GTK3)
+wintc_resolve_library(wintc-comgtk   WINTC_COMGTK)
+wintc_resolve_library(wintc-exec     WINTC_EXEC)
+wintc_resolve_library(wintc-shllang  WINTC_SHLLANG)
 
 wintc_compile_resources()
 wintc_create_meta_h()
@@ -97,12 +83,26 @@ target_compile_options(
     PRIVATE ${WINTC_COMPILE_OPTIONS}
 )
 
+message(
+    STATUS
+    "Include dirs: ${GARCON_INCLUDE_DIRS}"
+)
+
+message(
+    STATUS
+    "Link dirs: ${GARCON_LIBRARY_DIRS}"
+)
+
+message(
+    STATUS
+    "Link libs: ${GARCON_LIBRARIES}"
+)
+
 target_include_directories(
     wintc-taskband
     SYSTEM
     PRIVATE ${GARCON_INCLUDE_DIRS}
     PRIVATE ${GARCON_GTK3_INCLUDE_DIRS}
-    PRIVATE ${GDK_INCLUDE_DIRS}
     PRIVATE ${GDK_PIXBUF_INCLUDE_DIRS}
     PRIVATE ${GLIB_INCLUDE_DIRS}
     PRIVATE ${GTK3_INCLUDE_DIRS}
@@ -115,7 +115,6 @@ target_link_directories(
     wintc-taskband
     PRIVATE ${GARCON_LIBRARY_DIRS}
     PRIVATE ${GARCON_GTK3_LIBRARY_DIRS}
-    PRIVATE ${GDK_LIBRARY_DIRS}
     PRIVATE ${GDK_PIXBUF_LIBRARY_DIRS}
     PRIVATE ${GLIB_LIBRARY_DIRS}
     PRIVATE ${GTK3_LIBRARY_DIRS}
@@ -129,7 +128,6 @@ target_link_libraries(
     PRIVATE ${CMAKE_DL_LIBS}
     PRIVATE ${GARCON_LIBRARIES}
     PRIVATE ${GARCON_GTK3_LIBRARIES}
-    PRIVATE ${GDK_LIBRARIES}
     PRIVATE ${GDK_PIXBUF_LIBRARIES}
     PRIVATE ${GLIB_LIBRARIES}
     PRIVATE ${GTK3_LIBRARIES}

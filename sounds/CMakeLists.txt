@@ -4,6 +4,7 @@ project(
     wintc-sound-theme-xp
     VERSION 1.0
     DESCRIPTION "Windows Total Conversion Windows XP sound theme."
+    LANGUAGES C
 )
 
 set(PROJECT_ANYARCH    true)

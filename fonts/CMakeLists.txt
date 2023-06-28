@@ -4,6 +4,7 @@ project(
     wintc-fonts-xp
     VERSION 1.0
     DESCRIPTION "Windows Total Conversion Windows XP fonts."
+    LANGUAGES C
 )
 
 set(PROJECT_ANYARCH    true)

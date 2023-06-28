@@ -4,6 +4,7 @@ project(
     wintc-theme-native
     VERSION 1.0
     DESCRIPTION "Windows Total Conversion Windows Classic theme."
+    LANGUAGES C
 )
 
 set(PROJECT_ANYARCH    true)

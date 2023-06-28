@@ -12,6 +12,13 @@ else()
     set(WINTC_COMPILE_OPTIONS -Wall -Wextra -Wpedantic -Werror -Wno-overlength-strings)
 endif()
 
+# Build options from user
+#
+option(
+    WINTC_USE_LOCAL_LIBS
+    "Use compiled libraries instead of system installed for libwintc* libs."
+)
+
 # Handle SKU stuff
 #
 set(

@@ -4,17 +4,12 @@ project(
     libwintc-winbrand
     VERSION 1.0
     DESCRIPTION "Windows Total Conversion Windows branding library."
+    LANGUAGES C
 )
 
 set(PROJECT_ANYARCH    false)
 set(PROJECT_FREESTATUS false)
 set(PROJECT_MAINTAINER "Rory Fewell <roryf@oddmatics.uk>")
-
-set(
-    PROJECT_DEPENDENCIES
-    libgdk-pixbuf-2.0-0
-    libglib2.0-0
-)
 
 set(PROJECT_ROOT ${CMAKE_CURRENT_LIST_DIR})
 
@@ -22,12 +17,11 @@ include(GNUInstallDirs)
 
 include(../../packaging/cmake-inc/common/CMakeLists.txt)
 include(../../packaging/cmake-inc/libraries/CMakeLists.txt)
+include(../../packaging/cmake-inc/linking/CMakeLists.txt)
 include(../../packaging/cmake-inc/packaging/CMakeLists.txt)
 
-find_package(PkgConfig REQUIRED)
-
-pkg_check_modules(GDK_PIXBUF REQUIRED gdk-pixbuf-2.0)
-pkg_check_modules(GLIB       REQUIRED glib-2.0)
+wintc_resolve_library(gdk-pixbuf-2.0 GDK_PIXBUF)
+wintc_resolve_library(glib-2.0       GLIB)
 
 configure_file(src/brand.c.in ${PROJECT_ROOT}/src/brand.c @ONLY)
 

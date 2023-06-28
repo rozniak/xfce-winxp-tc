@@ -1,5 +1,9 @@
 cmake_minimum_required(VERSION 3.12)
 
+# Define constants
+#
+set(DEPMAP_TOOL_DIR ${REPO_ROOT}/tools/bldutils/depmap)
+
 # Emit the project name we're building, this can be pulled out by packaging
 # scripts
 #
@@ -8,7 +12,7 @@ message(STATUS "CMAKING:${PROJECT_NAME}")
 # If no target package format was specified, default to 'raw' (aka we just
 # dump the files out)
 #
-if (NOT DEFINED WINTC_PKGMGR)
+if (NOT DEFINED WINTC_PKGMGR OR "${WINTC_PKGMGR}" STREQUAL "")
     set(WINTC_PKGMGR raw)
 endif()
 
@@ -92,19 +96,35 @@ function(wintc_configure_and_install_packaging)
 
         # Map dependencies to Debian
         #
-        if (DEFINED PROJECT_DEPENDENCIES)
-            list(
-                JOIN
-                PROJECT_DEPENDENCIES
-                ", "
-                DEB_DEPENDENCIES
+        if (EXISTS ${PROJECT_ROOT}/deps)
+            find_package(PythonInterp 3.0 REQUIRED)
+
+            execute_process(
+                COMMAND ${PYTHON_EXECUTABLE} ${DEPMAP_TOOL_DIR}/depmap.py deps deb
+                WORKING_DIRECTORY ${PROJECT_ROOT}
+                OUTPUT_VARIABLE DEB_DEPENDENCIES_RAW
+                RESULT_VARIABLE DEPMAP_RET
             )
 
-            string(
-                PREPEND
-                DEB_DEPENDENCIES
-                "Depends: "
-            )
+            if (DEPMAP_RET AND NOT DEPMAP_RET EQUAL 0)
+                message(
+                    FATAL_ERROR
+                    "Failed to map dependencies for packaging."
+                )
+            endif()
+
+            string(REPLACE "\n" ";" DEB_DEPENDENCIES_RAW ${DEB_DEPENDENCIES_RAW})
+
+            foreach(line ${DEB_DEPENDENCIES_RAW})
+                if (${line} MATCHES "^rt:(.+)$")
+                    list(APPEND DEB_DEPENDENCIES_LIST ${CMAKE_MATCH_1})
+                endif()
+            endforeach()
+        endif()
+
+        if (DEFINED DEB_DEPENDENCIES_LIST)
+            list(JOIN DEB_DEPENDENCIES_LIST ", " DEB_DEPENDENCIES)
+            string(PREPEND DEB_DEPENDENCIES "Depends: ")
         endif()
 
         # Add postinstall script

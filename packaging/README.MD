@@ -6,9 +6,29 @@ The contents of this directory is as follows:
 
 `cmake-inc/` - common CMake scripts to be included by components in their builds
 
-`deb/` - Debian (`.deb`) packaging
+`deb/` - Debian (`.deb`) packaging implementation
+
+`build.sh` - build script for compiling a single component
+
+`buildall.sh` - build script for compiling all components in the project
+
+`chkdeps.sh` - script for checking dependencies for building components are installed
+
+`distid.sh` - helper script for identifying the distribution in use
+
+`targets` - default build list for all components in the project
+
+## TL;DR on Building
+If you are new and simply want to compile everything, you should:
+- Ensure you have the typical tools installed: `cmake`, `fakeroot`, `gcc`, `make`, `python3`
+- Run `./chkdeps.sh -l` - this will inform you if you're missing any build-time dependencies
+  - This script should output the package names, so you can bung it straight into your package manager, eg. `apt install $(./chkdeps.sh -l | cut -d':' -f2 | tr '\n' ' ')`
+- Run `./buildall.sh` - this should build the entire project by default under the `xpclient-pro` SKU, outputting in `./xptc`
+
+This is intended to *Just Work(TM)*, if you have any problems, please raise an issue!
 
 ## Support?
-At the moment you'll notice there is only a `deb` subdirectory. I personally use Debian, so I have got Debian packaging functional - if you're also a Debian user, or you use a derivative such as Ubuntu, then you should be good to go.
+Supported distros/package formats:
+- Debian (`.deb`)
 
-For users on Linux distributions that use other package managers, I will get around to supporting those one day, it just takes a lot of work and a lot of testing. This `README` will be updated to reflect the status of package manager support when the work is done.
+Please check under the `packaging` tag to see if there is an open issue for your favourite distro/package format. You can help speed up the process by providing a simple example package script or TL;DR so that the porting process is easier (I'm not familiar with every distro out there!)

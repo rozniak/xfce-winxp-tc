@@ -4,6 +4,7 @@ project(
     wintc-icon-theme-luna
     VERSION 1.0
     DESCRIPTION "Windows Total Conversion Windows XP icon theme."
+    LANGUAGES C
 )
 
 set(PROJECT_ANYARCH    true)

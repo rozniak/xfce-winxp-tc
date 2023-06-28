@@ -19,15 +19,7 @@ I used to use Luna theme ports on Windows 7, which has now lost support, and cus
 There are themes that aim to replicate the Windows XP visual styles already, however as anyone who has tried this stuff knows, themes are either lacking or only go so far. This project differs in that I aim for as close to pixel-perfect as possible, and write programs to recreate the complete Windows XP environment (themes alone cannot reproduce the Start menu in the screenshots above).
 
 ## Building / Installation
-Make sure to clone this repository recursively so that `/submodules` is populated! (use `git clone <url> --recurse-submodules`)
-
-This project is componentised, so you can compile/install each thing individually (each cursor theme, desktop theme, program, library, etc.). The components are built using CMake (so for developing you can `make`, or if you're on an unsupported distro and desperate, `make install`).
-
-The typical install process involves packaging for each component, and then installing those packages. At the moment, I have only implemented `.deb` packaging, though I have [issue #35](https://github.com/rozniak/xfce-winxp-tc/issues/35) open to sort out other package managers eventually.
-
-The packaging [lives under `/packaging`](https://github.com/rozniak/xfce-winxp-tc/tree/master/packaging) per format (except for `/submodules`). In general, have a poke around in this repository, there are `README`s in each directory that will explain what things are, and how to install them. 😁
-
-*Please note, if you came from YouTube, the packaging process differs now in that it has been simplified to a single script rather than a script per type of component.*
+Please refer to `/packaging/README.MD` for build instructions. 😁
 
 ## The theme(s) are buggy!
 This is almost certainly true, especially seeing as [theming GTK isn't really a supported feature](https://stopthemingmy.app/). If you're using themes from this repository and programs look broken, you should file issues here rather than pestering the developers of said program.

@@ -4,6 +4,7 @@ project(
     wintc-theme-professional
     VERSION 1.0
     DESCRIPTION "Windows Total Conversion Professional theme."
+    LANGUAGES C
 )
 
 set(PROJECT_ANYARCH    true)
