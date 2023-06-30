@@ -19,7 +19,9 @@ I used to use Luna theme ports on Windows 7, which has now lost support, and cus
 There are themes that aim to replicate the Windows XP visual styles already, however as anyone who has tried this stuff knows, themes are either lacking or only go so far. This project differs in that I aim for as close to pixel-perfect as possible, and write programs to recreate the complete Windows XP environment (themes alone cannot reproduce the Start menu in the screenshots above).
 
 ## Building / Installation
-Please refer to `/packaging/README.MD` for build instructions. 😁
+For AUR (Arch User Repository) there is an `xfce-winxp-tc-git` package maintained by [**@SelfRef**](https://github.com/SelfRef) [here](https://aur.archlinux.org/packages/xfce-winxp-tc-git).
+
+Otherwise, please refer to `/packaging/README.MD` for build instructions. 😁
 
 ## The theme(s) are buggy!
 This is almost certainly true, especially seeing as [theming GTK isn't really a supported feature](https://stopthemingmy.app/). If you're using themes from this repository and programs look broken, you should file issues here rather than pestering the developers of said program.

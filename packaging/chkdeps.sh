@@ -129,14 +129,18 @@ check_deps()
         # It's a new dep, check whether it is already installed
         #
         case "${dist_id}" in
+            archpkg)
+                pacman -Q -k "${pkg_name}" >/dev/null 2>&1
+                ;;
             deb)
                 dpkg -s "${pkg_name}" >/dev/null 2>&1
-
-                if [[ $? -gt 0 ]]
-                then
-                    g_needed_pkgs+=("${pkg_name}")
-                fi
+                ;;
         esac
+
+        if [[ $? -gt 0 ]]
+        then
+            g_needed_pkgs+=("${pkg_name}")
+        fi
     done <<< "${required_deps}"
 }
 

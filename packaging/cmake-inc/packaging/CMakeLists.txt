@@ -36,13 +36,94 @@ else()
     )
 endif()
 
+# Define dependency mapping function
+#
+function(wintc_map_dependencies)
+    if (${WINTC_PKGMGR} STREQUAL "raw")
+        return()
+    endif()
+
+    if (NOT EXISTS ${PROJECT_ROOT}/deps)
+        return()
+    endif()
+
+    find_package(PythonInterp 3.0 REQUIRED)
+
+    execute_process(
+        COMMAND ${PYTHON_EXECUTABLE} ${DEPMAP_TOOL_DIR}/depmap.py deps ${WINTC_PKGMGR}
+        WORKING_DIRECTORY ${PROJECT_ROOT}
+        OUTPUT_VARIABLE DEPENDENCIES_MAP_RAW
+        RESULT_VARIABLE DEPMAP_RET
+    )
+
+    if (DEPMAP_RET AND NOT DEPMAP_RET EQUAL 0)
+        message(
+            FATAL_ERROR
+            "Failed to map dependencies for packaging."
+        )
+    endif()
+
+    string(REPLACE "\n" ";" DEPENDENCIES_MAP_RAW ${DEPENDENCIES_MAP_RAW})
+
+    foreach (line ${DEPENDENCIES_MAP_RAW})
+        if (${line} MATCHES "^rt:(.+)$")
+            list(APPEND DEPENDENCIES_MAP ${CMAKE_MATCH_1})
+        endif()
+    endforeach()
+
+    set(DEPENDENCIES_MAP ${DEPENDENCIES_MAP} PARENT_SCOPE)
+endfunction()
+
 # Do special stuff for the target package format, if needed
 #
+set(WINTC_ARCH_PKGBUILD_IN_PATH  ${CMAKE_CURRENT_LIST_DIR}/PKGBUILD.in)
 set(WINTC_DEBIAN_CONTROL_IN_PATH ${CMAKE_CURRENT_LIST_DIR}/debian-control.in)
 
 function(wintc_configure_and_install_packaging)
     if (${WINTC_PKGMGR} STREQUAL "raw")
         message(STATUS "Outputting raw build (no package manager)")
+    elseif (${WINTC_PKGMGR} STREQUAL "archpkg")
+        message(STATUS "Outputting build for Arch Linux packaging")
+
+        # LIB_DIR is always /lib - /lib64 is not a valid target on Arch
+        #
+        set(LIB_DIR lib PARENT_SCOPE)
+
+        # Set the project name, we drop the 'lib' prefix for Arch
+        #
+        set(ARCH_PROJECT_NAME ${PROJECT_NAME})
+
+        if (${PROJECT_NAME} MATCHES "^lib(.+)")
+            set(ARCH_PROJECT_NAME ${CMAKE_MATCH_1})
+        endif()
+
+        # Set the architecture
+        #
+        set(ARCH_ARCHITECTURE ${CMAKE_SYSTEM_PROCESSOR})
+
+        if (${PROJECT_ANYARCH})
+            set(ARCH_ARCHITECTURE any)
+        endif()
+
+        # Set the licence
+        #
+        if (${PROJECT_FREESTATUS})
+            set(ARCH_LICENCE GPL)
+        else()
+            set(ARCH_LICENCE non-free)
+        endif()
+
+        # Map dependencies to Arch Linux
+        #
+        wintc_map_dependencies()
+
+        if (DEFINED DEPENDENCIES_MAP)
+            list(JOIN DEPENDENCIES_MAP " " ARCH_DEPENDENCIES)
+            string(PREPEND ARCH_DEPENDENCIES "depends=(")
+            string(APPEND  ARCH_DEPENDENCIES ")")
+        endif()
+
+        configure_file(${WINTC_ARCH_PKGBUILD_IN_PATH} PKGBUILD @ONLY)
     elseif (${WINTC_PKGMGR} STREQUAL "deb")
         message(STATUS "Outputting build for Debian packaging")
 
@@ -96,34 +177,10 @@ function(wintc_configure_and_install_packaging)
 
         # Map dependencies to Debian
         #
-        if (EXISTS ${PROJECT_ROOT}/deps)
-            find_package(PythonInterp 3.0 REQUIRED)
+        wintc_map_dependencies()
 
-            execute_process(
-                COMMAND ${PYTHON_EXECUTABLE} ${DEPMAP_TOOL_DIR}/depmap.py deps deb
-                WORKING_DIRECTORY ${PROJECT_ROOT}
-                OUTPUT_VARIABLE DEB_DEPENDENCIES_RAW
-                RESULT_VARIABLE DEPMAP_RET
-            )
-
-            if (DEPMAP_RET AND NOT DEPMAP_RET EQUAL 0)
-                message(
-                    FATAL_ERROR
-                    "Failed to map dependencies for packaging."
-                )
-            endif()
-
-            string(REPLACE "\n" ";" DEB_DEPENDENCIES_RAW ${DEB_DEPENDENCIES_RAW})
-
-            foreach(line ${DEB_DEPENDENCIES_RAW})
-                if (${line} MATCHES "^rt:(.+)$")
-                    list(APPEND DEB_DEPENDENCIES_LIST ${CMAKE_MATCH_1})
-                endif()
-            endforeach()
-        endif()
-
-        if (DEFINED DEB_DEPENDENCIES_LIST)
-            list(JOIN DEB_DEPENDENCIES_LIST ", " DEB_DEPENDENCIES)
+        if (DEFINED DEPENDENCIES_MAP)
+            list(JOIN DEPENDENCIES_MAP ", " DEB_DEPENDENCIES)
             string(PREPEND DEB_DEPENDENCIES "Depends: ")
         endif()
 

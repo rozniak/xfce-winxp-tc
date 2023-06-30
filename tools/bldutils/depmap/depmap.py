@@ -3,7 +3,7 @@ import argparse
 from pathlib import Path
 
 def main():
-    VALID_DISTROS=["deb"]
+    VALID_DISTROS=["archpkg", "deb"]
 
     parser = argparse.ArgumentParser(
         prog="Dependency Mapper Utility",

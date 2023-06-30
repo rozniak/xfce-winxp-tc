@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #
-# package.sh - Packaging Script (Debian)
+# package.sh - Packaging Script
 #
 # This source-code is part of Windows XP stuff for XFCE:
 # <<https://www.oddmatics.uk>>
@@ -16,6 +16,8 @@ CURDIR=`realpath -s "./"`
 SCRIPTDIR=`dirname "$0"`
 
 REPO_ROOT=`realpath -s "${SCRIPTDIR}/../.."`
+
+SH_DISTID="${SCRIPTDIR}/distid.sh"
 
 
 
@@ -62,6 +64,11 @@ fi
 #
 # MAIN SCRIPT
 #
+if [[ ! -f "${SH_DISTID}" ]]
+then
+    echo "distid.sh not found - this should never happen!!"
+    exit 1
+fi
 
 # Ensure the output containing dir exists
 #
@@ -76,32 +83,39 @@ then
     fi
 fi
 
+# Identify our distro
+#
+dist_id=`${SH_DISTID}`
+
+if [[ $? -gt 0 ]]
+then
+    echo "Failed to identify distribution."
+    exit 1
+fi
+
+# Ensure packaging implementation available
+#
+sh_pkg_impl="${SCRIPTDIR}/${dist_id}/pkgimpl.sh"
+
+if [[ ! -f "${sh_pkg_impl}" ]]
+then
+    echo "Packaging implementation for ${dist_id} not found!"
+    exit 1
+fi
+
 # Ensure the built component exists
 #
 rel_component_dir="${1}"
 full_component_dir="${OPT_BUILD_DIR}/${rel_component_dir}"
-pkg_dir="${full_component_dir}/out"
 
-if [[ ! -d "${pkg_dir}" ]]
+if [[ ! -d "${full_component_dir}" ]]
 then
-    "Expected component to be built at ${full_component_dir}, it's missing."
+    echo "Component doesn't seem to be built at ${full_component_dir}"
     exit 1
 fi
 
-# Build package now
+# Hand off to implementation
 #
-fakeroot dpkg-deb -v --build "${pkg_dir}"
+. "${sh_pkg_impl}"
 
-if [[ $? -gt 0 ]]
-then
-    "Package build failure!"
-    exit 1
-fi
-
-# Move package to output
-#
-clean_pkg_name=`cat ${full_component_dir}/control | grep 'Package:' | cut -d":" -f2 | xargs echo -n`
-
-mv "${pkg_dir}.deb" "${OPT_OUTPUT_DIR}/${clean_pkg_name}.deb"
-
-echo "Packaged ${clean_pkg_name}"
+do_packaging

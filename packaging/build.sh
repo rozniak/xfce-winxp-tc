@@ -125,8 +125,7 @@ cmake --fresh                                        \
       "${full_component_dir}"
 ((build_result+=$?))
 
-rm -rf ./out
-make DESTDIR=./out all install
+make -j$(nproc)
 ((build_result+=$?))
 
 cd "${CURDIR}"

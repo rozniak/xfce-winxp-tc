@@ -21,6 +21,7 @@ TARGETS_PATH="${SCRIPTDIR}/targets"
 SH_BUILD="${SCRIPTDIR}/build.sh"
 SH_CHKDEPS="${SCRIPTDIR}/chkdeps.sh"
 SH_DISTID="${SCRIPTDIR}/distid.sh"
+SH_PACKAGE="${SCRIPTDIR}/package.sh"
 
 
 
@@ -30,8 +31,9 @@ SH_DISTID="${SCRIPTDIR}/distid.sh"
 OPT_BUILDLIST="${TARGETS_PATH}"
 OPT_OUTPUT_DIR=""
 OPT_SKU="xpclient-pro"
+OPT_SKIP_PACKAGING=0
 
-while getopts "c:ho:s:" opt;
+while getopts "c:ho:s:z" opt;
 do
     case "${opt}" in
         c)
@@ -44,6 +46,7 @@ do
             echo " -h : display this help screen"
             echo " -o : specify output directory for packages"
             echo " -s : specify SKU to build (default xpclient-pro)"
+            echo " -z : skip packaging steps, compile only"
             echo ""
 
             exit 0
@@ -55,6 +58,10 @@ do
 
         s)
             OPT_SKU="${OPTARG}"
+            ;;
+
+        z)
+            OPT_SKIP_PACKAGING=1
             ;;
     esac
 done
@@ -69,25 +76,9 @@ declare -a g_built_libs
 
 build_component()
 {
-    local dist="${1}"
-    local rel_dir="${2}"
+    local rel_dir="${1}"
     local target_dir="${REPO_ROOT}/${rel_dir}"
     local deps_path="${target_dir}/deps"
-
-    # Ensure package script available
-    #
-    local sh_package="${SCRIPTDIR}/${dist}/package.sh"
-
-    if [[ g_checked_pkg_sh -eq 0 ]]
-    then
-        if [[ ! -f "${sh_package}" ]]
-        then
-            echo "package.sh missing for ${dist}, cannot continue."
-            exit 1
-        fi
-
-        g_checked_pkg_sh=1
-    fi
 
     # All good, continue build
     #
@@ -120,7 +111,7 @@ build_component()
                 #
                 if [[ -d "${REPO_ROOT}/shared/${lib_shortname}" ]]
                 then
-                    build_component "${dist}" "shared/${lib_shortname}"
+                    build_component "shared/${lib_shortname}"
                     g_built_libs+=("${lib_shortname}")
                 fi
             fi
@@ -139,7 +130,12 @@ build_component()
 
     # Package the component
     #
-    "${sh_package}" -o "${OPT_OUTPUT_DIR}" "${rel_dir}"
+    if [[ $OPT_SKIP_PACKAGING -eq 1 ]]
+    then
+        return
+    fi
+
+    "${SH_PACKAGE}" -o "${OPT_OUTPUT_DIR}" "${rel_dir}"
 
     if [[ $? -gt 0 ]]
     then
@@ -185,6 +181,12 @@ then
     exit 1
 fi
 
+if [[ ! -f "${SH_PACKAGE}" ]]
+then
+    echo "package.sh not found - this should never happen!!"
+    exit 1
+fi
+
 if [[ ! -f "${OPT_BUILDLIST}" ]]
 then
     echo "Build list not found or readable: ${OPT_BUILDLIST}"
@@ -212,17 +214,24 @@ tag="${cur_hash}.${cur_arch}.${cur_branch}.${OPT_SKU}(${cur_user},${dist_id})"
 
 echo "Doing full system build for ${tag}"
 
-if [[ "${OPT_OUTPUT_DIR}" == "" ]]
+# Handle output dir for packaging
+#
+if [[ $OPT_SKIP_PACKAGING -eq 0 ]]
 then
-    OPT_OUTPUT_DIR="${CURDIR}/xptc/${cur_hash}.${cur_branch}/${cur_arch}/${dist_id}"
+    if [[ "${OPT_OUTPUT_DIR}" == "" ]]
+    then
+        OPT_OUTPUT_DIR="${CURDIR}/xptc/${cur_hash}.${cur_branch}/${cur_arch}/${dist_id}"
 
-    mkdir -p "${OPT_OUTPUT_DIR}"
-fi
+        mkdir -p "${OPT_OUTPUT_DIR}"
+    fi
 
-if [[ ! -d "${OPT_OUTPUT_DIR}" ]]
-then
-    echo "Cannot ensure output directory "${OPT_OUTPUT_DIR}" exists."
-    exit 1
+    if [[ ! -d "${OPT_OUTPUT_DIR}" ]]
+    then
+        echo "Cannot ensure output directory "${OPT_OUTPUT_DIR}" exists."
+        exit 1
+    fi
+else
+    echo "Packaging will be skipped for this session."
 fi
 
 # Check system deps
@@ -239,7 +248,7 @@ fi
 #
 while IFS= read -u "${targets_fd}" -r rel_target_dir
 do
-    build_component "${dist_id}" "${rel_target_dir}"
+    build_component "${rel_target_dir}"
 done {targets_fd}<"${OPT_BUILDLIST}"
 
 echo "Build complete for ${tag}"

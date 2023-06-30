@@ -23,6 +23,10 @@ fi
 distro_in_use=`cat /etc/os-release | grep "^ID" | cut -d"=" -f2`
 
 case "${distro_in_use}" in
+    arch)
+        echo -n "archpkg"
+        ;;
+
     debian)
         echo -n "deb"
         ;;
