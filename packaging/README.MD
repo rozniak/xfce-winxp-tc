@@ -24,7 +24,7 @@ The contents of this directory is as follows:
 
 ## TL;DR on Building
 If you are new and simply want to compile everything, you should:
-- Ensure you have the typical tools installed: `cmake`, `fakeroot`, `gcc`, `make`, `python3`
+- Ensure you have the typical tools installed: `cmake`, `fakeroot`, `gcc`, `make`, `pkg-config`, `python3`
 - Run `./chkdeps.sh -l` - this will inform you if you're missing any build-time dependencies
   - This script should output the package names, so you can bung it straight into your package manager, eg. `apt install $(./chkdeps.sh -l | cut -d':' -f2 | tr '\n' ' ')`
 - Run `./buildall.sh` - this should build the entire project by default under the `xpclient-pro` SKU, outputting in `./xptc`

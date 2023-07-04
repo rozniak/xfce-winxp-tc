@@ -40,11 +40,23 @@ add_executable(
     src/window.h
 )
 
-set_target_properties(
-    wintc-notepad
-    PROPERTIES
-    OUTPUT_NAME notepad
-)
+# We would like the output executable to be called 'notepad', however some
+# distros already use this name for WINE's Notepad, so we can only use the name
+# on distros without this clash
+#
+# The var set here is so that the name can be used in the notepad.desktop file
+#
+set(NOTEPAD_OUTPUT_NAME ${PROJECT_NAME})
+
+if (NOT ${WINTC_PKGMGR} STREQUAL "archpkg")
+    set(NOTEPAD_OUTPUT_NAME notepad)
+
+    set_target_properties(
+        wintc-notepad
+        PROPERTIES
+        OUTPUT_NAME ${NOTEPAD_OUTPUT_NAME}
+    )
+endif()
 
 target_compile_options(
     wintc-notepad
@@ -87,8 +99,10 @@ wintc_configure_and_install_packaging()
 wintc_install_icons_into_package()
 wintc_compile_and_install_pofiles()
 
+configure_file(notepad.desktop.in notepad.desktop @ONLY)
+
 install(
-    FILES notepad.desktop
+    FILES ${CMAKE_BINARY_DIR}/notepad.desktop
     DESTINATION share/applications
 )
 install(
