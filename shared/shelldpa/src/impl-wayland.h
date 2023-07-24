@@ -1,5 +1,5 @@
-#ifndef __DISPPROTO_WAYLAND_H__
-#define __DISPPROTO_WAYLAND_H__
+#ifndef __IMPL_WAYLAND_H__
+#define __IMPL_WAYLAND_H__
 
 #include <glib.h>
 

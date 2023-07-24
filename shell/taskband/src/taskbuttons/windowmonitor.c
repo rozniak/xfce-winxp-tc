@@ -2,8 +2,8 @@
 #include <gtk/gtk.h>
 #include <pango/pango.h>
 #include <wintc-comgtk.h>
+#include <wintc-shelldpa.h>
 
-#include "../dispproto.h"
 #include "windowmonitor.h"
 
 //
@@ -11,53 +11,53 @@
 //
 typedef struct _WindowManagerSingle
 {
-    GtkToggleButton* button;
-    GtkImage*        button_icon;
-    gboolean         button_synchronizing;
-    GtkLabel*        button_text;
-    WndMgmtWindow*   managed_window;
-    WindowMonitor*   parent_monitor;
+    GtkToggleButton*    button;
+    GtkImage*           button_icon;
+    gboolean            button_synchronizing;
+    GtkLabel*           button_text;
+    WinTCWndMgmtWindow* managed_window;
+    WindowMonitor*      parent_monitor;
 } WindowManagerSingle;
 
 struct _WindowMonitor
 {
-    GtkContainer*  container;
-    WndMgmtScreen* screen;
-    GHashTable*    window_manager_map;
+    GtkContainer*       container;
+    WinTCWndMgmtScreen* screen;
+    GHashTable*         window_manager_map;
 };
 
 //
 // FORWARD DECLARATIONS
 //
 static void on_active_window_changed(
-    WndMgmtScreen* screen,
-    WndMgmtWindow* previously_active_window,
-    gpointer       user_data
+    WinTCWndMgmtScreen* screen,
+    WinTCWndMgmtWindow* previously_active_window,
+    gpointer            user_data
 );
 static void on_window_closed(
-    WndMgmtScreen* screen,
-    WndMgmtWindow* window,
-    gpointer       user_data
+    WinTCWndMgmtScreen* screen,
+    WinTCWndMgmtWindow* window,
+    gpointer            user_data
 );
 static void on_window_opened(
-    WndMgmtScreen* screen,
-    WndMgmtWindow* window,
-    gpointer       user_data
+    WinTCWndMgmtScreen* screen,
+    WinTCWndMgmtWindow* window,
+    gpointer            user_data
 );
 
 static void on_window_icon_changed(
-    WndMgmtWindow* window,
-    gpointer       user_data
+    WinTCWndMgmtWindow* window,
+    gpointer            user_data
 );
 static void on_window_name_changed(
-    WndMgmtWindow* window,
-    gpointer       user_data
+    WinTCWndMgmtWindow* window,
+    gpointer            user_data
 );
 static void on_window_state_changed(
-    WndMgmtWindow* window,
-    gint           changed_mask,
-    gint           new_state,
-    gpointer       user_data
+    WinTCWndMgmtWindow* window,
+    gint                changed_mask,
+    gint                new_state,
+    gpointer            user_data
 );
 
 static void on_window_button_toggled(
@@ -85,7 +85,7 @@ WindowMonitor* window_monitor_init_management(
     WindowMonitor* window_monitor = g_new(WindowMonitor, 1);
 
     window_monitor->container          = container;
-    window_monitor->screen             = wndmgmt_screen_get_default();
+    window_monitor->screen             = wintc_wndmgmt_screen_get_default();
     window_monitor->window_manager_map = g_hash_table_new(
                                              g_direct_hash,
                                              g_direct_equal
@@ -127,7 +127,7 @@ static void window_manager_update_icon(
 
     gtk_image_set_from_pixbuf(
         window_manager->button_icon,
-        wndmgmt_window_get_mini_icon(
+        wintc_wndmgmt_window_get_mini_icon(
             window_manager->managed_window
         )
     );
@@ -141,7 +141,7 @@ static void window_manager_update_state(
     gboolean skip_tasklist;
 
     skip_tasklist =
-        wndmgmt_window_is_skip_tasklist(window_manager->managed_window);
+        wintc_wndmgmt_window_is_skip_tasklist(window_manager->managed_window);
 
     if (skip_tasklist && window_manager->button != NULL)
     {
@@ -218,7 +218,7 @@ static void window_manager_update_text(
 )
 {
     const gchar* new_text =
-        wndmgmt_window_get_name(window_manager->managed_window);
+        wintc_wndmgmt_window_get_name(window_manager->managed_window);
 
     gtk_label_set_text(
         window_manager->button_text,
@@ -234,17 +234,18 @@ static void window_manager_update_text(
 // CALLBACKS
 //
 static void on_active_window_changed(
-    WINTC_UNUSED(WndMgmtScreen* screen),
-    WndMgmtWindow* previously_active_window,
-    gpointer       user_data
+    WINTC_UNUSED(WinTCWndMgmtScreen* screen),
+    WinTCWndMgmtWindow* previously_active_window,
+    gpointer            user_data
 )
 {
-    WndMgmtWindow*       active_window;
+    WinTCWndMgmtWindow*  active_window;
     WindowManagerSingle* window_manager_old;
     WindowManagerSingle* window_manager_new;
     WindowMonitor*       window_monitor = (WindowMonitor*) user_data;
 
-    active_window = wndmgmt_screen_get_active_window(window_monitor->screen);
+    active_window =
+        wintc_wndmgmt_screen_get_active_window(window_monitor->screen);
 
     if (previously_active_window != NULL)
     {
@@ -296,9 +297,9 @@ static void on_active_window_changed(
 }
 
 static void on_window_closed(
-    WINTC_UNUSED(WndMgmtScreen* screen),
-    WndMgmtWindow* window,
-    gpointer       user_data
+    WINTC_UNUSED(WinTCWndMgmtScreen* screen),
+    WinTCWndMgmtWindow* window,
+    gpointer            user_data
 )
 {
     WindowManagerSingle* window_manager;
@@ -327,9 +328,9 @@ static void on_window_closed(
 }
 
 static void on_window_opened(
-    WINTC_UNUSED(WndMgmtScreen* screen),
-    WndMgmtWindow* window,
-    gpointer       user_data
+    WINTC_UNUSED(WinTCWndMgmtScreen* screen),
+    WinTCWndMgmtWindow* window,
+    gpointer            user_data
 )
 {
     WindowManagerSingle* window_manager = g_new(WindowManagerSingle, 1);
@@ -371,7 +372,7 @@ static void on_window_opened(
 }
 
 static void on_window_icon_changed(
-    WINTC_UNUSED(WndMgmtWindow* window),
+    WINTC_UNUSED(WinTCWndMgmtWindow* window),
     gpointer user_data
 )
 {
@@ -381,7 +382,7 @@ static void on_window_icon_changed(
 }
 
 static void on_window_name_changed(
-    WINTC_UNUSED(WndMgmtWindow* window),
+    WINTC_UNUSED(WinTCWndMgmtWindow* window),
     gpointer user_data
 )
 {
@@ -391,7 +392,7 @@ static void on_window_name_changed(
 }
 
 static void on_window_state_changed(
-    WINTC_UNUSED(WndMgmtWindow* window),
+    WINTC_UNUSED(WinTCWndMgmtWindow* window),
     WINTC_UNUSED(gint changed_mask),
     WINTC_UNUSED(gint new_state),
     gpointer user_data
@@ -416,10 +417,10 @@ static void on_window_button_toggled(
 
     if (gtk_toggle_button_get_active(button))
     {
-        wndmgmt_window_unminimize(window_manager->managed_window);
+        wintc_wndmgmt_window_unminimize(window_manager->managed_window);
     }
     else
     {
-        wndmgmt_window_minimize(window_manager->managed_window);
+        wintc_wndmgmt_window_minimize(window_manager->managed_window);
     }
 }

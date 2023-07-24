@@ -2,45 +2,45 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <glib.h>
 
-#include "dispproto.h"
-#include "dispproto-wndmgmt-xfw.h"
+#include "api.h"
+#include "impl-wndmgmt-xfw.h"
 
 //
 // RESOLVED FUNCS
 //
-static WndMgmtWindow* (*p_xfw_screen_get_active_window) (
-    WndMgmtScreen* screen
+static WinTCWndMgmtWindow* (*p_xfw_screen_get_active_window) (
+    WinTCWndMgmtScreen* screen
 ) = NULL;
-static WndMgmtScreen* (*p_xfw_screen_get_default) (void) = NULL;
+static WinTCWndMgmtScreen* (*p_xfw_screen_get_default) (void) = NULL;
 
 static GdkPixbuf* (*p_xfw_window_get_icon) (
-    WndMgmtWindow* window,
-    gint           size,
-    gint           scale
+    WinTCWndMgmtWindow* window,
+    gint                size,
+    gint                scale
 ) = NULL;
 static gchar* (*p_xfw_window_get_name) (
-    WndMgmtWindow* window
+    WinTCWndMgmtWindow* window
 ) = NULL;
 static gboolean (*p_xfw_window_is_skip_tasklist) (
-    WndMgmtWindow* window
+    WinTCWndMgmtWindow* window
 ) = NULL;
 static gboolean (*p_xfw_window_set_minimized) (
-    WndMgmtWindow* window,
-    gboolean       is_maximized,
-    GError**       error
+    WinTCWndMgmtWindow* window,
+    gboolean            is_maximized,
+    GError**            error
 ) = NULL;
 
 //
 // FORWARD DECLARATIONS
 //
 static GdkPixbuf* xfw_window_get_mini_icon(
-    WndMgmtWindow* window
+    WinTCWndMgmtWindow* window
 );
 static void xfw_window_minimize(
-    WndMgmtWindow* window
+    WinTCWndMgmtWindow* window
 );
 static void xfw_window_unminimize(
-    WndMgmtWindow* window
+    WinTCWndMgmtWindow* window
 );
 
 //
@@ -93,13 +93,13 @@ gboolean init_wndmgmt_xfw_impl(void)
 
     // We're good, implement the API
     //
-    wndmgmt_screen_get_active_window = p_xfw_screen_get_active_window;
-    wndmgmt_screen_get_default       = p_xfw_screen_get_default;
-    wndmgmt_window_get_mini_icon     = &xfw_window_get_mini_icon;
-    wndmgmt_window_get_name          = p_xfw_window_get_name;
-    wndmgmt_window_is_skip_tasklist  = p_xfw_window_is_skip_tasklist;
-    wndmgmt_window_minimize          = &xfw_window_minimize;
-    wndmgmt_window_unminimize        = &xfw_window_unminimize;
+    wintc_wndmgmt_screen_get_active_window = p_xfw_screen_get_active_window;
+    wintc_wndmgmt_screen_get_default       = p_xfw_screen_get_default;
+    wintc_wndmgmt_window_get_mini_icon     = &xfw_window_get_mini_icon;
+    wintc_wndmgmt_window_get_name          = p_xfw_window_get_name;
+    wintc_wndmgmt_window_is_skip_tasklist  = p_xfw_window_is_skip_tasklist;
+    wintc_wndmgmt_window_minimize          = &xfw_window_minimize;
+    wintc_wndmgmt_window_unminimize        = &xfw_window_unminimize;
 
     return TRUE;
 }
@@ -107,21 +107,21 @@ gboolean init_wndmgmt_xfw_impl(void)
 // PRIVATE FUNCTIONS
 //
 static GdkPixbuf* xfw_window_get_mini_icon(
-    WndMgmtWindow* window
+    WinTCWndMgmtWindow* window
 )
 {
     return p_xfw_window_get_icon(window, 16, 1);
 }
 
 static void xfw_window_minimize(
-    WndMgmtWindow* window
+    WinTCWndMgmtWindow* window
 )
 {
     p_xfw_window_set_minimized(window, TRUE, NULL);
 }
 
 static void xfw_window_unminimize(
-    WndMgmtWindow* window
+    WinTCWndMgmtWindow* window
 )
 {
     p_xfw_window_set_minimized(window, FALSE, NULL);

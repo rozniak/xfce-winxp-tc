@@ -1,9 +1,9 @@
 #include <glib.h>
 #include <gtk/gtk.h>
 #include <wintc-comgtk.h>
+#include <wintc-shelldpa.h>
 
 #include "application.h"
-#include "dispproto.h"
 #include "window.h"
 
 //
@@ -104,7 +104,7 @@ static void wintc_taskband_application_startup(
 
     // Init APIs at runtime
     //
-    if (!init_display_protocol_apis())
+    if (!wintc_init_display_protocol_apis())
     {
         g_critical("%s", "Failed to resolve display protocol APIs.");
         g_application_quit(application);

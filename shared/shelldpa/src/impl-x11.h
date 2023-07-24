@@ -1,5 +1,5 @@
-#ifndef __DISPPROTO_X11_H__
-#define __DISPPROTO_X11_H__
+#ifndef __IMPL_X11_H__
+#define __IMPL_X11_H__
 
 #include <glib.h>
 

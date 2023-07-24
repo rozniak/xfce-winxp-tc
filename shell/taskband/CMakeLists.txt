@@ -13,8 +13,6 @@ set(PROJECT_MAINTAINER "Rory Fewell <roryf@oddmatics.uk>")
 
 set(PROJECT_ROOT ${CMAKE_CURRENT_LIST_DIR})
 
-set(WINTC_NO_PEDANTIC_COMPILE true) # Necessary because we use dlsym()
-
 include(GNUInstallDirs)
 
 include(../../packaging/cmake-inc/common/CMakeLists.txt)
@@ -30,6 +28,7 @@ wintc_resolve_library(glib-2.0       GLIB)
 wintc_resolve_library(gtk+-3.0       GTK3)
 wintc_resolve_library(wintc-comgtk   WINTC_COMGTK)
 wintc_resolve_library(wintc-exec     WINTC_EXEC)
+wintc_resolve_library(wintc-shelldpa WINTC_SHELLDPA)
 wintc_resolve_library(wintc-shllang  WINTC_SHLLANG)
 
 wintc_compile_resources()
@@ -39,16 +38,6 @@ add_executable(
     wintc-taskband
     src/application.c
     src/application.h
-    src/dispproto.c
-    src/dispproto.h
-    src/dispproto-wayland.c
-    src/dispproto-wayland.h
-    src/dispproto-x11.c
-    src/dispproto-x11.h
-    src/dispproto-wndmgmt-wnck.c
-    src/dispproto-wndmgmt-wnck.h
-    src/dispproto-wndmgmt-xfw.c
-    src/dispproto-wndmgmt-xfw.h
     src/main.c
     src/meta.h
     src/resources.c
@@ -83,21 +72,6 @@ target_compile_options(
     PRIVATE ${WINTC_COMPILE_OPTIONS}
 )
 
-message(
-    STATUS
-    "Include dirs: ${GARCON_INCLUDE_DIRS}"
-)
-
-message(
-    STATUS
-    "Link dirs: ${GARCON_LIBRARY_DIRS}"
-)
-
-message(
-    STATUS
-    "Link libs: ${GARCON_LIBRARIES}"
-)
-
 target_include_directories(
     wintc-taskband
     SYSTEM
@@ -108,6 +82,7 @@ target_include_directories(
     PRIVATE ${GTK3_INCLUDE_DIRS}
     PRIVATE ${WINTC_COMGTK_INCLUDE_DIRS}
     PRIVATE ${WINTC_EXEC_INCLUDE_DIRS}
+    PRIVATE ${WINTC_SHELLDPA_INCLUDE_DIRS}
     PRIVATE ${WINTC_SHLLANG_INCLUDE_DIRS}
 )
 
@@ -120,12 +95,12 @@ target_link_directories(
     PRIVATE ${GTK3_LIBRARY_DIRS}
     PRIVATE ${WINTC_COMGTK_LIBRARY_DIRS}
     PRIVATE ${WINTC_EXEC_LIBRARY_DIRS}
+    PRIVATE ${WINTC_SHELLDPA_LIBRARY_DIRS}
     PRIVATE ${WINTC_SHLLANG_LIBRARY_DIRS}
 )
 
 target_link_libraries(
     wintc-taskband
-    PRIVATE ${CMAKE_DL_LIBS}
     PRIVATE ${GARCON_LIBRARIES}
     PRIVATE ${GARCON_GTK3_LIBRARIES}
     PRIVATE ${GDK_PIXBUF_LIBRARIES}
@@ -133,6 +108,7 @@ target_link_libraries(
     PRIVATE ${GTK3_LIBRARIES}
     PRIVATE ${WINTC_COMGTK_LIBRARIES}
     PRIVATE ${WINTC_EXEC_LIBRARIES}
+    PRIVATE ${WINTC_SHELLDPA_LIBRARIES}
     PRIVATE ${WINTC_SHLLANG_LIBRARIES}
 )
 

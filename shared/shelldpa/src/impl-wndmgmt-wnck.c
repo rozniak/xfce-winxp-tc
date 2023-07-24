@@ -2,39 +2,39 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <glib.h>
 
-#include "dispproto.h"
-#include "dispproto-wndmgmt-wnck.h"
+#include "api.h"
+#include "impl-wndmgmt-wnck.h"
 
 //
 // RESOLVED FUNCS
 //
-static WndMgmtWindow* (*p_wnck_screen_get_active_window) (
-    WndMgmtScreen* screen
+static WinTCWndMgmtWindow* (*p_wnck_screen_get_active_window) (
+    WinTCWndMgmtScreen* screen
 ) = NULL;
-static WndMgmtScreen* (*p_wnck_screen_get_default) (void) = NULL;
+static WinTCWndMgmtScreen* (*p_wnck_screen_get_default) (void) = NULL;
 
 static GdkPixbuf* (*p_wnck_window_get_mini_icon) (
-    WndMgmtWindow* window
+    WinTCWndMgmtWindow* window
 ) = NULL;
 static gchar* (*p_wnck_window_get_name) (
-    WndMgmtWindow* window
+    WinTCWndMgmtWindow* window
 ) = NULL;
 static gboolean (*p_wnck_window_is_skip_tasklist) (
-    WndMgmtWindow* window
+    WinTCWndMgmtWindow* window
 ) = NULL;
 static void (*p_wnck_window_minimize) (
-    WndMgmtWindow* window
+    WinTCWndMgmtWindow* window
 ) = NULL;
 static void (*p_wnck_window_unminimize) (
-    WndMgmtWindow* window,
-    guint32 timestamp
+    WinTCWndMgmtWindow* window,
+    guint32             timestamp
 ) = NULL;
 
 //
 // FORWARD DECLARATIONS
 //
 static void wnck_window_unminimize_now(
-    WndMgmtWindow* window
+    WinTCWndMgmtWindow* window
 );
 
 //
@@ -91,13 +91,13 @@ gboolean init_wndmgmt_wnck_impl(void)
 
     // We're good, implement the API
     //
-    wndmgmt_screen_get_active_window = p_wnck_screen_get_active_window;
-    wndmgmt_screen_get_default       = p_wnck_screen_get_default;
-    wndmgmt_window_get_mini_icon     = p_wnck_window_get_mini_icon;
-    wndmgmt_window_get_name          = p_wnck_window_get_name;
-    wndmgmt_window_is_skip_tasklist  = p_wnck_window_is_skip_tasklist;
-    wndmgmt_window_minimize          = p_wnck_window_minimize;
-    wndmgmt_window_unminimize        = &wnck_window_unminimize_now;
+    wintc_wndmgmt_screen_get_active_window = p_wnck_screen_get_active_window;
+    wintc_wndmgmt_screen_get_default       = p_wnck_screen_get_default;
+    wintc_wndmgmt_window_get_mini_icon     = p_wnck_window_get_mini_icon;
+    wintc_wndmgmt_window_get_name          = p_wnck_window_get_name;
+    wintc_wndmgmt_window_is_skip_tasklist  = p_wnck_window_is_skip_tasklist;
+    wintc_wndmgmt_window_minimize          = p_wnck_window_minimize;
+    wintc_wndmgmt_window_unminimize        = &wnck_window_unminimize_now;
 
     return TRUE;
 }
@@ -106,7 +106,7 @@ gboolean init_wndmgmt_wnck_impl(void)
 // PRIVATE FUNCTIONS
 //
 static void wnck_window_unminimize_now(
-    WndMgmtWindow* window
+    WinTCWndMgmtWindow* window
 )
 {
     // FIXME: This throws a warning because we use 0 or GDK_CURRENT_TIME where

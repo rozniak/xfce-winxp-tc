@@ -1,5 +1,5 @@
-#ifndef __DISPPROTO_WNDMGMT_WNCK_H__
-#define __DISPPROTO_WNDMGMT_WNCK_H__
+#ifndef __IMPL_WNDMGMT_WNCK_H__
+#define __IMPL_WNDMGMT_WNCK_H__
 
 #include <glib.h>
 

@@ -13,6 +13,7 @@ python3-venv-->bt,rt-->python3-venv
 sass-->bt,rt-->ruby-sass
 wintc-comgtk-->bt,rt-->libwintc-comgtk
 wintc-exec-->bt,rt-->libwintc-exec
+wintc-shelldpa-->bt,rt-->libwintc-shelldpa
 wintc-shllang-->bt,rt-->libwintc-shllang
 wintc-winbrand-->bt,rt-->libwintc-winbrand
 xcursorgen-->bt,rt-->x11-apps

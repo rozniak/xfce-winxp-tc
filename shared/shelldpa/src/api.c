@@ -3,57 +3,61 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <glib.h>
 
-#include "dispproto.h"
-#include "dispproto-wayland.h"
-#include "dispproto-x11.h"
-#include "dispproto-wndmgmt-wnck.h"
-#include "dispproto-wndmgmt-xfw.h"
+#include "api.h"
+#include "impl-wayland.h"
+#include "impl-x11.h"
+#include "impl-wndmgmt-wnck.h"
+#include "impl-wndmgmt-xfw.h"
 
 //
 // STATIC DATA
 //
-static TaskbandDisplayProtocol s_dispproto;
+static WinTCDisplayProtocol s_dispproto;
 
 //
 // RESOLVED FUNCS
 //
-static GType (*p_gdk_x11_display_get_type) (void) = NULL;
+static GType (*p_gdk_x11_display_get_type) (void)     = NULL;
 static GType (*p_gdk_wayland_display_get_type) (void) = NULL;
 
-void (*anchor_taskband_to_bottom)(
+void (*wintc_anchor_taskband_to_bottom) (
     GtkWindow* taskband
 ) = NULL;
 
-WndMgmtWindow* (*wndmgmt_screen_get_active_window) (
-    WndMgmtScreen* screen
+void (*wintc_become_desktop_window) (
+    GtkWindow* window
 ) = NULL;
-WndMgmtScreen* (*wndmgmt_screen_get_default) (void) = NULL;
 
-GdkPixbuf* (*wndmgmt_window_get_mini_icon) (
-    WndMgmtWindow* window
+WinTCWndMgmtWindow* (*wintc_wndmgmt_screen_get_active_window) (
+    WinTCWndMgmtScreen* screen
 ) = NULL;
-gchar* (*wndmgmt_window_get_name) (
-    WndMgmtWindow* window
+WinTCWndMgmtScreen* (*wintc_wndmgmt_screen_get_default) (void) = NULL;
+
+GdkPixbuf* (*wintc_wndmgmt_window_get_mini_icon) (
+    WinTCWndMgmtWindow* window
 ) = NULL;
-gboolean (*wndmgmt_window_is_skip_tasklist) (
-    WndMgmtWindow* window
+gchar* (*wintc_wndmgmt_window_get_name) (
+    WinTCWndMgmtWindow* window
 ) = NULL;
-void (*wndmgmt_window_minimize) (
-    WndMgmtWindow* window
+gboolean (*wintc_wndmgmt_window_is_skip_tasklist) (
+    WinTCWndMgmtWindow* window
 ) = NULL;
-void (*wndmgmt_window_unminimize) (
-    WndMgmtWindow* window
+void (*wintc_wndmgmt_window_minimize) (
+    WinTCWndMgmtWindow* window
+) = NULL;
+void (*wintc_wndmgmt_window_unminimize) (
+    WinTCWndMgmtWindow* window
 ) = NULL;
 
 //
 // PUBLIC FUNCTIONS
 //
-TaskbandDisplayProtocol get_display_protocol_in_use(void)
+WinTCDisplayProtocol wintc_get_display_protocol_in_use(void)
 {
     return s_dispproto;
 }
 
-gboolean init_display_protocol_apis(void)
+gboolean wintc_init_display_protocol_apis(void)
 {
     void* dl_gdk = dlopen("libgdk-3.so", RTLD_LAZY | RTLD_LOCAL);
 
@@ -86,7 +90,7 @@ gboolean init_display_protocol_apis(void)
         (G_TYPE_CHECK_INSTANCE_TYPE((display), p_gdk_x11_display_get_type()))
     )
     {
-        s_dispproto = DISPPROTO_X11;
+        s_dispproto = WINTC_DISPPROTO_X11;
 
         if (!init_x11_protocol_impl())
         {
@@ -99,7 +103,7 @@ gboolean init_display_protocol_apis(void)
         (G_TYPE_CHECK_INSTANCE_TYPE((display), p_gdk_wayland_display_get_type()))
     )
     {
-        s_dispproto = DISPPROTO_WAYLAND;
+        s_dispproto = WINTC_DISPPROTO_WAYLAND;
 
         if (!init_wayland_protocol_impl())
         {
@@ -115,11 +119,11 @@ gboolean init_display_protocol_apis(void)
 
     // Window management stuff, we prioritise loading xfce4windowing because it
     // is the future - failing that we try WNCK, but only for X cos It Don't
-    // Work On Wayland! (TM)
+    // Work On Wayland
     //
     if (!init_wndmgmt_xfw_impl())
     {
-        if (get_display_protocol_in_use() == DISPPROTO_WAYLAND)
+        if (wintc_get_display_protocol_in_use() == WINTC_DISPPROTO_WAYLAND)
         {
             // It's over for Wayland!
             //
@@ -132,7 +136,7 @@ gboolean init_display_protocol_apis(void)
 
         if (!init_wndmgmt_wnck_impl())
         {
-            // No WNCK! Computer over! Disaster = very yes! 
+            // No WNCK! Computer over! Disaster = very yes!
             //
             g_critical(
                 "%s",

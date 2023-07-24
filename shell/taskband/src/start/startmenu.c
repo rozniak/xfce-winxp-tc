@@ -6,8 +6,8 @@
 #include <pwd.h>
 #include <unistd.h>
 #include <wintc-comgtk.h>
+#include <wintc-shelldpa.h>
 
-#include "../dispproto.h"
 #include "../meta.h"
 #include "action.h"
 #include "placeslist.h"
@@ -114,7 +114,7 @@ StartMenu* start_menu_new(
     //
     // So... GtkWindow on X11, GtkPopover on Wayland :)
     //
-    if (get_display_protocol_in_use() == DISPPROTO_X11)
+    if (wintc_get_display_protocol_in_use() == WINTC_DISPPROTO_X11)
     {
         start_menu->menu = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 
@@ -170,7 +170,7 @@ StartMenu* start_menu_new(
             fake_titlebar
         );
     }
-    else if (get_display_protocol_in_use() == DISPPROTO_WAYLAND)
+    else if (wintc_get_display_protocol_in_use() == WINTC_DISPPROTO_WAYLAND)
     {
         start_menu->menu = gtk_popover_new(start_button);
     }
@@ -206,7 +206,7 @@ void start_menu_present(
     gint x;
     gint y;
 
-    if (get_display_protocol_in_use() == DISPPROTO_X11)
+    if (wintc_get_display_protocol_in_use() == WINTC_DISPPROTO_X11)
     {
         gtk_window_present_with_time(
             GTK_WINDOW(start_menu->menu),

@@ -2,9 +2,9 @@
 #include <glib.h>
 #include <gtk/gtk.h>
 #include <wintc-comgtk.h>
+#include <wintc-shelldpa.h>
 
 #include "application.h"
-#include "dispproto.h"
 #include "window.h"
 #include "start/startbutton.h"
 #include "systray/notifarea.h"
@@ -63,7 +63,7 @@ static void wintc_taskband_window_init(
         "wintc-taskband"
     );
 
-    anchor_taskband_to_bottom(GTK_WINDOW(self));
+    wintc_anchor_taskband_to_bottom(GTK_WINDOW(self));
 
     //
     // SET UP CHILDREN IN HERE
