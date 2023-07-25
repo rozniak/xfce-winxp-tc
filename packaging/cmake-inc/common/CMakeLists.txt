@@ -23,7 +23,7 @@ option(
 #
 set(
     WINTC_VALID_SKUS
-    xpclient-home     # CLIENT
+    xpclient-per      # CLIENT
     xpclient-pro
     xpclient-linux
     xpclient-mce

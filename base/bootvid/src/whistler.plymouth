@@ -1,0 +1,8 @@
+[Plymouth Theme]
+Name=Windows XP Splash
+Description=Windows XP boot splash screen.
+ModuleName=script
+
+[script]
+ImageDir=@CMAKE_INSTALL_PREFIX@/@PLYMOUTH_THEME_ROOT@
+ScriptFile=@CMAKE_INSTALL_PREFIX@/@PLYMOUTH_THEME_ROOT@/bootvid.script

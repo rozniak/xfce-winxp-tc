@@ -1,0 +1,118 @@
+// Deal with scaling
+//
+x_factor = Window.GetWidth()  / 640;
+y_factor = Window.GetHeight() / 480;
+
+fun scaled_x(x_val)
+{
+    return x_val * x_factor;
+}
+
+fun scaled_y(y_val)
+{
+    return y_val * y_factor;
+}
+
+fun scale_image(img)
+{
+    return img.Scale(
+        scaled_x(img.GetWidth()),
+        scaled_y(img.GetHeight())
+    );
+}
+
+// Actual theme
+//
+chunks_image = Image("chunks.png");
+sku_image    = Image("sku.png");
+splash_image = Image("splash.png");
+
+sku_image    = scale_image(sku_image);
+splash_image = scale_image(splash_image);
+
+for (i = 0; i < 3; i++)
+{
+    chunk_images[i] = scale_image(chunks_image.Crop(i * 8, 0, 6, 9));
+    chunk[i] = Sprite();
+    chunk[i].SetImage(chunk_images[i]);
+    chunk[i].SetOpacity(0.0);
+}
+
+sku = Sprite();
+sku.SetImage(sku_image);
+sku.SetOpacity(0.0);
+sku.SetPosition(scaled_x(220), scaled_y(271), 1);
+
+splash = Sprite();
+splash.SetImage(splash_image);
+splash.SetOpacity(0.0);
+splash.SetPosition(0, 0, 0);
+
+frame = 0;
+
+// Initial fade-in
+//
+fade_steps = 18;
+
+fun refresh_callback_fade_in()
+{
+    fade_opacity = (frame % fade_steps) / fade_steps;
+
+    sku.SetOpacity(fade_opacity);
+    splash.SetOpacity(fade_opacity);
+
+    frame++;
+
+    if (frame >= fade_steps)
+    {
+        sku.SetOpacity(1.0);
+        splash.SetOpacity(1.0);
+
+        frame = 0;
+
+        // Upgrade to 12FPS and switch to loop
+        //
+        Plymouth.SetRefreshRate(12);
+        Plymouth.SetRefreshFunction(refresh_callback_looping);
+    }
+}
+
+// Looping anim
+//
+bound_low     = scaled_x(259);
+bound_high    = scaled_x(377);
+chunk_start_x = scaled_x(235);
+chunk_start_y = scaled_y(354);
+chunk_step    = scaled_x(8);
+loop_steps    = 20;
+
+fun refresh_callback_looping()
+{
+    chunk_origin_x = chunk_start_x + ((frame % loop_steps) * chunk_step);
+
+    for (i = 0; i < 3; i++)
+    {
+        this_chunk_x = chunk_origin_x + (chunk_step * i);
+
+        chunk[i].SetPosition(this_chunk_x, chunk_start_y, 1);
+
+        if (this_chunk_x >= bound_low && this_chunk_x <= bound_high)
+        {
+            chunk[i].SetOpacity(1.0);
+        }
+        else
+        {
+            chunk[i].SetOpacity(0.0);
+        }
+    }
+
+    frame++;
+}
+
+if (Plymouth.GetMode() == "boot" || Plymouth.GetMode() == "resume")
+{
+    // Launch fade in at 7FPS
+    //
+    Plymouth.SetRefreshRate(7);
+    Plymouth.SetRefreshFunction(refresh_callback_fade_in);
+}
