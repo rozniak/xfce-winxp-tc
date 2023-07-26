@@ -12,27 +12,32 @@
 #
 # MAIN SCRIPT
 #
-if [[ ! -f "/etc/os-release" ]]
+
+# Probe for package managers to try and determine what distro we're
+# on
+#
+
+# Check Debian
+# 
+which dpkg >/dev/null 2>&1
+
+if [[ $? -eq 0 ]]
 then
-    echo "Unable to identify distribution."
-    exit 1
+    echo -n "deb"
+    exit 0
 fi
 
-# Retrieve distro ID
+# Check Arch Linux
 #
-distro_in_use=`cat /etc/os-release | grep "^ID" | cut -d"=" -f2`
+which pacman >/dev/null 2>&1
 
-case "${distro_in_use}" in
-    arch)
-        echo -n "archpkg"
-        ;;
+if [[ $? -eq 0 ]]
+then
+    echo -n "archpkg"
+    exit 0
+fi
 
-    debian)
-        echo -n "deb"
-        ;;
-
-    *)
-        echo "Unsupported distribution."
-        exit 1
-        ;;
-esac
+# Nothing else to probe, it's over!
+#
+echo "Unsupported distribution."
+exit 1
