@@ -42,7 +42,23 @@ static void wnck_window_unminimize_now(
 //
 gboolean init_wndmgmt_wnck_impl(void)
 {
-    void* dl_wnck = dlopen("libwnck-3.so", RTLD_LAZY | RTLD_LOCAL);
+    const gchar* dl_possible_names[] = {
+        "libwnck-3.so",
+        "libwnck-3.so.0",
+        NULL
+    };
+
+    void* dl_wnck = NULL;
+
+    for (int i = 0; dl_possible_names[i] != NULL; i++)
+    {
+        dl_wnck = dlopen(dl_possible_names[i], RTLD_LAZY | RTLD_LOCAL);
+
+        if (dl_wnck != NULL)
+        {
+            break;
+        }
+    }
 
     if (dl_wnck == NULL)
     {
