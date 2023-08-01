@@ -41,7 +41,7 @@ do
             ;;
 
         h)
-            echo "Usage: buildall.sh [-chos]"
+            echo "Usage: buildall.sh [-chosz]"
             echo " -c : provide a list of components (default 'targets')"
             echo " -h : display this help screen"
             echo " -o : specify output directory for packages"

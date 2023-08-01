@@ -11,5 +11,5 @@ package()
     @ARCH_DEPENDENCIES@
 
     cd ..
-    make install DESTDIR="$pkgdir/" CMAKE_INSTALL_ALWAYS=1
+    make install DESTDIR="$pkgdir/"
 }

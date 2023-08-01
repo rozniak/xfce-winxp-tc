@@ -115,8 +115,9 @@ build_result=0
 
 cd "${full_build_dir}"
 
-cmake --fresh                                        \
-      -DBUILD_SHARED_LIBS=ON                         \
+rm -rf "${full_build_dir}"/*
+
+cmake -DBUILD_SHARED_LIBS=ON                         \
       -DCMAKE_INSTALL_PREFIX=/usr                    \
       -DWINTC_SKU="${OPT_SKU}"                       \
       -DWINTC_PKGMGR="${dist_id}"                    \

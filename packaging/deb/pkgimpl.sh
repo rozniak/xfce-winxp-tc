@@ -21,7 +21,7 @@ do_packaging()
     # Assemble package
     #
     cd "${full_component_dir}"
-    make install DESTDIR="${pkg_dir}" CMAKE_INSTALL_ALWAYS=1
+    make install DESTDIR="${pkg_dir}"
 
     ass_res=$?
     
