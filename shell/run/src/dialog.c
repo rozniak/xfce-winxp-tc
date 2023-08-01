@@ -9,6 +9,8 @@
 #include "dialog.h"
 #include "history.h"
 
+#define INITIAL_POS_EDGE_OFFSET 4
+
 //
 // GTK OOP CLASS/INSTANCE DEFINITIONS
 //
@@ -58,6 +60,11 @@ static gboolean on_dialog_key_pressed(
     GtkWidget*   dialog,
     GdkEventKey* event,
     gpointer     user_data
+);
+static void on_dialog_map_event(
+    GtkWidget*  self,
+    GdkEventAny event,
+    gpointer    user_data
 );
 static void on_ok_button_clicked(
     GtkWidget*      button,
@@ -225,19 +232,13 @@ static void wintc_run_dialog_init(
     wintc_widget_add_css(icon, "image { margin-right: 11px; }");
     wintc_widget_add_css(label_open, "label { margin-right: 11px; }");
 
-    // Initial positioning
+    // Attach signal to map-event so we can position the window
     //
-    GdkDisplay*  default_display = gdk_display_get_default();
-    GdkRectangle geometry;
-    GdkMonitor*  primary_monitor = gdk_display_get_primary_monitor(default_display);
-
-    gdk_monitor_get_geometry(primary_monitor, &geometry);
-
-    gtk_window_set_gravity(GTK_WINDOW(self), GDK_GRAVITY_SOUTH_EAST); // Critical!
-    gtk_window_move(
-        GTK_WINDOW(self),
-        0,
-        geometry.height
+    g_signal_connect(
+        self,
+        "map-event",
+        G_CALLBACK(on_dialog_map_event),
+        NULL
     );
 
     // Set up instance private
@@ -417,6 +418,37 @@ static void on_cancel_button_clicked(
 )
 {
     gtk_window_close(GTK_WINDOW(dialog));
+}
+
+static void on_dialog_map_event(
+    GtkWidget* self,
+    WINTC_UNUSED(GdkEventAny event),
+    WINTC_UNUSED(gpointer    user_data)
+)
+{
+    // FIXME: This presumably only works on X11, Wayland could probably use
+    //        some layer shell hack to anchor the window?
+    //
+    GdkDisplay*  display = gdk_display_get_default();
+    GdkMonitor*  monitor = gdk_display_get_primary_monitor(display);
+    GdkRectangle monitor_rect;
+    GtkWindow*   window  = GTK_WINDOW(self);
+    GdkRectangle window_rect;
+
+    gdk_monitor_get_workarea(
+        monitor,
+        &monitor_rect
+    );
+    gdk_window_get_frame_extents(
+        gtk_widget_get_window(self),
+        &window_rect
+    );
+
+    gtk_window_move(
+        window,
+        monitor_rect.x + INITIAL_POS_EDGE_OFFSET,
+        monitor_rect.y + monitor_rect.height - window_rect.height - INITIAL_POS_EDGE_OFFSET
+    );
 }
 
 static gboolean on_dialog_key_pressed(
