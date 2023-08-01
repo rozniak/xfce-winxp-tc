@@ -1,6 +1,7 @@
 #include <gdk/gdk.h>
 #include <glib.h>
 #include <gtk/gtk.h>
+#include <wintc-comctl.h>
 #include <wintc-comgtk.h>
 
 #include "application.h"
@@ -28,25 +29,6 @@ static void wintc_run_application_activate(
     GApplication* application
 );
 
-static void wintc_run_application_finalize(
-    GObject* object
-);
-
-static void wintc_run_application_open(
-    GApplication* application,
-    GFile**       files,
-    int           n_files,
-    const gchar*   hint
-);
-
-static void wintc_run_application_startup(
-    GApplication* application
-);
-
-static void wintc_run_application_shutdown(
-    GApplication* application
-);
-
 //
 // GTK TYPE DEFINITION & CTORS
 //
@@ -57,29 +39,13 @@ static void wintc_run_application_class_init(
 )
 {
     GApplicationClass* application_class = G_APPLICATION_CLASS(klass);
-    GObjectClass*      object_class      = G_OBJECT_CLASS(klass);
 
     application_class->activate = wintc_run_application_activate;
-    application_class->open     = wintc_run_application_open;
-    application_class->startup  = wintc_run_application_startup;
-    application_class->shutdown = wintc_run_application_shutdown;
-
-    object_class->finalize = wintc_run_application_finalize;
 }
 
 static void wintc_run_application_init(
     WINTC_UNUSED(WinTCRunApplication* self)
 ) {}
-
-//
-// FINALIZE
-//
-static void wintc_run_application_finalize(
-    GObject* object
-)
-{
-    (*G_OBJECT_CLASS(wintc_run_application_parent_class)->finalize) (object);
-}
 
 //
 // PUBLIC FUNCTIONS
@@ -109,32 +75,14 @@ static void wintc_run_application_activate(
 {
     WinTCRunApplication* run_app = WINTC_RUN_APPLICATION(application);
 
+    wintc_comctl_install_default_styles();
+
+    if (run_app->main_window == NULL)
+    {
+        run_app->main_window = wintc_run_dialog_new(run_app);
+
+        gtk_widget_show_all(run_app->main_window);
+    }
+
     wintc_focus_window(GTK_WINDOW(run_app->main_window));
-}
-
-static void wintc_run_application_open(
-    WINTC_UNUSED(GApplication* application),
-    WINTC_UNUSED(GFile**       files),
-    WINTC_UNUSED(int           n_files),
-    WINTC_UNUSED(const gchar*  hint)
-) {}
-
-static void wintc_run_application_startup(
-    GApplication* application
-)
-{
-    WinTCRunApplication* run_app = WINTC_RUN_APPLICATION(application);
-
-    (G_APPLICATION_CLASS(wintc_run_application_parent_class))->startup(application);
-
-    run_app->main_window = wintc_run_dialog_new(run_app);
-
-    gtk_widget_show_all(run_app->main_window);
-}
-
-static void wintc_run_application_shutdown(
-    GApplication* application
-)
-{
-    (G_APPLICATION_CLASS(wintc_run_application_parent_class))->shutdown(application);
 }

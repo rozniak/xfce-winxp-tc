@@ -1,0 +1,11 @@
+box.wintc-button-box
+{
+    margin: 0px 8px 10px;
+}
+
+box.wintc-button-box button
+{
+    margin-left:  8px;
+    min-height:   15px;
+    min-width:    51px;
+}

@@ -6,6 +6,7 @@
 #include <sys/utsname.h>
 #include <unistd.h>
 #include <pwd.h>
+#include <wintc-comctl.h>
 #include <wintc-comgtk.h>
 #include <wintc-winbrand.h>
 
@@ -59,6 +60,8 @@ int main(
     struct utsname kernel_info;
 
     gtk_init(&argc, &argv);
+
+    wintc_comctl_install_default_styles();
 
     // Create the window
     //
@@ -160,11 +163,6 @@ int main(
     //
     button_ok = gtk_button_new_with_label("OK");
 
-    apply_box_model_style(button_ok, "margin", "right",  8);
-    apply_box_model_style(button_ok, "margin", "bottom", 10);
-    apply_box_model_style(button_ok, "padding", "left",  26);
-    apply_box_model_style(button_ok, "padding", "right", 26);
-
     g_signal_connect(
         button_ok,
         "clicked",
@@ -191,6 +189,11 @@ int main(
     
     gtk_box_pack_end(GTK_BOX(box),         box_buttons, FALSE, FALSE, 0);
     gtk_box_pack_end(GTK_BOX(box_buttons), button_ok,   FALSE, FALSE, 0);
+
+    wintc_widget_add_style_class(
+        box_buttons,
+        WINTC_COMCTL_BUTTON_BOX_CLASS
+    );
     
     // Clear mem
     //

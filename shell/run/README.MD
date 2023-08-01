@@ -1,7 +1,7 @@
 # run
 This directory contains the source code for the *Run* application.
 
-![image](https://user-images.githubusercontent.com/13258281/141702484-5c6698e3-63f2-4f53-a231-6e77aafcc8e0.png)
+![Run dialog preview](preview.png)
 
 ## Keyboard Shortcut
 You can add `run` to a keyboard shortcut on `Win`+`R`/`super`+`R` as follows:

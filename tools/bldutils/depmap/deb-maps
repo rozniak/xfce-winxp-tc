@@ -12,6 +12,7 @@ msgfmt-->bt,rt-->gettext
 plymouth-->bt,rt-->plymouth
 python3-venv-->bt,rt-->python3-venv
 sass-->bt,rt-->ruby-sass
+wintc-comctl-->bt,rt-->libwintc-comctl
 wintc-comgtk-->bt,rt-->libwintc-comgtk
 wintc-exec-->bt,rt-->libwintc-exec
 wintc-shelldpa-->bt,rt-->libwintc-shelldpa

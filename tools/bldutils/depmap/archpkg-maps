@@ -7,6 +7,7 @@ msgfmt-->bt,rt-->gettext
 plymouth-->bt,rt-->plymouth
 python3-venv-->bt,rt-->python3
 sass-->bt,rt-->ruby-sass
+wintc-comctl-->bt,rt-->wintc-comctl
 wintc-comgtk-->bt,rt-->wintc-comgtk
 wintc-exec-->bt,rt-->wintc-exec
 wintc-shelldpa-->bt,rt-->wintc-shelldpa

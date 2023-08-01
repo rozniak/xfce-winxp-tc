@@ -1,6 +1,7 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
+#include <wintc-comctl.h>
 #include <wintc-comgtk.h>
 #include <wintc-exec.h>
 #include <wintc-shllang.h>
@@ -217,6 +218,11 @@ static void wintc_run_dialog_init(
     gtk_box_pack_end(GTK_BOX(box_buttons), button_ok, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(box_outer), box_buttons, FALSE, FALSE, 0);
 
+    wintc_widget_add_style_class(
+        box_buttons,
+        WINTC_COMCTL_BUTTON_BOX_CLASS
+    );
+
     // Set OK button as default widget
     //
     gtk_window_set_default(GTK_WINDOW(self), button_ok);
@@ -225,6 +231,7 @@ static void wintc_run_dialog_init(
     //
     // FIXME: This should not be done here, use screen CSS instead!
     //
+    wintc_widget_add_css(box_buttons, "box { margin: 0px; }");
     wintc_widget_add_css(box_outer, "box { margin: 18px 11px 0px; }");
     wintc_widget_add_css(box_instructions, "box { margin-bottom: 13px; }");
     wintc_widget_add_css(box_input, "box { margin-bottom: 34px; }");
