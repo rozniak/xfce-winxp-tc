@@ -18,4 +18,6 @@ WindowMonitor* window_monitor_init_management(
     GtkContainer* container
 );
 
+G_END_DECLS
+
 #endif

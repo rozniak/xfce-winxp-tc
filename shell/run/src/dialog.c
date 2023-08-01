@@ -465,30 +465,27 @@ static void on_ok_button_clicked(
     switch (error->code)
     {
         case G_FILE_ERROR_NOENT:
-            g_snprintf(
-                message,
-                WINTC_GCHAR_BUFFER_SIZE,
-                _("Windows cannot find '%s'. Make sure you typed the name correctly, and then try again. To search for a file, click the Start button, and then click Search."),
-                cmdline
-            );
+            message =
+                g_strdup_printf(
+                    _("Windows cannot find '%s'. Make sure you typed the name correctly, and then try again. To search for a file, click the Start button, and then click Search."),
+                    cmdline
+                );
             break;
 
         case G_FILE_ERROR_NOSYS:
-            g_snprintf(
-                message,
-                WINTC_GCHAR_BUFFER_SIZE,
-                _("%s\n\nThe parameter is incorrect"),
-                cmdline
-            );
+            message =
+                g_strdup_printf(
+                    _("%s\n\nThe parameter is incorrect"),
+                    cmdline
+                );
             break;
 
         default:
-            g_snprintf(
-                message,
-                WINTC_GCHAR_BUFFER_SIZE,
-                _("Execution of '%s' failed."),
-                cmdline
-            );
+            message =
+                g_strdup_printf(
+                    _("Execution of '%s' failed."),
+                    cmdline
+                );
             break;
     }
 
@@ -499,6 +496,9 @@ static void on_ok_button_clicked(
         GTK_BUTTONS_OK,
         GTK_MESSAGE_ERROR
     );
+
+    g_clear_error(&error);
+    g_free(message);
 
     // Re-focus the window
     //
