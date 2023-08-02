@@ -23,6 +23,8 @@ include(../../packaging/cmake-inc/packaging/CMakeLists.txt)
 wintc_resolve_library(glib-2.0 GLIB)
 wintc_resolve_library(gtk+-3.0 GTK3)
 
+configure_file(src/version.c.in ${PROJECT_ROOT}/src/version.c @ONLY)
+
 add_library(
     libwintc-comgtk
     src/debug.h
@@ -44,6 +46,8 @@ add_library(
     src/strings.h
     src/styles.c
     src/styles.h
+    src/version.c
+    src/version.h
     src/window.c
     src/window.h
 )

@@ -17,10 +17,12 @@ SCRIPTDIR=`dirname "$0"`
 
 REPO_ROOT=`realpath -s "${SCRIPTDIR}/.."`
 TARGETS_PATH="${SCRIPTDIR}/targets"
+BLDUTILS_ROOT="${REPO_ROOT}/tools/bldutils"
 
 SH_BUILD="${SCRIPTDIR}/build.sh"
 SH_CHKDEPS="${SCRIPTDIR}/chkdeps.sh"
 SH_DISTID="${SCRIPTDIR}/distid.sh"
+SH_GENTAG="${BLDUTILS_ROOT}/gentag/gentag.sh"
 SH_PACKAGE="${SCRIPTDIR}/package.sh"
 
 
@@ -159,33 +161,26 @@ check_already_built()
     return 0
 }
 
+check_present()
+{
+    local check_path="${1}"
+
+    if [[ ! -f "${check_path}" ]]
+    then
+        echo "${check_path} not found - this should never happen!!"
+        exit 1
+    fi
+}
+
 
 #
 # MAIN SCRIPT
 #
-if [[ ! -f "${SH_BUILD}" ]]
-then
-    echo "build.sh not found - this should never happen!!"
-    exit 1
-fi
-
-if [[ ! -f "${SH_CHKDEPS}" ]]
-then
-    echo "chkdeps.sh not found - this should never happen!!"
-    exit 1
-fi
-
-if [[ ! -f "${SH_DISTID}" ]]
-then
-    echo "distid.sh not found - this should never happen!!"
-    exit 1
-fi
-
-if [[ ! -f "${SH_PACKAGE}" ]]
-then
-    echo "package.sh not found - this should never happen!!"
-    exit 1
-fi
+check_present "${SH_BUILD}"
+check_present "${SH_CHKDEPS}"
+check_present "${SH_DISTID}"
+check_present "${SH_GENTAG}"
+check_present "${SH_PACKAGE}"
 
 if [[ ! -f "${OPT_BUILDLIST}" ]]
 then
@@ -206,13 +201,9 @@ fi
 # Generate build tag
 #
 cur_arch=`uname -m | xargs echo -n`
-cur_branch=`git branch --show-current | xargs echo -n`
-cur_hash=`git rev-parse --short HEAD | xargs echo -n`
-cur_user=`whoami | xargs echo -n`
+tag=`${SH_GENTAG}`
 
-tag="${cur_hash}.${cur_arch}.${cur_branch}.${OPT_SKU}(${cur_user},${dist_id})"
-
-echo "Doing full system build for ${tag}"
+echo "Doing full system build for ${tag} (${cur_arch}, ${dist_id})"
 
 # Handle output dir for packaging
 #
@@ -220,7 +211,7 @@ if [[ $OPT_SKIP_PACKAGING -eq 0 ]]
 then
     if [[ "${OPT_OUTPUT_DIR}" == "" ]]
     then
-        OPT_OUTPUT_DIR="${CURDIR}/xptc/${cur_hash}.${cur_branch}/${cur_arch}/${dist_id}"
+        OPT_OUTPUT_DIR="${CURDIR}/xptc/${tag}/${dist_id}/${cur_arch}"
 
         mkdir -p "${OPT_OUTPUT_DIR}"
     fi

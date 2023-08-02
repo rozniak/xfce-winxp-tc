@@ -111,17 +111,18 @@ int main(
 
     // Get kernel info
     //
+    gchar* build_tag = wintc_get_build_tag();
     gchar* kernel_version;
 
     uname(&kernel_info);
     
     kernel_version =
         g_strdup_printf(
-            "%s (%s %s)",
-            kernel_info.version,
-            kernel_info.sysname,
-            kernel_info.release
+            "Version %s (%s)",
+            kernel_info.release,
+            build_tag
         );
+
     
     // Get system info
     //
@@ -197,6 +198,7 @@ int main(
     
     // Clear mem
     //
+    g_free(build_tag);
     g_free(kernel_version);
     g_free(system_stats);
 

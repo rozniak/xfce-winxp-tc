@@ -1,0 +1,23 @@
+#include "version.h"
+
+//
+// PUBLIC FUNCTIONS
+//
+gchar* wintc_get_build_tag(void)
+{
+    gchar* build_tag = NULL;
+
+    if (
+        !g_file_get_contents(
+            "@CMAKE_INSTALL_PREFIX@/@WINTC_ASSETS_INSTALL_DIR@/bldtag",
+            &build_tag,
+            NULL,
+            NULL
+        )
+    )
+    {
+        build_tag = g_strdup_printf("%s", "no tag");
+    }
+
+    return build_tag;
+}

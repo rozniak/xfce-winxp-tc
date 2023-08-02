@@ -196,6 +196,11 @@ void wintc_widget_add_style_class(
 );
 
 //
+// Version-related
+//
+gchar* wintc_get_build_tag(void);
+
+//
 // Window-related
 //
 void wintc_focus_window(
