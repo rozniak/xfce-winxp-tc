@@ -44,9 +44,8 @@ static void wnck_window_unminimize_now(
     WinTCWndMgmtWindow* window
 )
 {
-    // FIXME: This throws a warning because we use 0 or GDK_CURRENT_TIME where
-    //        it expects an X11 timestamp - it works and I can't be bothered to
-    //        resolve this right now
-    //
-    p_wnck_window_unminimize(window, 0);
+    p_wnck_window_unminimize(
+        window,
+        (guint32) (g_get_monotonic_time() / 1000)
+    );
 }
