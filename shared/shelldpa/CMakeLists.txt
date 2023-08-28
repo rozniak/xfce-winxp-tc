@@ -39,6 +39,10 @@ add_library(
     src/impl-wndmgmt-xfw.h
     src/impl-x11.c
     src/impl-x11.h
+    src/dll/wnck.c
+    src/dll/wnck.h
+    src/dll/xfw.c
+    src/dll/xfw.h
 )
 
 set_target_properties(
