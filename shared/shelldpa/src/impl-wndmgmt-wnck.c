@@ -9,8 +9,9 @@
 //
 // FORWARD DECLARATIONS
 //
-static void wnck_window_unminimize_now(
-    WinTCWndMgmtWindow* window
+static void wnck_window_unminimize_real(
+    WinTCWndMgmtWindow* window,
+    guint64             timestamp
 );
 
 //
@@ -32,7 +33,9 @@ gboolean init_wndmgmt_wnck_impl(void)
     wintc_wndmgmt_window_get_name          = p_wnck_window_get_name;
     wintc_wndmgmt_window_is_skip_tasklist  = p_wnck_window_is_skip_tasklist;
     wintc_wndmgmt_window_minimize          = p_wnck_window_minimize;
-    wintc_wndmgmt_window_unminimize        = &wnck_window_unminimize_now;
+    wintc_wndmgmt_window_unminimize        = &wnck_window_unminimize_real;
+
+    p_wnck_set_client_type(WNCK_CLIENT_TYPE_PAGER);
 
     return TRUE;
 }
@@ -40,12 +43,13 @@ gboolean init_wndmgmt_wnck_impl(void)
 //
 // PRIVATE FUNCTIONS
 //
-static void wnck_window_unminimize_now(
-    WinTCWndMgmtWindow* window
+static void wnck_window_unminimize_real(
+    WinTCWndMgmtWindow* window,
+    guint64             timestamp
 )
 {
     p_wnck_window_unminimize(
         window,
-        (guint32) (g_get_monotonic_time() / 1000)
+        (guint32) timestamp
     );
 }

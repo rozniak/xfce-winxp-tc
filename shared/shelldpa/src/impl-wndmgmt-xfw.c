@@ -1,6 +1,7 @@
 #include <dlfcn.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <glib.h>
+#include <wintc-comgtk.h>
 
 #include "api.h"
 #include "impl-wndmgmt-xfw.h"
@@ -16,7 +17,8 @@ static void xfw_window_minimize(
     WinTCWndMgmtWindow* window
 );
 static void xfw_window_unminimize(
-    WinTCWndMgmtWindow* window
+    WinTCWndMgmtWindow* window,
+    guint64             timestamp
 );
 
 //
@@ -60,8 +62,13 @@ static void xfw_window_minimize(
 }
 
 static void xfw_window_unminimize(
-    WinTCWndMgmtWindow* window
+    WinTCWndMgmtWindow* window,
+    WINTC_UNUSED(guint64 timestamp)
 )
 {
-    p_xfw_window_set_minimized(window, FALSE, NULL);
+    GError* error = NULL;
+
+    p_xfw_window_set_minimized(window, FALSE, &error);
+
+    wintc_log_error_and_clear(&error);
 }

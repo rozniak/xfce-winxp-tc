@@ -7,8 +7,21 @@
 #include "../api.h"
 
 //
+// PUBLIC ENUMS
+//
+typedef enum
+{
+    WNCK_CLIENT_TYPE_APPLICATION = 1,
+    WNCK_CLIENT_TYPE_PAGER       = 2
+} WnckClientType;
+
+//
 // RESOLVED FUNCS
 //
+extern void (*p_wnck_set_client_type) (
+    WnckClientType ewmh_sourceindication_client_type
+);
+
 extern WinTCWndMgmtWindow* (*p_wnck_screen_get_active_window) (
     WinTCWndMgmtScreen* screen
 );

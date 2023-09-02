@@ -13,7 +13,6 @@ typedef struct _WindowManagerSingle
 {
     GtkToggleButton*    button;
     GtkImage*           button_icon;
-    gboolean            button_synchronizing;
     GtkLabel*           button_text;
     WinTCWndMgmtWindow* managed_window;
     WindowMonitor*      parent_monitor;
@@ -60,9 +59,10 @@ static void on_window_state_changed(
     gpointer            user_data
 );
 
-static void on_window_button_toggled(
-    GtkToggleButton* button,
-    gpointer         user_data
+static gboolean on_window_button_button_released(
+    GtkWidget*      self,
+    GdkEventButton* event,
+    gpointer        user_data
 );
 
 static void window_manager_update_icon(
@@ -179,8 +179,8 @@ static void window_manager_update_state(
 
         g_signal_connect(
             window_manager->button,
-            "toggled",
-            G_CALLBACK(on_window_button_toggled),
+            "button-release-event",
+            G_CALLBACK(on_window_button_button_released),
             window_manager
         );
 
@@ -260,14 +260,10 @@ static void on_active_window_changed(
             window_manager_old->button != NULL
         )
         {
-            window_manager_old->button_synchronizing = TRUE;
-
             gtk_toggle_button_set_active(
                 window_manager_old->button,
                 FALSE
             );
-
-            window_manager_old->button_synchronizing = FALSE;
         }
     }
 
@@ -284,14 +280,10 @@ static void on_active_window_changed(
             window_manager_new->button != NULL
         )
         {
-            window_manager_new->button_synchronizing = TRUE;
-
             gtk_toggle_button_set_active(
                 window_manager_new->button,
                 TRUE
             );
-
-            window_manager_new->button_synchronizing = FALSE;
         }
     }
 }
@@ -338,7 +330,6 @@ static void on_window_opened(
 
     window_manager->button               = NULL;
     window_manager->button_icon          = NULL;
-    window_manager->button_synchronizing = FALSE;
     window_manager->button_text          = NULL;
     window_manager->managed_window       = window;
     window_manager->parent_monitor       = window_monitor;
@@ -403,24 +394,28 @@ static void on_window_state_changed(
     window_manager_update_state(window_manager);
 }
 
-static void on_window_button_toggled(
-    GtkToggleButton* button,
-    gpointer         user_data
+static gboolean on_window_button_button_released(
+    GtkWidget*      self,
+    GdkEventButton* event,
+    gpointer        user_data
 )
 {
+    GtkToggleButton*     toggle_button  = GTK_TOGGLE_BUTTON(self);
     WindowManagerSingle* window_manager = (WindowManagerSingle*) user_data;
 
-    if (window_manager->button_synchronizing)
+    if (gtk_toggle_button_get_active(toggle_button))
     {
-        return;
-    }
-
-    if (gtk_toggle_button_get_active(button))
-    {
-        wintc_wndmgmt_window_unminimize(window_manager->managed_window);
+        wintc_wndmgmt_window_minimize(
+            window_manager->managed_window
+        );
     }
     else
     {
-        wintc_wndmgmt_window_minimize(window_manager->managed_window);
+        wintc_wndmgmt_window_unminimize(
+            window_manager->managed_window,
+            (guint64) event->time
+        );
     }
+
+    return FALSE;
 }

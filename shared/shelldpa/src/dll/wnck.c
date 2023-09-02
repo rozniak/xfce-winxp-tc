@@ -13,6 +13,10 @@ static gboolean s_initialized = FALSE;
 //
 // RESOLVED FUNCS
 //
+void (*p_wnck_set_client_type) (
+    WnckClientType ewmh_sourceindication_client_type
+) = NULL;
+
 WinTCWndMgmtWindow* (*p_wnck_screen_get_active_window) (
     WinTCWndMgmtScreen* screen
 ) = NULL;
@@ -71,6 +75,9 @@ gboolean init_dll_wnck()
 
     // Attempt to load the necessary functions
     //
+    p_wnck_set_client_type =
+        dlsym(dl_wnck, "wnck_set_client_type");
+
     p_wnck_screen_get_active_window =
         dlsym(dl_wnck, "wnck_screen_get_active_window");
 
@@ -95,13 +102,13 @@ gboolean init_dll_wnck()
     // Check all symbols loaded
     //
     if (
+        p_wnck_set_client_type          == NULL ||
         p_wnck_screen_get_active_window == NULL ||
         p_wnck_screen_get_default       == NULL ||
         p_wnck_window_get_mini_icon     == NULL ||
         p_wnck_window_get_name          == NULL ||
         p_wnck_window_is_skip_tasklist  == NULL ||
-        p_wnck_window_minimize          == NULL ||
-        p_wnck_window_unminimize        == NULL
+        p_wnck_window_minimize          == NULL
     )
     {
         g_warning("%s", "libwnck loaded, but not all symbols.");

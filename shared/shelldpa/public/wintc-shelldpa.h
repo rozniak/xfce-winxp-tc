@@ -48,7 +48,8 @@ extern void (*wintc_wndmgmt_window_minimize) (
     WinTCWndMgmtWindow* window
 );
 extern void (*wintc_wndmgmt_window_unminimize) (
-    WinTCWndMgmtWindow* window
+    WinTCWndMgmtWindow* window,
+    guint64             timestamp
 );
 
 #endif
