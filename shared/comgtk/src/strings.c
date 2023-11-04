@@ -50,7 +50,7 @@ gint wintc_strstr_count(
 )
 {
     gint         advance = strlen(needle);
-    gint         count;
+    gint         count   = 0;
     const gchar* pchar   = haystack;
 
     while (pchar != NULL)
