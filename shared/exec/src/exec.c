@@ -262,8 +262,8 @@ static gboolean parse_unc_path_in_cmdline(
     GError*     error       = NULL;
     gint        match_count;
     GMatchInfo* match_info;
-    gchar*      path;
-    gchar*      uri;
+    gchar*      path        = NULL;
+    gchar*      uri         = NULL;
 
     WINTC_SAFE_REF_CLEAR(out_cmdline);
     WINTC_SAFE_REF_CLEAR(out_error);

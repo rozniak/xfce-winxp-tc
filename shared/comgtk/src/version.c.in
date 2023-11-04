@@ -3,6 +3,15 @@
 //
 // PUBLIC FUNCTIONS
 //
+gboolean wintc_build_is_debug(void)
+{
+#ifdef WINTC_CHECKED
+    return TRUE;
+#else
+    return FALSE;
+#endif
+}
+
 gchar* wintc_get_build_tag(void)
 {
     gchar* build_tag = NULL;

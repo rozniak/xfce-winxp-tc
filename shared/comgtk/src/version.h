@@ -6,6 +6,7 @@
 //
 // PUBLIC FUNCTIONS
 //
+gboolean wintc_build_is_debug(void);
 gchar* wintc_get_build_tag(void);
 
 #endif

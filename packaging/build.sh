@@ -25,20 +25,26 @@ SH_DISTID="${SCRIPTDIR}/distid.sh"
 # ARGUMENTS
 #
 OPT_BUILD_ROOT="${CURDIR}/build"
+OPT_BUILD_TYPE="Release"
 OPT_SKU="xpclient-pro"
 OPT_USE_LOCAL_LIBS=0
 
-while getopts "b:hls:" opt;
+while getopts "b:dhls:" opt;
 do
     case "${opt}" in
         b)
             OPT_BUILD_ROOT="${OPTARG}"
             ;;
 
+        d)
+            OPT_BUILD_TYPE="Debug"
+            ;;
+
         h)
             echo "Usage: build.sh [-bhls] <dir>"
             echo ""
             echo " -b : specify the directory to build relative to"
+            echo " -d : produce checked build"
             echo " -h : display this help screen"
             echo " -l : use wintc libraries compiled here, not system"
             echo " -s : specify SKU to build (default xpclient-pro)"
@@ -118,6 +124,7 @@ cd "${full_build_dir}"
 rm -rf "${full_build_dir}"/*
 
 cmake -DBUILD_SHARED_LIBS=ON                         \
+      -DCMAKE_BUILD_TYPE="${OPT_BUILD_TYPE}"         \
       -DCMAKE_INSTALL_PREFIX=/usr                    \
       -DWINTC_SKU="${OPT_SKU}"                       \
       -DWINTC_PKGMGR="${dist_id}"                    \

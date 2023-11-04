@@ -31,20 +31,26 @@ SH_PACKAGE="${SCRIPTDIR}/package.sh"
 # ARGUMENTS
 #
 OPT_BUILDLIST="${TARGETS_PATH}"
+OPT_CHECKED=0
 OPT_OUTPUT_DIR=""
 OPT_SKU="xpclient-pro"
 OPT_SKIP_PACKAGING=0
 
-while getopts "c:ho:s:z" opt;
+while getopts "c:dho:s:z" opt;
 do
     case "${opt}" in
         c)
             OPT_BUILDLIST="${OPTARG}"
             ;;
 
+        d)
+            OPT_CHECKED=1
+            ;;
+
         h)
             echo "Usage: buildall.sh [-chosz]"
             echo " -c : provide a list of components (default 'targets')"
+            echo " -d : produce checked build"
             echo " -h : display this help screen"
             echo " -o : specify output directory for packages"
             echo " -s : specify SKU to build (default xpclient-pro)"
@@ -122,7 +128,12 @@ build_component()
 
     # Now build the component
     #
-    "${SH_BUILD}" -l -s "${OPT_SKU}" "${rel_dir}"
+    if [[ $OPT_CHECKED -eq 1 ]]
+    then
+        "${SH_BUILD}" -d -l -s "${OPT_SKU}" "${rel_dir}"
+    else
+        "${SH_BUILD}" -l -s "${OPT_SKU}" "${rel_dir}"
+    fi
 
     if [[ $? -gt 0 ]]
     then
@@ -200,10 +211,18 @@ fi
 
 # Generate build tag
 #
+build_subdir="fre"
+build_type="free"
 cur_arch=`uname -m | xargs echo -n`
 tag=`${SH_GENTAG}`
 
-echo "Doing full system build for ${tag} (${cur_arch}, ${dist_id})"
+if [[ $OPT_CHECKED -eq 1 ]]
+then
+    build_subdir="chk"
+    build_type="checked"
+fi
+
+echo "Doing full system build for ${tag} (${cur_arch}, ${dist_id}) (${build_type})"
 
 # Handle output dir for packaging
 #
@@ -211,7 +230,7 @@ if [[ $OPT_SKIP_PACKAGING -eq 0 ]]
 then
     if [[ "${OPT_OUTPUT_DIR}" == "" ]]
     then
-        OPT_OUTPUT_DIR="${CURDIR}/xptc/${tag}/${dist_id}/${cur_arch}"
+        OPT_OUTPUT_DIR="${CURDIR}/xptc/${tag}/${dist_id}/${cur_arch}/${build_subdir}"
 
         mkdir -p "${OPT_OUTPUT_DIR}"
     fi
@@ -242,4 +261,4 @@ do
     build_component "${rel_target_dir}"
 done {targets_fd}<"${OPT_BUILDLIST}"
 
-echo "Build complete for ${tag}"
+echo "Build complete for ${tag} (${build_type})"

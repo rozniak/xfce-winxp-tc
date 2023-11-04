@@ -19,6 +19,12 @@ option(
     "Use compiled libraries instead of system installed for libwintc* libs."
 )
 
+# Define pre-processor macro for checked builds
+#
+if (${CMAKE_BUILD_TYPE} STREQUAL Debug)
+    add_definitions(-DWINTC_CHECKED)
+endif()
+
 # Handle SKU stuff
 #
 set(

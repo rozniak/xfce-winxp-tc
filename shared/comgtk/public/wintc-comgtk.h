@@ -198,6 +198,7 @@ void wintc_widget_add_style_class(
 //
 // Version-related
 //
+gboolean wintc_build_is_debug();
 gchar* wintc_get_build_tag(void);
 
 //

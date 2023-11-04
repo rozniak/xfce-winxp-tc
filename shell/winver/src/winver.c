@@ -90,24 +90,27 @@ int main(
     banner_pixbuf = wintc_brand_get_banner(&banner_error);
     strip_pixbuf  = wintc_brand_get_progress_strip(&strip_error);
 
-    if (banner_pixbuf != NULL)
+    // FIXME: Handle missing branding properly... bleh!
+    //
+    if (banner_pixbuf == NULL)
     {
-        banner = gtk_image_new_from_pixbuf(banner_pixbuf);
-
-        g_object_unref(banner_pixbuf);
+        wintc_log_error_and_clear(&banner_error);
+        return 1;
     }
 
-    if (strip_pixbuf != NULL)
+    if (strip_pixbuf == NULL)
     {
-        banner_strip = gtk_image_new_from_pixbuf(strip_pixbuf);
-
-        apply_box_model_style(banner_strip, "margin", "bottom", 4);
-
-        g_object_unref(strip_pixbuf);
+        wintc_log_error_and_clear(&strip_error);
+        return 1;
     }
 
-    wintc_log_error_and_clear(&banner_error);
-    wintc_log_error_and_clear(&strip_error);
+    banner       = gtk_image_new_from_pixbuf(banner_pixbuf);
+    banner_strip = gtk_image_new_from_pixbuf(strip_pixbuf);
+
+    apply_box_model_style(banner_strip, "margin", "bottom", 4);
+
+    g_object_unref(banner_pixbuf);
+    g_object_unref(strip_pixbuf);
 
     // Get kernel info
     //
@@ -118,12 +121,12 @@ int main(
     
     kernel_version =
         g_strdup_printf(
-            "Version %s (%s)",
+            "Version %s (%s)%s",
             kernel_info.release,
-            build_tag
+            build_tag,
+            wintc_build_is_debug() ? " (Debug)" : ""
         );
 
-    
     // Get system info
     //
     gchar* system_stats;
