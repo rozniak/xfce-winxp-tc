@@ -116,6 +116,38 @@ check_deps()
             fi
         fi
 
+        # If there are alternatives available, check which one is available
+        # for this distro
+        #
+        case "${dist_id}" in
+            deb)
+                local found_pkg=0
+
+                IFS='|' read -ra pkg_hits <<< "${pkg_name}"
+
+                if [[ ${#pkg_hits[@]} -gt 1 ]]
+                then
+                    for pkg_check in "${pkg_hits[@]}"
+                    do
+                        apt-cache search "${pkg_check}" | grep -q "${pkg_check}"
+
+                        if [[ $? -eq 0 ]]
+                        then
+                            found_pkg=1
+                            pkg_name="${pkg_check}"
+                            break
+                        fi
+                    done
+
+                    if [[ $found_pkg -eq 0 ]]
+                    then
+                        echo "${pkg_name} is unavailable for your distro."
+                        exit 1
+                    fi
+                fi
+                ;;
+        esac
+
         # Check we haven't already got this dep in our list
         #
         for list_pkg in "${g_needed_pkgs[@]}"
