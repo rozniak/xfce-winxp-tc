@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.12)
 
 # Define some constants for comm build paths
 #
@@ -26,12 +26,17 @@ find_program(SASS scss)
 
 # Set up venv for bldtheme tool
 #
-find_package(PythonInterp 3.0 REQUIRED)
+find_package(
+    Python3
+    COMPONENTS
+        Interpreter
+    REQUIRED
+)
 
 add_custom_command(
     OUTPUT ${THEMES_BLDTHEME_TOOL_DIR}/.venv
     WORKING_DIRECTORY ${THEMES_BLDTHEME_TOOL_DIR}
-    COMMAND ${PYTHON_EXECUTABLE}
+    COMMAND ${Python3_EXECUTABLE}
     ARGS
         -m
         venv

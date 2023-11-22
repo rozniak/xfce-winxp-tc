@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.12)
 
 # Check stuff we need is defined
 #
@@ -16,12 +16,17 @@ set(CURSOR_COMPCURS_OUTPUT_DIR ${CMAKE_BINARY_DIR}/compiled-cursors)
 # Define function for generating xcursors
 #
 function(wintc_add_gen_xcursors_target)
-    find_package(PythonInterp 3.0 REQUIRED)
+    find_package(
+        Python3
+        COMPONENTS
+            Interpreter
+        REQUIRED
+    )
 
     add_custom_command(
         OUTPUT ${CURSOR_COMPCURS_OUTPUT_DIR}
         WORKING_DIRECTORY ${CURSOR_COMPCURS_TOOL_DIR}
-        COMMAND ${PYTHON_EXECUTABLE}
+        COMMAND ${Python3_EXECUTABLE}
         ARGS
             compcurs.py
             ${PROJECT_ROOT}/cfg

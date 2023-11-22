@@ -47,10 +47,15 @@ function(wintc_map_dependencies)
         return()
     endif()
 
-    find_package(PythonInterp 3.0 REQUIRED)
+    find_package(
+        Python3
+        COMPONENTS
+            Interpreter
+        REQUIRED
+    )
 
     execute_process(
-        COMMAND ${PYTHON_EXECUTABLE} ${DEPMAP_TOOL_DIR}/depmap.py deps ${WINTC_PKGMGR}
+        COMMAND ${Python3_EXECUTABLE} ${DEPMAP_TOOL_DIR}/depmap.py deps ${WINTC_PKGMGR}
         WORKING_DIRECTORY ${PROJECT_ROOT}
         OUTPUT_VARIABLE DEPENDENCIES_MAP_RAW
         RESULT_VARIABLE DEPMAP_RET
