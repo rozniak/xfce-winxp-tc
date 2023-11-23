@@ -13,6 +13,10 @@ set(PROJECT_MAINTAINER "Rory Fewell <roryf@oddmatics.uk>")
 
 set(PROJECT_ROOT ${CMAKE_CURRENT_LIST_DIR})
 
+# Necessary due to fn ptr casts in marshal.c
+#
+set(WINTC_NO_PEDANTIC_COMPILE true)
+
 include(GNUInstallDirs)
 
 include(../../packaging/cmake-inc/common/CMakeLists.txt)
@@ -35,6 +39,8 @@ add_library(
     src/gchar.h
     src/list.c
     src/list.h
+    src/marshal.c
+    src/marshal.h
     src/msgbox.c
     src/msgbox.h
     src/profile.c

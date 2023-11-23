@@ -220,7 +220,7 @@ static void wintc_run_dialog_init(
 
     wintc_widget_add_style_class(
         box_buttons,
-        WINTC_COMCTL_BUTTON_BOX_CLASS
+        WINTC_COMCTL_BUTTON_BOX_CSS_CLASS
     );
 
     // Set OK button as default widget
@@ -304,7 +304,7 @@ static void wintc_run_dialog_init_combobox(
     {
         if (error != NULL)
         {
-            WINTC_LOG_DEBUG("I can't populate run history: %s", error->message);
+            WINTC_LOG_USER_DEBUG("Can't get run history: %s", error->message);
             g_clear_error(&error);
         }
 
@@ -328,7 +328,7 @@ static void wintc_run_dialog_init_combobox(
         )
     )
     {
-        WINTC_LOG_DEBUG("No recent runs.");
+        WINTC_LOG_USER_DEBUG("No recent runs.");
         return;
     }
 
@@ -486,7 +486,7 @@ static void on_ok_button_clicked(
     {
         if (!wintc_append_run_history(cmdline, &error))
         {
-            WINTC_LOG_DEBUG("I couldn't update run history: %s", error->message);
+            WINTC_LOG_USER_DEBUG("Can't update history: %s", error->message);
             g_clear_error(&error);
         }
 
@@ -499,7 +499,7 @@ static void on_ok_button_clicked(
     //
     gchar* message = g_slice_alloc0(WINTC_GCHAR_BUFFER_SIZE);
 
-    WINTC_LOG_DEBUG("Run command failed: %s", error->message);
+    WINTC_LOG_USER_DEBUG("Run command failed: %s", error->message);
 
     switch (error->code)
     {

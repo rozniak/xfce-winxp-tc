@@ -3,6 +3,7 @@ garcon-gtk3-->bt,rt-->garcon
 gdk-pixbuf2-->bt,rt-->gdk-pixbuf2
 glib2-->bt,rt-->glib2
 gtk3-->bt,rt-->gtk3
+lightdm-->bt,rt-->lightdm
 msgfmt-->bt,rt-->gettext
 plymouth-->bt,rt-->plymouth
 python3-venv-->bt,rt-->python3
@@ -10,6 +11,7 @@ sass-->bt,rt-->ruby-sass
 wintc-comctl-->bt,rt-->wintc-comctl
 wintc-comgtk-->bt,rt-->wintc-comgtk
 wintc-exec-->bt,rt-->wintc-exec
+wintc-msgina-->bt,rt-->wintc-msgina
 wintc-shelldpa-->bt,rt-->wintc-shelldpa
 wintc-shllang-->bt,rt-->wintc-shllang
 wintc-winbrand-->bt,rt-->wintc-winbrand

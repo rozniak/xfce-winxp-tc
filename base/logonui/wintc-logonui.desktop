@@ -1,0 +1,5 @@
+[Desktop Entry]
+Name=WinTC LogonUI Greeter
+Comment=This is the Windows Total Conversion logon user interface.
+Exec=logonui
+Type=Application

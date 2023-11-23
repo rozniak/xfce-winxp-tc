@@ -162,7 +162,7 @@ check_deps()
         #
         case "${dist_id}" in
             archpkg)
-                pacman -Q -k "${pkg_name}" >/dev/null 2>&1
+                pacman -Q -i "${pkg_name}" >/dev/null 2>&1
                 ;;
             deb)
                 dpkg -s "${pkg_name}" >/dev/null 2>&1

@@ -87,8 +87,14 @@ int main(
     GError*    strip_error   = NULL;
     GdkPixbuf* strip_pixbuf  = NULL;
 
-    banner_pixbuf = wintc_brand_get_banner(&banner_error);
-    strip_pixbuf  = wintc_brand_get_progress_strip(&strip_error);
+    banner_pixbuf = wintc_brand_get_brand_pixmap(
+                        WINTC_BRAND_PART_BANNER,
+                        &banner_error
+                    );
+    strip_pixbuf  = wintc_brand_get_brand_pixmap(
+                        WINTC_BRAND_PART_STRIP_STATIC,
+                        &strip_error
+                    );
 
     // FIXME: Handle missing branding properly... bleh!
     //
@@ -196,7 +202,7 @@ int main(
 
     wintc_widget_add_style_class(
         box_buttons,
-        WINTC_COMCTL_BUTTON_BOX_CLASS
+        WINTC_COMCTL_BUTTON_BOX_CSS_CLASS
     );
     
     // Clear mem

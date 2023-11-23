@@ -76,7 +76,7 @@ gboolean wintc_launch_command(
 
     WINTC_SAFE_REF_CLEAR(out_error);
 
-    WINTC_LOG_DEBUG("Launching %s", cmdline);
+    WINTC_LOG_USER_DEBUG("Launching %s", cmdline);
 
     // Iterate through parsers
     //
@@ -93,7 +93,7 @@ gboolean wintc_launch_command(
             return FALSE;
         }
 
-        WINTC_LOG_DEBUG("Parse result: %s", real_cmdline);
+        WINTC_LOG_USER_DEBUG("Parse result: %s", real_cmdline);
 
         wintc_strsteal(&tmp_cmdline, &real_cmdline);
 
@@ -104,7 +104,7 @@ gboolean wintc_launch_command(
     //
     real_cmdline = tmp_cmdline;
 
-    WINTC_LOG_DEBUG("Parsed command line: %s", real_cmdline);
+    WINTC_LOG_USER_DEBUG("Parsed command line: %s", real_cmdline);
 
     // Parse the command line into an argument vector
     //
@@ -142,14 +142,14 @@ gboolean wintc_launch_command(
 
     if (!success)
     {
-        WINTC_LOG_DEBUG("Failed to launch: %s", error->message);
+        WINTC_LOG_USER_DEBUG("Failed to launch: %s", error->message);
 
         g_propagate_error(out_error, error);
 
         return FALSE;
     }
 
-    WINTC_LOG_DEBUG("Done.");
+    WINTC_LOG_USER_DEBUG("Done.");
 
     return TRUE;
 }
@@ -201,7 +201,7 @@ static gboolean parse_file_in_cmdline(
         g_strcmp0(file_mime, "application/x-sharedlib") != 0
     )
     {
-        WINTC_LOG_DEBUG("Not an executable, will look for handler.");
+        WINTC_LOG_USER_DEBUG("Not an executable, will look for handler.");
 
         handler_entry =
             wintc_query_mime_handler(
@@ -211,7 +211,7 @@ static gboolean parse_file_in_cmdline(
 
         if (handler_entry == NULL)
         {
-            WINTC_LOG_DEBUG("I have nothing to handle the file!");
+            WINTC_LOG_USER_DEBUG("I have nothing to handle the file!");
 
             g_propagate_error(out_error, error);
             WINTC_SAFE_REF_SET(out_cmdline, g_strdup(cmdline));
@@ -282,7 +282,7 @@ static gboolean parse_unc_path_in_cmdline(
 
         if (unc_regex == NULL)
         {
-            WINTC_LOG_DEBUG("Failed to create the UNC path regex.");
+            WINTC_LOG_USER_DEBUG("Failed to create the UNC path regex.");
 
             g_propagate_error(out_error, error);
 
@@ -292,7 +292,7 @@ static gboolean parse_unc_path_in_cmdline(
 
     // Examine command line
     //
-    WINTC_LOG_DEBUG("Checking if %s looks like a UNC path...", cmdline);
+    WINTC_LOG_USER_DEBUG("Checking if %s looks like a UNC path...", cmdline);
 
     g_regex_match(unc_regex, cmdline, 0, &match_info);
 
@@ -302,7 +302,7 @@ static gboolean parse_unc_path_in_cmdline(
     //
     if (match_count == 0)
     {
-        WINTC_LOG_DEBUG("Nope!");
+        WINTC_LOG_USER_DEBUG("Nope!");
 
         g_match_info_free(match_info);
 
@@ -313,7 +313,7 @@ static gboolean parse_unc_path_in_cmdline(
 
     // Command line IS a UNC path, we need to retrieve the target host and path
     //
-    WINTC_LOG_DEBUG("Yeah, looks like a UNC path.");
+    WINTC_LOG_USER_DEBUG("Yeah, looks like a UNC path.");
 
     host = g_strdup(g_match_info_fetch(match_info, 1));
 
@@ -329,8 +329,8 @@ static gboolean parse_unc_path_in_cmdline(
 
     g_match_info_free(match_info);
 
-    // Construct URI (doesn't matter if path is NULL, the func stops at the first
-    // NULL anyway)
+    // Construct URI (doesn't matter if path is NULL, the func stops at the
+    // first NULL anyway)
     //
     uri = g_strconcat("smb://", host, path, NULL);
 
@@ -376,7 +376,7 @@ static gboolean parse_url_in_cmdline(
 
         if (url_regex == NULL)
         {
-            WINTC_LOG_DEBUG("Failed to create the URL regex.");
+            WINTC_LOG_USER_DEBUG("Failed to create the URL regex.");
 
             g_propagate_error(out_error, error);
 
@@ -386,7 +386,7 @@ static gboolean parse_url_in_cmdline(
 
     // Examine command line
     //
-    WINTC_LOG_DEBUG("Checking if %s looks like a URL...", cmdline);
+    WINTC_LOG_USER_DEBUG("Checking if %s looks like a URL...", cmdline);
 
     g_regex_match(url_regex, cmdline, 0, &match_info);
 
@@ -394,7 +394,7 @@ static gboolean parse_url_in_cmdline(
     //
     if (g_match_info_get_match_count(match_info) == 0)
     {
-        WINTC_LOG_DEBUG("Nope!");
+        WINTC_LOG_USER_DEBUG("Nope!");
 
         g_match_info_free(match_info);
 
@@ -405,7 +405,7 @@ static gboolean parse_url_in_cmdline(
 
     // Command line IS a URL, retrieve the scheme, query the handling program...
     //
-    WINTC_LOG_DEBUG("Yeah, looks like a URL.");
+    WINTC_LOG_USER_DEBUG("Yeah, looks like a URL.");
 
     uri_scheme = g_match_info_fetch(match_info, 1);
     mime_type  = g_strdup_printf(
@@ -421,7 +421,7 @@ static gboolean parse_url_in_cmdline(
 
     if (handler_entry == NULL)
     {
-        WINTC_LOG_DEBUG("I have nothing to handle the URL!");
+        WINTC_LOG_USER_DEBUG("I have nothing to handle the URL!");
 
         g_propagate_error(out_error, error);
 
@@ -476,7 +476,7 @@ static gchar** true_shell_parse_argv(
 
     if (error != NULL)
     {
-        WINTC_LOG_DEBUG("Failed to parse command line: %s", cmdline);
+        WINTC_LOG_USER_DEBUG("Failed to parse command line: %s", cmdline);
 
         g_propagate_error(out_error, error);
 

@@ -20,6 +20,8 @@ include(../../packaging/cmake-inc/libraries/CMakeLists.txt)
 include(../../packaging/cmake-inc/linking/CMakeLists.txt)
 include(../../packaging/cmake-inc/packaging/CMakeLists.txt)
 
+set(WINTC_BRAND_DIR ${WINTC_ASSETS_INSTALL_DIR}/brand)
+
 wintc_resolve_library(gdk-pixbuf-2.0 GDK_PIXBUF)
 wintc_resolve_library(glib-2.0       GLIB)
 
@@ -65,46 +67,24 @@ target_link_libraries(
 
 # Pick banner based on SKU
 #
-if (${WINTC_SKU} MATCHES "^xpclient-(.+)")
-    if (${CMAKE_MATCH_1} STREQUAL "pro")
-        if (${CMAKE_SYSTEM_PROCESSOR} STREQUAL "x86_64")
-            set(WINBRAND_BANNER_NAME x64pro)
-        elseif (
-            ${CMAKE_SYSTEM_PROCESSOR} STREQUAL "ia64"  OR
-            ${CMAKE_SYSTEM_PROCESSOR} STREQUAL "armv8"
-        )
-            set(WINBRAND_BANNER_NAME 64bit)
-        else()
-            set(WINBRAND_BANNER_NAME pro)
-        endif()
-    else()
-        set(WINBRAND_BANNER_NAME ${CMAKE_MATCH_1})
-    endif()
-elseif (${WINTC_SKU} MATCHES "^dnsrv-(.+)")
-    if (
-        ${CMAKE_MATCH_1} STREQUAL "sbs" OR
-        ${CMAKE_MATCH_1} STREQUAL "web" OR
-        ${CMAKE_MATCH_1} STREQUAL "ccs" OR
-        NOT ${CMAKE_SYSTEM_PROCESSOR} STREQUAL "x86_64"
-    )
-        set(WINBRAND_BANNER_NAME srv2k3${CMAKE_MATCH_1})
-    else()
-        set(WINBRAND_BANNER_NAME x64srv2k3${CMAKE_MATCH_1})
-    endif()
-elseif (${WINTC_SKU} MATCHES "^dnsrv_r2-(.+)")
+set(WINBRAND_BANNER_NAME ${WINTC_SKU})
+
+if (${WINTC_SKU} STREQUAL "xpclient-pro")
     if (${CMAKE_SYSTEM_PROCESSOR} STREQUAL "x86_64")
-        set(WINBRAND_BANNER_NAME x64srv2k3r2${CMAKE_MATCH_1})
-    else()
-        set(WINBRAND_BANNER_NAME srv2k3r2${CMAKE_MATCH_1})
-    endif()
-elseif (${WINTC_SKU} STREQUAL "homesrv")
-    set(WINBRAND_BANNER_NAME homesrv)
-else()
-    message(
-        FATAL_ERROR
-        "No banner defined for SKU: ${WINTC_SKU}"
+        set(WINBRAND_BANNER_NAME ${WINTC_SKU}_amd64)
+    elseif (
+        ${CMAKE_SYSTEM_PROCESSOR} STREQUAL "ia64" OR
+        ${CMAKE_SYSTEM_PROCESSOR} STREQUAL "armv8"
     )
+        set(WINBRAND_BANNER_NAME ${WINTC_SKU}_ia64)
+    endif()
+elseif (${WINTC_SKU} MATCHES "^dnsrv(_r2)?-(.+)")
+    if (${CMAKE_MATCH_2} MATCHES "(dtc|ent|std)")
+        set(WINBRAND_BANNER_NAME ${WINTC_SKU}_amd64)
+    endif()
 endif()
+
+
 
 # Installation
 #
@@ -112,14 +92,22 @@ wintc_configure_and_install_packaging()
 wintc_add_pkgconfig_install()
 
 install(
-    FILES res/banner-${WINBRAND_BANNER_NAME}.png
-    DESTINATION ${WINTC_ASSETS_INSTALL_DIR}/brand
+    FILES res/banner/${WINBRAND_BANNER_NAME}.png
+    DESTINATION ${WINTC_BRAND_DIR}
     RENAME banner.png
 )
 install(
-    FILES res/strip-xp.png
-    DESTINATION ${WINTC_ASSETS_INSTALL_DIR}/brand
-    RENAME strip.png
+    FILES res/bannerx/${WINBRAND_BANNER_NAME}.png
+    DESTINATION ${WINTC_BRAND_DIR}
+    RENAME bannerx.png
+)
+install(
+    FILES res/strip-static.png
+    DESTINATION ${WINTC_BRAND_DIR}
+)
+install(
+    FILES res/strip-anim.png
+    DESTINATION ${WINTC_BRAND_DIR}
 )
 install(
     TARGETS libwintc-winbrand

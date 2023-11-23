@@ -38,7 +38,7 @@ GList* wintc_get_run_history(
 
     if (!read_success)
     {
-        WINTC_LOG_DEBUG("No run history: %s", error->message);
+        WINTC_LOG_USER_DEBUG("No run history: %s", error->message);
 
         g_propagate_error(out_error, error);
 
@@ -66,7 +66,7 @@ gboolean wintc_append_run_history(
 
     WINTC_SAFE_REF_CLEAR(out_error);
 
-    WINTC_LOG_DEBUG("Writing to run history");
+    WINTC_LOG_USER_DEBUG("Writing to run history");
 
     // Check if list is above maximum size?
     //
@@ -108,7 +108,7 @@ gboolean wintc_append_run_history(
 
     if (!success)
     {
-        WINTC_LOG_DEBUG("Failed to write run history: %s", error->message);
+        WINTC_LOG_USER_DEBUG("Failed to write run history: %s", error->message);
 
         g_propagate_error(out_error, error);
 

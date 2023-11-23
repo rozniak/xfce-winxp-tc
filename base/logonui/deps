@@ -1,0 +1,7 @@
+bt,rt:gdk-pixbuf2
+bt,rt:glib2
+bt,rt:gtk3
+bt,rt:lightdm
+bt,rt:wintc-comctl
+bt,rt:wintc-comgtk
+bt,rt:wintc-msgina

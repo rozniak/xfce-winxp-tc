@@ -8,7 +8,13 @@
 // Debugging
 //
 #define WINTC_ENVVAR_DEBUG_LOGGING "WINDEBUG"
-#define WINTC_LOG_DEBUG(...) if (getenv(WINTC_ENVVAR_DEBUG_LOGGING)) { g_message(__VA_ARGS__); }
+#define WINTC_LOG_USER_DEBUG(...) if (getenv(WINTC_ENVVAR_DEBUG_LOGGING)) { g_message(__VA_ARGS__); }
+
+#ifdef WINTC_CHECKED
+#define WINTC_LOG_DEBUG(...) g_message(__VA_ARGS__);
+#else
+#define WINTC_LOG_DEBUG(...)
+#endif
 
 //
 // Shorthand
@@ -99,6 +105,27 @@ GList* wintc_list_limit(
 
 GList* wintc_list_read_from_string(
     const gchar* str
+);
+
+//
+// Closure Marshals
+//
+void wintc_cclosure_marshal_BOOLEAN__VOID(
+    GClosure*     closure,
+    GValue*       return_value,
+    guint         n_param_values,
+    const GValue* param_values,
+    gpointer      invocation_hint,
+    gpointer      marshal_data
+);
+
+void wintc_cclosure_marshal_INT__VOID(
+    GClosure*     closure,
+    GValue*       return_value,
+    guint         n_param_values,
+    const GValue* param_values,
+    gpointer      invocation_hint,
+    gpointer      marshal_data
 );
 
 //

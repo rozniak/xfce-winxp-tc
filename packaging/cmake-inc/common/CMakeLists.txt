@@ -21,6 +21,10 @@ option(
 
 # Define pre-processor macro for checked builds
 #
+if (NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Release)
+endif()
+
 if (${CMAKE_BUILD_TYPE} STREQUAL Debug)
     add_definitions(-DWINTC_CHECKED)
 endif()

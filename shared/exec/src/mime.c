@@ -24,7 +24,7 @@ gchar* wintc_query_mime_for_file(
     gint     status;
     gboolean success    = FALSE;
 
-    WINTC_LOG_DEBUG("Querying MIME type for: %s", filepath);
+    WINTC_LOG_USER_DEBUG("Querying MIME type for: %s", filepath);
 
     WINTC_SAFE_REF_CLEAR(out_error);
 
@@ -47,7 +47,7 @@ gchar* wintc_query_mime_for_file(
     {
         g_strstrip(cmd_output);
 
-        WINTC_LOG_DEBUG("Determined: %s", cmd_output);
+        WINTC_LOG_USER_DEBUG("Determined: %s", cmd_output);
 
         return cmd_output;
     }
@@ -56,14 +56,14 @@ gchar* wintc_query_mime_for_file(
     //
     if (error != NULL)
     {
-        WINTC_LOG_DEBUG("An error occurred: %s", error->message);
+        WINTC_LOG_USER_DEBUG("An error occurred: %s", error->message);
 
         g_propagate_error(out_error, error);
 
         return NULL;
     }
 
-    WINTC_LOG_DEBUG("Failed with code %d", status);
+    WINTC_LOG_USER_DEBUG("Failed with code %d", status);
 
     switch (status)
     {
@@ -109,7 +109,7 @@ GDesktopAppInfo* wintc_query_mime_handler(
     gchar*           filename   = NULL;
     gboolean         success    = FALSE;
 
-    WINTC_LOG_DEBUG("Querying handler for MIME type %s", mime_query);
+    WINTC_LOG_USER_DEBUG("Querying handler for MIME type %s", mime_query);
 
     WINTC_SAFE_REF_CLEAR(out_error);
 
@@ -128,7 +128,7 @@ GDesktopAppInfo* wintc_query_mime_handler(
 
     if (!success)
     {
-        WINTC_LOG_DEBUG("Failed to query MIME type: %s", error->message);
+        WINTC_LOG_USER_DEBUG("Failed to query MIME type: %s", error->message);
 
         g_propagate_error(out_error, error);
 
@@ -143,7 +143,7 @@ GDesktopAppInfo* wintc_query_mime_handler(
 
     if (output_length == 0)
     {
-        WINTC_LOG_DEBUG("No handler found!");
+        WINTC_LOG_USER_DEBUG("No handler found!");
 
         g_set_error(
             out_error,
@@ -167,7 +167,7 @@ GDesktopAppInfo* wintc_query_mime_handler(
                );
     entry    = g_desktop_app_info_new(filename);
 
-    WINTC_LOG_DEBUG("Query returned: %s", filename);
+    WINTC_LOG_USER_DEBUG("Query returned: %s", filename);
 
     g_free(cmd_output);
     g_free(filename);
@@ -182,7 +182,7 @@ GDesktopAppInfo* wintc_query_mime_handler(
             mime_query
         );
 
-        WINTC_LOG_DEBUG("Association found, but the desktop entry doesn't exist.");
+        WINTC_LOG_USER_DEBUG("Association found, but the desktop entry doesn't exist.");
 
         return NULL;
     }

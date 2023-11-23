@@ -6,22 +6,35 @@
 //
 // PUBLIC FUNCTIONS
 //
-GdkPixbuf* wintc_brand_get_banner(
-    GError** error
+GdkPixbuf* wintc_brand_get_brand_pixmap(
+    WinTCBrandPart part,
+    GError**       error
 )
 {
-    return gdk_pixbuf_new_from_file(
-        "@CMAKE_INSTALL_PREFIX@/@WINTC_ASSETS_INSTALL_DIR@/brand/banner.png",
-        error
-    );
-}
+    gchar* path = NULL;
 
-GdkPixbuf* wintc_brand_get_progress_strip(
-    GError** error
-)
-{
-    return gdk_pixbuf_new_from_file(
-        "@CMAKE_INSTALL_PREFIX@/@WINTC_ASSETS_INSTALL_DIR@/brand/strip.png",
-        error
-    );
+    switch (part)
+    {
+        case WINTC_BRAND_PART_BANNER:
+            path = "@CMAKE_INSTALL_PREFIX@/@WINTC_BRAND_DIR@/banner.png";
+            break;
+
+        case WINTC_BRAND_PART_BANNER_TALL:
+            path = "@CMAKE_INSTALL_PREFIX@/@WINTC_BRAND_DIR@/bannerx.png";
+            break;
+
+        case WINTC_BRAND_PART_STRIP_STATIC:
+            path = "@CMAKE_INSTALL_PREFIX@/@WINTC_BRAND_DIR@/strip-static.png";
+            break;
+
+        case WINTC_BRAND_PART_STRIP_ANIM:
+            path = "@CMAKE_INSTALL_PREFIX@/@WINTC_BRAND_DIR@/strip-anim.png";
+            break;
+
+        default:
+            g_critical("Unknown brand part %d", part);
+            return NULL;
+    }
+
+    return gdk_pixbuf_new_from_file(path, error);
 }

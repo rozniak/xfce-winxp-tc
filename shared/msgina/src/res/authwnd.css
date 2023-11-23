@@ -1,0 +1,20 @@
+box.please-wait
+{
+    margin: 15px 0px;
+    margin-left: 8px;
+}
+
+grid
+{
+    margin: 15px 0px;
+}
+
+grid *
+{
+    margin: 3px 10px 4px;
+}
+
+grid entry
+{
+    min-width: 240px;
+}

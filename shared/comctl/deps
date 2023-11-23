@@ -1,2 +1,4 @@
+bt,rt:gdk-pixbuf2
 bt,rt:glib2
 bt,rt:gtk3
+bt,rt:wintc-comgtk

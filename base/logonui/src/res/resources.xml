@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+    <gresource prefix="/uk/oddmatics/wintc/logonui">
+        <!--                     -->
+        <!-- GRAPHICAL RESOURCES -->
+        <!--                     -->
+        <file>bglight.png</file>
+        <file>ejctbtna.png</file>
+        <file>ejctbtn.png</file>
+        <file>entry.png</file>
+        <file>gobtna.png</file>
+        <file>gobtn.png</file>
+        <file>hintbtna.png</file>
+        <file>hintbtn.png</file>
+        <file>hsepa.png</file>
+        <file>hsepb.png</file>
+        <file>logoani.png</file>
+        <file>logo.png</file>
+        <file>scdnbtn.png</file>
+        <file>scrollbar.png</file>
+        <file>scupbtn.png</file>
+        <file>shtdbtna.png</file>
+        <file>shtdbtn.png</file>
+        <file>tilehot.png</file>
+        <file>tile.png</file>
+        <file>userpic.png</file>
+        <file>usersel.png</file>
+        <file>vsep.png</file>
+
+        <!--               -->
+        <!-- CSS RESOURCES -->
+        <!--               -->
+        <file>welcome-ui.css</file>
+    </gresource>
+</gresources>

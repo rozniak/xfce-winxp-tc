@@ -1,0 +1,21 @@
+.box-instruction label,
+.box-wait        label,
+.box-welcome     label
+{
+    color: #EFF7FF;
+    font-family: 'Arial';
+}
+
+.box-instruction label,
+.box-wait        label
+{
+    font-size: 14pt;
+}
+
+.box-welcome label
+{
+    font-size: 36pt;
+    font-style: italic;
+    font-weight: bold;
+    text-shadow: 2px 3px 0px #3151B5;
+}
