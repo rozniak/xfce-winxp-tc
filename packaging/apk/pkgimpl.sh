@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #
-# pkgimpl.sh - Packaging Implementation (Arch Linux)
+# pkgimpl.sh - Packaging Implementation (Alpine Linux)
 #
 # This source-code is part of Windows XP stuff for XFCE:
 # <<https://www.oddmatics.uk>>
@@ -9,7 +9,7 @@
 # Author(s): Rory Fewell <roryf@oddmatics.uk>
 #
 # Special Thanks:
-#     Kris/SelfRef <github@selfref.dev> (help and contributions)
+#     Martijn Braam <martijn@brixit.nl> (early Alpine/APK support)
 #
 
 
@@ -22,7 +22,7 @@ do_packaging()
     # Build package now
     #
     cd "${full_component_dir}"
-    makepkg -f --repackage
+    abuild rootpkg
 
     pkg_res=$?
 
@@ -36,9 +36,9 @@ do_packaging()
 
     # Move package to output
     #
-    clean_pkg_name=`cat ${full_component_dir}/PKGBUILD | grep 'pkgname' | cut -d'=' -f2 | xargs echo -n`
+    clean_pkg_name=`cat ${full_component_dir}/APKBUILD | grep 'pkgname' | cut -d'=' -f2 | xargs echo -n`
 
-    find "${full_component_dir}" -iname "${clean_pkg_name}*.pkg.tar.zst" -exec mv '{}' "${OPT_OUTPUT_DIR}/${clean_pkg_name}.pkg.tar.zst" \;
+    find ~/packages -iname "${clean_pkg_name}*.apk" -exec mv '{}' "${OPT_OUTPUT_DIR}/${clean_pkg_name}.apk" \;
 
     echo "Packaged ${clean_pkg_name}"
 }

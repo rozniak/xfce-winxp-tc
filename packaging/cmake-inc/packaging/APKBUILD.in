@@ -1,0 +1,20 @@
+# Maintainer: Rory Fewell <roryf@oddmatics.uk>
+pkgname="@PROJECT_NAME@"
+pkgver="@PROJECT_VERSION@"
+pkgrel=1
+pkgdesc="@PROJECT_DESCRIPTION@"
+arch="@ALPINE_ARCHITECTURE@"
+license="@ALPINE_LICENCE@"
+depends="@DEPENDS@"
+url="https://github.com/rozniak/xfce-winxp-tc"
+options="!check"
+
+build()
+{
+    echo "Build intentionally left blank."
+}
+
+package()
+{
+    make install DESTDIR="$pkgdir/"
+}

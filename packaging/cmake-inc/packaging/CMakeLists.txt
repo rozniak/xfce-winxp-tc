@@ -81,26 +81,54 @@ endfunction()
 
 # Do special stuff for the target package format, if needed
 #
-set(WINTC_ARCH_PKGBUILD_IN_PATH  ${CMAKE_CURRENT_LIST_DIR}/PKGBUILD.in)
-set(WINTC_DEBIAN_CONTROL_IN_PATH ${CMAKE_CURRENT_LIST_DIR}/debian-control.in)
+set(WINTC_ALPINE_APKBUILD_IN_PATH ${CMAKE_CURRENT_LIST_DIR}/APKBUILD.in)
+set(WINTC_ARCH_PKGBUILD_IN_PATH   ${CMAKE_CURRENT_LIST_DIR}/PKGBUILD.in)
+set(WINTC_DEBIAN_CONTROL_IN_PATH  ${CMAKE_CURRENT_LIST_DIR}/debian-control.in)
 
 function(wintc_configure_and_install_packaging)
+    # Provide 'ALT_PROJECT_NAME' - basically some distros skip the 'lib' in
+    # library names, so this alternative name is generated here
+    #
+    if (${PROJECT_NAME} MATCHES "^lib(.+)")
+        set(ALT_PROJECT_NAME ${CMAKE_MATCH_1} PARENT_SCOPE)
+    else()
+        set(ALT_PROJECT_NAME ${PROJECT_NAME} PARENT_SCOPE)
+    endif()
+
+    # Handle the package formats here
+    #
     if (${WINTC_PKGMGR} STREQUAL "raw")
         message(STATUS "Outputting raw build (no package manager)")
-    elseif (${WINTC_PKGMGR} STREQUAL "archpkg")
-        message(STATUS "Outputting build for Arch Linux packaging")
+    elseif (${WINTC_PKGMGR} STREQUAL "apk")
+        message(STATUS "Outputting build for Alpine Linux packaging")
 
-        # LIB_DIR is always /lib - /lib64 is not a valid target on Arch
+        # No /lib64 on Alpine
         #
         set(LIB_DIR lib PARENT_SCOPE)
 
-        # Set the project name, we drop the 'lib' prefix for Arch
+        # Set the architecture
         #
-        set(ARCH_PROJECT_NAME ${PROJECT_NAME})
+        set(ALPINE_ARCHITECTURE ${CMAKE_SYSTEM_PROCESSOR})
 
-        if (${PROJECT_NAME} MATCHES "^lib(.+)")
-            set(ARCH_PROJECT_NAME ${CMAKE_MATCH_1})
+        if (${PROJECT_ANYARCH})
+            set(ALPINE_ARCHITECTURE noarch)
         endif()
+
+        # Set the licence
+        #
+        if (${PROJECT_FREESTATUS})
+            set(ALPINE_LICENCE GPL-2.0-or-later)
+        else()
+            set(ALPINE_LICENCE non-free) # Unsure if correct
+        endif()
+
+        configure_file(${WINTC_ALPINE_APKBUILD_IN_PATH} APKBUILD @ONLY)
+    elseif (${WINTC_PKGMGR} STREQUAL "archpkg")
+        message(STATUS "Outputting build for Arch Linux packaging")
+
+        # No /lib64 on Arch
+        #
+        set(LIB_DIR lib PARENT_SCOPE)
 
         # Set the architecture
         #

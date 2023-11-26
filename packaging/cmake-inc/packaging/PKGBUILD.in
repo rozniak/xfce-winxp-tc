@@ -1,4 +1,4 @@
-pkgname="@ARCH_PROJECT_NAME@"
+pkgname="@ALT_PROJECT_NAME@"
 pkgver="@PROJECT_VERSION@"
 pkgrel=1
 pkgdesc="@PROJECT_DESCRIPTION@"

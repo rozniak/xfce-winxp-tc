@@ -6,6 +6,8 @@ The contents of this directory is as follows:
 
 `cmake-inc/` - common CMake scripts to be included by components in their builds
 
+`apk/` - Alpine Linux (`.apk`) packaging implementation
+
 `archpkg/` - Arch Linux (`.pkg.tar.zst`) packaging implementation
 
 `deb/` - Debian (`.deb`) packaging implementation
@@ -24,7 +26,7 @@ The contents of this directory is as follows:
 
 ## TL;DR on Building
 If you are new and simply want to compile everything, you should:
-- Ensure you have the typical tools installed: `cmake`, `fakeroot`, `gcc`, `make`, `pkg-config`, `python3`
+- Ensure you have the typical tools installed: `bash`, `cmake`, `coreutils`, `fakeroot`, `gcc`, `make`, `pkg-config`, `python3`
 - Run `./chkdeps.sh -l` - this will inform you if you're missing any build-time dependencies
   - This script should output the package names, so you can bung it straight into your package manager, eg. `apt install $(./chkdeps.sh -l | cut -d':' -f2 | tr '\n' ' ')`
 - Run `./buildall.sh` - this should build the entire project by default under the `xpclient-pro` SKU, outputting in `./xptc`
@@ -33,6 +35,7 @@ This is intended to *Just Work(TM)*, if you have any problems, please raise an i
 
 ## Support?
 Supported distros/package formats:
+- Alpine Linux (`.apk`)
 - Arch Linux (`.pkg.tar.zst`)
 - Debian (`.deb`)
 

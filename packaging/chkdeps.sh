@@ -161,11 +161,18 @@ check_deps()
         # It's a new dep, check whether it is already installed
         #
         case "${dist_id}" in
+            apk)
+                apk info --installed "${pkg_name}" >/dev/null 2>&1
+                ;;
             archpkg)
                 pacman -Q -i "${pkg_name}" >/dev/null 2>&1
                 ;;
             deb)
                 dpkg -s "${pkg_name}" >/dev/null 2>&1
+                ;;
+            *)
+                echo "Package format not implemented!"
+                exit 1
                 ;;
         esac
 

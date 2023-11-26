@@ -22,7 +22,8 @@ endfunction()
 
 # Ensure SASS program available for GTK3 build
 #
-find_program(SASS scss)
+find_program(SASS  scss NAMES sass)
+find_program(SASSC sassc)
 
 # Set up venv for bldtheme tool
 #

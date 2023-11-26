@@ -37,6 +37,16 @@ then
     exit 0
 fi
 
+# Check Alpine Linux
+#
+which apk >/dev/null 2>&1
+
+if [[ $? -eq 0 ]]
+then
+    echo -n "apk"
+    exit 0
+fi
+
 # Nothing else to probe, it's over!
 #
 echo "Unsupported distribution."
