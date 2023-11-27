@@ -90,9 +90,9 @@ function(wintc_configure_and_install_packaging)
     # library names, so this alternative name is generated here
     #
     if (${PROJECT_NAME} MATCHES "^lib(.+)")
-        set(ALT_PROJECT_NAME ${CMAKE_MATCH_1} PARENT_SCOPE)
+        set(ALT_PROJECT_NAME ${CMAKE_MATCH_1})
     else()
-        set(ALT_PROJECT_NAME ${PROJECT_NAME} PARENT_SCOPE)
+        set(ALT_PROJECT_NAME ${PROJECT_NAME})
     endif()
 
     # Handle the package formats here
