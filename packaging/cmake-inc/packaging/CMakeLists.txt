@@ -19,8 +19,9 @@ endif()
 # Set up library directory
 #
 if (
-    ${CMAKE_SYSTEM_PROCESSOR} STREQUAL "i686" OR
-    ${CMAKE_SYSTEM_PROCESSOR} STREQUAL "armv71"
+    ${CMAKE_SYSTEM_PROCESSOR} STREQUAL "i686"   OR
+    ${CMAKE_SYSTEM_PROCESSOR} STREQUAL "armv6l" OR
+    ${CMAKE_SYSTEM_PROCESSOR} STREQUAL "armv7l"
 )
     set(LIB_DIR lib)
 elseif (
@@ -177,7 +178,10 @@ function(wintc_configure_and_install_packaging)
                 set(DEB_ARCHITECTURE i386)
             elseif (${CMAKE_SYSTEM_PROCESSOR} STREQUAL "ia64")
                 set(DEB_ARCHITECTURE ia64)
-            elseif (${CMAKE_SYSTEM_PROCESSOR} STREQUAL "armv7l")
+            elseif (
+                ${CMAKE_SYSTEM_PROCESSOR} STREQUAL "armv6l" OR # Raspberry Pi
+                ${CMAKE_SYSTEM_PROCESSOR} STREQUAL "armv7l"
+            )
                 set(DEB_ARCHITECTURE armhf)
             elseif (${CMAKE_SYSTEM_PROCESSOR} STREQUAL "armv8")
                 set(DEB_ARCHITECTURE arm64)
@@ -197,7 +201,9 @@ function(wintc_configure_and_install_packaging)
             set(LIB_DIR lib/i386-linux-gnu PARENT_SCOPE)
         elseif (${CMAKE_SYSTEM_PROCESSOR} STREQUAL "ia64")
             set(LIB_DIR lib/ia64-linux-gnu PARENT_SCOPE)
-        elseif (${CMAKE_SYSTEM_PROCESSOR} STREQUAL "armv71")
+        elseif (${CMAKE_SYSTEM_PROCESSOR} STREQUAL "armv6l")
+            set(LIB_DIR lib/arm-linux-gnueabihf PARENT_SCOPE)
+        elseif (${CMAKE_SYSTEM_PROCESSOR} STREQUAL "armv7l")
             set(LIB_DIR lib/arm-linux-gnu PARENT_SCOPE)
         elseif (${CMAKE_SYSTEM_PROCESSOR} STREQUAL "armv8")
             set(LIB_DIR lib/aarch64-linux-gnu PARENT_SCOPE)
