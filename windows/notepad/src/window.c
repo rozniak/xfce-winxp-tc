@@ -39,9 +39,7 @@ G_DEFINE_TYPE_WITH_CODE(
 
 static void wintc_notepad_window_class_init(
     WINTC_UNUSED(WinTCNotepadWindowClass* klass)
-)
-{
-}
+) {}
 
 static void wintc_notepad_window_init(
     WinTCNotepadWindow* self
@@ -50,6 +48,14 @@ static void wintc_notepad_window_init(
     GtkBuilder* builder;
     GtkWidget*  main_box;
 
+    // FIXME: Default to this size, and should remember the last size the
+    //        window was
+    //
+    gtk_window_set_default_size(
+        GTK_WINDOW(self),
+        400,
+        240
+    );
     gtk_window_set_title(GTK_WINDOW(self), _("Notepad"));
 
     builder =

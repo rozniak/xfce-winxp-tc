@@ -53,6 +53,52 @@ static void wintc_notepad_application_init(
 ) {}
 
 //
+// CLASS VIRTUAL METHODS
+//
+static void wintc_notepad_application_activate(
+    GApplication* application
+)
+{
+    static gboolean first_run = TRUE;
+
+    if (first_run)
+    {
+        GtkCssProvider* css_provider = gtk_css_provider_new();
+
+        gtk_css_provider_load_from_resource(
+            css_provider,
+            "/uk/oddmatics/wintc/notepad/appstyles.css"
+        );
+
+        gtk_style_context_add_provider_for_screen(
+            gdk_screen_get_default(),
+            GTK_STYLE_PROVIDER(css_provider),
+            GTK_STYLE_PROVIDER_PRIORITY_FALLBACK
+        );
+
+        first_run = FALSE;
+    }
+
+    // Launch
+    //
+    WinTCNotepadApplication* notepad_app = WINTC_NOTEPAD_APPLICATION(application);
+
+    gtk_widget_show_all(
+        wintc_notepad_window_new(notepad_app)
+    );
+}
+
+static void wintc_notepad_application_open(
+    WINTC_UNUSED(GApplication* application),
+    WINTC_UNUSED(GFile**       files),
+    WINTC_UNUSED(int           n_files),
+    WINTC_UNUSED(const gchar*  hint)
+)
+{
+    // TODO: Implement this
+}
+
+//
 // PUBLIC FUNCTIONS
 //
 WinTCNotepadApplication* wintc_notepad_application_new(void)
@@ -69,25 +115,4 @@ WinTCNotepadApplication* wintc_notepad_application_new(void)
         );
 
     return app;
-}
-
-//
-// CALLBACKS
-//
-static void wintc_notepad_application_activate(
-    WINTC_UNUSED(GApplication* application)
-)
-{
-    WinTCNotepadApplication* notepad_app = WINTC_NOTEPAD_APPLICATION(application);
-    gtk_widget_show_all(wintc_notepad_window_new(notepad_app));
-}
-
-static void wintc_notepad_application_open(
-    WINTC_UNUSED(GApplication* application),
-    WINTC_UNUSED(GFile**       files),
-    WINTC_UNUSED(int           n_files),
-    WINTC_UNUSED(const gchar*  hint)
-)
-{
-    // TODO: Implement this
 }

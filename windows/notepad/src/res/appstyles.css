@@ -1,0 +1,9 @@
+/**
+ * Default style for the text view
+ */
+textview
+{
+    font-family: 'Lucida Console', monospace;
+    font-size: 10pt;
+    padding: 2px;
+}
