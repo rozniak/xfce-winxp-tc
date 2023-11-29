@@ -25,7 +25,7 @@ SH_DISTID="${SCRIPTDIR}/distid.sh"
 # ARGUMENTS
 #
 OPT_BUILD_DIR="${CURDIR}/build"
-OPT_OUTPUT_DIR="${CURDIR}/dpkg-out"
+OPT_OUTPUT_DIR="${CURDIR}/local-out"
 
 while getopts "hi:o:" opt;
 do
