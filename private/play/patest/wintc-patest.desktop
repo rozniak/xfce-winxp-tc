@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=PulseAudio Test (WinTC Test)
+Comment=WinTC test PulseAudio program.
+Exec=wintc-patest
+Icon=wintc-patest
+Terminal=false
+StartupNotify=false
+Type=Application
+Categories=Utility;GTK;

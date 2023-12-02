@@ -12,6 +12,8 @@ lightdm-->bt-->liblightdm-gobject-dev|liblightdm-gobject-1-dev
 lightdm-->rt-->liblightdm-gobject-1-0
 msgfmt-->bt,rt-->gettext
 plymouth-->bt,rt-->plymouth
+pulseaudio-->bt-->libpulse-dev
+pulseaudio-->rt-->libpulse0
 python3-venv-->bt,rt-->python3-venv
 sass-->bt,rt-->ruby-sass
 wintc-comctl-->bt,rt-->libwintc-comctl
