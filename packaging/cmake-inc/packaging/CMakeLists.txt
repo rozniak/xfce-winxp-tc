@@ -37,6 +37,17 @@ else()
     )
 endif()
 
+# Set up sbin/bin directory target (some distros don't use sbin)
+#
+if (
+    ${WINTC_PKGMGR} STREQUAL "apk"     OR
+    ${WINTC_PKGMGR} STREQUAL "archpkg"
+)
+    set(WINTC_SAFE_SBIN_DIR ${CMAKE_INSTALL_BINDIR})
+else()
+    set(WINTC_SAFE_SBIN_DIR ${CMAKE_INSTALL_SBINDIR})
+endif()
+
 # Define dependency mapping function
 #
 function(wintc_map_dependencies)
