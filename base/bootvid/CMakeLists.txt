@@ -70,10 +70,12 @@ elseif (
     set(PLYMOUTH_IMAGE_SKU    skunull.png)
     set(PLYMOUTH_IMAGE_SPLASH splshsrv.png)
 
-    # For some reason Compute Cluster Edition has its own splash!
+    # Windows Home Server, and Server 2003 CCS have their own boot splashes!
     #
     if (${WINTC_SKU} STREQUAL "dnsrv-ccs")
         set(PLYMOUTH_IMAGE_SPLASH splshccs.png)
+    elseif (${WINTC_SKU} STREQUAL "homesrv")
+        set(PLYMOUTH_IMAGE_SPLASH splshqhs.png)
     endif()
 else()
     message(
