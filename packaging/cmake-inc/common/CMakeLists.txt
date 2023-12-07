@@ -47,12 +47,14 @@ set(
     dnsrv-std         # SERVER
     dnsrv-ent
     dnsrv-dtc
+    dnsrv-app
+    dnsrv-bla
     dnsrv-sbs
-    dnsrv-web
     dnsrv-ccs
     dnsrv_r2-std      # SERVER R2
     dnsrv_r2-ent
     dnsrv_r2-dtc
+    dnsrv_r2-ss
     homesrv           # HOME SERVER
 )
 
