@@ -1,6 +1,7 @@
 #include <dlfcn.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <glib.h>
+#include <wintc-comgtk.h>
 
 #include "api.h"
 #include "impl-wndmgmt-wnck.h"
@@ -21,7 +22,7 @@ gboolean init_wndmgmt_wnck_impl(void)
 {
     if (!init_dll_wnck())
     {
-        g_warning("%s", "libwnck not available.");
+        WINTC_LOG_USER_DEBUG("%s", "WNDMGMT: Can't use libwnck");
         return FALSE;
     }
 

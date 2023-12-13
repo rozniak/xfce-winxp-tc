@@ -1,6 +1,7 @@
 #include <dlfcn.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <glib.h>
+#include <wintc-comgtk.h>
 
 #include "wnck.h"
 #include "../api.h"
@@ -69,7 +70,7 @@ gboolean init_dll_wnck()
 
     if (dl_wnck == NULL)
     {
-        g_message("%s", "libwnck not available.");
+        WINTC_LOG_USER_DEBUG("%s", "libwnck not available.");
         return FALSE;
     }
 

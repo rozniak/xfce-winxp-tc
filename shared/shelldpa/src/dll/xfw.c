@@ -1,6 +1,7 @@
 #include <dlfcn.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <glib.h>
+#include <wintc-comgtk.h>
 
 #include "xfw.h"
 #include "../api.h"
@@ -51,7 +52,7 @@ gboolean init_dll_xfw()
 
     if (dl_xfw == NULL)
     {
-        g_message("%s", "libxfce4windowing not available.");
+        WINTC_LOG_USER_DEBUG("%s", "libxfce4windowing not available");
         return FALSE;
     }
 

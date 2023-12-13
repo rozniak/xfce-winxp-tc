@@ -28,7 +28,7 @@ gboolean init_wndmgmt_xfw_impl(void)
 {
     if (!init_dll_xfw())
     {
-        g_warning("%s", "libxfce4windowing not available.");
+        WINTC_LOG_USER_DEBUG("%s", "WNDMGMT: Can't use libxfce4windowing");
         return FALSE;
     }
 
