@@ -2,5 +2,6 @@
 <gresources>
     <gresource prefix="/uk/oddmatics/wintc/taskband">
         <file>start-menu.css</file>
+        <file>volume-popup.css</file>
     </gresource>
 </gresources>

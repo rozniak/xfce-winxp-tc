@@ -12,6 +12,8 @@ lightdm-->bt-->lightdm-dev
 lightdm-->rt-->lightdm
 msgfmt-->bt,rt-->gettext
 plymouth-->bt,rt-->plymouth
+pulseaudio-->bt-->pulseaudio-dev
+pulseaudio-->rt-->libpulse
 python3-venv-->bt,rt-->py3-virtualenv
 sass-->bt,rt-->sassc
 wintc-comctl-->bt,rt-->libwintc-comctl
@@ -20,6 +22,7 @@ wintc-exec-->bt,rt-->libwintc-exec
 wintc-msgina-->bt,rt-->libwintc-msgina
 wintc-shelldpa-->bt,rt-->libwintc-shelldpa
 wintc-shllang-->bt,rt-->libwintc-shllang
+wintc-sndapi-->bt,rt-->libwintc-sndapi
 wintc-winbrand-->bt,rt-->libwintc-winbrand
 xcursorgen-->bt,rt-->xcursorgen
 xdg-mime-->bt,rt-->xdg-utils

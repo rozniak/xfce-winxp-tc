@@ -19,6 +19,14 @@ typedef enum
 //
 // PUBLIC FUNCTIONS
 //
+GtkWidget* wintc_dpa_create_popup(
+    GtkWidget* owner
+);
+void wintc_dpa_show_popup(
+    GtkWidget* popup,
+    GtkWidget* owner
+);
+
 WinTCDisplayProtocol wintc_get_display_protocol_in_use(void);
 gboolean wintc_init_display_protocol_apis(void);
 

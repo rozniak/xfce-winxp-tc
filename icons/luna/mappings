@@ -283,6 +283,10 @@ places/user-desktop-->desktop
 places/user-home-->folder
 places/user-trash-->bin
 status/ac-adapter-->ac_power
+status/audio-volume-high-->volume_on
+status/audio-volume-medium-->volume_on
+status/audio-volume-low-->volume_on
+status/audio-volume-muted-->volume_off
 status/battery-caution-->battery_critical
 status/battery-caution-charging-->battery_low_charging
 status/battery-empty-->battery_empty

@@ -6,6 +6,7 @@ gtk3-->bt,rt-->gtk3
 lightdm-->bt,rt-->lightdm
 msgfmt-->bt,rt-->gettext
 plymouth-->bt,rt-->plymouth
+pulseaudio-->bt,rt-->libpulse
 python3-venv-->bt,rt-->python3
 sass-->bt,rt-->ruby-sass
 wintc-comctl-->bt,rt-->wintc-comctl
@@ -14,6 +15,7 @@ wintc-exec-->bt,rt-->wintc-exec
 wintc-msgina-->bt,rt-->wintc-msgina
 wintc-shelldpa-->bt,rt-->wintc-shelldpa
 wintc-shllang-->bt,rt-->wintc-shllang
+wintc-sndapi-->bt,rt-->wintc-sndapi
 wintc-winbrand-->bt,rt-->wintc-winbrand
 xcursorgen-->bt,rt-->xorg-xcursorgen
 xdg-mime-->bt,rt-->xdg-utils

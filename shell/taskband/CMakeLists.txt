@@ -30,6 +30,7 @@ wintc_resolve_library(wintc-comgtk   WINTC_COMGTK)
 wintc_resolve_library(wintc-exec     WINTC_EXEC)
 wintc_resolve_library(wintc-shelldpa WINTC_SHELLDPA)
 wintc_resolve_library(wintc-shllang  WINTC_SHLLANG)
+wintc_resolve_library(wintc-sndapi   WINTC_SNDAPI)
 
 wintc_compile_resources()
 wintc_create_meta_h()
@@ -57,10 +58,14 @@ add_executable(
     src/start/startmenuitem.h
     src/start/util.c
     src/start/util.h
+    src/systray/behaviour.c
+    src/systray/behaviour.h
     src/systray/clock.c
     src/systray/clock.h
     src/systray/notifarea.c
     src/systray/notifarea.h
+    src/systray/volume.c
+    src/systray/volume.h
     src/taskbuttons/taskbuttonbar.c
     src/taskbuttons/taskbuttonbar.h
     src/taskbuttons/windowmonitor.c
@@ -84,6 +89,7 @@ target_include_directories(
     PRIVATE ${WINTC_EXEC_INCLUDE_DIRS}
     PRIVATE ${WINTC_SHELLDPA_INCLUDE_DIRS}
     PRIVATE ${WINTC_SHLLANG_INCLUDE_DIRS}
+    PRIVATE ${WINTC_SNDAPI_INCLUDE_DIRS}
 )
 
 target_link_directories(
@@ -97,6 +103,7 @@ target_link_directories(
     PRIVATE ${WINTC_EXEC_LIBRARY_DIRS}
     PRIVATE ${WINTC_SHELLDPA_LIBRARY_DIRS}
     PRIVATE ${WINTC_SHLLANG_LIBRARY_DIRS}
+    PRIVATE ${WINTC_SNDAPI_LIBRARY_DIRS}
 )
 
 target_link_libraries(
@@ -110,6 +117,7 @@ target_link_libraries(
     PRIVATE ${WINTC_EXEC_LIBRARIES}
     PRIVATE ${WINTC_SHELLDPA_LIBRARIES}
     PRIVATE ${WINTC_SHLLANG_LIBRARIES}
+    PRIVATE ${WINTC_SNDAPI_LIBRARIES}
 )
 
 add_dependencies(

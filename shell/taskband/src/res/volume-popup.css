@@ -1,0 +1,15 @@
+.wintc-volmgmt > box > label
+{
+    margin: 10px 20px;
+}
+
+.wintc-volmgmt > box > scale
+{
+    margin:     4px 0px;
+    min-height: 65px;
+}
+
+.wintc-volmgmt > box > checkbutton
+{
+    margin: 12px 6px 4px;
+}

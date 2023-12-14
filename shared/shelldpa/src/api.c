@@ -2,6 +2,7 @@
 #include <gdk/gdk.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <glib.h>
+#include <wintc-comgtk.h>
 
 #include "api.h"
 #include "impl-wayland.h"
@@ -51,8 +52,118 @@ void (*wintc_wndmgmt_window_unminimize) (
 ) = NULL;
 
 //
+// FORWARD DECLARATIONS
+//
+static gboolean on_popup_window_focus_out(
+    GtkWidget* widget,
+    GdkEvent*  event,
+    gpointer   user_data
+);
+
+//
 // PUBLIC FUNCTIONS
 //
+GtkWidget* wintc_dpa_create_popup(
+    GtkWidget* owner
+)
+{
+    GtkWidget* popup;
+
+    // On GTK3, GtkPopovers are limited to the bounds of the parent when
+    // running under X11 -- this sucks!! So here we do the job of creating
+    // an appropriate pop-up widget based on display protocol
+    //
+    if (wintc_get_display_protocol_in_use() == WINTC_DISPPROTO_X11)
+    {
+        popup = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+
+        gtk_window_set_decorated(
+            GTK_WINDOW(popup),
+            FALSE
+        );
+        gtk_window_set_type_hint(
+            GTK_WINDOW(popup),
+            GDK_WINDOW_TYPE_HINT_POPUP_MENU
+        );
+        gtk_window_set_resizable(
+            GTK_WINDOW(popup),
+            FALSE
+        );
+        gtk_window_set_keep_above(
+            GTK_WINDOW(popup),
+            TRUE
+        );
+        gtk_window_set_skip_taskbar_hint(
+            GTK_WINDOW(popup),
+            TRUE
+        );
+        gtk_window_set_title(
+            GTK_WINDOW(popup),
+            "Popup"
+        );
+        gtk_widget_set_events(
+            popup,
+            GDK_FOCUS_CHANGE_MASK
+        );
+
+        // Connect signals
+        //
+        g_signal_connect(
+            popup,
+            "focus-out-event",
+            G_CALLBACK(on_popup_window_focus_out),
+            NULL
+        );
+    }
+    else
+    {
+        popup = gtk_popover_new(owner);
+    }
+
+    return popup;
+}
+
+void wintc_dpa_show_popup(
+    GtkWidget* popup,
+    GtkWidget* owner
+)
+{
+    gint height;
+    gint x;
+    gint y;
+
+    if (wintc_get_display_protocol_in_use() == WINTC_DISPPROTO_X11)
+    {
+        // FIXME: Position is UBER BROKEN here:
+        //          - Calculating height too early, should be done in map-event
+        //          - Not taking into account screen edges
+        //
+        gtk_window_present_with_time(
+            GTK_WINDOW(popup),
+            GDK_CURRENT_TIME
+        );
+        gtk_widget_show_all(popup);
+
+        height = gtk_widget_get_allocated_height(popup);
+
+        gdk_window_get_origin(
+            gtk_widget_get_window(owner),
+            &x,
+            &y
+        );
+
+        gtk_window_move(
+            GTK_WINDOW(popup),
+            x,
+            y - height // FIXME: We're assuming the bottom of the screen here
+        );
+    }
+    else
+    {
+        gtk_widget_show_all(popup);
+    }
+}
+
 WinTCDisplayProtocol wintc_get_display_protocol_in_use(void)
 {
     return s_dispproto;
@@ -147,5 +258,18 @@ gboolean wintc_init_display_protocol_apis(void)
         }
     }
 
+    return TRUE;
+}
+
+//
+// CALLBACKS
+//
+static gboolean on_popup_window_focus_out(
+    GtkWidget* widget,
+    WINTC_UNUSED(GdkEvent* event),
+    WINTC_UNUSED(gpointer  user_data)
+)
+{
+    gtk_widget_hide(widget);
     return TRUE;
 }
