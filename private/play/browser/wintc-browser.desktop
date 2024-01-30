@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=File Browser Test (WinTC Test)
+Comment=WinTC test file browser.
+Exec=wintc-browser
+Icon=wintc-browser
+Terminal=false
+StartupNotify=false
+Type=Application
+Categories=Utility;GTK;
