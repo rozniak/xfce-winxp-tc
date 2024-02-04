@@ -10,11 +10,6 @@
 //
 // GTK OOP CLASS/INSTANCE DEFINITIONS
 //
-struct _WinTCNotepadWindowPrivate
-{
-    int blah;
-};
-
 struct _WinTCNotepadWindowClass
 {
     GtkApplicationWindowClass __parent__;
@@ -23,18 +18,15 @@ struct _WinTCNotepadWindowClass
 struct _WinTCNotepadWindow
 {
     GtkApplicationWindow __parent__;
-
-    WinTCNotepadWindowPrivate* priv;
 };
 
 //
 // GTK TYPE DEFINITION & CTORS
 //
-G_DEFINE_TYPE_WITH_CODE(
+G_DEFINE_TYPE(
     WinTCNotepadWindow,
     wintc_notepad_window,
-    GTK_TYPE_APPLICATION_WINDOW,
-    G_ADD_PRIVATE(WinTCNotepadWindow)
+    GTK_TYPE_APPLICATION_WINDOW
 )
 
 static void wintc_notepad_window_class_init(

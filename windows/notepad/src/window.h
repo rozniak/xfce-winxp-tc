@@ -9,7 +9,6 @@
 //
 // GTK OOP BOILERPLATE
 //
-typedef struct _WinTCNotepadWindowPrivate WinTCNotepadWindowPrivate;
 typedef struct _WinTCNotepadWindowClass   WinTCNotepadWindowClass;
 typedef struct _WinTCNotepadWindow        WinTCNotepadWindow;
 
