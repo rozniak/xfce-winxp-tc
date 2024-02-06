@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Drag 'n' Drop (WinTC Test)
+Comment=WinTC drag 'n' drop test program.
+Exec=wintc-dnd-test
+Icon=wintc-dnd-test
+Terminal=false
+StartupNotify=false
+Type=Application
+Categories=Utility;GTK;
