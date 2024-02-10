@@ -80,6 +80,7 @@ target_compile_options(
 target_include_directories(
     wintc-taskband
     SYSTEM
+    BEFORE
     PRIVATE ${GARCON_INCLUDE_DIRS}
     PRIVATE ${GARCON_GTK3_INCLUDE_DIRS}
     PRIVATE ${GDK_PIXBUF_INCLUDE_DIRS}

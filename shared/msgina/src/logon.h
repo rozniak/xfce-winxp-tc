@@ -39,3 +39,4 @@ void wintc_gina_logon_session_try_logon(
 );
 
 #endif
+

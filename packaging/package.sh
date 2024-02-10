@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 #
 # package.sh - Packaging Script
@@ -12,10 +12,10 @@
 #
 # CONSTANTS
 #
-CURDIR=`realpath -s "./"`
+CURDIR=`realpath "./"`
 SCRIPTDIR=`dirname "$0"`
 
-REPO_ROOT=`realpath -s "${SCRIPTDIR}/../.."`
+REPO_ROOT=`realpath "${SCRIPTDIR}/../.."`
 
 SH_DISTID="${SCRIPTDIR}/distid.sh"
 

@@ -737,3 +737,4 @@ static gboolean wintc_animation_step(
 
     return G_SOURCE_CONTINUE;
 }
+

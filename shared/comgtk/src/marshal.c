@@ -94,3 +94,4 @@ void wintc_cclosure_marshal_INT__VOID(
 
     g_value_set_int(return_value, v_return);
 }
+

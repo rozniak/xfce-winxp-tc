@@ -1,2 +1,4 @@
 # Ignore dynamically generated source
+assets.h
 version.c
+wintc-comgtk.h

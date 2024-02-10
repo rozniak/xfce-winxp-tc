@@ -180,7 +180,7 @@ static void wintc_sndapi_context_finalize(
 //
 // PUBLIC FUNCTIONS
 //
-WinTCSndApiContext* wintc_sndapi_context_new()
+WinTCSndApiContext* wintc_sndapi_context_new(void)
 {
     return WINTC_SNDAPI_CONTEXT(
         g_object_new(

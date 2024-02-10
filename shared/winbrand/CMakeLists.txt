@@ -24,8 +24,8 @@ set(WINTC_BRAND_DIR ${WINTC_ASSETS_INSTALL_DIR}/brand)
 
 wintc_resolve_library(gdk-pixbuf-2.0 GDK_PIXBUF)
 wintc_resolve_library(glib-2.0       GLIB)
-
-configure_file(src/brand.c.in ${PROJECT_ROOT}/src/brand.c @ONLY)
+wintc_resolve_library(gtk+-3.0       GTK3)
+wintc_resolve_library(wintc-comgtk   WINTC_COMGTK)
 
 add_library(
     libwintc-winbrand
@@ -49,20 +49,27 @@ target_compile_options(
 target_include_directories(
     libwintc-winbrand
     SYSTEM
+    BEFORE
     PRIVATE ${GDK_PIXBUF_INCLUDE_DIRS}
     PRIVATE ${GLIB_INCLUDE_DIRS}
+    PRIVATE ${GTK3_INCLUDE_DIRS}
+    PRIVATE ${WINTC_COMGTK_INCLUDE_DIRS}
 )
 
 target_link_directories(
     libwintc-winbrand
     PRIVATE ${GDK_PIXBUF_LIBRARY_DIRS}
     PRIVATE ${GLIB_LIBRARY_DIRS}
+    PRIVATE ${GTK3_LIBRARY_DIRS}
+    PRIVATE ${WINTC_COMGTK_LIBRARY_DIRS}
 )
 
 target_link_libraries(
     libwintc-winbrand
     PRIVATE ${GDK_PIXBUF_LIBRARIES}
     PRIVATE ${GLIB_LIBRARIES}
+    PRIVATE ${GTK3_LIBRARIES}
+    PRIVATE ${WINTC_COMGTK_LIBRARIES}
 )
 
 # Pick banner based on SKU
@@ -70,7 +77,10 @@ target_link_libraries(
 set(WINBRAND_BANNER_NAME ${WINTC_SKU})
 
 if (${WINTC_SKU} STREQUAL "xpclient-pro")
-    if (${CMAKE_SYSTEM_PROCESSOR} STREQUAL "x86_64")
+    if (
+        ${CMAKE_SYSTEM_PROCESSOR} STREQUAL "amd64" OR
+        ${CMAKE_SYSTEM_PROCESSOR} STREQUAL "x86_64"
+    )
         set(WINBRAND_BANNER_NAME ${WINTC_SKU}_amd64)
     elseif (
         ${CMAKE_SYSTEM_PROCESSOR} STREQUAL "ia64" OR

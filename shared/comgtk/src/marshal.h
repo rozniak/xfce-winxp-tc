@@ -26,3 +26,4 @@ void wintc_cclosure_marshal_INT__VOID(
 );
 
 #endif
+

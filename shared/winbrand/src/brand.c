@@ -1,5 +1,6 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <glib.h>
+#include <wintc-comgtk.h>
 
 #include "brand.h"
 
@@ -16,19 +17,19 @@ GdkPixbuf* wintc_brand_get_brand_pixmap(
     switch (part)
     {
         case WINTC_BRAND_PART_BANNER:
-            path = "@CMAKE_INSTALL_PREFIX@/@WINTC_BRAND_DIR@/banner.png";
+            path = WINTC_ASSETS_DIR "/brand/banner.png";
             break;
 
         case WINTC_BRAND_PART_BANNER_TALL:
-            path = "@CMAKE_INSTALL_PREFIX@/@WINTC_BRAND_DIR@/bannerx.png";
+            path = WINTC_ASSETS_DIR "/brand/bannerx.png";
             break;
 
         case WINTC_BRAND_PART_STRIP_STATIC:
-            path = "@CMAKE_INSTALL_PREFIX@/@WINTC_BRAND_DIR@/strip-static.png";
+            path = WINTC_ASSETS_DIR "/brand/strip-static.png";
             break;
 
         case WINTC_BRAND_PART_STRIP_ANIM:
-            path = "@CMAKE_INSTALL_PREFIX@/@WINTC_BRAND_DIR@/strip-anim.png";
+            path = WINTC_ASSETS_DIR "/brand/strip-anim.png";
             break;
 
         default:

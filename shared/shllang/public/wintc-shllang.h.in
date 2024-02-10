@@ -5,6 +5,11 @@
 #include <gtk/gtk.h>
 
 //
+// binddomain path
+//
+#define WINTC_LOCALE_DIR "@CMAKE_INSTALL_PREFIX@/share/locale"
+
+//
 // Punctuation related
 //
 typedef enum {

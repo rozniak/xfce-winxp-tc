@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 #
 # build.sh - Build Single Component
@@ -12,10 +12,10 @@
 #
 # CONSTANTS
 #
-CURDIR=`realpath -s "./"`
+CURDIR=`realpath "./"`
 SCRIPTDIR=`dirname "$0"`
 
-REPO_ROOT=`realpath -s "${SCRIPTDIR}/.."`
+REPO_ROOT=`realpath "${SCRIPTDIR}/.."`
 
 SH_DISTID="${SCRIPTDIR}/distid.sh"
 
@@ -96,12 +96,19 @@ fi
 # Identify distro build
 #
 dist_id=`"${SH_DISTID}"`
+dist_prefix="/usr"
 
 if [[ $? -gt 0 ]]
 then
     "Failed to identify distribution."
     exit 1
 fi
+
+case "${dist_id}" in
+    bsdpkg)
+        dist_prefix="/usr/local"
+        ;;
+esac
 
 # Ensure the build dir exists
 #
@@ -125,7 +132,7 @@ rm -rf "${full_build_dir}"/*
 
 cmake -DBUILD_SHARED_LIBS=ON                         \
       -DCMAKE_BUILD_TYPE="${OPT_BUILD_TYPE}"         \
-      -DCMAKE_INSTALL_PREFIX=/usr                    \
+      -DCMAKE_INSTALL_PREFIX="${dist_prefix}"        \
       -DWINTC_SKU="${OPT_SKU}"                       \
       -DWINTC_PKGMGR="${dist_id}"                    \
       -DWINTC_USE_LOCAL_LIBS="${OPT_USE_LOCAL_LIBS}" \

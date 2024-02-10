@@ -419,3 +419,4 @@ static gboolean on_window_button_button_released(
 
     return FALSE;
 }
+

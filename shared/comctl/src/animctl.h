@@ -70,3 +70,4 @@ void wintc_animation_set_valign(
 );
 
 #endif
+

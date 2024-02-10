@@ -21,5 +21,6 @@ config.h
 meta.h
 resources.c
 *.deb
+*.pkg
 *.pkg.tar.zst
 *.pot

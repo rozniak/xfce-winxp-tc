@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 #
 # chkdeps.sh - Check Dependencies for Build
@@ -12,10 +12,10 @@
 #
 # CONSTANTS
 #
-CURDIR=`realpath -s "./"`
+CURDIR=`realpath "./"`
 SCRIPTDIR=`dirname "$0"`
 
-REPO_ROOT=`realpath -s "${SCRIPTDIR}/.."`
+REPO_ROOT=`realpath "${SCRIPTDIR}/.."`
 
 SH_DISTID="${SCRIPTDIR}/distid.sh"
 DEPMAP_PY="${REPO_ROOT}/tools/bldutils/depmap/depmap.py"
@@ -166,6 +166,9 @@ check_deps()
                 ;;
             archpkg)
                 pacman -Q -i "${pkg_name}" >/dev/null 2>&1
+                ;;
+            bsdpkg)
+                pkg info "${pkg_name}" >/dev/null 2>&1
                 ;;
             deb)
                 dpkg -s "${pkg_name}" >/dev/null 2>&1

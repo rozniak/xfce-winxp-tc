@@ -304,3 +304,4 @@ static void on_window_destroyed(
 {
     gtk_main_quit();
 }
+

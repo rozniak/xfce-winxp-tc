@@ -314,3 +314,4 @@ static gboolean wintc_gina_strip_step(
     return strip->priv->is_animating ?
         G_SOURCE_CONTINUE : G_SOURCE_REMOVE;
 }
+

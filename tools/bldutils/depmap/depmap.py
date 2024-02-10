@@ -3,7 +3,7 @@ import argparse
 from pathlib import Path
 
 def main():
-    VALID_DISTROS=["apk", "archpkg", "deb"]
+    VALID_DISTROS=["apk", "archpkg", "bsdpkg", "deb"]
 
     parser = argparse.ArgumentParser(
         prog="Dependency Mapper Utility",
@@ -72,13 +72,15 @@ def main():
             if not f"bt-{dep_name}" in distro_maps:
                 raise ValueError(f"No build-time mapping for dep: {dep_name}")
 
-            print("bt:" + distro_maps[f"bt-{dep_name}"])
+            if distro_maps[f"bt-{dep_name}"] != "NULL":
+                print("bt:" + distro_maps[f"bt-{dep_name}"])
 
         if dep_stage == "rt" or dep_stage == "bt,rt":
             if not f"rt-{dep_name}" in distro_maps:
                 raise ValueError(f"No run-time mapping for dep: {dep_name}")
 
-            print("rt:" + distro_maps[f"rt-{dep_name}"])
+            if distro_maps[f"rt-{dep_name}"] != "NULL":
+                print("rt:" + distro_maps[f"rt-{dep_name}"])
 
 
 if __name__ == "__main__":

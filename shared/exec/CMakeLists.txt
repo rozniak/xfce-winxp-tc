@@ -54,6 +54,7 @@ target_compile_options(
 target_include_directories(
     libwintc-exec
     SYSTEM
+    BEFORE
     PRIVATE ${GDK_INCLUDE_DIRS}
     PRIVATE ${GIO_INCLUDE_DIRS}
     PRIVATE ${GLIB_INCLUDE_DIRS}

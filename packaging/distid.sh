@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 #
 # distid.sh - Identify Distro
@@ -44,6 +44,16 @@ which apk >/dev/null 2>&1
 if [[ $? -eq 0 ]]
 then
     echo -n "apk"
+    exit 0
+fi
+
+# Check FreeBSD
+#
+which pkg >/dev/null 2>&1
+
+if [[ $? -eq 0 ]]
+then
+    echo -n "bsdpkg"
     exit 0
 fi
 

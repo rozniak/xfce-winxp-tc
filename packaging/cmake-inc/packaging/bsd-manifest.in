@@ -1,0 +1,14 @@
+name: @ALT_PROJECT_NAME@
+version: "@PROJECT_VERSION@"
+origin: wintc/@ALT_PROJECT_NAME@
+comment: @PROJECT_DESCRIPTION@
+arch: @CMAKE_SYSTEM_PROCESSOR@
+www: https://github.com/rozniak/xfce-winxp-tc
+maintainer: @PROJECT_MAINTAINER@
+prefix: @CMAKE_INSTALL_PREFIX@
+licenses: [ @BSD_LICENCE@ ]
+desc: @PROJECT_DESCRIPTION@
+
+deps: {
+@BSD_DEPENDENCIES@
+}

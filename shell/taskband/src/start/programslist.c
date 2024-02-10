@@ -137,7 +137,7 @@ static void programs_list_append_all_programs_item(
     // Set garcon menu
     //
     GarconMenu* programs_menu    = garcon_menu_new_for_path(
-                                       "/usr/share/wintc/shell-res/start-menu.menu"
+                                       WINTC_ASSETS_DIR "/shell-res/start-menu.menu"
                                    );
     GtkWidget*  programs_submenu = garcon_gtk_menu_new(programs_menu);
 
@@ -227,7 +227,7 @@ static void programs_list_append_top_items(
 )
 {
     GarconMenu* all_entries = garcon_menu_new_for_path(
-                                  "/usr/share/wintc/shell-res/all.menu"
+                                  WINTC_ASSETS_DIR "/shell-res/all.menu"
                               );
     GError*     load_error  = NULL;
 

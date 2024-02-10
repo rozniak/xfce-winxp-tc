@@ -126,3 +126,4 @@ static void on_self_realized(
 
     gtk_widget_show_all(classic_ui->priv->wnd_gina);
 }
+

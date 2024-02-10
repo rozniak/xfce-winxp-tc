@@ -41,6 +41,7 @@ target_compile_options(
 target_include_directories(
     wintc-desktop
     SYSTEM
+    BEFORE
     PRIVATE ${GLIB_INCLUDE_DIRS}
     PRIVATE ${GTK3_INCLUDE_DIRS}
     PRIVATE ${WINTC_COMGTK_INCLUDE_DIRS}

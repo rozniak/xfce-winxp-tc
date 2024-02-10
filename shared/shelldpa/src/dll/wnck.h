@@ -50,3 +50,4 @@ extern void (*p_wnck_window_unminimize) (
 gboolean init_dll_wnck(void);
 
 #endif
+

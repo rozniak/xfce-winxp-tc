@@ -30,3 +30,4 @@ void wintc_gina_strip_stop_animating(
 );
 
 #endif
+

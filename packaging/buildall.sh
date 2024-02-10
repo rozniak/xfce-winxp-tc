@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 #
 # buildall.sh - Build Entire System
@@ -12,10 +12,10 @@
 #
 # CONSTANTS
 #
-CURDIR=`realpath -s "./"`
+CURDIR=`realpath "./"`
 SCRIPTDIR=`dirname "$0"`
 
-REPO_ROOT=`realpath -s "${SCRIPTDIR}/.."`
+REPO_ROOT=`realpath "${SCRIPTDIR}/.."`
 TARGETS_PATH="${SCRIPTDIR}/targets"
 BLDUTILS_ROOT="${REPO_ROOT}/tools/bldutils"
 

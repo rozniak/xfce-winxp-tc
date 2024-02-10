@@ -25,11 +25,15 @@ wintc_resolve_library(glib-2.0     GLIB)
 wintc_resolve_library(gtk+-3.0     GTK3)
 wintc_resolve_library(wintc-comgtk WINTC_COMGTK)
 
+configure_file(public/wintc-shllang.h.in ${PROJECT_ROOT}/public/wintc-shllang.h @ONLY)
+configure_file(src/domain.h.in ${PROJECT_ROOT}/src/domain.h @ONLY)
+
 wintc_create_config_h()
 
 add_library(
     libwintc-shllang
     src/config.h
+    src/domain.h
     src/controls.c
     src/controls.h
     src/places.c
@@ -55,6 +59,7 @@ target_compile_options(
 target_include_directories(
     libwintc-shllang
     SYSTEM
+    BEFORE
     PRIVATE ${GLIB_INCLUDE_DIRS}
     PRIVATE ${GTK3_INCLUDE_DIRS}
     PRIVATE ${WINTC_COMGTK_INCLUDE_DIRS}

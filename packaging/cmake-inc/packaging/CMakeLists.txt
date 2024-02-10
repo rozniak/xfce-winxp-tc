@@ -25,6 +25,7 @@ if (
 )
     set(LIB_DIR lib)
 elseif (
+    ${CMAKE_SYSTEM_PROCESSOR} STREQUAL "amd64"  OR
     ${CMAKE_SYSTEM_PROCESSOR} STREQUAL "x86_64" OR
     ${CMAKE_SYSTEM_PROCESSOR} STREQUAL "ia64"   OR
     ${CMAKE_SYSTEM_PROCESSOR} STREQUAL "armv8"
@@ -46,6 +47,14 @@ if (
     set(WINTC_SAFE_SBIN_DIR ${CMAKE_INSTALL_BINDIR})
 else()
     set(WINTC_SAFE_SBIN_DIR ${CMAKE_INSTALL_SBINDIR})
+endif()
+
+# Set up pkgconfig directory target
+#
+if (${WINTC_PKGMGR} STREQUAL "bsdpkg")
+    set(WINTC_SAFE_PKGCONFIG_DIR libdata)
+else()
+    set(WINTC_SAFE_PKGCONFIG_DIR ${CMAKE_INSTALL_LIBDIR})
 endif()
 
 # Define dependency mapping function
@@ -95,6 +104,7 @@ endfunction()
 #
 set(WINTC_ALPINE_APKBUILD_IN_PATH ${CMAKE_CURRENT_LIST_DIR}/APKBUILD.in)
 set(WINTC_ARCH_PKGBUILD_IN_PATH   ${CMAKE_CURRENT_LIST_DIR}/PKGBUILD.in)
+set(WINTC_BSD_MANIFEST_IN_PATH    ${CMAKE_CURRENT_LIST_DIR}/bsd-manifest.in)
 set(WINTC_DEBIAN_CONTROL_IN_PATH  ${CMAKE_CURRENT_LIST_DIR}/debian-control.in)
 
 function(wintc_configure_and_install_packaging)
@@ -177,6 +187,31 @@ function(wintc_configure_and_install_packaging)
         endif()
 
         configure_file(${WINTC_ARCH_PKGBUILD_IN_PATH} PKGBUILD @ONLY)
+    elseif (${WINTC_PKGMGR} STREQUAL "bsdpkg")
+        message(STATUS "Outputting build for FreeBSD packaging")
+
+        # No /lib64 on FreeBSD
+        #
+        set(LIB_DIR lib PARENT_SCOPE)
+
+        # Set the licence
+        #
+        if (${PROJECT_FREESTATUS})
+            set(BSD_LICENCE GPL)
+        else()
+            set(BSD_LICENCE non-free)
+        endif()
+
+        # Map dependencies to FreeBSD
+        #
+        wintc_map_dependencies()
+
+        if (DEFINED DEPENDENCIES_MAP)
+            list(JOIN DEPENDENCIES_MAP ": { origin: '*', version: '*' },\n" BSD_DEPENDENCIES)
+            string(APPEND BSD_DEPENDENCIES ": { origin: '*', version: '*' }")
+        endif()
+
+        configure_file(${WINTC_BSD_MANIFEST_IN_PATH} manifest @ONLY)
     elseif (${WINTC_PKGMGR} STREQUAL "deb")
         message(STATUS "Outputting build for Debian packaging")
 

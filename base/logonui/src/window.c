@@ -222,3 +222,4 @@ static void on_window_realize(
         )
     );
 }
+

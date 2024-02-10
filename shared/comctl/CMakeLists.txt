@@ -53,6 +53,7 @@ target_compile_options(
 target_include_directories(
     libwintc-comctl
     SYSTEM
+    BEFORE
     PRIVATE ${GDK_PIXBUF_INCLUDE_DIRS}
     PRIVATE ${GLIB_INCLUDE_DIRS}
     PRIVATE ${GTK3_INCLUDE_DIRS}

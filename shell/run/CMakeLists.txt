@@ -56,6 +56,7 @@ target_compile_options(
 target_include_directories(
     wintc-shell-run
     SYSTEM
+    BEFORE
     PRIVATE ${GDK_INCLUDE_DIRS}
     PRIVATE ${GLIB_INCLUDE_DIRS}
     PRIVATE ${GTK3_INCLUDE_DIRS}

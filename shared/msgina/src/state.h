@@ -10,3 +10,4 @@ typedef enum
 } WinTCGinaState;
 
 #endif
+

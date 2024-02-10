@@ -524,7 +524,7 @@ static void update_userpic(
         // FIXME: This should read from whatever the XDG path is, probably needs a
         //        g_strdup_printf for the username
         //
-        css = "* { background-image: url('/usr/share/wintc/shell-res/fpo-userpic.png'); }";
+        css = "* { background-image: url('" WINTC_ASSETS_DIR "/shell-res/fpo-userpic.png'); }";
     }
 
     // Give GTK a bump that we want to update the pic

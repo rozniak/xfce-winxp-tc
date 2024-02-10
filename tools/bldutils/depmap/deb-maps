@@ -16,6 +16,7 @@ pulseaudio-->bt-->libpulse-dev
 pulseaudio-->rt-->libpulse0
 python3-venv-->bt,rt-->python3-venv
 sass-->bt,rt-->ruby-sass
+sysinfo-->bt,rt-->NULL
 wintc-comctl-->bt,rt-->libwintc-comctl
 wintc-comgtk-->bt,rt-->libwintc-comgtk
 wintc-exec-->bt,rt-->libwintc-exec

@@ -38,5 +38,6 @@ Supported distros/package formats:
 - Alpine Linux (`.apk`)
 - Arch Linux (`.pkg.tar.zst`)
 - Debian (`.deb`)
+- FreeBSD (`.pkg`)
 
 Please check under the `packaging` tag to see if there is an open issue for your favourite distro/package format. You can help speed up the process by providing a simple example package script or TL;DR so that the porting process is easier (I'm not familiar with every distro out there!)

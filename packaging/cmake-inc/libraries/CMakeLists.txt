@@ -25,5 +25,5 @@ endif()
 #
 function(wintc_add_pkgconfig_install)
     configure_file(${DEFAULT_LIB_PKGCONFIG} ${LIB_NAME}.pc @ONLY)
-    install(FILES ${CMAKE_BINARY_DIR}/${LIB_NAME}.pc DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
+    install(FILES ${CMAKE_BINARY_DIR}/${LIB_NAME}.pc DESTINATION ${WINTC_SAFE_PKGCONFIG_DIR}/pkgconfig)
 endfunction()

@@ -45,6 +45,7 @@ target_compile_options(
 target_include_directories(
     wintc-shell-winver
     SYSTEM
+    BEFORE
     PRIVATE ${GDK_PIXBUF_INCLUDE_DIRS}
     PRIVATE ${GLIB_INCLUDE_DIRS}
     PRIVATE ${GTK3_INCLUDE_DIRS}
@@ -72,6 +73,25 @@ target_link_libraries(
     PRIVATE ${WINTC_COMGTK_LIBRARIES}
     PRIVATE ${WINTC_WINBRAND_LIBRARIES}
 )
+
+# FreeBSD requires linking to libsysinfo port
+#
+if (${WINTC_PKGMGR} STREQUAL "bsdpkg")
+    wintc_resolve_library(libsysinfo SYSINFO)
+
+    target_include_directories(
+        wintc-shell-winver
+        PRIVATE ${SYSINFO_INCLUDE_DIRS}
+    )
+    target_link_directories(
+        wintc-shell-winver
+        PRIVATE ${SYSINFO_LIBRARY_DIRS}
+    )
+    target_link_libraries(
+        wintc-shell-winver
+        PRIVATE ${SYSINFO_LIBRARIES}
+    )
+endif()
 
 # Installation
 #

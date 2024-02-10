@@ -93,7 +93,7 @@ static void wintc_gina_logon_session_init(
 //
 // PUBLIC FUNCTIONS
 //
-WinTCGinaLogonSession* wintc_gina_logon_session_new()
+WinTCGinaLogonSession* wintc_gina_logon_session_new(void)
 {
     return WINTC_GINA_LOGON_SESSION(
         g_object_new(
@@ -279,3 +279,4 @@ static void on_greeter_show_prompt(
         g_critical("Unknown prompt: %s", text);
     }
 }
+

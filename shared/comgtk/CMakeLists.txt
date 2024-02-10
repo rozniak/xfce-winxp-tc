@@ -27,10 +27,13 @@ include(../../packaging/cmake-inc/packaging/CMakeLists.txt)
 wintc_resolve_library(glib-2.0 GLIB)
 wintc_resolve_library(gtk+-3.0 GTK3)
 
+configure_file(public/wintc-comgtk.h.in ${PROJECT_ROOT}/public/wintc-comgtk.h @ONLY)
+configure_file(src/assets.h.in  ${PROJECT_ROOT}/src/assets.h  @ONLY)
 configure_file(src/version.c.in ${PROJECT_ROOT}/src/version.c @ONLY)
 
 add_library(
     libwintc-comgtk
+    src/assets.h
     src/debug.h
     src/defprocs.c
     src/defprocs.h
@@ -74,6 +77,7 @@ target_compile_options(
 target_include_directories(
     libwintc-comgtk
     SYSTEM
+    BEFORE
     PRIVATE ${GLIB_INCLUDE_DIRS}
     PRIVATE ${GTK3_INCLUDE_DIRS}
 )

@@ -1082,3 +1082,4 @@ static void on_button_go_clicked(
         gtk_entry_get_text(GTK_ENTRY(user_list->priv->entry_password))
     );
 }
+

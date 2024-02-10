@@ -26,3 +26,4 @@ GType wintc_gina_auth_window_get_type(void) G_GNUC_CONST;
 GtkWidget* wintc_gina_auth_window_new(void);
 
 #endif
+

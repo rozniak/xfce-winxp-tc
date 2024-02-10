@@ -52,6 +52,7 @@ target_compile_options(
 target_include_directories(
     libwintc-sndapi
     SYSTEM
+    BEFORE
     PRIVATE ${GLIB_INCLUDE_DIRS}
     PRIVATE ${GTK3_INCLUDE_DIRS}
     PRIVATE ${PULSEAUDIO_INCLUDE_DIRS}

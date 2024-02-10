@@ -1,6 +1,7 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <locale.h>
+#include <wintc-shllang.h>
 
 #include "application.h"
 #include "meta.h"
@@ -13,7 +14,7 @@ int main(
     // Set up locales
     //
     setlocale(LC_ALL, "");
-    bindtextdomain(PKG_NAME, "/usr/share/locale");
+    bindtextdomain(PKG_NAME, WINTC_LOCALE_DIR);
     textdomain(PKG_NAME);
 
     // Launch application

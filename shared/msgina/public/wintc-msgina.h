@@ -75,3 +75,4 @@ typedef enum
 } WinTCGinaState;
 
 #endif
+

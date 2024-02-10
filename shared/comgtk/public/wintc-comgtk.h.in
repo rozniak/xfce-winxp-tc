@@ -5,6 +5,11 @@
 #include <gtk/gtk.h>
 
 //
+// Assets-related
+//
+#define WINTC_ASSETS_DIR "@CMAKE_INSTALL_PREFIX@/@WINTC_ASSETS_INSTALL_DIR@"
+
+//
 // Debugging
 //
 #define WINTC_ENVVAR_DEBUG_LOGGING "WINDEBUG"
@@ -236,3 +241,4 @@ void wintc_focus_window(
 );
 
 #endif
+

@@ -1,4 +1,4 @@
-prefix=/usr
+prefix=@CMAKE_INSTALL_PREFIX@
 exec_prefix=${prefix}
 libdir=${prefix}/@LIB_DIR@
 includedir=${exec_prefix}/include
