@@ -5,6 +5,7 @@ pkgdesc="@PROJECT_DESCRIPTION@"
 arch=("@ARCH_ARCHITECTURE@")
 url="https://github.com/rozniak/xfce-winxp-tc"
 license=("@ARCH_LICENCE@")
+options=(@ARCH_PKGBUILD_OPTIONS@)
 
 package()
 {

@@ -168,6 +168,14 @@ function(wintc_configure_and_install_packaging)
             string(APPEND  ARCH_DEPENDENCIES ")")
         endif()
 
+        # Handle build options
+        #
+        if (${CMAKE_BUILD_TYPE} STREQUAL "Release")
+            set(ARCH_PKGBUILD_OPTIONS "strip !debug")
+        else()
+            set(ARCH_PKGBUILD_OPTIONS "!strip !debug")
+        endif()
+
         configure_file(${WINTC_ARCH_PKGBUILD_IN_PATH} PKGBUILD @ONLY)
     elseif (${WINTC_PKGMGR} STREQUAL "deb")
         message(STATUS "Outputting build for Debian packaging")
