@@ -497,7 +497,7 @@ static void on_ok_button_clicked(
 
     // Command launch failed, what was the error?!
     //
-    gchar* message = g_slice_alloc0(WINTC_GCHAR_BUFFER_SIZE);
+    gchar* message;
 
     WINTC_LOG_USER_DEBUG("Run command failed: %s", error->message);
 

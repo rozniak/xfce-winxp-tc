@@ -25,12 +25,15 @@ struct _WinTCNotepadApplication
 static void wintc_notepad_application_activate(
     GApplication* application
 );
-
 static void wintc_notepad_application_open(
     GApplication* application,
     GFile**       files,
     int           n_files,
     const gchar*  hint
+);
+
+static void first_run(
+    GApplication* application
 );
 
 //
@@ -59,6 +62,70 @@ static void wintc_notepad_application_activate(
     GApplication* application
 )
 {
+    WinTCNotepadApplication* notepad_app =
+        WINTC_NOTEPAD_APPLICATION(application);
+
+    first_run(application);
+
+    gtk_widget_show_all(
+        wintc_notepad_window_new(notepad_app)
+    );
+}
+
+static void wintc_notepad_application_open(
+    GApplication* application,
+    GFile**       files,
+    int           n_files,
+    WINTC_UNUSED(const gchar* hint)
+)
+{
+    WinTCNotepadApplication* notepad_app =
+        WINTC_NOTEPAD_APPLICATION(application);
+
+    first_run(application);
+
+    for (int i = 0; i < n_files; i++)
+    {
+        GFile*     file = files[i];
+        gchar*     uri  = g_file_get_uri(file);
+        GtkWidget* wnd  = wintc_notepad_window_new_with_uri(
+                              notepad_app,
+                              uri
+                          );
+
+        gtk_widget_show_all(wnd);
+
+        g_free(uri);
+    }
+}
+
+//
+// PUBLIC FUNCTIONS
+//
+WinTCNotepadApplication* wintc_notepad_application_new(void)
+{
+    WinTCNotepadApplication* app;
+
+    g_set_application_name("Notepad");
+
+    app =
+        g_object_new(
+            wintc_notepad_application_get_type(),
+            "application-id", "uk.co.oddmatics.wintc.notepad",
+            "flags",          G_APPLICATION_HANDLES_OPEN,
+            NULL
+        );
+
+    return app;
+}
+
+//
+// PRIVATE FUNCTIONS
+//
+static void first_run(
+    WINTC_UNUSED(GApplication* application)
+)
+{
     static gboolean first_run = TRUE;
 
     if (first_run)
@@ -78,41 +145,4 @@ static void wintc_notepad_application_activate(
 
         first_run = FALSE;
     }
-
-    // Launch
-    //
-    WinTCNotepadApplication* notepad_app = WINTC_NOTEPAD_APPLICATION(application);
-
-    gtk_widget_show_all(
-        wintc_notepad_window_new(notepad_app)
-    );
-}
-
-static void wintc_notepad_application_open(
-    WINTC_UNUSED(GApplication* application),
-    WINTC_UNUSED(GFile**       files),
-    WINTC_UNUSED(int           n_files),
-    WINTC_UNUSED(const gchar*  hint)
-)
-{
-    // TODO: Implement this
-}
-
-//
-// PUBLIC FUNCTIONS
-//
-WinTCNotepadApplication* wintc_notepad_application_new(void)
-{
-    WinTCNotepadApplication* app;
-
-    g_set_application_name("Notepad");
-
-    app =
-        g_object_new(
-            wintc_notepad_application_get_type(),
-            "application-id", "uk.co.oddmatics.wintc.notepad",
-            NULL
-        );
-
-    return app;
 }

@@ -27,5 +27,9 @@ GType wintc_notepad_window_get_type(void) G_GNUC_CONST;
 GtkWidget* wintc_notepad_window_new(
     WinTCNotepadApplication* app
 );
+GtkWidget* wintc_notepad_window_new_with_uri(
+    WinTCNotepadApplication* app,
+    const gchar*             uri
+);
 
 #endif

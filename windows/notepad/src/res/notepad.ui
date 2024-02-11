@@ -24,6 +24,7 @@
                   <object class="GtkMenuItem">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="action-name">win.new</property>
                     <property name="label" translatable="yes">%CTL_NEW%</property>
                     <property name="use-underline">True</property>
                   </object>
@@ -32,6 +33,8 @@
                   <object class="GtkMenuItem">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="action-name">win.open</property>
+                    <property name="action-target">''</property>
                     <property name="label" translatable="yes">%PUNC_MOREINPUT%%CTL_OPEN%</property>
                     <property name="use-underline">True</property>
                   </object>
@@ -40,6 +43,7 @@
                   <object class="GtkMenuItem">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="action-name">win.save</property>
                     <property name="label" translatable="yes">%CTL_SAVE%</property>
                     <property name="use-underline">True</property>
                   </object>
@@ -48,6 +52,8 @@
                   <object class="GtkMenuItem">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="action-name">win.save-as</property>
+                    <property name="action-target">''</property>
                     <property name="label" translatable="yes">%PUNC_MOREINPUT%%CTL_SAVEAS%</property>
                     <property name="use-underline">True</property>
                   </object>
@@ -62,6 +68,7 @@
                   <object class="GtkMenuItem">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="action-name">win.notimpl</property>
                     <property name="label" translatable="yes">%PUNC_MOREINPUT%%CTL_PAGESETUP%</property>
                     <property name="use-underline">True</property>
                   </object>
@@ -70,6 +77,7 @@
                   <object class="GtkMenuItem">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="action-name">win.notimpl</property>
                     <property name="label" translatable="yes">%PUNC_MOREINPUT%%CTL_PRINT%</property>
                     <property name="use-underline">True</property>
                   </object>
@@ -84,6 +92,7 @@
                   <object class="GtkMenuItem">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="action-name">win.exit</property>
                     <property name="label" translatable="yes">%CTL_EXIT%</property>
                     <property name="use-underline">True</property>
                   </object>
@@ -106,6 +115,7 @@
                   <object class="GtkMenuItem">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="action-name">win.notimpl</property>
                     <property name="label" translatable="yes">%CTL_UNDO%</property>
                     <property name="use-underline">True</property>
                   </object>
@@ -120,6 +130,7 @@
                   <object class="GtkMenuItem">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="action-name">win.notimpl</property>
                     <property name="label" translatable="yes">%CTL_CUT%</property>
                     <property name="use-underline">True</property>
                   </object>
@@ -128,6 +139,7 @@
                   <object class="GtkMenuItem">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="action-name">win.notimpl</property>
                     <property name="label" translatable="yes">%CTL_COPY%</property>
                     <property name="use-underline">True</property>
                   </object>
@@ -136,6 +148,7 @@
                   <object class="GtkMenuItem">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="action-name">win.notimpl</property>
                     <property name="label" translatable="yes">%CTL_PASTE%</property>
                     <property name="use-underline">True</property>
                   </object>
@@ -144,6 +157,7 @@
                   <object class="GtkMenuItem">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="action-name">win.notimpl</property>
                     <property name="label" translatable="yes">%CTL_DELETE%</property>
                     <property name="use-underline">True</property>
                   </object>
@@ -158,6 +172,7 @@
                   <object class="GtkMenuItem">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="action-name">win.notimpl</property>
                     <property name="label" translatable="yes">%PUNC_MOREINPUT%%CTL_FIND%</property>
                     <property name="use-underline">True</property>
                   </object>
@@ -166,6 +181,7 @@
                   <object class="GtkMenuItem">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="action-name">win.notimpl</property>
                     <property name="label" translatable="yes">%CTL_FINDNEXT%</property>
                     <property name="use-underline">True</property>
                   </object>
@@ -174,6 +190,7 @@
                   <object class="GtkMenuItem">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="action-name">win.notimpl</property>
                     <property name="label" translatable="yes">%PUNC_MOREINPUT%%CTL_REPLACE%</property>
                     <property name="use-underline">True</property>
                   </object>
@@ -182,6 +199,7 @@
                   <object class="GtkMenuItem">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="action-name">win.notimpl</property>
                     <property name="label" translatable="yes">%PUNC_MOREINPUT%%CTL_GOTO%</property>
                     <property name="use-underline">True</property>
                   </object>
@@ -196,6 +214,7 @@
                   <object class="GtkMenuItem">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="action-name">win.notimpl</property>
                     <property name="label" translatable="yes">%CTL_SELECTALL%</property>
                     <property name="use-underline">True</property>
                   </object>
@@ -204,6 +223,7 @@
                   <object class="GtkMenuItem">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="action-name">win.notimpl</property>
                     <property name="label" translatable="yes">Time/Date</property>
                     <property name="use-underline">True</property>
                   </object>
@@ -226,6 +246,7 @@
                   <object class="GtkMenuItem">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="action-name">win.notimpl</property>
                     <property name="label" translatable="yes">%CTL_WORDWRAP%</property>
                     <property name="use-underline">True</property>
                   </object>
@@ -234,6 +255,7 @@
                   <object class="GtkMenuItem">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="action-name">win.notimpl</property>
                     <property name="label" translatable="yes">%PUNC_MOREINPUT%%CTL_FONT%</property>
                     <property name="use-underline">True</property>
                   </object>
@@ -256,6 +278,7 @@
                   <object class="GtkMenuItem">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="action-name">win.notimpl</property>
                     <property name="label" translatable="yes">%CTL_STATUSBAR%</property>
                     <property name="use-underline">True</property>
                   </object>
@@ -278,6 +301,7 @@
                   <object class="GtkMenuItem">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="action-name">win.notimpl</property>
                     <property name="label" translatable="yes">%CTL_HELPTOPICS%</property>
                     <property name="use-underline">True</property>
                   </object>
@@ -292,6 +316,7 @@
                   <object class="GtkMenuItem">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="action-name">win.notimpl</property>
                     <property name="label" translatable="yes">About Notepad</property>
                     <property name="use-underline">True</property>
                   </object>
@@ -313,7 +338,7 @@
         <property name="can-focus">True</property>
         <property name="shadow-type">in</property>
         <child>
-          <object class="GtkTextView">
+          <object class="GtkTextView" id="text-edit">
             <property name="visible">True</property>
             <property name="can-focus">True</property>
           </object>
