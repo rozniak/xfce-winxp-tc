@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+    <gresource prefix="/uk/oddmatics/wintc/mspaint">
+        <file>mspaint.ui</file>
+        <file>tool-freeform-select.png</file>
+        <file>tool-rectangle-select.png</file>
+        <file>tool-eraser.png</file>
+        <file>tool-fill.png</file>
+        <file>tool-ink-dropper.png</file>
+        <file>tool-zoom.png</file>
+        <file>tool-pencil.png</file>
+        <file>tool-brush.png</file>
+        <file>tool-spray-can.png</file>
+        <file>tool-text.png</file>
+        <file>tool-line-simple.png</file>
+        <file>tool-line-bezier.png</file>
+        <file>tool-rectangle.png</file>
+        <file>tool-freeform.png</file>
+        <file>tool-ellipse.png</file>
+        <file>tool-rectangle-rounded.png</file>
+    </gresource>
+</gresources>

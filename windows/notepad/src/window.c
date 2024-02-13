@@ -266,6 +266,8 @@ static void wintc_notepad_window_finalize(
     WinTCNotepadWindow* wnd = WINTC_NOTEPAD_WINDOW(object);
 
     g_free(wnd->file_uri);
+
+    (G_OBJECT_CLASS(wintc_notepad_window_parent_class))->finalize(object);
 }
 
 static void wintc_notepad_window_get_property(

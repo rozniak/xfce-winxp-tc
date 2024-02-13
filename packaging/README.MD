@@ -10,6 +10,8 @@ The contents of this directory is as follows:
 
 `archpkg/` - Arch Linux (`.pkg.tar.zst`) packaging implementation
 
+`bsdpkg/` - FreeBSD (`.pkg`) packaging implementation
+
 `deb/` - Debian (`.deb`) packaging implementation
 
 `build.sh` - build script for compiling a single component

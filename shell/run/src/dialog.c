@@ -267,7 +267,7 @@ static void wintc_run_dialog_finalize(
     GObject* object
 )
 {
-    (*G_OBJECT_CLASS(wintc_run_dialog_parent_class)->finalize) (object);
+    (G_OBJECT_CLASS(wintc_run_dialog_parent_class))->finalize(object);
 }
 
 //

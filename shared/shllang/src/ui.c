@@ -264,6 +264,11 @@ static const gchar* translate_widget_text(
     gchar*             text_punc   = NULL;
     gchar*             text_str    = NULL;
 
+    if (!widget_text)
+    {
+        return NULL;
+    }
+
     if (!g_regex_match(s_langstr_regex, widget_text, 0, &match_info))
     {
         return ret;

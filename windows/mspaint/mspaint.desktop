@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Paint
+Comment=Creates and edits drawings, and displays and edits scanned photos.
+Exec=mspaint %F
+Icon=mspaint
+Terminal=false
+StartupNotify=false
+Type=Application
+Categories=Utility;Graphics;RasterGraphics;GTK;
+MimeType=image/bmp;image/gif;image/jpeg;image/png;image/tiff;image/vnd.microsoft.icon;
