@@ -144,7 +144,7 @@ static void wintc_notification_volume_constructed(
     // Connect up to the notification icon widget
     // 
     volume->popup_volmgmt =
-        wintc_dpa_create_popup(behaviour->widget_notif);
+        wintc_dpa_create_popup(behaviour->widget_notif, FALSE);
 
     volume->box_container = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     volume->check_mute    = gtk_check_button_new_with_label("Mute");

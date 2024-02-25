@@ -7,7 +7,8 @@
  * Author(s): Rory Fewell <roryf@oddmatics.uk>
  */
 
-$start_flag_size: 16px !default;
+$start_flag_height: 16px !default;
+$start_flag_width: 16px !default;
 $start_text_case: upper !default;
 
 $start_menu_allprograms_height: 30px !default;
@@ -360,7 +361,7 @@ $start_menu_allprograms_separator_styles:
         $start_menu_allprograms_separator_styles,
         true,
         margin,
-        20,
+        4,
         undefined,
         undefined,
         undefined

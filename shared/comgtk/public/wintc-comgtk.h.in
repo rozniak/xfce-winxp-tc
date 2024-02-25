@@ -10,6 +10,13 @@
 #define WINTC_ASSETS_DIR "@CMAKE_INSTALL_PREFIX@/@WINTC_ASSETS_INSTALL_DIR@"
 
 //
+// Container-related
+//
+void wintc_gtk_container_clear(
+    GtkContainer* container
+);
+
+//
 // Debugging
 //
 #define WINTC_ENVVAR_DEBUG_LOGGING "WINDEBUG"

@@ -64,7 +64,8 @@ static gboolean on_popup_window_focus_out(
 // PUBLIC FUNCTIONS
 //
 GtkWidget* wintc_dpa_create_popup(
-    GtkWidget* owner
+    GtkWidget* owner,
+    gboolean   enable_composition
 )
 {
     GtkWidget* popup;
@@ -77,10 +78,6 @@ GtkWidget* wintc_dpa_create_popup(
     {
         popup = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 
-        gtk_window_set_decorated(
-            GTK_WINDOW(popup),
-            FALSE
-        );
         gtk_window_set_type_hint(
             GTK_WINDOW(popup),
             GDK_WINDOW_TYPE_HINT_POPUP_MENU
@@ -105,6 +102,34 @@ GtkWidget* wintc_dpa_create_popup(
             popup,
             GDK_FOCUS_CHANGE_MASK
         );
+
+        // If the application wants composition (eg. for shadows) we fake out
+        // CSD here
+        //
+        if (enable_composition)
+        {
+            GtkWidget* fake_titlebar = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+
+            // HACK: Apply CSS to force the fake titlebar to not show up as
+            //       Adwaita has a min-height on titlebar boxes! Blah!
+            //
+            wintc_widget_add_css(
+                fake_titlebar,
+                "* { min-height: 0px; }"
+            );
+
+            gtk_window_set_titlebar(
+                GTK_WINDOW(popup),
+                fake_titlebar
+            );
+        }
+        else
+        {
+            gtk_window_set_decorated(
+                GTK_WINDOW(popup),
+                FALSE
+            );
+        }
 
         // Connect signals
         //
@@ -144,7 +169,11 @@ void wintc_dpa_show_popup(
         );
         gtk_widget_show_all(popup);
 
-        height = gtk_widget_get_allocated_height(popup);
+        gtk_window_get_size(
+            GTK_WINDOW(popup),
+            NULL,
+            &height
+        );
 
         gdk_window_get_origin(
             gtk_widget_get_window(owner),

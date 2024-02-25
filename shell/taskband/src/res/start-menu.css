@@ -1,4 +1,4 @@
-.xp-start-button .lower
+.wintc-start-button .lower
 {
     font-size: 0pt;
 }
@@ -13,32 +13,22 @@ box > menubar > separator
     margin: 4px 0px;
 }
 
-menuitem.xp-start-all-programs
+menuitem.start-all-programs > box
 {
     min-height: 32px;
 }
 
-menuitem.xp-start-all-programs > box
-{
-    font-weight: bold;
-}
-
-separator.xp-start-all-programs
-{
-    margin-top: 40px;
-}
-
-.xp-start-logoffpane button
+.start-logoffpane button
 {
     margin: 8px 3px;
 }
 
-.xp-start-logoffpane button:last-child
+.start-logoffpane button:last-child
 {
     margin-right: 8px;
 }
 
-.xp-start-userpane box
+.start-userpane box
 {
     background-size: 100% 100%;
     box-shadow: 0px 0px 2px 0px rgba(0,0,0,0.75);
@@ -47,12 +37,12 @@ separator.xp-start-all-programs
     min-width: 48px;
 }
 
-.xp-start-userpane label
+.start-userpane label
 {
     font-size: 16pt;
 }
 
-.xp-start-vuserpane label
+.start-vuserpane label
 {
     font-size: 0pt;
 }

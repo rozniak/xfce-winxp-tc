@@ -9,7 +9,6 @@
 //
 // GTK OOP BOILERPLATE
 //
-typedef struct _WinTCTaskbandWindowPrivate WinTCTaskbandWindowPrivate;
 typedef struct _WinTCTaskbandWindowClass   WinTCTaskbandWindowClass;
 typedef struct _WinTCTaskbandWindow        WinTCTaskbandWindow;
 
@@ -30,3 +29,4 @@ GtkWidget* wintc_taskband_window_new(
 );
 
 #endif
+

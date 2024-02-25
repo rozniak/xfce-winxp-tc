@@ -7,7 +7,8 @@
  * Author(s): Rory Fewell <roryf@oddmatics.uk>
  */
 
-$start_flag_size: 20px;
+$start_flag_height: 20px;
+$start_flag_width: 20px;
 $start_text_case: lower;
 
 $start_menu_allprograms_height: 24px;
@@ -478,7 +479,7 @@ $start_menu_places_column_styles:
         padding,
         2,
         2,
-        undefined,
+        5,
         5
     );
 $start_menu_places_column_styles:

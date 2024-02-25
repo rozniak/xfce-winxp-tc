@@ -5,24 +5,57 @@
 #include <wintc-shelldpa.h>
 
 #include "application.h"
+#include "toolbar.h"
 #include "window.h"
-#include "start/startbutton.h"
-#include "systray/notifarea.h"
-#include "taskbuttons/taskbuttonbar.h"
-#include "taskbuttons/windowmonitor.h"
+#include "start/toolbar.h"
+#include "systray/toolbar.h"
+#include "taskbuttons/toolbar.h"
+
+#define TASKBAND_HEIGHT 30
+
+//
+// PRIVATE ENUMS
+//
+typedef enum
+{
+    WINTC_TASKBAND_TOOLBAR_START,
+    WINTC_TASKBAND_TOOLBAR_QUICK_ACCESS,
+    WINTC_TASKBAND_TOOLBAR_PRE_BUTTONS,
+    WINTC_TASKBAND_TOOLBAR_BUTTONS,
+    WINTC_TASKBAND_TOOLBAR_POST_BUTTONS,
+    WINTC_TASKBAND_TOOLBAR_NOTIFICATION_AREA
+} WinTCTaskbandToolbarId;
+
+//
+// FORWARD DECLARATIONS
+//
+static void wintc_taskband_window_create_toolbar(
+    WinTCTaskbandWindow* taskband,
+    GType                toolbar_type,
+    gboolean             expand
+);
+
+static gboolean on_window_map_event(
+    GtkWidget*   self,
+    GdkEventAny* event,
+    gpointer     user_data
+);
+
+//
+// STATIC DATA
+//
+static const WinTCTaskbandToolbarId s_layout[] = {
+    WINTC_TASKBAND_TOOLBAR_START,
+    WINTC_TASKBAND_TOOLBAR_QUICK_ACCESS,
+    WINTC_TASKBAND_TOOLBAR_PRE_BUTTONS,
+    WINTC_TASKBAND_TOOLBAR_BUTTONS,
+    WINTC_TASKBAND_TOOLBAR_POST_BUTTONS,
+    WINTC_TASKBAND_TOOLBAR_NOTIFICATION_AREA
+};
 
 //
 // GTK OOP CLASS/INSTANCE DEFINITIONS
 //
-struct _WinTCTaskbandWindowPrivate
-{
-    GtkWidget*     main_box;
-
-    GtkWidget*     notification_area;
-    GtkWidget*     start_button;
-    GtkWidget*     taskbuttons;
-};
-
 struct _WinTCTaskbandWindowClass
 {
     GtkApplicationWindowClass __parent__;
@@ -32,17 +65,20 @@ struct _WinTCTaskbandWindow
 {
     GtkApplicationWindow __parent__;
 
-    WinTCTaskbandWindowPrivate* priv;
+    GtkWidget*     main_box;
+
+    GtkWidget*     notification_area;
+    GtkWidget*     start_button;
+    GtkWidget*     taskbuttons;
 };
 
 //
 // GTK TYPE DEFINITION & CTORS
 //
-G_DEFINE_TYPE_WITH_CODE(
+G_DEFINE_TYPE(
     WinTCTaskbandWindow,
     wintc_taskband_window,
-    GTK_TYPE_APPLICATION_WINDOW,
-    G_ADD_PRIVATE(WinTCTaskbandWindow)
+    GTK_TYPE_APPLICATION_WINDOW
 )
 
 static void wintc_taskband_window_class_init(
@@ -53,8 +89,6 @@ static void wintc_taskband_window_init(
     WinTCTaskbandWindow* self
 )
 {
-    self->priv = wintc_taskband_window_get_instance_private(self);
-
     //
     // WINDOW SETUP
     //
@@ -63,71 +97,27 @@ static void wintc_taskband_window_init(
         "wintc-taskband"
     );
 
+    // FIXME: This is obviously hard coded rubbish!
+    //
+    gtk_widget_set_size_request(GTK_WIDGET(self), -1, TASKBAND_HEIGHT);
     wintc_anchor_taskband_to_bottom(GTK_WINDOW(self));
-
-    //
-    // SET UP CHILDREN IN HERE
-    // FIXME: Tidy all this stuff up big time! Taskband shouldn't know about
-    //        how stuff is built, just ask for a Start button, a taskbar, and
-    //        systray -- no implementation details!!
-    //
 
     // Create main container box
     //
-    self->priv->main_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+    self->main_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 
     gtk_container_add(
         GTK_CONTAINER(self),
-        self->priv->main_box
+        self->main_box
     );
 
-    // Create Start button and menu
+    // Connect to map-event signal to spawn toolbars once the window opens
     //
-    GtkCssProvider* css_start = gtk_css_provider_new();
-
-    gtk_css_provider_load_from_resource(
-        css_start,
-        "/uk/oddmatics/wintc/taskband/start-menu.css"
-    );
-
-    gtk_style_context_add_provider_for_screen(
-        gdk_screen_get_default(),
-        GTK_STYLE_PROVIDER(css_start),
-        GTK_STYLE_PROVIDER_PRIORITY_FALLBACK
-    );
-
-    self->priv->start_button = start_button_new();
-
-    gtk_box_pack_start(
-        GTK_BOX(self->priv->main_box),
-        self->priv->start_button,
-        FALSE,
-        FALSE,
-        0
-    );
-
-    // Create task buttons
-    //
-    self->priv->taskbuttons = taskbutton_bar_new();
-
-    gtk_box_pack_start(
-        GTK_BOX(self->priv->main_box),
-        self->priv->taskbuttons,
-        TRUE,
-        TRUE,
-        0
-    );
-
-    // Create notification area
-    //
-    self->priv->notification_area = notification_area_new();
-
-    gtk_box_pack_end(
-        GTK_BOX(self->priv->main_box),
-        self->priv->notification_area,
-        FALSE,
-        FALSE,
-        0
+    g_signal_connect(
+        self,
+        "map-event",
+        G_CALLBACK(on_window_map_event),
+        NULL
     );
 }
 
@@ -150,3 +140,81 @@ GtkWidget* wintc_taskband_window_new(
         )
     );
 }
+
+//
+// PRIVATE FUNCTIONS
+//
+static void wintc_taskband_window_create_toolbar(
+    WinTCTaskbandWindow* taskband,
+    GType                toolbar_type,
+    gboolean             expand
+)
+{
+    WinTCTaskbandToolbar* toolbar = g_object_new(toolbar_type, NULL);
+    GtkWidget*            root    = wintc_taskband_toolbar_get_root_widget(
+                                        toolbar
+                                    );
+
+    gtk_box_pack_start(
+        GTK_BOX(taskband->main_box),
+        root,
+        expand,
+        expand,
+        0
+    );
+
+    gtk_widget_show_all(root);
+}
+
+//
+// CALLBACKS
+//
+static gboolean on_window_map_event(
+    GtkWidget* self,
+    WINTC_UNUSED(GdkEventAny* event),
+    WINTC_UNUSED(gpointer     user_data)
+)
+{
+    WinTCTaskbandWindow* taskband = WINTC_TASKBAND_WINDOW(self);
+
+    // Spawn toolbars
+    //
+    for (guint i = 0; i < G_N_ELEMENTS(s_layout); i++)
+    {
+        switch (s_layout[i])
+        {
+            case WINTC_TASKBAND_TOOLBAR_START:
+                wintc_taskband_window_create_toolbar(
+                    taskband,
+                    TYPE_WINTC_TOOLBAR_START,
+                    FALSE
+                );
+                break;
+
+            case WINTC_TASKBAND_TOOLBAR_BUTTONS:
+                wintc_taskband_window_create_toolbar(
+                    taskband,
+                    TYPE_WINTC_TOOLBAR_TASK_BUTTONS,
+                    TRUE
+                );
+                break;
+
+            case WINTC_TASKBAND_TOOLBAR_NOTIFICATION_AREA:
+                wintc_taskband_window_create_toolbar(
+                    taskband,
+                    TYPE_WINTC_TOOLBAR_NOTIF_AREA,
+                    FALSE
+                );
+                break;
+
+            case WINTC_TASKBAND_TOOLBAR_QUICK_ACCESS:
+            case WINTC_TASKBAND_TOOLBAR_PRE_BUTTONS:
+            case WINTC_TASKBAND_TOOLBAR_POST_BUTTONS:
+                WINTC_LOG_DEBUG("Not implemented toolbar: %d", s_layout[i]);
+                break;
+        }
+    }
+
+    return TRUE;
+}
+

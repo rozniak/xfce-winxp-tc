@@ -6,9 +6,6 @@
 #include "api.h"
 #include "impl-x11.h"
 
-// FIXME: Remove this before release
-#define TASKBAND_ROW_HEIGHT 30
-
 //
 // STRUCTURE DEFINITIONS
 //
@@ -127,12 +124,13 @@ static void on_taskband_realized(
 )
 {
     GdkAtom      cardinal_atom;
-    GdkDisplay*  display       = gdk_display_get_default();
+    GdkDisplay*  display        = gdk_display_get_default();
     GdkRectangle geometry;
-    GdkMonitor*  monitor       = NULL;
-    int          monitor_count = gdk_display_get_n_monitors(display);
+    gint         height_request = 0;
+    GdkMonitor*  monitor        = NULL;
+    int          monitor_count  = gdk_display_get_n_monitors(display);
     GdkAtom      net_wm_strut_partial_atom;
-    int          screen_bottom = 0;
+    int          screen_bottom  = 0;
 
     cardinal_atom =
         gdk_atom_intern_static_string("CARDINAL");
@@ -165,19 +163,25 @@ static void on_taskband_realized(
 
     gdk_monitor_get_geometry(monitor, &geometry);
 
-    gtk_window_set_default_size(
-        GTK_WINDOW(self),
+    gtk_widget_get_size_request(
+        self,
+        NULL,
+        &height_request
+    );
+
+    gtk_widget_set_size_request(
+        self,
         geometry.width,
-        TASKBAND_ROW_HEIGHT
+        height_request
     );
     gtk_window_move(
         GTK_WINDOW(self),
         geometry.x,
-        geometry.y + geometry.height - TASKBAND_ROW_HEIGHT
+        geometry.y + geometry.height - height_request
     );
 
     struts.bottom =
-        screen_bottom - (geometry.y + geometry.height) + TASKBAND_ROW_HEIGHT;
+        screen_bottom - (geometry.y + geometry.height) + height_request;
     struts.bottom_start_x = geometry.x;
     struts.bottom_end_x   = geometry.x + geometry.width;
 

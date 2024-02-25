@@ -35,6 +35,8 @@ add_library(
     libwintc-comgtk
     src/assets.h
     src/debug.h
+    src/container.c
+    src/container.h
     src/defprocs.c
     src/defprocs.h
     src/errors.c

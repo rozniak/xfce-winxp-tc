@@ -20,7 +20,8 @@ typedef enum
 // PUBLIC FUNCTIONS
 //
 GtkWidget* wintc_dpa_create_popup(
-    GtkWidget* owner
+    GtkWidget* owner,
+    gboolean   enable_composition
 );
 void wintc_dpa_show_popup(
     GtkWidget* popup,

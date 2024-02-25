@@ -42,20 +42,17 @@ add_executable(
     src/main.c
     src/meta.h
     src/resources.c
+    src/toolbar.c
+    src/toolbar.h
     src/window.c
     src/window.h
-    src/start/action.c
-    src/start/action.h
-    src/start/placeslist.c
-    src/start/placeslist.h
-    src/start/programslist.c
-    src/start/programslist.h
-    src/start/startbutton.c
-    src/start/startbutton.h
-    src/start/startmenu.c
-    src/start/startmenu.h
-    src/start/startmenuitem.c
-    src/start/startmenuitem.h
+    src/start/menumod.c
+    src/start/menumod.h
+    src/start/personal.c
+    src/start/personal.h
+    src/start/shared.h
+    src/start/toolbar.c
+    src/start/toolbar.h
     src/start/util.c
     src/start/util.h
     src/systray/behaviour.c
@@ -64,10 +61,14 @@ add_executable(
     src/systray/clock.h
     src/systray/notifarea.c
     src/systray/notifarea.h
+    src/systray/toolbar.c
+    src/systray/toolbar.h
     src/systray/volume.c
     src/systray/volume.h
     src/taskbuttons/taskbuttonbar.c
     src/taskbuttons/taskbuttonbar.h
+    src/taskbuttons/toolbar.c
+    src/taskbuttons/toolbar.h
     src/taskbuttons/windowmonitor.c
     src/taskbuttons/windowmonitor.h
 )
