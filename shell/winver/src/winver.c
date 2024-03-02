@@ -6,9 +6,9 @@
 #include <sys/utsname.h>
 #include <unistd.h>
 #include <pwd.h>
-#include <wintc-comctl.h>
-#include <wintc-comgtk.h>
-#include <wintc-winbrand.h>
+#include <wintc/comctl.h>
+#include <wintc/comgtk.h>
+#include <wintc/winbrand.h>
 
 //
 // FORWARD DECLARATIONS
@@ -61,7 +61,7 @@ int main(
 
     gtk_init(&argc, &argv);
 
-    wintc_comctl_install_default_styles();
+    wintc_ctl_install_default_styles();
 
     // Create the window
     //
@@ -120,7 +120,7 @@ int main(
 
     // Get kernel info
     //
-    gchar* build_tag = wintc_get_build_tag();
+    gchar* build_tag = wintc_build_get_tag();
     gchar* kernel_version;
 
     uname(&kernel_info);
@@ -202,7 +202,7 @@ int main(
 
     wintc_widget_add_style_class(
         box_buttons,
-        WINTC_COMCTL_BUTTON_BOX_CSS_CLASS
+        WINTC_CTL_BUTTON_BOX_CSS_CLASS
     );
     
     // Clear mem

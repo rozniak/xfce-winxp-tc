@@ -2,12 +2,12 @@
 #include <glib.h>
 #include <gtk/gtk.h>
 
-#include "style.h"
+#include "../public/style.h"
 
 //
 // PUBLIC FUNCTIONS
 //
-void wintc_comctl_install_default_styles(void)
+void wintc_ctl_install_default_styles(void)
 {
     static gboolean already_done = FALSE;
 

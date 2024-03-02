@@ -1,8 +1,8 @@
 #include <glib.h>
 #include <gtk/gtk.h>
-#include <wintc-comgtk.h>
-#include <wintc-shelldpa.h>
-#include <wintc-shllang.h>
+#include <wintc/comgtk.h>
+#include <wintc/shelldpa.h>
+#include <wintc/shlang.h>
 
 #include "../toolbar.h"
 #include "personal.h"
@@ -27,7 +27,7 @@ static void on_start_button_toggled(
 G_DEFINE_TYPE(
     WinTCToolbarStart,
     wintc_toolbar_start,
-    TYPE_WINTC_TASKBAND_TOOLBAR
+    WINTC_TYPE_TASKBAND_TOOLBAR
 )
 
 static void wintc_toolbar_start_class_init(
@@ -73,7 +73,7 @@ static void wintc_toolbar_start_init(
             "/uk/oddmatics/wintc/taskband/start-button.ui"
         );
 
-    wintc_preprocess_builder_widget_text(builder);
+    wintc_lc_builder_preprocess_widget_text(builder);
 
     toolbar->widget_root =
         GTK_WIDGET(

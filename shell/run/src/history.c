@@ -1,6 +1,6 @@
 #include <glib.h>
 #include <stddef.h>
-#include <wintc-comgtk.h>
+#include <wintc/comgtk.h>
 
 #include "history.h"
 

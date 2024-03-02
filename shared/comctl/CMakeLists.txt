@@ -32,15 +32,14 @@ add_library(
     libwintc-comctl
     src/resources.c
     src/animctl.c
-    src/animctl.h
+    public/animctl.h
     src/style.c
-    src/style.h
+    public/style.h
 )
 
 set_target_properties(
     libwintc-comctl
     PROPERTIES
-    PUBLIC_HEADER public/wintc-comctl.h
     SOVERSION 1
     VERSION ${PROJECT_VERSION}
 )
@@ -80,9 +79,9 @@ target_link_libraries(
 #
 wintc_configure_and_install_packaging()
 wintc_add_pkgconfig_install()
+wintc_install_public_headers()
 
 install(
     TARGETS libwintc-comctl
-    LIBRARY       DESTINATION ${LIB_DIR}
-    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+    LIBRARY DESTINATION ${LIB_DIR}
 )

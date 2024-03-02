@@ -1,6 +1,6 @@
 #include <glib.h>
 #include <gtk/gtk.h>
-#include <wintc-comgtk.h>
+#include <wintc/comgtk.h>
 
 #include "../toolbar.h"
 #include "notifarea.h"
@@ -25,7 +25,7 @@ struct _WinTCToolbarNotifArea
 G_DEFINE_TYPE(
     WinTCToolbarNotifArea,
     wintc_toolbar_notif_area,
-    TYPE_WINTC_TASKBAND_TOOLBAR
+    WINTC_TYPE_TASKBAND_TOOLBAR
 )
 
 static void wintc_toolbar_notif_area_class_init(

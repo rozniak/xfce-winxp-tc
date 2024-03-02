@@ -1,8 +1,8 @@
 #include <gdk/gdk.h>
 #include <glib.h>
 #include <gtk/gtk.h>
-#include <wintc-comgtk.h>
-#include <wintc-shelldpa.h>
+#include <wintc/comgtk.h>
+#include <wintc/shelldpa.h>
 
 #include "application.h"
 #include "toolbar.h"
@@ -130,7 +130,7 @@ GtkWidget* wintc_taskband_window_new(
 {
     return GTK_WIDGET(
         g_object_new(
-            TYPE_WINTC_TASKBAND_WINDOW,
+            WINTC_TYPE_TASKBAND_WINDOW,
             "application", GTK_APPLICATION(app),
             "type",        GTK_WINDOW_TOPLEVEL,
             "decorated",   FALSE,
@@ -186,7 +186,7 @@ static gboolean on_window_map_event(
             case WINTC_TASKBAND_TOOLBAR_START:
                 wintc_taskband_window_create_toolbar(
                     taskband,
-                    TYPE_WINTC_TOOLBAR_START,
+                    WINTC_TYPE_TOOLBAR_START,
                     FALSE
                 );
                 break;
@@ -194,7 +194,7 @@ static gboolean on_window_map_event(
             case WINTC_TASKBAND_TOOLBAR_BUTTONS:
                 wintc_taskband_window_create_toolbar(
                     taskband,
-                    TYPE_WINTC_TOOLBAR_TASK_BUTTONS,
+                    WINTC_TYPE_TOOLBAR_TASK_BUTTONS,
                     TRUE
                 );
                 break;
@@ -202,7 +202,7 @@ static gboolean on_window_map_event(
             case WINTC_TASKBAND_TOOLBAR_NOTIFICATION_AREA:
                 wintc_taskband_window_create_toolbar(
                     taskband,
-                    TYPE_WINTC_TOOLBAR_NOTIF_AREA,
+                    WINTC_TYPE_TOOLBAR_NOTIF_AREA,
                     FALSE
                 );
                 break;

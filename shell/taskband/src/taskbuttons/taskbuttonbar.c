@@ -1,6 +1,6 @@
 #include <glib.h>
 #include <gtk/gtk.h>
-#include <wintc-comgtk.h>
+#include <wintc/comgtk.h>
 
 #include "../taskband.h"
 #include "taskbuttonbar.h"
@@ -13,12 +13,6 @@
 //
 // GTK OOP CLASS/INSTANCE DEFINITIONS
 //
-struct _TaskButtonBarPrivate
-{
-    GSList* buttons;
-    WindowMonitor* window_monitor;
-};
-
 struct _TaskButtonBarClass
 {
     GtkContainerClass __parent__;
@@ -28,7 +22,8 @@ struct _TaskButtonBar
 {
     GtkContainer __parent__;
 
-    TaskButtonBarPrivate* priv;
+    GSList* buttons;
+    WindowMonitor* window_monitor;
 };
 
 //
@@ -87,11 +82,10 @@ static gboolean taskbutton_bar_has_button(
 //
 // GTK TYPE DEFINITIONS & CTORS
 //
-G_DEFINE_TYPE_WITH_CODE(
+G_DEFINE_TYPE(
     TaskButtonBar,
     taskbutton_bar,
-    GTK_TYPE_CONTAINER,
-    G_ADD_PRIVATE(TaskButtonBar)
+    GTK_TYPE_CONTAINER
 )
 
 static void taskbutton_bar_class_init(
@@ -119,9 +113,7 @@ static void taskbutton_bar_init(
     TaskButtonBar* self
 )
 {
-    self->priv = taskbutton_bar_get_instance_private(self);
-
-    self->priv->window_monitor =
+    self->window_monitor =
         window_monitor_init_management(GTK_CONTAINER(self));
 
     gtk_widget_set_has_window(GTK_WIDGET(self), FALSE);
@@ -151,8 +143,8 @@ static void taskbutton_bar_add(
 
     gtk_widget_set_parent(widget, GTK_WIDGET(container));
 
-    taskbutton_bar->priv->buttons =
-        g_slist_append(taskbutton_bar->priv->buttons, widget);
+    taskbutton_bar->buttons =
+        g_slist_append(taskbutton_bar->buttons, widget);
 }
 
 static GType taskbutton_bar_child_type(
@@ -172,7 +164,7 @@ static void taskbutton_bar_forall(
     TaskButtonBar* taskbutton_bar = TASKBUTTON_BAR(container);
 
     g_slist_foreach(
-        taskbutton_bar->priv->buttons,
+        taskbutton_bar->buttons,
         (GFunc) callback,
         callback_data
     );
@@ -186,7 +178,7 @@ static void taskbutton_bar_remove(
     TaskButtonBar* taskbutton_bar = TASKBUTTON_BAR(container);
     GSList*        to_remove;
 
-    to_remove = g_slist_find(taskbutton_bar->priv->buttons, widget);
+    to_remove = g_slist_find(taskbutton_bar->buttons, widget);
 
     if (to_remove == NULL)
     {
@@ -195,8 +187,8 @@ static void taskbutton_bar_remove(
 
     gtk_widget_unparent(GTK_WIDGET(to_remove->data));
 
-    taskbutton_bar->priv->buttons =
-        g_slist_delete_link(taskbutton_bar->priv->buttons, to_remove);
+    taskbutton_bar->buttons =
+        g_slist_delete_link(taskbutton_bar->buttons, to_remove);
 
     gtk_widget_queue_resize(GTK_WIDGET(container));
 }
@@ -236,7 +228,7 @@ static void taskbutton_bar_get_preferred_width(
     GSList*          child;
     TaskButtonBar*   taskbutton_bar = TASKBUTTON_BAR(widget);
 
-    child = taskbutton_bar->priv->buttons;
+    child = taskbutton_bar->buttons;
 
     while (child)
     {
@@ -303,14 +295,14 @@ static void taskbutton_bar_size_allocate(
     guint            n_buttons_can_fit = 0;
     TaskButtonBar*   taskbutton_bar    = TASKBUTTON_BAR(widget);
 
-    n_buttons = g_slist_length(taskbutton_bar->priv->buttons);
+    n_buttons = g_slist_length(taskbutton_bar->buttons);
 
     gtk_widget_set_allocation(widget, allocation);
 
     // Phase 1 - calculate how much space would be taken up if all the buttons
     //           are the minimum size
     //
-    child = taskbutton_bar->priv->buttons;
+    child = taskbutton_bar->buttons;
 
     while (child)
     {
@@ -348,7 +340,7 @@ static void taskbutton_bar_size_allocate(
             );
     }
 
-    child = taskbutton_bar->priv->buttons;
+    child = taskbutton_bar->buttons;
 
     child_alloc.x      = allocation->x;
     child_alloc.y      = 0;
@@ -409,5 +401,5 @@ static gboolean taskbutton_bar_has_button(
     GtkToggleButton* button
 )
 {
-    return g_slist_find(taskbutton_bar->priv->buttons, button) != NULL;
+    return g_slist_find(taskbutton_bar->buttons, button) != NULL;
 }

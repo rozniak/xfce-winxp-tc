@@ -1,9 +1,9 @@
 #include <glib.h>
 #include <lightdm.h>
-#include <wintc-comgtk.h>
+#include <wintc/comgtk.h>
 
-#include "challenge.h"
-#include "logon.h"
+#include "../public/challenge.h"
+#include "../public/logon.h"
 
 //
 // PRIVATE ENUMS
@@ -97,7 +97,7 @@ WinTCGinaLogonSession* wintc_gina_logon_session_new(void)
 {
     return WINTC_GINA_LOGON_SESSION(
         g_object_new(
-            TYPE_WINTC_GINA_LOGON_SESSION,
+            WINTC_TYPE_GINA_LOGON_SESSION,
             NULL
         )
     );

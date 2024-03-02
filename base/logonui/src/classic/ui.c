@@ -1,20 +1,15 @@
 #include <gdk/gdk.h>
 #include <glib.h>
 #include <gtk/gtk.h>
-#include <wintc-comgtk.h>
-#include <wintc-msgina.h>
+#include <wintc/comgtk.h>
+#include <wintc/msgina.h>
 
-#include "ui.h"
 #include "../window.h"
+#include "ui.h"
 
 //
 // GTK OOP CLASS/INSTANCE DEFINITIONS
 //
-struct _WinTCClassicUIPrivate
-{
-    GtkWidget* wnd_gina;
-};
-
 struct _WinTCClassicUIClass
 {
     GtkWidgetClass __parent__;
@@ -24,7 +19,7 @@ struct _WinTCClassicUI
 {
     GtkWidget __parent__;
 
-    WinTCClassicUIPrivate* priv;
+    GtkWidget* wnd_gina;
 };
 
 //
@@ -43,11 +38,10 @@ static void on_self_realized(
 //
 // GTK TYPE DEFINITIONS & CTORS
 //
-G_DEFINE_TYPE_WITH_CODE(
+G_DEFINE_TYPE(
     WinTCClassicUI,
     wintc_classic_ui,
-    GTK_TYPE_WIDGET,
-    G_ADD_PRIVATE(WinTCClassicUI)
+    GTK_TYPE_WIDGET
 )
 
 static void wintc_classic_ui_class_init(
@@ -63,13 +57,11 @@ static void wintc_classic_ui_init(
     WinTCClassicUI* self
 )
 {
-    self->priv = wintc_classic_ui_get_instance_private(self);
-
     gtk_widget_set_has_window(GTK_WIDGET(self), FALSE);
 
     // Set up widgets
     //
-    self->priv->wnd_gina = wintc_gina_auth_window_new();
+    self->wnd_gina = wintc_gina_auth_window_new();
 
     // Connect to realize signal to begin when we're ready
     //
@@ -106,7 +98,7 @@ GtkWidget* wintc_classic_ui_new(void)
 {
     return GTK_WIDGET(
         g_object_new(
-            TYPE_WINTC_CLASSIC_UI,
+            WINTC_TYPE_CLASSIC_UI,
             "hexpand", TRUE,
             "vexpand", TRUE,
             NULL
@@ -124,6 +116,6 @@ static void on_self_realized(
 {
     WinTCClassicUI* classic_ui = WINTC_CLASSIC_UI(self);
 
-    gtk_widget_show_all(classic_ui->priv->wnd_gina);
+    gtk_widget_show_all(classic_ui->wnd_gina);
 }
 

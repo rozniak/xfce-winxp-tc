@@ -2,11 +2,11 @@
 #include <gio/gdesktopappinfo.h>
 #include <glib.h>
 #include <sys/wait.h>
-#include <wintc-comgtk.h>
+#include <wintc/comgtk.h>
 
-#include "desktop.h"
-#include "mime.h"
-#include "exec.h"
+#include "../public/desktop.h"
+#include "../public/mime.h"
+#include "../public/exec.h"
 
 //
 // LOCAL TYPEDEFS

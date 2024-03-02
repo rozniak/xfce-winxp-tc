@@ -1,9 +1,9 @@
 #include <gio/gdesktopappinfo.h>
 #include <glib.h>
 #include <sys/wait.h>
-#include <wintc-comgtk.h>
+#include <wintc/comgtk.h>
 
-#include "mime.h"
+#include "../public/mime.h"
 
 //
 // PUBLIC FUNCTIONS

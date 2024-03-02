@@ -1,6 +1,6 @@
 #include <glib.h>
 
-#include "list.h"
+#include "../public/list.h"
 
 //
 // PUBLIC FUNCTIONS

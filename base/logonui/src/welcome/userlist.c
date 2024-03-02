@@ -3,8 +3,8 @@
 #include <glib.h>
 #include <gtk/gtk.h>
 #include <lightdm.h>
-#include <wintc-comgtk.h>
-#include <wintc-msgina.h>
+#include <wintc/comgtk.h>
+#include <wintc/msgina.h>
 
 #include "userlist.h"
 
@@ -40,8 +40,17 @@ enum
 //
 // GTK OOP CLASS/INSTANCE DEFINITIONS
 //
-struct _WinTCWelcomeUserListPrivate
+struct _WinTCWelcomeUserListClass
 {
+    GtkContainerClass __parent__;
+};
+
+struct _WinTCWelcomeUserList
+{
+    GtkContainer __parent__;
+
+    // UI
+    //
     GdkWindow* hwnd;
 
     GSList* child_widgets;
@@ -69,6 +78,7 @@ struct _WinTCWelcomeUserListPrivate
     cairo_surface_t* surface_usersel;
 
     // Geometry
+    //
     gint item_height;
 
     GtkAdjustment* hadjustment;
@@ -79,18 +89,6 @@ struct _WinTCWelcomeUserListPrivate
 
     gint scroll_x;
     gint scroll_y;
-};
-
-struct _WinTCWelcomeUserListClass
-{
-    GtkContainerClass __parent__;
-};
-
-struct _WinTCWelcomeUserList
-{
-    GtkContainer __parent__;
-
-    WinTCWelcomeUserListPrivate* priv;
 };
 
 //
@@ -211,7 +209,6 @@ G_DEFINE_TYPE_WITH_CODE(
     WinTCWelcomeUserList,
     wintc_welcome_user_list,
     GTK_TYPE_CONTAINER,
-    G_ADD_PRIVATE(WinTCWelcomeUserList)
     G_IMPLEMENT_INTERFACE(
         GTK_TYPE_SCROLLABLE,
         NULL
@@ -255,7 +252,7 @@ static void wintc_welcome_user_list_class_init(
             "logon-session",
             "LogonSession",
             "The GINA logon session instance.",
-            TYPE_WINTC_GINA_LOGON_SESSION,
+            WINTC_TYPE_GINA_LOGON_SESSION,
             G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY
         )
     );
@@ -288,79 +285,77 @@ static void wintc_welcome_user_list_init(
     WinTCWelcomeUserList* self
 )
 {
-    self->priv = wintc_welcome_user_list_get_instance_private(self);
-
     gtk_widget_set_has_window(GTK_WIDGET(self), TRUE);
 
     // Set up image resources
     //
-    self->priv->pixbuf_tile =
+    self->pixbuf_tile =
         gdk_pixbuf_new_from_resource(
             "/uk/oddmatics/wintc/logonui/tile.png",
             NULL // FIXME: Error reporting
         );
-    self->priv->pixbuf_tilehot =
+    self->pixbuf_tilehot =
         gdk_pixbuf_new_from_resource(
             "/uk/oddmatics/wintc/logonui/tilehot.png",
             NULL // FIXME: Error reporting
         );
-    self->priv->pixbuf_userpic =
+    self->pixbuf_userpic =
         gdk_pixbuf_new_from_resource(
             "/uk/oddmatics/wintc/logonui/userpic.png",
             NULL // FIXME: Error reporting
         );
-    self->priv->pixbuf_usersel =
+    self->pixbuf_usersel =
         gdk_pixbuf_new_from_resource(
             "/uk/oddmatics/wintc/logonui/usersel.png",
             NULL // FIXME: Error reporting
         );
 
-    self->priv->surface_tile =
+    self->surface_tile =
         gdk_cairo_surface_create_from_pixbuf(
-            self->priv->pixbuf_tile,
+            self->pixbuf_tile,
             1,
             NULL
         );
-    self->priv->surface_tilehot =
+    self->surface_tilehot =
         gdk_cairo_surface_create_from_pixbuf(
-            self->priv->pixbuf_tilehot,
+            self->pixbuf_tilehot,
             1,
             NULL
         );
-    self->priv->surface_userpic =
+    self->surface_userpic =
         gdk_cairo_surface_create_from_pixbuf(
-            self->priv->pixbuf_userpic,
+            self->pixbuf_userpic,
             1,
             NULL
         );
-    self->priv->surface_usersel =
+    self->surface_usersel =
         gdk_cairo_surface_create_from_pixbuf(
-            self->priv->pixbuf_usersel,
+            self->pixbuf_usersel,
             1,
             NULL
         );
 
     // Set up widgets
     //
-    self->priv->box_auth       = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-    self->priv->button_go      = gtk_button_new_with_label("Go");
-    self->priv->entry_password = gtk_entry_new();
+    self->box_auth       = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+    self->button_go      = gtk_button_new_with_label("Go");
+    self->entry_password = gtk_entry_new();
 
     gtk_entry_set_visibility(
-        GTK_ENTRY(self->priv->entry_password),
+        GTK_ENTRY(self->entry_password),
         FALSE
     );
 
     gtk_box_pack_start(
-        GTK_BOX(self->priv->box_auth),
-        self->priv->entry_password,
+        GTK_BOX(self->box_auth),
+        self->entry_password,
         FALSE,
         FALSE,
         0
     );
     gtk_box_pack_start(
-        GTK_BOX(self->priv->box_auth),
-        self->priv->button_go,
+        GTK_BOX(self->box_auth),
+        self->button_go,
         FALSE,
         FALSE,
         0
@@ -368,16 +363,16 @@ static void wintc_welcome_user_list_init(
 
     wintc_welcome_user_list_internal_add(
         self,
-        self->priv->box_auth
+        self->box_auth
     );
 
     gtk_widget_set_sensitive(
-        self->priv->entry_password,
+        self->entry_password,
         FALSE
     );
 
     g_signal_connect(
-        self->priv->button_go,
+        self->button_go,
         "clicked",
         G_CALLBACK(on_button_go_clicked),
         self
@@ -385,28 +380,28 @@ static void wintc_welcome_user_list_init(
 
     // Add style classes
     //
-    wintc_widget_add_style_class(self->priv->button_go,      "go");
-    wintc_widget_add_style_class(self->priv->entry_password, "password");
+    wintc_widget_add_style_class(self->button_go,      "go");
+    wintc_widget_add_style_class(self->entry_password, "password");
 
     // Store item height
     //
-    gint usersel_height = gdk_pixbuf_get_height(self->priv->pixbuf_usersel);
+    gint usersel_height = gdk_pixbuf_get_height(self->pixbuf_usersel);
 
-    self->priv->item_height = usersel_height + (2 * USER_LISTING_GAP_Y_HALF);
+    self->item_height = usersel_height + (2 * USER_LISTING_GAP_Y_HALF);
 
     // Set up default scroll policy
     //
-    self->priv->hscroll_policy = GTK_SCROLL_MINIMUM;
-    self->priv->vscroll_policy = GTK_SCROLL_NATURAL;
+    self->hscroll_policy = GTK_SCROLL_MINIMUM;
+    self->vscroll_policy = GTK_SCROLL_NATURAL;
 
     // Retrieve users
     //
-    self->priv->users =
+    self->users =
         lightdm_user_list_get_users(
             lightdm_user_list_get_instance()
         );
 
-    self->priv->selected_index = -1;
+    self->selected_index = -1;
 }
 
 //
@@ -418,14 +413,14 @@ static void wintc_welcome_user_list_finalize(
 {
     WinTCWelcomeUserList* user_list = WINTC_WELCOME_USER_LIST(gobject);
 
-    cairo_surface_destroy(user_list->priv->surface_tile);
-    cairo_surface_destroy(user_list->priv->surface_tilehot);
-    cairo_surface_destroy(user_list->priv->surface_userpic);
-    cairo_surface_destroy(user_list->priv->surface_usersel);
-    g_clear_object(&user_list->priv->pixbuf_tile);
-    g_clear_object(&user_list->priv->pixbuf_tilehot);
-    g_clear_object(&user_list->priv->pixbuf_userpic);
-    g_clear_object(&user_list->priv->pixbuf_usersel);
+    cairo_surface_destroy(user_list->surface_tile);
+    cairo_surface_destroy(user_list->surface_tilehot);
+    cairo_surface_destroy(user_list->surface_userpic);
+    cairo_surface_destroy(user_list->surface_usersel);
+    g_clear_object(&user_list->pixbuf_tile);
+    g_clear_object(&user_list->pixbuf_tilehot);
+    g_clear_object(&user_list->pixbuf_userpic);
+    g_clear_object(&user_list->pixbuf_usersel);
 
     (G_OBJECT_CLASS(wintc_welcome_user_list_parent_class))->finalize(gobject);
 }
@@ -442,19 +437,19 @@ static void wintc_welcome_user_list_get_property(
     switch (prop_id)
     {
         case PROP_HADJUSTMENT:
-            g_value_set_object(value, user_list->priv->hadjustment);
+            g_value_set_object(value, user_list->hadjustment);
             break;
 
         case PROP_VADJUSTMENT:
-            g_value_set_object(value, user_list->priv->vadjustment);
+            g_value_set_object(value, user_list->vadjustment);
             break;
 
         case PROP_HSCROLL_POLICY:
-            g_value_set_enum(value, user_list->priv->hscroll_policy);
+            g_value_set_enum(value, user_list->hscroll_policy);
             break;
 
         case PROP_VSCROLL_POLICY:
-            g_value_set_enum(value, user_list->priv->vscroll_policy);
+            g_value_set_enum(value, user_list->vscroll_policy);
             break;
 
         default:
@@ -475,11 +470,11 @@ static void wintc_welcome_user_list_set_property(
     switch (prop_id)
     {
         case PROP_LOGON_SESSION:
-           user_list->priv->logon_session =
+           user_list->logon_session =
                WINTC_GINA_LOGON_SESSION(g_value_get_object(value));
 
            g_signal_connect(
-               user_list->priv->logon_session,
+               user_list->logon_session,
                "attempt-complete",
                G_CALLBACK(on_logon_session_attempt_complete),
                user_list
@@ -499,18 +494,18 @@ static void wintc_welcome_user_list_set_property(
             break;
 
         case PROP_HSCROLL_POLICY:
-            if (user_list->priv->hscroll_policy != g_value_get_enum(value))
+            if (user_list->hscroll_policy != g_value_get_enum(value))
             {
-                user_list->priv->hscroll_policy = g_value_get_enum(value);
+                user_list->hscroll_policy = g_value_get_enum(value);
                 gtk_widget_queue_resize(GTK_WIDGET(user_list));
                 g_object_notify_by_pspec(gobject, pspec);
             }
             break;
 
         case PROP_VSCROLL_POLICY:
-            if (user_list->priv->vscroll_policy != g_value_get_enum(value))
+            if (user_list->vscroll_policy != g_value_get_enum(value))
             {
-                user_list->priv->vscroll_policy = g_value_get_enum(value);
+                user_list->vscroll_policy = g_value_get_enum(value);
                 gtk_widget_queue_resize(GTK_WIDGET(user_list));
                 g_object_notify_by_pspec(gobject, pspec);
             }
@@ -531,10 +526,10 @@ static gboolean wintc_welcome_user_list_button_press_event(
     gdouble               scroll_y;
     WinTCWelcomeUserList* user_list = WINTC_WELCOME_USER_LIST(widget);
 
-    scroll_y = gtk_adjustment_get_value(user_list->priv->vadjustment);
-    hit_item = (gint) (scroll_y + event->y) / user_list->priv->item_height;
+    scroll_y = gtk_adjustment_get_value(user_list->vadjustment);
+    hit_item = (gint) (scroll_y + event->y) / user_list->item_height;
 
-    if (hit_item >= (gint) g_list_length(user_list->priv->users))
+    if (hit_item >= (gint) g_list_length(user_list->users))
     {
         hit_item = -1;
     }
@@ -553,7 +548,7 @@ static gboolean wintc_welcome_user_list_draw(
 
     // Acquire adjustment
     //
-    gdouble scroll_y = gtk_adjustment_get_value(user_list->priv->vadjustment);
+    gdouble scroll_y = gtk_adjustment_get_value(user_list->vadjustment);
 
     // Acquire clip region
     //
@@ -569,16 +564,16 @@ static gboolean wintc_welcome_user_list_draw(
     gdouble region_bottom = clip_bottom + scroll_y;
     gdouble region_top    = clip_top    + scroll_y;
 
-    gint   item_first = (gint) region_top    / user_list->priv->item_height;
-    gint   item_last  = (gint) region_bottom / user_list->priv->item_height;
-    gint   items      = g_list_length(user_list->priv->users);
+    gint   item_first = (gint) region_top    / user_list->item_height;
+    gint   item_last  = (gint) region_bottom / user_list->item_height;
+    gint   items      = g_list_length(user_list->users);
     gdouble width     = clip_right - clip_left;
 
     item_first = item_first < 0 ? 0 : item_first;
 
     for (int i = item_first; i < items && i <= item_last; i++)
     {
-        gdouble item_y = (double) (i * user_list->priv->item_height) - scroll_y;
+        gdouble item_y = (double) (i * user_list->item_height) - scroll_y;
 
         cairo_save(cr);
 
@@ -587,7 +582,7 @@ static gboolean wintc_welcome_user_list_draw(
             0.0f,
             item_y,
             width,
-            (double) user_list->priv->item_height
+            (double) user_list->item_height
         );
         cairo_clip(cr);
 
@@ -596,8 +591,8 @@ static gboolean wintc_welcome_user_list_draw(
 
         draw_user(
             cr,
-            (g_list_nth(user_list->priv->users, i))->data,
-            user_list->priv->selected_index == i,
+            (g_list_nth(user_list->users, i))->data,
+            user_list->selected_index == i,
             user_list
         );
 
@@ -620,9 +615,9 @@ static void wintc_welcome_user_list_get_preferred_height(
 {
     WinTCWelcomeUserList* user_list = WINTC_WELCOME_USER_LIST(widget);
 
-    *minimum_height = user_list->priv->item_height;
-    *natural_height = user_list->priv->item_height *
-                      g_list_length(user_list->priv->users);
+    *minimum_height = user_list->item_height;
+    *natural_height = user_list->item_height *
+                      g_list_length(user_list->users);
 }
 
 static void wintc_welcome_user_list_get_preferred_height_for_width(
@@ -690,7 +685,7 @@ static void wintc_welcome_user_list_realize(
     attribs.visual      = gtk_widget_get_visual(widget);
     attribs.window_type = GDK_WINDOW_CHILD;
 
-    user_list->priv->hwnd =
+    user_list->hwnd =
         gdk_window_new(
             gtk_widget_get_parent_window(widget),
             &attribs,
@@ -699,11 +694,11 @@ static void wintc_welcome_user_list_realize(
 
     gtk_widget_set_window(
         widget,
-        user_list->priv->hwnd
+        user_list->hwnd
     );
     gtk_widget_register_window(
         widget,
-        user_list->priv->hwnd
+        user_list->hwnd
     );
 }
 
@@ -721,7 +716,7 @@ static void wintc_welcome_user_list_size_allocate(
     if (gtk_widget_get_realized(widget))
     {
         gdk_window_move_resize(
-            user_list->priv->hwnd,
+            user_list->hwnd,
             allocation->x,
             allocation->y,
             allocation->width,
@@ -733,21 +728,21 @@ static void wintc_welcome_user_list_size_allocate(
     //
     GtkAllocation box_alloc;
 
-    if (user_list->priv->selected_index > -1)
+    if (user_list->selected_index > -1)
     {
         gint scroll_y =
             gtk_adjustment_get_value(
-                user_list->priv->vadjustment
+                user_list->vadjustment
             );
 
         box_alloc.x      = 70;
-        box_alloc.y      = user_list->priv->selected_index *
-                           user_list->priv->item_height    +
+        box_alloc.y      = user_list->selected_index *
+                           user_list->item_height    +
                            50 - scroll_y;
         box_alloc.width  = 248;
         box_alloc.height = 30;
 
-        gtk_widget_show_all(user_list->priv->box_auth);
+        gtk_widget_show_all(user_list->box_auth);
     }
     else
     {
@@ -756,11 +751,11 @@ static void wintc_welcome_user_list_size_allocate(
         box_alloc.width  = 0;
         box_alloc.height = 0;
 
-        gtk_widget_hide(user_list->priv->box_auth);
+        gtk_widget_hide(user_list->box_auth);
     }
 
     gtk_widget_size_allocate(
-        user_list->priv->box_auth,
+        user_list->box_auth,
         &box_alloc
     );
 
@@ -787,7 +782,7 @@ static void wintc_welcome_user_list_forall(
     WinTCWelcomeUserList* user_list = WINTC_WELCOME_USER_LIST(container);
 
     g_slist_foreach(
-        user_list->priv->child_widgets,
+        user_list->child_widgets,
         (GFunc) callback,
         callback_data
     );
@@ -810,7 +805,7 @@ GtkWidget* wintc_welcome_user_list_new(
 {
     return GTK_WIDGET(
         g_object_new(
-            TYPE_WINTC_WELCOME_USER_LIST,
+            WINTC_TYPE_WELCOME_USER_LIST,
             "logon-session", logon_session,
             "hexpand",       TRUE,
             "vexpand",       TRUE,
@@ -829,8 +824,8 @@ static void wintc_welcome_user_list_internal_add(
 {
     gtk_widget_set_parent(widget, GTK_WIDGET(user_list));
 
-    user_list->priv->child_widgets =
-        g_slist_append(user_list->priv->child_widgets, widget);
+    user_list->child_widgets =
+        g_slist_append(user_list->child_widgets, widget);
 }
 
 static void wintc_welcome_user_list_select_user(
@@ -838,22 +833,22 @@ static void wintc_welcome_user_list_select_user(
     gint                  index
 )
 {
-    user_list->priv->selected_index = index;
+    user_list->selected_index = index;
 
     if (index >= 0)
     {
         gtk_widget_set_sensitive(
-            user_list->priv->entry_password,
+            user_list->entry_password,
             TRUE
         );
         gtk_widget_grab_focus(
-            user_list->priv->entry_password
+            user_list->entry_password
         );
     }
     else
     {
         gtk_widget_set_sensitive(
-            user_list->priv->entry_password,
+            user_list->entry_password,
             FALSE
         );
     }
@@ -866,20 +861,20 @@ static void wintc_welcome_user_list_set_vadjustment(
     GtkAdjustment*        adjustment
 )
 {
-    if (user_list->priv->vadjustment == adjustment)
+    if (user_list->vadjustment == adjustment)
     {
         return;
     }
 
-    if (user_list->priv->vadjustment)
+    if (user_list->vadjustment)
     {
         g_signal_handlers_disconnect_by_func(
-            user_list->priv->vadjustment,
+            user_list->vadjustment,
             on_self_adjustment_changed,
             user_list
         );
 
-        g_object_unref(user_list->priv->vadjustment);
+        g_object_unref(user_list->vadjustment);
     }
 
     if (adjustment == NULL)
@@ -902,7 +897,7 @@ static void wintc_welcome_user_list_set_vadjustment(
         user_list
     );
 
-    user_list->priv->vadjustment = g_object_ref_sink(adjustment);
+    user_list->vadjustment = g_object_ref_sink(adjustment);
 
     wintc_welcome_user_list_set_vadjustment_values(user_list);
 
@@ -922,15 +917,15 @@ static void wintc_welcome_user_list_set_vadjustment_values(
     gtk_widget_get_allocation(GTK_WIDGET(user_list), &alloc);
 
     old_value  =
-        gtk_adjustment_get_value(user_list->priv->vadjustment);
+        gtk_adjustment_get_value(user_list->vadjustment);
     user_count =
-        g_list_length(user_list->priv->users);
+        g_list_length(user_list->users);
 
     new_upper =
-        MAX(alloc.height, user_list->priv->item_height * user_count);
+        MAX(alloc.height, user_list->item_height * user_count);
 
     g_object_set(
-        user_list->priv->vadjustment,
+        user_list->vadjustment,
         "lower",          0.0,
         "upper",          new_upper,
         "page-size",      (gdouble) alloc.height,
@@ -944,7 +939,7 @@ static void wintc_welcome_user_list_set_vadjustment_values(
     if (new_value != old_value)
     {
         gtk_adjustment_set_value(
-            user_list->priv->vadjustment,
+            user_list->vadjustment,
             new_value
         );
     }
@@ -969,7 +964,7 @@ static void draw_user(
     {
         cairo_set_source_surface(
             cr,
-            user_list->priv->surface_usersel,
+            user_list->surface_usersel,
             0.0f,
             origin_y
         );
@@ -985,8 +980,8 @@ static void draw_user(
     cairo_set_source_surface(
         cr,
         selected ?
-            user_list->priv->surface_tilehot :
-            user_list->priv->surface_tile,
+            user_list->surface_tilehot :
+            user_list->surface_tile,
         USER_TILE_OFFSET_X,
         USER_TILE_OFFSET_Y + origin_y
     );
@@ -994,7 +989,7 @@ static void draw_user(
 
     cairo_set_source_surface(
         cr,
-        user_list->priv->surface_userpic,
+        user_list->surface_userpic,
         USER_TILE_OFFSET_X + USER_PIC_OFFSET,
         USER_TILE_OFFSET_Y + USER_PIC_OFFSET + origin_y
     );
@@ -1040,16 +1035,16 @@ static void on_logon_session_attempt_complete(
     if (response == WINTC_GINA_RESPONSE_FAIL)
     {
         gtk_entry_set_text(
-            GTK_ENTRY(user_list->priv->entry_password),
+            GTK_ENTRY(user_list->entry_password),
             ""
         );
 
         gtk_widget_set_sensitive(
-            user_list->priv->button_go,
+            user_list->button_go,
             TRUE
         );
         gtk_widget_set_sensitive(
-            user_list->priv->entry_password,
+            user_list->entry_password,
             TRUE
         );
     }
@@ -1063,23 +1058,23 @@ static void on_button_go_clicked(
     WinTCWelcomeUserList* user_list = WINTC_WELCOME_USER_LIST(user_data);
 
     gtk_widget_set_sensitive(
-        user_list->priv->button_go,
+        user_list->button_go,
         FALSE
     );
     gtk_widget_set_sensitive(
-        user_list->priv->entry_password,
+        user_list->entry_password,
         FALSE
     );
 
     wintc_gina_logon_session_try_logon(
-        user_list->priv->logon_session,
+        user_list->logon_session,
         lightdm_user_get_name(
             g_list_nth(
-                user_list->priv->users,
-                user_list->priv->selected_index
+                user_list->users,
+                user_list->selected_index
             )->data
         ),
-        gtk_entry_get_text(GTK_ENTRY(user_list->priv->entry_password))
+        gtk_entry_get_text(GTK_ENTRY(user_list->entry_password))
     );
 }
 

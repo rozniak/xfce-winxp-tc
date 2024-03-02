@@ -35,11 +35,11 @@ add_library(
     libwintc-msgina
     src/resources.c
     src/authwnd.c
-    src/authwnd.h
-    src/challenge.h
+    public/authwnd.h
+    public/challenge.h
     src/logon.c
-    src/logon.h
-    src/state.h
+    public/logon.h
+    public/state.h
     src/stripctl.c
     src/stripctl.h
 )
@@ -47,7 +47,6 @@ add_library(
 set_target_properties(
     libwintc-msgina
     PROPERTIES
-    PUBLIC_HEADER public/wintc-msgina.h
     SOVERSION 1
     VERSION ${PROJECT_VERSION}
 )
@@ -96,9 +95,9 @@ target_link_libraries(
 #
 wintc_configure_and_install_packaging()
 wintc_add_pkgconfig_install()
+wintc_install_public_headers()
 
 install(
     TARGETS libwintc-msgina
-    LIBRARY       DESTINATION ${LIB_DIR}
-    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+    LIBRARY DESTINATION ${LIB_DIR}
 )

@@ -1,6 +1,6 @@
 #include <glib.h>
 #include <gtk/gtk.h>
-#include <wintc-comgtk.h>
+#include <wintc/comgtk.h>
 
 #include "window.h"
 

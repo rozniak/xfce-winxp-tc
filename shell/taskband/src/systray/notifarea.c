@@ -1,6 +1,6 @@
 #include <glib.h>
 #include <gtk/gtk.h>
-#include <wintc-comgtk.h>
+#include <wintc/comgtk.h>
 
 #include "behaviour.h"
 #include "clock.h"
@@ -119,7 +119,7 @@ GtkWidget* notification_area_new(void)
 {
     return GTK_WIDGET(
         g_object_new(
-            TYPE_WINTC_NOTIFICATION_AREA,
+            WINTC_TYPE_NOTIFICATION_AREA,
             NULL
         )
     );

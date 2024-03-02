@@ -1,8 +1,8 @@
 #include <gdk/gdk.h>
 #include <gtk/gtk.h>
 
-#include "defprocs.h"
-#include "shorthand.h"
+#include "../public/defprocs.h"
+#include "../public/shorthand.h"
 
 //
 // PUBLIC FUNCTIONS

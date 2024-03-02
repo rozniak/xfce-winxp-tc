@@ -1,9 +1,10 @@
 #include <glib.h>
 #include <pulse/pulseaudio.h>
-#include <wintc-comgtk.h>
+#include <wintc/comgtk.h>
 
-#include "context.h"
-#include "output.h"
+#include "../public/context.h"
+#include "../public/output.h"
+#include "output-priv.h"
 #include "volcvt.h"
 
 //
@@ -323,7 +324,7 @@ WinTCSndApiOutput* wintc_sndapi_output_new(
 {
     return WINTC_SNDAPI_OUTPUT(
         g_object_new(
-            TYPE_WINTC_SNDAPI_OUTPUT,
+            WINTC_TYPE_SNDAPI_OUTPUT,
             "pa-context", pulse_context,
             "pa-sink-id", sink_id,
             NULL

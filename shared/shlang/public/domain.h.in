@@ -1,0 +1,17 @@
+/** @file */
+
+#ifndef __SHLANG_DOMAIN_H__
+#define __SHLANG_DOMAIN_H__
+
+//
+// PUBLIC DEFINES
+//
+
+/**
+ * The root directory for locale data.
+ *
+ * @remarks This should be retired - a define is the wrong way to provide this.
+ */
+#define WINTC_LOCALE_DIR "@CMAKE_INSTALL_PREFIX@/share/locale"
+
+#endif

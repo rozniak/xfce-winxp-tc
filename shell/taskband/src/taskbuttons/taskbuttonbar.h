@@ -9,9 +9,8 @@ G_BEGIN_DECLS
 //
 // GTK OOP BOILERPLATE
 //
-typedef struct _TaskButtonBarPrivate TaskButtonBarPrivate;
-typedef struct _TaskButtonBarClass   TaskButtonBarClass;
-typedef struct _TaskButtonBar        TaskButtonBar;
+typedef struct _TaskButtonBarClass TaskButtonBarClass;
+typedef struct _TaskButtonBar      TaskButtonBar;
 
 #define TYPE_TASKBUTTON_BAR            (taskbutton_bar_get_type())
 #define TASKBUTTON_BAR(obj)            (G_TYPE_CHECK_INSTANCE_CAST((obj), TYPE_TASKBUTTON_BAR, TaskButtonBar))

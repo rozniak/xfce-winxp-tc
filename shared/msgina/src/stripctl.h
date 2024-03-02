@@ -4,9 +4,8 @@
 //
 // GTK OOP BOILERPLATE
 //
-typedef struct _WinTCGinaStripPrivate WinTCGinaStripPrivate;
-typedef struct _WinTCGinaStripClass   WinTCGinaStripClass;
-typedef struct _WinTCGinaStrip        WinTCGinaStrip;
+typedef struct _WinTCGinaStripClass WinTCGinaStripClass;
+typedef struct _WinTCGinaStrip      WinTCGinaStrip;
 
 #define TYPE_WINTC_GINA_STRIP            (wintc_gina_strip_get_type())
 #define WINTC_GINA_STRIP(obj)            (G_TYPE_CHECK_INSTANCE_CAST((obj), TYPE_WINTC_GINA_STRIP, WinTCGinaStrip))

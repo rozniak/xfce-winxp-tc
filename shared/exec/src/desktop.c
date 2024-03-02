@@ -1,7 +1,7 @@
 #include <gio/gdesktopappinfo.h>
 #include <glib.h>
 
-#include "desktop.h"
+#include "../public/desktop.h"
 
 //
 // PUBLIC FUNCTIONS
@@ -53,7 +53,7 @@ gchar* wintc_expand_desktop_entry_cmdline(
     {
         g_string_append(
             expanded,
-            "exo-open --launch TerminalEmulator"
+            "exo-open --launch TerminalEmulator "
         );
     }
 
@@ -84,9 +84,10 @@ gchar* wintc_expand_desktop_entry_cmdline(
                 case 'i':
                     if (icon_name != NULL)
                     {
-                        g_string_append(
+                        g_string_append_printf(
                             expanded,
-                            name
+                            "--icon %s",
+                            icon_name
                         );
                     }
 

@@ -1,8 +1,8 @@
 #include <glib.h>
 #include <gtk/gtk.h>
 
-#include "marshal.h"
-#include "shorthand.h"
+#include "../public/marshal.h"
+#include "../public/shorthand.h"
 
 //
 // PUBLIC FUNCTIONS

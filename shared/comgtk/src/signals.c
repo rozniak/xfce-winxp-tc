@@ -1,7 +1,7 @@
 #include <glib.h>
 #include <gtk/gtk.h>
 
-#include "signals.h"
+#include "../public/signals.h"
 
 //
 // PUBLIC FUNCTIONS

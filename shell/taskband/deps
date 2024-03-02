@@ -6,5 +6,5 @@ bt,rt:gtk3
 bt,rt:wintc-comgtk
 bt,rt:wintc-exec
 bt,rt:wintc-shelldpa
-bt,rt:wintc-shllang
+bt,rt:wintc-shlang
 bt,rt:wintc-sndapi

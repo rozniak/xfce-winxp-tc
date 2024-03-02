@@ -1,7 +1,7 @@
 #include <gdk/gdk.h>
 #include <gtk/gtk.h>
 
-#include "window.h"
+#include "../public/window.h"
 
 //
 // PUBLIC FUNCTIONS

@@ -1,7 +1,7 @@
 #include <gdk/gdk.h>
 #include <glib.h>
 #include <gtk/gtk.h>
-#include <wintc-comgtk.h>
+#include <wintc/comgtk.h>
 
 #include "window.h"
 #include "classic/ui.h"
@@ -19,11 +19,6 @@ enum
 //
 // GTK OOP CLASS/INSTANCE DEFINITIONS
 //
-struct _WinTCLogonUIWindowPrivate
-{
-    GtkWidget* login_ui;
-};
-
 struct _WinTCLogonUIWindowClass
 {
     GtkWindowClass __parent__;
@@ -33,7 +28,7 @@ struct _WinTCLogonUIWindow
 {
     GtkWindow __parent__;
 
-    WinTCLogonUIWindowPrivate* priv;
+    GtkWidget* login_ui;
 };
 
 //
@@ -59,11 +54,10 @@ static void on_window_realize(
 //
 // GTK TYPE DEFINITIONS & CTORS
 //
-G_DEFINE_TYPE_WITH_CODE(
+G_DEFINE_TYPE(
     WinTCLogonUIWindow,
     wintc_logonui_window,
-    GTK_TYPE_WINDOW,
-    G_ADD_PRIVATE(WinTCLogonUIWindow)
+    GTK_TYPE_WINDOW
 )
 
 static void wintc_logonui_window_class_init(
@@ -91,8 +85,6 @@ static void wintc_logonui_window_init(
     WinTCLogonUIWindow* self
 )
 {
-    self->priv = wintc_logonui_window_get_instance_private(self);
-
     // Set up window
     //
     GdkDisplay*  display = gdk_display_get_default();
@@ -154,12 +146,12 @@ static void wintc_logonui_window_set_property(
         case PROP_PREFER_CLASSIC_LOGON:
             if (g_value_get_boolean(value))
             {
-                window->priv->login_ui =
+                window->login_ui =
                     wintc_classic_ui_new();
             }
             else
             {
-                window->priv->login_ui =
+                window->login_ui =
                     wintc_welcome_ui_new();
             }
 
@@ -178,7 +170,7 @@ GtkWidget* wintc_logonui_window_new()
 {
     return GTK_WIDGET(
         g_object_new(
-            TYPE_WINTC_LOGONUI_WINDOW,
+            WINTC_TYPE_LOGONUI_WINDOW,
             "type",                 GTK_WINDOW_TOPLEVEL,
             "decorated",            FALSE,
             "resizable",            FALSE,
@@ -202,9 +194,9 @@ static gboolean on_window_map_event(
 
     gtk_container_add(
         GTK_CONTAINER(self),
-        window->priv->login_ui
+        window->login_ui
     );
-    gtk_widget_show_all(window->priv->login_ui);
+    gtk_widget_show_all(window->login_ui);
 
     return TRUE;
 }

@@ -10,12 +10,12 @@
 typedef struct _WinTCDndTestApplicationClass WinTCDndTestApplicationClass;
 typedef struct _WinTCDndTestApplication      WinTCDndTestApplication;
 
-#define TYPE_WINTC_DND_TEST_APPLICATION            (wintc_dnd_test_application_get_type())
-#define WINTC_DND_TEST_APPLICATION(obj)            (G_TYPE_CHECK_INSTANCE_CAST((obj), TYPE_WINTC_DND_TEST_APPLICATION, WinTCDndTestApplication))
-#define WINTC_DND_TEST_APPLICATION_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST((klass), TYPE_WINTC_DND_TEST_APPLICATION, WinTCDndTestApplicationClass))
-#define IS_WINTC_DND_TEST_APPLICATION(obj)         (G_TYPE_CHECK_INSTANCE_TYPE((obj), TYPE_WINTC_DND_TEST_APPLICATION))
-#define IS_WINTC_DND_TEST_APPLICATION_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE((klass), TYPE_WINTC_DND_TEST_APPLICATION))
-#define WINTC_DND_TEST_APPLICATION_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS((obj), TYPE_WINTC_DND_TEST_APPLICATION, WinTCDndTestApplicationClass))
+#define WINTC_TYPE_DND_TEST_APPLICATION            (wintc_dnd_test_application_get_type())
+#define WINTC_DND_TEST_APPLICATION(obj)            (G_TYPE_CHECK_INSTANCE_CAST((obj), WINTC_TYPE_DND_TEST_APPLICATION, WinTCDndTestApplication))
+#define WINTC_DND_TEST_APPLICATION_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST((klass), WINTC_TYPE_DND_TEST_APPLICATION, WinTCDndTestApplicationClass))
+#define IS_WINTC_DND_TEST_APPLICATION(obj)         (G_TYPE_CHECK_INSTANCE_TYPE((obj), WINTC_TYPE_DND_TEST_APPLICATION))
+#define IS_WINTC_DND_TEST_APPLICATION_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE((klass), WINTC_TYPE_DND_TEST_APPLICATION))
+#define WINTC_DND_TEST_APPLICATION_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS((obj), WINTC_TYPE_DND_TEST_APPLICATION, WinTCDndTestApplicationClass))
 
 GType wintc_dnd_test_application_get_type(void) G_GNUC_CONST;
 

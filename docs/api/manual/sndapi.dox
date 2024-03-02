@@ -1,0 +1,4 @@
+/**
+ * \dir ../../shared/sndapi
+ * \brief This is the system audio abstraction library.
+ */

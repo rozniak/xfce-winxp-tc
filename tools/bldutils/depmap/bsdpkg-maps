@@ -15,7 +15,7 @@ wintc-comgtk-->bt,rt-->wintc-comgtk
 wintc-exec-->bt,rt-->wintc-exec
 wintc-msgina-->bt,rt-->wintc-msgina
 wintc-shelldpa-->bt,rt-->wintc-shelldpa
-wintc-shllang-->bt,rt-->wintc-shllang
+wintc-shlang-->bt,rt-->wintc-shlang
 wintc-sndapi-->bt,rt-->wintc-sndapi
 wintc-winbrand-->bt,rt-->wintc-winbrand
 xcursorgen-->bt,rt-->xcursorgen

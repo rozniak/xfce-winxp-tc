@@ -1,9 +1,9 @@
 #include <dlfcn.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <glib.h>
-#include <wintc-comgtk.h>
+#include <wintc/comgtk.h>
 
-#include "api.h"
+#include "../public/api.h"
 #include "impl-wndmgmt-wnck.h"
 #include "dll/wnck.h"
 

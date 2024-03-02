@@ -1,8 +1,8 @@
 #include <gdk/gdk.h>
 #include <glib.h>
 #include <gtk/gtk.h>
-#include <wintc-comgtk.h>
-#include <wintc-shelldpa.h>
+#include <wintc/comgtk.h>
+#include <wintc/shelldpa.h>
 
 #include "application.h"
 #include "window.h"
@@ -78,7 +78,7 @@ GtkWidget* wintc_desktop_window_new(
 {
     return GTK_WIDGET(
         g_object_new(
-            TYPE_WINTC_DESKTOP_WINDOW,
+            WINTC_TYPE_DESKTOP_WINDOW,
             "application", GTK_APPLICATION(app),
             "type",        GTK_WINDOW_TOPLEVEL,
             "decorated",   TRUE,

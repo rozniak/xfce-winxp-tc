@@ -3,4 +3,4 @@ bt,rt:gtk3
 bt,rt:wintc-comctl
 bt,rt:wintc-comgtk
 bt,rt:wintc-exec
-bt,rt:wintc-shllang
+bt,rt:wintc-shlang

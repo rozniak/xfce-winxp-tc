@@ -29,9 +29,10 @@ wintc_resolve_library(wintc-comgtk           WINTC_COMGTK)
 add_library(
     libwintc-sndapi
     src/context.c
-    src/context.h
+    public/context.h
     src/output.c
-    src/output.h
+    src/output-priv.h
+    public/output.h
     src/volcvt.c
     src/volcvt.h
 )
@@ -39,7 +40,6 @@ add_library(
 set_target_properties(
     libwintc-sndapi
     PROPERTIES
-    PUBLIC_HEADER public/wintc-sndapi.h
     SOVERSION 1
     VERSION ${PROJECT_VERSION}
 )
@@ -82,9 +82,9 @@ target_link_libraries(
 #
 wintc_configure_and_install_packaging()
 wintc_add_pkgconfig_install()
+wintc_install_public_headers()
 
 install(
     TARGETS libwintc-sndapi
-    LIBRARY       DESTINATION ${LIB_DIR}
-    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+    LIBRARY DESTINATION ${LIB_DIR}
 )

@@ -1,8 +1,8 @@
 #include <gdk/gdk.h>
 #include <glib.h>
 #include <gtk/gtk.h>
-#include <wintc-comctl.h>
-#include <wintc-comgtk.h>
+#include <wintc/comctl.h>
+#include <wintc/comgtk.h>
 
 #include "application.h"
 #include "dialog.h"
@@ -75,7 +75,7 @@ static void wintc_run_application_activate(
 {
     WinTCRunApplication* run_app = WINTC_RUN_APPLICATION(application);
 
-    wintc_comctl_install_default_styles();
+    wintc_ctl_install_default_styles();
 
     if (run_app->main_window == NULL)
     {

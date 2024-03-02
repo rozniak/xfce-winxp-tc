@@ -1,7 +1,7 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <locale.h>
-#include <wintc-shllang.h>
+#include <wintc/shlang.h>
 
 #include "application.h"
 #include "meta.h"

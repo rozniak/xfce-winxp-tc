@@ -2,9 +2,9 @@
 #include <gdk/gdk.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <glib.h>
-#include <wintc-comgtk.h>
+#include <wintc/comgtk.h>
 
-#include "api.h"
+#include "../public/api.h"
 #include "impl-wayland.h"
 #include "impl-x11.h"
 #include "impl-wndmgmt-wnck.h"

@@ -2,7 +2,7 @@
 #include <gtk/gtk.h>
 #include <pulse/pulseaudio.h>
 #include <pulse/glib-mainloop.h>
-#include <wintc-comgtk.h>
+#include <wintc/comgtk.h>
 
 #include "application.h"
 #include "window.h"
@@ -262,7 +262,7 @@ GtkWidget* wintc_patest_window_new(
 {
     return GTK_WIDGET(
         g_object_new(
-            TYPE_WINTC_PATEST_WINDOW,
+            WINTC_TYPE_PATEST_WINDOW,
             "application", GTK_APPLICATION(app),
             "title",       "PulseAudio Test Program",
             NULL

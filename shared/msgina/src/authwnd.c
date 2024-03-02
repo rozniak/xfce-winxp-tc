@@ -2,14 +2,14 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <glib.h>
 #include <gtk/gtk.h>
-#include <wintc-comctl.h>
-#include <wintc-comgtk.h>
-#include <wintc-winbrand.h>
+#include <wintc/comctl.h>
+#include <wintc/comgtk.h>
+#include <wintc/winbrand.h>
 
-#include "authwnd.h"
-#include "challenge.h"
-#include "logon.h"
-#include "state.h"
+#include "../public/authwnd.h"
+#include "../public/challenge.h"
+#include "../public/logon.h"
+#include "../public/state.h"
 #include "stripctl.h"
 
 #define DELAY_SECONDS_AT_LEAST 2
@@ -18,8 +18,15 @@
 //
 // GTK OOP CLASS/INSTANCE DEFINITIONS
 //
-struct _WinTCGinaAuthWindowPrivate
+struct _WinTCGinaAuthWindowClass
 {
+    GtkWindowClass __parent__;
+};
+
+struct _WinTCGinaAuthWindow
+{
+    GtkWindow __parent__;
+
     // Image resources
     //
     GdkPixbuf* pixbuf_banner;
@@ -43,18 +50,6 @@ struct _WinTCGinaAuthWindowPrivate
     //
     WinTCGinaState         current_state;
     WinTCGinaLogonSession* logon_session;
-};
-
-struct _WinTCGinaAuthWindowClass
-{
-    GtkWindowClass __parent__;
-};
-
-struct _WinTCGinaAuthWindow
-{
-    GtkWindow __parent__;
-
-    WinTCGinaAuthWindowPrivate* priv;
 };
 
 //
@@ -95,11 +90,10 @@ static gboolean on_timeout_poll_ready(
 //
 // GTK TYPE DEFINITIONS & CTORS
 //
-G_DEFINE_TYPE_WITH_CODE(
+G_DEFINE_TYPE(
     WinTCGinaAuthWindow,
     wintc_gina_auth_window,
-    GTK_TYPE_WINDOW,
-    G_ADD_PRIVATE(WinTCGinaAuthWindow)
+    GTK_TYPE_WINDOW
 )
 
 static void wintc_gina_auth_window_class_init(
@@ -125,25 +119,23 @@ static void wintc_gina_auth_window_class_init(
         GTK_STYLE_PROVIDER_PRIORITY_FALLBACK
     );
 
-    wintc_comctl_install_default_styles();
+    wintc_ctl_install_default_styles();
 }
 
 static void wintc_gina_auth_window_init(
     WinTCGinaAuthWindow* self
 )
 {
-    self->priv = wintc_gina_auth_window_get_instance_private(self);
-
     // Acquire branding pixbufs
     //
     GError* err_banner  = NULL;
     GError* err_bannerx = NULL;
 
-    self->priv->pixbuf_banner  = wintc_brand_get_brand_pixmap(
+    self->pixbuf_banner  = wintc_brand_get_brand_pixmap(
                                      WINTC_BRAND_PART_BANNER,
                                      &err_banner
                                  );
-    self->priv->pixbuf_bannerx = wintc_brand_get_brand_pixmap(
+    self->pixbuf_bannerx = wintc_brand_get_brand_pixmap(
                                      WINTC_BRAND_PART_BANNER_TALL,
                                      &err_bannerx
                                  );
@@ -155,22 +147,22 @@ static void wintc_gina_auth_window_init(
     //
     GtkWidget* image_brand =
         gtk_image_new_from_pixbuf(
-            self->priv->pixbuf_bannerx
+            self->pixbuf_bannerx
         );
 
-    self->priv->box_brand = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-    self->priv->strip     = wintc_gina_strip_new();
+    self->box_brand = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+    self->strip     = wintc_gina_strip_new();
 
     gtk_box_pack_start(
-        GTK_BOX(self->priv->box_brand),
+        GTK_BOX(self->box_brand),
         image_brand,
         FALSE,
         FALSE,
         0
     );
     gtk_box_pack_start(
-        GTK_BOX(self->priv->box_brand),
-        self->priv->strip,
+        GTK_BOX(self->box_brand),
+        self->strip,
         FALSE,
         FALSE,
         0
@@ -180,10 +172,10 @@ static void wintc_gina_auth_window_init(
     //
     GtkWidget* label_wait = gtk_label_new("Please wait...");
 
-    self->priv->box_wait = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+    self->box_wait = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 
     wintc_widget_add_style_class(
-        self->priv->box_wait,
+        self->box_wait,
         "please-wait"
     );
 
@@ -197,7 +189,7 @@ static void wintc_gina_auth_window_init(
     );
 
     gtk_box_pack_start(
-        GTK_BOX(self->priv->box_wait),
+        GTK_BOX(self->box_wait),
         label_wait,
         TRUE,
         TRUE,
@@ -211,19 +203,19 @@ static void wintc_gina_auth_window_init(
     GtkWidget* label_password = gtk_label_new("Password:");
     GtkWidget* label_username = gtk_label_new("User name:");
 
-    self->priv->box_login = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+    self->box_login = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 
-    self->priv->button_submit  = gtk_button_new_with_label("OK");
-    self->priv->entry_password = gtk_entry_new();
-    self->priv->entry_username = gtk_entry_new();
+    self->button_submit  = gtk_button_new_with_label("OK");
+    self->entry_password = gtk_entry_new();
+    self->entry_username = gtk_entry_new();
 
     wintc_widget_add_style_class(
         box_buttons,
-        WINTC_COMCTL_BUTTON_BOX_CSS_CLASS
+        WINTC_CTL_BUTTON_BOX_CSS_CLASS
     );
 
     wintc_widget_add_style_class(
-        self->priv->box_login,
+        self->box_login,
         "login"
     );
 
@@ -236,10 +228,10 @@ static void wintc_gina_auth_window_init(
         GTK_ALIGN_START
     );
 
-    gtk_entry_set_visibility(GTK_ENTRY(self->priv->entry_password), FALSE);
+    gtk_entry_set_visibility(GTK_ENTRY(self->entry_password), FALSE);
 
     g_signal_connect(
-        self->priv->button_submit,
+        self->button_submit,
         "clicked",
         G_CALLBACK(on_button_submit_clicked),
         self
@@ -255,7 +247,7 @@ static void wintc_gina_auth_window_init(
     );
     gtk_grid_attach(
         GTK_GRID(grid_login),
-        self->priv->entry_username,
+        self->entry_username,
         1,
         0,
         1,
@@ -272,7 +264,7 @@ static void wintc_gina_auth_window_init(
     );
     gtk_grid_attach(
         GTK_GRID(grid_login),
-        self->priv->entry_password,
+        self->entry_password,
         1,
         1,
         1,
@@ -281,18 +273,18 @@ static void wintc_gina_auth_window_init(
 
     gtk_box_pack_end(
         GTK_BOX(box_buttons),
-        self->priv->button_submit,
+        self->button_submit,
         FALSE,
         FALSE,
         0
     );
 
     gtk_container_add(
-        GTK_CONTAINER(self->priv->box_login),
+        GTK_CONTAINER(self->box_login),
         grid_login
     );
     gtk_container_add(
-        GTK_CONTAINER(self->priv->box_login),
+        GTK_CONTAINER(self->box_login),
         box_buttons
     );
 
@@ -300,7 +292,7 @@ static void wintc_gina_auth_window_init(
     //
     GtkWidget* header_bar = gtk_header_bar_new();
 
-    self->priv->box_container = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+    self->box_container = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 
     gtk_header_bar_set_title(
         GTK_HEADER_BAR(header_bar),
@@ -308,13 +300,13 @@ static void wintc_gina_auth_window_init(
     );
 
     gtk_container_add(
-        GTK_CONTAINER(self->priv->box_container),
-        self->priv->box_brand
+        GTK_CONTAINER(self->box_container),
+        self->box_brand
     );
 
     gtk_container_add(
         GTK_CONTAINER(self),
-        self->priv->box_container
+        self->box_container
     );
 
     gtk_window_set_titlebar(
@@ -325,8 +317,8 @@ static void wintc_gina_auth_window_init(
     // Hold additional references to the boxes, so we can add/remove
     // them ourselves without them getting binned
     //
-    g_object_ref(self->priv->box_login);
-    g_object_ref(self->priv->box_wait);
+    g_object_ref(self->box_login);
+    g_object_ref(self->box_wait);
 
     // Connect to realize signal to kick off everything when we're
     // actually live
@@ -340,11 +332,11 @@ static void wintc_gina_auth_window_init(
 
     // Set initial state
     //
-    self->priv->current_state = WINTC_GINA_STATE_NONE;
-    self->priv->logon_session = wintc_gina_logon_session_new();
+    self->current_state = WINTC_GINA_STATE_NONE;
+    self->logon_session = wintc_gina_logon_session_new();
 
     g_signal_connect(
-        self->priv->logon_session,
+        self->logon_session,
         "attempt-complete",
         G_CALLBACK(on_logon_session_attempt_complete),
         self
@@ -360,13 +352,13 @@ static void wintc_gina_auth_window_finalize(
 {
     WinTCGinaAuthWindow* window = WINTC_GINA_AUTH_WINDOW(gobject);
 
-    g_clear_object(&(window->priv->pixbuf_banner));
-    g_clear_object(&(window->priv->pixbuf_bannerx));
+    g_clear_object(&(window->pixbuf_banner));
+    g_clear_object(&(window->pixbuf_bannerx));
 
     // Bin additional references held for the boxes
     //
-    g_clear_object(&(window->priv->box_login));
-    g_clear_object(&(window->priv->box_wait));
+    g_clear_object(&(window->box_login));
+    g_clear_object(&(window->box_wait));
 
     (G_OBJECT_CLASS(wintc_gina_auth_window_parent_class))->finalize(gobject);
 }
@@ -378,7 +370,7 @@ GtkWidget* wintc_gina_auth_window_new(void)
 {
     return GTK_WIDGET(
         g_object_new(
-            TYPE_WINTC_GINA_AUTH_WINDOW,
+            WINTC_TYPE_GINA_AUTH_WINDOW,
             "type",      GTK_WINDOW_TOPLEVEL,
             "resizable", FALSE,
             NULL
@@ -396,23 +388,23 @@ static void wintc_gina_auth_window_change_state(
 {
     // Disable current state, if any
     //
-    switch (window->priv->current_state)
+    switch (window->current_state)
     {
         case WINTC_GINA_STATE_STARTING:
         case WINTC_GINA_STATE_LAUNCHING:
             wintc_gina_strip_stop_animating(
-                WINTC_GINA_STRIP(window->priv->strip)
+                WINTC_GINA_STRIP(window->strip)
             );
             gtk_container_remove(
-                GTK_CONTAINER(window->priv->box_container),
-                window->priv->box_wait
+                GTK_CONTAINER(window->box_container),
+                window->box_wait
             );
             break;
 
         case WINTC_GINA_STATE_PROMPT:
             gtk_container_remove(
-                GTK_CONTAINER(window->priv->box_container),
-                window->priv->box_login
+                GTK_CONTAINER(window->box_container),
+                window->box_login
             );
             break;
 
@@ -425,17 +417,17 @@ static void wintc_gina_auth_window_change_state(
     {
         case WINTC_GINA_STATE_STARTING:
             gtk_box_pack_start(
-                GTK_BOX(window->priv->box_container),
-                window->priv->box_wait,
+                GTK_BOX(window->box_container),
+                window->box_wait,
                 TRUE,
                 TRUE,
                 0
             );
             wintc_gina_strip_animate(
-                WINTC_GINA_STRIP(window->priv->strip)
+                WINTC_GINA_STRIP(window->strip)
             );
             wintc_gina_logon_session_establish(
-                window->priv->logon_session
+                window->logon_session
             );
             g_timeout_add_seconds(
                 DELAY_SECONDS_AT_LEAST,
@@ -446,8 +438,8 @@ static void wintc_gina_auth_window_change_state(
 
         case WINTC_GINA_STATE_PROMPT:
             gtk_box_pack_start(
-                GTK_BOX(window->priv->box_container),
-                window->priv->box_login,
+                GTK_BOX(window->box_container),
+                window->box_login,
                 TRUE,
                 TRUE,
                 0
@@ -456,14 +448,14 @@ static void wintc_gina_auth_window_change_state(
 
         case WINTC_GINA_STATE_LAUNCHING:
             gtk_box_pack_start(
-                GTK_BOX(window->priv->box_container),
-                window->priv->box_wait,
+                GTK_BOX(window->box_container),
+                window->box_wait,
                 TRUE,
                 TRUE,
                 0
             );
             wintc_gina_strip_animate(
-                WINTC_GINA_STRIP(window->priv->strip)
+                WINTC_GINA_STRIP(window->strip)
             );
             g_timeout_add_seconds(
                 DELAY_SECONDS_AT_LEAST,
@@ -476,10 +468,10 @@ static void wintc_gina_auth_window_change_state(
     }
 
     gtk_widget_show_all(
-        window->priv->box_container
+        window->box_container
     );
 
-    window->priv->current_state = next_state;
+    window->current_state = next_state;
 }
 
 //
@@ -516,29 +508,29 @@ static void on_logon_session_attempt_complete(
         case WINTC_GINA_RESPONSE_FAIL:
             // FIXME: Prompt for failure
             gtk_entry_set_text(
-                GTK_ENTRY(window->priv->entry_password),
+                GTK_ENTRY(window->entry_password),
                 ""
             );
             gtk_entry_set_text(
-                GTK_ENTRY(window->priv->entry_username),
+                GTK_ENTRY(window->entry_username),
                 ""
             );
 
             gtk_widget_set_sensitive(
-                window->priv->button_submit,
+                window->button_submit,
                 TRUE
             );
             gtk_widget_set_sensitive(
-                window->priv->entry_password,
+                window->entry_password,
                 TRUE
             );
             gtk_widget_set_sensitive(
-                window->priv->entry_username,
+                window->entry_username,
                 TRUE
             );
 
             wintc_gina_strip_stop_animating(
-                WINTC_GINA_STRIP(window->priv->strip)
+                WINTC_GINA_STRIP(window->strip)
             );
 
             break;
@@ -555,26 +547,26 @@ static void on_button_submit_clicked(
     WinTCGinaAuthWindow* window = WINTC_GINA_AUTH_WINDOW(user_data);
 
     gtk_widget_set_sensitive(
-        window->priv->button_submit,
+        window->button_submit,
         FALSE
     );
     gtk_widget_set_sensitive(
-        window->priv->entry_password,
+        window->entry_password,
         FALSE
     );
     gtk_widget_set_sensitive(
-        window->priv->entry_username,
+        window->entry_username,
         FALSE
     );
 
     wintc_gina_strip_animate(
-        WINTC_GINA_STRIP(window->priv->strip)
+        WINTC_GINA_STRIP(window->strip)
     );
 
     wintc_gina_logon_session_try_logon(
-        window->priv->logon_session,
-        gtk_entry_get_text(GTK_ENTRY(window->priv->entry_username)),
-        gtk_entry_get_text(GTK_ENTRY(window->priv->entry_password))
+        window->logon_session,
+        gtk_entry_get_text(GTK_ENTRY(window->entry_username)),
+        gtk_entry_get_text(GTK_ENTRY(window->entry_password))
     );
 }
 
@@ -584,7 +576,7 @@ static gboolean on_timeout_delay_done(
 {
     WinTCGinaAuthWindow* window = WINTC_GINA_AUTH_WINDOW(user_data);
 
-    switch (window->priv->current_state)
+    switch (window->current_state)
     {
         case WINTC_GINA_STATE_STARTING:
             g_timeout_add_seconds(
@@ -596,7 +588,7 @@ static gboolean on_timeout_delay_done(
 
         case WINTC_GINA_STATE_LAUNCHING:
             wintc_gina_logon_session_finish(
-                window->priv->logon_session
+                window->logon_session
             );
             break;
 
@@ -616,7 +608,7 @@ static gboolean on_timeout_poll_ready(
 
     if (
         wintc_gina_logon_session_is_available(
-            window->priv->logon_session
+            window->logon_session
         )
     )
     {

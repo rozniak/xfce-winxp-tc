@@ -2,8 +2,8 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <glib.h>
 #include <gtk/gtk.h>
-#include <wintc-comgtk.h>
-#include <wintc-winbrand.h>
+#include <wintc/comgtk.h>
+#include <wintc/winbrand.h>
 
 #include "stripctl.h"
 
@@ -15,15 +15,6 @@
 //
 // GTK OOP CLASS/INSTANCE DEFINITIONS
 //
-struct _WinTCGinaStripPrivate
-{
-    GdkPixbuf*       pixbuf_strip;
-    cairo_surface_t* surface_strip;
-
-    gboolean is_animating;
-    gint64   origin_time;
-};
-
 struct _WinTCGinaStripClass
 {
     GtkWidgetClass __parent__;    
@@ -33,7 +24,13 @@ struct _WinTCGinaStrip
 {
     GtkWidget __parent__;
 
-    WinTCGinaStripPrivate* priv;
+    // UI resources and state
+    //
+    GdkPixbuf*       pixbuf_strip;
+    cairo_surface_t* surface_strip;
+
+    gboolean is_animating;
+    gint64   origin_time;
 };
 
 //
@@ -79,11 +76,10 @@ static gboolean wintc_gina_strip_step(
 //
 // GTK TYPE DEFINITIONS & CTORS
 //
-G_DEFINE_TYPE_WITH_CODE(
+G_DEFINE_TYPE(
     WinTCGinaStrip,
     wintc_gina_strip,
-    GTK_TYPE_WIDGET,
-    G_ADD_PRIVATE(WinTCGinaStrip)
+    GTK_TYPE_WIDGET
 )
 
 static void wintc_gina_strip_class_init(
@@ -111,15 +107,13 @@ static void wintc_gina_strip_init(
     WinTCGinaStrip* self
 )
 {
-    self->priv = wintc_gina_strip_get_instance_private(self);
-
     gtk_widget_set_has_window(GTK_WIDGET(self), FALSE);
 
     // Load assets
     //
     GError* error = NULL;
 
-    self->priv->pixbuf_strip =
+    self->pixbuf_strip =
         wintc_brand_get_brand_pixmap(
             WINTC_BRAND_PART_STRIP_ANIM,
             &error
@@ -127,9 +121,9 @@ static void wintc_gina_strip_init(
 
     // FIXME: Handle error
 
-    self->priv->surface_strip =
+    self->surface_strip =
         gdk_cairo_surface_create_from_pixbuf(
-            self->priv->pixbuf_strip,
+            self->pixbuf_strip,
             1,
             NULL // FIXME: Error reporting
         );
@@ -144,8 +138,8 @@ static void wintc_gina_strip_finalize(
 {
     WinTCGinaStrip* strip = WINTC_GINA_STRIP(gobject);
 
-    cairo_surface_destroy(strip->priv->surface_strip);
-    g_clear_object(&(strip->priv->pixbuf_strip));
+    cairo_surface_destroy(strip->surface_strip);
+    g_clear_object(&(strip->pixbuf_strip));
 
     (G_OBJECT_CLASS(wintc_gina_strip_parent_class))->finalize(gobject);
 }
@@ -161,16 +155,16 @@ static gboolean wintc_gina_strip_draw(
     // If animating, work out offset of strip based
     // on time
     //
-    if (strip->priv->is_animating)
+    if (strip->is_animating)
     {
         gint64  current_time = g_get_monotonic_time();
-        gint64  delta        = strip->priv->origin_time - current_time;
+        gint64  delta        = strip->origin_time - current_time;
         gint64  mod_time     = delta % ANIM_RATE_IN_US;
         gdouble within_pct   = (gdouble) mod_time / ANIM_RATE_IN_US;
 
         gint img_width =
             cairo_image_surface_get_width(
-                strip->priv->surface_strip
+                strip->surface_strip
             );
 
         x_offset = (gint) (img_width * within_pct);
@@ -180,7 +174,7 @@ static gboolean wintc_gina_strip_draw(
     //
     cairo_set_source_surface(
         cr,
-        strip->priv->surface_strip,
+        strip->surface_strip,
         x_offset,
         0.0f
     );
@@ -205,7 +199,7 @@ static void wintc_gina_strip_get_preferred_height(
 
     height =
         cairo_image_surface_get_height(
-            strip->priv->surface_strip
+            strip->surface_strip
         );
 
     *minimum_height = height;
@@ -237,7 +231,7 @@ static void wintc_gina_strip_get_preferred_width(
 
     width =
         cairo_image_surface_get_width(
-            strip->priv->surface_strip
+            strip->surface_strip
         );
 
     *minimum_width = width;
@@ -275,13 +269,13 @@ void wintc_gina_strip_animate(
     WinTCGinaStrip* strip
 )
 {
-    if (strip->priv->is_animating)
+    if (strip->is_animating)
     {
         return;
     }
 
-    strip->priv->is_animating = TRUE;
-    strip->priv->origin_time  = g_get_monotonic_time();
+    strip->is_animating = TRUE;
+    strip->origin_time  = g_get_monotonic_time();
 
     gtk_widget_add_tick_callback(
         GTK_WIDGET(strip),
@@ -295,7 +289,7 @@ void wintc_gina_strip_stop_animating(
     WinTCGinaStrip* strip
 )
 {
-    strip->priv->is_animating = FALSE;
+    strip->is_animating = FALSE;
 }
 
 //
@@ -311,7 +305,7 @@ static gboolean wintc_gina_strip_step(
 
     gtk_widget_queue_draw(widget);
 
-    return strip->priv->is_animating ?
+    return strip->is_animating ?
         G_SOURCE_CONTINUE : G_SOURCE_REMOVE;
 }
 

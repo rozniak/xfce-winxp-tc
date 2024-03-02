@@ -1,8 +1,8 @@
 #include <glib.h>
 #include <gtk/gtk.h>
 
-#include "errors.h"
-#include "msgbox.h"
+#include "../public/errors.h"
+#include "../public/msgbox.h"
 
 #define RETURN_IF_NO_ERROR(e) if (e == NULL || *e == NULL) { return; }
 

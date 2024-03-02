@@ -1,12 +1,12 @@
 #include <glib.h>
 #include <gtk/gtk.h>
 
-#include "container.h"
+#include "../public/container.h"
 
 //
 // PUBLIC FUNCTIONS
 //
-void wintc_gtk_container_clear(
+void wintc_container_clear(
     GtkContainer* container
 )
 {

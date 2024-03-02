@@ -2,9 +2,9 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <glib.h>
 #include <gtk/gtk.h>
-#include <wintc-comgtk.h>
+#include <wintc/comgtk.h>
 
-#include "animctl.h"
+#include "../public/animctl.h"
 
 #define ONE_SECOND_IN_US 1000000
 
@@ -21,89 +21,88 @@ enum
 //
 // PRIVATE STURCTURE DEFINITIONS
 //
-typedef struct _WinTCAnimationData
+typedef struct _WinTCCtlAnimationData
 {
     GdkPixbuf*       pixbuf_bmp;
     cairo_surface_t* surface_bmp;
 
     gint frame_count;
     gint frame_height;
-} WinTCAnimationData;
+} WinTCCtlAnimationData;
 
 //
 // GTK OOP CLASS/INSTANCE DEFINITIONS
 //
-struct _WinTCAnimationPrivate
+struct _WinTCCtlAnimationClass
 {
+    GtkWidgetClass __parent__;
+};
+
+struct _WinTCCtlAnimation
+{
+    GtkWidget __parent__;
+
+    // State
+    //
     GSList* animations;
 
     gboolean is_animating;
     guint    tick_id;
 
-    WinTCAnimationData* current_anim;
-    gint                current_frame;
-    gint                desired_repeats;
-    gint                last_frame;
-    gint64              origin_frame_time;
-    gint64              per_frame_time;
-    gint64              playback_total_time;
+    WinTCCtlAnimationData* current_anim;
+    gint                   current_frame;
+    gint                   desired_repeats;
+    gint                   last_frame;
+    gint64                 origin_frame_time;
+    gint64                 per_frame_time;
+    gint64                 playback_total_time;
 
+    // UI properties
+    //
     GtkAlign halign;
     GtkAlign valign;
-};
-
-struct _WinTCAnimationClass
-{
-    GtkWidgetClass __parent__;
-};
-
-struct _WinTCAnimation
-{
-    GtkWidget __parent__;
-
-    WinTCAnimationPrivate* priv;
 };
 
 //
 // FORWARD DECLARATIONS
 //
-static void wintc_animation_finalize(
+static void wintc_ctl_animation_finalize(
     GObject* gobject
 );
-static void wintc_animation_get_property(
+static void wintc_ctl_animation_get_property(
     GObject*    object,
     guint       prop_id,
     GValue*     value,
     GParamSpec* pspec
 );
-static void wintc_animation_set_property(
+static void wintc_ctl_animation_set_property(
     GObject*      object,
     guint         prop_id,
     const GValue* value,
     GParamSpec*   pspec
 );
 
-static gboolean wintc_animation_draw(
+static gboolean wintc_ctl_animation_draw(
     GtkWidget* widget,
     cairo_t*   cr
 );
-static void wintc_animation_get_preferred_height(
+static void wintc_ctl_animation_get_preferred_height(
     GtkWidget* widget,
     gint*      minimum_height,
     gint*      natural_height
 );
-static void wintc_animation_get_preferred_height_for_width(
+static void wintc_ctl_animation_get_preferred_height_for_width(
     GtkWidget* widget,
     gint       width,
     gint*      minimum_height,
     gint*      natural_height
 );
-static void wintc_animation_get_preferred_width(
+static void wintc_ctl_animation_get_preferred_width(
     GtkWidget* widget,
     gint*      minimum_width,
     gint*      natural_width
 );
-static void wintc_animation_get_preferred_width_for_height(
+static void wintc_ctl_animation_get_preferred_width_for_height(
     GtkWidget* widget,
     gint       height,
     gint*      minimum_width,
@@ -111,10 +110,10 @@ static void wintc_animation_get_preferred_width_for_height(
 );
 
 static void free_anim_data(
-    WinTCAnimationData* anim_data
+    WinTCCtlAnimationData* anim_data
 );
 
-static gboolean wintc_animation_step(
+static gboolean wintc_ctl_animation_step(
     GtkWidget*     widget,
     GdkFrameClock* frame_clock,
     gpointer       user_data
@@ -123,34 +122,33 @@ static gboolean wintc_animation_step(
 //
 // GTK TYPE DEFINITIONS & CTORS
 //
-G_DEFINE_TYPE_WITH_CODE(
-    WinTCAnimation,
-    wintc_animation,
-    GTK_TYPE_WIDGET,
-    G_ADD_PRIVATE(WinTCAnimation)
+G_DEFINE_TYPE(
+    WinTCCtlAnimation,
+    wintc_ctl_animation,
+    GTK_TYPE_WIDGET
 )
 
-static void wintc_animation_class_init(
-    WinTCAnimationClass* klass
+static void wintc_ctl_animation_class_init(
+    WinTCCtlAnimationClass* klass
 )
 {
     GtkWidgetClass* widget_class = GTK_WIDGET_CLASS(klass);
     GObjectClass*   object_class = G_OBJECT_CLASS(klass);
 
-    object_class->finalize     = wintc_animation_finalize;
-    object_class->get_property = wintc_animation_get_property;
-    object_class->set_property = wintc_animation_set_property;
+    object_class->finalize     = wintc_ctl_animation_finalize;
+    object_class->get_property = wintc_ctl_animation_get_property;
+    object_class->set_property = wintc_ctl_animation_set_property;
 
     widget_class->draw                           =
-        wintc_animation_draw;
+        wintc_ctl_animation_draw;
     widget_class->get_preferred_height           =
-        wintc_animation_get_preferred_height;
+        wintc_ctl_animation_get_preferred_height;
     widget_class->get_preferred_height_for_width =
-        wintc_animation_get_preferred_height_for_width;
+        wintc_ctl_animation_get_preferred_height_for_width;
     widget_class->get_preferred_width            =
-        wintc_animation_get_preferred_width;
+        wintc_ctl_animation_get_preferred_width;
     widget_class->get_preferred_width_for_height =
-        wintc_animation_get_preferred_width_for_height;
+        wintc_ctl_animation_get_preferred_width_for_height;
 
     g_object_class_install_property(
         object_class,
@@ -178,57 +176,55 @@ static void wintc_animation_class_init(
     );
 }
 
-static void wintc_animation_init(
-    WinTCAnimation* self
+static void wintc_ctl_animation_init(
+    WinTCCtlAnimation* self
 )
 {
-    self->priv = wintc_animation_get_instance_private(self);
-
     gtk_widget_set_has_window(GTK_WIDGET(self), FALSE);
 }
 
 //
 // CLASS VIRTUAL METHODS
 //
-static void wintc_animation_finalize(
+static void wintc_ctl_animation_finalize(
     GObject* gobject
 )
 {
-    WinTCAnimation* anim = WINTC_ANIMATION(gobject);
+    WinTCCtlAnimation* anim = WINTC_CTL_ANIMATION(gobject);
 
     g_slist_free_full(
-        anim->priv->animations,
+        anim->animations,
         (GDestroyNotify) free_anim_data
     );
 
-    if (anim->priv->tick_id > 0)
+    if (anim->tick_id > 0)
     {
         gtk_widget_remove_tick_callback(
             GTK_WIDGET(anim),
-            anim->priv->tick_id
+            anim->tick_id
         );
     }
 
-    (G_OBJECT_CLASS(wintc_animation_parent_class))->finalize(gobject);
+    (G_OBJECT_CLASS(wintc_ctl_animation_parent_class))->finalize(gobject);
 }
 
-static void wintc_animation_get_property(
+static void wintc_ctl_animation_get_property(
     GObject*    object,
     guint       prop_id,
     GValue*     value,
     GParamSpec* pspec
 )
 {
-    WinTCAnimation* anim = WINTC_ANIMATION(object);
+    WinTCCtlAnimation* anim = WINTC_CTL_ANIMATION(object);
 
     switch (prop_id)
     {
         case PROP_HALIGN:
-            g_value_set_enum(value, anim->priv->halign);
+            g_value_set_enum(value, anim->halign);
             break;
 
         case PROP_VALIGN:
-            g_value_set_enum(value, anim->priv->valign);
+            g_value_set_enum(value, anim->valign);
             break;
 
         default:
@@ -237,24 +233,24 @@ static void wintc_animation_get_property(
     }
 }
 
-static void wintc_animation_set_property(
+static void wintc_ctl_animation_set_property(
     GObject*      object,
     guint         prop_id,
     const GValue* value,
     GParamSpec*   pspec
 )
 {
-    WinTCAnimation* anim = WINTC_ANIMATION(object);
+    WinTCCtlAnimation* anim = WINTC_CTL_ANIMATION(object);
 
     switch (prop_id)
     {
         case PROP_HALIGN:
-            anim->priv->halign = g_value_get_enum(value);
+            anim->halign = g_value_get_enum(value);
             gtk_widget_queue_draw(GTK_WIDGET(object));
             break;
 
         case PROP_VALIGN:
-            anim->priv->valign = g_value_get_enum(value);
+            anim->valign = g_value_get_enum(value);
             gtk_widget_queue_draw(GTK_WIDGET(object));
             break;
 
@@ -264,14 +260,14 @@ static void wintc_animation_set_property(
     }
 }
 
-static gboolean wintc_animation_draw(
+static gboolean wintc_ctl_animation_draw(
     GtkWidget* widget,
     cairo_t*   cr
 )
 {
-    WinTCAnimation* anim = WINTC_ANIMATION(widget);
+    WinTCCtlAnimation* anim = WINTC_CTL_ANIMATION(widget);
 
-    if (anim->priv->current_anim == NULL)
+    if (anim->current_anim == NULL)
     {
         return FALSE;
     }
@@ -284,19 +280,19 @@ static gboolean wintc_animation_draw(
 
     graphic_width =
         cairo_image_surface_get_width(
-            anim->priv->current_anim->surface_bmp
+            anim->current_anim->surface_bmp
         );
 
-    if (anim->priv->current_anim->frame_count > 1)
+    if (anim->current_anim->frame_count > 1)
     {
-        graphic_height = anim->priv->current_anim->frame_height;
-        y_offset       = (graphic_height * anim->priv->current_frame) * -1.0f;
+        graphic_height = anim->current_anim->frame_height;
+        y_offset       = (graphic_height * anim->current_frame) * -1.0f;
     }
     else
     {
         graphic_height =
             cairo_image_surface_get_height(
-                anim->priv->current_anim->surface_bmp
+                anim->current_anim->surface_bmp
             );
         y_offset       = 0.0f;
     }
@@ -313,7 +309,7 @@ static gboolean wintc_animation_draw(
     double target_scale_w = 1.0f;
     double target_scale_h = 1.0f;
 
-    switch (anim->priv->halign)
+    switch (anim->halign)
     {
         case GTK_ALIGN_END:
             target_x = (double) (my_width - graphic_width);
@@ -333,7 +329,7 @@ static gboolean wintc_animation_draw(
             break;
     }
 
-    switch (anim->priv->valign)
+    switch (anim->valign)
     {
         case GTK_ALIGN_END:
             target_y = (double) (my_height - graphic_height);
@@ -372,7 +368,7 @@ static gboolean wintc_animation_draw(
 
     cairo_set_source_surface(
         cr,
-        anim->priv->current_anim->surface_bmp,
+        anim->current_anim->surface_bmp,
         0.0f,
         y_offset
     );
@@ -385,32 +381,32 @@ static gboolean wintc_animation_draw(
 
     cairo_restore(cr);
 
-    anim->priv->last_frame = anim->priv->current_frame;
+    anim->last_frame = anim->current_frame;
 
     return FALSE;
 }
 
-static void wintc_animation_get_preferred_height(
+static void wintc_ctl_animation_get_preferred_height(
     GtkWidget* widget,
     gint*      minimum_height,
     gint*      natural_height
 )
 {
-    WinTCAnimation* anim   = WINTC_ANIMATION(widget);
-    gint            height = 0;
+    WinTCCtlAnimation* anim   = WINTC_CTL_ANIMATION(widget);
+    gint               height = 0;
 
-    if (anim->priv->current_anim != NULL)
+    if (anim->current_anim != NULL)
     {
-        if (anim->priv->current_anim->frame_count == 1)
+        if (anim->current_anim->frame_count == 1)
         {
             height =
                 cairo_image_surface_get_height(
-                    anim->priv->current_anim->surface_bmp
+                    anim->current_anim->surface_bmp
                 );
         }
         else
         {
-            height = anim->priv->current_anim->frame_height;
+            height = anim->current_anim->frame_height;
         }
     }
 
@@ -418,29 +414,29 @@ static void wintc_animation_get_preferred_height(
     *natural_height = height;
 }
 
-static void wintc_animation_get_preferred_height_for_width(
+static void wintc_ctl_animation_get_preferred_height_for_width(
     GtkWidget* widget,
     WINTC_UNUSED(gint width),
     gint*      minimum_height,
     gint*      natural_height
 )
 {
-    wintc_animation_get_preferred_height(
+    wintc_ctl_animation_get_preferred_height(
         widget,
         minimum_height,
         natural_height
     );
 }
 
-static void wintc_animation_get_preferred_width(
+static void wintc_ctl_animation_get_preferred_width(
     GtkWidget* widget,
     gint*      minimum_width,
     gint*      natural_width
 )
 {
-    WinTCAnimation* anim = WINTC_ANIMATION(widget);
+    WinTCCtlAnimation* anim = WINTC_CTL_ANIMATION(widget);
 
-    if (anim->priv->current_anim == NULL)
+    if (anim->current_anim == NULL)
     {
         minimum_width = 0;
         natural_width = 0;
@@ -449,21 +445,21 @@ static void wintc_animation_get_preferred_width(
 
     gint width =
         cairo_image_surface_get_width(
-            anim->priv->current_anim->surface_bmp
+            anim->current_anim->surface_bmp
         );
 
     *minimum_width = width;
     *natural_width = width;
 }
 
-static void wintc_animation_get_preferred_width_for_height(
+static void wintc_ctl_animation_get_preferred_width_for_height(
     GtkWidget* widget,
     WINTC_UNUSED(gint height),
     gint*      minimum_width,
     gint*      natural_width
 )
 {
-    wintc_animation_get_preferred_width(
+    wintc_ctl_animation_get_preferred_width(
         widget,
         minimum_width,
         natural_width
@@ -473,24 +469,26 @@ static void wintc_animation_get_preferred_width_for_height(
 //
 // PUBLIC FUNCTIONS
 //
-GtkWidget* wintc_animation_new(void)
+GtkWidget* wintc_ctl_animation_new(void)
 {
     return GTK_WIDGET(
         g_object_new(
-            TYPE_WINTC_ANIMATION,
+            WINTC_TYPE_CTL_ANIMATION,
             NULL
         )
     );
 }
 
-guint wintc_animation_add_framesheet(
-    WinTCAnimation* anim,
-    GdkPixbuf*      framesheet_pixbuf,
-    gint            frame_count
+guint wintc_ctl_animation_add_framesheet(
+    WinTCCtlAnimation* anim,
+    GdkPixbuf*         framesheet_pixbuf,
+    gint               frame_count
 )
 {
-    WinTCAnimationData* anim_data = g_new0(WinTCAnimationData, 1);
-    gint                height    = gdk_pixbuf_get_height(framesheet_pixbuf);
+    WinTCCtlAnimationData* anim_data = g_new0(WinTCCtlAnimationData, 1);
+    gint                   height    = gdk_pixbuf_get_height(
+                                           framesheet_pixbuf
+                                       );
 
     g_object_ref(framesheet_pixbuf);
 
@@ -505,21 +503,21 @@ guint wintc_animation_add_framesheet(
     anim_data->frame_count  = frame_count;
     anim_data->frame_height = height / frame_count;
 
-    anim->priv->animations =
+    anim->animations =
         g_slist_append(
-            anim->priv->animations,
+            anim->animations,
             anim_data
         );
 
-    return wintc_animation_get_count(anim);
+    return wintc_ctl_animation_get_count(anim);
 }
 
-guint wintc_animation_add_static(
-    WinTCAnimation* anim,
-    GdkPixbuf*      static_pixbuf
+guint wintc_ctl_animation_add_static(
+    WinTCCtlAnimation* anim,
+    GdkPixbuf*         static_pixbuf
 )
 {
-    WinTCAnimationData* anim_data = g_new0(WinTCAnimationData, 1);
+    WinTCCtlAnimationData* anim_data = g_new0(WinTCCtlAnimationData, 1);
 
     g_object_ref(static_pixbuf);
 
@@ -534,24 +532,24 @@ guint wintc_animation_add_static(
     anim_data->frame_count  = 1;
     anim_data->frame_height = 0;
 
-    anim->priv->animations =
+    anim->animations =
         g_slist_append(
-            anim->priv->animations,
+            anim->animations,
             anim_data
         );
 
-    return wintc_animation_get_count(anim);
+    return wintc_ctl_animation_get_count(anim);
 }
 
-guint wintc_animation_get_count(
-    WinTCAnimation* anim
+guint wintc_ctl_animation_get_count(
+    WinTCCtlAnimation* anim
 )
 {
-    return g_slist_length(anim->priv->animations);
+    return g_slist_length(anim->animations);
 }
 
-GtkAlign wintc_animation_get_halign(
-    WinTCAnimation* anim
+GtkAlign wintc_ctl_animation_get_halign(
+    WinTCCtlAnimation* anim
 )
 {
     GtkAlign value;
@@ -561,8 +559,8 @@ GtkAlign wintc_animation_get_halign(
     return value;
 }
 
-GtkAlign wintc_animation_get_valign(
-    WinTCAnimation* anim
+GtkAlign wintc_ctl_animation_get_valign(
+    WinTCCtlAnimation* anim
 )
 {
     GtkAlign value;
@@ -572,24 +570,24 @@ GtkAlign wintc_animation_get_valign(
     return value;
 }
 
-void wintc_animation_play(
-    WinTCAnimation* anim,
-    guint           id,
-    gint            frame_rate,
-    gint            repeats
+void wintc_ctl_animation_play(
+    WinTCCtlAnimation* anim,
+    guint              id,
+    gint               frame_rate,
+    gint               repeats
 )
 {
     // Reset anim state values
     //
-    anim->priv->is_animating = FALSE;
+    anim->is_animating = FALSE;
 
-    anim->priv->current_anim        = NULL;
-    anim->priv->current_frame       = 0;
-    anim->priv->last_frame          = 0;
-    anim->priv->desired_repeats     = 0;
-    anim->priv->origin_frame_time   = 0;
-    anim->priv->per_frame_time      = 0;
-    anim->priv->playback_total_time = 0;
+    anim->current_anim        = NULL;
+    anim->current_frame       = 0;
+    anim->last_frame          = 0;
+    anim->desired_repeats     = 0;
+    anim->origin_frame_time   = 0;
+    anim->per_frame_time      = 0;
+    anim->playback_total_time = 0;
 
     // Queue a draw regardless of what happens
     //
@@ -597,13 +595,13 @@ void wintc_animation_play(
 
     // Check we're being asked to actually play anything
     //
-    if (id > wintc_animation_get_count(anim))
+    if (id > wintc_ctl_animation_get_count(anim))
     {
-        g_warning("WinTCAnimation - attempted to play invalid ID %u", id);
+        g_warning("WinTCCtlAnimation - attempted to play invalid ID %u", id);
         return;
     }
 
-    if (id == WINTC_ANIMATION_NONE)
+    if (id == WINTC_CTL_ANIMATION_NONE)
     {
         return;
     }
@@ -612,34 +610,34 @@ void wintc_animation_play(
     //
     gint real_id = id - 1; // The consumer is given the count rather than index
                            // in the 'add' APIs, so that we can have a special
-                           // meaning for 0 (WINTC_ANIMATION_NONE)
+                           // meaning for 0 (WINTC_CTL_ANIMATION_NONE)
 
     GSList*             anim_link = g_slist_nth(
-                                        anim->priv->animations,
+                                        anim->animations,
                                         real_id
                                     );
-    WinTCAnimationData* anim_data = anim_link->data;
+    WinTCCtlAnimationData* anim_data = anim_link->data;
 
-    anim->priv->current_anim = anim_data;
+    anim->current_anim = anim_data;
 
     if (
         anim_data->frame_count > 1 &&
         frame_rate             > 0
     )
     {
-        anim->priv->is_animating = TRUE;
+        anim->is_animating = TRUE;
 
-        anim->priv->desired_repeats     = repeats;
-        anim->priv->origin_frame_time   = g_get_monotonic_time();
-        anim->priv->per_frame_time      = ONE_SECOND_IN_US / frame_rate;
-        anim->priv->playback_total_time =
-            anim->priv->per_frame_time * anim_data->frame_count;
+        anim->desired_repeats     = repeats;
+        anim->origin_frame_time   = g_get_monotonic_time();
+        anim->per_frame_time      = ONE_SECOND_IN_US / frame_rate;
+        anim->playback_total_time =
+            anim->per_frame_time * anim_data->frame_count;
 
-        if (anim->priv->tick_id == 0)
+        if (anim->tick_id == 0)
         {
             gtk_widget_add_tick_callback(
                 GTK_WIDGET(anim),
-                (GtkTickCallback) wintc_animation_step,
+                (GtkTickCallback) wintc_ctl_animation_step,
                 NULL,
                 NULL
             );
@@ -647,40 +645,40 @@ void wintc_animation_play(
     }
 }
 
-void wintc_animation_remove(
-    WinTCAnimation* anim,
-    guint           id
+void wintc_ctl_animation_remove(
+    WinTCCtlAnimation* anim,
+    guint              id
 )
 {
-    if (id == 0 || id > wintc_animation_get_count(anim))
+    if (id == 0 || id > wintc_ctl_animation_get_count(anim))
     {
-        g_warning("WinTCAnimation - attempted to remove invalid ID %u", id);
+        g_warning("WinTCCtlAnimation - attempted to remove invalid ID %u", id);
         return;
     }
 
     gint    real_id   = id - 1; 
-    GSList* to_delete = g_slist_nth(anim->priv->animations, real_id);
+    GSList* to_delete = g_slist_nth(anim->animations, real_id);
 
     free_anim_data(to_delete->data);
 
-    anim->priv->animations =
+    anim->animations =
         g_slist_delete_link(
-            anim->priv->animations,
+            anim->animations,
             to_delete
         );
 }
 
-void wintc_animation_set_halign(
-    WinTCAnimation* anim,
-    GtkAlign        align
+void wintc_ctl_animation_set_halign(
+    WinTCCtlAnimation* anim,
+    GtkAlign           align
 )
 {
     g_object_set(anim, "gfx-halign", align, NULL);
 }
 
-void wintc_animation_set_valign(
-    WinTCAnimation* anim,
-    GtkAlign        align
+void wintc_ctl_animation_set_valign(
+    WinTCCtlAnimation* anim,
+    GtkAlign           align
 )
 {
     g_object_set(anim, "gfx-valign", align, NULL);
@@ -690,7 +688,7 @@ void wintc_animation_set_valign(
 // PRIVATE FUNCTIONS
 //
 static void free_anim_data(
-    WinTCAnimationData* anim_data
+    WinTCCtlAnimationData* anim_data
 )
 {
     cairo_surface_destroy(anim_data->surface_bmp);
@@ -701,39 +699,39 @@ static void free_anim_data(
 //
 // CALLBACKS
 //
-static gboolean wintc_animation_step(
+static gboolean wintc_ctl_animation_step(
     GtkWidget*     widget,
     GdkFrameClock* frame_clock,
     WINTC_UNUSED(gpointer user_data)
 )
 {
-    WinTCAnimation* anim = WINTC_ANIMATION(widget);
+    WinTCCtlAnimation* anim = WINTC_CTL_ANIMATION(widget);
 
-    if (!anim->priv->is_animating)
+    if (!anim->is_animating)
     {
         return G_SOURCE_REMOVE;
     }
 
     gint64 frame_time   = gdk_frame_clock_get_frame_time(frame_clock);
-    gint64 progress     = frame_time - anim->priv->origin_frame_time;
-    gint64 repeat_no    = progress / anim->priv->playback_total_time;
-    gint64 within_frame = progress % anim->priv->playback_total_time;
-    gint   frame_no     = (gint) (within_frame / anim->priv->per_frame_time);
+    gint64 progress     = frame_time - anim->origin_frame_time;
+    gint64 repeat_no    = progress / anim->playback_total_time;
+    gint64 within_frame = progress % anim->playback_total_time;
+    gint   frame_no     = (gint) (within_frame / anim->per_frame_time);
 
     if (
-        anim->priv->desired_repeats != WINTC_ANIMATION_INFINITE &&
-        anim->priv->desired_repeats <  repeat_no
+        anim->desired_repeats != WINTC_CTL_ANIMATION_INFINITE &&
+        anim->desired_repeats <  repeat_no
     )
     {
         return G_SOURCE_REMOVE;
     }
 
-    if (anim->priv->last_frame != frame_no)
+    if (anim->last_frame != frame_no)
     {
         gtk_widget_queue_draw(widget);
     }
 
-    anim->priv->current_frame = frame_no;
+    anim->current_frame = frame_no;
 
     return G_SOURCE_CONTINUE;
 }

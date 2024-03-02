@@ -20,13 +20,13 @@ include(../../packaging/cmake-inc/linking/CMakeLists.txt)
 include(../../packaging/cmake-inc/locale/CMakeLists.txt)
 include(../../packaging/cmake-inc/packaging/CMakeLists.txt)
 
-wintc_resolve_library(gdk-3.0       GDK)
-wintc_resolve_library(glib-2.0      GLIB)
-wintc_resolve_library(gtk+-3.0      GTK3)
-wintc_resolve_library(wintc-comctl  WINTC_COMCTL)
-wintc_resolve_library(wintc-comgtk  WINTC_COMGTK)
-wintc_resolve_library(wintc-exec    WINTC_EXEC)
-wintc_resolve_library(wintc-shllang WINTC_SHLLANG)
+wintc_resolve_library(gdk-3.0      GDK)
+wintc_resolve_library(glib-2.0     GLIB)
+wintc_resolve_library(gtk+-3.0     GTK3)
+wintc_resolve_library(wintc-comctl WINTC_COMCTL)
+wintc_resolve_library(wintc-comgtk WINTC_COMGTK)
+wintc_resolve_library(wintc-exec   WINTC_EXEC)
+wintc_resolve_library(wintc-shlang WINTC_SHLANG)
 
 wintc_create_meta_h()
 
@@ -63,7 +63,7 @@ target_include_directories(
     PRIVATE ${WINTC_COMCTL_INCLUDE_DIRS}
     PRIVATE ${WINTC_COMGTK_INCLUDE_DIRS}
     PRIVATE ${WINTC_EXEC_INCLUDE_DIRS}
-    PRIVATE ${WINTC_SHLLANG_INCLUDE_DIRS}
+    PRIVATE ${WINTC_SHLANG_INCLUDE_DIRS}
 )
 
 target_link_directories(
@@ -74,7 +74,7 @@ target_link_directories(
     PRIVATE ${WINTC_COMCTL_LIBRARY_DIRS}
     PRIVATE ${WINTC_COMGTK_LIBRARY_DIRS}
     PRIVATE ${WINTC_EXEC_LIBRARY_DIRS}
-    PRIVATE ${WINTC_SHLLANG_LIBRARY_DIRS}
+    PRIVATE ${WINTC_SHLANG_LIBRARY_DIRS}
 )
 
 target_link_libraries(
@@ -85,7 +85,7 @@ target_link_libraries(
     PRIVATE ${WINTC_COMCTL_LIBRARIES}
     PRIVATE ${WINTC_COMGTK_LIBRARIES}
     PRIVATE ${WINTC_EXEC_LIBRARIES}
-    PRIVATE ${WINTC_SHLLANG_LIBRARIES}
+    PRIVATE ${WINTC_SHLANG_LIBRARIES}
 )
 
 # Installation

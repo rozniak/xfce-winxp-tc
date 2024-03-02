@@ -166,7 +166,7 @@ WinTCClockRunner* wintc_clock_runner_new(
 {
     return WINTC_CLOCK_RUNNER(
         g_object_new(
-            TYPE_WINTC_CLOCK_RUNNER,
+            WINTC_TYPE_CLOCK_RUNNER,
             "label-target", label_target,
             NULL
         )

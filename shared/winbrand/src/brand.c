@@ -1,8 +1,8 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <glib.h>
-#include <wintc-comgtk.h>
+#include <wintc/comgtk.h>
 
-#include "brand.h"
+#include "../public/brand.h"
 
 //
 // PUBLIC FUNCTIONS

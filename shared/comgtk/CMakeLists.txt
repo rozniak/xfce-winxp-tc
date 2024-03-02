@@ -27,46 +27,43 @@ include(../../packaging/cmake-inc/packaging/CMakeLists.txt)
 wintc_resolve_library(glib-2.0 GLIB)
 wintc_resolve_library(gtk+-3.0 GTK3)
 
-configure_file(public/wintc-comgtk.h.in ${PROJECT_ROOT}/public/wintc-comgtk.h @ONLY)
-configure_file(src/assets.h.in  ${PROJECT_ROOT}/src/assets.h  @ONLY)
-configure_file(src/version.c.in ${PROJECT_ROOT}/src/version.c @ONLY)
+configure_file(public/assets.h.in ${PROJECT_ROOT}/public/assets.h @ONLY)
+configure_file(src/version.c.in   ${PROJECT_ROOT}/src/version.c   @ONLY)
 
 add_library(
     libwintc-comgtk
-    src/assets.h
-    src/debug.h
+    public/assets.h
+    public/debug.h
     src/container.c
-    src/container.h
+    public/container.h
     src/defprocs.c
-    src/defprocs.h
+    public/defprocs.h
     src/errors.c
-    src/errors.h
-    src/gchar.h
+    public/errors.h
     src/list.c
-    src/list.h
+    public/list.h
     src/marshal.c
-    src/marshal.h
+    public/marshal.h
     src/msgbox.c
-    src/msgbox.h
+    public/msgbox.h
     src/profile.c
-    src/profile.h
-    src/shorthand.h
+    public/profile.h
+    public/shorthand.h
     src/signals.c
-    src/signals.h
+    public/signals.h
     src/strings.c
-    src/strings.h
+    public/strings.h
     src/styles.c
-    src/styles.h
+    public/styles.h
     src/version.c
-    src/version.h
+    public/version.h
     src/window.c
-    src/window.h
+    public/window.h
 )
 
 set_target_properties(
     libwintc-comgtk
     PROPERTIES
-    PUBLIC_HEADER public/wintc-comgtk.h
     SOVERSION 1
     VERSION ${PROJECT_VERSION}
 )
@@ -100,9 +97,9 @@ target_link_libraries(
 #
 wintc_configure_and_install_packaging()
 wintc_add_pkgconfig_install()
+wintc_install_public_headers()
 
 install(
     TARGETS libwintc-comgtk
-    LIBRARY       DESTINATION ${LIB_DIR}
-    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+    LIBRARY DESTINATION ${LIB_DIR}
 )

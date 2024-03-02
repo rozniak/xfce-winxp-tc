@@ -1,8 +1,8 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
-#include <wintc-comgtk.h>
-#include <wintc-shllang.h>
+#include <wintc/comgtk.h>
+#include <wintc/shlang.h>
 
 #include "application.h"
 #include "window.h"
@@ -86,7 +86,7 @@ static void wintc_paint_window_init(
             "/uk/oddmatics/wintc/mspaint/mspaint.ui"
         );
 
-    wintc_preprocess_builder_widget_text(builder);
+    wintc_lc_builder_preprocess_widget_text(builder);
 
     main_box = GTK_WIDGET(gtk_builder_get_object(builder, "main-box"));
 
@@ -102,7 +102,7 @@ GtkWidget* wintc_paint_window_new(
 {
     return GTK_WIDGET(
         g_object_new(
-            TYPE_WINTC_PAINT_WINDOW,
+            WINTC_TYPE_PAINT_WINDOW,
             "application", GTK_APPLICATION(app),
             "title",       _("Paint"),
             NULL

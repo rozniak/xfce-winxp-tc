@@ -1,10 +1,10 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
-#include <wintc-comctl.h>
-#include <wintc-comgtk.h>
-#include <wintc-exec.h>
-#include <wintc-shllang.h>
+#include <wintc/comctl.h>
+#include <wintc/comgtk.h>
+#include <wintc/exec.h>
+#include <wintc/shlang.h>
 
 #include "application.h"
 #include "dialog.h"
@@ -15,12 +15,6 @@
 //
 // GTK OOP CLASS/INSTANCE DEFINITIONS
 //
-struct _WinTCRunDialogPrivate
-{
-    GtkWidget* combo;
-    GtkWidget* entry;
-};
-
 struct _WinTCRunDialogClass
 {
     GtkApplicationWindowClass __parent__;
@@ -30,7 +24,10 @@ struct _WinTCRunDialog
 {
     GtkApplicationWindow __parent__;
 
-    WinTCRunDialogPrivate* priv;
+    // UI
+    //
+    GtkWidget* combo;
+    GtkWidget* entry;
 };
 
 //
@@ -75,11 +72,10 @@ static void on_ok_button_clicked(
 //
 // GTK TYPE DEFINITION & CTORS
 //
-G_DEFINE_TYPE_WITH_CODE(
+G_DEFINE_TYPE(
     WinTCRunDialog,
     wintc_run_dialog,
-    GTK_TYPE_APPLICATION_WINDOW,
-    G_ADD_PRIVATE(WinTCRunDialog)
+    GTK_TYPE_APPLICATION_WINDOW
 )
 
 static void wintc_run_dialog_class_init(
@@ -139,7 +135,7 @@ static void wintc_run_dialog_init(
     //
     label_open =
         gtk_label_new(
-            wintc_get_control_text(WINTC_CTLTXT_OPEN, WINTC_PUNC_ITEMIZATION)
+            wintc_lc_get_control_text(WINTC_CTLTXT_OPEN, WINTC_PUNC_ITEMIZATION)
         );
 
     // Create combobox entry
@@ -155,19 +151,19 @@ static void wintc_run_dialog_init(
     // Create buttons
     // 
     button_browse = gtk_button_new_with_label(
-                        wintc_get_control_text(
+                        wintc_lc_get_control_text(
                             WINTC_CTLTXT_BROWSE,
                             WINTC_PUNC_MOREINPUT
                         )
                     );
     button_cancel = gtk_button_new_with_label(
-                        wintc_get_control_text(
+                        wintc_lc_get_control_text(
                             WINTC_CTLTXT_CANCEL,
                             WINTC_PUNC_NONE
                         )
                     );
     button_ok     = gtk_button_new_with_label(
-                        wintc_get_control_text(
+                        wintc_lc_get_control_text(
                             WINTC_CTLTXT_OK,
                             WINTC_PUNC_NONE
                         )
@@ -220,7 +216,7 @@ static void wintc_run_dialog_init(
 
     wintc_widget_add_style_class(
         box_buttons,
-        WINTC_COMCTL_BUTTON_BOX_CSS_CLASS
+        WINTC_CTL_BUTTON_BOX_CSS_CLASS
     );
 
     // Set OK button as default widget
@@ -250,10 +246,8 @@ static void wintc_run_dialog_init(
 
     // Set up instance private
     //
-    self->priv = wintc_run_dialog_get_instance_private(self);
-
-    self->priv->combo = combo_entry;
-    self->priv->entry = combo_entry_internal;
+    self->combo = combo_entry;
+    self->entry = combo_entry_internal;
 
     // Initialize combobox with value
     //
@@ -279,7 +273,7 @@ GtkWidget* wintc_run_dialog_new(
 {
     return GTK_WIDGET(
         g_object_new(
-            TYPE_WINTC_RUN_DIALOG,
+            WINTC_TYPE_RUN_DIALOG,
             "application", GTK_APPLICATION(app),
             NULL
         )
@@ -314,12 +308,12 @@ static void wintc_run_dialog_init_combobox(
     g_list_foreach(
         history,
         (GFunc) iter_run_history,
-        GTK_COMBO_BOX_TEXT(dialog->priv->combo)
+        GTK_COMBO_BOX_TEXT(dialog->combo)
     );
 
     // Try to select the most recent item
     //
-    combo_model = gtk_combo_box_get_model(GTK_COMBO_BOX(dialog->priv->combo));
+    combo_model = gtk_combo_box_get_model(GTK_COMBO_BOX(dialog->combo));
     
     if (
         !gtk_tree_model_get_iter_first(
@@ -333,7 +327,7 @@ static void wintc_run_dialog_init_combobox(
     }
 
     gtk_combo_box_set_active_iter(
-        GTK_COMBO_BOX(dialog->priv->combo),
+        GTK_COMBO_BOX(dialog->combo),
         &combo_iter
     );
 }
@@ -378,12 +372,12 @@ static void on_browse_button_clicked(
     //
     file_dialog =
         gtk_file_chooser_dialog_new(
-            wintc_get_control_text(WINTC_CTLTXT_BROWSE, WINTC_PUNC_NONE),
+            wintc_lc_get_control_text(WINTC_CTLTXT_BROWSE, WINTC_PUNC_NONE),
             GTK_WINDOW(dialog),
             GTK_FILE_CHOOSER_ACTION_OPEN,
-            wintc_get_control_text(WINTC_CTLTXT_CANCEL, WINTC_PUNC_NONE),
+            wintc_lc_get_control_text(WINTC_CTLTXT_CANCEL, WINTC_PUNC_NONE),
             GTK_RESPONSE_CANCEL,
-            wintc_get_control_text(WINTC_CTLTXT_OPEN, WINTC_PUNC_NONE),
+            wintc_lc_get_control_text(WINTC_CTLTXT_OPEN, WINTC_PUNC_NONE),
             GTK_RESPONSE_ACCEPT,
             NULL
         );
@@ -409,14 +403,14 @@ static void on_browse_button_clicked(
     if (result == GTK_RESPONSE_ACCEPT)
     {
         gtk_entry_set_text(
-            GTK_ENTRY(dialog->priv->entry),
+            GTK_ENTRY(dialog->entry),
             gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(file_dialog))
         );
     }
 
     gtk_widget_destroy(file_dialog);
     wintc_focus_window(GTK_WINDOW(dialog));
-    gtk_widget_grab_focus(dialog->priv->entry);
+    gtk_widget_grab_focus(dialog->entry);
 }
 
 static void on_cancel_button_clicked(
@@ -478,7 +472,7 @@ static void on_ok_button_clicked(
     WinTCRunDialog* dialog
 )
 {
-    GtkEntry*    entry           = GTK_ENTRY(dialog->priv->entry);
+    GtkEntry*    entry           = GTK_ENTRY(dialog->entry);
     GError*      error           = NULL;
     const gchar* cmdline         = gtk_entry_get_text(entry);
 

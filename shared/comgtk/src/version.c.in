@@ -1,4 +1,6 @@
-#include "version.h"
+#include <glib.h>
+
+#include "../public/version.h"
 
 //
 // PUBLIC FUNCTIONS
@@ -12,7 +14,7 @@ gboolean wintc_build_is_debug(void)
 #endif
 }
 
-gchar* wintc_get_build_tag(void)
+gchar* wintc_build_get_tag(void)
 {
     gchar* build_tag = NULL;
 

@@ -1,6 +1,6 @@
 #include <glib.h>
 #include <gtk/gtk.h>
-#include <wintc-comgtk.h>
+#include <wintc/comgtk.h>
 
 #include "application.h"
 #include "window.h"
@@ -28,7 +28,11 @@ static void wintc_hello_application_activate(
 //
 // GTK TYPE DEFINITIONS & CTORS
 //
-G_DEFINE_TYPE(WinTCHelloApplication, wintc_hello_application, GTK_TYPE_APPLICATION)
+G_DEFINE_TYPE(
+    WinTCHelloApplication,
+    wintc_hello_application,
+    GTK_TYPE_APPLICATION
+)
 
 static void wintc_hello_application_class_init(
     WinTCHelloApplicationClass* klass

@@ -1,8 +1,8 @@
 #include <glib.h>
-#include <wintc-comgtk.h>
+#include <wintc/comgtk.h>
 
-#include "action.h"
-#include "exec.h"
+#include "../public/action.h"
+#include "../public/exec.h"
 
 //
 // PUBLIC FUNCTIONS

@@ -1,8 +1,8 @@
 #include <errno.h>
 #include <glib.h>
 
-#include "profile.h"
-#include "shorthand.h"
+#include "../public/profile.h"
+#include "../public/shorthand.h"
 
 //
 // PUBLIC FUNCTIONS

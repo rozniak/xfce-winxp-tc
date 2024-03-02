@@ -22,7 +22,7 @@ wintc-comgtk-->bt,rt-->libwintc-comgtk
 wintc-exec-->bt,rt-->libwintc-exec
 wintc-msgina-->bt,rt-->libwintc-msgina
 wintc-shelldpa-->bt,rt-->libwintc-shelldpa
-wintc-shllang-->bt,rt-->libwintc-shllang
+wintc-shlang-->bt,rt-->libwintc-shlang
 wintc-sndapi-->bt,rt-->libwintc-sndapi
 wintc-winbrand-->bt,rt-->libwintc-winbrand
 xcursorgen-->bt,rt-->xcursorgen

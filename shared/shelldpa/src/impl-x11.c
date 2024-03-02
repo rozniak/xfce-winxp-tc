@@ -1,9 +1,9 @@
 #include <gdk/gdk.h>
 #include <glib.h>
 #include <gtk/gtk.h>
-#include <wintc-comgtk.h>
+#include <wintc/comgtk.h>
 
-#include "api.h"
+#include "../public/api.h"
 #include "impl-x11.h"
 
 //

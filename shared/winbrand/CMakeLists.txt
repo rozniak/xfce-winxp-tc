@@ -29,14 +29,13 @@ wintc_resolve_library(wintc-comgtk   WINTC_COMGTK)
 
 add_library(
     libwintc-winbrand
-    src/brand.h
+    public/brand.h
     src/brand.c
 )
 
 set_target_properties(
     libwintc-winbrand
     PROPERTIES
-    PUBLIC_HEADER public/wintc-winbrand.h
     SOVERSION 1
     VERSION ${PROJECT_VERSION}
 )
@@ -100,6 +99,7 @@ endif()
 #
 wintc_configure_and_install_packaging()
 wintc_add_pkgconfig_install()
+wintc_install_public_headers()
 
 install(
     FILES res/banner/${WINBRAND_BANNER_NAME}.png
@@ -121,6 +121,5 @@ install(
 )
 install(
     TARGETS libwintc-winbrand
-    LIBRARY       DESTINATION ${LIB_DIR}
-    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+    LIBRARY DESTINATION ${LIB_DIR}
 )

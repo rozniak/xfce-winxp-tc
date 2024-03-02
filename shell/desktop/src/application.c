@@ -1,7 +1,7 @@
 #include <glib.h>
 #include <gtk/gtk.h>
-#include <wintc-comgtk.h>
-#include <wintc-shelldpa.h>
+#include <wintc/comgtk.h>
+#include <wintc/shelldpa.h>
 
 #include "application.h"
 #include "window.h"

@@ -1,6 +1,6 @@
 #include <gtk/gtk.h>
 
-#include "styles.h"
+#include "../public/styles.h"
 
 //
 // PUBLIC FUNCIONS

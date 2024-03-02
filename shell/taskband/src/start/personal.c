@@ -5,10 +5,10 @@
 #include <gtk/gtk.h>
 #include <pwd.h>
 #include <sys/types.h>
-#include <wintc-comgtk.h>
-#include <wintc-exec.h>
-#include <wintc-shelldpa.h>
-#include <wintc-shllang.h>
+#include <wintc/comgtk.h>
+#include <wintc/exec.h>
+#include <wintc/shelldpa.h>
+#include <wintc/shlang.h>
 
 #include "../toolbar.h"
 #include "menumod.h"
@@ -149,7 +149,7 @@ void create_personal_menu(
 
     // Ensure our modded menu type is known to GObject
     //
-    g_type_ensure(TYPE_WINTC_MENU_MODDED);
+    g_type_ensure(WINTC_TYPE_MENU_MODDED);
 
     // Construct menu from XML
     //
@@ -158,7 +158,7 @@ void create_personal_menu(
             "/uk/oddmatics/wintc/taskband/personal-menu.ui"
         );
 
-    wintc_preprocess_builder_widget_text(builder);
+    wintc_lc_builder_preprocess_widget_text(builder);
 
     // Pull UI elements we store for later usage
     //
@@ -740,7 +740,7 @@ static void refresh_personal_menu(
 
     // Clear existing items
     //
-    wintc_gtk_container_clear(
+    wintc_container_clear(
         GTK_CONTAINER(toolbar_start->personal.menubar_programs)
     );
 

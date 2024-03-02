@@ -28,20 +28,19 @@ wintc_resolve_library(wintc-comgtk WINTC_COMGTK)
 
 add_library(
     libwintc-exec
-    src/action.h
+    public/action.h
     src/action.c
-    src/desktop.h
+    public/desktop.h
     src/desktop.c
-    src/exec.h
+    public/exec.h
     src/exec.c
-    src/mime.h
+    public/mime.h
     src/mime.c
 )
 
 set_target_properties(
     libwintc-exec
     PROPERTIES
-    PUBLIC_HEADER public/wintc-exec.h
     SOVERSION 1
     VERSION ${PROJECT_VERSION}
 )
@@ -84,9 +83,9 @@ target_link_libraries(
 #
 wintc_configure_and_install_packaging()
 wintc_add_pkgconfig_install()
+wintc_install_public_headers()
 
 install(
     TARGETS libwintc-exec
-    LIBRARY       DESTINATION ${LIB_DIR}
-    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+    LIBRARY DESTINATION ${LIB_DIR}
 )

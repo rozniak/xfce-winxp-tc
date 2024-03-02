@@ -1,8 +1,8 @@
 #include <glib.h>
 #include <gtk/gtk.h>
 #include <pango/pango.h>
-#include <wintc-comgtk.h>
-#include <wintc-shelldpa.h>
+#include <wintc/comgtk.h>
+#include <wintc/shelldpa.h>
 
 #include "windowmonitor.h"
 

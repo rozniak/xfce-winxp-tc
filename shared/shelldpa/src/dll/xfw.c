@@ -1,10 +1,10 @@
 #include <dlfcn.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <glib.h>
-#include <wintc-comgtk.h>
+#include <wintc/comgtk.h>
 
+#include "../../public/api.h"
 #include "xfw.h"
-#include "../api.h"
 
 //
 // STATIC DATA

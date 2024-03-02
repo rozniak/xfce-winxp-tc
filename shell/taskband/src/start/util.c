@@ -1,6 +1,6 @@
 #include <garcon/garcon.h>
 #include <glib.h>
-#include <wintc-exec.h>
+#include <wintc/exec.h>
 
 #include "util.h"
 

@@ -1,7 +1,7 @@
 #include <glib.h>
 #include <string.h>
 
-#include "strings.h"
+#include "../public/strings.h"
 
 //
 // PUBLIC FUNCTIONS

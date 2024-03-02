@@ -1,8 +1,8 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
-#include <wintc-comgtk.h>
-#include <wintc-shllang.h>
+#include <wintc/comgtk.h>
+#include <wintc/shlang.h>
 
 #include "application.h"
 #include "window.h"
@@ -223,7 +223,7 @@ static void wintc_notepad_window_init(
             "/uk/oddmatics/wintc/notepad/notepad.ui"
         );
 
-    wintc_preprocess_builder_widget_text(builder);
+    wintc_lc_builder_preprocess_widget_text(builder);
 
     main_box = GTK_WIDGET(gtk_builder_get_object(builder, "main-box"));
 
@@ -321,7 +321,7 @@ GtkWidget* wintc_notepad_window_new(
 {
     return GTK_WIDGET(
         g_object_new(
-            TYPE_WINTC_NOTEPAD_WINDOW,
+            WINTC_TYPE_NOTEPAD_WINDOW,
             "application", GTK_APPLICATION(app),
             NULL
         )
@@ -335,7 +335,7 @@ GtkWidget* wintc_notepad_window_new_with_uri(
 {
     return GTK_WIDGET(
         g_object_new(
-            TYPE_WINTC_NOTEPAD_WINDOW,
+            WINTC_TYPE_NOTEPAD_WINDOW,
             "application", GTK_APPLICATION(app),
             "file-uri",    uri,
             NULL
@@ -373,11 +373,11 @@ static gboolean wintc_notepad_window_close_document(
 
     gtk_dialog_add_buttons(
         GTK_DIALOG(dlg),
-        wintc_get_control_text(WINTC_CTLTXT_YES, WINTC_PUNC_NONE),
+        wintc_lc_get_control_text(WINTC_CTLTXT_YES, WINTC_PUNC_NONE),
         GTK_RESPONSE_YES,
-        wintc_get_control_text(WINTC_CTLTXT_NO, WINTC_PUNC_NONE),
+        wintc_lc_get_control_text(WINTC_CTLTXT_NO, WINTC_PUNC_NONE),
         GTK_RESPONSE_NO,
-        wintc_get_control_text(WINTC_CTLTXT_CANCEL, WINTC_PUNC_NONE),
+        wintc_lc_get_control_text(WINTC_CTLTXT_CANCEL, WINTC_PUNC_NONE),
         GTK_RESPONSE_CANCEL,
         NULL
     );
@@ -474,12 +474,12 @@ static GtkWidget* create_file_chooser_dialog(
 
     dlg =
         gtk_file_chooser_dialog_new(
-            wintc_get_control_text(WINTC_CTLTXT_OPEN, WINTC_PUNC_NONE),
+            wintc_lc_get_control_text(WINTC_CTLTXT_OPEN, WINTC_PUNC_NONE),
             GTK_WINDOW(wnd),
             action,
-            wintc_get_control_text(WINTC_CTLTXT_CANCEL, WINTC_PUNC_NONE),
+            wintc_lc_get_control_text(WINTC_CTLTXT_CANCEL, WINTC_PUNC_NONE),
             GTK_RESPONSE_CANCEL,
-            wintc_get_control_text(btn, WINTC_PUNC_NONE),
+            wintc_lc_get_control_text(btn, WINTC_PUNC_NONE),
             GTK_RESPONSE_ACCEPT,
             NULL
         );
@@ -495,7 +495,7 @@ static GtkWidget* create_file_chooser_dialog(
 
     gtk_window_set_title(
         GTK_WINDOW(dlg),
-        wintc_get_control_text(title, WINTC_PUNC_NONE)
+        wintc_lc_get_control_text(title, WINTC_PUNC_NONE)
     );
 
     return dlg;
@@ -683,17 +683,17 @@ static void action_open(
 
                     gtk_dialog_add_buttons(
                         GTK_DIALOG(dlg),
-                        wintc_get_control_text(
+                        wintc_lc_get_control_text(
                             WINTC_CTLTXT_YES,
                             WINTC_PUNC_NONE
                         ),
                         GTK_RESPONSE_YES,
-                        wintc_get_control_text(
+                        wintc_lc_get_control_text(
                             WINTC_CTLTXT_NO,
                             WINTC_PUNC_NONE
                         ),
                         GTK_RESPONSE_NO,
-                        wintc_get_control_text(
+                        wintc_lc_get_control_text(
                             WINTC_CTLTXT_CANCEL,
                             WINTC_PUNC_NONE
                         ),

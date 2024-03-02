@@ -1,6 +1,0 @@
-#ifndef __ASSETS_H__
-#define __ASSETS_H__
-
-#define WINTC_ASSETS_DIR "@CMAKE_INSTALL_PREFIX@/@WINTC_ASSETS_INSTALL_DIR@"
-
-#endif

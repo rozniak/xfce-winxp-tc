@@ -1,8 +1,8 @@
 #include <glib.h>
 #include <gtk/gtk.h>
-#include <wintc-comgtk.h>
-#include <wintc-shelldpa.h>
-#include <wintc-sndapi.h>
+#include <wintc/comgtk.h>
+#include <wintc/shelldpa.h>
+#include <wintc/sndapi.h>
 
 #include "behaviour.h"
 #include "volume.h"
@@ -85,7 +85,7 @@ static void on_scale_volume_value_changed(
 G_DEFINE_TYPE(
     WinTCNotificationVolume,
     wintc_notification_volume,
-    TYPE_WINTC_NOTIFICATION_BEHAVIOUR
+    WINTC_TYPE_NOTIFICATION_BEHAVIOUR
 )
 
 static void wintc_notification_volume_class_init(
@@ -246,7 +246,7 @@ WinTCNotificationVolume* wintc_notification_volume_new(
 {
     return WINTC_NOTIFICATION_VOLUME(
         g_object_new(
-            TYPE_WINTC_NOTIFICATION_VOLUME,
+            WINTC_TYPE_NOTIFICATION_VOLUME,
             "widget-notif", widget_notif,
             NULL
         )

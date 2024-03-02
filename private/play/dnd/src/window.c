@@ -1,6 +1,6 @@
 #include <glib.h>
 #include <gtk/gtk.h>
-#include <wintc-comgtk.h>
+#include <wintc/comgtk.h>
 
 #include "application.h"
 #include "window.h"
@@ -92,7 +92,7 @@ GtkWidget* wintc_dnd_test_window_new(
 {
     return GTK_WIDGET(
         g_object_new(
-            TYPE_WINTC_DND_TEST_WINDOW,
+            WINTC_TYPE_DND_TEST_WINDOW,
             "application", GTK_APPLICATION(app),
             "title",       "Drag 'n' Drop File(s)!",
             NULL

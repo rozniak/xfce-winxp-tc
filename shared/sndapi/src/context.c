@@ -1,10 +1,10 @@
 #include <glib.h>
 #include <pulse/pulseaudio.h>
 #include <pulse/glib-mainloop.h>
-#include <wintc-comgtk.h>
+#include <wintc/comgtk.h>
 
-#include "context.h"
-#include "output.h"
+#include "../public/context.h"
+#include "output-priv.h"
 
 //
 // PRIVATE ENUMS
@@ -184,7 +184,7 @@ WinTCSndApiContext* wintc_sndapi_context_new(void)
 {
     return WINTC_SNDAPI_CONTEXT(
         g_object_new(
-            TYPE_WINTC_SNDAPI_CONTEXT,
+            WINTC_TYPE_SNDAPI_CONTEXT,
             NULL
         )
     );

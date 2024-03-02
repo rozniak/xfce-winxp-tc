@@ -1,6 +1,6 @@
 #include <glib.h>
 #include <gtk/gtk.h>
-#include <wintc-comgtk.h>
+#include <wintc/comgtk.h>
 
 #include "../toolbar.h"
 #include "taskbuttonbar.h"
@@ -25,7 +25,7 @@ struct _WinTCToolbarTaskButtons
 G_DEFINE_TYPE(
     WinTCToolbarTaskButtons,
     wintc_toolbar_task_buttons,
-    TYPE_WINTC_TASKBAND_TOOLBAR
+    WINTC_TYPE_TASKBAND_TOOLBAR
 )
 
 static void wintc_toolbar_task_buttons_class_init(

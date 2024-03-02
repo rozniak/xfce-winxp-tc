@@ -4,7 +4,7 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <glib.h>
 
-#include "../api.h"
+#include "../../public/api.h"
 
 //
 // RESOLVED FUNCS

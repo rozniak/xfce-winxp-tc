@@ -1,6 +1,6 @@
 #include <glib.h>
 #include <gtk/gtk.h>
-#include <wintc-comgtk.h>
+#include <wintc/comgtk.h>
 
 #include "application.h"
 #include "window.h"
@@ -28,7 +28,11 @@ static void wintc_patest_application_activate(
 //
 // GTK TYPE DEFINITIONS & CTORS
 //
-G_DEFINE_TYPE(WinTCPaTestApplication, wintc_patest_application, GTK_TYPE_APPLICATION)
+G_DEFINE_TYPE(
+    WinTCPaTestApplication,
+    wintc_patest_application,
+    GTK_TYPE_APPLICATION
+)
 
 static void wintc_patest_application_class_init(
     WinTCPaTestApplicationClass* klass

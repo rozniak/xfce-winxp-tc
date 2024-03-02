@@ -3,7 +3,7 @@
 #include <glib.h>
 #include <gtk/gtk.h>
 
-#include "api.h"
+#include "../public/api.h"
 #include "impl-wayland.h"
 
 //

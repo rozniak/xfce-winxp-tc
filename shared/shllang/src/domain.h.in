@@ -1,6 +1,0 @@
-#ifndef __DOMAIN_H__
-#define __DOMAIN_H__
-
-#define WINTC_LOCALE_DIR "@CMAKE_INSTALL_PREFIX@/share/locale"
-
-#endif

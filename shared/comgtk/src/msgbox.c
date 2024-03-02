@@ -1,6 +1,6 @@
 #include <gtk/gtk.h>
 
-#include "msgbox.h"
+#include "../public/msgbox.h"
 
 //
 // PUBLIC FUNCTIONS
