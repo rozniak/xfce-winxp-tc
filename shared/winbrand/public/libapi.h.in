@@ -1,0 +1,6 @@
+#ifndef __WINTC_WINBRAND_H__
+#define __WINTC_WINBRAND_H__
+
+#include "@LIB_HEADER_DIR@/brand.h"
+
+#endif

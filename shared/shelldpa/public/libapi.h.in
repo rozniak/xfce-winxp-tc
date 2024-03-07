@@ -1,0 +1,6 @@
+#ifndef __WINTC_SHELLDPA_H__
+#define __WINTC_SHELLDPA_H__
+
+#include "@LIB_HEADER_DIR@/api.h"
+
+#endif

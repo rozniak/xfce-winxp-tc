@@ -45,6 +45,15 @@ function(wintc_install_public_headers)
         endif()
     endforeach()
 
+    # Configure file output - output two versions of the aggregate header file,
+    # one for install, and one strictly for local lib builds
+    #
+    set(LIB_HEADER_DIR "${LIB_NAME_SIMPLE}")
+    configure_file(public/libapi.h.in ${PROJECT_ROOT}/public/libapi.h @ONLY)
+
+    set(LIB_HEADER_DIR "${PROJECT_ROOT}/public")
+    configure_file(public/libapi.h.in wintc/${LIB_NAME_SIMPLE}.h @ONLY)
+
     # Add installs
     #
     set(LIB_INCLUDEDIR ${WINTC_LIB_INCLUDEDIR}/${LIB_NAME_SIMPLE})
@@ -54,7 +63,7 @@ function(wintc_install_public_headers)
           DESTINATION ${LIB_INCLUDEDIR}
     )
     install(
-        FILES public/_api.h
+        FILES public/libapi.h
           DESTINATION ${WINTC_LIB_INCLUDEDIR}
           RENAME ${LIB_NAME_SIMPLE}.h
     )

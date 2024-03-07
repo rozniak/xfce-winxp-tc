@@ -1,0 +1,9 @@
+#ifndef __WINTC_EXEC_H__
+#define __WINTC_EXEC_H__
+
+#include "@LIB_HEADER_DIR@/action.h"
+#include "@LIB_HEADER_DIR@/desktop.h"
+#include "@LIB_HEADER_DIR@/exec.h"
+#include "@LIB_HEADER_DIR@/mime.h"
+
+#endif

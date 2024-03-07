@@ -1,0 +1,7 @@
+#ifndef __WINTC_SNDAPI_H__
+#define __WINTC_SNDAPI_H__
+
+#include "@LIB_HEADER_DIR@/context.h"
+#include "@LIB_HEADER_DIR@/output.h"
+
+#endif

@@ -1,0 +1,10 @@
+#ifndef __WINTC_SHLANG_H__
+#define __WINTC_SHLANG_H__
+
+#include "@LIB_HEADER_DIR@/controls.h"
+#include "@LIB_HEADER_DIR@/domain.h"
+#include "@LIB_HEADER_DIR@/places.h"
+#include "@LIB_HEADER_DIR@/punctuation.h"
+#include "@LIB_HEADER_DIR@/ui.h"
+
+#endif

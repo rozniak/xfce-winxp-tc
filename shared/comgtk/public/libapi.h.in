@@ -1,0 +1,20 @@
+#ifndef __WINTC_COMGTK_H__
+#define __WINTC_COMGTK_H__
+
+#include "@LIB_HEADER_DIR@/assets.h"
+#include "@LIB_HEADER_DIR@/container.h"
+#include "@LIB_HEADER_DIR@/debug.h"
+#include "@LIB_HEADER_DIR@/defprocs.h"
+#include "@LIB_HEADER_DIR@/errors.h"
+#include "@LIB_HEADER_DIR@/list.h"
+#include "@LIB_HEADER_DIR@/marshal.h"
+#include "@LIB_HEADER_DIR@/msgbox.h"
+#include "@LIB_HEADER_DIR@/profile.h"
+#include "@LIB_HEADER_DIR@/shorthand.h"
+#include "@LIB_HEADER_DIR@/signals.h"
+#include "@LIB_HEADER_DIR@/strings.h"
+#include "@LIB_HEADER_DIR@/styles.h"
+#include "@LIB_HEADER_DIR@/version.h"
+#include "@LIB_HEADER_DIR@/window.h"
+
+#endif

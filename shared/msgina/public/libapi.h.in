@@ -1,0 +1,9 @@
+#ifndef __WINTC_MSGINA_H__
+#define __WINTC_MSGINA_H__
+
+#include "@LIB_HEADER_DIR@/authwnd.h"
+#include "@LIB_HEADER_DIR@/challenge.h"
+#include "@LIB_HEADER_DIR@/logon.h"
+#include "@LIB_HEADER_DIR@/state.h"
+
+#endif
