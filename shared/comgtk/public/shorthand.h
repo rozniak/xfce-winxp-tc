@@ -24,4 +24,21 @@
  */
 #define WINTC_UNUSED(arg) __attribute__((unused)) arg
 
+/**
+ * @def WINTC_RETURN_IF_FAIL(cond)
+ *
+ * Returns from a function if the condition fails - this is provided as an
+ * alternative to g_return_if_fail so that G_DISABLE_CHECKS does not apply.
+ */
+#define WINTC_RETURN_IF_FAIL(cond) if (!(cond)) { return; }
+
+/**
+ * @def WINTC_RETURN_VAL_IF_FAIL(cond, ret)
+ *
+ * Returns a value from a function if the condition fails - this is provided
+ * as an alternative to g_return_val_if_fail so that G_DISABLED_CHECKS does
+ * not apply.
+ */
+#define WINTC_RETURN_VAL_IF_FAIL(cond, ret) if (!(cond)) { return (ret); }
+
 #endif

@@ -21,7 +21,10 @@ wintc-comctl-->bt,rt-->libwintc-comctl
 wintc-comgtk-->bt,rt-->libwintc-comgtk
 wintc-exec-->bt,rt-->libwintc-exec
 wintc-msgina-->bt,rt-->libwintc-msgina
+wintc-shcommon-->bt,rt-->libwintc-shcommon
+wintc-shell-->bt,rt-->libwintc-shell
 wintc-shelldpa-->bt,rt-->libwintc-shelldpa
+wintc-shellext-->bt,rt-->libwintc-shellext
 wintc-shlang-->bt,rt-->libwintc-shlang
 wintc-sndapi-->bt,rt-->libwintc-sndapi
 wintc-winbrand-->bt,rt-->libwintc-winbrand

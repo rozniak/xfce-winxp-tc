@@ -1,0 +1,5 @@
+[CplApplet]
+Name=Printers and Faxes
+Comments=Shows installed printers and fax printers and helps you add new ones.
+Exec=::{2ea9a9c1-bea4-41aa-a263-7fca5e22ced0}
+Icon=uk.co.oddmatics.wintc.cpl-printers

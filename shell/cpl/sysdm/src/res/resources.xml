@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/uk/oddmatics/wintc/cpl-sysdm">
+    <file>sysdm.ui</file>
+    <file>page-gen.ui</file>
+    <file>comphi.png</file>
+    <file>complow.png</file>
+  </gresource>
+</gresources>

@@ -38,6 +38,41 @@ else()
     )
 endif()
 
+# Library directory varies on some distros...
+#
+if (
+    ${WINTC_PKGMGR} STREQUAL "apk"     OR
+    ${WINTC_PKGMGR} STREQUAL "archpkg" OR
+    ${WINTC_PKGMGR} STREQUAL "bsdpkg"
+)
+    # No lib64 on some distros
+    #
+    set(LIB_DIR lib)
+elseif (
+    ${WINTC_PKGMGR} STREQUAL "deb"
+)
+    # Debian needs mapping to multi-arch
+    #
+    if (${CMAKE_SYSTEM_PROCESSOR} STREQUAL "x86_64")
+        set(LIB_DIR lib/x86_64-linux-gnu)
+    elseif (${CMAKE_SYSTEM_PROCESSOR} STREQUAL "i686")
+        set(LIB_DIR lib/i386-linux-gnu)
+    elseif (${CMAKE_SYSTEM_PROCESSOR} STREQUAL "ia64")
+        set(LIB_DIR lib/ia64-linux-gnu)
+    elseif (${CMAKE_SYSTEM_PROCESSOR} STREQUAL "armv6l")
+        set(LIB_DIR lib/arm-linux-gnueabihf)
+    elseif (${CMAKE_SYSTEM_PROCESSOR} STREQUAL "armv7l")
+        set(LIB_DIR lib/arm-linux-gnu)
+    elseif (${CMAKE_SYSTEM_PROCESSOR} STREQUAL "armv8")
+        set(LIB_DIR lib/aarch64-linux-gnu)
+    else()
+        message(
+            FATAL_ERROR
+            "No deb multiarch for architecture: ${CMAKE_SYSTEM_PROCESSOR}"
+        )
+    endif()
+endif()
+
 # Set up sbin/bin directory target (some distros don't use sbin)
 #
 if (
@@ -124,10 +159,6 @@ function(wintc_configure_and_install_packaging)
     elseif (${WINTC_PKGMGR} STREQUAL "apk")
         message(STATUS "Outputting build for Alpine Linux packaging")
 
-        # No /lib64 on Alpine
-        #
-        set(LIB_DIR lib PARENT_SCOPE)
-
         # Set the architecture
         #
         set(ALPINE_ARCHITECTURE ${CMAKE_SYSTEM_PROCESSOR})
@@ -147,10 +178,6 @@ function(wintc_configure_and_install_packaging)
         configure_file(${WINTC_ALPINE_APKBUILD_IN_PATH} APKBUILD @ONLY)
     elseif (${WINTC_PKGMGR} STREQUAL "archpkg")
         message(STATUS "Outputting build for Arch Linux packaging")
-
-        # No /lib64 on Arch
-        #
-        set(LIB_DIR lib PARENT_SCOPE)
 
         # Set the architecture
         #
@@ -189,10 +216,6 @@ function(wintc_configure_and_install_packaging)
         configure_file(${WINTC_ARCH_PKGBUILD_IN_PATH} PKGBUILD @ONLY)
     elseif (${WINTC_PKGMGR} STREQUAL "bsdpkg")
         message(STATUS "Outputting build for FreeBSD packaging")
-
-        # No /lib64 on FreeBSD
-        #
-        set(LIB_DIR lib PARENT_SCOPE)
 
         # Set the licence
         #
@@ -245,27 +268,6 @@ function(wintc_configure_and_install_packaging)
                     "No dpkg architecture mapping for: ${CMAKE_SYSTEM_PROCESSOR}"
                 )
             endif()
-        endif()
-
-        # Map architectures to libdirs
-        #
-        if (${CMAKE_SYSTEM_PROCESSOR} STREQUAL "x86_64")
-            set(LIB_DIR lib/x86_64-linux-gnu PARENT_SCOPE)
-        elseif (${CMAKE_SYSTEM_PROCESSOR} STREQUAL "i686")
-            set(LIB_DIR lib/i386-linux-gnu PARENT_SCOPE)
-        elseif (${CMAKE_SYSTEM_PROCESSOR} STREQUAL "ia64")
-            set(LIB_DIR lib/ia64-linux-gnu PARENT_SCOPE)
-        elseif (${CMAKE_SYSTEM_PROCESSOR} STREQUAL "armv6l")
-            set(LIB_DIR lib/arm-linux-gnueabihf PARENT_SCOPE)
-        elseif (${CMAKE_SYSTEM_PROCESSOR} STREQUAL "armv7l")
-            set(LIB_DIR lib/arm-linux-gnu PARENT_SCOPE)
-        elseif (${CMAKE_SYSTEM_PROCESSOR} STREQUAL "armv8")
-            set(LIB_DIR lib/aarch64-linux-gnu PARENT_SCOPE)
-        else()
-            message(
-                FATAL_ERROR
-                "No deb multiarch for architecture: ${CMAKE_SYSTEM_PROCESSOR}"
-            )
         endif()
 
         # Map dependencies to Debian

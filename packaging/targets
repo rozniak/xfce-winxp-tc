@@ -9,7 +9,10 @@ sounds
 themes/native
 themes/professional
 themes/luna/blue
+shell/cpl/printers
+shell/cpl/sysdm
 shell/desktop
+shell/explorer
 shell/run
 shell/taskband
 shell/winver

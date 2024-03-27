@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=System
+Comment=See information about your computer system, and change settings for hardware, performance, and automatic updates.
+Exec=sysdm.cpl
+Icon=uk.co.oddmatics.wintc.cpl-sysdm
+Terminal=false
+StartupNotify=false
+Type=Application
+Categories=Settings;GTK;
+OnlyShowIn=WINTC;

@@ -70,6 +70,7 @@ actions/go-next-->nav_forward
 actions/go-next-rtl-->nav_back
 actions/go-previous-->nav_back
 actions/go-previous-rtl-->nav_forward
+actions/go-up-->nav_parent_dir
 actions/help-about-->null
 actions/next-->nav_forward
 actions/previous-->nav_back
@@ -77,6 +78,7 @@ actions/system-log-out-->logoff
 actions/system-run-->run
 actions/system-search-->search
 actions/system-shutdown-->shutdown
+actions/up-->nav_parent_dir
 apps/firefox-->firefox
 apps/firefox-esr-->firefox
 apps/help-browser-->help
@@ -275,8 +277,9 @@ places/folder-remote-->folder_network
 places/folder-saved-search-->folder
 places/folder-templates-->folder
 places/folder-videos-->folder_videos
+places/folders-->folders
 places/network-server-->network_share
-places/network-workgroup-->net_lan
+places/network-workgroup-->net_places
 places/start-here-->computer
 places/user-bookmarks-->fave
 places/user-desktop-->desktop

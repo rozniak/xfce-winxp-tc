@@ -7,6 +7,14 @@
 
 #define WINTC_GENERAL_ERROR wintc_general_error_quark()
 
+#define WINTC_SUCCESS(expr, err, success)  \
+    (expr);                                \
+    if ((err))                             \
+    {                                      \
+        wintc_log_error_and_clear(&(err)); \
+        success = FALSE;                   \
+    }
+
 /**
  * Specifies simple errors used by WinTC components.
  */

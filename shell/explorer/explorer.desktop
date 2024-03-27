@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Windows Explorer
+Comment=Displays the files and folders on your computer.
+Exec=explorer
+Icon=explorer
+Terminal=false
+StartupNotify=false
+Type=Application
+Categories=Utility;GTK;

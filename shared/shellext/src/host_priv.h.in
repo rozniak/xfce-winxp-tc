@@ -1,0 +1,9 @@
+#ifndef __HOST_PRIV_H__
+#define __HOST_PRIV_H__
+
+//
+// PUBLIC DEFINES
+//
+#define SHEXT_LIB_DIR "@CMAKE_INSTALL_PREFIX@/@LIB_DIR@/wintc/shext"
+
+#endif

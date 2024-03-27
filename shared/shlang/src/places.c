@@ -2,6 +2,7 @@
 
 #include <glib.h>
 #include <glib/gi18n-lib.h>
+#include <wintc/shcommon.h>
 
 #include "../public/places.h"
 
@@ -31,7 +32,7 @@ static gchar* place_texts[] = {
 // PUBLIC FUNCTIONS
 //
 const gchar* wintc_lc_get_place_name(
-    WinTCShellPlace place
+    WinTCShPlace place
 )
 {
     return _(place_texts[place]);

@@ -14,7 +14,10 @@ wintc-comctl-->bt,rt-->wintc-comctl
 wintc-comgtk-->bt,rt-->wintc-comgtk
 wintc-exec-->bt,rt-->wintc-exec
 wintc-msgina-->bt,rt-->wintc-msgina
+wintc-shcommon-->bt,rt-->wintc-shcommon
+wintc-shell-->bt,rt-->wintc-shell
 wintc-shelldpa-->bt,rt-->wintc-shelldpa
+wintc-shellext-->bt,rt-->wintc-shellext
 wintc-shlang-->bt,rt-->wintc-shlang
 wintc-sndapi-->bt,rt-->wintc-sndapi
 wintc-winbrand-->bt,rt-->wintc-winbrand
