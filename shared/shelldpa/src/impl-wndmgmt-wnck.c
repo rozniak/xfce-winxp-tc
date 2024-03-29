@@ -10,6 +10,9 @@
 //
 // FORWARD DECLARATIONS
 //
+static GdkPixbuf* wnck_window_get_mini_icon_real(
+    WinTCWndMgmtWindow* window
+);
 static void wnck_window_unminimize_real(
     WinTCWndMgmtWindow* window,
     guint64             timestamp
@@ -30,7 +33,7 @@ gboolean init_wndmgmt_wnck_impl(void)
     //
     wintc_wndmgmt_screen_get_active_window = p_wnck_screen_get_active_window;
     wintc_wndmgmt_screen_get_default       = p_wnck_screen_get_default;
-    wintc_wndmgmt_window_get_mini_icon     = p_wnck_window_get_mini_icon;
+    wintc_wndmgmt_window_get_mini_icon     = &wnck_window_get_mini_icon_real;
     wintc_wndmgmt_window_get_name          = p_wnck_window_get_name;
     wintc_wndmgmt_window_is_skip_tasklist  = p_wnck_window_is_skip_tasklist;
     wintc_wndmgmt_window_minimize          = p_wnck_window_minimize;
@@ -44,6 +47,50 @@ gboolean init_wndmgmt_wnck_impl(void)
 //
 // PRIVATE FUNCTIONS
 //
+static GdkPixbuf* wnck_window_get_mini_icon_real(
+    WinTCWndMgmtWindow* window
+)
+{
+    GdkPixbuf*    icon = p_wnck_window_get_mini_icon(window);
+    GdkPixbuf*    icon_resolv;
+    GtkIconTheme* icon_theme;
+    const gchar*  wm_class;
+
+    if (p_wnck_window_get_icon_is_fallback(window))
+    {
+        // Try resolving an icon in the theme using WM_CLASS
+        //
+        icon_theme = gtk_icon_theme_get_default();
+        wm_class = p_wnck_window_get_class_instance_name(window);
+
+        WINTC_LOG_DEBUG(
+            "dpa: look up icon for wnd %p using WM_CLASS %s",
+            window,
+            wm_class
+        );
+
+        icon_resolv =
+            gtk_icon_theme_load_icon(
+                icon_theme,
+                wm_class,
+                16, // GTK_ICON_SIZE_MENU
+                GTK_ICON_LOOKUP_FORCE_SIZE,
+                NULL
+            );
+
+        if (icon_resolv)
+        {
+            icon = icon_resolv; // Pass on
+        }
+    }
+    else
+    {
+        g_object_ref(icon);
+    }
+
+    return icon;
+}
+
 static void wnck_window_unminimize_real(
     WinTCWndMgmtWindow* window,
     guint64             timestamp

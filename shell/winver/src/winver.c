@@ -68,10 +68,10 @@ int main(
     window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 
     gtk_widget_set_size_request(window, 413, 322);
-    gtk_window_set_icon(GTK_WINDOW(window), NULL); // FIXME: Icon still present :(
+    gtk_window_set_icon_name(GTK_WINDOW(window), "help-browser");
     gtk_window_set_resizable(GTK_WINDOW(window), FALSE);
     gtk_window_set_title(GTK_WINDOW(window), "About Windows");
-    gtk_window_set_type_hint(GTK_WINDOW(window), GDK_WINDOW_TYPE_HINT_MENU);
+    gtk_window_set_type_hint(GTK_WINDOW(window), GDK_WINDOW_TYPE_HINT_DIALOG);
 
     g_signal_connect(
         window,

@@ -27,6 +27,12 @@ extern WinTCWndMgmtWindow* (*p_wnck_screen_get_active_window) (
 );
 extern WinTCWndMgmtScreen* (*p_wnck_screen_get_default) (void);
 
+extern const gchar* (*p_wnck_window_get_class_instance_name) (
+    WinTCWndMgmtWindow* Window
+);
+extern gboolean (*p_wnck_window_get_icon_is_fallback) (
+    WinTCWndMgmtWindow* window
+);
 extern GdkPixbuf* (*p_wnck_window_get_mini_icon) (
     WinTCWndMgmtWindow* window
 );

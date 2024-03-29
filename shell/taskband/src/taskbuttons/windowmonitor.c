@@ -120,17 +120,21 @@ static void window_manager_update_icon(
     WindowManagerSingle* window_manager
 )
 {
+    GdkPixbuf* icon;
+
     if (window_manager->button == NULL)
     {
         return;
     }
 
+    icon = wintc_wndmgmt_window_get_mini_icon(window_manager->managed_window);
+
     gtk_image_set_from_pixbuf(
         window_manager->button_icon,
-        wintc_wndmgmt_window_get_mini_icon(
-            window_manager->managed_window
-        )
+        icon
     );
+
+    g_object_unref(icon);
 }
 
 static void window_manager_update_state(
