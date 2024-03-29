@@ -904,7 +904,7 @@ style "default" {
       function        = SLIDER
       state           = NORMAL
       detail          = "slider"
-      file            = "../Resources/composed/scrollbar_slider_border.png"
+      file            = "../Resources/composed/scrollbar_slider.png"
       border          = {2, 2, 2, 2}
       stretch         = TRUE
       orientation     = HORIZONTAL
@@ -914,7 +914,7 @@ style "default" {
       function        = SLIDER
       state           = PRELIGHT
       detail          = "slider"
-      file            = "../Resources/composed/scrollbar_slider_border.png"
+      file            = "../Resources/composed/scrollbar_slider.png"
       border          = {2, 2, 2, 2}
       stretch         = TRUE
       orientation     = HORIZONTAL
@@ -924,7 +924,7 @@ style "default" {
       function        = SLIDER
       state           = ACTIVE
       detail          = "slider"
-      file            = "../Resources/composed/scrollbar_slider_border.png"
+      file            = "../Resources/composed/scrollbar_slider.png"
       border          = {2, 2, 2, 2}
       stretch         = TRUE
       orientation     = HORIZONTAL
@@ -936,7 +936,7 @@ style "default" {
       function        = SLIDER
       state           = NORMAL
       detail          = "slider"
-      file            = "../Resources/composed/scrollbar_slider_border.png"
+      file            = "../Resources/composed/scrollbar_slider.png"
       border          = {2, 2, 2, 2}
       stretch         = TRUE
       orientation     = VERTICAL
@@ -947,7 +947,7 @@ style "default" {
       function        = SLIDER
       state           = PRELIGHT
       detail          = "slider"
-      file            = "../Resources/composed/scrollbar_slider_border.png"
+      file            = "../Resources/composed/scrollbar_slider.png"
       border          = {2, 2, 2, 2}
       stretch         = TRUE
       orientation     = VERTICAL
@@ -958,7 +958,7 @@ style "default" {
       function        = SLIDER
       state           = ACTIVE
       detail          = "slider"
-      file            = "../Resources/composed/scrollbar_slider_border.png"
+      file            = "../Resources/composed/scrollbar_slider.png"
       border          = {2, 2, 2, 2}
       stretch         = TRUE
       orientation     = VERTICAL
