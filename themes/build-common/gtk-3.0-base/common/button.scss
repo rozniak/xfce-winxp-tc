@@ -529,7 +529,8 @@ toolbar.inline-toolbar toolbutton
 
 %linked_middle
 {
-    margin: inherit 2px;
+    margin-left: 2px;
+    margin-right: 2px;
 }
 
 %linked_left
@@ -544,7 +545,8 @@ toolbar.inline-toolbar toolbutton
 
 %linked_only_child
 {
-    margin: inherit 0px;
+    margin-left: 0px;
+    margin-right: 0px;
 }
 
 // .linked assumes Box, which reverses nodes in RTL, so 1st child is always left
@@ -584,7 +586,8 @@ toolbar.inline-toolbar toolbutton
 
 %linked_vertical_middle
 {
-    margin: 2px inherit;
+    margin-bottom: 2px;
+    margin-top: 2px;
 }
 
 %linked_vertical_top
@@ -599,7 +602,8 @@ toolbar.inline-toolbar toolbutton
 
 %linked_vertical_only_child
 {
-    margin: 0px inherit;
+    margin-bottom: 0px;
+    margin-top: 0px;
 }
 
 %linked_vertical
