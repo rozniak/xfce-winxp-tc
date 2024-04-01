@@ -27,7 +27,8 @@ if (${WINTC_SKU} MATCHES "^xpclient-(.+)")
         )
             set(PLYMOUTH_IMAGE_SKU skux64.png)
         elseif (
-            ${CMAKE_SYSTEM_PROCESSOR} STREQUAL "ia64" OR
+            ${CMAKE_SYSTEM_PROCESSOR} STREQUAL "ia64"    OR
+            ${CMAKE_SYSTEM_PROCESSOR} STREQUAL "aarch64" OR
             ${CMAKE_SYSTEM_PROCESSOR} STREQUAL "armv8"
         )
             set(PLYMOUTH_IMAGE_SPLASH splshcl3.png)

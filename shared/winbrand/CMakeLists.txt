@@ -82,7 +82,8 @@ if (${WINTC_SKU} STREQUAL "xpclient-pro")
     )
         set(WINBRAND_BANNER_NAME ${WINTC_SKU}_amd64)
     elseif (
-        ${CMAKE_SYSTEM_PROCESSOR} STREQUAL "ia64" OR
+        ${CMAKE_SYSTEM_PROCESSOR} STREQUAL "ia64"    OR
+        ${CMAKE_SYSTEM_PROCESSOR} STREQUAL "aarch64" OR
         ${CMAKE_SYSTEM_PROCESSOR} STREQUAL "armv8"
     )
         set(WINBRAND_BANNER_NAME ${WINTC_SKU}_ia64)
