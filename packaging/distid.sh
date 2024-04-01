@@ -16,16 +16,12 @@
 # Probe for package managers to try and determine what distro we're
 # on
 #
-
-# Check Debian
-# 
-which dpkg >/dev/null 2>&1
-
-if [[ $? -eq 0 ]]
-then
-    echo -n "deb"
-    exit 0
-fi
+# NOTE: Since #253, Debian/dpkg is checked last, because potentially users of
+#       other distros might have dpkg installed which throws off detection
+#
+#       I think it's unlikely the other package managers will be installed on
+#       different distros... mainly just dpkg
+#
 
 # Check Arch Linux
 #
@@ -54,6 +50,16 @@ which pkg >/dev/null 2>&1
 if [[ $? -eq 0 ]]
 then
     echo -n "bsdpkg"
+    exit 0
+fi
+
+# Check Debian
+#
+which dpkg >/dev/null 2>&1
+
+if [[ $? -eq 0 ]]
+then
+    echo -n "deb"
     exit 0
 fi
 
