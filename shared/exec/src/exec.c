@@ -403,19 +403,41 @@ static gboolean parse_url_in_cmdline(
         return FALSE;
     }
 
-    // Command line IS a URL, retrieve the scheme, query the handling program...
+    // Command line IS a URL, retrieve the scheme
     //
     WINTC_LOG_USER_DEBUG("Yeah, looks like a URL.");
 
     uri_scheme = g_match_info_fetch(match_info, 1);
-    mime_type  = g_strdup_printf(
-                     "x-scheme-handler/%s",
-                     uri_scheme
-                 );
+
+    g_match_info_free(match_info);
+
+    // Special case: if the scheme is file:// then convert to just the file
+    // path
+    //
+    if (g_ascii_strcasecmp(uri_scheme, "file") == 0)
+    {
+        WINTC_SAFE_REF_SET(
+            out_cmdline,
+            g_uri_unescape_string(
+                cmdline + strlen("file://"),
+                NULL
+            )
+        );
+
+        g_free(uri_scheme);
+
+        return FALSE;
+    }
+
+    // Continue with normal handling - look up a handler for the scheme
+    //
+    mime_type = g_strdup_printf(
+                    "x-scheme-handler/%s",
+                    uri_scheme
+                );
 
     handler_entry = wintc_query_mime_handler(mime_type, &error);
 
-    g_match_info_free(match_info);
     g_free(mime_type);
     g_free(uri_scheme);
 
