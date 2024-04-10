@@ -31,6 +31,8 @@ add_library(
     libwintc-shelldpa
     src/api.c
     public/api.h
+    src/deskwnd.c
+    public/deskwnd.h
     src/impl-wayland.c
     src/impl-wayland.h
     src/impl-wndmgmt-wnck.c
@@ -39,6 +41,8 @@ add_library(
     src/impl-wndmgmt-xfw.h
     src/impl-x11.c
     src/impl-x11.h
+    src/dll/layersh.c
+    src/dll/layersh.h
     src/dll/wnck.c
     src/dll/wnck.h
     src/dll/xfw.c

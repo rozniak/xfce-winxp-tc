@@ -22,10 +22,11 @@ typedef struct _WinTCDesktopWindow      WinTCDesktopWindow;
 GType wintc_desktop_window_get_type(void) G_GNUC_CONST;
 
 //
-// PUBLIC FUNCTION
+// PUBLIC FUNCTIONS
 //
 GtkWidget* wintc_desktop_window_new(
-        WinTCDesktopApplication* app
+    WinTCDesktopApplication* app,
+    GdkMonitor*              monitor
 );
 
 #endif

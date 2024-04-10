@@ -2,5 +2,6 @@
 #define __WINTC_SHELLDPA_H__
 
 #include "@LIB_HEADER_DIR@/api.h"
+#include "@LIB_HEADER_DIR@/deskwnd.h"
 
 #endif

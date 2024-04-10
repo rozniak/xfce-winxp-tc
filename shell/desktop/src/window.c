@@ -12,12 +12,12 @@
 //
 struct _WinTCDesktopWindowClass
 {
-    GtkApplicationWindowClass __parent__;
+    WinTCDpaDesktopWindowClass __parent__;
 };
 
 struct _WinTCDesktopWindow
 {
-    GtkApplicationWindow __parent__;
+    WinTCDpaDesktopWindow __parent__;
 };
 
 //
@@ -34,7 +34,7 @@ static gboolean wintc_desktop_window_draw(
 G_DEFINE_TYPE(
     WinTCDesktopWindow,
     wintc_desktop_window,
-    GTK_TYPE_APPLICATION_WINDOW
+    WINTC_TYPE_DPA_DESKTOP_WINDOW
 )
 
 static void wintc_desktop_window_class_init(
@@ -47,11 +47,8 @@ static void wintc_desktop_window_class_init(
 }
 
 static void wintc_desktop_window_init(
-    WinTCDesktopWindow* self
-)
-{
-    wintc_become_desktop_window(GTK_WINDOW(self));
-}
+    WINTC_UNUSED(WinTCDesktopWindow* self)
+) {}
 
 //
 // CLASS VIRTUAL METHODS
@@ -73,7 +70,8 @@ static gboolean wintc_desktop_window_draw(
 // PUBLIC FUNCTIONS
 //
 GtkWidget* wintc_desktop_window_new(
-    WinTCDesktopApplication* app
+    WinTCDesktopApplication* app,
+    GdkMonitor*              monitor
 )
 {
     return GTK_WIDGET(
@@ -82,6 +80,7 @@ GtkWidget* wintc_desktop_window_new(
             "application", GTK_APPLICATION(app),
             "type",        GTK_WINDOW_TOPLEVEL,
             "decorated",   TRUE,
+            "monitor",     monitor,
             "resizable",   FALSE,
             NULL
         )

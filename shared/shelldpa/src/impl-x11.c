@@ -35,9 +35,6 @@ struct X11Struts
 static void x11_anchor_taskband_to_bottom(
     GtkWindow* taskband
 );
-static void x11_become_desktop_window(
-    GtkWindow* window
-);
 
 static void on_taskband_realized(
     GtkWidget* self,
@@ -50,7 +47,6 @@ static void on_taskband_realized(
 gboolean init_x11_protocol_impl(void)
 {
     wintc_anchor_taskband_to_bottom = &x11_anchor_taskband_to_bottom;
-    wintc_become_desktop_window     = &x11_become_desktop_window;
 
     return TRUE;
 }
@@ -67,51 +63,6 @@ static void x11_anchor_taskband_to_bottom(
         "realize",
         G_CALLBACK(on_taskband_realized),
         NULL
-    );
-}
-
-static void x11_become_desktop_window(
-    GtkWindow* window
-)
-{
-    // Set up window size / position
-    //
-    GdkDisplay*  display = gdk_display_get_default();
-    GdkRectangle geometry;
-    GdkMonitor*  monitor = NULL;
-    int          monitor_count = gdk_display_get_n_monitors(display);
-    gint         work_height = 0;
-    gint         work_width  = 0;
-
-    for (int i = 0; i < monitor_count; i++)
-    {
-        gint bottom;
-        gint right;
-
-        monitor = gdk_display_get_monitor(display, i);
-
-        gdk_monitor_get_geometry(monitor, &geometry);
-
-        bottom = geometry.y + geometry.height;
-        right  = geometry.x + geometry.width;
-
-        if (bottom > work_height)
-        {
-            work_height = bottom;
-        }
-
-        if (right > work_width)
-        {
-            work_width = right;
-        }
-    }
-
-    gtk_window_move(window, 0, 0);
-    gtk_window_set_type_hint(window, GDK_WINDOW_TYPE_HINT_DESKTOP);
-    gtk_widget_set_size_request(
-        GTK_WIDGET(window),
-        work_width,
-        work_height
     );
 }
 

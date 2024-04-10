@@ -25,10 +25,6 @@ void (*wintc_anchor_taskband_to_bottom) (
     GtkWindow* taskband
 ) = NULL;
 
-void (*wintc_become_desktop_window) (
-    GtkWindow* window
-) = NULL;
-
 WinTCWndMgmtWindow* (*wintc_wndmgmt_screen_get_active_window) (
     WinTCWndMgmtScreen* screen
 ) = NULL;

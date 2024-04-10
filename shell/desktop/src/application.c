@@ -17,8 +17,6 @@ struct _WinTCDesktopApplicationClass
 struct _WinTCDesktopApplication
 {
     GtkApplication __parent__;
-
-    GtkWidget* host_window;
 };
 
 //
@@ -80,17 +78,29 @@ static void wintc_desktop_application_activate(
     GApplication* application
 )
 {
+    static gboolean launched = FALSE;
+
     WinTCDesktopApplication* desktop_app =
         WINTC_DESKTOP_APPLICATION(application);
 
-    if (desktop_app->host_window != NULL)
+    if (launched)
     {
         return;
     }
 
-    desktop_app->host_window = wintc_desktop_window_new(desktop_app);
+    // FIXME: Just create a desktop window per monitor for now, connect up
+    //        signals for monitors added/removed later
+    //
+    GdkDisplay* display    = gdk_display_get_default();
+    int         n_monitors = gdk_display_get_n_monitors(display);
 
-    gtk_widget_show_all(desktop_app->host_window);
+    for (int i = 0; i < n_monitors; i++)
+    {
+        GdkMonitor* monitor = gdk_display_get_monitor(display, i);
+        GtkWidget*  wnd     = wintc_desktop_window_new(desktop_app, monitor);
+
+        gtk_widget_show_all(wnd);
+    }
 }
 
 static void wintc_desktop_application_startup(

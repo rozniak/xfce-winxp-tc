@@ -104,17 +104,6 @@ extern void (*wintc_anchor_taskband_to_bottom) (
 );
 
 /**
- * Assigns properties for the window to become the desktop.
- *
- * @param window The window.
- *
- * @remarks This function will be retired with a better, general purpose API.
- */
-extern void (*wintc_become_desktop_window) (
-    GtkWindow* window
-);
-
-/**
  * Retrieves the active window on the specified screen.
  *
  * @param screen The screen.
