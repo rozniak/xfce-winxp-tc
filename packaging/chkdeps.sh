@@ -173,6 +173,9 @@ check_deps()
             deb)
                 dpkg -s "${pkg_name}" >/dev/null 2>&1
                 ;;
+            rpm)
+                rpm --query "${pkg_name}" >/dev/null 2>&1
+                ;;
             *)
                 echo "Package format not implemented!"
                 exit 1

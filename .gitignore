@@ -25,3 +25,4 @@ resources.c
 *.pkg
 *.pkg.tar.zst
 *.pot
+*.rpm

@@ -53,6 +53,16 @@ then
     exit 0
 fi
 
+# Check Red Hat
+#
+which rpm >/dev/null 2>&1
+
+if [[ $? -eq 0 ]]
+then
+    echo -n "rpm"
+    exit 0
+fi
+
 # Check Debian
 #
 which dpkg >/dev/null 2>&1

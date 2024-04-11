@@ -142,6 +142,7 @@ set(WINTC_ALPINE_APKBUILD_IN_PATH ${CMAKE_CURRENT_LIST_DIR}/APKBUILD.in)
 set(WINTC_ARCH_PKGBUILD_IN_PATH   ${CMAKE_CURRENT_LIST_DIR}/PKGBUILD.in)
 set(WINTC_BSD_MANIFEST_IN_PATH    ${CMAKE_CURRENT_LIST_DIR}/bsd-manifest.in)
 set(WINTC_DEBIAN_CONTROL_IN_PATH  ${CMAKE_CURRENT_LIST_DIR}/debian-control.in)
+set(WINTC_RPM_SPEC_IN_PATH        ${CMAKE_CURRENT_LIST_DIR}/rpm.spec.in)
 
 function(wintc_configure_and_install_packaging)
     # Provide 'ALT_PROJECT_NAME' - basically some distros skip the 'lib' in
@@ -299,6 +300,31 @@ function(wintc_configure_and_install_packaging)
 
         configure_file(${WINTC_DEBIAN_CONTROL_IN_PATH} control @ONLY)
         install(FILES ${CMAKE_BINARY_DIR}/control DESTINATION ${DESTDIR}/DEBIAN)
+    elseif (${WINTC_PKGMGR} STREQUAL "rpm")
+        message(STATUS "Outputting build Red Hat packaging")
+
+        if (${PROJECT_FREESTATUS})
+            set(RPM_LICENCE GPLv2)
+        else()
+            set(RPM_LICENCE NonFree) # Do not know if correct, sod it
+        endif()
+
+        if (${PROJECT_ANYARCH})
+            set(RPM_ARCHITECTURE noarch)
+        else()
+            set(RPM_ARCHITECTURE ${CMAKE_SYSTEM_PROCESSOR})
+        endif()
+
+        # Map dependencies to RPM
+        #
+        wintc_map_dependencies()
+
+        if (DEFINED DEPENDENCIES_MAP)
+            list(JOIN DEPENDENCIES_MAP " " RPM_REQUIRES)
+            string(PREPEND RPM_REQUIRES "Requires: ")
+        endif()
+
+        configure_file(${WINTC_RPM_SPEC_IN_PATH} rpm.spec @ONLY)
     else()
         message(
             FATAL_ERROR

@@ -1,0 +1,19 @@
+Name: @ALT_PROJECT_NAME@
+Version: @PROJECT_VERSION@
+Release: 1
+Summary: @PROJECT_DESCRIPTION@
+BuildArch: @RPM_ARCHITECTURE@
+License: @RPM_LICENCE@
+@RPM_REQUIRES@
+URL: https://github.com/rozniak/xfce-winxp-tc
+BugURL: https://github.com/rozniak/xfce-winxp-tc/issues
+
+%description
+@PROJECT_DESCRIPTION@
+
+%install
+cd $TRUE_BUILD_ROOT
+%make_install
+(cd %{buildroot} && find . -type f,l) | sed 's/\.//' | sed 's/\ /\\ /g' > %{_builddir}/files
+
+%files -f files
