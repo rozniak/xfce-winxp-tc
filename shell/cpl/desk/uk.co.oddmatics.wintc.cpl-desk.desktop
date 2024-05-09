@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Display
+Comment=Change the appearance of your desktop, such as the background, screen saver, colors, font sizes, and screen resolution.
+Exec=desk.cpl
+Icon=preferences-desktop-display
+Terminal=false
+StartupNotify=false
+Type=Application
+Categories=Settings;GTK;
+OnlyShowIn=WINTC;

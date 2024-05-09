@@ -1,0 +1,4 @@
+bt,rt:glib2
+bt,rt:gtk3
+bt,rt:python3-packaging
+bt,rt:wintc-comgtk

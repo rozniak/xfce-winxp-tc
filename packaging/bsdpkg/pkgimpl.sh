@@ -34,7 +34,7 @@ do_packaging()
 
     # Build package now
     #
-    (cd "${pkg_dir}/usr/local" && find . -type f,l) | sed 's/\.\///' > plist
+    (cd "${pkg_dir}/usr/local" && find -L . -type f) | sed 's/\.\///' > plist
     pkg create -M manifest -r "${pkg_dir}" -p plist
 
     cd "${CURDIR}"

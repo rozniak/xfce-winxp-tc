@@ -37,8 +37,6 @@ add_library(
     public/cpl.h
     src/error.c
     public/error.h
-    src/fs.c
-    src/fs.h
     src/icnvwbeh.c
     public/icnvwbeh.h
     public/trevwbeh.h

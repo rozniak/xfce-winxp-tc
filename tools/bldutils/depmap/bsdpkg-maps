@@ -7,13 +7,16 @@ lightdm-->bt,rt-->lightdm
 msgfmt-->bt,rt-->gettext
 plymouth-->bt,rt-->splash
 pulseaudio-->bt,rt-->pulseaudio
+python3-packaging-->bt,rt-->py39-packaging
 python3-venv-->bt,rt-->py39-virtualenv
 sass-->bt,rt-->rubygem-sass
+sqlite3-->bt,rt-->sqlite3
 sysinfo-->bt,rt-->libsysinfo
 wintc-comctl-->bt,rt-->wintc-comctl
 wintc-comgtk-->bt,rt-->wintc-comgtk
 wintc-exec-->bt,rt-->wintc-exec
 wintc-msgina-->bt,rt-->wintc-msgina
+wintc-registry-->bt,rt-->wintc-registry
 wintc-shcommon-->bt,rt-->wintc-shcommon
 wintc-shell-->bt,rt-->wintc-shell
 wintc-shelldpa-->bt,rt-->wintc-shelldpa

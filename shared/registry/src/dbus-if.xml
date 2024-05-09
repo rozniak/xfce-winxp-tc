@@ -1,0 +1,30 @@
+<node>
+  <interface name="uk.oddmatics.wintc.registry.GDBUS">
+    <method name="CreateKey">
+      <arg name="key_path" direction="in" type="s" />
+      <arg name="result" direction="out" type="i" />
+    </method>
+
+    <method name="GetKeyValue">
+      <arg name="key_path" direction="in" type="s" />
+      <arg name="value_name" direction="in" type="s" />
+      <arg name="value_type" direction="in" type="i" />
+      <arg name="value_data" direction="out" type="v" />
+      <arg name="result" direction="out" type="i" />
+    </method>
+
+    <method name="SetKeyValue">
+      <arg name="key_path" direction="in" type="s" />
+      <arg name="value_name" direction="in" type="s" />
+      <arg name="value_data" direction="in" type="v" />
+      <arg name="silent" direction="in" type="b" />
+      <arg name="result" direction="out" type="i" />
+    </method>
+
+    <signal name="KeyValueChanged">
+      <arg name="key_path" type="s" />
+      <arg name="value_name" type="s" />
+      <arg name="value_data" type="v" />
+    </signal>
+  </interface>
+</node>

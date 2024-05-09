@@ -1,6 +1,7 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
+#include <wintc/comctl.h>
 #include <wintc/comgtk.h>
 #include <wintc/shlang.h>
 
@@ -10,11 +11,6 @@
 //
 // FORWARD DECLARATIONS
 //
-static void add_sysdm_page(
-    GtkNotebook* notebook_main,
-    gchar*       resource_path
-);
-
 static void action_close(
     GSimpleAction* action,
     GVariant*      parameter,
@@ -117,9 +113,10 @@ static void wintc_cpl_sysdm_window_init(
 
     // Init pages
     //
-    add_sysdm_page(
+    wintc_ctl_cpl_notebook_append_page_from_resource(
         GTK_NOTEBOOK(self->notebook_main),
-        "/uk/oddmatics/wintc/cpl-sysdm/page-gen.ui"
+        "/uk/oddmatics/wintc/cpl-sysdm/page-gen.ui",
+        NULL
     );
 }
 
@@ -138,34 +135,6 @@ GtkWidget* wintc_cpl_sysdm_window_new(
             NULL
         )
     );
-}
-
-//
-// PRIVATE FUNCTIONS
-//
-static void add_sysdm_page(
-    GtkNotebook* notebook_main,
-    gchar*       resource_path
-)
-{
-    GtkBuilder* builder;
-    GtkWidget*  box_page;
-    GtkWidget*  label_title;
-
-    builder = gtk_builder_new_from_resource(resource_path);
-
-    wintc_lc_builder_preprocess_widget_text(builder);
-
-    box_page = GTK_WIDGET(gtk_builder_get_object(builder, "page-box"));
-    label_title = GTK_WIDGET(gtk_builder_get_object(builder, "label-title"));
-
-    gtk_notebook_append_page(
-        notebook_main,
-        box_page,
-        label_title
-    );
-
-    g_object_unref(G_OBJECT(builder));
 }
 
 //

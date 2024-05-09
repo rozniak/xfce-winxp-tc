@@ -1,0 +1,8 @@
+<node>
+  <interface name="uk.oddmatics.wintc.testreg.GDBUS">
+    <method name="Testing">
+      <arg name="szinput" direction="in" type="s" />
+      <arg name="szoutput" direction="out" type="s" />
+    </method>
+  </interface>
+</node>

@@ -1,6 +1,7 @@
 base/bootvid
 base/bldtag
 base/logonui
+base/regsvc
 cursors/no-shadow/standard
 cursors/with-shadow/standard
 fonts
@@ -9,6 +10,7 @@ sounds
 themes/native
 themes/professional
 themes/luna/blue
+shell/cpl/desk
 shell/cpl/printers
 shell/cpl/sysdm
 shell/desktop

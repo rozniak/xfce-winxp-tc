@@ -14,13 +14,17 @@ msgfmt-->bt,rt-->gettext
 plymouth-->bt,rt-->plymouth
 pulseaudio-->bt-->libpulse-dev
 pulseaudio-->rt-->libpulse0
+python3-packaging-->bt,rt-->python3-packaging
 python3-venv-->bt,rt-->python3-venv
 sass-->bt,rt-->ruby-sass
+sqlite3-->bt-->libsqlite3-dev
+sqlite3-->rt-->libsqlite3-0
 sysinfo-->bt,rt-->NULL
 wintc-comctl-->bt,rt-->libwintc-comctl
 wintc-comgtk-->bt,rt-->libwintc-comgtk
 wintc-exec-->bt,rt-->libwintc-exec
 wintc-msgina-->bt,rt-->libwintc-msgina
+wintc-registry-->bt,rt-->libwintc-registry
 wintc-shcommon-->bt,rt-->libwintc-shcommon
 wintc-shell-->bt,rt-->libwintc-shell
 wintc-shelldpa-->bt,rt-->libwintc-shelldpa

@@ -7,13 +7,16 @@ lightdm-->bt,rt-->lightdm
 msgfmt-->bt,rt-->gettext
 plymouth-->bt,rt-->plymouth
 pulseaudio-->bt,rt-->libpulse
+python3-packaging-->bt,rt-->python-packaging
 python3-venv-->bt,rt-->python3
 sass-->bt,rt-->ruby-sass
+sqlite3-->bt,rt-->sqlite
 sysinfo-->bt,rt-->NULL
 wintc-comctl-->bt,rt-->wintc-comctl
 wintc-comgtk-->bt,rt-->wintc-comgtk
 wintc-exec-->bt,rt-->wintc-exec
 wintc-msgina-->bt,rt-->wintc-msgina
+wintc-registry-->bt,rt-->wintc-registry
 wintc-shcommon-->bt,rt-->wintc-shcommon
 wintc-shell-->bt,rt-->wintc-shell
 wintc-shelldpa-->bt,rt-->wintc-shelldpa

@@ -1,0 +1,7 @@
+bt,rt:glib2
+bt,rt:gtk3
+bt,rt:wintc-comctl
+bt,rt:wintc-comgtk
+bt,rt:wintc-registry
+bt,rt:wintc-shcommon
+bt,rt:wintc-shlang

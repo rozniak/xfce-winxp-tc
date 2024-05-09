@@ -5,6 +5,7 @@
 #include <gtk/gtk.h>
 
 #include "application.h"
+#include "settings.h"
 
 //
 // GTK OOP BOILERPLATE
@@ -26,7 +27,8 @@ GType wintc_desktop_window_get_type(void) G_GNUC_CONST;
 //
 GtkWidget* wintc_desktop_window_new(
     WinTCDesktopApplication* app,
-    GdkMonitor*              monitor
+    GdkMonitor*              monitor,
+    WinTCDesktopSettings*    settings
 );
 
 #endif

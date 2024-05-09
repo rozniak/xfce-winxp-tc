@@ -1,0 +1,8 @@
+#ifndef __WINTC_REGISTRY_H__
+#define __WINTC_REGISTRY_H__
+
+#include "@LIB_HEADER_DIR@/reg-dbus.h"
+#include "@LIB_HEADER_DIR@/regwrap.h"
+#include "@LIB_HEADER_DIR@/variant.h"
+
+#endif

@@ -3,7 +3,6 @@
 #include <wintc/shcommon.h>
 
 #include "../public/vwfs.h"
-#include "fs.h"
 
 //
 // PRIVATE ENUMS
@@ -262,7 +261,14 @@ void wintc_sh_view_fs_refresh_items(
 
     // FIXME: Error handling (no way of passing to caller)
     //
-    GSList* entries = wintc_sh_fs_get_names_as_list(view_fs->path, FALSE, NULL);
+    GSList* entries =
+        wintc_sh_fs_get_names_as_list(
+            view_fs->path,
+            FALSE,
+            0,
+            FALSE,
+            NULL
+        );
 
     // Create actual array
     // FIXME: list->array should probs be in comgtk

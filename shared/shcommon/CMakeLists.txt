@@ -26,6 +26,8 @@ wintc_resolve_library(wintc-comgtk WINTC_COMGTK)
 
 add_library(
     libwintc-shcommon
+    src/fs.c
+    public/fs.h
     src/path.c
     public/path.h
     src/places.c

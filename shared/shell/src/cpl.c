@@ -1,8 +1,8 @@
 #include <glib.h>
 #include <wintc/comgtk.h>
+#include <wintc/shcommon.h>
 
 #include "../public/cpl.h"
-#include "fs.h"
 
 //
 // PRIVATE CONSTANTS
@@ -20,7 +20,14 @@ static const gchar* S_CPL_KEY_ICON_NAME    = "Icon";
 //
 GSList* wintc_sh_cpl_applet_get_all(void)
 {
-    GSList* entries = wintc_sh_fs_get_names_as_list(S_CPL_ENTRIES_DIR, TRUE, NULL);
+    GSList* entries =
+        wintc_sh_fs_get_names_as_list(
+            S_CPL_ENTRIES_DIR,
+            TRUE,
+            G_FILE_TEST_IS_REGULAR,
+            FALSE,
+            NULL
+        );
 
     if (!entries)
     {

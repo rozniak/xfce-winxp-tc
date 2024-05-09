@@ -4,6 +4,7 @@
 #include <wintc/shelldpa.h>
 
 #include "application.h"
+#include "settings.h"
 #include "window.h"
 
 //
@@ -17,6 +18,8 @@ struct _WinTCDesktopApplicationClass
 struct _WinTCDesktopApplication
 {
     GtkApplication __parent__;
+
+    WinTCDesktopSettings* settings;
 };
 
 //
@@ -49,8 +52,11 @@ static void wintc_desktop_application_class_init(
 }
 
 static void wintc_desktop_application_init(
-    WINTC_UNUSED(WinTCDesktopApplication* self)
-) {}
+    WinTCDesktopApplication* self
+)
+{
+    self->settings = wintc_desktop_settings_new();
+}
 
 //
 // PUBLIC FUNCTIONS
@@ -97,7 +103,11 @@ static void wintc_desktop_application_activate(
     for (int i = 0; i < n_monitors; i++)
     {
         GdkMonitor* monitor = gdk_display_get_monitor(display, i);
-        GtkWidget*  wnd     = wintc_desktop_window_new(desktop_app, monitor);
+        GtkWidget*  wnd     = wintc_desktop_window_new(
+                                  desktop_app,
+                                  monitor,
+                                  desktop_app->settings
+                              );
 
         gtk_widget_show_all(wnd);
     }

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/uk/oddmatics/wintc/cpl-desk">
+    <file>desk.ui</file>
+    <file>page-appearance.ui</file>
+    <file>page-desktop.ui</file>
+    <file>page-scrnsave.ui</file>
+    <file>page-settings.ui</file>
+    <file>page-themes.ui</file>
+    <file>monitor.png</file>
+    <file>sample.png</file>
+  </gresource>
+</gresources>
