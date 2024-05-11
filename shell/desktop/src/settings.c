@@ -257,7 +257,7 @@ static void wintc_desktop_settings_set_wallpaper_path(
 //
 static void regkey_changed_desktop_cb(
     WINTC_UNUSED(WinTCRegistry* registry),
-    const gchar* key_path,
+    WINTC_DEBUG_ONLY(const gchar* key_path),
     const gchar* value_name,
     GVariant*    value_variant,
     WINTC_UNUSED(gpointer user_data)

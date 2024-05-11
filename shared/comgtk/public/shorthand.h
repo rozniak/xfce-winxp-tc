@@ -25,6 +25,18 @@
 #define WINTC_UNUSED(arg) __attribute__((unused)) arg
 
 /**
+ * @def WINTC_DEBUG_ONLY(arg)
+ *
+ * Marks a parameter as only used in chcked builds, so the compiler does not
+ * complain for free builds.
+ */
+#ifdef WINTC_CHECKED
+#define WINTC_DEBUG_ONLY(arg) arg
+#else
+#define WINTC_DEBUG_ONLY(arg) WINTC_UNUSED(arg)
+#endif
+
+/**
  * @def WINTC_RETURN_IF_FAIL(cond)
  *
  * Returns from a function if the condition fails - this is provided as an
