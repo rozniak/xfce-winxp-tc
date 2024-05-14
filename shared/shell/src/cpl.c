@@ -132,7 +132,7 @@ gboolean wintc_sh_cpl_applet_is_executable(
     // Check exec string - shell path vs. anything else (this probably isn't
     // the best way, but it'll do for now)
     //
-    return g_str_has_prefix(applet->exec, "::{");
+    return !g_str_has_prefix(applet->exec, "::{");
 }
 
 void wintc_sh_cpl_applet_free(

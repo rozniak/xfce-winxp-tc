@@ -65,9 +65,10 @@ static void wintc_ishext_view_default_init(
 //
 // INTERFACE METHODS
 //
-WinTCShextPathInfo* wintc_ishext_view_activate_item(
+gboolean wintc_ishext_view_activate_item(
     WinTCIShextView*    view,
     WinTCShextViewItem* item,
+    WinTCShextPathInfo* path_info,
     GError**            error
 )
 {
@@ -77,6 +78,7 @@ WinTCShextPathInfo* wintc_ishext_view_activate_item(
     return iface->activate_item(
         view,
         item,
+        path_info,
         error
     );
 }
@@ -112,24 +114,26 @@ const gchar* wintc_ishext_view_get_display_name(
     return iface->get_display_name(view);
 }
 
-const gchar* wintc_ishext_view_get_parent_path(
-    WinTCIShextView* view
+void wintc_ishext_view_get_parent_path(
+    WinTCIShextView*    view,
+    WinTCShextPathInfo* path_info
 )
 {
     WinTCIShextViewInterface* iface =
         WINTC_ISHEXT_VIEW_GET_IFACE(view);
 
-    return iface->get_parent_path(view);
+    return iface->get_parent_path(view, path_info);
 }
 
-const gchar* wintc_ishext_view_get_path(
-    WinTCIShextView* view
+void wintc_ishext_view_get_path(
+    WinTCIShextView*    view,
+    WinTCShextPathInfo* path_info
 )
 {
     WinTCIShextViewInterface* iface =
         WINTC_ISHEXT_VIEW_GET_IFACE(view);
 
-    return iface->get_path(view);
+    return iface->get_path(view, path_info);
 }
 
 void wintc_ishext_view_refresh_items(
@@ -171,11 +175,10 @@ void _wintc_ishext_view_items_removed(
     );
 }
 
-void wintc_shext_path_info_free(
+void wintc_shext_path_info_free_data(
     WinTCShextPathInfo* path_info
 )
 {
-    g_free(path_info->base_path);
-    g_free(path_info->extended_path);
-    g_free(path_info);
+    g_free(g_steal_pointer(&(path_info->base_path)));
+    g_free(g_steal_pointer(&(path_info->extended_path)));
 }

@@ -34,9 +34,10 @@ struct _WinTCIShextViewInterface
 {
     GTypeInterface base_iface;
 
-    WinTCShextPathInfo* (*activate_item) (
+    gboolean (*activate_item) (
         WinTCIShextView*    view,
         WinTCShextViewItem* item,
+        WinTCShextPathInfo* path_info,
         GError**            error
     );
 
@@ -51,11 +52,13 @@ struct _WinTCIShextViewInterface
     const gchar* (*get_display_name) (
         WinTCIShextView* view
     );
-    const gchar* (*get_parent_path) (
-        WinTCIShextView* view
+    void (*get_parent_path) (
+        WinTCIShextView*    view,
+        WinTCShextPathInfo* path_info
     );
-    const gchar* (*get_path) (
-        WinTCIShextView* view
+    void (*get_path) (
+        WinTCIShextView*    view,
+        WinTCShextPathInfo* path_info
     );
 
     void (*refresh_items) (
@@ -66,9 +69,10 @@ struct _WinTCIShextViewInterface
 //
 // INTERFACE METHODS
 //
-WinTCShextPathInfo* wintc_ishext_view_activate_item(
+gboolean wintc_ishext_view_activate_item(
     WinTCIShextView*    view,
     WinTCShextViewItem* item,
+    WinTCShextPathInfo* path_info,
     GError**            error
 );
 
@@ -87,11 +91,13 @@ void wintc_ishext_view_get_actions_for_view(
 const gchar* wintc_ishext_view_get_display_name(
     WinTCIShextView* view
 );
-const gchar* wintc_ishext_view_get_parent_path(
-    WinTCIShextView* view
+void wintc_ishext_view_get_parent_path(
+    WinTCIShextView*    view,
+    WinTCShextPathInfo* path_info
 );
-const gchar* wintc_ishext_view_get_path(
-    WinTCIShextView* view
+void wintc_ishext_view_get_path(
+    WinTCIShextView*    view,
+    WinTCShextPathInfo* path_info
 );
 
 //
@@ -106,7 +112,7 @@ void _wintc_ishext_view_items_removed(
     WinTCShextViewItem** items
 );
 
-void wintc_shext_path_info_free(
+void wintc_shext_path_info_free_data(
     WinTCShextPathInfo* path_info
 );
 

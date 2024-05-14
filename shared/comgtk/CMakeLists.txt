@@ -48,6 +48,8 @@ add_library(
     public/msgbox.h
     src/profile.c
     public/profile.h
+    src/regex.c
+    public/regex.h
     public/shorthand.h
     src/signals.c
     public/signals.h

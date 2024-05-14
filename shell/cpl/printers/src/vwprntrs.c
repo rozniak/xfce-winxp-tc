@@ -23,9 +23,10 @@ static void wintc_cpl_view_printers_ishext_view_interface_init(
     WinTCIShextViewInterface* iface
 );
 
-WinTCShextPathInfo* wintc_cpl_view_printers_activate_item(
+gboolean wintc_cpl_view_printers_activate_item(
     WinTCIShextView*    view,
     WinTCShextViewItem* item,
+    WinTCShextPathInfo* path_info,
     GError**            error
 );
 
@@ -46,12 +47,14 @@ const gchar* wintc_cpl_view_printers_get_display_name(
     WinTCIShextView* view
 );
 
-const gchar* wintc_cpl_view_printers_get_parent_path(
-    WinTCIShextView* view
+void wintc_cpl_view_printers_get_parent_path(
+    WinTCIShextView*    view,
+    WinTCShextPathInfo* path_info
 );
 
-const gchar* wintc_cpl_view_printers_get_path(
-    WinTCIShextView* view
+void wintc_cpl_view_printers_get_path(
+    WinTCIShextView*    view,
+    WinTCShextPathInfo* path_info
 );
 
 //
@@ -104,15 +107,16 @@ static void wintc_cpl_view_printers_ishext_view_interface_init(
 //
 // INTERFACE METHODS
 //
-WinTCShextPathInfo* wintc_cpl_view_printers_activate_item(
+gboolean wintc_cpl_view_printers_activate_item(
     WINTC_UNUSED(WinTCIShextView*    view),
     WINTC_UNUSED(WinTCShextViewItem* item),
+    WINTC_UNUSED(WinTCShextPathInfo* path_info),
     GError** error
 )
 {
     WINTC_SAFE_REF_CLEAR(error);
     g_critical("%s Not Implemented", __func__);
-    return NULL;
+    return FALSE;
 }
 
 void wintc_cpl_view_printers_refresh_items(
@@ -157,18 +161,26 @@ const gchar* wintc_cpl_view_printers_get_display_name(
     return "Printers and Faxes";
 }
 
-const gchar* wintc_cpl_view_printers_get_parent_path(
-    WINTC_UNUSED(WinTCIShextView* view)
+void wintc_cpl_view_printers_get_parent_path(
+    WINTC_UNUSED(WinTCIShextView* view),
+    WinTCShextPathInfo* path_info
 )
 {
-    return wintc_sh_get_place_path(WINTC_SH_PLACE_CONTROLPANEL);
+    path_info->base_path =
+        g_strdup(
+            wintc_sh_get_place_path(WINTC_SH_PLACE_CONTROLPANEL)
+        );
 }
 
-const gchar* wintc_cpl_view_printers_get_path(
-    WINTC_UNUSED(WinTCIShextView* view)
+void wintc_cpl_view_printers_get_path(
+    WINTC_UNUSED(WinTCIShextView* view),
+    WinTCShextPathInfo* path_info
 )
 {
-    return wintc_sh_get_place_path(WINTC_SH_PLACE_PRINTERS);
+    path_info->base_path =
+        g_strdup(
+            wintc_sh_get_place_path(WINTC_SH_PLACE_PRINTERS)
+        );
 }
 
 //

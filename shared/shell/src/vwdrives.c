@@ -23,9 +23,10 @@ static void wintc_sh_view_drives_ishext_view_interface_init(
     WinTCIShextViewInterface* iface
 );
 
-WinTCShextPathInfo* wintc_sh_view_drives_activate_item(
+gboolean wintc_sh_view_drives_activate_item(
     WinTCIShextView*    view,
     WinTCShextViewItem* item,
+    WinTCShextPathInfo* path_info,
     GError**            error
 );
 
@@ -46,12 +47,14 @@ const gchar* wintc_sh_view_drives_get_display_name(
     WinTCIShextView* view
 );
 
-const gchar* wintc_sh_view_drives_get_parent_path(
-    WinTCIShextView* view
+void wintc_sh_view_drives_get_parent_path(
+    WinTCIShextView*    view,
+    WinTCShextPathInfo* path_info
 );
 
-const gchar* wintc_sh_view_drives_get_path(
-    WinTCIShextView* view
+void wintc_sh_view_drives_get_path(
+    WinTCIShextView*    view,
+    WinTCShextPathInfo* path_info
 );
 
 //
@@ -109,19 +112,20 @@ static void wintc_sh_view_drives_ishext_view_interface_init(
 //
 // INTERFACE METHODS
 //
-WinTCShextPathInfo* wintc_sh_view_drives_activate_item(
-    WINTC_UNUSED(WinTCIShextView*    view),
+gboolean wintc_sh_view_drives_activate_item(
+    WINTC_UNUSED(WinTCIShextView* view),
     WinTCShextViewItem* item,
-    WINTC_UNUSED(GError**            error)
+    WinTCShextPathInfo* path_info,
+    GError**            error
 )
 {
+    WINTC_SAFE_REF_CLEAR(error);
+
     // TODO: Handle properly, we're using temp items for now
     //
-    WinTCShextPathInfo* path_info = g_new0(WinTCShextPathInfo, 1);
-
     path_info->base_path = g_strdup(item->priv);
 
-    return path_info;
+    return TRUE;
 }
 
 void wintc_sh_view_drives_refresh_items(
@@ -166,18 +170,26 @@ const gchar* wintc_sh_view_drives_get_display_name(
     return "My Computer";
 }
 
-const gchar* wintc_sh_view_drives_get_parent_path(
-    WINTC_UNUSED(WinTCIShextView* view)
+void wintc_sh_view_drives_get_parent_path(
+    WINTC_UNUSED(WinTCIShextView* view),
+    WinTCShextPathInfo* path_info
 )
 {
-    return wintc_sh_get_place_path(WINTC_SH_PLACE_DESKTOP);
+    path_info->base_path =
+        g_strdup(
+            wintc_sh_get_place_path(WINTC_SH_PLACE_DESKTOP)
+        );
 }
 
-const gchar* wintc_sh_view_drives_get_path(
-    WINTC_UNUSED(WinTCIShextView* view)
+void wintc_sh_view_drives_get_path(
+    WINTC_UNUSED(WinTCIShextView* view),
+    WinTCShextPathInfo* path_info
 )
 {
-    return wintc_sh_get_place_path(WINTC_SH_PLACE_DRIVES);
+    path_info->base_path =
+        g_strdup(
+            wintc_sh_get_place_path(WINTC_SH_PLACE_DRIVES)
+        );
 }
 
 //

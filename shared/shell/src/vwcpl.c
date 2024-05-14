@@ -18,9 +18,10 @@ static void wintc_sh_view_cpl_finalize(
     GObject* object
 );
 
-WinTCShextPathInfo* wintc_sh_view_cpl_activate_item(
+gboolean wintc_sh_view_cpl_activate_item(
     WinTCIShextView*    view,
     WinTCShextViewItem* item,
+    WinTCShextPathInfo* path_info,
     GError**            error
 );
 
@@ -41,12 +42,14 @@ const gchar* wintc_sh_view_cpl_get_display_name(
     WinTCIShextView* view
 );
 
-const gchar* wintc_sh_view_cpl_get_parent_path(
-    WinTCIShextView* view
+void wintc_sh_view_cpl_get_parent_path(
+    WinTCIShextView*    view,
+    WinTCShextPathInfo* path_info
 );
 
-const gchar* wintc_sh_view_cpl_get_path(
-    WinTCIShextView* view
+void wintc_sh_view_cpl_get_path(
+    WinTCIShextView*    view,
+    WinTCShextPathInfo* path_info
 );
 
 //
@@ -130,27 +133,23 @@ static void wintc_sh_view_cpl_finalize(
 //
 // INTERFACE METHODS
 //
-WinTCShextPathInfo* wintc_sh_view_cpl_activate_item(
+gboolean wintc_sh_view_cpl_activate_item(
     WINTC_UNUSED(WinTCIShextView* view),
     WinTCShextViewItem* item,
+    WinTCShextPathInfo* path_info,
     GError**            error
 )
 {
-    WinTCShCplApplet*   applet    = (WinTCShCplApplet*) item->priv;
-    WinTCShextPathInfo* path_info = NULL;
+    WinTCShCplApplet* applet = (WinTCShCplApplet*) item->priv;
 
     if (wintc_sh_cpl_applet_is_executable(applet))
     {
-        path_info = g_new0(WinTCShextPathInfo, 1);
-
-        path_info->base_path = g_strdup(applet->exec);
-    }
-    else
-    {
-        wintc_launch_command(applet->exec, error);
+        return wintc_launch_command(applet->exec, error);
     }
 
-    return path_info;
+    path_info->base_path = g_strdup(applet->exec);
+
+    return TRUE;
 }
 
 void wintc_sh_view_cpl_refresh_items(
@@ -240,18 +239,26 @@ const gchar* wintc_sh_view_cpl_get_display_name(
     return "Control Panel";
 }
 
-const gchar* wintc_sh_view_cpl_get_parent_path(
-    WINTC_UNUSED(WinTCIShextView* view)
+void wintc_sh_view_cpl_get_parent_path(
+    WINTC_UNUSED(WinTCIShextView* view),
+    WinTCShextPathInfo* path_info
 )
 {
-    return wintc_sh_get_place_path(WINTC_SH_PLACE_DRIVES);
+    path_info->base_path =
+        g_strdup(
+            wintc_sh_get_place_path(WINTC_SH_PLACE_DRIVES)
+        );
 }
 
-const gchar* wintc_sh_view_cpl_get_path(
-    WINTC_UNUSED(WinTCIShextView* view)
+void wintc_sh_view_cpl_get_path(
+    WINTC_UNUSED(WinTCIShextView* view),
+    WinTCShextPathInfo* path_info
 )
 {
-    return wintc_sh_get_place_path(WINTC_SH_PLACE_CONTROLPANEL);
+    path_info->base_path =
+        g_strdup(
+            wintc_sh_get_place_path(WINTC_SH_PLACE_CONTROLPANEL)
+        );
 }
 
 //

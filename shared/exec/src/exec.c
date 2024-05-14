@@ -350,38 +350,21 @@ static gboolean parse_url_in_cmdline(
     GError**     out_error
 )
 {
-    static GRegex* url_regex = NULL;
-
-    GError*          error           = NULL;
+    GError*          error     = NULL;
     GDesktopAppInfo* handler_entry;
     gchar*           handler_cmdline;
     GMatchInfo*      match_info;
     gchar*           mime_type;
+    const GRegex*    url_regex = wintc_regex_uri_scheme(&error);
     gchar*           uri_scheme;
 
     WINTC_SAFE_REF_CLEAR(out_cmdline);
     WINTC_SAFE_REF_CLEAR(out_error);
 
-    // Create regex if it hasn't already been created
-    //
-    if (url_regex == NULL)
+    if (!url_regex)
     {
-        url_regex =
-            g_regex_new(
-                "^([A-Za-z-]+)://",
-                0,
-                0,
-                &error
-            );
-
-        if (url_regex == NULL)
-        {
-            WINTC_LOG_USER_DEBUG("Failed to create the URL regex.");
-
-            g_propagate_error(out_error, error);
-
-            return FALSE;
-        }
+        g_propagate_error(out_error, error);
+        return FALSE;
     }
 
     // Examine command line

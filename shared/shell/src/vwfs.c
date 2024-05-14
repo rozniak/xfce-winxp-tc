@@ -35,9 +35,10 @@ static void wintc_sh_view_fs_set_property(
     GParamSpec*   pspec
 );
 
-WinTCShextPathInfo* wintc_sh_view_fs_activate_item(
+gboolean wintc_sh_view_fs_activate_item(
     WinTCIShextView*    view,
     WinTCShextViewItem* item,
+    WinTCShextPathInfo* path_info,
     GError**            error
 );
 
@@ -58,12 +59,14 @@ const gchar* wintc_sh_view_fs_get_display_name(
     WinTCIShextView* view
 );
 
-const gchar* wintc_sh_view_fs_get_parent_path(
-    WinTCIShextView* view
+void wintc_sh_view_fs_get_parent_path(
+    WinTCIShextView*    view,
+    WinTCShextPathInfo* path_info
 );
 
-const gchar* wintc_sh_view_fs_get_path(
-    WinTCIShextView* view
+void wintc_sh_view_fs_get_path(
+    WinTCIShextView*    view,
+    WinTCShextPathInfo* path_info
 );
 
 static void clear_view_item(
@@ -205,13 +208,7 @@ static void wintc_sh_view_fs_set_property(
             //
             if (g_strcmp0(view->path, "/") != 0)
             {
-                // Need to prefix with file:// for it to work
-                //
-                gchar* parent_path = g_path_get_dirname(view->path);
-
-                view->parent_path = g_strdup_printf("file://%s", parent_path);
-
-                g_free(parent_path);
+                view->parent_path = g_path_get_dirname(view->path);
             }
 
             break;
@@ -225,18 +222,18 @@ static void wintc_sh_view_fs_set_property(
 //
 // INTERFACE METHODS
 //
-WinTCShextPathInfo* wintc_sh_view_fs_activate_item(
+gboolean wintc_sh_view_fs_activate_item(
     WinTCIShextView*    view,
     WinTCShextViewItem* item,
-    WINTC_UNUSED(GError** error)
+    WinTCShextPathInfo* path_info,
+    GError**            error
 )
 {
     WinTCShViewFS* view_fs = WINTC_SH_VIEW_FS(view);
 
-    gchar*              next_path;
-    WinTCShextPathInfo* path_info = g_new0(WinTCShextPathInfo, 1);
+    WINTC_SAFE_REF_CLEAR(error);
 
-    next_path =
+    gchar* next_path =
         g_build_path(
             G_DIR_SEPARATOR_S,
             view_fs->path,
@@ -248,7 +245,7 @@ WinTCShextPathInfo* wintc_sh_view_fs_activate_item(
 
     g_free(next_path);
 
-    return path_info;
+    return TRUE;
 }
 
 void wintc_sh_view_fs_refresh_items(
@@ -364,27 +361,38 @@ const gchar* wintc_sh_view_fs_get_display_name(
     return g_strrstr(view_fs->path, G_DIR_SEPARATOR_S) + 1;
 }
 
-const gchar* wintc_sh_view_fs_get_parent_path(
-    WinTCIShextView* view
+void wintc_sh_view_fs_get_parent_path(
+    WinTCIShextView*    view,
+    WinTCShextPathInfo* path_info
 )
 {
     WinTCShViewFS* view_fs = WINTC_SH_VIEW_FS(view);
 
-    if (!(view_fs->parent_path))
+    if (view_fs->parent_path)
     {
-        return wintc_sh_get_place_path(WINTC_SH_PLACE_DRIVES);
+        path_info->base_path =
+            g_strdup_printf("file://%s", view_fs->parent_path);
     }
-
-    return view_fs->parent_path;
+    else
+    {
+        path_info->base_path =
+            g_strdup(
+                wintc_sh_get_place_path(
+                    WINTC_SH_PLACE_DRIVES
+                )
+            );
+    }
 }
 
-const gchar* wintc_sh_view_fs_get_path(
-    WinTCIShextView* view
+void wintc_sh_view_fs_get_path(
+    WinTCIShextView*    view,
+    WinTCShextPathInfo* path_info
 )
 {
     WinTCShViewFS* view_fs = WINTC_SH_VIEW_FS(view);
 
-    return view_fs->path;
+    path_info->base_path =
+        g_strdup_printf("file://%s", view_fs->path);
 }
 
 //

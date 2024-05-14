@@ -140,9 +140,9 @@ const WinTCShextViewItem** wintc_shext_host_get_toplevel_items(
 }
 
 WinTCIShextView* wintc_shext_host_get_view_for_path(
-    WinTCShextHost* host,
-    const gchar*    path,
-    GError**        error
+    WinTCShextHost*           host,
+    const WinTCShextPathInfo* path_info,
+    GError**                  error
 )
 {
     GError*          local_error = NULL;
@@ -150,7 +150,10 @@ WinTCIShextView* wintc_shext_host_get_view_for_path(
 
     WINTC_SAFE_REF_CLEAR(error);
 
-    WINTC_LOG_DEBUG("shellext: view lookup for path %s", path);
+    WINTC_LOG_DEBUG(
+        "shellext: view lookup for path %s",
+        path_info->base_path
+    );
 
     // Iterate through lookups 'til we get a view
     //
@@ -159,7 +162,7 @@ WinTCIShextView* wintc_shext_host_get_view_for_path(
         view =
             s_lookup_view_funcs[i](
                 host,
-                path,
+                path_info->base_path,
                 &local_error
             );
 
@@ -195,7 +198,7 @@ WinTCIShextView* wintc_shext_host_get_view_for_path(
             WINTC_SHEXT_ERROR,
             WINTC_SHEXT_ERROR_HOST_NO_VIEW,
             "Cannot find '%s'. Make sure the path or Internet address is correct.",
-            path
+            path_info->base_path
         );
 
         return NULL;

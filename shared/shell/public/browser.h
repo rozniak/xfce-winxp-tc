@@ -33,10 +33,15 @@ WinTCShBrowser* wintc_sh_browser_new(
     WinTCShextHost* shext_host
 );
 
-void wintc_sh_browser_activate_item(
+gboolean wintc_sh_browser_activate_item(
     WinTCShBrowser*     browser,
     WinTCShextViewItem* item,
     GError**            error
+);
+
+void wintc_sh_browser_get_location(
+    WinTCShBrowser*     browser,
+    WinTCShextPathInfo* path_info
 );
 
 GtkTreeModel* wintc_sh_browser_get_model(
@@ -51,10 +56,10 @@ void wintc_sh_browser_refresh(
     WinTCShBrowser* browser
 );
 
-void wintc_sh_browser_set_location(
-    WinTCShBrowser* browser,
-    const gchar*    path,
-    GError**        error
+gboolean wintc_sh_browser_set_location(
+    WinTCShBrowser*           browser,
+    const WinTCShextPathInfo* path_info,
+    GError**                  error
 );
 
 #endif

@@ -16,6 +16,12 @@ enum
 
 enum
 {
+    SIGNAL_LOCATION_CHANGED = 0,
+    N_SIGNALS
+};
+
+enum
+{
     COLUMN_VIEWITEM = 0,
     COLUMN_ICON,
     COLUMN_DISPLAY_NAME,
@@ -23,12 +29,14 @@ enum
 };
 
 //
+// STATIC DATA
+//
+static gint wintc_sh_browser_signals[N_SIGNALS] = { 0 };
+
+//
 // FORWARD DECLARATIONS
 //
 static void wintc_sh_browser_dispose(
-    GObject* object
-);
-static void wintc_sh_browser_finalize(
     GObject* object
 );
 static void wintc_sh_browser_get_property(
@@ -71,7 +79,6 @@ struct _WinTCShBrowser
 
     // Browser state
     //
-    gchar*           current_path;
     WinTCIShextView* current_view;
     GtkListStore*    view_model;
 };
@@ -92,7 +99,6 @@ static void wintc_sh_browser_class_init(
     GObjectClass* object_class = G_OBJECT_CLASS(klass);
 
     object_class->dispose      = wintc_sh_browser_dispose;
-    object_class->finalize     = wintc_sh_browser_finalize;
     object_class->get_property = wintc_sh_browser_get_property;
     object_class->set_property = wintc_sh_browser_set_property;
 
@@ -107,6 +113,19 @@ static void wintc_sh_browser_class_init(
             G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY
         )
     );
+
+    wintc_sh_browser_signals[SIGNAL_LOCATION_CHANGED] =
+        g_signal_new(
+            "location-changed",
+            G_TYPE_FROM_CLASS(object_class),
+            G_SIGNAL_RUN_FIRST,
+            0,
+            NULL,
+            NULL,
+            g_cclosure_marshal_VOID__VOID,
+            G_TYPE_NONE,
+            0
+        );
 }
 
 static void wintc_sh_browser_init(
@@ -138,18 +157,6 @@ static void wintc_sh_browser_dispose(
 
     (G_OBJECT_CLASS(wintc_sh_browser_parent_class))
         ->dispose(object);
-}
-
-static void wintc_sh_browser_finalize(
-    GObject* object
-)
-{
-    WinTCShBrowser* browser = WINTC_SH_BROWSER(object);
-
-    g_free(browser->current_path);
-
-    (G_OBJECT_CLASS(wintc_sh_browser_parent_class))
-        ->finalize(object);
 }
 
 static void wintc_sh_browser_get_property(
@@ -204,59 +211,81 @@ WinTCShBrowser* wintc_sh_browser_new(
     );
 }
 
-void wintc_sh_browser_activate_item(
+gboolean wintc_sh_browser_activate_item(
     WinTCShBrowser*     browser,
     WinTCShextViewItem* item,
     GError**            error
 )
 {
-    GError*             local_error = NULL;
-    WinTCShextPathInfo* path_info   = NULL;
+    GError*            local_error = NULL;
+    WinTCShextPathInfo path_info   = { 0 };
 
     WINTC_SAFE_REF_CLEAR(error);
 
     if (!browser->current_view)
     {
         g_critical("%s", "shell: browser - activate item with no view");
-        return;
+        return FALSE;
     }
 
     // Attempt to activate the item in the view
     //
-    path_info =
-        wintc_ishext_view_activate_item(
+    if (
+        !wintc_ishext_view_activate_item(
             browser->current_view,
             item,
+            &path_info,
             &local_error
-        );
-
-    if (!path_info)
+        )
+    )
     {
-        // Lack of location change is not necessarily an error, so we check
-        // here
-        //
-        if (local_error)
-        {
-            g_propagate_error(error, local_error);
-        }
+        g_propagate_error(error, local_error);
+        return FALSE;
+    }
 
-        return;
+    // It's possible the item launched an executable rather than it being a
+    // location change
+    //
+    if (!path_info.base_path)
+    {
+        return TRUE;
     }
 
     // Navigate to the path
-    // FIXME: Set location only supports a simple path, and not path info!
     //
-    wintc_sh_browser_set_location(
-        browser,
-        path_info->base_path,
-        &local_error
-    );
+    gboolean success =
+        wintc_sh_browser_set_location(
+            browser,
+            &path_info,
+            &local_error
+        );
 
-    wintc_shext_path_info_free(path_info);
-
-    if (local_error)
+    if (!success)
     {
         g_propagate_error(error, local_error);
+    }
+
+    wintc_shext_path_info_free_data(&path_info);
+
+    return success;
+}
+
+void wintc_sh_browser_get_location(
+    WinTCShBrowser*     browser,
+    WinTCShextPathInfo* path_info
+)
+{
+    if (!browser->current_view)
+    {
+        path_info->base_path     = NULL;
+        path_info->extended_path = NULL;
+    }
+    else
+    {
+        wintc_ishext_view_get_path(
+            browser->current_view,
+            path_info
+        );
     }
 }
 
@@ -271,7 +300,7 @@ void wintc_sh_browser_navigate_to_parent(
     WinTCShBrowser* browser
 )
 {
-    const gchar* parent_path = NULL;
+    WinTCShextPathInfo path_info = { 0 };
 
     if (!browser->current_view)
     {
@@ -279,15 +308,20 @@ void wintc_sh_browser_navigate_to_parent(
         return;
     }
 
-    parent_path = wintc_ishext_view_get_parent_path(browser->current_view);
+    wintc_ishext_view_get_parent_path(
+        browser->current_view,
+        &path_info
+    );
 
-    if (!parent_path)
+    if (!path_info.base_path)
     {
         g_critical("%s", "shell: browser can't nav to parent, no parent");
         return;
     }
 
-    wintc_sh_browser_set_location(browser, parent_path, NULL);
+    wintc_sh_browser_set_location(browser, &path_info, NULL);
+
+    wintc_shext_path_info_free_data(&path_info);
 }
 
 void wintc_sh_browser_refresh(
@@ -304,10 +338,10 @@ void wintc_sh_browser_refresh(
     wintc_ishext_view_refresh_items(browser->current_view);
 }
 
-void wintc_sh_browser_set_location(
-    WinTCShBrowser* browser,
-    const gchar*    path,
-    GError**        error
+gboolean wintc_sh_browser_set_location(
+    WinTCShBrowser*           browser,
+    const WinTCShextPathInfo* path_info,
+    GError**                  error
 )
 {
     WinTCIShextView* new_view = NULL;
@@ -315,15 +349,17 @@ void wintc_sh_browser_set_location(
     new_view =
         wintc_shext_host_get_view_for_path(
             browser->shext_host,
-            path,
+            path_info,
             error
         );
 
     if (!new_view)
     {
-        return;
+        return FALSE;
     }
 
+    // Update the view
+    //
     g_clear_object(&(browser->current_view));
     browser->current_view = new_view;
 
@@ -341,6 +377,16 @@ void wintc_sh_browser_set_location(
     );
 
     wintc_sh_browser_refresh(browser);
+
+    // All done!
+    //
+    g_signal_emit(
+        browser,
+        wintc_sh_browser_signals[SIGNAL_LOCATION_CHANGED],
+        0
+    );
+
+    return TRUE;
 }
 
 //

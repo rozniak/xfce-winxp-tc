@@ -739,9 +739,16 @@
             <property name="visible">True</property>
             <property name="can-focus">False</property>
             <child>
-              <object class="GtkComboBoxText">
+              <object class="GtkComboBoxText" id="combo-address">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
+                <property name="has-entry">True</property>
+                <child internal-child="entry">
+                  <object class="GtkEntry">
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                  </object>
+                </child>
               </object>
             </child>
           </object>
@@ -755,7 +762,7 @@
             <property name="visible">True</property>
             <property name="can-focus">False</property>
             <child>
-              <object class="GtkButton">
+              <object class="GtkButton" id="button-nav-go">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <property name="receives-default">False</property>

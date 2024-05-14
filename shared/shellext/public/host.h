@@ -79,9 +79,9 @@ const WinTCShextViewItem** wintc_shext_host_get_toplevel_items(
 );
 
 WinTCIShextView* wintc_shext_host_get_view_for_path(
-    WinTCShextHost* host,
-    const gchar*    path,
-    GError**        error
+    WinTCShextHost*           host,
+    const WinTCShextPathInfo* path_info,
+    GError**                  error
 );
 
 gboolean wintc_shext_host_load_extensions(
