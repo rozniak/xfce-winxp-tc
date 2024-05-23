@@ -85,7 +85,7 @@ fi
 
 # Identify our distro
 #
-dist_id=`${SH_DISTID}`
+. "${SH_DISTID}"
 
 if [[ $? -gt 0 ]]
 then
@@ -95,11 +95,11 @@ fi
 
 # Ensure packaging implementation available
 #
-sh_pkg_impl="${SCRIPTDIR}/${dist_id}/pkgimpl.sh"
+sh_pkg_impl="${SCRIPTDIR}/${DIST_ID}/pkgimpl.sh"
 
 if [[ ! -f "${sh_pkg_impl}" ]]
 then
-    echo "Packaging implementation for ${dist_id} not found!"
+    echo "Packaging implementation for ${DIST_ID} not found!"
     exit 1
 fi
 

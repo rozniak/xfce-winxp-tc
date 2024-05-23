@@ -73,7 +73,7 @@ check_deps()
     fi
 
     local required_deps
-    required_deps=`python3 ${DEPMAP_PY} ${full_deps_path} ${dist_id}`
+    required_deps=`python3 ${DEPMAP_PY} ${full_deps_path} ${DIST_ID}`
 
     if [[ $? -gt 0 ]]
     then
@@ -119,7 +119,7 @@ check_deps()
         # If there are alternatives available, check which one is available
         # for this distro
         #
-        case "${dist_id}" in
+        case "${DIST_ID}" in
             deb)
                 local found_pkg=0
 
@@ -160,7 +160,7 @@ check_deps()
 
         # It's a new dep, check whether it is already installed
         #
-        case "${dist_id}" in
+        case "${DIST_ID}" in
             apk)
                 apk info --installed "${pkg_name}" >/dev/null 2>&1
                 ;;
@@ -175,6 +175,9 @@ check_deps()
                 ;;
             rpm)
                 rpm --query "${pkg_name}" >/dev/null 2>&1
+                ;;
+            xbps)
+                xbps-query --show "${pkg_name}" >/dev/null 2>&1
                 ;;
             *)
                 echo "Package format not implemented!"
@@ -214,7 +217,7 @@ fi
 
 # Identify our distro
 #
-dist_id=`"${SH_DISTID}"`
+. "${SH_DISTID}"
 
 if [[ $? -gt 0 ]]
 then

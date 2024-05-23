@@ -201,7 +201,7 @@ fi
 
 # Identify our distro
 #
-dist_id=`${SH_DISTID}`
+. "${SH_DISTID}"
 
 if [[ $? -gt 0 ]]
 then
@@ -222,7 +222,7 @@ then
     build_type="checked"
 fi
 
-echo "Doing full system build for ${tag} (${cur_arch}, ${dist_id}) (${build_type})"
+echo "Doing full system build for ${tag} (${cur_arch}, ${DIST_ID}-${DIST_ID_EXT}) (${build_type})"
 
 # Handle output dir for packaging
 #
@@ -230,7 +230,7 @@ if [[ $OPT_SKIP_PACKAGING -eq 0 ]]
 then
     if [[ "${OPT_OUTPUT_DIR}" == "" ]]
     then
-        OPT_OUTPUT_DIR="${CURDIR}/xptc/${tag}/${dist_id}/${cur_arch}/${build_subdir}"
+        OPT_OUTPUT_DIR="${CURDIR}/xptc/${tag}/${DIST_ID}/${DIST_ID_EXT}/${cur_arch}/${build_subdir}"
 
         mkdir -p "${OPT_OUTPUT_DIR}"
     fi

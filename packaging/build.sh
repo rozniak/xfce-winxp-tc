@@ -95,8 +95,9 @@ fi
 
 # Identify distro build
 #
-dist_id=`"${SH_DISTID}"`
 dist_prefix="/usr"
+
+. "${SH_DISTID}"
 
 if [[ $? -gt 0 ]]
 then
@@ -104,7 +105,7 @@ then
     exit 1
 fi
 
-case "${dist_id}" in
+case "${DIST_ID}" in
     bsdpkg)
         dist_prefix="/usr/local"
         ;;
@@ -134,7 +135,8 @@ cmake -DBUILD_SHARED_LIBS=ON                         \
       -DCMAKE_BUILD_TYPE="${OPT_BUILD_TYPE}"         \
       -DCMAKE_INSTALL_PREFIX="${dist_prefix}"        \
       -DWINTC_SKU="${OPT_SKU}"                       \
-      -DWINTC_PKGMGR="${dist_id}"                    \
+      -DWINTC_PKGMGR="${DIST_ID}"                    \
+      -DWINTC_PKGMGR_EXT="${DIST_ID_EXT}"            \
       -DWINTC_USE_LOCAL_LIBS="${OPT_USE_LOCAL_LIBS}" \
       -DWINTC_LOCAL_LIBS_ROOT="${OPT_BUILD_ROOT}"    \
       "${full_component_dir}"

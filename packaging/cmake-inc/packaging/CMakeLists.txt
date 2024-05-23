@@ -48,7 +48,8 @@ endif()
 if (
     ${WINTC_PKGMGR} STREQUAL "apk"     OR
     ${WINTC_PKGMGR} STREQUAL "archpkg" OR
-    ${WINTC_PKGMGR} STREQUAL "bsdpkg"
+    ${WINTC_PKGMGR} STREQUAL "bsdpkg"  OR
+    ${WINTC_PKGMGR} STREQUAL "xbps"
 )
     # No lib64 on some distros
     #
@@ -82,7 +83,8 @@ endif()
 #
 if (
     ${WINTC_PKGMGR} STREQUAL "apk"     OR
-    ${WINTC_PKGMGR} STREQUAL "archpkg"
+    ${WINTC_PKGMGR} STREQUAL "archpkg" OR
+    ${WINTC_PKGMGR} STREQUAL "xbps"
 )
     set(WINTC_SAFE_SBIN_DIR ${CMAKE_INSTALL_BINDIR})
 else()
@@ -94,7 +96,7 @@ endif()
 if (${WINTC_PKGMGR} STREQUAL "bsdpkg")
     set(WINTC_SAFE_PKGCONFIG_DIR libdata)
 else()
-    set(WINTC_SAFE_PKGCONFIG_DIR ${CMAKE_INSTALL_LIBDIR})
+    set(WINTC_SAFE_PKGCONFIG_DIR ${LIB_DIR})
 endif()
 
 # Define dependency mapping function
@@ -147,6 +149,7 @@ set(WINTC_ARCH_PKGBUILD_IN_PATH   ${CMAKE_CURRENT_LIST_DIR}/PKGBUILD.in)
 set(WINTC_BSD_MANIFEST_IN_PATH    ${CMAKE_CURRENT_LIST_DIR}/bsd-manifest.in)
 set(WINTC_DEBIAN_CONTROL_IN_PATH  ${CMAKE_CURRENT_LIST_DIR}/debian-control.in)
 set(WINTC_RPM_SPEC_IN_PATH        ${CMAKE_CURRENT_LIST_DIR}/rpm.spec.in)
+set(WINTC_XBPS_VARS_IN_PATH       ${CMAKE_CURRENT_LIST_DIR}/xbps-vars.sh.in)
 
 function(wintc_configure_and_install_packaging)
     # Provide 'ALT_PROJECT_NAME' - basically some distros skip the 'lib' in
@@ -305,7 +308,7 @@ function(wintc_configure_and_install_packaging)
         configure_file(${WINTC_DEBIAN_CONTROL_IN_PATH} control @ONLY)
         install(FILES ${CMAKE_BINARY_DIR}/control DESTINATION ${DESTDIR}/DEBIAN)
     elseif (${WINTC_PKGMGR} STREQUAL "rpm")
-        message(STATUS "Outputting build Red Hat packaging")
+        message(STATUS "Outputting build for Red Hat packaging")
 
         if (${PROJECT_FREESTATUS})
             set(RPM_LICENCE GPLv2)
@@ -329,6 +332,51 @@ function(wintc_configure_and_install_packaging)
         endif()
 
         configure_file(${WINTC_RPM_SPEC_IN_PATH} rpm.spec @ONLY)
+    elseif(${WINTC_PKGMGR} STREQUAL "xbps")
+        message(STATUS "Outputting build for Void Linux packaging")
+
+        if (${PROJECT_FREESTATUS})
+            set(XBPS_LICENCE GPL-2.0-or-later)
+        else()
+            set(XBPS_LICENCE nonfree) # Again, could be bollocks
+        endif()
+
+        if (${PROJECT_ANYARCH})
+            set(XBPS_ARCHITECTURE noarch)
+        else()
+            if (${WINTC_PKGMGR_EXT} STREQUAL "musl")
+                set(XBPS_ARCHITECTURE ${CMAKE_SYSTEM_PROCESSOR}-musl)
+            else()
+                set(XBPS_ARCHITECTURE ${CMAKE_SYSTEM_PROCESSOR})
+            endif()
+        endif()
+
+        # Map dependencies to XBPS
+        #
+        wintc_map_dependencies()
+
+        if (DEFINED DEPENDENCIES_MAP)
+            # HACK: This transform here is a horrible bodge that would probably
+            #       get me hung, drawn and quartered by Void Linux packagers if
+            #       they ever came across it
+            #
+            #       The repo currently doesn't track specific versions for deps
+            #       so in order for Void Linux to be happy, we specify
+            #           foo>=0.1_1
+            #       which gets the job done, though obviously this is a totally
+            #       scumbag thing to do
+            #
+            # FIXME: Probably should actually track minimum dep versions, since
+            #        the packaging doesn't bother with versions for any other
+            #        format either, not just Void
+            #
+            list(TRANSFORM DEPENDENCIES_MAP APPEND ">=0.1_1")
+            list(JOIN DEPENDENCIES_MAP " " XBPS_DEPENDENCIES)
+        else()
+            set(XBPS_DEPENDENCIES "")
+        endif()
+
+        configure_file(${WINTC_XBPS_VARS_IN_PATH} xbps-vars.sh @ONLY)
     else()
         message(
             FATAL_ERROR
