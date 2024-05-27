@@ -51,44 +51,54 @@ static GdkPixbuf* wnck_window_get_mini_icon_real(
     WinTCWndMgmtWindow* window
 )
 {
-    GdkPixbuf*    icon = p_wnck_window_get_mini_icon(window);
+    GdkPixbuf*    icon_from_wnd = p_wnck_window_get_mini_icon(window);
     GdkPixbuf*    icon_resolv;
     GtkIconTheme* icon_theme;
+    GdkPixbuf*    ret_icon;
     const gchar*  wm_class;
+
+    ret_icon = icon_from_wnd;
 
     if (p_wnck_window_get_icon_is_fallback(window))
     {
         // Try resolving an icon in the theme using WM_CLASS
         //
-        icon_theme = gtk_icon_theme_get_default();
         wm_class = p_wnck_window_get_class_instance_name(window);
 
-        WINTC_LOG_DEBUG(
-            "dpa: look up icon for wnd %p using WM_CLASS %s",
-            window,
-            wm_class
-        );
+        if (wm_class)
+        {
+            icon_theme = gtk_icon_theme_get_default();
 
-        icon_resolv =
-            gtk_icon_theme_load_icon(
-                icon_theme,
-                wm_class,
-                16, // GTK_ICON_SIZE_MENU
-                GTK_ICON_LOOKUP_FORCE_SIZE,
-                NULL
+            WINTC_LOG_DEBUG(
+                "dpa: look up icon for wnd %p using WM_CLASS %s",
+                window,
+                wm_class
             );
 
-        if (icon_resolv)
-        {
-            icon = icon_resolv; // Pass on
+            icon_resolv =
+                gtk_icon_theme_load_icon(
+                    icon_theme,
+                    wm_class,
+                    16, // GTK_ICON_SIZE_MENU
+                    GTK_ICON_LOOKUP_FORCE_SIZE,
+                    NULL
+                );
+
+            if (icon_resolv)
+            {
+                ret_icon = icon_resolv; // Pass on
+            }
         }
     }
-    else
+
+    // If we're returning the window's icon, we need to add our own ref
+    //
+    if (ret_icon == icon_from_wnd)
     {
-        g_object_ref(icon);
+        g_object_ref(ret_icon);
     }
 
-    return icon;
+    return ret_icon;
 }
 
 static void wnck_window_unminimize_real(
