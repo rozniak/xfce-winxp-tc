@@ -37,6 +37,12 @@ add_executable(
     src/application.h
     src/main.c
     src/resources.c
+    src/toolbar.c
+    src/toolbar.h
+    src/toolbars/adrbar.c
+    src/toolbars/adrbar.h
+    src/toolbars/stdbar.c
+    src/toolbars/stdbar.h
     src/window.c
     src/window.h
 )

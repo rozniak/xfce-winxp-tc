@@ -270,6 +270,19 @@ gboolean wintc_sh_browser_activate_item(
     return success;
 }
 
+gboolean wintc_sh_browser_can_navigate_to_parent(
+    WinTCShBrowser* browser
+)
+{
+    if (!browser->current_view)
+    {
+        g_critical("%s", "shell: nav to parent - no view");
+        return FALSE;
+    }
+
+    return wintc_ishext_view_has_parent(browser->current_view);
+}
+
 void wintc_sh_browser_get_location(
     WinTCShBrowser*     browser,
     WinTCShextPathInfo* path_info
@@ -277,16 +290,13 @@ void wintc_sh_browser_get_location(
 {
     if (!browser->current_view)
     {
-        path_info->base_path     = NULL;
-        path_info->extended_path = NULL;
+        return;
     }
-    else
-    {
-        wintc_ishext_view_get_path(
-            browser->current_view,
-            path_info
-        );
-    }
+
+    wintc_ishext_view_get_path(
+        browser->current_view,
+        path_info
+    );
 }
 
 GtkTreeModel* wintc_sh_browser_get_model(
@@ -302,9 +312,9 @@ void wintc_sh_browser_navigate_to_parent(
 {
     WinTCShextPathInfo path_info = { 0 };
 
-    if (!browser->current_view)
+    if (!wintc_sh_browser_can_navigate_to_parent(browser))
     {
-        g_critical("%s", "shell: browser can't nav to parent, no view");
+        g_critical("%s", "shell: browser can't nav to parent");
         return;
     }
 
@@ -312,12 +322,6 @@ void wintc_sh_browser_navigate_to_parent(
         browser->current_view,
         &path_info
     );
-
-    if (!path_info.base_path)
-    {
-        g_critical("%s", "shell: browser can't nav to parent, no parent");
-        return;
-    }
 
     wintc_sh_browser_set_location(browser, &path_info, NULL);
 

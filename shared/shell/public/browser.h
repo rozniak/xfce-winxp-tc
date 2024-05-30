@@ -39,6 +39,10 @@ gboolean wintc_sh_browser_activate_item(
     GError**            error
 );
 
+gboolean wintc_sh_browser_can_navigate_to_parent(
+    WinTCShBrowser* browser
+);
+
 void wintc_sh_browser_get_location(
     WinTCShBrowser*     browser,
     WinTCShextPathInfo* path_info

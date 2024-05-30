@@ -60,6 +60,9 @@ struct _WinTCIShextViewInterface
         WinTCIShextView*    view,
         WinTCShextPathInfo* path_info
     );
+    gboolean (*has_parent) (
+        WinTCIShextView* view
+    );
 
     void (*refresh_items) (
         WinTCIShextView* view
@@ -99,6 +102,9 @@ void wintc_ishext_view_get_path(
     WinTCIShextView*    view,
     WinTCShextPathInfo* path_info
 );
+gboolean wintc_ishext_view_has_parent(
+    WinTCIShextView* view
+);
 
 //
 // PUBLIC FUNCTIONS
@@ -112,8 +118,16 @@ void _wintc_ishext_view_items_removed(
     WinTCShextViewItem** items
 );
 
+void wintc_shext_path_info_copy(
+    WinTCShextPathInfo* dst,
+    WinTCShextPathInfo* src
+);
 void wintc_shext_path_info_free_data(
     WinTCShextPathInfo* path_info
+);
+void wintc_shext_path_info_move(
+    WinTCShextPathInfo* dst,
+    WinTCShextPathInfo* src
 );
 
 #endif

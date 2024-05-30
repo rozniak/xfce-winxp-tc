@@ -40,6 +40,8 @@ add_library(
     public/defprocs.h
     src/errors.c
     public/errors.h
+    src/icons.c
+    public/icons.h
     src/list.c
     public/list.h
     src/marshal.c

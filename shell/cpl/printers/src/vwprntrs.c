@@ -23,38 +23,42 @@ static void wintc_cpl_view_printers_ishext_view_interface_init(
     WinTCIShextViewInterface* iface
 );
 
-gboolean wintc_cpl_view_printers_activate_item(
+static gboolean wintc_cpl_view_printers_activate_item(
     WinTCIShextView*    view,
     WinTCShextViewItem* item,
     WinTCShextPathInfo* path_info,
     GError**            error
 );
 
-void wintc_cpl_view_printers_refresh_items(
+static void wintc_cpl_view_printers_refresh_items(
     WinTCIShextView* view
 );
 
-void wintc_cpl_view_printers_get_actions_for_item(
+static void wintc_cpl_view_printers_get_actions_for_item(
     WinTCIShextView*    view,
     WinTCShextViewItem* item
 );
 
-void wintc_cpl_view_printers_get_actions_for_view(
+static void wintc_cpl_view_printers_get_actions_for_view(
     WinTCIShextView* view
 );
 
-const gchar* wintc_cpl_view_printers_get_display_name(
+static const gchar* wintc_cpl_view_printers_get_display_name(
     WinTCIShextView* view
 );
 
-void wintc_cpl_view_printers_get_parent_path(
+static void wintc_cpl_view_printers_get_parent_path(
     WinTCIShextView*    view,
     WinTCShextPathInfo* path_info
 );
 
-void wintc_cpl_view_printers_get_path(
+static void wintc_cpl_view_printers_get_path(
     WinTCIShextView*    view,
     WinTCShextPathInfo* path_info
+);
+
+static gboolean wintc_cpl_view_printers_has_parent(
+    WinTCIShextView* view
 );
 
 //
@@ -102,12 +106,13 @@ static void wintc_cpl_view_printers_ishext_view_interface_init(
     iface->get_display_name     = wintc_cpl_view_printers_get_display_name;
     iface->get_parent_path      = wintc_cpl_view_printers_get_parent_path;
     iface->get_path             = wintc_cpl_view_printers_get_path;
+    iface->has_parent           = wintc_cpl_view_printers_has_parent;
 }
 
 //
 // INTERFACE METHODS
 //
-gboolean wintc_cpl_view_printers_activate_item(
+static gboolean wintc_cpl_view_printers_activate_item(
     WINTC_UNUSED(WinTCIShextView*    view),
     WINTC_UNUSED(WinTCShextViewItem* item),
     WINTC_UNUSED(WinTCShextPathInfo* path_info),
@@ -119,7 +124,7 @@ gboolean wintc_cpl_view_printers_activate_item(
     return FALSE;
 }
 
-void wintc_cpl_view_printers_refresh_items(
+static void wintc_cpl_view_printers_refresh_items(
     WinTCIShextView* view
 )
 {
@@ -137,7 +142,7 @@ void wintc_cpl_view_printers_refresh_items(
     _wintc_ishext_view_items_added(view, &items);
 }
 
-void wintc_cpl_view_printers_get_actions_for_item(
+static void wintc_cpl_view_printers_get_actions_for_item(
     WINTC_UNUSED(WinTCIShextView*    view),
     WINTC_UNUSED(WinTCShextViewItem* item)
 )
@@ -145,14 +150,14 @@ void wintc_cpl_view_printers_get_actions_for_item(
     g_critical("%s Not Implemented", __func__);
 }
 
-void wintc_cpl_view_printers_get_actions_for_view(
+static void wintc_cpl_view_printers_get_actions_for_view(
     WINTC_UNUSED(WinTCIShextView* view)
 )
 {
     g_critical("%s Not Implemented", __func__);
 }
 
-const gchar* wintc_cpl_view_printers_get_display_name(
+static const gchar* wintc_cpl_view_printers_get_display_name(
     WINTC_UNUSED(WinTCIShextView* view)
 )
 {
@@ -161,7 +166,7 @@ const gchar* wintc_cpl_view_printers_get_display_name(
     return "Printers and Faxes";
 }
 
-void wintc_cpl_view_printers_get_parent_path(
+static void wintc_cpl_view_printers_get_parent_path(
     WINTC_UNUSED(WinTCIShextView* view),
     WinTCShextPathInfo* path_info
 )
@@ -172,7 +177,7 @@ void wintc_cpl_view_printers_get_parent_path(
         );
 }
 
-void wintc_cpl_view_printers_get_path(
+static void wintc_cpl_view_printers_get_path(
     WINTC_UNUSED(WinTCIShextView* view),
     WinTCShextPathInfo* path_info
 )
@@ -181,6 +186,13 @@ void wintc_cpl_view_printers_get_path(
         g_strdup(
             wintc_sh_get_place_path(WINTC_SH_PLACE_PRINTERS)
         );
+}
+
+static gboolean wintc_cpl_view_printers_has_parent(
+    WINTC_UNUSED(WinTCIShextView* view)
+)
+{
+    return TRUE;
 }
 
 //

@@ -7,6 +7,9 @@
 #include <wintc/shlang.h>
 
 #include "application.h"
+#include "toolbar.h"
+#include "toolbars/adrbar.h"
+#include "toolbars/stdbar.h"
 #include "window.h"
 
 //
@@ -15,6 +18,12 @@
 enum
 {
     PROP_SHEXT_HOST = 1
+};
+
+enum
+{
+    SIGNAL_LOCATION_CHANGED = 0,
+    N_SIGNALS
 };
 
 //
@@ -33,9 +42,24 @@ static void wintc_explorer_window_set_property(
     GParamSpec*   pspec
 );
 
+static void do_navigation(
+    WinTCExplorerWindow* wnd,
+    const gchar*         specified_path
+);
 static void prepare_new_location(
     const gchar*        specified_path,
     WinTCShextPathInfo* current_path_info
+);
+
+static void action_nav_go(
+    GSimpleAction* action,
+    GVariant*      parameter,
+    gpointer       user_data
+);
+static void action_nav_up(
+    GSimpleAction* action,
+    GVariant*      parameter,
+    gpointer       user_data
 );
 
 static void on_browser_location_changed(
@@ -43,18 +67,27 @@ static void on_browser_location_changed(
     gpointer        user_data
 );
 
-static void on_button_nav_go_clicked(
-    GtkButton* self,
-    gpointer   user_data
-);
-static void on_button_nav_up_clicked(
-    GtkButton* self,
-    gpointer   user_data
-);
-static void on_combo_address_entry_activate(
-    GtkEntry* self,
-    gpointer  user_data
-);
+//
+// STATIC DATA
+//
+static GActionEntry s_window_actions[] = {
+    {
+        .name           = "nav-go",
+        .activate       = action_nav_go,
+        .parameter_type = "s",
+        .state          = NULL,
+        .change_state   = NULL
+    },
+    {
+        .name           = "nav-up",
+        .activate       = action_nav_up,
+        .parameter_type = NULL,
+        .state          = NULL,
+        .change_state   = NULL
+    }
+};
+
+static gint wintc_explorer_window_signals[N_SIGNALS] = { 0 };
 
 //
 // GTK OOP CLASS/INSTANCE DEFINITIONS
@@ -73,14 +106,16 @@ struct _WinTCExplorerWindow
     WinTCShBrowser* browser;
     WinTCShextHost* shext_host;
 
+    // State
+    //
+    WinTCShextPathInfo current_path;
+
     // UI
     //
     WinTCShIconViewBehaviour* behaviour_icons;
     GtkWidget*                iconview_browser;
 
-    GtkWidget* button_nav_go;
-    GtkWidget* button_nav_up;
-    GtkWidget* combo_address;
+    GtkWidget* box_toolbars;
 };
 
 //
@@ -113,6 +148,19 @@ static void wintc_explorer_window_class_init(
             G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY
         )
     );
+
+    wintc_explorer_window_signals[SIGNAL_LOCATION_CHANGED] =
+        g_signal_new(
+            "location-changed",
+            G_TYPE_FROM_CLASS(object_class),
+            G_SIGNAL_RUN_FIRST,
+            0,
+            NULL,
+            NULL,
+            g_cclosure_marshal_VOID__VOID,
+            G_TYPE_NONE,
+            0
+        );
 }
 
 static void wintc_explorer_window_init(
@@ -121,6 +169,28 @@ static void wintc_explorer_window_init(
 {
     GtkBuilder* builder;
     GtkWidget*  main_box;
+
+    // Define GActions
+    //
+    g_action_map_add_action_entries(
+        G_ACTION_MAP(self),
+        s_window_actions,
+        G_N_ELEMENTS(s_window_actions),
+        self
+    );
+
+    // FIXME: Defaulting nav-up to disabled, in future this will depend on the
+    //        initial location of the explorer window
+    //
+    g_simple_action_set_enabled(
+        G_SIMPLE_ACTION(
+            g_action_map_lookup_action(
+                G_ACTION_MAP(self),
+                "nav-up"
+            )
+        ),
+        FALSE
+    );
 
     // FIXME: Don't know what the default size should be
     //
@@ -146,35 +216,25 @@ static void wintc_explorer_window_init(
     self->iconview_browser =
         GTK_WIDGET(gtk_builder_get_object(builder, "browse-view"));
 
-    self->combo_address =
-        GTK_WIDGET(gtk_builder_get_object(builder, "combo-address"));
-    self->button_nav_go =
-        GTK_WIDGET(gtk_builder_get_object(builder, "button-nav-go"));
-    self->button_nav_up =
-        GTK_WIDGET(gtk_builder_get_object(builder, "button-nav-up"));
+    self->box_toolbars =
+        GTK_WIDGET(gtk_builder_get_object(builder, "box-toolbars"));
 
     gtk_container_add(GTK_CONTAINER(self), main_box);
 
-    // Link up UI
-    // FIXME: This is temp, use GActions!
+    // FIXME: Toolbars are configurable!
     //
-    g_signal_connect(
-        self->button_nav_go,
-        "clicked",
-        G_CALLBACK(on_button_nav_go_clicked),
-        self
+    WinTCExplorerToolbar* toolbar_adr =
+        wintc_exp_address_toolbar_new(self);
+    WinTCExplorerToolbar* toolbar_std =
+        wintc_exp_standard_toolbar_new(self);
+
+    gtk_container_add(
+        GTK_CONTAINER(self->box_toolbars),
+        wintc_explorer_toolbar_get_toolbar(toolbar_std)
     );
-    g_signal_connect(
-        self->button_nav_up,
-        "clicked",
-        G_CALLBACK(on_button_nav_up_clicked),
-        self
-    );
-    g_signal_connect(
-        gtk_bin_get_child(GTK_BIN(self->combo_address)),
-        "activate",
-        G_CALLBACK(on_combo_address_entry_activate),
-        self
+    gtk_container_add(
+        GTK_CONTAINER(self->box_toolbars),
+        wintc_explorer_toolbar_get_toolbar(toolbar_adr)
     );
 }
 
@@ -215,23 +275,10 @@ static void wintc_explorer_window_constructed(
     // Navigate to desktop
     // FIXME: Need to check if we were initialised with a path in future!
     //
-    GError*            error     = NULL;
-    WinTCShextPathInfo path_info = { 0 };
-
-    path_info.base_path = wintc_sh_path_for_guid(WINTC_SH_GUID_DESKTOP);
-
-    if (
-        !wintc_sh_browser_set_location(
-            wnd->browser,
-            &path_info,
-            &error
-        )
-    )
-    {
-        wintc_display_error_and_clear(&error);
-    }
-
-    wintc_shext_path_info_free_data(&path_info);
+    do_navigation(
+        wnd,
+        wintc_sh_get_place_path(WINTC_SH_PLACE_DESKTOP)
+    );
 
     (G_OBJECT_CLASS(wintc_explorer_window_parent_class))->constructed(object);
 }
@@ -288,9 +335,81 @@ GtkWidget* wintc_explorer_window_new(
     );
 }
 
+void wintc_explorer_window_get_location(
+    WinTCExplorerWindow* wnd,
+    WinTCShextPathInfo*  path_info
+)
+{
+    if (!wnd->current_path.base_path)
+    {
+        return;
+    }
+
+    wintc_shext_path_info_copy(
+        path_info,
+        &(wnd->current_path)
+    );
+}
+
 //
 // PRIVATE FUNCTIONS
 //
+static void do_navigation(
+    WinTCExplorerWindow* wnd,
+    const gchar*         specified_path
+)
+{
+    GError*            error     = NULL;
+    WinTCShextPathInfo path_info = { 0 };
+
+    // Don't bother navigating if there's nowhere to go!
+    //
+    if (g_strcmp0(specified_path, "") == 0)
+    {
+        return;
+    }
+
+    // Retrieve new location
+    //
+    wintc_shext_path_info_copy(
+        &path_info,
+        &(wnd->current_path)
+    );
+
+    prepare_new_location(
+        specified_path,
+        &path_info
+    );
+
+    // Attempt the navigation
+    //
+    if (
+        wintc_sh_browser_set_location(
+            wnd->browser,
+            &path_info,
+            &error
+        )
+    )
+    {
+        wintc_shext_path_info_move(
+            &(wnd->current_path),
+            &path_info
+        );
+
+        g_signal_emit(
+            wnd,
+            wintc_explorer_window_signals[SIGNAL_LOCATION_CHANGED],
+            0
+        );
+    }
+    else
+    {
+        wintc_nice_error_and_clear(&error);
+    }
+
+    wintc_shext_path_info_free_data(&path_info);
+}
+
 static void prepare_new_location(
     const gchar*        specified_path,
     WinTCShextPathInfo* current_path_info
@@ -361,114 +480,23 @@ static void prepare_new_location(
 //
 // CALLBACKS
 //
-static void on_browser_location_changed(
-    WinTCShBrowser* self,
-    gpointer        user_data
+static void action_nav_go(
+    WINTC_UNUSED(GSimpleAction* action),
+    GVariant* parameter,
+    gpointer  user_data
 )
 {
     WinTCExplorerWindow* wnd = WINTC_EXPLORER_WINDOW(user_data);
 
-    // Just update the address bar for now
-    //
-    GtkWidget*         entry;
-    WinTCShextPathInfo path_info = { 0 };
-
-    entry =
-        gtk_bin_get_child(
-            GTK_BIN(wnd->combo_address)
-        );
-
-    wintc_sh_browser_get_location(self, &path_info);
-
-    if (path_info.extended_path)
-    {
-        gtk_entry_set_text(
-            GTK_ENTRY(entry),
-            path_info.extended_path
-        );
-    }
-    else
-    {
-        // Special case for file:// address, we only want to display the actual
-        // filesystem path - kinda cheeky bunging it in here but it does get
-        // the job done
-        //
-        if (g_str_has_prefix(path_info.base_path, "file://"))
-        {
-            gtk_entry_set_text(
-                GTK_ENTRY(entry),
-                path_info.base_path + strlen("file://")
-            );
-        }
-        else
-        {
-            gtk_entry_set_text(
-                GTK_ENTRY(entry),
-                path_info.base_path
-            );
-        }
-    }
-
-    wintc_shext_path_info_free_data(&path_info);
+    do_navigation(
+        wnd,
+        g_variant_get_string(parameter, NULL)
+    );
 }
 
-static void on_button_nav_go_clicked(
-    WINTC_UNUSED(GtkButton* self),
-    gpointer user_data
-)
-{
-    WinTCExplorerWindow* wnd = WINTC_EXPLORER_WINDOW(user_data);
-
-    GtkWidget*         entry;
-    GError*            error     = NULL;
-    WinTCShextPathInfo path_info = { 0 };
-    const gchar*       target_path;
-
-    entry =
-        gtk_bin_get_child(
-            GTK_BIN(wnd->combo_address)
-        );
-
-    target_path =
-        gtk_entry_get_text(GTK_ENTRY(entry));
-
-    // Don't bother navigating if there's nowhere to go!
-    //
-    if (g_strcmp0(target_path, "") == 0)
-    {
-        return;
-    }
-
-    // Retrieve new location
-    //
-    wintc_sh_browser_get_location(
-        wnd->browser,
-        &path_info
-    );
-
-    prepare_new_location(
-        target_path,
-        &path_info
-    );
-
-    // Attempt the navigation
-    //
-    if (
-        !wintc_sh_browser_set_location(
-            wnd->browser,
-            &path_info,
-            &error
-        )
-    )
-    {
-        wintc_nice_error_and_clear(&error);
-    }
-
-    wintc_shext_path_info_free_data(&path_info);
-}
-
-static void on_button_nav_up_clicked(
-    WINTC_UNUSED(GtkButton* self),
+static void action_nav_up(
+    WINTC_UNUSED(GSimpleAction* action),
+    WINTC_UNUSED(GVariant*      parameter),
     gpointer user_data
 )
 {
@@ -477,14 +505,37 @@ static void on_button_nav_up_clicked(
     wintc_sh_browser_navigate_to_parent(wnd->browser);
 }
 
-static void on_combo_address_entry_activate(
-    WINTC_UNUSED(GtkEntry* self),
-    gpointer user_data
+static void on_browser_location_changed(
+    WinTCShBrowser* self,
+    gpointer        user_data
 )
 {
     WinTCExplorerWindow* wnd = WINTC_EXPLORER_WINDOW(user_data);
 
-    gtk_widget_activate(
-        GTK_WIDGET(wnd->button_nav_go)
+    // Update our local state and emit on the window
+    //
+    wintc_shext_path_info_free_data(&(wnd->current_path));
+
+    wintc_sh_browser_get_location(
+        wnd->browser,
+        &(wnd->current_path)
+    );
+
+    g_signal_emit(
+        wnd,
+        wintc_explorer_window_signals[SIGNAL_LOCATION_CHANGED],
+        0
+    );
+
+    // Update action(s)
+    //
+    g_simple_action_set_enabled(
+        G_SIMPLE_ACTION(
+            g_action_map_lookup_action(
+                G_ACTION_MAP(wnd),
+                "nav-up"
+            )
+        ),
+        wintc_sh_browser_can_navigate_to_parent(self)
     );
 }

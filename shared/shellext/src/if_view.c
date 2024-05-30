@@ -136,6 +136,16 @@ void wintc_ishext_view_get_path(
     return iface->get_path(view, path_info);
 }
 
+gboolean wintc_ishext_view_has_parent(
+    WinTCIShextView* view
+)
+{
+    WinTCIShextViewInterface* iface =
+        WINTC_ISHEXT_VIEW_GET_IFACE(view);
+
+    return iface->has_parent(view);
+}
+
 void wintc_ishext_view_refresh_items(
     WinTCIShextView* view
 )
@@ -175,10 +185,46 @@ void _wintc_ishext_view_items_removed(
     );
 }
 
+void wintc_shext_path_info_copy(
+    WinTCShextPathInfo* dst,
+    WinTCShextPathInfo* src
+)
+{
+    wintc_shext_path_info_free_data(dst);
+
+    if (!src->base_path)
+    {
+        return;
+    }
+
+    dst->base_path = g_strdup(src->base_path);
+
+    if (src->extended_path)
+    {
+        dst->extended_path = g_strdup(src->extended_path);
+    }
+}
+
 void wintc_shext_path_info_free_data(
     WinTCShextPathInfo* path_info
 )
 {
     g_free(g_steal_pointer(&(path_info->base_path)));
     g_free(g_steal_pointer(&(path_info->extended_path)));
+}
+
+void wintc_shext_path_info_move(
+    WinTCShextPathInfo* dst,
+    WinTCShextPathInfo* src
+)
+{
+    wintc_shext_path_info_free_data(dst);
+
+    if (!src->base_path)
+    {
+        return;
+    }
+
+    dst->base_path     = g_steal_pointer(&(src->base_path));
+    dst->extended_path = g_steal_pointer(&(src->extended_path));
 }

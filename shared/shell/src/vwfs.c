@@ -35,38 +35,42 @@ static void wintc_sh_view_fs_set_property(
     GParamSpec*   pspec
 );
 
-gboolean wintc_sh_view_fs_activate_item(
+static gboolean wintc_sh_view_fs_activate_item(
     WinTCIShextView*    view,
     WinTCShextViewItem* item,
     WinTCShextPathInfo* path_info,
     GError**            error
 );
 
-void wintc_sh_view_fs_refresh_items(
+static void wintc_sh_view_fs_refresh_items(
     WinTCIShextView* view
 );
 
-void wintc_sh_view_fs_get_actions_for_item(
+static void wintc_sh_view_fs_get_actions_for_item(
     WinTCIShextView*    view,
     WinTCShextViewItem* item
 );
 
-void wintc_sh_view_fs_get_actions_for_view(
+static void wintc_sh_view_fs_get_actions_for_view(
     WinTCIShextView* view
 );
 
-const gchar* wintc_sh_view_fs_get_display_name(
+static const gchar* wintc_sh_view_fs_get_display_name(
     WinTCIShextView* view
 );
 
-void wintc_sh_view_fs_get_parent_path(
+static void wintc_sh_view_fs_get_parent_path(
     WinTCIShextView*    view,
     WinTCShextPathInfo* path_info
 );
 
-void wintc_sh_view_fs_get_path(
+static void wintc_sh_view_fs_get_path(
     WinTCIShextView*    view,
     WinTCShextPathInfo* path_info
+);
+
+static gboolean wintc_sh_view_fs_has_parent(
+    WinTCIShextView* view
 );
 
 static void clear_view_item(
@@ -151,6 +155,7 @@ static void wintc_sh_view_fs_ishext_view_interface_init(
     iface->get_display_name     = wintc_sh_view_fs_get_display_name;
     iface->get_parent_path      = wintc_sh_view_fs_get_parent_path;
     iface->get_path             = wintc_sh_view_fs_get_path;
+    iface->has_parent           = wintc_sh_view_fs_has_parent;
 }
 
 //
@@ -222,7 +227,7 @@ static void wintc_sh_view_fs_set_property(
 //
 // INTERFACE METHODS
 //
-gboolean wintc_sh_view_fs_activate_item(
+static gboolean wintc_sh_view_fs_activate_item(
     WinTCIShextView*    view,
     WinTCShextViewItem* item,
     WinTCShextPathInfo* path_info,
@@ -248,7 +253,7 @@ gboolean wintc_sh_view_fs_activate_item(
     return TRUE;
 }
 
-void wintc_sh_view_fs_refresh_items(
+static void wintc_sh_view_fs_refresh_items(
     WinTCIShextView* view
 )
 {
@@ -329,7 +334,7 @@ void wintc_sh_view_fs_refresh_items(
     _wintc_ishext_view_items_added(view, &update);
 }
 
-void wintc_sh_view_fs_get_actions_for_item(
+static void wintc_sh_view_fs_get_actions_for_item(
     WINTC_UNUSED(WinTCIShextView* view),
     WINTC_UNUSED(WinTCShextViewItem* item)
 )
@@ -337,14 +342,14 @@ void wintc_sh_view_fs_get_actions_for_item(
     g_critical("%s Not Implemented", __func__);
 }
 
-void wintc_sh_view_fs_get_actions_for_view(
+static void wintc_sh_view_fs_get_actions_for_view(
     WINTC_UNUSED(WinTCIShextView* view)
 )
 {
     g_critical("%s Not Implemented", __func__);
 }
 
-const gchar* wintc_sh_view_fs_get_display_name(
+static const gchar* wintc_sh_view_fs_get_display_name(
     WinTCIShextView* view
 )
 {
@@ -361,7 +366,7 @@ const gchar* wintc_sh_view_fs_get_display_name(
     return g_strrstr(view_fs->path, G_DIR_SEPARATOR_S) + 1;
 }
 
-void wintc_sh_view_fs_get_parent_path(
+static void wintc_sh_view_fs_get_parent_path(
     WinTCIShextView*    view,
     WinTCShextPathInfo* path_info
 )
@@ -384,7 +389,7 @@ void wintc_sh_view_fs_get_parent_path(
     }
 }
 
-void wintc_sh_view_fs_get_path(
+static void wintc_sh_view_fs_get_path(
     WinTCIShextView*    view,
     WinTCShextPathInfo* path_info
 )
@@ -393,6 +398,13 @@ void wintc_sh_view_fs_get_path(
 
     path_info->base_path =
         g_strdup_printf("file://%s", view_fs->path);
+}
+
+static gboolean wintc_sh_view_fs_has_parent(
+    WINTC_UNUSED(WinTCIShextView* view)
+)
+{
+    return TRUE;
 }
 
 //

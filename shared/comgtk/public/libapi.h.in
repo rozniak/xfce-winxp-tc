@@ -6,6 +6,7 @@
 #include "@LIB_HEADER_DIR@/debug.h"
 #include "@LIB_HEADER_DIR@/defprocs.h"
 #include "@LIB_HEADER_DIR@/errors.h"
+#include "@LIB_HEADER_DIR@/icons.h"
 #include "@LIB_HEADER_DIR@/list.h"
 #include "@LIB_HEADER_DIR@/marshal.h"
 #include "@LIB_HEADER_DIR@/msgbox.h"

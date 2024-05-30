@@ -30,4 +30,9 @@ GtkWidget* wintc_explorer_window_new(
     WinTCShextHost*           shext_host
 );
 
+void wintc_explorer_window_get_location(
+    WinTCExplorerWindow* wnd,
+    WinTCShextPathInfo*  path_info
+);
+
 #endif
