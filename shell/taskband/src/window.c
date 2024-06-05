@@ -29,6 +29,10 @@ typedef enum
 //
 // FORWARD DECLARATIONS
 //
+static void wintc_taskband_window_dispose(
+    GObject* object
+);
+
 static void wintc_taskband_window_create_toolbar(
     WinTCTaskbandWindow* taskband,
     GType                toolbar_type,
@@ -65,11 +69,15 @@ struct _WinTCTaskbandWindow
 {
     GtkApplicationWindow __parent__;
 
+    // UI
+    //
     GtkWidget*     main_box;
 
     GtkWidget*     notification_area;
     GtkWidget*     start_button;
     GtkWidget*     taskbuttons;
+
+    GSList* toolbars;
 };
 
 //
@@ -82,8 +90,13 @@ G_DEFINE_TYPE(
 )
 
 static void wintc_taskband_window_class_init(
-    WINTC_UNUSED(WinTCTaskbandWindowClass* klass)
-) {}
+    WinTCTaskbandWindowClass* klass
+)
+{
+    GObjectClass* object_class = G_OBJECT_CLASS(klass);
+
+    object_class->dispose = wintc_taskband_window_dispose;
+}
 
 static void wintc_taskband_window_init(
     WinTCTaskbandWindow* self
@@ -122,6 +135,20 @@ static void wintc_taskband_window_init(
 }
 
 //
+// FORWARD DECLARATIONS
+//
+static void wintc_taskband_window_dispose(
+    GObject* object
+)
+{
+    WinTCTaskbandWindow* wnd = WINTC_TASKBAND_WINDOW(object);
+
+    g_clear_slist(&(wnd->toolbars), g_object_unref);
+
+    (G_OBJECT_CLASS(wintc_taskband_window_parent_class))->dispose(object);
+}
+
+//
 // PUBLIC FUNCTIONS
 //
 GtkWidget* wintc_taskband_window_new(
@@ -154,6 +181,12 @@ static void wintc_taskband_window_create_toolbar(
     GtkWidget*            root    = wintc_taskband_toolbar_get_root_widget(
                                         toolbar
                                     );
+
+    taskband->toolbars =
+        g_slist_append(
+            taskband->toolbars,
+            toolbar
+        );
 
     gtk_box_pack_start(
         GTK_BOX(taskband->main_box),

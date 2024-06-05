@@ -189,6 +189,8 @@ static gboolean parse_file_in_cmdline(
             g_propagate_error(out_error, error);
         }
 
+        g_clear_error(&error);
+
         WINTC_SAFE_REF_SET(out_cmdline, g_strdup(cmdline));
 
         return FALSE;

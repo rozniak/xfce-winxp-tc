@@ -52,6 +52,8 @@ gchar* wintc_query_mime_for_file(
         return cmd_output;
     }
 
+    g_free(cmd_output);
+
     // Handle errors
     //
     if (error != NULL)

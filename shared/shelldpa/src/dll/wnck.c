@@ -23,6 +23,8 @@ WinTCWndMgmtWindow* (*p_wnck_screen_get_active_window) (
 ) = NULL;
 WinTCWndMgmtScreen* (*p_wnck_screen_get_default) (void) = NULL;
 
+void (*p_wnck_shutdown) (void) = NULL;
+
 const gchar* (*p_wnck_window_get_class_instance_name) (
     WinTCWndMgmtWindow* window
 ) = NULL;
@@ -91,6 +93,9 @@ gboolean init_dll_wnck()
     p_wnck_screen_get_default =
         dlsym(dl_wnck, "wnck_screen_get_default");
 
+    p_wnck_shutdown =
+        dlsym(dl_wnck, "wnck_shutdown");
+
     p_wnck_window_get_class_instance_name =
         dlsym(dl_wnck, "wnck_window_get_class_instance_name");
 
@@ -118,6 +123,7 @@ gboolean init_dll_wnck()
         p_wnck_set_client_type                == NULL ||
         p_wnck_screen_get_active_window       == NULL ||
         p_wnck_screen_get_default             == NULL ||
+        p_wnck_shutdown                       == NULL ||
         p_wnck_window_get_class_instance_name == NULL ||
         p_wnck_window_get_icon_is_fallback    == NULL ||
         p_wnck_window_get_mini_icon           == NULL ||

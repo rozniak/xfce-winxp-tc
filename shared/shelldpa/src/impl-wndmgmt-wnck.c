@@ -33,6 +33,7 @@ gboolean init_wndmgmt_wnck_impl(void)
     //
     wintc_wndmgmt_screen_get_active_window = p_wnck_screen_get_active_window;
     wintc_wndmgmt_screen_get_default       = p_wnck_screen_get_default;
+    wintc_wndmgmt_shutdown                 = p_wnck_shutdown;
     wintc_wndmgmt_window_get_mini_icon     = &wnck_window_get_mini_icon_real;
     wintc_wndmgmt_window_get_name          = p_wnck_window_get_name;
     wintc_wndmgmt_window_is_skip_tasklist  = p_wnck_window_is_skip_tasklist;

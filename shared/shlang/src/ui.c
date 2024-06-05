@@ -272,6 +272,7 @@ static const gchar* translate_widget_text(
 
     if (!g_regex_match(s_langstr_regex, widget_text, 0, &match_info))
     {
+        g_match_info_unref(match_info);
         return ret;
     }
 

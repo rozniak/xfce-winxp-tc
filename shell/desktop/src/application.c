@@ -28,9 +28,33 @@ struct _WinTCDesktopApplication
 static void wintc_desktop_application_activate(
     GApplication* application
 );
+static gint wintc_desktop_application_command_line(
+    GApplication*            application,
+    GApplicationCommandLine* command_line
+);
+static gint wintc_desktop_application_handle_local_options(
+    GApplication* application,
+    GVariantDict* options
+);
 static void wintc_desktop_application_startup(
     GApplication* application
 );
+
+//
+// STATIC DATA
+//
+static const GOptionEntry S_OPTIONS[] = {
+    {
+        "quit",
+        'q',
+        G_OPTION_FLAG_NONE,
+        G_OPTION_ARG_NONE,
+        NULL,
+        "Quit a running Windows desktop instance.",
+        NULL
+    },
+    { 0 }
+};
 
 //
 // GTK TYPE DEFINITION & CTORS
@@ -47,15 +71,24 @@ static void wintc_desktop_application_class_init(
 {
     GApplicationClass* application_class = G_APPLICATION_CLASS(klass);
 
-    application_class->activate = wintc_desktop_application_activate;
-    application_class->startup  = wintc_desktop_application_startup;
+    application_class->activate =
+        wintc_desktop_application_activate;
+    application_class->command_line =
+        wintc_desktop_application_command_line;
+    application_class->handle_local_options =
+        wintc_desktop_application_handle_local_options;
+    application_class->startup =
+        wintc_desktop_application_startup;
 }
 
 static void wintc_desktop_application_init(
     WinTCDesktopApplication* self
 )
 {
-    self->settings = wintc_desktop_settings_new();
+    g_application_add_main_option_entries(
+        G_APPLICATION(self),
+        S_OPTIONS
+    );
 }
 
 //
@@ -71,6 +104,7 @@ WinTCDesktopApplication* wintc_desktop_application_new(void)
         g_object_new(
             wintc_desktop_application_get_type(),
             "application-id", "uk.co.oddmatics.wintc.desktop",
+            "flags",          G_APPLICATION_HANDLES_COMMAND_LINE,
             NULL
         );
 
@@ -94,6 +128,10 @@ static void wintc_desktop_application_activate(
         return;
     }
 
+    launched = TRUE;
+
+    desktop_app->settings = wintc_desktop_settings_new();
+
     // FIXME: Just create a desktop window per monitor for now, connect up
     //        signals for monitors added/removed later
     //
@@ -111,6 +149,36 @@ static void wintc_desktop_application_activate(
 
         gtk_widget_show_all(wnd);
     }
+}
+
+static gint wintc_desktop_application_command_line(
+    GApplication*            application,
+    GApplicationCommandLine* command_line
+)
+{
+    GVariantDict* options =
+        g_application_command_line_get_options_dict(command_line);
+
+    // Just check for --quit
+    //
+    if (g_variant_dict_contains(options, "quit"))
+    {
+        g_application_quit(application);
+        return 0;
+    }
+
+    g_application_activate(application);
+
+    return 0;
+}
+
+static gint wintc_desktop_application_handle_local_options(
+    WINTC_UNUSED(GApplication* application),
+    WINTC_UNUSED(GVariantDict* options)
+)
+{
+    // Stub
+    return -1;
 }
 
 static void wintc_desktop_application_startup(

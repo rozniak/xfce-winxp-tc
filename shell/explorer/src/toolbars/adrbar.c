@@ -95,6 +95,8 @@ static void wintc_exp_address_toolbar_init(
     self->combo_address =
         GTK_WIDGET(gtk_builder_get_object(builder, "combo-address"));
 
+    g_object_unref(builder);
+
     // Connect signals
     //
     g_signal_connect(

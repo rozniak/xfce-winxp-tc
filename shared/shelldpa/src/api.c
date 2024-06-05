@@ -30,6 +30,8 @@ WinTCWndMgmtWindow* (*wintc_wndmgmt_screen_get_active_window) (
 ) = NULL;
 WinTCWndMgmtScreen* (*wintc_wndmgmt_screen_get_default) (void) = NULL;
 
+void (*wintc_wndmgmt_shutdown) (void) = NULL;
+
 GdkPixbuf* (*wintc_wndmgmt_window_get_mini_icon) (
     WinTCWndMgmtWindow* window
 ) = NULL;

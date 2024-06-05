@@ -26,6 +26,9 @@ static gint wintc_notification_behaviour_signals[N_SIGNALS] = { 0 };
 //
 // FORWARD DECLARATIONS
 //
+static void wintc_notification_behaviour_finalize(
+    GObject* object
+);
 static void wintc_notification_behaviour_get_property(
     GObject*    object,
     guint       prop_id,
@@ -54,6 +57,7 @@ static void wintc_notification_behaviour_class_init(
 {
     GObjectClass* object_class = G_OBJECT_CLASS(klass);
 
+    object_class->finalize     = wintc_notification_behaviour_finalize;
     object_class->get_property = wintc_notification_behaviour_get_property;
     object_class->set_property = wintc_notification_behaviour_set_property;
 
@@ -105,6 +109,19 @@ static void wintc_notification_behaviour_init(
 //
 // CLASS VIRTUAL METHODS
 //
+static void wintc_notification_behaviour_finalize(
+    GObject* object
+)
+{
+    WinTCNotificationBehaviour* behaviour =
+        WINTC_NOTIFICATION_BEHAVIOUR(object);
+
+    g_free(behaviour->icon_name);
+
+    (G_OBJECT_CLASS(wintc_notification_behaviour_parent_class))
+        ->finalize(object);
+}
+
 static void wintc_notification_behaviour_get_property(
     GObject*    object,
     guint       prop_id,

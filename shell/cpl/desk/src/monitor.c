@@ -152,6 +152,8 @@ static void wintc_desk_monitor_dispose(
 
     g_clear_object(&(monitor->pixbuf_preview));
     cairo_surface_destroy(g_steal_pointer(&monitor->surface_preview));
+
+    (G_OBJECT_CLASS(wintc_desk_monitor_parent_class))->dispose(object);
 }
 
 static gboolean wintc_desk_monitor_draw(

@@ -32,6 +32,9 @@ enum
 static void wintc_explorer_window_constructed(
     GObject* object
 );
+static void wintc_explorer_window_finalize(
+    GObject* object
+);
 static void wintc_explorer_window_dispose(
     GObject* object
 );
@@ -110,6 +113,9 @@ struct _WinTCExplorerWindow
     //
     WinTCShextPathInfo current_path;
 
+    WinTCExplorerToolbar* toolbar_adr;
+    WinTCExplorerToolbar* toolbar_std;
+
     // UI
     //
     WinTCShIconViewBehaviour* behaviour_icons;
@@ -135,6 +141,7 @@ static void wintc_explorer_window_class_init(
 
     object_class->constructed  = wintc_explorer_window_constructed;
     object_class->dispose      = wintc_explorer_window_dispose;
+    object_class->finalize     = wintc_explorer_window_finalize;
     object_class->set_property = wintc_explorer_window_set_property;
 
     g_object_class_install_property(
@@ -221,20 +228,22 @@ static void wintc_explorer_window_init(
 
     gtk_container_add(GTK_CONTAINER(self), main_box);
 
+    g_object_unref(builder);
+
     // FIXME: Toolbars are configurable!
     //
-    WinTCExplorerToolbar* toolbar_adr =
+    self->toolbar_adr =
         wintc_exp_address_toolbar_new(self);
-    WinTCExplorerToolbar* toolbar_std =
+    self->toolbar_std =
         wintc_exp_standard_toolbar_new(self);
 
     gtk_container_add(
         GTK_CONTAINER(self->box_toolbars),
-        wintc_explorer_toolbar_get_toolbar(toolbar_std)
+        wintc_explorer_toolbar_get_toolbar(self->toolbar_std)
     );
     gtk_container_add(
         GTK_CONTAINER(self->box_toolbars),
-        wintc_explorer_toolbar_get_toolbar(toolbar_adr)
+        wintc_explorer_toolbar_get_toolbar(self->toolbar_adr)
     );
 }
 
@@ -293,7 +302,21 @@ static void wintc_explorer_window_dispose(
     g_clear_object(&(wnd->browser));
     g_clear_object(&(wnd->shext_host));
 
+    g_clear_object(&(wnd->toolbar_adr));
+    g_clear_object(&(wnd->toolbar_std));
+
     (G_OBJECT_CLASS(wintc_explorer_window_parent_class))->dispose(object);
+}
+
+static void wintc_explorer_window_finalize(
+    GObject* object
+)
+{
+    WinTCExplorerWindow* wnd = WINTC_EXPLORER_WINDOW(object);
+
+    wintc_shext_path_info_free_data(&(wnd->current_path));
+
+    (G_OBJECT_CLASS(wintc_explorer_window_parent_class))->finalize(object);
 }
 
 static void wintc_explorer_window_set_property(

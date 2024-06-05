@@ -29,6 +29,10 @@ struct _TaskButtonBar
 //
 // FORWARD DECLARATIONS
 //
+static void taskbutton_bar_finalize(
+    GObject* object
+);
+
 static void taskbutton_bar_get_preferred_height(
     GtkWidget* widget,
     gint*      minimum_height,
@@ -94,6 +98,9 @@ static void taskbutton_bar_class_init(
 {
     GtkContainerClass* container_class = GTK_CONTAINER_CLASS(klass);
     GtkWidgetClass*    widget_class    = GTK_WIDGET_CLASS(klass);
+    GObjectClass*      object_class    = G_OBJECT_CLASS(klass);
+
+    object_class->finalize = taskbutton_bar_finalize;
 
     widget_class->get_preferred_height = taskbutton_bar_get_preferred_height;
     widget_class->get_preferred_height_for_width =
@@ -124,6 +131,19 @@ static void taskbutton_bar_init(
 //
 // CLASS VIRTUAL METHODS
 //
+static void taskbutton_bar_finalize(
+    GObject* object
+)
+{
+    TaskButtonBar* taskbutton_bar = TASKBUTTON_BAR(object);
+
+    window_monitor_destroy(
+        taskbutton_bar->window_monitor
+    );
+
+    (G_OBJECT_CLASS(taskbutton_bar_parent_class))->finalize(object);
+}
+
 static void taskbutton_bar_add(
     GtkContainer* container,
     GtkWidget*    widget

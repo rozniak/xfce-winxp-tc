@@ -14,6 +14,10 @@ typedef struct _WindowMonitor WindowMonitor;
 //
 // PUBLIC FUNCTIONS
 //
+void window_monitor_destroy(
+    WindowMonitor* monitor
+);
+
 WindowMonitor* window_monitor_init_management(
     GtkContainer* container
 );

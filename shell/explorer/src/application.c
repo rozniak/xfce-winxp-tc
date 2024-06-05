@@ -28,6 +28,10 @@ struct _WinTCExplorerApplication
 //
 // FORWARD DECLARATIONS
 //
+static void wintc_explorer_application_dispose(
+    GObject* object
+);
+
 static void wintc_explorer_application_activate(
     GApplication* application
 );
@@ -49,9 +53,12 @@ static void wintc_explorer_application_class_init(
 )
 {
     GApplicationClass* application_class = G_APPLICATION_CLASS(klass);
+    GObjectClass*      object_class      = G_OBJECT_CLASS(klass);
 
     application_class->activate = wintc_explorer_application_activate;
     application_class->startup  = wintc_explorer_application_startup;
+
+    object_class->dispose = wintc_explorer_application_dispose;
 }
 
 static void wintc_explorer_application_init(
@@ -61,6 +68,19 @@ static void wintc_explorer_application_init(
 //
 // CLASS VIRTUAL METHODS
 //
+static void wintc_explorer_application_dispose(
+    GObject* object
+)
+{
+    WinTCExplorerApplication* explorer_app =
+        WINTC_EXPLORER_APPLICATION(object);
+
+    g_clear_object(&(explorer_app->shext_host));
+
+    (G_OBJECT_CLASS(wintc_explorer_application_parent_class))
+        ->dispose(object);
+}
+
 static void wintc_explorer_application_activate(
     GApplication* application
 )

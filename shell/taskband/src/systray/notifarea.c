@@ -30,6 +30,10 @@ struct _WinTCNotificationArea
 //
 // FORWARD DECLARATIONS
 //
+static void wintc_notification_area_dispose(
+    GObject* object
+);
+
 static GtkWidget* wintc_notification_area_append_icon(
     WinTCNotificationArea* notif_area
 );
@@ -59,8 +63,13 @@ G_DEFINE_TYPE(
 )
 
 static void wintc_notification_area_class_init(
-    WINTC_UNUSED(WinTCNotificationAreaClass* klass)
-) {}
+    WinTCNotificationAreaClass* klass
+)
+{
+    GObjectClass* object_class = G_OBJECT_CLASS(klass);
+
+    object_class->dispose = wintc_notification_area_dispose;
+}
 
 static void wintc_notification_area_init(
     WinTCNotificationArea* self
@@ -69,7 +78,12 @@ static void wintc_notification_area_init(
     // Create map for notification widgets --> behaviours
     //
     self->map_widget_to_behaviour =
-        g_hash_table_new(g_direct_hash, g_direct_equal);
+        g_hash_table_new_full(
+            g_direct_hash,
+            g_direct_equal,
+            NULL,
+            g_object_unref
+        );
 
     // Set up UI
     //
@@ -110,6 +124,27 @@ static void wintc_notification_area_init(
         widget_volume,
         WINTC_NOTIFICATION_BEHAVIOUR(notif_volume)
     );
+}
+
+//
+// CLASS VIRTUAL METHODS
+//
+static void wintc_notification_area_dispose(
+    GObject* object
+)
+{
+    WinTCNotificationArea* notif_area = WINTC_NOTIFICATION_AREA(object);
+
+    g_clear_object(&(notif_area->clock_runner));
+
+    if (notif_area->map_widget_to_behaviour)
+    {
+        g_hash_table_unref(
+            g_steal_pointer(&(notif_area->map_widget_to_behaviour))
+        );
+    }
+
+    (G_OBJECT_CLASS(wintc_notification_area_parent_class))->dispose(object);
 }
 
 //

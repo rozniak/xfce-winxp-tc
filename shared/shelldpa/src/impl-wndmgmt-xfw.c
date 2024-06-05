@@ -10,6 +10,7 @@
 //
 // FORWARD DECLARATIONS
 //
+static void xfw_shutdown(void);
 static GdkPixbuf* xfw_window_get_mini_icon(
     WinTCWndMgmtWindow* window
 );
@@ -36,6 +37,7 @@ gboolean init_wndmgmt_xfw_impl(void)
     //
     wintc_wndmgmt_screen_get_active_window = p_xfw_screen_get_active_window;
     wintc_wndmgmt_screen_get_default       = p_xfw_screen_get_default;
+    wintc_wndmgmt_shutdown                 = &xfw_shutdown;
     wintc_wndmgmt_window_get_mini_icon     = &xfw_window_get_mini_icon;
     wintc_wndmgmt_window_get_name          = p_xfw_window_get_name;
     wintc_wndmgmt_window_is_skip_tasklist  = p_xfw_window_is_skip_tasklist;
@@ -47,6 +49,11 @@ gboolean init_wndmgmt_xfw_impl(void)
 
 // PRIVATE FUNCTIONS
 //
+static void xfw_shutdown(void)
+{
+    // Nothing to do! xfce4windowing doesn't expose any shutdown method
+}
+
 static GdkPixbuf* xfw_window_get_mini_icon(
     WinTCWndMgmtWindow* window
 )

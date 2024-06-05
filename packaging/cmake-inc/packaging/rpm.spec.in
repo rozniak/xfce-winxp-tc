@@ -8,6 +8,12 @@ License: @RPM_LICENCE@
 URL: https://github.com/rozniak/xfce-winxp-tc
 BugURL: https://github.com/rozniak/xfce-winxp-tc/issues
 
+%if "@CMAKE_BUILD_TYPE@" == "Debug"
+%global _enable_debug_package 0
+%global debug_package %{nil}
+%global __os_install_post /usr/lib/rpm/brp-compress %{nil}
+%endif
+
 %description
 @PROJECT_DESCRIPTION@
 

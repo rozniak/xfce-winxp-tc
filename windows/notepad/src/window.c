@@ -857,6 +857,7 @@ static void action_save_as(
         {
             if (g_file_set_contents(file_path, file_contents, -1, &error))
             {
+                g_free(wnd->file_uri);
                 wnd->file_uri = g_strdup(uri);
 
                 gtk_text_buffer_set_modified(

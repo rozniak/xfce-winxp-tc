@@ -224,6 +224,8 @@ gboolean wintc_registry_get_key_value(
                 g_critical("registry: unknown type %d", value_type);
                 break;
         }
+
+        g_variant_unref(inner);
     }
 
     g_variant_unref(value_variant);
@@ -430,4 +432,6 @@ static void on_reg_key_value_changed(
          inner,
          cb_data->user_data
     );
+
+    g_variant_unref(inner);
 }

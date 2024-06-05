@@ -339,8 +339,10 @@ static void on_snd_output_muted_changed(
     WinTCNotificationVolume* volume =
         WINTC_NOTIFICATION_VOLUME(user_data);
 
-    gboolean muted     = wintc_sndapi_output_is_muted(output);
-    gchar*   icon_name = muted ? "audio-volume-muted" : "audio-volume-medium";
+    gboolean     muted     = wintc_sndapi_output_is_muted(output);
+    const gchar* icon_name = muted ?
+                                 "audio-volume-muted" :
+                                 "audio-volume-medium";
 
     volume->syncing_state = TRUE;
     gtk_toggle_button_set_active(

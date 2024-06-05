@@ -27,6 +27,8 @@ extern WinTCWndMgmtWindow* (*p_wnck_screen_get_active_window) (
 );
 extern WinTCWndMgmtScreen* (*p_wnck_screen_get_default) (void);
 
+extern void (*p_wnck_shutdown) (void);
+
 extern const gchar* (*p_wnck_window_get_class_instance_name) (
     WinTCWndMgmtWindow* Window
 );

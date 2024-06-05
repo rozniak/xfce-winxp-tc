@@ -25,6 +25,10 @@ typedef WinTCIShextView* (*LookupViewFunc) (
 //
 // FORWARD DECLARATIONS
 //
+static void wintc_shext_host_finalize(
+    GObject* object
+);
+
 WinTCIShextView* lookup_view_for_path_by_guid(
     WinTCShextHost* host,
     const gchar*    path,
@@ -73,8 +77,13 @@ G_DEFINE_TYPE(
 )
 
 static void wintc_shext_host_class_init(
-    WINTC_UNUSED(WinTCShextHostClass* klass)
-) {}
+    WinTCShextHostClass* klass
+)
+{
+    GObjectClass* object_class = G_OBJECT_CLASS(klass);
+
+    object_class->finalize = wintc_shext_host_finalize;
+}
 
 static void wintc_shext_host_init(
     WinTCShextHost* self
@@ -94,6 +103,21 @@ static void wintc_shext_host_init(
                                   g_free,
                                   NULL
                               );
+}
+
+//
+// CLASS VIRTUAL METHODS
+//
+static void wintc_shext_host_finalize(
+    GObject* object
+)
+{
+    WinTCShextHost* host = WINTC_SHEXT_HOST(object);
+
+    g_hash_table_unref(host->map_views_by_guid);
+    g_hash_table_unref(host->map_views_by_mime);
+
+    (G_OBJECT_CLASS(wintc_shext_host_parent_class))->finalize(object);
 }
 
 //

@@ -119,7 +119,7 @@ GSList* wintc_sh_cpl_applet_get_all(void)
         success = TRUE;
     }
 
-    g_slist_free(entries);
+    g_slist_free_full(entries, g_free);
     g_key_file_free(key_file);
 
     return cpls;
@@ -148,4 +148,5 @@ void wintc_sh_cpl_applet_free(
     g_free(applet->comment);
     g_free(applet->exec);
     g_free(applet->icon_name);
+    g_free(applet);
 }

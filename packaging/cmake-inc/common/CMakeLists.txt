@@ -29,6 +29,13 @@ if (${CMAKE_BUILD_TYPE} STREQUAL Debug)
     add_compile_definitions(WINTC_CHECKED)
 endif()
 
+# Enable ASAN for checked builds
+#
+if (${CMAKE_BUILD_TYPE} STREQUAL Debug)
+    add_compile_options(-fsanitize=address -fno-omit-frame-pointer)
+    add_link_options(-fsanitize=address)
+endif()
+
 # Handle SKU stuff
 #
 set(

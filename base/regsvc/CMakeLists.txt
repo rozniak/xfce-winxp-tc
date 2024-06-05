@@ -27,6 +27,8 @@ wintc_resolve_library(wintc-registry WINTC_REGISTRY)
 
 add_executable(
     wintc-regsvc
+    src/application.c
+    src/application.h
     src/backend.c
     src/backend.h
     src/main.c

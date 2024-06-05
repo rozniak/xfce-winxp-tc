@@ -121,6 +121,11 @@ extern WinTCWndMgmtWindow* (*wintc_wndmgmt_screen_get_active_window) (
 extern WinTCWndMgmtScreen* (*wintc_wndmgmt_screen_get_default) (void);
 
 /**
+ * Shuts down window management functionality, releasing all resources.
+ */
+extern void (*wintc_wndmgmt_shutdown) (void);
+
+/**
  * Retrieves the icon for the specified window.
  *
  * @param window The window.
