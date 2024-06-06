@@ -3,6 +3,7 @@
 #include <wintc/comgtk.h>
 
 #include "../public/challenge.h"
+#include "../public/error.h"
 #include "../public/logon.h"
 
 //
@@ -40,6 +41,10 @@ struct _WinTCGinaLogonSession
 //
 // FORWARD DECLARATIONS
 //
+static void reset_auth_state(
+    WinTCGinaLogonSession* logon_session
+);
+
 static void on_greeter_authentication_complete(
     LightDMGreeter* greeter,
     gpointer        user_data
@@ -153,27 +158,83 @@ gboolean wintc_gina_logon_session_establish(
     return TRUE;
 }
 
-void wintc_gina_logon_session_finish(
-    WinTCGinaLogonSession* logon_session
+gboolean wintc_gina_logon_session_finish(
+    WinTCGinaLogonSession* logon_session,
+    GError**               error
 )
 {
+    WINTC_SAFE_REF_CLEAR(error);
+
     WINTC_LOG_DEBUG("GINA - finish requested");
 
     if (!logon_session->auth_complete)
     {
         g_warning("%s", "Attempt to complete incomplete logon.");
-        return;
+        return FALSE;
     }
 
-    // FIXME: Error handling required
-    // FIXME: If this fails, we need to restart auth! The UI
-    //        does not handle this either
+    // Attempt to resolve a session, because we can't actually rely on LightDM
+    // having a default that is valid
     //
-    lightdm_greeter_start_session_sync(
-        logon_session->greeter,
-        NULL,
-        NULL
-    );
+    GList*       avail_sessions = lightdm_get_sessions();
+    const gchar* def_session    = lightdm_greeter_get_default_session_hint(
+                                      logon_session->greeter
+                                  );
+    const gchar* use_session    = NULL;
+
+    if (!avail_sessions)
+    {
+        // FIXME: This string will need localising, though there is no such
+        //        string in Windows (or similar afaik) as this situation does
+        //        not ever occur on Windows
+        //
+        g_set_error(
+            error,
+            WINTC_GINA_ERROR,
+            WINTC_GINA_ERROR_NO_SESSIONS,
+            "%s",
+            "There are no available sessions on this system. "
+            "Logon cannot be completed."
+        );
+
+        reset_auth_state(logon_session);
+
+        return FALSE;
+    }
+
+    for (GList* iter = avail_sessions; iter; iter = iter->next)
+    {
+        LightDMSession* session = (LightDMSession*) iter->data;
+
+        if (g_strcmp0(def_session, lightdm_session_get_key(session)) == 0)
+        {
+            use_session = def_session;
+        }
+    }
+
+    // If we didn't find the default session, just use the first one
+    //
+    if (use_session == NULL)
+    {
+        use_session =
+            lightdm_session_get_key((LightDMSession*) avail_sessions->data);
+    }
+
+    // Perform the logon attempt
+    //
+    gboolean success =
+        lightdm_greeter_start_session_sync(
+            logon_session->greeter,
+            use_session,
+            error
+        );
+
+    if (!success)
+    {
+        reset_auth_state(logon_session);
+    }
+
+    return success;
 }
 
 gboolean wintc_gina_logon_session_is_available(
@@ -211,6 +272,18 @@ void wintc_gina_logon_session_try_logon(
 }
 
 //
+// PRIVATE FUNCTIONS
+//
+static void reset_auth_state(
+    WinTCGinaLogonSession* logon_session
+)
+{
+    logon_session->auth_complete = FALSE;
+
+    lightdm_greeter_authenticate(logon_session->greeter, NULL, NULL);
+}
+
+//
 // CALLBACKS
 //
 static void on_greeter_authentication_complete(
@@ -236,12 +309,11 @@ static void on_greeter_authentication_complete(
     );
 
     // If the auth failed, have to restart
+    // FIXME: Error handling
     //
     if (!logon_session->auth_complete)
     {
-        // FIXME: Error handling
-        //
-        lightdm_greeter_authenticate(greeter, NULL, NULL);
+        reset_auth_state(logon_session);
     }
 }
 

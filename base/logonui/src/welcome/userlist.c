@@ -1026,28 +1026,27 @@ static void on_self_adjustment_changed(
 
 static void on_logon_session_attempt_complete(
     WINTC_UNUSED(WinTCGinaLogonSession* logon_session),
-    WinTCGinaResponse response,
+    WINTC_UNUSED(WinTCGinaResponse response),
     gpointer          user_data
 )
 {
     WinTCWelcomeUserList* user_list = WINTC_WELCOME_USER_LIST(user_data);
 
-    if (response == WINTC_GINA_RESPONSE_FAIL)
-    {
-        gtk_entry_set_text(
-            GTK_ENTRY(user_list->entry_password),
-            ""
-        );
+    // Reset the UI state after any logon attempt
+    //
+    gtk_entry_set_text(
+        GTK_ENTRY(user_list->entry_password),
+        ""
+    );
 
-        gtk_widget_set_sensitive(
-            user_list->button_go,
-            TRUE
-        );
-        gtk_widget_set_sensitive(
-            user_list->entry_password,
-            TRUE
-        );
-    }
+    gtk_widget_set_sensitive(
+        user_list->button_go,
+        TRUE
+    );
+    gtk_widget_set_sensitive(
+        user_list->entry_password,
+        TRUE
+    );
 }
 
 static void on_button_go_clicked(

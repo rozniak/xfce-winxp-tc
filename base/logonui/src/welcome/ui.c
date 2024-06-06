@@ -791,6 +791,8 @@ static gboolean on_timeout_delay_done(
 {
     WinTCWelcomeUI* welcome_ui = WINTC_WELCOME_UI(user_data);
 
+    GError* error = NULL;
+
     switch (welcome_ui->current_state)
     {
         case WINTC_GINA_STATE_STARTING:
@@ -802,9 +804,21 @@ static gboolean on_timeout_delay_done(
             break;
 
         case WINTC_GINA_STATE_LAUNCHING:
-            wintc_gina_logon_session_finish(
-                welcome_ui->logon_session
-            );
+            if (
+                !wintc_gina_logon_session_finish(
+                    welcome_ui->logon_session,
+                    &error
+                )
+            )
+            {
+                wintc_nice_error_and_clear(&error);
+
+                wintc_welcome_ui_change_state(
+                    welcome_ui,
+                    WINTC_GINA_STATE_PROMPT
+                );
+            }
+
             break;
 
         default:

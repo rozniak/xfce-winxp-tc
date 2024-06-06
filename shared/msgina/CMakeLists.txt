@@ -37,6 +37,8 @@ add_library(
     src/authwnd.c
     public/authwnd.h
     public/challenge.h
+    src/error.c
+    public/error.h
     src/logon.c
     public/logon.h
     public/state.h

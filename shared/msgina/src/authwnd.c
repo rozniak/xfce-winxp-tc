@@ -496,47 +496,45 @@ static void on_logon_session_attempt_complete(
 {
     WinTCGinaAuthWindow* window = WINTC_GINA_AUTH_WINDOW(user_data);
 
-    switch (response)
+    // Reset the UI state
+    //
+    gtk_entry_set_text(
+        GTK_ENTRY(window->entry_password),
+        ""
+    );
+    gtk_entry_set_text(
+        GTK_ENTRY(window->entry_username),
+        ""
+    );
+
+    gtk_widget_set_sensitive(
+        window->button_submit,
+        TRUE
+    );
+    gtk_widget_set_sensitive(
+        window->entry_password,
+        TRUE
+    );
+    gtk_widget_set_sensitive(
+        window->entry_username,
+        TRUE
+    );
+
+    wintc_gina_strip_stop_animating(
+        WINTC_GINA_STRIP(window->strip)
+    );
+
+    // Now handle specifics for whether the attempt succeeded or not
+    //
+    if (response == WINTC_GINA_RESPONSE_OKAY)
     {
-        case WINTC_GINA_RESPONSE_OKAY:
-            wintc_gina_auth_window_change_state(
-                window,
-                WINTC_GINA_STATE_LAUNCHING
-            );
-            break;
-
-        case WINTC_GINA_RESPONSE_FAIL:
-            // FIXME: Prompt for failure
-            gtk_entry_set_text(
-                GTK_ENTRY(window->entry_password),
-                ""
-            );
-            gtk_entry_set_text(
-                GTK_ENTRY(window->entry_username),
-                ""
-            );
-
-            gtk_widget_set_sensitive(
-                window->button_submit,
-                TRUE
-            );
-            gtk_widget_set_sensitive(
-                window->entry_password,
-                TRUE
-            );
-            gtk_widget_set_sensitive(
-                window->entry_username,
-                TRUE
-            );
-
-            wintc_gina_strip_stop_animating(
-                WINTC_GINA_STRIP(window->strip)
-            );
-
-            break;
-
-        default: break;
+        wintc_gina_auth_window_change_state(
+            window,
+            WINTC_GINA_STATE_LAUNCHING
+        );
     }
+    // else (WINTC_GINA_RESPONSE_FAIL)
+    // FIXME: Error should be handled here, when we have one
 }
 
 static void on_button_submit_clicked(
@@ -576,6 +574,8 @@ static gboolean on_timeout_delay_done(
 {
     WinTCGinaAuthWindow* window = WINTC_GINA_AUTH_WINDOW(user_data);
 
+    GError* error = NULL;
+
     switch (window->current_state)
     {
         case WINTC_GINA_STATE_STARTING:
@@ -587,9 +587,21 @@ static gboolean on_timeout_delay_done(
             break;
 
         case WINTC_GINA_STATE_LAUNCHING:
-            wintc_gina_logon_session_finish(
-                window->logon_session
-            );
+            if (
+                !wintc_gina_logon_session_finish(
+                    window->logon_session,
+                    &error
+                )
+            )
+            {
+                wintc_nice_error_and_clear(&error);
+
+                wintc_gina_auth_window_change_state(
+                    window,
+                    WINTC_GINA_STATE_PROMPT
+                );
+            }
+
             break;
 
         default:

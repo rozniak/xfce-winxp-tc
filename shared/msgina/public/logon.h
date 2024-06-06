@@ -78,9 +78,11 @@ gboolean wintc_gina_logon_session_establish(
  * authentication.
  *
  * @param logon_session The logon session.
+ * @param error         Storage location for any error that occurred.
  */
-void wintc_gina_logon_session_finish(
-    WinTCGinaLogonSession* logon_session
+gboolean wintc_gina_logon_session_finish(
+    WinTCGinaLogonSession* logon_session,
+    GError**               error
 );
 
 /**
