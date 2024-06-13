@@ -1,6 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <requires lib="gtk+" version="3.24"/>
+  <!-- Model for the 'Wallpaper Style' combo box -->
+  <object class="GtkListStore" id="model-style">
+    <columns>
+      <column type="gint"/>
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0">0</col>
+        <col id="1">Center</col>
+      </row>
+      <row>
+        <col id="0">1</col>
+        <col id="1">Tile</col>
+      </row>
+      <row>
+        <col id="0">2</col>
+        <col id="1">Stretch</col>
+      </row>
+    </data>
+  </object>
+
+  <!-- UI begins here -->
   <object class="GtkLabel" id="label-title">
     <property name="visible">True</property>
     <property name="can-focus">True</property>
@@ -130,9 +153,18 @@
               </packing>
             </child>
             <child>
-              <object class="GtkComboBox">
+              <object class="GtkComboBox" id="combo-style">
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
+                <property name="id-column">0</property>
+                <property name="model">model-style</property>
+
+                <child>
+                  <object class="GtkCellRendererText" />
+                  <attributes>
+                    <attribute name="text">1</attribute>
+                  </attributes>
+                </child>
               </object>
               <packing>
                 <property name="expand">False</property>

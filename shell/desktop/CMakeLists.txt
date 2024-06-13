@@ -24,6 +24,7 @@ wintc_resolve_library(gtk+-3.0       GTK3)
 wintc_resolve_library(wintc-comgtk   WINTC_COMGTK)
 wintc_resolve_library(wintc-registry WINTC_REGISTRY)
 wintc_resolve_library(wintc-shelldpa WINTC_SHELLDPA)
+wintc_resolve_library(wintc-syscfg   WINTC_SYSCFG)
 
 add_executable(
     wintc-desktop
@@ -50,6 +51,7 @@ target_include_directories(
     PRIVATE ${WINTC_COMGTK_INCLUDE_DIRS}
     PRIVATE ${WINTC_REGISTRY_INCLUDE_DIRS}
     PRIVATE ${WINTC_SHELLDPA_INCLUDE_DIRS}
+    PRIVATE ${WINTC_SYSCFG_INCLUDE_DIRS}
 )
 
 target_link_directories(
@@ -59,6 +61,7 @@ target_link_directories(
     PRIVATE ${WINTC_COMGTK_LIBRARY_DIRS}
     PRIVATE ${WINTC_REGISTRY_LIBRARY_DIRS}
     PRIVATE ${WINTC_SHELLDPA_LIBRARY_DIRS}
+    PRIVATE ${WINTC_SYSCFG_LIBRARY_DIRS}
 )
 
 target_link_libraries(
@@ -68,6 +71,7 @@ target_link_libraries(
     PRIVATE ${WINTC_COMGTK_LIBRARIES}
     PRIVATE ${WINTC_REGISTRY_LIBRARIES}
     PRIVATE ${WINTC_SHELLDPA_LIBRARIES}
+    PRIVATE ${WINTC_SYSCFG_LIBRARIES}
 )
 
 # Installation

@@ -1,6 +1,7 @@
 #include <glib.h>
 #include <wintc/comgtk.h>
 #include <wintc/registry.h>
+#include <wintc/syscfg.h>
 
 #include "settings.h"
 
@@ -26,7 +27,8 @@ struct _WinTCCplDeskSettings
 
     // Properties
     //
-    gchar* wallpaper_path;
+    gchar*              wallpaper_path;
+    WinTCWallpaperStyle wallpaper_style;
 
     // State
     //
@@ -165,6 +167,21 @@ gboolean wintc_cpl_desk_settings_apply(
         return FALSE;
     }
 
+    if (
+        !wintc_registry_set_key_value(
+            settings->registry,
+            "HKCU\\Control Panel\\Desktop",
+            "WallpaperStyle",
+            WINTC_REG_DWORD,
+            &(settings->wallpaper_style),
+            FALSE,
+            error
+        )
+    )
+    {
+        return FALSE;
+    }
+
     g_object_set(
         settings,
         "settings-changed", FALSE,
@@ -179,8 +196,12 @@ gboolean wintc_cpl_desk_settings_load(
     GError**              error
 )
 {
+    gint   dw_style     = 0;
     gchar* sz_wallpaper = NULL;
 
+    // FIXME: Same note is in shell/desktop - could do with an API for loading
+    //        in registry values from an array or something
+    //
     if (
         !wintc_registry_get_key_value(
             settings->registry,
@@ -195,13 +216,39 @@ gboolean wintc_cpl_desk_settings_load(
         return FALSE;
     }
 
+    if (
+        !wintc_registry_get_key_value(
+            settings->registry,
+            "HKCU\\Control Panel\\Desktop",
+            "WallpaperStyle",
+            WINTC_REG_DWORD,
+            &dw_style,
+            error
+        )
+    )
+    {
+        g_free(sz_wallpaper);
+        return FALSE;
+    }
+
     // Bin old settings
     //
     g_free(g_steal_pointer(&(settings->wallpaper_path)));
 
+    // Validate these key values
+    //
+    if (
+        dw_style < WINTC_WALLPAPER_STYLE_CENTER ||
+        dw_style > WINTC_WALLPAPER_STYLE_STRETCH
+    )
+    {
+        dw_style = WINTC_WALLPAPER_STYLE_CENTER;
+    }
+
     // Load in new settings
     //
-    settings->wallpaper_path = sz_wallpaper;
+    settings->wallpaper_path  = sz_wallpaper;
+    settings->wallpaper_style = dw_style;
 
     g_object_set(
         settings,
@@ -219,6 +266,13 @@ const gchar* wintc_cpl_desk_settings_get_wallpaper(
     return settings->wallpaper_path;
 }
 
+WinTCWallpaperStyle wintc_cpl_desk_settings_get_wallpaper_style(
+    WinTCCplDeskSettings* settings
+)
+{
+    return settings->wallpaper_style;
+}
+
 void wintc_cpl_desk_settings_set_wallpaper(
     WinTCCplDeskSettings* settings,
     const gchar*          path
@@ -227,6 +281,16 @@ void wintc_cpl_desk_settings_set_wallpaper(
     g_free(g_steal_pointer(&(settings->wallpaper_path)));
 
     settings->wallpaper_path = g_strdup(path);
+
+    wintc_cpl_desk_settings_bump_changed(settings);
+}
+
+void wintc_cpl_desk_settings_set_wallpaper_style(
+    WinTCCplDeskSettings* settings,
+    WinTCWallpaperStyle   style
+)
+{
+    settings->wallpaper_style = style;
 
     wintc_cpl_desk_settings_bump_changed(settings);
 }

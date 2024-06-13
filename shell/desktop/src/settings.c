@@ -2,6 +2,7 @@
 #include <glib.h>
 #include <wintc/comgtk.h>
 #include <wintc/registry.h>
+#include <wintc/syscfg.h>
 
 #include "settings.h"
 
@@ -10,7 +11,8 @@
 //
 enum
 {
-    PROP_PIXBUF_WALLPAPER = 1
+    PROP_PIXBUF_WALLPAPER = 1,
+    PROP_WALLPAPER_STYLE
 };
 
 //
@@ -31,7 +33,8 @@ struct _WinTCDesktopSettings
 
     // Properties
     //
-    GdkPixbuf* pixbuf_wallpaper;
+    GdkPixbuf*          pixbuf_wallpaper;
+    WinTCWallpaperStyle wallpaper_style;
 };
 
 //
@@ -96,6 +99,19 @@ static void wintc_desktop_settings_class_init(
             G_PARAM_READWRITE
         )
     );
+    g_object_class_install_property(
+        object_class,
+        PROP_WALLPAPER_STYLE,
+        g_param_spec_int(
+            "wallpaper-style",
+            "WallpaperStyle",
+            "The style in which to display the desktop wallpaper.",
+            WINTC_WALLPAPER_STYLE_CENTER,
+            WINTC_WALLPAPER_STYLE_STRETCH,
+            WINTC_WALLPAPER_STYLE_CENTER,
+            G_PARAM_READWRITE
+        )
+    );
 }
 
 static void wintc_desktop_settings_init(
@@ -111,7 +127,7 @@ static void wintc_desktop_settings_init(
     if (
         !wintc_registry_create_key(
             self->registry,
-            "HKCU\\Control Panel\\Desktop",
+            WINTC_CFG_REGKEY_DESKTOP,
             &error
         )
     )
@@ -120,13 +136,15 @@ static void wintc_desktop_settings_init(
     }
 
     // Get some stuff from registry for startup
+    // FIXME: Should have an API to read multiple key values quickly
     //
+    gint   dw_style     = 0;
     gchar* sz_wallpaper = NULL;
 
     if (
         !wintc_registry_get_key_value(
             self->registry,
-            "HKCU\\Control Panel\\Desktop",
+            WINTC_CFG_REGKEY_DESKTOP,
             "Wallpaper",
             WINTC_REG_SZ,
             &sz_wallpaper,
@@ -136,18 +154,39 @@ static void wintc_desktop_settings_init(
     {
         wintc_log_error_and_clear(&error);
     }
-
-    if (sz_wallpaper)
+    else
     {
         wintc_desktop_settings_set_wallpaper_path(self, sz_wallpaper);
         g_free(sz_wallpaper);
+    }
+
+    if (
+        !wintc_registry_get_key_value(
+            self->registry,
+            WINTC_CFG_REGKEY_DESKTOP,
+            "WallpaperStyle",
+            WINTC_REG_DWORD,
+            &dw_style,
+            &error
+        )
+    )
+    {
+        wintc_log_error_and_clear(&error);
+    }
+    else
+    {
+        g_object_set(
+            self,
+            "wallpaper-style", dw_style,
+            NULL
+        );
     }
 
     // Set up watcher
     //
     wintc_registry_watch_key(
         self->registry,
-        "HKCU\\Control Panel\\Desktop",
+        WINTC_CFG_REGKEY_DESKTOP,
         regkey_changed_desktop_cb,
         self
     );
@@ -182,6 +221,10 @@ static void wintc_desktop_settings_get_property(
             g_value_set_object(value, settings->pixbuf_wallpaper);
             break;
 
+        case PROP_WALLPAPER_STYLE:
+            g_value_set_int(value, settings->wallpaper_style);
+            break;
+
         default:
             G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
             break;
@@ -202,6 +245,10 @@ static void wintc_desktop_settings_set_property(
         case PROP_PIXBUF_WALLPAPER:
             g_clear_object(&(settings->pixbuf_wallpaper));
             settings->pixbuf_wallpaper = g_value_dup_object(value);
+            break;
+
+        case PROP_WALLPAPER_STYLE:
+            settings->wallpaper_style = g_value_get_int(value);
             break;
 
         default:
@@ -267,6 +314,9 @@ static void regkey_changed_desktop_cb(
 
     WINTC_LOG_DEBUG("desktop: saw key changed %s->%s", key_path, value_name);
 
+    // FIXME: Variant type checks should be some sort of assert, or just come
+    //        up with a better way of doing all this in general
+    //
     if (g_strcmp0(value_name, "Wallpaper") == 0)
     {
         if (wintc_registry_get_type_for_variant(value_variant) != WINTC_REG_SZ)
@@ -278,6 +328,23 @@ static void regkey_changed_desktop_cb(
         wintc_desktop_settings_set_wallpaper_path(
             settings,
             g_variant_get_string(value_variant, NULL)
+        );
+    }
+    else if (g_strcmp0(value_name, "WallpaperStyle") == 0)
+    {
+        if (
+            wintc_registry_get_type_for_variant(value_variant)
+                != WINTC_REG_DWORD
+        )
+        {
+            WINTC_LOG_DEBUG("%s", "desktop: style is not REG_DWORD");
+            return;
+        }
+
+        g_object_set(
+            settings,
+            "wallpaper-style", g_variant_get_int32(value_variant),
+            NULL
         );
     }
 }

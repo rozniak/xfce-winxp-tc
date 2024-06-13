@@ -1,0 +1,7 @@
+#ifndef __WINTC_SYSCFG_H__
+#define __WINTC_SYSCFG_H__
+
+#include "@LIB_HEADER_DIR@/enums.h"
+#include "@LIB_HEADER_DIR@/keys.h"
+
+#endif

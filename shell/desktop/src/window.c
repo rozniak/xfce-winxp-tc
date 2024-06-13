@@ -4,6 +4,7 @@
 #include <gtk/gtk.h>
 #include <wintc/comgtk.h>
 #include <wintc/shelldpa.h>
+#include <wintc/syscfg.h>
 
 #include "application.h"
 #include "settings.h"
@@ -42,6 +43,9 @@ struct _WinTCDesktopWindow
 //
 // FORWARD DECLARATIONS
 //
+static void wintc_desktop_window_constructed(
+    GObject* object
+);
 static void wintc_desktop_window_dispose(
     GObject* object
 );
@@ -72,6 +76,11 @@ static void on_settings_notify_pixbuf_wallpaper(
     GParamSpec* pspec,
     gpointer    user_data
 );
+static void on_settings_notify_wallpaper_style(
+    GObject*    self,
+    GParamSpec* pspec,
+    gpointer    user_data
+);
 
 //
 // GTK TYPE DEFINITION & CTORS
@@ -89,6 +98,7 @@ static void wintc_desktop_window_class_init(
     GObjectClass*   object_class = G_OBJECT_CLASS(klass);
     GtkWidgetClass* widget_class = GTK_WIDGET_CLASS(klass);
 
+    object_class->constructed  = wintc_desktop_window_constructed;
     object_class->dispose      = wintc_desktop_window_dispose;
     object_class->set_property = wintc_desktop_window_set_property;
 
@@ -122,6 +132,28 @@ static void wintc_desktop_window_init(
 //
 // CLASS VIRTUAL METHODS
 //
+static void wintc_desktop_window_constructed(
+    GObject* object
+)
+{
+    WinTCDesktopWindow* wnd = WINTC_DESKTOP_WINDOW(object);
+
+    g_signal_connect(
+        wnd->settings,
+        "notify::pixbuf-wallpaper",
+        G_CALLBACK(on_settings_notify_pixbuf_wallpaper),
+        wnd
+    );
+    g_signal_connect(
+        wnd->settings,
+        "notify::wallpaper-style",
+        G_CALLBACK(on_settings_notify_wallpaper_style),
+        wnd
+    );
+
+    (G_OBJECT_CLASS(wintc_desktop_window_parent_class))->constructed(object);
+}
+
 static void wintc_desktop_window_dispose(
     GObject* object
 )
@@ -150,14 +182,6 @@ static void wintc_desktop_window_set_property(
     {
         case PROP_SETTINGS:
             wnd->settings = g_value_get_object(value);
-
-            g_signal_connect(
-                wnd->settings,
-                "notify::pixbuf-wallpaper",
-                G_CALLBACK(on_settings_notify_pixbuf_wallpaper),
-                wnd
-            );
-
             break;
 
         default:
@@ -174,6 +198,9 @@ static gboolean wintc_desktop_window_draw(
     WinTCDpaDesktopWindow* dpa_wnd = WINTC_DPA_DESKTOP_WINDOW(widget);
     WinTCDesktopWindow*    wnd     = WINTC_DESKTOP_WINDOW(widget);
 
+    gint wnd_w = gtk_widget_get_allocated_width(widget);
+    gint wnd_h = gtk_widget_get_allocated_height(widget);
+
     // FIXME: Just drawing default desktop background colour atm
     //
     cairo_set_source_rgb(cr, 0.0f, 0.298f, 0.596f);
@@ -181,10 +208,53 @@ static gboolean wintc_desktop_window_draw(
 
     // FIXME: Billy basic drawing of the wallpaper, if present
     //
+    gint wallpaper_style = 0;
+
     if (wnd->surface_wallpaper)
     {
+        gint wallpaper_w = gdk_pixbuf_get_width(wnd->pixbuf_wallpaper);
+        gint wallpaper_h = gdk_pixbuf_get_height(wnd->pixbuf_wallpaper);
+
+        cairo_save(cr);
+
+        g_object_get(
+            wnd->settings,
+            "wallpaper-style", &wallpaper_style,
+            NULL
+        );
+
+        switch (wallpaper_style)
+        {
+            case WINTC_WALLPAPER_STYLE_CENTER:
+                cairo_translate(
+                    cr,
+                    ((gdouble) wnd_w / 2) - ((gdouble) wallpaper_w / 2),
+                    ((gdouble) wnd_h / 2) - ((gdouble) wallpaper_h / 2)
+                );
+                break;
+
+            case WINTC_WALLPAPER_STYLE_STRETCH:
+                cairo_scale(
+                    cr,
+                    (gdouble) wnd_w / wallpaper_w,
+                    (gdouble) wnd_h / wallpaper_h
+                );
+                break;
+        }
+
         cairo_set_source_surface(cr, wnd->surface_wallpaper, 0.0f, 0.0f);
+
+        if (wallpaper_style == WINTC_WALLPAPER_STYLE_TILED)
+        {
+            cairo_pattern_set_extend(
+                cairo_get_source(cr),
+                CAIRO_EXTEND_REPEAT
+            );
+        }
+
         cairo_paint(cr);
+
+        cairo_restore(cr);
     }
 
     // Rough watermark drawing
@@ -340,4 +410,13 @@ static void on_settings_notify_pixbuf_wallpaper(
     wintc_desktop_window_update_wallpaper(
         WINTC_DESKTOP_WINDOW(user_data)
     );
+}
+
+static void on_settings_notify_wallpaper_style(
+    WINTC_UNUSED(GObject* self),
+    WINTC_UNUSED(GParamSpec* pspec),
+    gpointer user_data
+)
+{
+    gtk_widget_queue_draw(GTK_WIDGET(user_data));
 }

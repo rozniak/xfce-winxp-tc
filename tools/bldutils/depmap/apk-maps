@@ -31,6 +31,7 @@ wintc-shelldpa-->bt,rt-->libwintc-shelldpa
 wintc-shellext-->bt,rt-->libwintc-shellext
 wintc-shlang-->bt,rt-->libwintc-shlang
 wintc-sndapi-->bt,rt-->libwintc-sndapi
+wintc-syscfg-->bt,rt-->libwintc-syscfg
 wintc-winbrand-->bt,rt-->libwintc-winbrand
 xcursorgen-->bt,rt-->xcursorgen
 xdg-mime-->bt,rt-->xdg-utils

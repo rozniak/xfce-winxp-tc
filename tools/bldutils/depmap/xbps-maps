@@ -31,6 +31,7 @@ wintc-shelldpa-->bt,rt-->wintc-shelldpa
 wintc-shellext-->bt,rt-->wintc-shellext
 wintc-shlang-->bt,rt-->wintc-shlang
 wintc-sndapi-->bt,rt-->wintc-sndapi
+wintc-syscfg-->bt,rt-->wintc-syscfg
 wintc-winbrand-->bt,rt-->wintc-winbrand
 xcursorgen-->bt,rt-->xcursorgen
 xdg-mime-->bt,rt-->xdg-utils

@@ -2,6 +2,7 @@
 #define __SETTINGS_H__
 
 #include <glib.h>
+#include <wintc/syscfg.h>
 
 //
 // GTK OOP BOILERPLATE
@@ -35,9 +36,16 @@ gboolean wintc_cpl_desk_settings_load(
 const gchar* wintc_cpl_desk_settings_get_wallpaper(
     WinTCCplDeskSettings* settings
 );
+WinTCWallpaperStyle wintc_cpl_desk_settings_get_wallpaper_style(
+    WinTCCplDeskSettings* settings
+);
 void wintc_cpl_desk_settings_set_wallpaper(
     WinTCCplDeskSettings* settings,
     const gchar*          path
+);
+void wintc_cpl_desk_settings_set_wallpaper_style(
+    WinTCCplDeskSettings* settings,
+    WinTCWallpaperStyle   style
 );
 
 #endif

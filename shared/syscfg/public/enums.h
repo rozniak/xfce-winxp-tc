@@ -1,0 +1,14 @@
+#ifndef __SYSCFG_ENUMS_H__
+#define __SYSCFG_ENUMS_H__
+
+//
+// PUBLIC ENUMS
+//
+typedef enum
+{
+    WINTC_WALLPAPER_STYLE_CENTER = 0,
+    WINTC_WALLPAPER_STYLE_TILED,
+    WINTC_WALLPAPER_STYLE_STRETCH
+} WinTCWallpaperStyle;
+
+#endif
