@@ -8,6 +8,16 @@
 #include "application.h"
 
 //
+// PUBLIC ENUMS
+//
+typedef enum
+{
+    WINTC_EXPLORER_WINDOW_MODE_INVALID = 0,
+    WINTC_EXPLORER_WINDOW_MODE_LOCAL,
+    WINTC_EXPLORER_WINDOW_MODE_INTERNET
+} WinTCExplorerWindowMode;
+
+//
 // GTK OOP BOILERPLATE
 //
 typedef struct _WinTCExplorerWindowClass WinTCExplorerWindowClass;
@@ -27,12 +37,16 @@ GType wintc_explorer_window_get_type(void) G_GNUC_CONST;
 //
 GtkWidget* wintc_explorer_window_new(
     WinTCExplorerApplication* app,
-    WinTCShextHost*           shext_host
+    WinTCShextHost*           shext_host,
+    const gchar*              initial_path
 );
 
 void wintc_explorer_window_get_location(
     WinTCExplorerWindow* wnd,
     WinTCShextPathInfo*  path_info
+);
+WinTCExplorerWindowMode wintc_explorer_window_get_mode(
+    WinTCExplorerWindow* wnd
 );
 
 #endif

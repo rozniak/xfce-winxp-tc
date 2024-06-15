@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Internet Explorer
+Comment=Finds and displays information and Web sites on the Internet.
+Exec=explorer --ie %F
+Icon=iexplore
+Terminal=false
+StartupNotify=false
+Type=Application
+Categories=Network;WebBrowser;GTK;

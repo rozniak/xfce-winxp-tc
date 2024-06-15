@@ -565,17 +565,10 @@
 
         <!-- FIXME: Placing shell view directly in for now -->
         <child>
-          <object class="GtkScrolledWindow">
+          <object class="GtkScrolledWindow" id="scrollwnd-main">
             <property name="visible">True</property>
             <property name="can-focus">True</property>
             <property name="shadow-type">in</property>
-            <child>
-              <object class="GtkIconView" id="browse-view">
-                <property name="visible">True</property>
-                <property name="can-focus">True</property>
-                <property name="margin">6</property>
-              </object>
-            </child>
           </object>
           <packing>
             <property name="resize">True</property>

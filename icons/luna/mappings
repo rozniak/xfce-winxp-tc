@@ -248,7 +248,7 @@ mimetypes/text-css-->file_generic_markup
 mimetypes/text-csv-->file_generic_markup
 mimetypes/text-enriched-->file_rtf
 mimetypes/text-htmlh-->file_generic_markup
-mimetypes/text-html-->file_generic_markup
+mimetypes/text-html-->file_html
 mimetypes/text-markdown-->file_generic_markup
 mimetypes/text-plain-->file_txt
 mimetypes/text-richtext-->file_rtf

@@ -44,6 +44,19 @@ gchar* wintc_str_set_suffix(
     }
 }
 
+void wintc_strdup_replace(
+    gchar**      dest,
+    const gchar* src
+)
+{
+    if (*dest != NULL)
+    {
+        g_free(g_steal_pointer(dest));
+    }
+
+    *dest = g_strdup(src);
+}
+
 gint wintc_strstr_count(
     const gchar* haystack,
     const gchar* needle
@@ -72,12 +85,12 @@ void wintc_strsteal(
     gchar** src
 )
 {
-    if (dest != NULL)
+    if (*dest != NULL)
     {
-        g_free((*dest));
-        *dest = *src;
+        g_free(g_steal_pointer(dest));
     }
 
+    *dest = *src;
     *src = NULL;
 }
 
@@ -140,4 +153,15 @@ gchar* wintc_strsubst(
     }
 
     return buffer;
+}
+
+guint wintc_strv_length(
+    const gchar** str_array
+)
+{
+    guint i;
+
+    for (i = 0; str_array[i]; i++);
+
+    return i;
 }

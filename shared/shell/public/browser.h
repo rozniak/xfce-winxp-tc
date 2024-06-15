@@ -8,6 +8,15 @@
 #include <wintc/shellext.h>
 
 //
+// PUBLIC ENUMS
+//
+typedef enum
+{
+    WINTC_SH_BROWSER_LOAD_STARTED = 0,
+    WINTC_SH_BROWSER_LOAD_FINISHED
+} WinTCShBrowserLoadEvent;
+
+//
 // GTK OOP BOILERPLATE
 //
 typedef struct _WinTCShBrowserClass WinTCShBrowserClass;
@@ -49,6 +58,10 @@ void wintc_sh_browser_get_location(
 );
 
 GtkTreeModel* wintc_sh_browser_get_model(
+    WinTCShBrowser* browser
+);
+
+const gchar* wintc_sh_browser_get_view_display_name(
     WinTCShBrowser* browser
 );
 

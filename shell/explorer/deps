@@ -1,5 +1,8 @@
+bt,rt:canberra
+bt,rt:canberra-gtk3
 bt,rt:glib2
 bt,rt:gtk3
+bt,rt:webkitgtk
 bt,rt:wintc-comctl
 bt,rt:wintc-comgtk
 bt,rt:wintc-shcommon

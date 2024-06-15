@@ -16,7 +16,7 @@ enum
 
 enum
 {
-    SIGNAL_LOCATION_CHANGED = 0,
+    SIGNAL_LOAD_CHANGED = 0,
     N_SIGNALS
 };
 
@@ -114,17 +114,18 @@ static void wintc_sh_browser_class_init(
         )
     );
 
-    wintc_sh_browser_signals[SIGNAL_LOCATION_CHANGED] =
+    wintc_sh_browser_signals[SIGNAL_LOAD_CHANGED] =
         g_signal_new(
-            "location-changed",
+            "load-changed",
             G_TYPE_FROM_CLASS(object_class),
             G_SIGNAL_RUN_FIRST,
             0,
             NULL,
             NULL,
-            g_cclosure_marshal_VOID__VOID,
+            g_cclosure_marshal_VOID__INT,
             G_TYPE_NONE,
-            0
+            1,
+            G_TYPE_INT
         );
 }
 
@@ -306,6 +307,13 @@ GtkTreeModel* wintc_sh_browser_get_model(
     return GTK_TREE_MODEL(browser->view_model);
 }
 
+const gchar* wintc_sh_browser_get_view_display_name(
+    WinTCShBrowser* browser
+)
+{
+    return wintc_ishext_view_get_display_name(browser->current_view);
+}
+
 void wintc_sh_browser_navigate_to_parent(
     WinTCShBrowser* browser
 )
@@ -380,15 +388,18 @@ gboolean wintc_sh_browser_set_location(
         browser
     );
 
-    wintc_sh_browser_refresh(browser);
-
-    // All done!
+    // Notify that we're loading...
     //
     g_signal_emit(
         browser,
-        wintc_sh_browser_signals[SIGNAL_LOCATION_CHANGED],
-        0
+        wintc_sh_browser_signals[SIGNAL_LOAD_CHANGED],
+        0,
+        WINTC_SH_BROWSER_LOAD_STARTED
     );
+
+    // Do the actual load
+    //
+    wintc_sh_browser_refresh(browser);
 
     return TRUE;
 }
@@ -431,6 +442,20 @@ static void on_current_view_items_added(
             COLUMN_ICON,         icon,
             COLUMN_DISPLAY_NAME, item->display_name,
             -1
+        );
+    }
+
+    // Check if done
+    //
+    if (event_data->done)
+    {
+        WINTC_LOG_DEBUG("%s", "shell: current view finished refreshing");
+
+        g_signal_emit(
+            browser,
+            wintc_sh_browser_signals[SIGNAL_LOAD_CHANGED],
+            0,
+            WINTC_SH_BROWSER_LOAD_FINISHED
         );
     }
 }

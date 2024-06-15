@@ -32,6 +32,8 @@ configure_file(src/version.c.in   ${PROJECT_ROOT}/src/version.c   @ONLY)
 
 add_library(
     libwintc-comgtk
+    src/application.c
+    public/application.h
     public/assets.h
     public/debug.h
     src/container.c
@@ -46,6 +48,8 @@ add_library(
     public/list.h
     src/marshal.c
     public/marshal.h
+    src/memory.c
+    public/memory.h
     src/msgbox.c
     public/msgbox.h
     src/profile.c

@@ -1,3 +1,5 @@
+canberra-->bt,rt-->libcanberra
+canberra-gtk3-->bt,rt-->libcanberra-gtk3
 garcon-->bt,rt-->garcon
 garcon-gtk3-->bt,rt-->garcon
 gdk-pixbuf2-->bt,rt-->gdk-pixbuf2
@@ -12,6 +14,7 @@ python3-venv-->bt,rt-->py39-virtualenv
 sass-->bt,rt-->rubygem-sass
 sqlite3-->bt,rt-->sqlite3
 sysinfo-->bt,rt-->libsysinfo
+webkitgtk-->bt,rt-->webkit2-gtk3
 wintc-comctl-->bt,rt-->wintc-comctl
 wintc-comgtk-->bt,rt-->wintc-comgtk
 wintc-exec-->bt,rt-->wintc-exec

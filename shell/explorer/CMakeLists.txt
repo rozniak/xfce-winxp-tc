@@ -20,14 +20,30 @@ include(../../packaging/cmake-inc/linking/CMakeLists.txt)
 include(../../packaging/cmake-inc/packaging/CMakeLists.txt)
 include(../../packaging/cmake-inc/resources/CMakeLists.txt)
 
-wintc_resolve_library(glib-2.0       GLIB)
-wintc_resolve_library(gtk+-3.0       GTK3)
-wintc_resolve_library(wintc-comctl   WINTC_COMCTL)
-wintc_resolve_library(wintc-comgtk   WINTC_COMGTK)
-wintc_resolve_library(wintc-shcommon WINTC_SHCOMMON)
-wintc_resolve_library(wintc-shell    WINTC_SHELL)
-wintc_resolve_library(wintc-shellext WINTC_SHELLEXT)
-wintc_resolve_library(wintc-shlang   WINTC_SHLANG)
+wintc_resolve_library(libcanberra      CANBERRA)
+wintc_resolve_library(libcanberra-gtk3 CANBERRA_GTK3)
+wintc_resolve_library(glib-2.0         GLIB)
+wintc_resolve_library(gtk+-3.0         GTK3)
+wintc_resolve_library(wintc-comctl     WINTC_COMCTL)
+wintc_resolve_library(wintc-comgtk     WINTC_COMGTK)
+wintc_resolve_library(wintc-shcommon   WINTC_SHCOMMON)
+wintc_resolve_library(wintc-shell      WINTC_SHELL)
+wintc_resolve_library(wintc-shellext   WINTC_SHELLEXT)
+wintc_resolve_library(wintc-shlang     WINTC_SHLANG)
+
+# FreeBSD currently does not have webkit2gtk-4.1 -- not a huge problem here
+# because the only different between 4.0 and 4.1 is apparently usage of
+# libsoap2 vs. libsoap3, which we don't really care about
+#
+# FIXME: Review this again sometime in future, I think there is ongoing
+#        with the webkit2gtk port on FreeBSD so this will probably get sorted
+#        out eventually
+#
+if (${WINTC_PKGMGR} STREQUAL "bsdpkg")
+    wintc_resolve_library(webkit2gtk-4.0 WEBKITGTK)
+else()
+    wintc_resolve_library(webkit2gtk-4.1 WEBKITGTK)
+endif()
 
 wintc_compile_resources()
 
@@ -61,8 +77,11 @@ target_compile_options(
 target_include_directories(
     wintc-explorer
     SYSTEM
+    PRIVATE ${CANBERRA_INCLUDE_DIRS}
+    PRIVATE ${CANBERRA_GTK3_INCLUDE_DIRS}
     PRIVATE ${GLIB_INCLUDE_DIRS}
     PRIVATE ${GTK3_INCLUDE_DIRS}
+    PRIVATE ${WEBKITGTK_INCLUDE_DIRS}
     PRIVATE ${WINTC_COMCTL_INCLUDE_DIRS}
     PRIVATE ${WINTC_COMGTK_INCLUDE_DIRS}
     PRIVATE ${WINTC_SHCOMMON_INCLUDE_DIRS}
@@ -73,8 +92,11 @@ target_include_directories(
 
 target_link_directories(
     wintc-explorer
+    PRIVATE ${CANBERRA_LIBRARY_DIRS}
+    PRIVATE ${CANBERRA_GTK3_LIBRARY_DIRS}
     PRIVATE ${GLIB_LIBRARY_DIRS}
     PRIVATE ${GTK3_LIBRARY_DIRS}
+    PRIVATE ${WEBKITGTK_LIBRARY_DIRS}
     PRIVATE ${WINTC_COMCTL_LIBRARY_DIRS}
     PRIVATE ${WINTC_COMGTK_LIBRARY_DIRS}
     PRIVATE ${WINTC_SHCOMMON_LIBRARY_DIRS}
@@ -85,8 +107,11 @@ target_link_directories(
 
 target_link_libraries(
     wintc-explorer
+    PRIVATE ${CANBERRA_LIBRARIES}
+    PRIVATE ${CANBERRA_GTK3_LIBRARIES}
     PRIVATE ${GLIB_LIBRARIES}
     PRIVATE ${GTK3_LIBRARIES}
+    PRIVATE ${WEBKITGTK_LIBRARIES}
     PRIVATE ${WINTC_COMCTL_LIBRARIES}
     PRIVATE ${WINTC_COMGTK_LIBRARIES}
     PRIVATE ${WINTC_SHCOMMON_LIBRARIES}
@@ -103,6 +128,19 @@ wintc_install_icons_into_package()
 install(
     FILES explorer.desktop
     DESTINATION share/applications
+)
+install(
+    FILES iexplore.desktop
+    DESTINATION share/applications
+)
+install(
+    FILES iexplore.sh
+    DESTINATION ${CMAKE_INSTALL_BINDIR}
+    PERMISSIONS
+        OWNER_READ OWNER_WRITE OWNER_EXECUTE
+        GROUP_READ             GROUP_EXECUTE
+        WORLD_READ             WORLD_EXECUTE
+    RENAME iexplore
 )
 install(
     TARGETS wintc-explorer

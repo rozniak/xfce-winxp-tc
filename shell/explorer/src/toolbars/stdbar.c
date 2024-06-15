@@ -26,7 +26,14 @@ void populate_toolbar(
     GtkWidget*   toolbar,
     const gchar* config_str
 );
+void repopulate_toolbar(
+    WinTCExpStandardToolbar* toolbar_std
+);
 
+static void on_owner_explorer_wnd_mode_changed(
+    GtkWidget* self,
+    gpointer   user_data
+);
 static void on_toolbar_style_updated(
     GtkWidget* self,
     gpointer   user_data
@@ -35,8 +42,8 @@ static void on_toolbar_style_updated(
 //
 // STATIC DATA
 //
-static const gchar* S_LAYOUT_LOCAL = "bfu|sd|v";
-//static const gchar* S_LAYOUT_INTERNET = "bfSRh|sFH|MPEC";
+static const gchar* S_LAYOUT_LOCAL    = "bfu|sd|v";
+static const gchar* S_LAYOUT_INTERNET = "bfSRh|sFH|MPEC";
 
 static const gint S_TOOLBAR_ICON_SIZE = 24;
 
@@ -99,13 +106,11 @@ static void wintc_exp_standard_toolbar_constructed(
 {
     WinTCExplorerToolbar* toolbar = WINTC_EXPLORER_TOOLBAR(object);
 
-    //
-    // TODO: In future, the toolbar layout will come from the registry
-    //
-
-    populate_toolbar(
-        toolbar->toolbar,
-        S_LAYOUT_LOCAL
+    g_signal_connect(
+        toolbar->owner_explorer_wnd,
+        "mode-changed",
+        G_CALLBACK(on_owner_explorer_wnd_mode_changed),
+        object
     );
 
     (G_OBJECT_CLASS(wintc_exp_standard_toolbar_parent_class))
@@ -475,19 +480,56 @@ void populate_toolbar(
     gtk_widget_show_all(toolbar);
 }
 
+void repopulate_toolbar(
+    WinTCExpStandardToolbar* toolbar_std
+)
+{
+    WinTCExplorerToolbar* toolbar = WINTC_EXPLORER_TOOLBAR(toolbar_std);
+
+    // Populate toolbar based on mode
+    //
+    WinTCExplorerWindowMode mode =
+        wintc_explorer_window_get_mode(
+            WINTC_EXPLORER_WINDOW(toolbar->owner_explorer_wnd)
+        );
+
+    switch (mode)
+    {
+        case WINTC_EXPLORER_WINDOW_MODE_LOCAL:
+            populate_toolbar(GTK_WIDGET(toolbar->toolbar), S_LAYOUT_LOCAL);
+            break;
+
+        case WINTC_EXPLORER_WINDOW_MODE_INTERNET:
+            populate_toolbar(GTK_WIDGET(toolbar->toolbar), S_LAYOUT_INTERNET);
+            break;
+
+        default:
+            g_critical("explorer: stdbar unknown explorer mode %d", mode);
+            break;
+    }
+}
+
 //
 // CALLBACKS
 //
+static void on_owner_explorer_wnd_mode_changed(
+    WINTC_UNUSED(GtkWidget* self),
+    gpointer user_data
+)
+{
+    // Just repopulate toolbar
+    //
+    repopulate_toolbar(WINTC_EXP_STANDARD_TOOLBAR(user_data));
+}
+
 static void on_toolbar_style_updated(
-    GtkWidget* self,
-    WINTC_UNUSED(gpointer user_data)
+    WINTC_UNUSED(GtkWidget* self),
+    gpointer user_data
 )
 {
     // We repopulate the toolbar upon style change, potentially the icon theme
     // changed which requires us to look up the icons again etc. it's easier
     // to just reload the whole thing (I'm a lazy git once again)
     //
-    // FIXME: Just reloading the default fs toolbar for now
-    //
-    populate_toolbar(self, S_LAYOUT_LOCAL);
+    repopulate_toolbar(WINTC_EXP_STANDARD_TOOLBAR(user_data));
 }

@@ -1,3 +1,4 @@
+#include <gdk-pixbuf/gdk-pixbuf.h>
 #include <glib.h>
 #include <gtk/gtk.h>
 #include <wintc/comctl.h>
@@ -35,9 +36,48 @@ static void wintc_explorer_application_dispose(
 static void wintc_explorer_application_activate(
     GApplication* application
 );
+static gint wintc_explorer_application_command_line(
+    GApplication*            application,
+    GApplicationCommandLine* command_line
+);
+static gint wintc_explorer_application_handle_local_options(
+    GApplication* application,
+    GVariantDict* options
+);
+static void wintc_explorer_application_open(
+    GApplication* application,
+    GFile**       files,
+    int           n_files,
+    const gchar*  hint
+);
 static void wintc_explorer_application_startup(
     GApplication* application
 );
+
+//
+// STATIC DATA
+//
+static const GOptionEntry S_OPTIONS[] = {
+    {
+        "ie",
+        '\0',
+        G_OPTION_FLAG_NONE,
+        G_OPTION_ARG_NONE,
+        NULL,
+        "Launch an IE window, if no URLs specified.",
+        NULL
+    },
+    {
+        G_OPTION_REMAINING,
+        '\0',
+        G_OPTION_FLAG_NONE,
+        G_OPTION_ARG_FILENAME_ARRAY,
+        NULL,
+        NULL,
+        "[URLS...]"
+    },
+    { 0 }
+};
 
 //
 // GTK TYPE DEFINITIONS & CTORS
@@ -55,15 +95,29 @@ static void wintc_explorer_application_class_init(
     GApplicationClass* application_class = G_APPLICATION_CLASS(klass);
     GObjectClass*      object_class      = G_OBJECT_CLASS(klass);
 
-    application_class->activate = wintc_explorer_application_activate;
-    application_class->startup  = wintc_explorer_application_startup;
+    application_class->activate =
+        wintc_explorer_application_activate;
+    application_class->command_line =
+        wintc_explorer_application_command_line;
+    application_class->handle_local_options =
+        wintc_explorer_application_handle_local_options;
+    application_class->open =
+        wintc_explorer_application_open;
+    application_class->startup =
+        wintc_explorer_application_startup;
 
     object_class->dispose = wintc_explorer_application_dispose;
 }
 
 static void wintc_explorer_application_init(
-    WINTC_UNUSED(WinTCExplorerApplication* self)
-) { }
+    WinTCExplorerApplication* self
+)
+{
+    g_application_add_main_option_entries(
+        G_APPLICATION(self),
+        S_OPTIONS
+    );
+}
 
 //
 // CLASS VIRTUAL METHODS
@@ -91,10 +145,101 @@ static void wintc_explorer_application_activate(
     GtkWidget* new_window =
         wintc_explorer_window_new(
             explorer_app,
-            explorer_app->shext_host
+            explorer_app->shext_host,
+            NULL
         );
 
     gtk_widget_show_all(new_window);
+}
+
+static gint wintc_explorer_application_command_line(
+    GApplication*            application,
+    GApplicationCommandLine* command_line
+)
+{
+    GVariantDict* options =
+        g_application_command_line_get_options_dict(command_line);
+
+    gboolean hint_ie = FALSE;
+
+    // Check for IE hint
+    //
+    if (g_variant_dict_contains(options, "ie"))
+    {
+        hint_ie = TRUE;
+    }
+
+    // Handle URIs passed in
+    //
+    guint   n_uris = 0;
+    GFile** uris   = wintc_application_command_line_get_files(
+                         command_line,
+                         &n_uris
+                     );
+    if (uris)
+    {
+        g_application_open(application, uris, n_uris, NULL);
+
+        wintc_freenv(uris, n_uris, g_object_unref);
+    }
+    else
+    {
+        // No URIs - open either default explorer window, or IE home page
+        //
+        if (hint_ie)
+        {
+            // FIXME: Defaulting to msn.com because we have no home page
+            //        setting yet
+            //
+            GFile* home_page =
+                g_file_new_for_uri("https://www.msn.com");
+
+            g_application_open(application, &home_page, 1, NULL);
+
+            g_object_unref(home_page);
+        }
+        else
+        {
+            g_application_activate(application);
+        }
+    }
+
+    return 0;
+}
+
+static gint wintc_explorer_application_handle_local_options(
+    WINTC_UNUSED(GApplication* application),
+    WINTC_UNUSED(GVariantDict* options)
+)
+{
+    // Stub
+    return -1;
+}
+
+static void wintc_explorer_application_open(
+    GApplication* application,
+    GFile**       files,
+    int           n_files,
+    WINTC_UNUSED(const gchar* hint)
+)
+{
+    WinTCExplorerApplication* explorer_app =
+        WINTC_EXPLORER_APPLICATION(application);
+
+    for (int i = 0; i < n_files; i++)
+    {
+        GFile*     file = files[i];
+        gchar*     uri  = g_file_get_uri(file);
+        GtkWidget* wnd  = wintc_explorer_window_new(
+                              explorer_app,
+                              explorer_app->shext_host,
+                              uri
+                          );
+
+        gtk_widget_show_all(wnd);
+
+        g_free(uri);
+    }
 }
 
 static void wintc_explorer_application_startup(
@@ -128,11 +273,36 @@ static void wintc_explorer_application_startup(
 //
 WinTCExplorerApplication* wintc_explorer_application_new(void)
 {
+    const GApplicationFlags k_app_flags =
+        G_APPLICATION_HANDLES_OPEN |
+        G_APPLICATION_HANDLES_COMMAND_LINE;
+
     return WINTC_EXPLORER_APPLICATION(
         g_object_new(
             wintc_explorer_application_get_type(),
             "application-id", "uk.co.oddmatics.wintc.explorer",
+            "flags",          k_app_flags,
             NULL
         )
     );
+}
+
+GdkPixbuf* wintc_explorer_application_get_throbber_pixbuf(void)
+{
+    static GdkPixbuf* pixbuf = NULL;
+
+    if (!pixbuf)
+    {
+        GError* error = NULL;
+
+        pixbuf =
+            gdk_pixbuf_new_from_resource(
+                "/uk/oddmatics/wintc/explorer/flag22.png",
+                &error
+            );
+
+        wintc_log_error_and_clear(&error);
+    }
+
+    return pixbuf;
 }

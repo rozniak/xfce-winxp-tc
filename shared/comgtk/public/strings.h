@@ -34,6 +34,18 @@ gchar* wintc_str_set_suffix(
 );
 
 /**
+ * Duplicates a string and replaces the string at the destination with it - if
+ * there was a string at the destination pointer, it will be freed.
+ *
+ * @param dest Reference to the destination pointer.
+ * @param src  Reference to the source pointer.
+ */
+void wintc_strdup_replace(
+    gchar**      dest,
+    const gchar* src
+);
+
+/**
  * Counts the number of time a string appears within another string.
  *
  * @param haystack The subject string.
@@ -69,6 +81,17 @@ gchar* wintc_strsubst(
     const gchar* str,
     const gchar* findwhat,
     const gchar* replacewith
+);
+
+/**
+ * Constant version of g_strv_length - returns the length of an array of
+ * strings. str_array must not be NULL.
+ *
+ * @param str_array A null-terminated array of gchar*.
+ * @return Length of str_array.
+ */
+guint wintc_strv_length(
+    const gchar** str_array
 );
 
 #endif

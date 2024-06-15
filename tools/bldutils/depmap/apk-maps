@@ -1,3 +1,6 @@
+canberra-->bt-->libcanberra-dev
+canberra-->rt-->libcanberra
+canberra-gtk3-->bt,rt-->libcanberra-gtk3
 garcon-->bt-->garcon-dev
 garcon-->rt-->garcon
 garcon-gtk3-->bt-->garcon-dev
@@ -20,6 +23,8 @@ sass-->bt,rt-->sassc
 sqlite3-->bt-->sqlite-dev
 sqlite3-->rt-->sqlite
 sysinfo-->bt,rt-->NULL
+webkitgtk-->bt-->webkit2gtk-4.1-dev
+webkitgtk-->rt-->webkit2gtk-4.1
 wintc-comctl-->bt,rt-->libwintc-comctl
 wintc-comgtk-->bt,rt-->libwintc-comgtk
 wintc-exec-->bt,rt-->libwintc-exec

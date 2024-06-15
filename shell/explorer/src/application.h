@@ -1,6 +1,7 @@
 #ifndef __APPLICATION_H__
 #define __APPLICATION_H__
 
+#include <gdk-pixbuf/gdk-pixbuf.h>
 #include <glib.h>
 #include <gtk/gtk.h>
 
@@ -23,5 +24,7 @@ GType wintc_explorer_application_get_type(void) G_GNUC_CONST;
 // PUBLIC FUNCTIONS
 //
 WinTCExplorerApplication* wintc_explorer_application_new(void);
+
+GdkPixbuf* wintc_explorer_application_get_throbber_pixbuf(void);
 
 #endif
