@@ -29,11 +29,16 @@ if (${CMAKE_BUILD_TYPE} STREQUAL Debug)
     add_compile_definitions(WINTC_CHECKED)
 endif()
 
-# Enable ASAN for checked builds
+# Enable ASAN for checked builds - but NOT for musl targets!!
 #
-if (${CMAKE_BUILD_TYPE} STREQUAL Debug)
-    add_compile_options(-fsanitize=address -fno-omit-frame-pointer)
-    add_link_options(-fsanitize=address)
+if (
+    NOT ${WINTC_PKGMGR}     STREQUAL apk  AND
+    NOT ${WINTC_PKGMGR_EXT} STREQUAL musl
+)
+    if (${CMAKE_BUILD_TYPE} STREQUAL Debug)
+        add_compile_options(-fsanitize=address -fno-omit-frame-pointer)
+        add_link_options(-fsanitize=address)
+    endif()
 endif()
 
 # Handle SKU stuff
