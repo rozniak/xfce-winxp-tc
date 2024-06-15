@@ -21,17 +21,19 @@ include(../../packaging/cmake-inc/locale/CMakeLists.txt)
 include(../../packaging/cmake-inc/packaging/CMakeLists.txt)
 include(../../packaging/cmake-inc/resources/CMakeLists.txt)
 
-wintc_resolve_library(garcon-1       GARCON)
-wintc_resolve_library(garcon-gtk3-1  GARCON_GTK3)
-wintc_resolve_library(gdk-pixbuf-2.0 GDK_PIXBUF)
-wintc_resolve_library(glib-2.0       GLIB)
-wintc_resolve_library(gtk+-3.0       GTK3)
-wintc_resolve_library(wintc-comgtk   WINTC_COMGTK)
-wintc_resolve_library(wintc-exec     WINTC_EXEC)
-wintc_resolve_library(wintc-shcommon WINTC_SHCOMMON)
-wintc_resolve_library(wintc-shelldpa WINTC_SHELLDPA)
-wintc_resolve_library(wintc-shlang   WINTC_SHLANG)
-wintc_resolve_library(wintc-sndapi   WINTC_SNDAPI)
+wintc_resolve_library(libcanberra      CANBERRA)
+wintc_resolve_library(libcanberra-gtk3 CANBERRA_GTK3)
+wintc_resolve_library(garcon-1         GARCON)
+wintc_resolve_library(garcon-gtk3-1    GARCON_GTK3)
+wintc_resolve_library(gdk-pixbuf-2.0   GDK_PIXBUF)
+wintc_resolve_library(glib-2.0         GLIB)
+wintc_resolve_library(gtk+-3.0         GTK3)
+wintc_resolve_library(wintc-comgtk     WINTC_COMGTK)
+wintc_resolve_library(wintc-exec       WINTC_EXEC)
+wintc_resolve_library(wintc-shcommon   WINTC_SHCOMMON)
+wintc_resolve_library(wintc-shelldpa   WINTC_SHELLDPA)
+wintc_resolve_library(wintc-shlang     WINTC_SHLANG)
+wintc_resolve_library(wintc-sndapi     WINTC_SNDAPI)
 
 wintc_compile_resources()
 wintc_create_meta_h()
@@ -83,6 +85,8 @@ target_include_directories(
     wintc-taskband
     SYSTEM
     BEFORE
+    PRIVATE ${CANBERRA_INCLUDE_DIRS}
+    PRIVATE ${CANBERRA_GTK3_INCLUDE_DIRS}
     PRIVATE ${GARCON_INCLUDE_DIRS}
     PRIVATE ${GARCON_GTK3_INCLUDE_DIRS}
     PRIVATE ${GDK_PIXBUF_INCLUDE_DIRS}
@@ -98,6 +102,8 @@ target_include_directories(
 
 target_link_directories(
     wintc-taskband
+    PRIVATE ${CANBERRA_LIBRARY_DIRS}
+    PRIVATE ${CANBERRA_GTK3_LIBRARY_DIRS}
     PRIVATE ${GARCON_LIBRARY_DIRS}
     PRIVATE ${GARCON_GTK3_LIBRARY_DIRS}
     PRIVATE ${GDK_PIXBUF_LIBRARY_DIRS}
@@ -113,6 +119,8 @@ target_link_directories(
 
 target_link_libraries(
     wintc-taskband
+    PRIVATE ${CANBERRA_LIBRARIES}
+    PRIVATE ${CANBERRA_GTK3_LIBRARIES}
     PRIVATE ${GARCON_LIBRARIES}
     PRIVATE ${GARCON_GTK3_LIBRARIES}
     PRIVATE ${GDK_PIXBUF_LIBRARIES}

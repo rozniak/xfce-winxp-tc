@@ -1,3 +1,5 @@
+#include <canberra.h>
+#include <canberra-gtk.h>
 #include <glib.h>
 #include <gtk/gtk.h>
 #include <wintc/comgtk.h>
@@ -73,6 +75,11 @@ static gboolean on_widget_notif_button_press_event(
 static void on_check_mute_toggled(
     GtkToggleButton* self,
     gpointer         user_data
+);
+static gboolean on_scale_volume_button_release_event(
+    GtkWidget*      self,
+    GdkEventButton* event,
+    gpointer        user_data
 );
 static void on_scale_volume_value_changed(
     GtkRange* self,
@@ -192,6 +199,12 @@ static void wintc_notification_volume_constructed(
         "toggled",
         G_CALLBACK(on_check_mute_toggled),
         object
+    );
+    g_signal_connect(
+        volume->scale_volume,
+        "button-release-event",
+        G_CALLBACK(on_scale_volume_button_release_event),
+        NULL
     );
     g_signal_connect(
         volume->scale_volume,
@@ -410,6 +423,31 @@ static void on_check_mute_toggled(
         volume->snd_output,
         gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(self))
     );
+}
+
+static gboolean on_scale_volume_button_release_event(
+    WINTC_UNUSED(GtkWidget* self),
+    GdkEventButton* event,
+    WINTC_UNUSED(gpointer user_data)
+)
+{
+    if (event->button != GDK_BUTTON_PRIMARY)
+    {
+        return FALSE;
+    }
+
+    // Ding!
+    //
+    ca_context* ctx = ca_gtk_context_get();
+
+    ca_context_play(
+        ctx,
+        0,
+        CA_PROP_EVENT_ID, "audio-volume-change",
+        NULL
+    );
+
+    return FALSE;
 }
 
 static void on_scale_volume_value_changed(
