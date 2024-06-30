@@ -204,7 +204,10 @@ static void on_explorer_wnd_location_changed(
         &path_info
     );
 
-    if (path_info.extended_path)
+    if (
+        path_info.extended_path &&
+        strlen(path_info.extended_path) > 0
+    )
     {
         gtk_entry_set_text(
             GTK_ENTRY(entry),

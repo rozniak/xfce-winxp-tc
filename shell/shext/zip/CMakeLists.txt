@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.5)
 
 project(
-    libwintc-cpl-printers
+    libwintc-shext-zip
     VERSION 1.0
-    DESCRIPTION "Windows Total Conversion 'Printers and Faxes' Control Panel applet."
+    DESCRIPTION "Windows Total Conversion ZIP file shell extension."
     LANGUAGES C
 )
 
@@ -23,65 +23,56 @@ include(../../../packaging/cmake-inc/packaging/CMakeLists.txt)
 wintc_resolve_library(glib-2.0       GLIB)
 wintc_resolve_library(gtk+-3.0       GTK3)
 wintc_resolve_library(wintc-comgtk   WINTC_COMGTK)
-wintc_resolve_library(wintc-shcommon WINTC_SHCOMMON)
-wintc_resolve_library(wintc-shell    WINTC_SHELL)
 wintc_resolve_library(wintc-shellext WINTC_SHELLEXT)
+wintc_resolve_library(libzip         ZIP)
 
 add_library(
-    libwintc-cpl-printers
+    libwintc-shext-zip
     src/shext.c
-    src/vwprntrs.c
-    src/vwprntrs.h
+    src/vwzip.c
+    src/vwzip.h
 )
 
 target_compile_options(
-    libwintc-cpl-printers
+    libwintc-shext-zip
     PRIVATE ${WINTC_COMPILE_OPTIONS}
 )
 
 target_include_directories(
-    libwintc-cpl-printers
+    libwintc-shext-zip
     SYSTEM
     BEFORE
     PRIVATE ${GLIB_INCLUDE_DIRS}
     PRIVATE ${GTK3_INCLUDE_DIRS}
     PRIVATE ${WINTC_COMGTK_INCLUDE_DIRS}
-    PRIVATE ${WINTC_SHCOMMON_INCLUDE_DIRS}
-    PRIVATE ${WINTC_SHELL_INCLUDE_DIRS}
     PRIVATE ${WINTC_SHELLEXT_INCLUDE_DIRS}
+    PRIVATE ${ZIP_INCLUDE_DIRS}
 )
 
 target_link_directories(
-    libwintc-cpl-printers
+    libwintc-shext-zip
     PRIVATE ${GLIB_LIBRARY_DIRS}
     PRIVATE ${GTK3_LIBRARY_DIRS}
     PRIVATE ${WINTC_COMGTK_LIBRARY_DIRS}
-    PRIVATE ${WINTC_SHCOMMON_LIBRARY_DIRS}
-    PRIVATE ${WINTC_SHELL_LIBRARY_DIRS}
     PRIVATE ${WINTC_SHELLEXT_LIBRARY_DIRS}
+    PRIVATE ${ZIP_LIBRARY_DIRS}
 )
 
 target_link_libraries(
-    libwintc-cpl-printers
+    libwintc-shext-zip
     PRIVATE ${GLIB_LIBRARIES}
     PRIVATE ${GTK3_LIBRARIES}
     PRIVATE ${WINTC_COMGTK_LIBRARIES}
-    PRIVATE ${WINTC_SHCOMMON_LIBRARIES}
-    PRIVATE ${WINTC_SHELL_LIBRARIES}
     PRIVATE ${WINTC_SHELLEXT_LIBRARIES}
+    PRIVATE ${ZIP_LIBRARIES}
 )
 
 #
 # Installation
 #
 wintc_configure_and_install_packaging()
-wintc_install_icons_into_package()
 
 install(
-    FILES printers.desktop
-    DESTINATION share/wintc/cpl
-)
-install(
-    TARGETS libwintc-cpl-printers
+    TARGETS libwintc-shext-zip
     DESTINATION ${LIB_DIR}/wintc/shext
 )

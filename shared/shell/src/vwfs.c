@@ -1,6 +1,8 @@
 #include <glib.h>
 #include <wintc/comgtk.h>
+#include <wintc/exec.h>
 #include <wintc/shcommon.h>
+#include <wintc/shellext.h>
 
 #include "../public/vwfs.h"
 
@@ -9,7 +11,8 @@
 //
 enum
 {
-    PROP_PATH = 1
+    PROP_SHEXT_HOST = 1,
+    PROP_PATH
 };
 
 //
@@ -19,6 +22,9 @@ static void wintc_sh_view_fs_ishext_view_interface_init(
     WinTCIShextViewInterface* iface
 );
 
+static void wintc_sh_view_fs_dispose(
+    GObject* object
+);
 static void wintc_sh_view_fs_finalize(
     GObject* object
 );
@@ -94,6 +100,8 @@ struct _WinTCShViewFS
     GArray* items;
     gchar*  parent_path;
     gchar*  path;
+
+    WinTCShextHost* shext_host;
 };
 
 //
@@ -115,10 +123,22 @@ static void wintc_sh_view_fs_class_init(
 {
     GObjectClass* object_class = G_OBJECT_CLASS(klass);
 
+    object_class->dispose      = wintc_sh_view_fs_dispose;
     object_class->finalize     = wintc_sh_view_fs_finalize;
     object_class->get_property = wintc_sh_view_fs_get_property;
     object_class->set_property = wintc_sh_view_fs_set_property;
 
+    g_object_class_install_property(
+        object_class,
+        PROP_SHEXT_HOST,
+        g_param_spec_object(
+            "shext-host",
+            "ShextHost",
+            "The shell extension host.",
+            WINTC_TYPE_SHEXT_HOST,
+            G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY
+        )
+    );
     g_object_class_install_property(
         object_class,
         PROP_PATH,
@@ -161,6 +181,17 @@ static void wintc_sh_view_fs_ishext_view_interface_init(
 //
 // CLASS VIRTUAL METHODS
 //
+static void wintc_sh_view_fs_dispose(
+    GObject* object
+)
+{
+    WinTCShViewFS* view = WINTC_SH_VIEW_FS(object);
+
+    g_clear_object(&(view->shext_host));
+
+    (G_OBJECT_CLASS(wintc_sh_view_fs_parent_class))->dispose(object);
+}
+
 static void wintc_sh_view_fs_finalize(
     GObject* object
 )
@@ -206,6 +237,10 @@ static void wintc_sh_view_fs_set_property(
 
     switch (prop_id)
     {
+        case PROP_SHEXT_HOST:
+            view->shext_host = g_value_dup_object(value);
+            break;
+
         case PROP_PATH:
             view->path = g_value_dup_string(value);
 
@@ -234,20 +269,54 @@ static gboolean wintc_sh_view_fs_activate_item(
     GError**            error
 )
 {
-    WinTCShViewFS* view_fs = WINTC_SH_VIEW_FS(view);
+    GError*        local_error = NULL;
+    WinTCShViewFS* view_fs     = WINTC_SH_VIEW_FS(view);
 
     WINTC_SAFE_REF_CLEAR(error);
 
-    gchar* next_path =
-        g_build_path(
-            G_DIR_SEPARATOR_S,
-            view_fs->path,
-            item->display_name,
-            NULL
-        );
+    // Retrieve MIME for the item
+    //
+    gchar*  next_path = g_build_path(
+                            G_DIR_SEPARATOR_S,
+                            view_fs->path,
+                            item->display_name,
+                            NULL
+                        );
+    gchar*  mime_type = wintc_query_mime_for_file(
+                            next_path,
+                            &local_error
+                        );
 
-    path_info->base_path = g_strdup_printf("file://%s", next_path);
+    if (!mime_type)
+    {
+        g_propagate_error(error, local_error);
+        return FALSE;
+    }
 
+    // Handle the item based on MIME, if it's a directory then we can set that
+    // as our next location - otherwise, it depends if there is a shell
+    // extension for handling the MIME type or not
+    //
+    if (g_strcmp0(mime_type, "inode/directory") == 0)
+    {
+        path_info->base_path = g_strdup_printf("file://%s", next_path);
+    }
+    else
+    {
+        if (wintc_shext_host_has_view_for_mime(view_fs->shext_host, mime_type))
+        {
+            path_info->base_path = g_strdup_printf("file://%s", next_path);
+        }
+        else
+        {
+            if (!wintc_launch_command(next_path, &local_error))
+            {
+                g_propagate_error(error, local_error);
+            }
+        }
+    }
+
+    g_free(mime_type);
     g_free(next_path);
 
     return TRUE;
@@ -411,13 +480,15 @@ static gboolean wintc_sh_view_fs_has_parent(
 // PUBLIC FUNCTIONS
 //
 WinTCIShextView* wintc_sh_view_fs_new(
-    const gchar* path
+    WinTCShextHost* shext_host,
+    const gchar*    path
 )
 {
     return WINTC_ISHEXT_VIEW(
         g_object_new(
             WINTC_TYPE_SH_VIEW_FS,
-            "path", path,
+            "path",       path,
+            "shext-host", shext_host,
             NULL
         )
     );

@@ -14,14 +14,16 @@
 // FORWARD DECLARATIONS
 //
 static WinTCIShextView* factory_view_by_guid_cb(
-    WinTCShextViewAssoc assoc,
-    const gchar*        assoc_str,
-    const gchar*        url
+    WinTCShextHost*           shext_host,
+    WinTCShextViewAssoc       assoc,
+    const gchar*              assoc_str,
+    const WinTCShextPathInfo* path_info
 );
 static WinTCIShextView* factory_view_for_filesystem(
-    WinTCShextViewAssoc assoc,
-    const gchar*        assoc_str,
-    const gchar*        url
+    WinTCShextHost*           shext_host,
+    WinTCShextViewAssoc       assoc,
+    const gchar*              assoc_str,
+    const WinTCShextPathInfo* path_info
 );
 
 //
@@ -79,9 +81,10 @@ void wintc_sh_init_namespace_tree(
 // CALLBACKS
 //
 static WinTCIShextView* factory_view_by_guid_cb(
-    WINTC_UNUSED(WinTCShextViewAssoc assoc),
+    WINTC_UNUSED(WinTCShextHost*           shext_host),
+    WINTC_UNUSED(WinTCShextViewAssoc       assoc),
     const gchar* assoc_str,
-    WINTC_UNUSED(const gchar*        url)
+    WINTC_UNUSED(const WinTCShextPathInfo* url)
 )
 {
     WINTC_LOG_DEBUG("shell: create new shell view for %s", assoc_str);
@@ -107,14 +110,16 @@ static WinTCIShextView* factory_view_by_guid_cb(
 }
 
 static WinTCIShextView* factory_view_for_filesystem(
+    WinTCShextHost* shext_host,
     WINTC_UNUSED(WinTCShextViewAssoc assoc),
     WINTC_UNUSED(const gchar*        assoc_str),
-    const gchar* url
+    const WinTCShextPathInfo* path_info
 )
 {
-    const gchar* path_in_url = url + g_utf8_strlen("file://", -1);
+    const gchar* path_in_url =
+        path_info->base_path + g_utf8_strlen("file://", -1);
 
-    WINTC_LOG_DEBUG("shell: create new fs view for %s", url);
+    WINTC_LOG_DEBUG("shell: create new fs view for %s", path_in_url);
 
-    return wintc_sh_view_fs_new(path_in_url);
+    return wintc_sh_view_fs_new(shext_host, path_in_url);
 }

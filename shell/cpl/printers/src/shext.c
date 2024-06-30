@@ -3,16 +3,16 @@
 #include <wintc/shcommon.h>
 #include <wintc/shellext.h>
 
-#include "shext.h"
 #include "vwprntrs.h"
 
 //
 // FORWARD DECLARATIONS
 //
 static WinTCIShextView* factory_view_cpl_printers(
-    WinTCShextViewAssoc assoc,
-    const gchar*        assoc_str,
-    const gchar*        url
+    WinTCShextHost*           shext_host,
+    WinTCShextViewAssoc       assoc,
+    const gchar*              assoc_str,
+    const WinTCShextPathInfo* path_info
 );
 
 //
@@ -38,9 +38,10 @@ gboolean shext_init(
 // CALLBACKS
 //
 static WinTCIShextView* factory_view_cpl_printers(
-    WINTC_UNUSED(WinTCShextViewAssoc assoc),
-    WINTC_UNUSED(const gchar*        assoc_str),
-    WINTC_UNUSED(const gchar*        url)
+    WINTC_UNUSED(WinTCShextHost*           shext_host),
+    WINTC_UNUSED(WinTCShextViewAssoc       assoc),
+    WINTC_UNUSED(const gchar*              assoc_str),
+    WINTC_UNUSED(const WinTCShextPathInfo* path_info)
 )
 {
     WINTC_LOG_DEBUG("%s", "cpl-prntrs: create new cpl printers view");

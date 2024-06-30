@@ -16,6 +16,7 @@ shell/cpl/sysdm
 shell/desktop
 shell/explorer
 shell/run
+shell/shext/zip
 shell/taskband
 shell/winver
 wallpapers

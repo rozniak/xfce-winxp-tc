@@ -30,23 +30,10 @@ typedef enum
 } WinTCShextViewAssoc;
 
 //
-// PUBLIC CALLBACK PROTOTYPES
-//
-typedef GtkWidget** (*WinTCShextPropertyPagesCtor) (
-    const gchar* url,
-    const gchar* mime_type
-);
-typedef WinTCIShextView* (*WinTCShextViewCtor) (
-    WinTCShextViewAssoc assoc,
-    const gchar*        assoc_str,
-    const gchar*        url
-);
-
-//
 // GTK OOP BOILERPLATE
 //
 typedef struct _WinTCShextHostClass WinTCShextHostClass;
-typedef struct _WinTCShextHost WinTCShextHost;
+typedef struct _WinTCShextHost      WinTCShextHost;
 
 #define WINTC_TYPE_SHEXT_HOST            (wintc_shext_host_get_type())
 #define WINTC_SHEXT_HOST(obj)            (G_TYPE_CHECK_INSTANCE_CAST((obj), WINTC_TYPE_SHEXT_HOST, WinTCShextHost))
@@ -56,6 +43,21 @@ typedef struct _WinTCShextHost WinTCShextHost;
 #define WINTC_SHEXT_HOST_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS((obj), WINTC_TYPE_SHEXT_HOST, WinTCShextHost))
 
 GType wintc_shext_host_get_type(void) G_GNUC_CONST;
+
+//
+// PUBLIC CALLBACK PROTOTYPES
+//
+typedef GtkWidget** (*WinTCShextPropertyPagesCtor) (
+    WinTCShextHost* shext_host,
+    const gchar*    url,
+    const gchar*    mime_type
+);
+typedef WinTCIShextView* (*WinTCShextViewCtor) (
+    WinTCShextHost*           shext_host,
+    WinTCShextViewAssoc       assoc,
+    const gchar*              assoc_str,
+    const WinTCShextPathInfo* path_info
+);
 
 //
 // PUBLIC FUNCTIONS
@@ -82,6 +84,11 @@ WinTCIShextView* wintc_shext_host_get_view_for_path(
     WinTCShextHost*           host,
     const WinTCShextPathInfo* path_info,
     GError**                  error
+);
+
+gboolean wintc_shext_host_has_view_for_mime(
+    WinTCShextHost* host,
+    const gchar*    mime_type
 );
 
 gboolean wintc_shext_host_load_extensions(

@@ -1,6 +1,7 @@
 #include <dlfcn.h>
 #include <glib.h>
 #include <wintc/comgtk.h>
+#include <wintc/exec.h>
 
 #include "../public/category.h"
 #include "../public/error.h"
@@ -17,9 +18,9 @@ typedef gboolean (*ShextInitFunc) (
 );
 
 typedef WinTCIShextView* (*LookupViewFunc) (
-    WinTCShextHost* host,
-    const gchar*    path,
-    GError**        error
+    WinTCShextHost*           host,
+    const WinTCShextPathInfo* path_info,
+    GError**                  error
 );
 
 //
@@ -30,14 +31,14 @@ static void wintc_shext_host_finalize(
 );
 
 WinTCIShextView* lookup_view_for_path_by_guid(
-    WinTCShextHost* host,
-    const gchar*    path,
-    GError**        error
+    WinTCShextHost*           host,
+    const WinTCShextPathInfo* path_info,
+    GError**                  error
 );
 WinTCIShextView* lookup_view_for_path_by_mime(
-    WinTCShextHost* host,
-    const gchar*    path,
-    GError**        error
+    WinTCShextHost*           host,
+    const WinTCShextPathInfo* path_info,
+    GError**                  error
 );
 
 //
@@ -186,7 +187,7 @@ WinTCIShextView* wintc_shext_host_get_view_for_path(
         view =
             s_lookup_view_funcs[i](
                 host,
-                path_info->base_path,
+                path_info,
                 &local_error
             );
 
@@ -229,6 +230,19 @@ WinTCIShextView* wintc_shext_host_get_view_for_path(
     }
 
     return view;
+}
+
+gboolean wintc_shext_host_has_view_for_mime(
+    WinTCShextHost* host,
+    const gchar*    mime_type
+)
+{
+    gchar*   mime_u = g_ascii_strup(mime_type, -1);
+    gboolean ret    = g_hash_table_contains(host->map_views_by_mime, mime_u);
+
+    g_free(mime_u);
+
+    return ret;
 }
 
 gboolean wintc_shext_host_load_extensions(
@@ -360,7 +374,7 @@ gboolean wintc_shext_host_use_view_for_mime(
         factory_cb
     );
 
-    return FALSE;
+    return TRUE;
 }
 
 gboolean wintc_shext_host_use_view_for_path_regex(
@@ -387,9 +401,9 @@ gboolean wintc_shext_host_use_view_for_real_path(
 // PRIVATE FUNCTIONS
 //
 WinTCIShextView* lookup_view_for_path_by_guid(
-    WinTCShextHost* host,
-    const gchar*    path,
-    GError**        error
+    WinTCShextHost*           host,
+    const WinTCShextPathInfo* path_info,
+    GError**                  error
 )
 {
     static GRegex* regex_guid = NULL;
@@ -420,7 +434,12 @@ WinTCIShextView* lookup_view_for_path_by_guid(
 
     WINTC_LOG_DEBUG("%s", "shellext: view lookup - try guid...");
 
-    g_regex_match(regex_guid, path, 0, &match_info);
+    g_regex_match(
+        regex_guid,
+        path_info->base_path,
+        0,
+        &match_info
+    );
 
     if (g_match_info_get_match_count(match_info))
     {
@@ -439,9 +458,10 @@ WinTCIShextView* lookup_view_for_path_by_guid(
         {
             view =
                 ctor(
+                    host,
                     WINTC_SHEXT_VIEW_ASSOC_VIEW_GUID,
                     guid_u,
-                    path
+                    path_info
                 );
         }
         else
@@ -460,18 +480,15 @@ WinTCIShextView* lookup_view_for_path_by_guid(
 }
 
 WinTCIShextView* lookup_view_for_path_by_mime(
-    WinTCShextHost* host,
-    const gchar*    path,
-    GError**        error
+    WinTCShextHost*           host,
+    const WinTCShextPathInfo* path_info,
+    GError**                  error
 )
 {
     static GRegex* regex_scheme = NULL;
 
     WinTCShextViewCtor ctor;
     GMatchInfo*        match_info = NULL;
-    gchar*             mime;
-    gchar*             mime_u;
-    gchar*             scheme;
     WinTCIShextView*   view       = NULL;
 
     if (!regex_scheme)
@@ -492,16 +509,87 @@ WinTCIShextView* lookup_view_for_path_by_mime(
 
     WINTC_LOG_DEBUG("%s", "shellext: view lookup - try scheme...");
 
-    g_regex_match(regex_scheme, path, 0, &match_info);
-
-    if (g_match_info_get_match_count(match_info))
+    if (
+        !g_regex_match(
+            regex_scheme,
+            path_info->base_path,
+            0,
+            &match_info
+        )
+    )
     {
-        scheme = g_match_info_fetch(match_info, 1);
-        mime   = g_strdup_printf("x-scheme-handler/%s", scheme);
-        mime_u = g_ascii_strup(mime, -1);
+        g_match_info_free(match_info);
+        return NULL;
+    }
 
-        WINTC_LOG_DEBUG("shellext: view lookup - match scheme %s", mime_u);
+    // Matched a scheme successfully, pull it out...
+    //
+    gchar* scheme = g_match_info_fetch(match_info, 1);
+    gchar* mime   = g_strdup_printf("x-scheme-handler/%s", scheme);
+    gchar* mime_u = g_ascii_strup(mime, -1);
 
+    g_match_info_free(match_info);
+
+    // ...if it's file://, first see if it's a file that we have a more
+    // specific MIME type handler for...
+    //
+    if (g_strcmp0(mime_u, "X-SCHEME-HANDLER/FILE") == 0)
+    {
+        const gchar* local_path    = path_info->base_path + strlen("file://");
+        gchar*       target_mime   = wintc_query_mime_for_file(
+                                        local_path,
+                                        error
+                                     );
+        gchar*       target_mime_u;
+
+        if (!target_mime)
+        {
+            g_free(scheme);
+            g_free(mime);
+            g_free(mime_u);
+
+            return NULL;
+        }
+
+        target_mime_u = g_ascii_strup(target_mime, -1);
+
+        // No special handling for inode/directory, it should be the same as
+        // the file:// URI scheme
+        //
+        if (g_strcmp0(target_mime_u, "INODE/DIRECTORY") != 0)
+        {
+            ctor =
+                g_hash_table_lookup(
+                    host->map_views_by_mime,
+                    target_mime_u
+                );
+
+            if (ctor)
+            {
+                WINTC_LOG_DEBUG(
+                    "shellext: view lookup - match file MIME %s",
+                    target_mime_u
+                );
+
+                view =
+                    ctor(
+                        host,
+                        WINTC_SHEXT_VIEW_ASSOC_MIME,
+                        target_mime_u,
+                        path_info
+                    );
+            }
+        }
+
+        g_free(target_mime);
+        g_free(target_mime_u);
+    }
+
+    // ...if no special handling occurred, just look up a handler for the
+    // scheme and use that
+    //
+    if (!view)
+    {
         ctor =
             g_hash_table_lookup(
                 host->map_views_by_mime,
@@ -510,20 +598,24 @@ WinTCIShextView* lookup_view_for_path_by_mime(
 
         if (ctor)
         {
+            WINTC_LOG_DEBUG(
+                "shellext: view lookup - match scheme %s",
+                mime_u
+            );
+
             view =
                 ctor(
+                    host,
                     WINTC_SHEXT_VIEW_ASSOC_MIME,
                     mime_u,
-                    path
+                    path_info
                 );
         }
-
-        g_free(scheme);
-        g_free(mime);
-        g_free(mime_u);
     }
 
-    g_match_info_free(match_info);
+    g_free(scheme);
+    g_free(mime);
+    g_free(mime_u);
 
     return view;
 }
