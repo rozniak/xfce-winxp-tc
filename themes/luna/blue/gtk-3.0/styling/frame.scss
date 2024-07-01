@@ -29,9 +29,12 @@ $separator_styles:
     wintc_define_props_bg(
         $separator_styles,
         false,
-        $menu_borders_color,
+        #CAC6AF,
         undefined,
         undefined,
         undefined,
         undefined
     );
+
+$separator_horz_styles: ();
+$separator_vert_styles: ();

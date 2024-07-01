@@ -26,6 +26,11 @@ menubar,
 
     -GtkWidget-window-dragging: true;
 
+    box.vertical > &:last-child
+    {
+        border-bottom-style: none;
+    }
+
     > menuitem
     {
         @include __wintc_apply_props($menustrip_menuitem_styles);

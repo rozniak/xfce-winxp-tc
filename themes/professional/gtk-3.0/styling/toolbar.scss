@@ -1,0 +1,34 @@
+/**
+ * toolbar.scss - Professional Style Toolbar Style Constants
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+//
+// TOOLBAR
+//
+$toolbar_styles:
+    wintc_define_props_bg(
+        $toolbar_styles,
+        false,
+        $toolbar_bg_color,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
+$toolbar_styles:
+    wintc_define_props_borders(
+        $toolbar_styles,
+        false,
+        solid,
+        2,
+        2,
+        2,
+        2,
+        undefined,
+        url('../Resources/toolbar_border.png')
+    );

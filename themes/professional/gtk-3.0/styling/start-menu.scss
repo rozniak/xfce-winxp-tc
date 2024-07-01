@@ -179,6 +179,31 @@ $start_menu_styles:
         undefined
     );
 
+// Clear out default menubar styles
+//
+$start_menu_menustrip_styles:
+    wintc_define_props_bg(
+        $start_menu_menustrip_styles,
+        false,
+        unset,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
+$start_menu_menustrip_styles:
+    wintc_define_props_borders(
+        $start_menu_menustrip_styles,
+        false,
+        none,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
+
 $start_menu_menustrip_menuitem_styles:
     wintc_define_props_borders(
         $start_menu_menustrip_menuitem_styles,

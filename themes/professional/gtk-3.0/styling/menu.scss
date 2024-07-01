@@ -12,6 +12,29 @@ $menu_separator_thickness: $separator_thickness;
 //
 // MENUSTRIP
 //
+$menustrip_styles:
+    wintc_define_props_bg(
+        $menustrip_styles,
+        false,
+        $toolbar_bg_color,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
+$menustrip_styles:
+    wintc_define_props_borders(
+        $menustrip_styles,
+        false,
+        solid,
+        2,
+        2,
+        2,
+        2,
+        undefined,
+        url('../Resources/toolbar_border.png')
+    );
+
 $menustrip_menuitem_styles:
     wintc_define_props_borders(
         $menustrip_menuitem_styles,

@@ -18,7 +18,17 @@ toolbar
 {
     @extend %toolbar;
 
+    @include __wintc_apply_props($toolbar_styles);
+
     padding: 4px 3px 3px 4px;
+
+    // RORY: This is an attempt to avoid weird borders on frames... see
+    //       issue #334
+    //
+    box.vertical > &:last-child
+    {
+        border-bottom-style: none;
+    }
 
     // On OSD
     //

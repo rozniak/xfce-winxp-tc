@@ -28,13 +28,24 @@ $frame_label_styles:
 //
 // SEPARATOR
 //
-$separator_styles:
+$separator_styles: ();
+$separator_horz_styles:
     wintc_define_props_bg(
-        $separator_styles,
+        $separator_horz_styles,
         true,
         undefined,
         undefined,
         undefined,
         undefined,
-        url('../Resources/separator.png')
+        url('../Resources/separator_horz.png')
+    );
+$separator_vert_styles:
+    wintc_define_props_bg(
+        $separator_vert_styles,
+        true,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/separator_vert.png')
     );

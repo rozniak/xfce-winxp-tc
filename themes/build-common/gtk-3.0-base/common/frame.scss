@@ -121,10 +121,22 @@ scrolledwindow
 }
 
 // vbox and hbox separators
+// RORY: Default to horizontal styles, and only override for vertical - the
+//       common use-case is horizontal (eg. menus)
 //
 separator
 {
     @include __wintc_apply_props($separator_styles);
+    @include __wintc_apply_props($separator_horz_styles);
 
     min-height: $separator_thickness;
+    min-width:  $separator_thickness;
+}
+
+// Direct descendant selector so we don't screw up menus from like horizontal
+// menu bar that pops out a menu (which always has vertical orientation)
+//
+.horizontal > separator
+{
+    @include __wintc_apply_props($separator_vert_styles);
 }

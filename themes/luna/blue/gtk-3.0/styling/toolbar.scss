@@ -1,5 +1,5 @@
 /**
- * menu.scss - Luna (Blue) Style Menu Style Constants
+ * toolbar.scss - Luna (Blue) Style Toolbar Style Constants
  *
  * This source-code is part of Windows XP stuff for XFCE:
  * <<https://www.oddmatics.uk>>
@@ -10,11 +10,11 @@
 $menu_separator_thickness: $separator_thickness;
 
 //
-// MENUSTRIP
+// TOOLBAR
 //
-$menustrip_styles:
+$toolbar_styles:
     wintc_define_props_borders(
-        $menustrip_styles,
+        $toolbar_styles,
         false,
         solid,
         0,
@@ -23,20 +23,4 @@ $menustrip_styles:
         0,
         undefined,
         url('../Resources/toolbar_border.png')
-    );
-
-//
-// POPUP MENUS
-//
-$popup_menu_styles:
-    wintc_define_props_borders(
-        $popup_menu_styles,
-        false,
-        solid,
-        1,
-        1,
-        1,
-        1,
-        $menu_borders_color,
-        undefined
     );

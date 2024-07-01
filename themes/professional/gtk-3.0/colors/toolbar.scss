@@ -1,5 +1,5 @@
 /**
- * _all.scss - Professional Style Colour Constant SCSS Aggregation Document
+ * toolbar.scss - Professional Style Toolbar Colour Constants
  *
  * This source-code is part of Windows XP stuff for XFCE:
  * <<https://www.oddmatics.uk>>
@@ -7,6 +7,4 @@
  * Author(s): Rory Fewell <roryf@oddmatics.uk>
  */
 
-@import "borders";
-@import "menu";
-@import "toolbar";
+$toolbar_bg_color: #F4F4F0;
