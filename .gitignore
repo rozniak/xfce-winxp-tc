@@ -25,4 +25,5 @@ resources.c
 *.pkg
 *.pkg.tar.zst
 *.pot
+*.pyc
 *.rpm
