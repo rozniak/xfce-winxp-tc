@@ -1,0 +1,28 @@
+Welcome to WinTC Release Preview
+
+Thanks for installing and trying out Windows Total Conversion Release Preview! It has been a long road to reach this first test release, and there's still plenty left to do.
+
+Please report any bugs, feedback, or technical contributions you may have as this would be beneficial to improving the project.
+
+--
+Your distro matters
+
+Windows Total Conversion provides you with the Windows XP user interface without imposing on your choice of OS distribution.
+
+Included programs adapt to support your configuration, so your computer works the way you want it to.
+
+--
+Familiar and fun, enjoy computing again
+
+Software does not have to be so lifeless, the Windows Total Conversion project is driven by enthusiasm for fun and usefulness in computing.
+
+Feel free to toy around and personalize your environment, and know your bug reports will be taken seriously!
+
+--
+Thank you, and enjoy!
+
+I sincerely hope you enjoy using Windows Total Conversion. Whilst this first release may be at the bottom of the mountain, it should be much less fuss for you to try out!
+
+Thank you and have fun!
+
+Rory

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/uk/oddmatics/wintc/wsetupx">
+    <!--                     -->
+    <!-- GRAPHICAL RESOURCES -->
+    <!--                     -->
+    <file>bgmain.png</file>
+    <file>bgsteps.png</file>
+    <file>borderb.png</file>
+    <file>bordert.png</file>
+    <file>bullcur.png</file>
+    <file>bulldone.png</file>
+    <file>bullnull.png</file>
+    <file>logo.png</file>
+    <file>throb1.png</file>
+    <file>throb2.png</file>
+    <file>throb3.png</file>
+    <file>throb4.png</file>
+
+    <!--             -->
+    <!-- STYLESHEETS -->
+    <!--             -->
+    <file>setupwnd.css</file>
+
+    <!--           -->
+    <!-- STRUCTURE -->
+    <!--           -->
+    <file>setupwnd.ui</file>
+  </gresource>
+</gresources>

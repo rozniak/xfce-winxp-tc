@@ -1,0 +1,79 @@
+.setup-wnd
+{
+    background: #4E6FD6;
+    color: #FFF;
+}
+
+.setup-top,
+.setup-bottom
+{
+    min-height: 35px;
+}
+
+.setup-top
+{
+    background: #003399;
+    border-bottom: 2px solid #000;
+    border-image: url('resource:///uk/oddmatics/wintc/wsetupx/bordert.png') 0 0 2 0;
+}
+
+.setup-top image
+{
+    margin-left: 10px;
+}
+
+.setup-steps
+{
+    background: url('resource:///uk/oddmatics/wintc/wsetupx/bgsteps.png');
+    background-repeat: no-repeat;
+    padding: 0px 50px
+}
+
+.setup-steps > grid
+{
+    margin-top: 20px;
+}
+
+grid > *
+{
+    margin-top: 10px
+}
+
+grid > label
+{
+    font-weight: bold;
+}
+
+.setup-main
+{
+    background: url('resource:///uk/oddmatics/wintc/wsetupx/bgmain.png');
+    background-position: bottom right;
+    background-repeat: no-repeat;
+}
+
+.promo,
+.blurb
+{
+    font-family: 'Arial';
+    margin-top: 20px;
+    margin-left: 50px;
+}
+
+.promo
+{
+    font-size: 18pt;
+    font-weight: bold;
+    text-shadow: 2px 2px 0px #00256D;
+}
+
+.blurb
+{
+    font-size: 10pt;
+}
+
+.setup-bottom
+{
+    background: #08339B;
+    border-top: 2px solid #000;
+    border-image: url('resource:///uk/oddmatics/wintc/wsetupx/borderb.png') 2 0 0 0;
+}

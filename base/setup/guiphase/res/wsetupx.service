@@ -1,0 +1,10 @@
+[Unit]
+Description=Windows WinTC Setup (Graphical Phase)
+Before=display-manager.service
+
+[Service]
+# FIXME: Needs to be configured by CMake...
+ExecStart=startx /usr/share/wintc/setup/xinitrc
+
+[Install]
+WantedBy=multi-user.target
