@@ -69,7 +69,10 @@ elseif (
         set(LIB_DIR lib/arm-linux-gnueabihf)
     elseif (${CMAKE_SYSTEM_PROCESSOR} STREQUAL "armv7l")
         set(LIB_DIR lib/arm-linux-gnu)
-    elseif (${CMAKE_SYSTEM_PROCESSOR} STREQUAL "armv8")
+    elseif (
+        ${CMAKE_SYSTEM_PROCESSOR} STREQUAL "armv8" OR
+        ${CMAKE_SYSTEM_PROCESSOR} STREQUAL "aarch64"
+    )
         set(LIB_DIR lib/aarch64-linux-gnu)
     else()
         message(
@@ -269,7 +272,10 @@ function(wintc_configure_and_install_packaging)
                 ${CMAKE_SYSTEM_PROCESSOR} STREQUAL "armv7l"
             )
                 set(DEB_ARCHITECTURE armhf)
-            elseif (${CMAKE_SYSTEM_PROCESSOR} STREQUAL "armv8")
+            elseif (
+                ${CMAKE_SYSTEM_PROCESSOR} STREQUAL "armv8" OR
+                ${CMAKE_SYSTEM_PROCESSOR} STREQUAL "aarch64"
+            )
                 set(DEB_ARCHITECTURE arm64)
             else()
                 message(
