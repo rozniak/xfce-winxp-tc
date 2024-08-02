@@ -49,7 +49,10 @@ add_executable(
 #
 set(NOTEPAD_OUTPUT_NAME ${PROJECT_NAME})
 
-if (NOT ${WINTC_PKGMGR} STREQUAL "archpkg")
+if (
+    NOT ${WINTC_PKGMGR} STREQUAL "archpkg" AND
+    NOT ${WINTC_PKGMGR} STREQUAL "rpm"
+)
     set(NOTEPAD_OUTPUT_NAME notepad)
 
     set_target_properties(
