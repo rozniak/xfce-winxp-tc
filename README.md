@@ -21,6 +21,8 @@ There are themes that aim to replicate the Windows XP visual styles already, how
 ## Building / Installation
 For AUR (Arch User Repository) there is an `xfce-winxp-tc-git` package maintained by [**@SelfRef**](https://github.com/SelfRef) [here](https://aur.archlinux.org/packages/xfce-winxp-tc-git).
 
+You can checkout https://codeberg.org/Beta-Cygni-A/winxp-xfce-tc-packages for other packages.
+
 Otherwise, please refer to `/packaging/README.MD` for build instructions. 😁
 
 ## The theme(s) are buggy!
