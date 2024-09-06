@@ -78,6 +78,16 @@ target_link_libraries(
 #
 wintc_configure_and_install_packaging()
 
+configure_file(
+    res/uk.oddmatics.wintc.registry.service.in
+    uk.oddmatics.wintc.registry.service
+    @ONLY
+)
+
+install(
+    FILES ${CMAKE_BINARY_DIR}/uk.oddmatics.wintc.registry.service
+    DESTINATION share/dbus-1/services
+)
 install(
     TARGETS wintc-regsvc
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
