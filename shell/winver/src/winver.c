@@ -204,6 +204,14 @@ int main(
         box_buttons,
         WINTC_CTL_BUTTON_BOX_CSS_CLASS
     );
+    wintc_widget_add_style_class(
+        box_buttons,
+        WINTC_CTL_MARGINB_LG_CSS_CLASS
+    );
+    wintc_widget_add_style_class(
+        box_buttons,
+        WINTC_CTL_MARGINR_LG_CSS_CLASS
+    );
     
     // Clear mem
     //

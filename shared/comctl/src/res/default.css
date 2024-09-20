@@ -1,11 +1,50 @@
-box.wintc-button-box
+/**
+ * Sizing metrics - these are standard classes to provide spacing for the
+ * Adwaita theme, to be overridden by the WinTC themes
+ *
+ * Default sizing¬
+ *   md: 8px
+ *   lg: 16px
+ */
+
+/** medium **/
+.wintc-mb-md { margin-bottom: 8px; }
+.wintc-ml-md { margin-left:   8px; }
+.wintc-mr-md { margin-right:  8px; }
+.wintc-mt-md { margin-top:    8px; }
+
+/** large **/
+.wintc-mb-lg { margin-bottom: 16px; }
+.wintc-ml-lg { margin-left:   16px; }
+.wintc-mr-lg { margin-right:  16px; }
+.wintc-mt-lg { margin-top:    16px; }
+
+box.horizontal.wintc-button-box button
 {
-    margin: 0px 8px 10px;
+    margin: 0px 4px;
 }
 
-box.wintc-button-box button
+box.horizontal.wintc-button-box button:first-child
 {
-    margin-left:  8px;
-    min-height:   15px;
-    min-width:    51px;
+    margin-left: 0px;
+}
+
+box.horizontal.wintc-button-box button:last-child
+{
+    margin-right: 0px;
+}
+
+box.vertical.wintc-button-box button
+{
+    margin: 4px 0px;
+}
+
+box.vertical.wintc-button-box button:first-child
+{
+    margin-top: 0px;
+}
+
+box.vertical.wintc-button-box button:last-child
+{
+    margin-bottom: 0px;
 }

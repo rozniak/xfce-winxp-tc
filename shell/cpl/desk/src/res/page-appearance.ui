@@ -43,6 +43,10 @@
               <object class="GtkComboBox">
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
+
+                <style>
+                  <class name="wintc-mb-md" />
+                </style>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -68,6 +72,10 @@
               <object class="GtkComboBox">
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
+
+                <style>
+                  <class name="wintc-mb-md" />
+                </style>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -113,17 +121,23 @@
           <object class="GtkBox">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
+            <property name="halign">GTK_ALIGN_END</property>
             <property name="orientation">vertical</property>
-            <property name="valign">2</property>
+            <property name="valign">GTK_ALIGN_END</property>
 
             <child>
               <object class="GtkButton">
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
-                <property name="halign">2</property>
+                <property name="halign">GTK_ALIGN_FILL</property>
                 <property name="label" translatable="yes">Effects...</property>
                 <property name="sensitive">False</property>
+
+                <style>
+                  <class name="wintc-button" />
+                  <class name="wintc-mb-md" />
+                </style>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -136,9 +150,13 @@
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
-                <property name="halign">2</property>
+                <property name="halign">GTK_ALIGN_FILL</property>
                 <property name="label" translatable="yes">Advanced</property>
                 <property name="sensitive">False</property>
+
+                <style>
+                  <class name="wintc-button" />
+                </style>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -153,6 +171,13 @@
             <property name="position">1</property>
           </packing>
         </child>
+
+        <style>
+          <class name="wintc-mb-lg" />
+          <class name="wintc-ml-lg" />
+          <class name="wintc-mr-lg" />
+          <class name="wintc-mt-lg" />
+        </style>
       </object>
       <packing>
         <property name="expand">False</property>

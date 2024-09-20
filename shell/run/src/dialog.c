@@ -227,7 +227,7 @@ static void wintc_run_dialog_init(
     //
     // FIXME: This should not be done here, use screen CSS instead!
     //
-    wintc_widget_add_css(box_buttons, "box { margin: 0px; }");
+    wintc_widget_add_css(box_buttons, "box { margin-bottom: 10px; }");
     wintc_widget_add_css(box_outer, "box { margin: 18px 11px 0px; }");
     wintc_widget_add_css(box_instructions, "box { margin-bottom: 13px; }");
     wintc_widget_add_css(box_input, "box { margin-bottom: 34px; }");

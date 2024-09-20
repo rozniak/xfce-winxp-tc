@@ -69,8 +69,13 @@ static void wintc_cpl_sysdm_window_init(
 
     gtk_widget_set_size_request(
         GTK_WIDGET(self),
-        414, // Approx.
-        454
+        402, // Approx.
+        420
+    );
+    gtk_window_set_default_size(
+        GTK_WINDOW(self),
+        402, // Approx.
+        420
     );
     gtk_window_set_resizable(
         GTK_WINDOW(self),

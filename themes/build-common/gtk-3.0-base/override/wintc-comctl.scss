@@ -1,0 +1,73 @@
+/**
+ * wintc-comctl.scss - Theme Base Common Control (comctl) Styles
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+$metric_md: 6px;
+$metric_lg: 12px;
+
+/** medium **/
+.wintc-mb-md { margin-bottom: $metric_md; }
+.wintc-ml-md { margin-left:   $metric_md; }
+.wintc-mr-md { margin-right:  $metric_md; }
+.wintc-mt-md { margin-top:    $metric_md; }
+
+/** large **/
+.wintc-mb-lg { margin-bottom: $metric_lg; }
+.wintc-ml-lg { margin-left:   $metric_lg; }
+.wintc-mr-lg { margin-right:  $metric_lg; }
+.wintc-mt-lg { margin-top:    $metric_lg; }
+
+.wintc-button
+{
+    min-height: 15px;
+    min-width:  51px;
+}
+
+box.wintc-button-box
+{
+    button
+    {
+        @extend .wintc-button;
+    }
+
+    &.horizontal
+    {
+        button
+        {
+            margin: 0px calc($metric_md / 2);
+
+            &:first-child
+            {
+                margin-left: 0px;
+            }
+
+            &:last-child
+            {
+                margin-right: 0px;
+            }
+        }
+    }
+
+    &:vertical
+    {
+        button
+        {
+            margin: calc($metric_md / 2) 0px;
+
+            &:first-child
+            {
+                margin-top: 0px;
+            }
+
+            &:last-child
+            {
+                margin-bottom: 0px;
+            }
+        }
+    }
+}

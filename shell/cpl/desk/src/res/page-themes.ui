@@ -16,9 +16,14 @@
         <property name="visible">True</property>
         <property name="can-focus">False</property>
         <property name="label" translatable="yes">A theme is a background plus a set of sounds, icons, and other elements to help you personalize your computer with one click.</property>
-        <property name="max-width-chars">71</property>
+        <property name="halign">GTK_ALIGN_START</property>
+        <property name="max-width-chars">58</property>
         <property name="wrap">True</property>
         <property name="xalign">0.0</property>
+
+        <style>
+          <class name="wintc-mb-lg" />
+        </style>
       </object>
       <packing>
         <property name="expand">False</property>
@@ -34,6 +39,10 @@
         <property name="can-focus">False</property>
         <property name="label" translatable="yes">Theme:</property>
         <property name="xalign">0.0</property>
+
+        <style>
+          <class name="wintc-mb-md" />
+        </style>
       </object>
       <packing>
         <property name="expand">False</property>
@@ -50,6 +59,9 @@
 
         <child>
           <object class="GtkComboBox">
+            <style>
+              <class name="wintc-mr-md" />
+            </style>
           </object>
           <packing>
             <property name="expand">True</property>
@@ -59,12 +71,44 @@
         </child>
 
         <child>
-          <object class="GtkButton">
-            <property name="label" translatable="yes">%CTL_SAVEAS%</property>
+          <object class="GtkBox">
             <property name="visible">True</property>
-            <property name="can-focus">True</property>
-            <property name="receives-default">True</property>
-            <property name="sensitive">False</property>
+            <property name="can-focus">False</property>
+            <property name="orientation">horizontal</property>
+
+            <child>
+              <object class="GtkButton">
+                <property name="label" translatable="yes">%CTL_SAVEAS%</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
+                <property name="sensitive">False</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+
+            <child>
+              <object class="GtkButton">
+                <property name="label" translatable="yes">%CTL_DELETE%</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
+                <property name="sensitive">False</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+
+            <style>
+              <class name="wintc-button-box" />
+            </style>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -73,20 +117,9 @@
           </packing>
         </child>
 
-        <child>
-          <object class="GtkButton">
-            <property name="label" translatable="yes">%CTL_DELETE%</property>
-            <property name="visible">True</property>
-            <property name="can-focus">True</property>
-            <property name="receives-default">True</property>
-            <property name="sensitive">False</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">False</property>
-            <property name="position">2</property>
-          </packing>
-        </child>
+        <style>
+          <class name="wintc-mb-md" />
+        </style>
       </object>
       <packing>
         <property name="expand">False</property>
@@ -109,5 +142,12 @@
         <property name="position">3</property>
       </packing>
     </child>
+
+    <style>
+      <class name="wintc-mb-lg" />
+      <class name="wintc-ml-lg" />
+      <class name="wintc-mr-lg" />
+      <class name="wintc-mt-lg" />
+    </style>
   </object>
 </interface>

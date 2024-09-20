@@ -94,13 +94,13 @@ static void wintc_cpl_desk_window_init(
 
     gtk_widget_set_size_request(
         GTK_WIDGET(self),
-        414, // Approx.
-        454
+        402, // Approx.
+        420
     );
     gtk_window_set_default_size(
         GTK_WINDOW(self),
-        414, // Approx.
-        454
+        402, // Approx.
+        420
     );
     gtk_window_set_icon_name(
         GTK_WINDOW(self),

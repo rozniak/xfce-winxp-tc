@@ -21,6 +21,8 @@
       <object class="GtkBox">
         <property name="visible">True</property>
         <property name="can-focus">False</property>
+        <property name="orientation">horizontal</property>
+
         <child>
           <object class="GtkButton" id="button-apply">
             <property name="label" translatable="no">Apply</property>
@@ -68,6 +70,7 @@
         </child>
         <style>
           <class name="wintc-button-box"/>
+          <class name="wintc-mt-md" />
         </style>
       </object>
       <packing>
@@ -76,5 +79,11 @@
         <property name="position">1</property>
       </packing>
     </child>
+    <style>
+      <class name="wintc-mb-md" />
+      <class name="wintc-ml-md" />
+      <class name="wintc-mr-md" />
+      <class name="wintc-mt-md" />
+    </style>
   </object>
 </interface>

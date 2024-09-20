@@ -17,8 +17,8 @@
         <property name="can-focus">False</property>
       </object>
       <packing>
-        <property name="expand">True</property>
-        <property name="fill">True</property>
+        <property name="expand">False</property>
+        <property name="fill">False</property>
         <property name="position">0</property>
       </packing>
     </child>
@@ -47,6 +47,11 @@
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
                     <property name="sensitive">False</property>
+
+                    <style>
+                      <class name="wintc-ml-md" />
+                      <class name="wintc-mr-md" />
+                    </style>
                   </object>
                   <packing>
                     <property name="expand">True</property>
@@ -55,12 +60,44 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton">
+                  <object class="GtkBox">
                     <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="receives-default">True</property>
-                    <property name="label" translatable="yes">Settings</property>
-                    <property name="sensitive">False</property>
+                    <property name="can-focus">False</property>
+                    <property name="orientation">horizontal</property>
+
+                    <child>
+                      <object class="GtkButton">
+                        <property name="visible">True</property>
+                        <property name="can-focus">True</property>
+                        <property name="receives-default">True</property>
+                        <property name="label" translatable="yes">Settings</property>
+                        <property name="sensitive">False</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkButton">
+                        <property name="visible">True</property>
+                        <property name="can-focus">True</property>
+                        <property name="receives-default">True</property>
+                        <property name="label" translatable="yes">Preview</property>
+                        <property name="sensitive">False</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+
+                    <style>
+                      <class name="wintc-button-box" />
+                      <class name="wintc-mr-md" />
+                    </style>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -68,20 +105,10 @@
                     <property name="position">1</property>
                   </packing>
                 </child>
-                <child>
-                  <object class="GtkButton">
-                    <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="receives-default">True</property>
-                    <property name="label" translatable="yes">Preview</property>
-                    <property name="sensitive">False</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">False</property>
-                    <property name="position">2</property>
-                  </packing>
-                </child>
+
+                <style>
+                  <class name="wintc-mb-md" />
+                </style>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -102,6 +129,10 @@
                     <property name="can-focus">False</property>
                     <property name="label" translatable="yes">Wait:</property>
                     <property name="xalign">0.0</property>
+
+                    <style>
+                      <class name="wintc-ml-md" />
+                    </style>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -114,6 +145,11 @@
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
                     <property name="sensitive">False</property>
+                    
+                    <style>
+                      <class name="wintc-ml-md" />
+                      <class name="wintc-mr-md" />
+                    </style>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -147,6 +183,10 @@
                     <property name="position">3</property>
                   </packing>
                 </child>
+
+                <style>
+                  <class name="wintc-mb-md" />
+                </style>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -156,6 +196,10 @@
             </child>
           </object>
         </child>
+
+        <style>
+          <class name="wintc-mt-md" />
+        </style>
       </object>
       <packing>
         <property name="expand">False</property>
@@ -180,9 +224,15 @@
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <property name="label" translatable="yes">To adjust monitor power settings and save energy, click Power.</property>
-                <property name="max-width-chars">49</property>
+                <property name="halign">GTK_ALIGN_END</property>
+                <property name="max-width-chars">44</property>
                 <property name="wrap">True</property>
                 <property name="xalign">1.0</property>
+
+                <style>
+                  <class name="wintc-mr-md" />
+                  <class name="wintc-mb-md" />
+                </style>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -199,6 +249,12 @@
                 <property name="halign">2</property>
                 <property name="label" translatable="yes">Power</property>
                 <property name="sensitive">False</property>
+
+                <style>
+                  <class name="wintc-button" />
+                  <class name="wintc-mr-md" />
+                  <class name="wintc-mb-md" />
+                </style>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -215,5 +271,12 @@
         <property name="position">2</property>
       </packing>
     </child>
+
+    <style>
+      <class name="wintc-mb-md" />
+      <class name="wintc-ml-lg" />
+      <class name="wintc-mr-lg" />
+      <class name="wintc-mt-lg" />
+    </style>
   </object>
 </interface>
