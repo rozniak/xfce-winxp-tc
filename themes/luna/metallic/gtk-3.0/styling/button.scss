@@ -18,8 +18,7 @@ $button_styles:
         100% 100%,
         undefined,
         undefined,
-        url('../Resources/button_body.png'),
-        linear-gradient(170deg, rgba(252,252,252,1) 0%, rgba(233,232,225,1) 100%)
+        linear-gradient(180deg, rgba(253,253,253,1) 0%, rgba(205,204,223,1) 100%)
     );
 $button_styles:
     wintc_define_props_borders(
@@ -31,19 +30,18 @@ $button_styles:
         3,
         3,
         undefined,
-        url('../Resources/button_border.png'),
+        url('../Resources/button_border.png')
     );
 
 $button_focused_styles:
     wintc_define_props_bg(
         $button_focused_styles,
-        false
+        false,
         undefined,
         undefined,
         undefined,
         undefined,
-        url('../Resources/button_body.png'),
-        linear-gradient(170deg, rgba(252,252,252,1) 0%, rgba(233,232,225,1) 100%)
+        linear-gradient(180deg, rgba(253,253,253,1) 0%, rgba(205,204,223,1) 100%)
     );
 $button_focused_styles:
     wintc_define_props_borders(
@@ -66,8 +64,7 @@ $button_hover_styles:
         undefined,
         undefined,
         undefined,
-        url('../Resources/button_body.png'),
-        linear-gradient(170deg, rgba(252,252,252,1) 0%, rgba(233,232,225,1) 100%)
+        linear-gradient(180deg, rgba(253,253,253,1) 0%, rgba(205,204,223,1) 100%)
     );
 $button_hover_styles:
     wintc_define_props_borders(
@@ -90,8 +87,7 @@ $button_press_styles:
         undefined,
         undefined,
         undefined,
-        url('../Resources/button_press_body.png'),
-        linear-gradient(170deg, rgba(228,227,220,1) 0%, rgba(226,225,217,1) 5%, rgba(226,225,217,1) 95%, rgba(228,227,220,1) 100%),
+        linear-gradient(180deg, rgba(179,178,197,1) 0%, rgba(248,252,253,1) 100%)
     );
 $button_press_styles:
     wintc_define_props_borders(
@@ -110,7 +106,7 @@ $button_inactive_styles:
     wintc_define_props_bg(
         $button_inactive_styles,
         false,
-        #F5F4EA,
+        #F1F1ED,
         undefined,
         undefined,
         undefined,
