@@ -7,8 +7,8 @@
  * Author(s): Rory Fewell <roryf@oddmatics.uk>
  */
 
-$combobox_button_height: 18px;
-$combobox_button_width:  15px;
+$combobox_button_height: 19px;
+$combobox_button_width:  17px;
 
 
 //
@@ -43,17 +43,6 @@ $combobox_inactive_styles:
 //
 // BUTTON STYLES
 //
-$combobox_button_styles:
-    wintc_define_props_box(
-        $combobox_button_styles,
-        false,
-        margin,
-        1,
-        1,
-        1,
-        1
-    );
-
 $combobox_button_hover_styles:
     wintc_define_props_bg(
         $combobox_button_hover_styles,
