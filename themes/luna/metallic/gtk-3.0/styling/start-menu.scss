@@ -57,7 +57,7 @@ $start_button_styles:
         undefined,
         undefined,
         url('../Resources/start_button_body.png'),
-        linear-gradient(179deg, rgba(150,196,150,1) 0%, rgba(54,143,55,1) 15%, rgba(54,143,55,1) 35%, rgba(61,159,62,1) 60%, rgba(61,152,61,1) 100%)
+        linear-gradient(180deg, rgba(158,219,126,1) 0%, rgba(235,235,238,1) 18%, rgba(102,169,83,1) 40%, rgba(102,169,83,1) 65%, rgba(37,142,42,1) 81%, rgba(52,157,78,1) 100%)
     );
 $start_button_styles:
     wintc_define_props_borders(
@@ -95,7 +95,7 @@ $start_button_styles:
     wintc_define_props_fg(
         $start_button_styles,
         false,
-        undefined,
+        #FFFFFF,
         1px 1px 2px #152404
     );
 $start_button_styles:
@@ -117,7 +117,7 @@ $start_button_hover_styles:
         undefined,
         undefined,
         url('../Resources/start_button_hover_body.png'),
-        linear-gradient(179deg, rgba(146,207,145,1) 0%, rgba(65,174,66,1) 15%, rgba(65,180,65,1) 50%, rgba(64,173,65,1) 95%, rgba(64,166,65,1) 100%)
+        linear-gradient(180deg, rgba(156,235,104,1) 0%, rgba(245,245,250,1) 18%, rgba(89,157,66,1) 40%, rgba(89,157,66,1) 65%, rgba(21,132,19,1) 81%, rgba(34,147,54,1) 100%)
     );
 $start_button_hover_styles:
     wintc_define_props_borders(
@@ -141,7 +141,7 @@ $start_button_press_styles:
         undefined,
         undefined,
         url('../Resources/start_button_press_body.png'),
-        linear-gradient(179deg, rgba(43,91,43,1) 0%, rgba(43,91,43,1) 10%, rgba(29,129,29,1) 15%, rgba(29,129,29,1) 35%, rgba(29,145,29,1) 55%, rgba(29,145,29,1) 100%)
+        linear-gradient(180deg, rgba(138,183,115,1) 0%, rgba(211,211,213,1) 18%, rgba(85,124,77,1) 40%, rgba(85,124,77,1) 65%, rgba(44,102,45,1) 81%, rgba(56,114,71,1) 100%)
     );
 $start_button_press_styles:
     wintc_define_props_borders(

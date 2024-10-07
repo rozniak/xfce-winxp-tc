@@ -22,9 +22,9 @@ $systray_styles:
         $systray_styles,
         false,
         solid,
-        5,
         0,
-        3,
+        0,
+        2,
         16,
         undefined,
         url('../Resources/taskband_tray_horz.png')
@@ -44,8 +44,8 @@ $systray_styles:
         $systray_styles,
         false,
         padding,
-        undefined,
+        5,
         14,
-        undefined,
+        1,
         undefined
     );
