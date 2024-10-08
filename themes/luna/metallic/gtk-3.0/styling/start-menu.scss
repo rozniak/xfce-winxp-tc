@@ -216,20 +216,20 @@ $start_menu_horz_userpane_styles:
         $start_menu_horz_userpane_styles,
         false,
         undefined,
-        101% 100%,
         undefined,
-        -2px 0px,
-        url('../Resources/start_userpane_body.png')
+        undefined,
+        undefined,
+        linear-gradient(180deg, rgba(175,177,198,1) 0%, rgba(181,183,203,1) 15%, rgba(255,255,255,1) 100%)
     );
 $start_menu_horz_userpane_styles:
     wintc_define_props_borders(
         $start_menu_horz_userpane_styles,
         false,
         solid,
-        5,
-        6,
+        8,
+        7,
         0,
-        6,
+        7,
         undefined,
         url('../Resources/start_userpane_border.png')
     );
@@ -272,7 +272,7 @@ $start_menu_horz_username_styles:
         $start_menu_horz_username_styles,
         false,
         #FFFFFF,
-        0px 1px 2px #000000
+        (0px 1px 2px #000000, 0px 1px 2px #000000)
     );
 $start_menu_horz_username_styles:
     wintc_define_props_font(
@@ -303,10 +303,10 @@ $start_menu_programs_column_styles:
         $start_menu_programs_column_styles,
         false,
         solid,
-        3,
+        1,
         0,
         1,
-        2,
+        3,
         undefined,
         url('../Resources/start_programs_border.png')
     );
@@ -444,7 +444,7 @@ $start_menu_places_column_styles:
     wintc_define_props_bg(
         $start_menu_places_column_styles,
         false,
-        #D3E5FA,
+        #E3E7EB,
         undefined,
         undefined,
         undefined,
@@ -455,8 +455,8 @@ $start_menu_places_column_styles:
         $start_menu_places_column_styles,
         false,
         solid,
-        3,
-        6,
+        1,
+        1,
         1,
         1,
         undefined,
@@ -498,7 +498,7 @@ $start_menu_places_separator_styles:
         undefined,
         undefined,
         undefined,
-        linear-gradient(90deg, rgba(211,229,250,1) 0%, rgba(129,182,255,1) 35%, rgba(129,182,255,1) 50%, rgba(129,182,255,1) 65%, rgba(211,229,250,1) 100%)
+        linear-gradient(90deg, rgba(231,230,237,1) 0%, rgba(178,187,207,1) 50%, rgba(231,230,237,1) 100%)
     );
 
 
@@ -511,7 +511,7 @@ $start_menu_button_styles:
         false,
         margin,
         4,
-        -2,
+        0,
         6,
         0
     );
@@ -542,10 +542,10 @@ $start_menu_logoff_pane_styles:
         $start_menu_logoff_pane_styles,
         false,
         undefined,
-        101% 100%,
         undefined,
-        -2px 0px,
-        url('../Resources/start_logoffpane_body.png')
+        undefined,
+        undefined,
+        linear-gradient(180deg, rgba(229,230,237,1) 0%, rgba(175,177,198,1) 95%, rgba(168,167,191,1) 100%)
     );
 $start_menu_logoff_pane_styles:
     wintc_define_props_borders(
@@ -553,16 +553,9 @@ $start_menu_logoff_pane_styles:
         false,
         solid,
         0,
-        4,
+        2,
         0,
-        4,
+        3,
         undefined,
         url('../Resources/start_logoffpane_border.png')
-    );
-$start_menu_logoff_pane_styles:
-    wintc_define_props_fg(
-        $start_menu_logoff_pane_styles,
-        false,
-        #FFFFFF,
-        undefined
     );
