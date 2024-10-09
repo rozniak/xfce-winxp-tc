@@ -1,0 +1,16 @@
+/* XPM */
+static char *dummy[]={
+"4 4 9 1",
+"b c #00138c",
+"g c #001b9b",
+"a c #001da0",
+"f c #001ea1",
+"e c #001ea3",
+"d c #002cbc",
+"# c #002dbe",
+"c c #0037d0",
+". c #003ddc",
+".#ab",
+"cdeb",
+"efgb",
+"bbbb"};
