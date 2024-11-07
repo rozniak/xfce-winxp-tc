@@ -1,5 +1,5 @@
 /**
- * treeview.scss - Luna (Blue) Style Tree-view Style Constants
+ * treeview.scss - Luna (Metallic) Style Tree-view Style Constants
  *
  * This source-code is part of Windows XP stuff for XFCE:
  * <<https://www.oddmatics.uk>>
@@ -11,7 +11,7 @@ $treeview_header_styles:
     wintc_define_props_bg(
         $treeview_header_styles,
         false,
-        #EBEADB,
+        #F9FAFD,
         undefined,
         undefined,
         undefined,
@@ -77,7 +77,7 @@ $treeview_header_press_styles:
     wintc_define_props_bg(
         $treeview_header_press_styles,
         false,
-        #DEDFDA,
+        #ECECF3,
         undefined,
         undefined,
         undefined,

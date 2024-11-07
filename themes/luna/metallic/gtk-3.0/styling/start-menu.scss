@@ -1,0 +1,561 @@
+/**
+ * start-menu.scss - Luna (Metallic) Style Start Menu Style Constants
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+$start_flag_height: 20px;
+$start_flag_width: 20px;
+$start_text_case: lower;
+
+$start_menu_allprograms_height: 24px;
+$start_menu_allprograms_arrow_width: 16px;
+
+$start_menu_display_userpic: true;
+
+$start_menu_programs_column_width: 176px;
+$start_menu_places_column_width: 176px;
+
+$start_menu_popup_menu_vmargin: 1px;
+
+$start_menu_separator_thickness: $separator_thickness;
+
+
+//
+// START BUTTON
+//
+$start_flag_styles:
+    wintc_define_props_bg(
+        $start_flag_styles,
+        false,
+        undefined,
+        undefined,
+        no-repeat,
+        0px 3px,
+        url('../Resources/start_flag.png')
+    );
+$start_flag_styles:
+    wintc_define_props_box(
+        $start_flag_styles,
+        false,
+        margin,
+        undefined,
+        4,
+        undefined,
+        5
+    );
+
+$start_button_styles:
+    wintc_define_props_bg(
+        $start_button_styles,
+        false,
+        undefined,
+        100% 100%,
+        undefined,
+        undefined,
+        url('../Resources/start_button_body.png'),
+        linear-gradient(180deg, rgba(158,219,126,1) 0%, rgba(235,235,238,1) 18%, rgba(102,169,83,1) 40%, rgba(102,169,83,1) 65%, rgba(37,142,42,1) 81%, rgba(52,157,78,1) 100%)
+    );
+$start_button_styles:
+    wintc_define_props_borders(
+        $start_button_styles,
+        false,
+        solid,
+        2,
+        13,
+        3,
+        5,
+        undefined,
+        url('../Resources/start_button_border.png')
+    );
+$start_button_styles:
+    wintc_define_props_box(
+        $start_button_styles,
+        false,
+        margin,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
+$start_button_styles:
+    wintc_define_props_box(
+        $start_button_styles,
+        false,
+        padding,
+        0,
+        0,
+        0,
+        0
+    );
+$start_button_styles:
+    wintc_define_props_fg(
+        $start_button_styles,
+        false,
+        #FFFFFF,
+        1px 1px 2px #152404
+    );
+$start_button_styles:
+    wintc_define_props_font(
+        $start_button_styles,
+        false,
+        'Franklin Gothic Medium',
+        14pt,
+        italic,
+        undefined
+    );
+
+$start_button_hover_styles:
+    wintc_define_props_bg(
+        $start_button_hover_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/start_button_hover_body.png'),
+        linear-gradient(180deg, rgba(156,235,104,1) 0%, rgba(245,245,250,1) 18%, rgba(89,157,66,1) 40%, rgba(89,157,66,1) 65%, rgba(21,132,19,1) 81%, rgba(34,147,54,1) 100%)
+    );
+$start_button_hover_styles:
+    wintc_define_props_borders(
+        $start_button_hover_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/start_button_hover_border.png')
+    );
+
+$start_button_press_styles:
+    wintc_define_props_bg(
+        $start_button_press_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/start_button_press_body.png'),
+        linear-gradient(180deg, rgba(138,183,115,1) 0%, rgba(211,211,213,1) 18%, rgba(85,124,77,1) 40%, rgba(85,124,77,1) 65%, rgba(44,102,45,1) 81%, rgba(56,114,71,1) 100%)
+    );
+$start_button_press_styles:
+    wintc_define_props_borders(
+        $start_button_press_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/start_button_press_border.png')
+    );
+$start_button_press_styles:
+    wintc_define_props_box(
+        $start_button_press_styles,
+        false,
+        padding,
+        0,
+        0,
+        0,
+        0
+    );
+
+$start_button_selected_styles: $start_button_press_styles;
+
+$start_button_text_styles:
+    wintc_define_props_box(
+        $start_button_text_styles,
+        false,
+        margin,
+        0,
+        13,
+        0,
+        0
+    );
+
+
+//
+// START MENU
+//
+$start_menu_styles: ();
+$start_menu_styles:
+    wintc_define_props_bg(
+        $start_menu_styles,
+        false,
+        transparent,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
+$start_menu_styles:
+    wintc_define_props_borders(
+        $start_menu_styles,
+        false,
+        none,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
+
+
+//
+// START MENU HORIZONTAL USER PANE
+//
+$start_menu_horz_userpane_styles:
+    wintc_define_props_bg(
+        $start_menu_horz_userpane_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        linear-gradient(180deg, rgba(175,177,198,1) 0%, rgba(181,183,203,1) 15%, rgba(255,255,255,1) 100%)
+    );
+$start_menu_horz_userpane_styles:
+    wintc_define_props_borders(
+        $start_menu_horz_userpane_styles,
+        false,
+        solid,
+        8,
+        7,
+        0,
+        7,
+        undefined,
+        url('../Resources/start_userpane_border.png')
+    );
+$start_menu_horz_userpane_styles:
+    wintc_define_props_box(
+        $start_menu_horz_userpane_styles,
+        false,
+        margin,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
+
+$start_menu_userpic_styles:
+    wintc_define_props_borders(
+        $start_menu_userpic_styles,
+        false,
+        solid,
+        2,
+        5,
+        5,
+        2,
+        undefined,
+        url('../Resources/user_tile_border.png')
+    );
+$start_menu_userpic_styles:
+    wintc_define_props_box(
+        $start_menu_userpic_styles,
+        false,
+        margin,
+        2,
+        0,
+        2,
+        1
+    );
+
+$start_menu_horz_username_styles:
+    wintc_define_props_fg(
+        $start_menu_horz_username_styles,
+        false,
+        #FFFFFF,
+        (0px 1px 2px #000000, 0px 1px 2px #000000)
+    );
+$start_menu_horz_username_styles:
+    wintc_define_props_font(
+        $start_menu_horz_username_styles,
+        false,
+        'Franklin Gothic Medium',
+        undefined,
+        undefined,
+        undefined
+    );
+
+
+//
+// START MENU PROGRAMS COLUMN
+//
+$start_menu_programs_column_styles:
+    wintc_define_props_bg(
+        $start_menu_programs_column_styles,
+        false,
+        #FFFFFF,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
+$start_menu_programs_column_styles:
+    wintc_define_props_borders(
+        $start_menu_programs_column_styles,
+        false,
+        solid,
+        1,
+        0,
+        1,
+        3,
+        undefined,
+        url('../Resources/start_programs_border.png')
+    );
+$start_menu_programs_column_styles:
+    wintc_define_props_box(
+        $start_menu_programs_column_styles,
+        false,
+        margin,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
+$start_menu_programs_column_styles:
+    wintc_define_props_box(
+        $start_menu_programs_column_styles,
+        false,
+        padding,
+        2,
+        6,
+        undefined,
+        6
+    );
+$start_menu_programs_column_styles:
+    wintc_define_props_fg(
+        $start_menu_programs_column_styles,
+        false,
+        #373737,
+        undefined
+    );
+
+
+$start_menu_programs_separator_styles:
+    wintc_define_props_bg(
+        $start_menu_programs_separator_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(211,211,200,1) 25%, rgba(211,211,200,1) 50%, rgba(211,211,200,1) 75%, rgba(255,255,255,1) 100%)
+    );
+
+$start_menu_programs_menuitem_mime_prgtxt_styles:
+    wintc_define_props_fg(
+        $start_menu_programs_menuitem_mime_prgtxt_styles,
+        false,
+        #808080,
+        undefined
+    );
+$start_menu_programs_menuitem_mime_hover_styles:
+    wintc_define_props_fg(
+        $start_menu_programs_menuitem_mime_hover_styles,
+        false,
+        $selected_fg_color,
+        undefined
+    );
+
+//
+// 'ALL PROGRAMS' MENU ITEM
+//
+$start_menu_allprograms_menuitem_styles:
+    wintc_define_props_box(
+        $start_menu_allprograms_menuitem_styles,
+        false,
+        margin,
+        6,
+        undefined,
+        5,
+        undefined
+    );
+$start_menu_allprograms_menuitem_styles:
+    wintc_define_props_box(
+        $start_menu_allprograms_menuitem_styles,
+        false,
+        padding,
+        0,
+        undefined,
+        0,
+        undefined
+    );
+$start_menu_allprograms_menuitem_styles:
+    wintc_define_props_font(
+        $start_menu_allprograms_menuitem_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        bold
+    );
+
+
+//
+// START MENU POPUP MENU
+//
+$start_menu_popup_menu_styles:
+    wintc_define_props_borders(
+        $start_menu_popup_menu_styles,
+        false,
+        solid,
+        1,
+        1,
+        1,
+        6,
+        undefined,
+        url('../Resources/start_menu_item.png')
+    );
+
+$start_menu_popup_menu_menuitem_styles:
+    wintc_define_props_box(
+        $start_menu_popup_menu_menuitem_styles,
+        false,
+        margin,
+        0,
+        1,
+        0,
+        6
+    );
+$start_menu_popup_menu_menuitem_styles:
+    wintc_define_props_box(
+        $start_menu_popup_menu_menuitem_styles,
+        false,
+        padding,
+        3,
+        0,
+        2,
+        12
+    );
+
+
+//
+// START MENU PLACES COLUMN
+//
+$start_menu_places_column_styles:
+    wintc_define_props_bg(
+        $start_menu_places_column_styles,
+        false,
+        #E3E7EB,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
+$start_menu_places_column_styles:
+    wintc_define_props_borders(
+        $start_menu_places_column_styles,
+        false,
+        solid,
+        1,
+        1,
+        1,
+        1,
+        undefined,
+        url('../Resources/start_places_border.png')
+    );
+$start_menu_places_column_styles:
+    wintc_define_props_box(
+        $start_menu_places_column_styles,
+        false,
+        margin,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
+$start_menu_places_column_styles:
+    wintc_define_props_box(
+        $start_menu_places_column_styles,
+        false,
+        padding,
+        2,
+        2,
+        5,
+        5
+    );
+$start_menu_places_column_styles:
+    wintc_define_props_fg(
+        $start_menu_places_column_styles,
+        false,
+        #0A246A,
+        undefined
+    );
+
+$start_menu_places_separator_styles:
+    wintc_define_props_bg(
+        $start_menu_places_separator_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        linear-gradient(90deg, rgba(231,230,237,1) 0%, rgba(178,187,207,1) 50%, rgba(231,230,237,1) 100%)
+    );
+
+
+//
+// START MENU LOGOFF PANE
+//
+$start_menu_button_styles:
+    wintc_define_props_box(
+        $start_menu_button_styles,
+        false,
+        margin,
+        4,
+        0,
+        6,
+        0
+    );
+$start_menu_button_styles:
+    wintc_define_props_box(
+        $start_menu_button_styles,
+        false,
+        padding,
+        3,
+        10,
+        3,
+        3
+    );
+
+$start_menu_button_press_styles:
+    wintc_define_props_box(
+        $start_menu_button_press_styles,
+        false,
+        padding,
+        4,
+        9,
+        2,
+        4
+    );
+
+$start_menu_logoff_pane_styles:
+    wintc_define_props_bg(
+        $start_menu_logoff_pane_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        linear-gradient(180deg, rgba(229,230,237,1) 0%, rgba(175,177,198,1) 95%, rgba(168,167,191,1) 100%)
+    );
+$start_menu_logoff_pane_styles:
+    wintc_define_props_borders(
+        $start_menu_logoff_pane_styles,
+        false,
+        solid,
+        0,
+        2,
+        0,
+        3,
+        undefined,
+        url('../Resources/start_logoffpane_border.png')
+    );
