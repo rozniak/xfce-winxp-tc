@@ -441,7 +441,7 @@ WinTCIShextView* lookup_view_for_path_by_guid(
         &match_info
     );
 
-    if (g_match_info_get_match_count(match_info))
+    if (g_match_info_get_match_count(match_info) > 0)
     {
         guid   = g_match_info_fetch(match_info, 1);
         guid_u = g_ascii_strup(guid, -1);

@@ -495,6 +495,26 @@ static void do_navigation(
     const gchar*         specified_path
 )
 {
+    GError*       error              = NULL;
+    const GRegex* regex_looks_webish = NULL;
+
+    if (!regex_looks_webish)
+    {
+        regex_looks_webish =
+            g_regex_new(
+                "^[a-z0-9-]+(\\.[a-z0-9-]+)+(\\/.*)?$",
+                G_REGEX_CASELESS,
+                0,
+                &error
+            );
+
+        if (!regex_looks_webish)
+        {
+            wintc_display_error_and_clear(&error);
+            return;
+        }
+    }
+
     wintc_ctl_animation_play(
         WINTC_CTL_ANIMATION(wnd->throbber),
         wnd->throbber_anim_id,
@@ -504,25 +524,39 @@ static void do_navigation(
 
     // Check out how we should navigate - local or IE?
     //
-    // This isn't exactly 'elegant' but I don't really care 'cos it works
+    // Very simply, check if it looks like a web URL - either it looks like a
+    // web address (like bbc.co.uk/news), or it starts with http/https scheme
     //
-    gchar* ipath = g_utf8_strdown(specified_path, -1);
+    // By no means perfect, but will do for now (ask me in 10 years)
+    //
+    gchar*       check;
+    const gchar* use_path = specified_path;
+
+    if (g_regex_match(regex_looks_webish, specified_path, 0, NULL))
+    {
+        check    = g_strdup_printf("http://%s", specified_path);
+        use_path = check;
+    }
+    else
+    {
+        check = g_utf8_strdown(specified_path, -1);
+    }
 
     if (
-        g_str_has_prefix(ipath, "http://") ||
-        g_str_has_prefix(ipath, "https://")
+        g_str_has_prefix(check, "http://") ||
+        g_str_has_prefix(check, "https://")
     )
     {
         switch_mode_to(wnd, WINTC_EXPLORER_WINDOW_MODE_INTERNET);
-        do_navigation_internet(wnd, specified_path);
+        do_navigation_internet(wnd, use_path);
     }
     else
     {
         switch_mode_to(wnd, WINTC_EXPLORER_WINDOW_MODE_LOCAL);
-        do_navigation_local(wnd, specified_path);
+        do_navigation_local(wnd, use_path);
     }
 
-    g_free(ipath);
+    g_free(check);
 }
 
 static void do_navigation_internet(
