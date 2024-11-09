@@ -5,6 +5,7 @@
 #include "behaviour.h"
 #include "clock.h"
 #include "notifarea.h"
+#include "power.h"
 #include "volume.h"
 
 //
@@ -34,6 +35,10 @@ static void wintc_notification_area_dispose(
     GObject* object
 );
 
+static void wintc_notification_area_append_component(
+    WinTCNotificationArea* notif_area,
+    GType                  component_type
+);
 static GtkWidget* wintc_notification_area_append_icon(
     WinTCNotificationArea* notif_area
 );
@@ -111,18 +116,15 @@ static void wintc_notification_area_init(
     self->clock_runner =
         wintc_clock_runner_new(GTK_LABEL(self->label_clock));
 
-    // Create volume icon and behaviour for system tray
+    // Create notification area icons
     //
-    WinTCNotificationVolume* notif_volume;
-    GtkWidget*               widget_volume;
-
-    widget_volume = wintc_notification_area_append_icon(self);
-    notif_volume  = wintc_notification_volume_new(widget_volume);
-
-    wintc_notification_area_map_widget(
+    wintc_notification_area_append_component(
         self,
-        widget_volume,
-        WINTC_NOTIFICATION_BEHAVIOUR(notif_volume)
+        WINTC_TYPE_NOTIFICATION_POWER
+    );
+    wintc_notification_area_append_component(
+        self,
+        WINTC_TYPE_NOTIFICATION_VOLUME
     );
 }
 
@@ -163,6 +165,29 @@ GtkWidget* notification_area_new(void)
 //
 // PRIVATE FUNCTIONS
 //
+static void wintc_notification_area_append_component(
+    WinTCNotificationArea* notif_area,
+    GType                  component_type
+)
+{
+    GtkWidget* widget = wintc_notification_area_append_icon(notif_area);
+
+    WinTCNotificationBehaviour* notif =
+        WINTC_NOTIFICATION_BEHAVIOUR(
+            g_object_new(
+                component_type,
+                "widget-notif", widget,
+                NULL
+            )
+        );
+
+    wintc_notification_area_map_widget(
+        notif_area,
+        widget,
+        notif
+    );
+}
+
 static GtkWidget* wintc_notification_area_append_icon(
     WinTCNotificationArea* notif_area
 )

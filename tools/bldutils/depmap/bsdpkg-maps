@@ -14,6 +14,7 @@ python3-venv-->bt,rt-->py39-virtualenv
 sass-->bt,rt-->rubygem-sass
 sqlite3-->bt,rt-->sqlite3
 sysinfo-->bt,rt-->libsysinfo
+upower-glib-->bt,rt-->upower
 webkitgtk-->bt,rt-->webkit2-gtk3
 wintc-comctl-->bt,rt-->wintc-comctl
 wintc-comgtk-->bt,rt-->wintc-comgtk

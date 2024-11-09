@@ -23,6 +23,8 @@ sass-->bt,rt-->rubygem-sass
 sqlite3-->bt-->sqlite-devel
 sqlite3-->rt-->sqlite
 sysinfo-->bt,rt-->NULL
+upower-glib-->bt-->upower-devel
+upower-glib-->rt-->upower-libs
 webkitgtk-->bt-->webkit2gtk4.1-devel
 webkitgtk-->rt-->webkit2gtk4.1
 wintc-comctl-->bt,rt-->wintc-comctl

@@ -23,6 +23,8 @@ sass-->bt,rt-->sassc
 sqlite3-->bt-->sqlite-dev
 sqlite3-->rt-->sqlite
 sysinfo-->bt,rt-->NULL
+upower-glib-->bt-->upower-dev
+upower-glib-->rt-->upower
 webkitgtk-->bt-->webkit2gtk-4.1-dev
 webkitgtk-->rt-->webkit2gtk-4.1
 wintc-comctl-->bt,rt-->libwintc-comctl

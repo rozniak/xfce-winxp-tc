@@ -28,6 +28,7 @@ wintc_resolve_library(garcon-gtk3-1    GARCON_GTK3)
 wintc_resolve_library(gdk-pixbuf-2.0   GDK_PIXBUF)
 wintc_resolve_library(glib-2.0         GLIB)
 wintc_resolve_library(gtk+-3.0         GTK3)
+wintc_resolve_library(upower-glib      UPOWER_GLIB)
 wintc_resolve_library(wintc-comgtk     WINTC_COMGTK)
 wintc_resolve_library(wintc-exec       WINTC_EXEC)
 wintc_resolve_library(wintc-shcommon   WINTC_SHCOMMON)
@@ -64,6 +65,8 @@ add_executable(
     src/systray/clock.h
     src/systray/notifarea.c
     src/systray/notifarea.h
+    src/systray/power.c
+    src/systray/power.h
     src/systray/toolbar.c
     src/systray/toolbar.h
     src/systray/volume.c
@@ -92,6 +95,7 @@ target_include_directories(
     PRIVATE ${GDK_PIXBUF_INCLUDE_DIRS}
     PRIVATE ${GLIB_INCLUDE_DIRS}
     PRIVATE ${GTK3_INCLUDE_DIRS}
+    PRIVATE ${UPOWER_GLIB_INCLUDE_DIRS}
     PRIVATE ${WINTC_COMGTK_INCLUDE_DIRS}
     PRIVATE ${WINTC_EXEC_INCLUDE_DIRS}
     PRIVATE ${WINTC_SHCOMMON_INCLUDE_DIRS}
@@ -109,6 +113,7 @@ target_link_directories(
     PRIVATE ${GDK_PIXBUF_LIBRARY_DIRS}
     PRIVATE ${GLIB_LIBRARY_DIRS}
     PRIVATE ${GTK3_LIBRARY_DIRS}
+    PRIVATE ${UPOWER_GLIB_LIBRARY_DIRS}
     PRIVATE ${WINTC_COMGTK_LIBRARY_DIRS}
     PRIVATE ${WINTC_EXEC_LIBRARY_DIRS}
     PRIVATE ${WINTC_SHCOMMON_LIBRARY_DIRS}
@@ -126,6 +131,7 @@ target_link_libraries(
     PRIVATE ${GDK_PIXBUF_LIBRARIES}
     PRIVATE ${GLIB_LIBRARIES}
     PRIVATE ${GTK3_LIBRARIES}
+    PRIVATE ${UPOWER_GLIB_LIBRARIES}
     PRIVATE ${WINTC_COMGTK_LIBRARIES}
     PRIVATE ${WINTC_EXEC_LIBRARIES}
     PRIVATE ${WINTC_SHCOMMON_LIBRARIES}

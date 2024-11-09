@@ -5,6 +5,7 @@ bt,rt:garcon-gtk3
 bt,rt:gdk-pixbuf2
 bt,rt:glib2
 bt,rt:gtk3
+bt,rt:upower-glib
 bt,rt:wintc-comgtk
 bt,rt:wintc-exec
 bt,rt:wintc-shcommon

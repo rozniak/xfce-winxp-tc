@@ -15,6 +15,7 @@ python3-venv-->bt,rt-->python3
 sass-->bt,rt-->ruby-sass
 sqlite3-->bt,rt-->sqlite
 sysinfo-->bt,rt-->NULL
+upower-glib-->bt,rt-->upower
 webkitgtk-->bt,rt-->webkit2gtk-4.1
 wintc-comctl-->bt,rt-->wintc-comctl
 wintc-comgtk-->bt,rt-->wintc-comgtk
