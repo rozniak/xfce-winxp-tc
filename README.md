@@ -1,9 +1,10 @@
 # xfce-winxp-tc
 This is my little chipping-away spot for a Windows XP Total Conversion for XFCE.
 
-![luna-blue-promo](https://user-images.githubusercontent.com/13258281/234408181-dc8222c1-81ac-4759-b6ac-84a515b0cb13.png)
-![professional-promo](https://user-images.githubusercontent.com/13258281/234408192-3b06b634-cff7-4d24-ba0d-d64b949272e8.png)
-![classic-promo](https://user-images.githubusercontent.com/13258281/234408198-ac3232c2-d00c-4eaf-8a0d-37d7e239293b.png)
+![luna-blue-promo](https://github.com/user-attachments/assets/53ce3a26-9d51-47f5-9c6e-8104b654b019)
+![luna-metallic-promo](https://github.com/user-attachments/assets/a113ca1b-4047-4519-95dc-3d1feb479426)
+![professional-promo](https://github.com/user-attachments/assets/33c063ea-9456-42d0-b969-c131d1b72d96)
+![classic-promo](https://github.com/user-attachments/assets/09cb558e-900e-4dd1-b1c0-994680969504)
 
 ## What?
 Essentially this repo is a 'project' to replicate the XP experience on XFCE / Linux in general. This includes everything from desktop themes, icons, cursors, all the way to programs and the shell itself.
@@ -19,12 +20,10 @@ I used to use Luna theme ports on Windows 7, which has now lost support, and cus
 There are themes that aim to replicate the Windows XP visual styles already, however as anyone who has tried this stuff knows, themes are either lacking or only go so far. This project differs in that I aim for as close to pixel-perfect as possible, and write programs to recreate the complete Windows XP environment (themes alone cannot reproduce the Start menu in the screenshots above).
 
 ## Building / Installation
-For AUR (Arch User Repository) there is an `xfce-winxp-tc-git` package maintained by [**@SelfRef**](https://github.com/SelfRef) [here](https://aur.archlinux.org/packages/xfce-winxp-tc-git).
-
-Otherwise, please refer to `/packaging/README.MD` for build instructions. 😁
+Please see the *Installation* section of the Wiki here: https://github.com/rozniak/xfce-winxp-tc/wiki/Installation 😁
 
 ## The theme(s) are buggy!
-This is almost certainly true, especially seeing as [theming GTK isn't really a supported feature](https://stopthemingmy.app/). If you're using themes from this repository and programs look broken, you should file issues here rather than pestering the developers of said program.
+Themes in GTK3 are not supported by upstream and this project is still under development, so they can potentially look broken in certain programs. If you're using themes from this repository and programs look broken, you should file issues here rather than pestering the developers of said program.
 
 I hope to cover theming for standard GTK widgets across the board, but there will always be potential bugs with subclassed widgets and the like - they'll have to be handled on a case-by-case basis.
 
@@ -39,3 +38,5 @@ This licence obviously does not cover the assets from Windows/Office (images, so
 I don't have a fancy looking roadmap document for this repo - there's too much to list really. Essentially, if something was in Windows XP, it's on my mind.
 
 As part of that, user-friendliness is always a target - besides themes and programs, I aim to one day have a nice setup application/process akin to XP's. And perhaps an OOBE if I can figure that out (mostly for the nostalgic music).
+
+If you're interested in the current completion state of the project, see this Wiki page: https://github.com/rozniak/xfce-winxp-tc/wiki/Project-progress-and-status
