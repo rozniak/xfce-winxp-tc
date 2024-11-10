@@ -271,12 +271,11 @@ static gboolean wintc_desktop_window_draw(
 
         if (!s_tag)
         {
-            gchar* tag = wintc_build_get_tag();
-
             s_tag =
-                g_strdup_printf("For testing purposes only. Build %s", tag);
-
-            g_free(tag);
+                g_strdup_printf(
+                    "For testing purposes only. Build %s",
+                    wintc_build_get_tag()
+                );
         }
 
         // Default to white, IDK if Windows changes this...

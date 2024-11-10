@@ -45,6 +45,10 @@ struct _WinTCCplSysdmWindow
     // UI
     //
     GtkWidget* notebook_main;
+
+    GtkWidget* label_skuname;
+    GtkWidget* label_skued;
+    GtkWidget* label_skuver;
 };
 
 //
@@ -121,7 +125,23 @@ static void wintc_cpl_sysdm_window_init(
     wintc_ctl_cpl_notebook_append_page_from_resource(
         GTK_NOTEBOOK(self->notebook_main),
         "/uk/oddmatics/wintc/cpl-sysdm/page-gen.ui",
+        "label-skuname", &(self->label_skuname),
+        "label-skued",   &(self->label_skued),
+        "label-skuver",  &(self->label_skuver),
         NULL
+    );
+
+    gtk_label_set_text(
+        GTK_LABEL(self->label_skuname),
+        wintc_build_get_sku_name()
+    );
+    gtk_label_set_text(
+        GTK_LABEL(self->label_skued),
+        wintc_build_get_sku_edition()
+    );
+    gtk_label_set_text(
+        GTK_LABEL(self->label_skuver),
+        wintc_build_get_tagline()
     );
 }
 

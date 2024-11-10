@@ -1,6 +1,27 @@
 #include <glib.h>
 
+#include "../public/errors.h"
 #include "../public/version.h"
+
+//
+// PRIVATE CONSTANTS
+//
+static const gchar* S_KEYFILE_GROUP = "Version";
+
+//
+// STATIC DATA
+//
+static gboolean  s_keyfile_loaded;
+static GKeyFile* s_keyfile_version;
+
+//
+// FORWARD DECLARATIONS
+//
+gboolean ensure_keyfile(void);
+gchar* get_keyfile_entry(
+    const gchar* key,
+    const gchar* default_str
+);
 
 //
 // PUBLIC FUNCTIONS
@@ -14,21 +35,110 @@ gboolean wintc_build_is_debug(void)
 #endif
 }
 
-gchar* wintc_build_get_tag(void)
+const gchar* wintc_build_get_pretty_name(void)
 {
-    gchar* build_tag = NULL;
+    static gchar* pretty_name = NULL;
 
-    if (
-        !g_file_get_contents(
-            "@CMAKE_INSTALL_PREFIX@/@WINTC_ASSETS_INSTALL_DIR@/bldtag",
-            &build_tag,
-            NULL,
-            NULL
-        )
-    )
+    if (!pretty_name)
     {
-        build_tag = g_strdup_printf("%s", "no tag");
+        pretty_name = get_keyfile_entry("PrettyName", "Unknown System");
+    }
+
+    return pretty_name;
+}
+
+const gchar* wintc_build_get_sku_edition(void)
+{
+    static gchar* skued = NULL;
+
+    if (!skued)
+    {
+        skued = get_keyfile_entry("SkuEdition", "");
+    }
+
+    return skued;
+}
+
+const gchar* wintc_build_get_sku_name(void)
+{
+    static gchar* skuname = NULL;
+
+    if (!skuname)
+    {
+        skuname = get_keyfile_entry("SkuName", "Unknown System");
+    }
+
+    return skuname;
+}
+
+const gchar* wintc_build_get_tag(void)
+{
+    static gchar* build_tag = NULL;
+
+    if (!build_tag)
+    {
+        build_tag = get_keyfile_entry("BuildTag", "no tag");
     }
 
     return build_tag;
+}
+
+const gchar* wintc_build_get_tagline(void)
+{
+    static gchar* skuver = NULL;
+
+    if (!skuver)
+    {
+        skuver = get_keyfile_entry("SkuTagline", "");
+    }
+
+    return skuver;
+}
+
+//
+// PRIVATE FUNCTIONS
+//
+gboolean ensure_keyfile(void)
+{
+    GError* error = NULL;
+
+    if (s_keyfile_loaded)
+    {
+        return TRUE;
+    }
+
+    if (!s_keyfile_version)
+    {
+        s_keyfile_version = g_key_file_new();
+    }
+
+    s_keyfile_loaded =
+        g_key_file_load_from_file(
+            s_keyfile_version,
+            "@CMAKE_INSTALL_PREFIX@/@WINTC_ASSETS_INSTALL_DIR@/release",
+            G_KEY_FILE_NONE,
+            &error
+        );
+
+    wintc_log_error_and_clear(&error);
+
+    return s_keyfile_loaded;
+}
+
+gchar* get_keyfile_entry(
+    const gchar* key,
+    const gchar* default_str
+)
+{
+    if (ensure_keyfile())
+    {
+        return g_key_file_get_string(
+            s_keyfile_version,
+            S_KEYFILE_GROUP,
+            key,
+            NULL
+        );
+    }
+
+    return g_strdup_printf("%s", default_str);
 }

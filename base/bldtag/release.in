@@ -1,0 +1,6 @@
+[Version]
+PrettyName=@REL_PRETTY_NAME@
+SkuName=@REL_SKU_NAME@
+SkuEdition=@REL_SKU_EDITION@
+SkuTagline=@REL_SKU_TAGLINE@
+BuildTag=@REL_BUILD_TAG@

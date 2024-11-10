@@ -120,7 +120,6 @@ int main(
 
     // Get kernel info
     //
-    gchar* build_tag = wintc_build_get_tag();
     gchar* kernel_version;
 
     uname(&kernel_info);
@@ -129,7 +128,7 @@ int main(
         g_strdup_printf(
             "Version %s (%s)%s",
             kernel_info.release,
-            build_tag,
+            wintc_build_get_tag(),
             wintc_build_is_debug() ? " (Debug)" : ""
         );
 
@@ -215,7 +214,6 @@ int main(
     
     // Clear mem
     //
-    g_free(build_tag);
     g_free(kernel_version);
     g_free(system_stats);
 
