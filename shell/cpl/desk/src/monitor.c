@@ -302,4 +302,6 @@ void wintc_desk_monitor_set_pixbuf(
             1,
             NULL
         );
+
+    gtk_widget_queue_draw(GTK_WIDGET(monitor));
 }
