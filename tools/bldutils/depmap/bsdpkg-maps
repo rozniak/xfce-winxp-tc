@@ -7,6 +7,7 @@ glib2-->bt,rt-->glib
 gtk3-->bt,rt-->gtk3
 lightdm-->bt,rt-->lightdm
 msgfmt-->bt,rt-->gettext
+networkmanager-->bt,rt-->NULL
 plymouth-->bt,rt-->splash
 pulseaudio-->bt,rt-->pulseaudio
 python3-packaging-->bt,rt-->py39-packaging

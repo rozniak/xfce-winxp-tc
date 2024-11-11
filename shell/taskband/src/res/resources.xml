@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
     <gresource prefix="/uk/oddmatics/wintc/taskband">
+        <file>menu-tray-nm.ui</file>
         <file>personal-menu.ui</file>
         <file>start-button.ui</file>
         <file>start-menu.css</file>

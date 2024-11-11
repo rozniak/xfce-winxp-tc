@@ -8,6 +8,10 @@
 #include "power.h"
 #include "volume.h"
 
+#ifndef WINTC_PKGMGR_BSDPKG
+#include "network.h"
+#endif
+
 //
 // GTK OOP CLASS/INSTANCE DEFINITIONS
 //
@@ -118,6 +122,12 @@ static void wintc_notification_area_init(
 
     // Create notification area icons
     //
+#ifndef WINTC_PKGMGR_BSDPKG
+    wintc_notification_area_append_component(
+        self,
+        WINTC_TYPE_NOTIFICATION_NETWORK
+    );
+#endif
     wintc_notification_area_append_component(
         self,
         WINTC_TYPE_NOTIFICATION_POWER

@@ -14,6 +14,8 @@ gtk3-->rt-->gtk+3.0
 lightdm-->bt-->lightdm-dev
 lightdm-->rt-->lightdm
 msgfmt-->bt,rt-->gettext
+networkmanager-->bt-->networkmanager-dev
+networkmanager-->rt-->networkmanager
 plymouth-->bt,rt-->plymouth
 pulseaudio-->bt-->pulseaudio-dev
 pulseaudio-->rt-->libpulse

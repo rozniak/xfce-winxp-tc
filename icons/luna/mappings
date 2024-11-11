@@ -335,6 +335,8 @@ status/info-->dialog_info
 status/messagebox-critical-->dialog_error
 status/messagebox-info-->dialog_info
 status/messagebox-warning-->dialog_warning
+status/network-idle-->net_idle
+status/network-offline-->net_offline
 status/stock-dialog-error-->dialog_error
 status/stock-dialog-info-->dialog_info
 status/stock-dialog-warning-->dialog_warning

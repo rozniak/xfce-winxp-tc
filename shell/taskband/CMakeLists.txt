@@ -13,6 +13,8 @@ set(PROJECT_MAINTAINER "Rory Fewell <roryf@oddmatics.uk>")
 
 set(PROJECT_ROOT ${CMAKE_CURRENT_LIST_DIR})
 
+set(WINTC_NO_PEDANTIC_COMPILE true) # Necessary due to NetworkManager headers
+
 include(GNUInstallDirs)
 
 include(../../packaging/cmake-inc/common/CMakeLists.txt)
@@ -39,8 +41,9 @@ wintc_resolve_library(wintc-sndapi     WINTC_SNDAPI)
 wintc_compile_resources()
 wintc_create_meta_h()
 
-add_executable(
-    wintc-taskband
+# FIXME: For now, exclude the network icon stuff from build on FreeBSD
+set(
+    TASKBAND_SOURCES
     src/application.c
     src/application.h
     src/main.c
@@ -77,6 +80,22 @@ add_executable(
     src/taskbuttons/toolbar.h
     src/taskbuttons/windowmonitor.c
     src/taskbuttons/windowmonitor.h
+)
+
+if (NOT ${WINTC_PKGMGR} STREQUAL "bsdpkg")
+    wintc_resolve_library(libnm NM)
+
+    set(
+        TASKBAND_SOURCES
+        ${TASKBAND_SOURCES}
+        src/systray/network.c
+        src/systray/network.h
+    )
+endif()
+
+add_executable(
+    wintc-taskband
+    ${TASKBAND_SOURCES}
 )
 
 target_compile_options(
@@ -139,6 +158,21 @@ target_link_libraries(
     PRIVATE ${WINTC_SHLANG_LIBRARIES}
     PRIVATE ${WINTC_SNDAPI_LIBRARIES}
 )
+
+if (NOT ${WINTC_PKGMGR} STREQUAL "bsdpkg")
+    target_include_directories(
+        wintc-taskband
+        PRIVATE ${NM_INCLUDE_DIRS}
+    )
+    target_link_directories(
+        wintc-taskband
+        PRIVATE ${NM_LIBRARY_DIRS}
+    )
+    target_link_libraries(
+        wintc-taskband
+        PRIVATE ${NM_LIBRARIES}
+    )
+endif()
 
 add_dependencies(
     wintc-taskband
