@@ -761,6 +761,8 @@ static void switch_mode_to(
                         GTK_ICON_VIEW(wnd->iconview_browser),
                         wnd->browser
                     );
+
+                gtk_widget_show(wnd->iconview_browser);
             }
 
             // Update view
