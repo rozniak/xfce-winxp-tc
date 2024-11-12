@@ -10,6 +10,8 @@
 #include <wintc/shlang.h>
 
 #include "application.h"
+#include "sidebar.h"
+#include "sidebars/fldrside.h"
 #include "toolbar.h"
 #include "toolbars/adrbar.h"
 #include "toolbars/stdbar.h"
@@ -154,12 +156,16 @@ struct _WinTCExplorerWindow
 
     WinTCExplorerWindowMode mode;
 
+    WinTCExplorerSidebar* sidebar_folders;
+
     WinTCExplorerToolbar* toolbar_adr;
     WinTCExplorerToolbar* toolbar_std;
 
     // UI
     //
     WinTCShIconViewBehaviour* behaviour_icons;
+
+    GtkWidget* pane_view;
 
     GtkWidget* box_toolbars;
 
@@ -292,14 +298,34 @@ static void wintc_explorer_window_init(
 
     self->box_toolbars =
         GTK_WIDGET(gtk_builder_get_object(builder, "box-toolbars"));
-    self->scrollwnd_main =
-        GTK_WIDGET(gtk_builder_get_object(builder, "scrollwnd-main"));
+    self->pane_view =
+        GTK_WIDGET(gtk_builder_get_object(builder, "pane-view"));
     self->throbber =
         GTK_WIDGET(gtk_builder_get_object(builder, "throbber"));
 
     gtk_container_add(GTK_CONTAINER(self), main_box);
 
     g_object_unref(builder);
+
+    // FIXME: Temporary pane setup
+    //
+    self->sidebar_folders = wintc_exp_folders_sidebar_new(self);
+    self->scrollwnd_main  = gtk_scrolled_window_new(NULL, NULL);
+
+    gtk_paned_pack1(
+        GTK_PANED(self->pane_view),
+        wintc_explorer_sidebar_get_root_widget(
+            self->sidebar_folders
+        ),
+        FALSE,
+        FALSE
+    );
+    gtk_paned_pack2(
+        GTK_PANED(self->pane_view),
+        self->scrollwnd_main,
+        TRUE,
+        TRUE
+    );
 
     // FIXME: Toolbars are configurable!
     //

@@ -9,7 +9,7 @@
 #include "adrbar.h"
 
 //
-// FOWARD DECLARATIONS
+// FORWARD DECLARATIONS
 //
 static void wintc_exp_address_toolbar_constructed(
     GObject* object
@@ -83,7 +83,7 @@ static void wintc_exp_address_toolbar_init(
 
     toolbar->toolbar =
         GTK_WIDGET(
-            g_object_ref_sink(
+            g_object_ref(
                 gtk_builder_get_object(builder, "toolbar")
             )
         );

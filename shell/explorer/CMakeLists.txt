@@ -53,6 +53,12 @@ add_executable(
     src/application.h
     src/main.c
     src/resources.c
+    src/sidebar.c
+    src/sidebar.h
+    src/sidebars/fldrside.c
+    src/sidebars/fldrside.h
+    src/sidebars/srchside.c
+    src/sidebars/srchside.h
     src/toolbar.c
     src/toolbar.h
     src/toolbars/adrbar.c

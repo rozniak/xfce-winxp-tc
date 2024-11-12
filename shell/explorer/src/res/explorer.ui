@@ -547,34 +547,9 @@
     </child>
 
     <child>
-      <object class="GtkPaned">
+      <object class="GtkPaned" id="pane-view">
         <property name="visible">True</property>
         <property name="can-focus">False</property>
-
-        <!-- FIXME: Placing folder view directly in for now -->
-        <child>
-          <object class="GtkTreeView">
-            <property name="visible">True</property>
-            <property name="can-focus">True</property>
-          </object>
-          <packing>
-            <property name="resize">False</property>
-            <property name="shrink">True</property>
-          </packing>
-        </child>
-
-        <!-- FIXME: Placing shell view directly in for now -->
-        <child>
-          <object class="GtkScrolledWindow" id="scrollwnd-main">
-            <property name="visible">True</property>
-            <property name="can-focus">True</property>
-            <property name="shadow-type">in</property>
-          </object>
-          <packing>
-            <property name="resize">True</property>
-            <property name="shrink">True</property>
-          </packing>
-        </child>
       </object>
       <packing>
         <property name="expand">True</property>
