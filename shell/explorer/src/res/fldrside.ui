@@ -46,9 +46,17 @@
       </packing>
     </child>
     <child>
-      <object class="GtkTreeView">
+      <object class="GtkScrolledWindow">
         <property name="visible">True</property>
-        <property name="can-focus">False</property>
+        <property name="can-focus">True</property>
+        <property name="shadow-type">in</property>
+
+        <child>
+          <object class="GtkTreeView" id="tree-view">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+          </object>
+        </child>
       </object>
       <packing>
         <property name="expand">True</property>

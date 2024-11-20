@@ -13,7 +13,7 @@
 // FIXME: Temporary, until we display printers
 //
 static WinTCShextViewItem s_temp_items[] = {
-    { "FPO", "printer", TRUE, NULL }
+    { "FPO", "printer", TRUE, 0, NULL }
 };
 
 //
@@ -57,6 +57,10 @@ static void wintc_cpl_view_printers_get_path(
     WinTCShextPathInfo* path_info
 );
 
+static guint wintc_cpl_view_printers_get_unique_hash(
+    WinTCIShextView* view
+);
+
 static gboolean wintc_cpl_view_printers_has_parent(
     WinTCIShextView* view
 );
@@ -89,7 +93,14 @@ G_DEFINE_TYPE_WITH_CODE(
 
 static void wintc_cpl_view_printers_class_init(
     WINTC_UNUSED(WinTCCplViewPrintersClass* klass)
-) {}
+)
+{
+    gchar* temp = g_strdup_printf("printers%d", g_random_int());
+
+    s_temp_items[0].hash = g_str_hash(temp);
+
+    g_free(temp);
+}
 
 static void wintc_cpl_view_printers_init(
     WINTC_UNUSED(WinTCCplViewPrinters* self)
@@ -106,6 +117,7 @@ static void wintc_cpl_view_printers_ishext_view_interface_init(
     iface->get_display_name     = wintc_cpl_view_printers_get_display_name;
     iface->get_parent_path      = wintc_cpl_view_printers_get_parent_path;
     iface->get_path             = wintc_cpl_view_printers_get_path;
+    iface->get_unique_hash      = wintc_cpl_view_printers_get_unique_hash;
     iface->has_parent           = wintc_cpl_view_printers_has_parent;
 }
 
@@ -186,6 +198,13 @@ static void wintc_cpl_view_printers_get_path(
         g_strdup(
             wintc_sh_get_place_path(WINTC_SH_PLACE_PRINTERS)
         );
+}
+
+static guint wintc_cpl_view_printers_get_unique_hash(
+    WINTC_UNUSED(WinTCIShextView* view)
+)
+{
+    return g_str_hash(wintc_sh_get_place_path(WINTC_SH_PLACE_PRINTERS));
 }
 
 static gboolean wintc_cpl_view_printers_has_parent(

@@ -66,10 +66,18 @@ static void wintc_view_zip_get_path(
     WinTCShextPathInfo* path_info
 );
 
+static guint wintc_view_zip_get_unique_hash(
+    WinTCIShextView* view
+);
+
 static gboolean wintc_view_zip_has_parent(
     WinTCIShextView* view
 );
 
+static guint zip_entry_hash(
+    const gchar* zip_file_path,
+    const gchar* rel_entry_path
+);
 static gboolean zip_entry_is_in_dir(
     const gchar* this_dir,
     const gchar* entry,
@@ -169,6 +177,7 @@ static void wintc_view_zip_ishext_view_interface_init(
     iface->get_display_name     = wintc_view_zip_get_display_name;
     iface->get_parent_path      = wintc_view_zip_get_parent_path;
     iface->get_path             = wintc_view_zip_get_path;
+    iface->get_unique_hash      = wintc_view_zip_get_unique_hash;
     iface->has_parent           = wintc_view_zip_has_parent;
 }
 
@@ -323,8 +332,9 @@ static void wintc_view_zip_refresh_items(
                                          );
 
         item->display_name = entry_copy + name_offset;
-        item->icon_name    = g_str_has_suffix(entry_name, G_DIR_SEPARATOR_S) ?
-                                 "inode-directory" : "empty";
+        item->is_leaf      = !g_str_has_suffix(entry_name, G_DIR_SEPARATOR_S);
+        item->icon_name    = item->is_leaf ? "empty" : "inode-directory";
+        item->hash         = zip_entry_hash(path, entry_name);
         item->priv         = entry_copy;
 
         n_local_entries++;
@@ -474,6 +484,19 @@ static void wintc_view_zip_get_path(
     path_info->extended_path = g_strdup(view_zip->rel_path);
 }
 
+static guint wintc_view_zip_get_unique_hash(
+    WinTCIShextView* view
+)
+{
+    WinTCViewZip* view_zip = WINTC_VIEW_ZIP(view);
+
+    return
+        zip_entry_hash(
+            (view_zip->zip_uri + strlen("file://")),
+            view_zip->rel_path
+        );
+}
+
 static gboolean wintc_view_zip_has_parent(
     WINTC_UNUSED(WinTCIShextView* view)
 )
@@ -502,6 +525,21 @@ WinTCIShextView* wintc_view_zip_new(
 //
 // PRIVATE FUNCTIONS
 //
+static guint zip_entry_hash(
+    const gchar* zip_file_path,
+    const gchar* rel_entry_path
+)
+{
+    guint hash = g_str_hash(zip_file_path);
+
+    if (rel_entry_path)
+    {
+        hash = hash * 33 + g_str_hash(rel_entry_path);
+    }
+
+    return hash;
+}
+
 static gboolean zip_entry_is_in_dir(
     const gchar* this_dir,
     const gchar* entry,

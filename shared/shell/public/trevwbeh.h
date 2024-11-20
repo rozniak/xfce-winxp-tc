@@ -27,7 +27,7 @@ GType wintc_sh_tree_view_behaviour_get_type(void) G_GNUC_CONST;
 // PUBLIC FUNCTIONS
 //
 WinTCShTreeViewBehaviour* wintc_sh_tree_view_behaviour_new(
-    GtkTreeView*    icon_view,
+    GtkTreeView*    tree_view,
     WinTCShBrowser* browser
 );
 

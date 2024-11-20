@@ -17,24 +17,28 @@ static WinTCShextViewItem s_desktop_items[] = {
         "My Computer",
         "computer",
         FALSE,
+        0,
         NULL
     },
     {
         "My Documents",
         "folder-documents",
         FALSE,
+        0,
         NULL
     },
     {
         "My Network Places",
         "network-workgroup",
         FALSE,
+        0,
         NULL
     },
     {
         "Recycle Bin",
         "user-trash",
         FALSE,
+        0,
         NULL
     }
 };
@@ -80,6 +84,10 @@ static void wintc_sh_view_desktop_get_path(
     WinTCShextPathInfo* path_info
 );
 
+static guint wintc_sh_view_desktop_get_unique_hash(
+    WinTCIShextView* view
+);
+
 static gboolean wintc_sh_view_desktop_has_parent(
     WinTCIShextView* view
 );
@@ -118,6 +126,26 @@ static void wintc_sh_view_desktop_class_init(
     // whatever
     //
     s_desktop_items[0].priv = wintc_sh_path_for_guid(WINTC_SH_GUID_DRIVES);
+
+    // Assign hashes
+    //
+    for (gulong i = 0; i < G_N_ELEMENTS(s_desktop_items); i++)
+    {
+        // FIXME: Temporary hack until the implementations are finished
+        //
+        if (s_desktop_items[i].priv)
+        {
+            s_desktop_items[i].hash = g_str_hash(s_desktop_items[i].priv);
+        }
+        else
+        {
+            gchar* temp = g_strdup_printf("desktop%d", g_random_int());
+
+            s_desktop_items[i].hash = g_str_hash(temp);
+
+            g_free(temp);
+        }
+    }
 }
 
 static void wintc_sh_view_desktop_init(
@@ -135,6 +163,7 @@ static void wintc_sh_view_desktop_ishext_view_interface_init(
     iface->get_display_name     = wintc_sh_view_desktop_get_display_name;
     iface->get_parent_path      = wintc_sh_view_desktop_get_parent_path;
     iface->get_path             = wintc_sh_view_desktop_get_path;
+    iface->get_unique_hash      = wintc_sh_view_desktop_get_unique_hash;
     iface->has_parent           = wintc_sh_view_desktop_has_parent;
 }
 
@@ -218,6 +247,13 @@ static void wintc_sh_view_desktop_get_path(
         g_strdup(
             wintc_sh_get_place_path(WINTC_SH_PLACE_DESKTOP)
         );
+}
+
+static guint wintc_sh_view_desktop_get_unique_hash(
+    WINTC_UNUSED(WinTCIShextView* view)
+)
+{
+    return g_str_hash(wintc_sh_get_place_path(WINTC_SH_PLACE_DESKTOP));
 }
 
 static gboolean wintc_sh_view_desktop_has_parent(

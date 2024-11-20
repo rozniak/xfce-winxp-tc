@@ -52,12 +52,20 @@ gboolean wintc_sh_browser_can_navigate_to_parent(
     WinTCShBrowser* browser
 );
 
+WinTCIShextView* wintc_sh_browser_get_current_view(
+    WinTCShBrowser* browser
+);
+
 void wintc_sh_browser_get_location(
     WinTCShBrowser*     browser,
     WinTCShextPathInfo* path_info
 );
 
 GtkTreeModel* wintc_sh_browser_get_model(
+    WinTCShBrowser* browser
+);
+
+WinTCShextHost* wintc_sh_browser_get_shext_host(
     WinTCShBrowser* browser
 );
 

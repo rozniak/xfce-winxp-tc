@@ -3,6 +3,7 @@
 
 #include <glib.h>
 #include <gtk/gtk.h>
+#include <wintc/shell.h>
 #include <wintc/shellext.h>
 
 #include "application.h"
@@ -41,6 +42,9 @@ GtkWidget* wintc_explorer_window_new(
     const gchar*              initial_path
 );
 
+WinTCShBrowser* wintc_explorer_window_get_browser(
+    WinTCExplorerWindow* wnd
+);
 void wintc_explorer_window_get_location(
     WinTCExplorerWindow* wnd,
     WinTCShextPathInfo*  path_info

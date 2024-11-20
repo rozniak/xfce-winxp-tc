@@ -61,6 +61,10 @@ static void wintc_sh_view_fs_get_actions_for_view(
     WinTCIShextView* view
 );
 
+static guint wintc_sh_view_fs_get_unique_hash(
+    WinTCIShextView* view
+);
+
 static const gchar* wintc_sh_view_fs_get_display_name(
     WinTCIShextView* view
 );
@@ -175,6 +179,7 @@ static void wintc_sh_view_fs_ishext_view_interface_init(
     iface->get_display_name     = wintc_sh_view_fs_get_display_name;
     iface->get_parent_path      = wintc_sh_view_fs_get_parent_path;
     iface->get_path             = wintc_sh_view_fs_get_path;
+    iface->get_unique_hash      = wintc_sh_view_fs_get_unique_hash;
     iface->has_parent           = wintc_sh_view_fs_has_parent;
 }
 
@@ -380,6 +385,7 @@ static void wintc_sh_view_fs_refresh_items(
         item->display_name = (gchar*) g_steal_pointer(&(iter->data));
         item->icon_name    = is_dir ? "inode-directory" : "empty";
         item->is_leaf      = !is_dir;
+        item->hash         = g_str_hash(entry_path);
 
         g_free(entry_path);
 
@@ -467,6 +473,15 @@ static void wintc_sh_view_fs_get_path(
 
     path_info->base_path =
         g_strdup_printf("file://%s", view_fs->path);
+}
+
+static guint wintc_sh_view_fs_get_unique_hash(
+    WinTCIShextView* view
+)
+{
+    WinTCShViewFS* view_fs = WINTC_SH_VIEW_FS(view);
+
+    return g_str_hash(view_fs->path);
 }
 
 static gboolean wintc_sh_view_fs_has_parent(

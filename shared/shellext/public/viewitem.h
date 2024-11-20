@@ -13,6 +13,7 @@ typedef struct _WinTCShextViewItem
     gchar*   display_name;
     gchar*   icon_name;
     gboolean is_leaf;
+    guint    hash;
     gpointer priv;
 } WinTCShextViewItem;
 

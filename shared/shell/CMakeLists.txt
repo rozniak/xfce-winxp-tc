@@ -39,6 +39,7 @@ add_library(
     public/error.h
     src/icnvwbeh.c
     public/icnvwbeh.h
+    src/trevwbeh.c
     public/trevwbeh.h
     src/nmspace.c
     public/nmspace.h

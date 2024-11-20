@@ -12,8 +12,8 @@
 // FIXME: Temporary - only item is the drive root atm
 //
 static WinTCShextViewItem s_temp_items[] = {
-    { "/",             "drive-harddisk",    FALSE, "file:///" },
-    { "Control Panel", "preferences-other", FALSE, NULL       }
+    { "/",             "drive-harddisk",    FALSE, 0, "file:///" },
+    { "Control Panel", "preferences-other", FALSE, 0, NULL       }
 };
 
 //
@@ -57,6 +57,10 @@ static void wintc_sh_view_drives_get_path(
     WinTCShextPathInfo* path_info
 );
 
+static guint wintc_sh_view_drives_get_unique_hash(
+    WinTCIShextView* view
+);
+
 static gboolean wintc_sh_view_drives_has_parent(
     WinTCIShextView* view
 );
@@ -94,6 +98,11 @@ static void wintc_sh_view_drives_class_init(
     // TEMP: Assign CPL view path
     //
     s_temp_items[1].priv = wintc_sh_path_for_guid(WINTC_SH_GUID_CPL);
+
+    // TEMP: Assign hashes
+    //
+    s_temp_items[0].hash = g_str_hash("/");
+    s_temp_items[1].hash = g_str_hash(s_temp_items[1].priv);
 }
 
 static void wintc_sh_view_drives_init(
@@ -111,6 +120,7 @@ static void wintc_sh_view_drives_ishext_view_interface_init(
     iface->get_display_name     = wintc_sh_view_drives_get_display_name;
     iface->get_parent_path      = wintc_sh_view_drives_get_parent_path;
     iface->get_path             = wintc_sh_view_drives_get_path;
+    iface->get_unique_hash      = wintc_sh_view_drives_get_unique_hash;
     iface->has_parent           = wintc_sh_view_drives_has_parent;
 }
 
@@ -195,6 +205,13 @@ static void wintc_sh_view_drives_get_path(
         g_strdup(
             wintc_sh_get_place_path(WINTC_SH_PLACE_DRIVES)
         );
+}
+
+static guint wintc_sh_view_drives_get_unique_hash(
+    WINTC_UNUSED(WinTCIShextView* view)
+)
+{
+    return g_str_hash(wintc_sh_get_place_path(WINTC_SH_PLACE_DRIVES));
 }
 
 static gboolean wintc_sh_view_drives_has_parent(

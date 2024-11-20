@@ -284,6 +284,13 @@ gboolean wintc_sh_browser_can_navigate_to_parent(
     return wintc_ishext_view_has_parent(browser->current_view);
 }
 
+WinTCIShextView* wintc_sh_browser_get_current_view(
+    WinTCShBrowser* browser
+)
+{
+    return browser->current_view;
+}
+
 void wintc_sh_browser_get_location(
     WinTCShBrowser*     browser,
     WinTCShextPathInfo* path_info
@@ -305,6 +312,13 @@ GtkTreeModel* wintc_sh_browser_get_model(
 )
 {
     return GTK_TREE_MODEL(browser->view_model);
+}
+
+WinTCShextHost* wintc_sh_browser_get_shext_host(
+    WinTCShBrowser* browser
+)
+{
+    return browser->shext_host;
 }
 
 const gchar* wintc_sh_browser_get_view_display_name(

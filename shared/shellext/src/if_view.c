@@ -136,6 +136,16 @@ void wintc_ishext_view_get_path(
     return iface->get_path(view, path_info);
 }
 
+guint wintc_ishext_view_get_unique_hash(
+    WinTCIShextView* view
+)
+{
+    WinTCIShextViewInterface* iface =
+        WINTC_ISHEXT_VIEW_GET_IFACE(view);
+
+    return iface->get_unique_hash(view);
+}
+
 gboolean wintc_ishext_view_has_parent(
     WinTCIShextView* view
 )
@@ -227,4 +237,38 @@ void wintc_shext_path_info_move(
 
     dst->base_path     = g_steal_pointer(&(src->base_path));
     dst->extended_path = g_steal_pointer(&(src->extended_path));
+}
+
+guint wintc_shext_path_info_hash(
+    gconstpointer v
+)
+{
+    const WinTCShextPathInfo* path_info = (WinTCShextPathInfo*) v;
+
+    // Not sure if this reduces the effectiveness of the hash... think it
+    // should be okay?
+    //
+    guint hash1 = g_str_hash(
+                      path_info->base_path ?
+                        path_info->base_path : ""
+                  );
+    guint hash2 = g_str_hash(
+                      path_info->extended_path ?
+                        path_info->extended_path : ""
+                  );
+
+    return hash1 * 33 + hash2;
+}
+
+gboolean wintc_shext_path_info_equal(
+    gconstpointer v1,
+    gconstpointer v2
+)
+{
+    const WinTCShextPathInfo* path_info1 = (WinTCShextPathInfo*) v1;
+    const WinTCShextPathInfo* path_info2 = (WinTCShextPathInfo*) v2;
+
+    return
+        g_strcmp0(path_info1->base_path,     path_info2->base_path)     == 0 &&
+        g_strcmp0(path_info1->extended_path, path_info2->extended_path) == 0;
 }

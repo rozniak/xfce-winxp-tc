@@ -52,6 +52,10 @@ static void wintc_sh_view_cpl_get_path(
     WinTCShextPathInfo* path_info
 );
 
+static guint wintc_sh_view_cpl_get_unique_hash(
+    WinTCIShextView* view
+);
+
 static gboolean wintc_sh_view_cpl_has_parent(
     WinTCIShextView* view
 );
@@ -114,6 +118,7 @@ static void wintc_sh_view_cpl_ishext_view_interface_init(
     iface->get_display_name     = wintc_sh_view_cpl_get_display_name;
     iface->get_parent_path      = wintc_sh_view_cpl_get_parent_path;
     iface->get_path             = wintc_sh_view_cpl_get_path;
+    iface->get_unique_hash      = wintc_sh_view_cpl_get_unique_hash;
     iface->has_parent           = wintc_sh_view_cpl_has_parent;
 }
 
@@ -200,6 +205,7 @@ static void wintc_sh_view_cpl_refresh_items(
                                       applet->icon_name :
                                       "image-missing";
         view_item->is_leaf      = wintc_sh_cpl_applet_is_executable(applet);
+        view_item->hash         = g_str_hash(applet->exec);
         view_item->priv         = applet;
 
         i++;
@@ -264,6 +270,13 @@ static void wintc_sh_view_cpl_get_path(
         g_strdup(
             wintc_sh_get_place_path(WINTC_SH_PLACE_CONTROLPANEL)
         );
+}
+
+static guint wintc_sh_view_cpl_get_unique_hash(
+    WINTC_UNUSED(WinTCIShextView* view)
+)
+{
+    return g_str_hash(wintc_sh_get_place_path(WINTC_SH_PLACE_CONTROLPANEL));
 }
 
 static gboolean wintc_sh_view_cpl_has_parent(

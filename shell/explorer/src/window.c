@@ -39,10 +39,10 @@ enum
 static void wintc_explorer_window_constructed(
     GObject* object
 );
-static void wintc_explorer_window_finalize(
+static void wintc_explorer_window_dispose(
     GObject* object
 );
-static void wintc_explorer_window_dispose(
+static void wintc_explorer_window_finalize(
     GObject* object
 );
 static void wintc_explorer_window_set_property(
@@ -473,6 +473,13 @@ GtkWidget* wintc_explorer_window_new(
     );
 }
 
+WinTCShBrowser* wintc_explorer_window_get_browser(
+    WinTCExplorerWindow* wnd
+)
+{
+    return wnd->browser;
+}
+
 void wintc_explorer_window_get_location(
     WinTCExplorerWindow* wnd,
     WinTCShextPathInfo*  path_info
@@ -521,8 +528,9 @@ static void do_navigation(
     const gchar*         specified_path
 )
 {
-    GError*       error              = NULL;
-    const GRegex* regex_looks_webish = NULL;
+    static GRegex* regex_looks_webish = NULL;
+
+    GError* error = NULL;
 
     if (!regex_looks_webish)
     {

@@ -60,6 +60,9 @@ struct _WinTCIShextViewInterface
         WinTCIShextView*    view,
         WinTCShextPathInfo* path_info
     );
+    guint (*get_unique_hash) (
+        WinTCIShextView* view
+    );
     gboolean (*has_parent) (
         WinTCIShextView* view
     );
@@ -102,6 +105,9 @@ void wintc_ishext_view_get_path(
     WinTCIShextView*    view,
     WinTCShextPathInfo* path_info
 );
+guint wintc_ishext_view_get_unique_hash(
+    WinTCIShextView* view
+);
 gboolean wintc_ishext_view_has_parent(
     WinTCIShextView* view
 );
@@ -128,6 +134,14 @@ void wintc_shext_path_info_free_data(
 void wintc_shext_path_info_move(
     WinTCShextPathInfo* dst,
     WinTCShextPathInfo* src
+);
+
+guint wintc_shext_path_info_hash(
+    gconstpointer v
+);
+gboolean wintc_shext_path_info_equal(
+    gconstpointer v1,
+    gconstpointer v2
 );
 
 #endif
