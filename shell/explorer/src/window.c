@@ -975,6 +975,13 @@ static void on_browser_load_changed(
                     wintc_sh_browser_get_view_display_name(self)
                 );
 
+            gtk_window_set_icon_name(
+                GTK_WINDOW(wnd),
+                wintc_ishext_view_get_icon_name(
+                    wintc_sh_browser_get_current_view(self)
+                )
+            );
+
             wintc_ctl_animation_play(
                 WINTC_CTL_ANIMATION(wnd->throbber),
                 wnd->throbber_anim_id,

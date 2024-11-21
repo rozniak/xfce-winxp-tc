@@ -52,6 +52,9 @@ struct _WinTCIShextViewInterface
     const gchar* (*get_display_name) (
         WinTCIShextView* view
     );
+    const gchar* (*get_icon_name) (
+        WinTCIShextView* view
+    );
     void (*get_parent_path) (
         WinTCIShextView*    view,
         WinTCShextPathInfo* path_info
@@ -95,6 +98,9 @@ void wintc_ishext_view_get_actions_for_view(
 );
 
 const gchar* wintc_ishext_view_get_display_name(
+    WinTCIShextView* view
+);
+const gchar* wintc_ishext_view_get_icon_name(
     WinTCIShextView* view
 );
 void wintc_ishext_view_get_parent_path(

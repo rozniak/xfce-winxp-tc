@@ -12,7 +12,8 @@
 enum
 {
     PROP_SHEXT_HOST = 1,
-    PROP_PATH
+    PROP_PATH,
+    PROP_ICON_NAME
 };
 
 //
@@ -47,38 +48,33 @@ static gboolean wintc_sh_view_fs_activate_item(
     WinTCShextPathInfo* path_info,
     GError**            error
 );
-
 static void wintc_sh_view_fs_refresh_items(
     WinTCIShextView* view
 );
-
 static void wintc_sh_view_fs_get_actions_for_item(
     WinTCIShextView*    view,
     WinTCShextViewItem* item
 );
-
 static void wintc_sh_view_fs_get_actions_for_view(
     WinTCIShextView* view
 );
-
 static guint wintc_sh_view_fs_get_unique_hash(
     WinTCIShextView* view
 );
-
 static const gchar* wintc_sh_view_fs_get_display_name(
     WinTCIShextView* view
 );
-
+static const gchar* wintc_sh_view_fs_get_icon_name(
+    WinTCIShextView* view
+);
 static void wintc_sh_view_fs_get_parent_path(
     WinTCIShextView*    view,
     WinTCShextPathInfo* path_info
 );
-
 static void wintc_sh_view_fs_get_path(
     WinTCIShextView*    view,
     WinTCShextPathInfo* path_info
 );
-
 static gboolean wintc_sh_view_fs_has_parent(
     WinTCIShextView* view
 );
@@ -132,6 +128,12 @@ static void wintc_sh_view_fs_class_init(
     object_class->get_property = wintc_sh_view_fs_get_property;
     object_class->set_property = wintc_sh_view_fs_set_property;
 
+    g_object_class_override_property(
+        object_class,
+        PROP_ICON_NAME,
+        "icon-name"
+    );
+
     g_object_class_install_property(
         object_class,
         PROP_SHEXT_HOST,
@@ -177,6 +179,7 @@ static void wintc_sh_view_fs_ishext_view_interface_init(
     iface->get_actions_for_item = wintc_sh_view_fs_get_actions_for_item;
     iface->get_actions_for_view = wintc_sh_view_fs_get_actions_for_view;
     iface->get_display_name     = wintc_sh_view_fs_get_display_name;
+    iface->get_icon_name        = wintc_sh_view_fs_get_icon_name;
     iface->get_parent_path      = wintc_sh_view_fs_get_parent_path;
     iface->get_path             = wintc_sh_view_fs_get_path;
     iface->get_unique_hash      = wintc_sh_view_fs_get_unique_hash;
@@ -217,12 +220,20 @@ static void wintc_sh_view_fs_get_property(
     GParamSpec* pspec
 )
 {
-    WinTCShViewFS* view = WINTC_SH_VIEW_FS(object);
+    WinTCIShextView* view    = WINTC_ISHEXT_VIEW(object);
+    WinTCShViewFS*   view_fs = WINTC_SH_VIEW_FS(object);
 
     switch (prop_id)
     {
         case PROP_PATH:
-            g_value_set_string(value, view->path);
+            g_value_set_string(value, view_fs->path);
+            break;
+
+        case PROP_ICON_NAME:
+            g_value_set_string(
+                value,
+                wintc_ishext_view_get_icon_name(view)
+            );
             break;
 
         default:
@@ -265,7 +276,7 @@ static void wintc_sh_view_fs_set_property(
 }
 
 //
-// INTERFACE METHODS
+// INTERFACE METHODS (WinTCIShextView)
 //
 static gboolean wintc_sh_view_fs_activate_item(
     WinTCIShextView*    view,
@@ -439,6 +450,13 @@ static const gchar* wintc_sh_view_fs_get_display_name(
     //        separator, cba for now
     //
     return g_strrstr(view_fs->path, G_DIR_SEPARATOR_S) + 1;
+}
+
+static const gchar* wintc_sh_view_fs_get_icon_name(
+    WINTC_UNUSED(WinTCIShextView* view)
+)
+{
+    return "inode-directory";
 }
 
 static void wintc_sh_view_fs_get_parent_path(

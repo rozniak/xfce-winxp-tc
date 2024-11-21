@@ -8,6 +8,14 @@
 #include "../public/vwcpl.h"
 
 //
+// PRIVATE ENUMS
+//
+enum
+{
+    PROP_ICON_NAME = 1
+};
+
+//
 // FORWARD DECLARATIONS
 //
 static void wintc_sh_view_cpl_ishext_view_interface_init(
@@ -17,6 +25,12 @@ static void wintc_sh_view_cpl_ishext_view_interface_init(
 static void wintc_sh_view_cpl_finalize(
     GObject* object
 );
+static void wintc_sh_view_cpl_get_property(
+    GObject*    object,
+    guint       prop_id,
+    GValue*     value,
+    GParamSpec* pspec
+);
 
 static gboolean wintc_sh_view_cpl_activate_item(
     WinTCIShextView*    view,
@@ -24,38 +38,33 @@ static gboolean wintc_sh_view_cpl_activate_item(
     WinTCShextPathInfo* path_info,
     GError**            error
 );
-
 static void wintc_sh_view_cpl_refresh_items(
     WinTCIShextView* view
 );
-
 static void wintc_sh_view_cpl_get_actions_for_item(
     WinTCIShextView*    view,
     WinTCShextViewItem* item
 );
-
 static void wintc_sh_view_cpl_get_actions_for_view(
     WinTCIShextView* view
 );
-
 static const gchar* wintc_sh_view_cpl_get_display_name(
     WinTCIShextView* view
 );
-
+static const gchar* wintc_sh_view_cpl_get_icon_name(
+    WinTCIShextView* view
+);
 static void wintc_sh_view_cpl_get_parent_path(
     WinTCIShextView*    view,
     WinTCShextPathInfo* path_info
 );
-
 static void wintc_sh_view_cpl_get_path(
     WinTCIShextView*    view,
     WinTCShextPathInfo* path_info
 );
-
 static guint wintc_sh_view_cpl_get_unique_hash(
     WinTCIShextView* view
 );
-
 static gboolean wintc_sh_view_cpl_has_parent(
     WinTCIShextView* view
 );
@@ -97,7 +106,14 @@ static void wintc_sh_view_cpl_class_init(
 {
     GObjectClass* object_class = G_OBJECT_CLASS(klass);
 
-    object_class->finalize = wintc_sh_view_cpl_finalize;
+    object_class->finalize     = wintc_sh_view_cpl_finalize;
+    object_class->get_property = wintc_sh_view_cpl_get_property;
+
+    g_object_class_override_property(
+        object_class,
+        PROP_ICON_NAME,
+        "icon-name"
+    );
 }
 
 static void wintc_sh_view_cpl_init(
@@ -116,6 +132,7 @@ static void wintc_sh_view_cpl_ishext_view_interface_init(
     iface->get_actions_for_item = wintc_sh_view_cpl_get_actions_for_item;
     iface->get_actions_for_view = wintc_sh_view_cpl_get_actions_for_view;
     iface->get_display_name     = wintc_sh_view_cpl_get_display_name;
+    iface->get_icon_name        = wintc_sh_view_cpl_get_icon_name;
     iface->get_parent_path      = wintc_sh_view_cpl_get_parent_path;
     iface->get_path             = wintc_sh_view_cpl_get_path;
     iface->get_unique_hash      = wintc_sh_view_cpl_get_unique_hash;
@@ -140,8 +157,32 @@ static void wintc_sh_view_cpl_finalize(
     (G_OBJECT_CLASS(wintc_sh_view_cpl_parent_class))->finalize(object);
 }
 
+static void wintc_sh_view_cpl_get_property(
+    GObject*    object,
+    guint       prop_id,
+    GValue*     value,
+    GParamSpec* pspec
+)
+{
+    WinTCIShextView* view = WINTC_ISHEXT_VIEW(object);
+
+    switch (prop_id)
+    {
+        case PROP_ICON_NAME:
+            g_value_set_string(
+                value,
+                wintc_ishext_view_get_icon_name(view)
+            );
+            break;
+
+        default:
+            G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
+            break;
+    }
+}
+
 //
-// INTERFACE METHODS
+// INTERFACE METHODS (WinTCIShextView)
 //
 static gboolean wintc_sh_view_cpl_activate_item(
     WINTC_UNUSED(WinTCIShextView* view),
@@ -248,6 +289,13 @@ static const gchar* wintc_sh_view_cpl_get_display_name(
     // FIXME: Localisation
     //
     return "Control Panel";
+}
+
+static const gchar* wintc_sh_view_cpl_get_icon_name(
+    WINTC_UNUSED(WinTCIShextView* view)
+)
+{
+    return "preferences-other";
 }
 
 static void wintc_sh_view_cpl_get_parent_path(

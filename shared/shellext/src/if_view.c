@@ -34,6 +34,17 @@ static void wintc_ishext_view_default_init(
 {
     GType iface_type = G_TYPE_FROM_INTERFACE(iface);
 
+    g_object_interface_install_property(
+        iface,
+        g_param_spec_string(
+            "icon-name",
+            "IconName",
+            "The XDG icon name for the view.",
+            "inode-directory",
+            G_PARAM_READABLE
+        )
+    );
+
     wintc_ishext_view_signals[SIGNAL_ITEMS_ADDED] =
         g_signal_new(
             "items-added",
@@ -112,6 +123,16 @@ const gchar* wintc_ishext_view_get_display_name(
         WINTC_ISHEXT_VIEW_GET_IFACE(view);
 
     return iface->get_display_name(view);
+}
+
+const gchar* wintc_ishext_view_get_icon_name(
+    WinTCIShextView* view
+)
+{
+    WinTCIShextViewInterface* iface =
+        WINTC_ISHEXT_VIEW_GET_IFACE(view);
+
+    return iface->get_icon_name(view);
 }
 
 void wintc_ishext_view_get_parent_path(

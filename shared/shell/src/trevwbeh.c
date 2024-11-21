@@ -482,7 +482,7 @@ static void on_browser_load_changed(
                 gtk_tree_store_set(
                     behaviour->tree_model,
                     &next,
-                    COL_ICON_NAME,  "inode-directory",
+                    COL_ICON_NAME,  wintc_ishext_view_get_icon_name(view),
                     COL_ENTRY_NAME, wintc_ishext_view_get_display_name(view),
                     COL_VIEW_HASH,  hash,
                     -1
@@ -538,7 +538,7 @@ static void on_browser_load_changed(
             gtk_tree_store_set(
                 behaviour->tree_model,
                 &next,
-                COL_ICON_NAME,  "inode-directory",
+                COL_ICON_NAME,  wintc_ishext_view_get_icon_name(next_view),
                 COL_ENTRY_NAME, wintc_ishext_view_get_display_name(next_view),
                 COL_VIEW_HASH,  hash,
                 -1
@@ -662,7 +662,7 @@ static void on_view_items_added(
         gtk_tree_store_set(
             behaviour->tree_model,
             &child,
-            COL_ICON_NAME,  "inode-directory",
+            COL_ICON_NAME,  view_item->icon_name,
             COL_ENTRY_NAME, view_item->display_name,
             COL_VIEW_HASH,  view_item->hash,
             -1
