@@ -1,5 +1,6 @@
 import argparse
 import pefile
+import struct
 
 from io import BytesIO
 from pathlib import Path
@@ -39,6 +40,13 @@ def main():
         # NOTE: Appears pillow does not handle 32bpp bitmaps - see the radio
         #       button output, should have an alpha channel
         #
+        # FIXME: Crappy stuff below for reconstructing the 14 byte header, not
+        #        actually necessary as the bug is in Pillow - code left here
+        #        just in case
+        #
+        #        Realistically need to fix the BMP/DIB reading in Pillow
+        #          See issue #352 discussion
+        #
         data_rva = entry.directory.entries[0].data.struct.OffsetToData
         size = entry.directory.entries[0].data.struct.Size
 
@@ -48,8 +56,19 @@ def main():
 
         datafile = BytesIO(data)
 
-        img = Image.open(datafile)
-        img.save(str(entry.name) + ".png")
+        fixed = bytearray(datafile.getbuffer().nbytes + 14)
+
+        todata = struct.unpack("I", datafile.getbuffer()[:4])[0] + 14
+        header = struct.pack("<ccIHHI", b"B", b"M", len(fixed), 0, 0, todata)
+
+        fixed[0:13] = header
+        fixed[14:len(fixed) - 1] = datafile.getbuffer()
+
+        with open("out/" + str(entry.name) + ".bmp", "wb") as myFile:
+              myFile.write(fixed)
+
+        img = Image.open("out/" + str(entry.name) + ".bmp", "r", [ "BMP" ])
+        img.save("out/" + str(entry.name) + ".png")
 
 
 if __name__ == "__main__":
