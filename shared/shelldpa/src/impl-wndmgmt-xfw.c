@@ -58,7 +58,11 @@ static GdkPixbuf* xfw_window_get_mini_icon(
     WinTCWndMgmtWindow* window
 )
 {
-    return p_xfw_window_get_icon(window, 16, 1);
+    GdkPixbuf* icon = p_xfw_window_get_icon(window, 16, 1);
+
+    g_object_ref(icon);
+
+    return icon;
 }
 
 static void xfw_window_minimize(
