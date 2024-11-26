@@ -70,6 +70,7 @@ static void wintc_explorer_sidebar_dispose(
     WinTCExplorerSidebar* sidebar = WINTC_EXPLORER_SIDEBAR(object);
 
     g_clear_object(&(sidebar->owner_explorer_wnd));
+    g_clear_object(&(sidebar->root_widget));
 
     (G_OBJECT_CLASS(wintc_explorer_sidebar_parent_class))->dispose(object);
 }

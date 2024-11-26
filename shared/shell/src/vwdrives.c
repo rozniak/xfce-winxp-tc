@@ -199,6 +199,8 @@ static void wintc_sh_view_drives_refresh_items(
 {
     WINTC_LOG_DEBUG("%s", "shell: refresh drives view");
 
+    _wintc_ishext_view_refreshing(view);
+
     // Emit only the root '/' for now
     // TODO: Basically everything in My Computer!
     //

@@ -4,29 +4,29 @@
 
 #include "../sidebar.h"
 #include "../window.h"
-#include "srchside.h"
+#include "favside.h"
 
 //
 // PUBLIC CONSTANTS
 //
-const gchar* WINTC_EXPLORER_SIDEBAR_ID_SEARCH = "search";
+const gchar* WINTC_EXPLORER_SIDEBAR_ID_FAVORITES = "favorites";
 
 //
 // FORWARD DECLARATIONS
 //
-static void wintc_exp_search_sidebar_constructed(
+static void wintc_exp_favorites_sidebar_constructed(
     GObject* object
 );
 
 //
 // GTK OOP CLASS/INSTANCE DEFINITIONS
 //
-struct _WinTCExpSearchSidebarClass
+struct _WinTCExpFavoritesSidebarClass
 {
     WinTCExplorerSidebarClass __parent__;
 };
 
-struct _WinTCExpSearchSidebar
+struct _WinTCExpFavoritesSidebar
 {
     WinTCExplorerSidebar __parent__;
 };
@@ -35,29 +35,29 @@ struct _WinTCExpSearchSidebar
 // GTK TYPE DEFINITION & CTORS
 //
 G_DEFINE_TYPE(
-    WinTCExpSearchSidebar,
-    wintc_exp_search_sidebar,
+    WinTCExpFavoritesSidebar,
+    wintc_exp_favorites_sidebar,
     WINTC_TYPE_EXPLORER_SIDEBAR
 )
 
-static void wintc_exp_search_sidebar_class_init(
-    WinTCExpSearchSidebarClass* klass
+static void wintc_exp_favorites_sidebar_class_init(
+    WinTCExpFavoritesSidebarClass* klass
 )
 {
     GObjectClass* object_class = G_OBJECT_CLASS(klass);
 
-    object_class->constructed = wintc_exp_search_sidebar_constructed;
+    object_class->constructed = wintc_exp_favorites_sidebar_constructed;
 }
 
-static void wintc_exp_search_sidebar_init(
-    WinTCExpSearchSidebar* self
+static void wintc_exp_favorites_sidebar_init(
+    WinTCExpFavoritesSidebar* self
 )
 {
     WinTCExplorerSidebar* sidebar = WINTC_EXPLORER_SIDEBAR(self);
 
     GtkBuilder* builder =
         gtk_builder_new_from_resource(
-            "/uk/oddmatics/wintc/explorer/srchside.ui"
+            "/uk/oddmatics/wintc/explorer/favside.ui"
         );
 
     sidebar->root_widget =
@@ -73,20 +73,20 @@ static void wintc_exp_search_sidebar_init(
 //
 // CLASS VIRTUAL METHODS
 //
-static void wintc_exp_search_sidebar_constructed(
+static void wintc_exp_favorites_sidebar_constructed(
     WINTC_UNUSED(GObject* object)
 ) {}
 
 //
 // PUBLIC FUNCTIONS
 //
-WinTCExplorerSidebar* wintc_exp_search_sidebar_new(
+WinTCExplorerSidebar* wintc_exp_favorites_sidebar_new(
     WinTCExplorerWindow* wnd
 )
 {
     return WINTC_EXPLORER_SIDEBAR(
         g_object_new(
-            WINTC_TYPE_EXP_SEARCH_SIDEBAR,
+            WINTC_TYPE_EXP_FAVORITES_SIDEBAR,
             "owner-explorer", wnd,
             NULL
         )

@@ -25,6 +25,10 @@ GType wintc_explorer_application_get_type(void) G_GNUC_CONST;
 //
 WinTCExplorerApplication* wintc_explorer_application_new(void);
 
+GType wintc_explorer_application_lookup_sidebar_type(
+    WinTCExplorerApplication* explorer_app,
+    const gchar*              sidebar_id
+);
 GdkPixbuf* wintc_explorer_application_get_throbber_pixbuf(void);
 
 #endif

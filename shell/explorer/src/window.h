@@ -7,6 +7,7 @@
 #include <wintc/shellext.h>
 
 #include "application.h"
+#include "loader.h"
 
 //
 // PUBLIC ENUMS
@@ -39,6 +40,7 @@ GType wintc_explorer_window_get_type(void) G_GNUC_CONST;
 GtkWidget* wintc_explorer_window_new(
     WinTCExplorerApplication* app,
     WinTCShextHost*           shext_host,
+    WinTCExplorerLoader*      loader,
     const gchar*              initial_path
 );
 
@@ -51,6 +53,10 @@ void wintc_explorer_window_get_location(
 );
 WinTCExplorerWindowMode wintc_explorer_window_get_mode(
     WinTCExplorerWindow* wnd
+);
+void wintc_explorer_window_toggle_sidebar(
+    WinTCExplorerWindow* wnd,
+    const gchar*         sidebar_id
 );
 
 #endif

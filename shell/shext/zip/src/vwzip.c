@@ -303,6 +303,8 @@ static void wintc_view_zip_refresh_items(
 
     WINTC_LOG_DEBUG("%s", "shext-zip: refresh zip view");
 
+    _wintc_ishext_view_refreshing(view);
+
     // Open the archive
     //
     const gchar* path = view_zip->zip_uri + strlen("file://");

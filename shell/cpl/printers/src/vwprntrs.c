@@ -192,6 +192,8 @@ static void wintc_cpl_view_printers_refresh_items(
 {
     WINTC_LOG_DEBUG("%s", "cpl-prntrs: refresh printers view");
 
+    _wintc_ishext_view_refreshing(view);
+
     // Emit the FPO printer for now
     // TODO: Implement this!
     //

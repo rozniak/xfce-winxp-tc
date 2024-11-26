@@ -209,6 +209,8 @@ static void wintc_sh_view_cpl_refresh_items(
 {
     WinTCShViewCpl* view_cpl = WINTC_SH_VIEW_CPL(view);
 
+    _wintc_ishext_view_refreshing(view);
+
     // Refresh list
     //
     g_clear_slist(

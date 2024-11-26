@@ -248,6 +248,8 @@ static void wintc_sh_view_desktop_refresh_items(
 {
     WINTC_LOG_DEBUG("%s", "shell: refresh desktop view");
 
+    _wintc_ishext_view_refreshing(view);
+
     // Just emit the default items for now
     // TODO: Should aggregate with user desktop files
     //

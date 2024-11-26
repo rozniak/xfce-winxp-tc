@@ -346,6 +346,8 @@ static void wintc_sh_view_fs_refresh_items(
 
     WINTC_LOG_DEBUG("%s", "shell: refresh fs view");
 
+    _wintc_ishext_view_refreshing(view);
+
     // FIXME: Error handling (no way of passing to caller)
     //
     GSList* entries =

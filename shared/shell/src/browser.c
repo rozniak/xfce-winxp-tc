@@ -62,6 +62,10 @@ static void on_current_view_items_removed(
     WinTCShextViewItem** items,
     gpointer             user_data
 );
+static void on_current_view_refreshing(
+    WinTCIShextView* view,
+    gpointer         user_data
+);
 
 //
 // GTK OOP CLASS/INSTANCE DEFINITIONS
@@ -401,6 +405,12 @@ gboolean wintc_sh_browser_set_location(
         G_CALLBACK(on_current_view_items_removed),
         browser
     );
+    g_signal_connect(
+        browser->current_view,
+        "refreshing",
+        G_CALLBACK(on_current_view_refreshing),
+        browser
+    );
 
     // Notify that we're loading...
     //
@@ -489,4 +499,14 @@ static void on_current_view_items_removed(
         g_message("Item removed: %s", p_item->display_name);
         p_item++;
     }
+}
+
+static void on_current_view_refreshing(
+    WINTC_UNUSED(WinTCIShextView* view),
+    gpointer user_data
+)
+{
+    WinTCShBrowser* browser = WINTC_SH_BROWSER(user_data);
+
+    gtk_list_store_clear(browser->view_model);
 }

@@ -7,6 +7,7 @@
 #include <wintc/shellext.h>
 
 #include "application.h"
+#include "loader.h"
 #include "window.h"
 
 //
@@ -23,7 +24,8 @@ struct _WinTCExplorerApplication
 
     // Application state
     //
-    WinTCShextHost* shext_host;
+    WinTCExplorerLoader* exp_loader;
+    WinTCShextHost*      shext_host;
 };
 
 //
@@ -130,6 +132,7 @@ static void wintc_explorer_application_dispose(
         WINTC_EXPLORER_APPLICATION(object);
 
     g_clear_object(&(explorer_app->shext_host));
+    g_clear_object(&(explorer_app->exp_loader));
 
     (G_OBJECT_CLASS(wintc_explorer_application_parent_class))
         ->dispose(object);
@@ -146,6 +149,7 @@ static void wintc_explorer_application_activate(
         wintc_explorer_window_new(
             explorer_app,
             explorer_app->shext_host,
+            explorer_app->exp_loader,
             NULL
         );
 
@@ -233,6 +237,7 @@ static void wintc_explorer_application_open(
         GtkWidget* wnd  = wintc_explorer_window_new(
                               explorer_app,
                               explorer_app->shext_host,
+                              explorer_app->exp_loader,
                               uri
                           );
 
@@ -255,6 +260,14 @@ static void wintc_explorer_application_startup(
     // Init comctl
     //
     wintc_ctl_install_default_styles();
+
+    // Init sidebars/toolbars
+    //
+    explorer_app->exp_loader = wintc_explorer_loader_new();
+
+    wintc_explorer_loader_load_extensions(
+        explorer_app->exp_loader
+    );
 
     // Create shext host instance
     //

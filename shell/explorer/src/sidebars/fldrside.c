@@ -8,6 +8,11 @@
 #include "fldrside.h"
 
 //
+// PUBLIC CONSTANTS
+//
+const gchar* WINTC_EXPLORER_SIDEBAR_ID_FOLDERS = "folders";
+
+//
 // FORWARD DECLARATIONS
 //
 static void wintc_exp_folders_sidebar_constructed(
@@ -75,17 +80,14 @@ static void wintc_exp_folders_sidebar_init(
 
     sidebar->root_widget =
         GTK_WIDGET(
-            g_object_ref(
-                gtk_builder_get_object(builder, "main-box")
-            )
+            gtk_builder_get_object(builder, "main-box")
         );
-
     self->tree_view =
         GTK_WIDGET(
-            g_object_ref(
-                gtk_builder_get_object(builder, "tree-view")
-            )
+            gtk_builder_get_object(builder, "tree-view")
         );
+
+    g_object_ref(sidebar->root_widget);
 
     g_object_unref(builder);
 }
@@ -121,11 +123,12 @@ static void wintc_exp_folders_sidebar_constructed(
     }
     else
     {
-        g_signal_connect(
+        g_signal_connect_object(
             sidebar->owner_explorer_wnd,
             "mode-changed",
             G_CALLBACK(on_explorer_window_mode_changed),
-            object
+            object,
+            G_CONNECT_DEFAULT
         );
     }
 

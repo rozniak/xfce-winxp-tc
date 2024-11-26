@@ -4,8 +4,14 @@
 #include <glib.h>
 #include <gtk/gtk.h>
 
+#include "../sidebar.h"
 #include "../toolbar.h"
 #include "../window.h"
+
+//
+// PUBLIC CONSTANTS
+//
+extern const gchar* WINTC_EXPLORER_SIDEBAR_ID_SEARCH;
 
 //
 // GTK OOP BOILERPLATE

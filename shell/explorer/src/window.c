@@ -10,6 +10,7 @@
 #include <wintc/shlang.h>
 
 #include "application.h"
+#include "loader.h"
 #include "sidebar.h"
 #include "sidebars/fldrside.h"
 #include "toolbar.h"
@@ -23,7 +24,9 @@
 enum
 {
     PROP_SHEXT_HOST = 1,
-    PROP_INITIAL_PATH
+    PROP_EXPLORER_LOADER,
+    PROP_INITIAL_PATH,
+    PROP_ACTIVE_SIDEBAR
 };
 
 enum
@@ -44,6 +47,12 @@ static void wintc_explorer_window_dispose(
 );
 static void wintc_explorer_window_finalize(
     GObject* object
+);
+static void wintc_explorer_window_get_property(
+    GObject*    object,
+    guint       prop_id,
+    GValue*     value,
+    GParamSpec* pspec
 );
 static void wintc_explorer_window_set_property(
     GObject*      object,
@@ -156,7 +165,10 @@ struct _WinTCExplorerWindow
 
     WinTCExplorerWindowMode mode;
 
-    WinTCExplorerSidebar* sidebar_folders;
+    WinTCExplorerLoader* loader;
+
+    gchar*                active_sidebar_id;
+    WinTCExplorerSidebar* active_sidebar;
 
     WinTCExplorerToolbar* toolbar_adr;
     WinTCExplorerToolbar* toolbar_std;
@@ -195,6 +207,7 @@ static void wintc_explorer_window_class_init(
     object_class->constructed  = wintc_explorer_window_constructed;
     object_class->dispose      = wintc_explorer_window_dispose;
     object_class->finalize     = wintc_explorer_window_finalize;
+    object_class->get_property = wintc_explorer_window_get_property;
     object_class->set_property = wintc_explorer_window_set_property;
 
     g_object_class_install_property(
@@ -210,6 +223,17 @@ static void wintc_explorer_window_class_init(
     );
     g_object_class_install_property(
         object_class,
+        PROP_EXPLORER_LOADER,
+        g_param_spec_object(
+            "explorer-loader",
+            "ExplorerLoader",
+            "The explorer sidebar and toolbar loader host object to use.",
+            WINTC_TYPE_EXPLORER_LOADER,
+            G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY
+        )
+    );
+    g_object_class_install_property(
+        object_class,
         PROP_INITIAL_PATH,
         g_param_spec_string(
             "initial-path",
@@ -217,6 +241,18 @@ static void wintc_explorer_window_class_init(
             "The initial path for the window to open.",
             NULL,
             G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY
+        )
+    );
+
+    g_object_class_install_property(
+        object_class,
+        PROP_ACTIVE_SIDEBAR,
+        g_param_spec_string(
+            "active-sidebar",
+            "ActiveSidebar",
+            "The currently active sidebar.",
+            NULL,
+            G_PARAM_READWRITE
         )
     );
 
@@ -309,17 +345,8 @@ static void wintc_explorer_window_init(
 
     // FIXME: Temporary pane setup
     //
-    self->sidebar_folders = wintc_exp_folders_sidebar_new(self);
     self->scrollwnd_main  = gtk_scrolled_window_new(NULL, NULL);
 
-    gtk_paned_pack1(
-        GTK_PANED(self->pane_view),
-        wintc_explorer_sidebar_get_root_widget(
-            self->sidebar_folders
-        ),
-        FALSE,
-        FALSE
-    );
     gtk_paned_pack2(
         GTK_PANED(self->pane_view),
         self->scrollwnd_main,
@@ -378,6 +405,11 @@ static void wintc_explorer_window_constructed(
     //
     if (!wnd->initial_path)
     {
+        wintc_explorer_window_toggle_sidebar(
+            wnd,
+            WINTC_EXPLORER_SIDEBAR_ID_FOLDERS
+        );
+
         // Nav to desktop if there's no path
         //
         do_navigation(
@@ -409,6 +441,8 @@ static void wintc_explorer_window_dispose(
     g_clear_object(&(wnd->iconview_browser));
     g_clear_object(&(wnd->webkit_browser));
 
+    g_clear_object(&(wnd->loader));
+    g_clear_object(&(wnd->active_sidebar));
     g_clear_object(&(wnd->toolbar_adr));
     g_clear_object(&(wnd->toolbar_std));
 
@@ -421,11 +455,33 @@ static void wintc_explorer_window_finalize(
 {
     WinTCExplorerWindow* wnd = WINTC_EXPLORER_WINDOW(object);
 
+    g_free(wnd->active_sidebar_id);
     g_free(wnd->initial_path);
     g_free(wnd->internet_path);
     wintc_shext_path_info_free_data(&(wnd->local_path));
 
     (G_OBJECT_CLASS(wintc_explorer_window_parent_class))->finalize(object);
+}
+
+static void wintc_explorer_window_get_property(
+    GObject*    object,
+    guint       prop_id,
+    GValue*     value,
+    GParamSpec* pspec
+)
+{
+    WinTCExplorerWindow* wnd = WINTC_EXPLORER_WINDOW(object);
+
+    switch (prop_id)
+    {
+        case PROP_ACTIVE_SIDEBAR:
+            g_value_set_string(value, wnd->active_sidebar_id);
+            break;
+
+        default:
+            G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
+            break;
+    }
 }
 
 static void wintc_explorer_window_set_property(
@@ -443,8 +499,79 @@ static void wintc_explorer_window_set_property(
             wnd->shext_host = g_value_dup_object(value);
             break;
 
+        case PROP_EXPLORER_LOADER:
+            wnd->loader = g_value_dup_object(value);
+            break;
+
         case PROP_INITIAL_PATH:
             wnd->initial_path = g_value_dup_string(value);
+            break;
+
+        case PROP_ACTIVE_SIDEBAR:
+            // Check if this is a nothing burger
+            //
+            if (
+                g_strcmp0(
+                    wnd->active_sidebar_id,
+                    g_value_get_string(value)
+                ) == 0
+            )
+            {
+                break;
+            }
+
+            if (wnd->active_sidebar)
+            {
+                gtk_container_remove(
+                    GTK_CONTAINER(wnd->pane_view),
+                    gtk_paned_get_child1(GTK_PANED(wnd->pane_view))
+                );
+
+                g_clear_object(&(wnd->active_sidebar));
+            }
+
+            g_free(wnd->active_sidebar_id);
+            wnd->active_sidebar_id = g_value_dup_string(value);
+
+            if (wnd->active_sidebar_id)
+            {
+                GType sidebar_type =
+                    wintc_explorer_loader_lookup_sidebar_type(
+                        wnd->loader,
+                        wnd->active_sidebar_id
+                    );
+
+                if (!sidebar_type)
+                {
+                    // Safety - set toolbar to NULL
+                    //
+                    g_object_set(
+                        wnd,
+                        "active-sidebar", NULL,
+                        NULL
+                    );
+                    break;
+                }
+
+                wnd->active_sidebar =
+                    WINTC_EXPLORER_SIDEBAR(
+                        g_object_new(
+                            sidebar_type,
+                            "owner-explorer", wnd,
+                            NULL
+                        )
+                    );
+
+                gtk_paned_pack1(
+                    GTK_PANED(wnd->pane_view),
+                    wintc_explorer_sidebar_get_root_widget(
+                        wnd->active_sidebar
+                    ),
+                    FALSE,
+                    FALSE
+                );
+            }
+
             break;
 
         default:
@@ -459,15 +586,17 @@ static void wintc_explorer_window_set_property(
 GtkWidget* wintc_explorer_window_new(
     WinTCExplorerApplication* app,
     WinTCShextHost*           shext_host,
+    WinTCExplorerLoader*      loader,
     const gchar*              initial_path
 )
 {
     return GTK_WIDGET(
         g_object_new(
             WINTC_TYPE_EXPLORER_WINDOW,
-            "application",  GTK_APPLICATION(app),
-            "shext-host",   shext_host,
-            "initial-path", initial_path,
+            "application",     GTK_APPLICATION(app),
+            "shext-host",      shext_host,
+            "explorer-loader", loader,
+            "initial-path",    initial_path,
             NULL
         )
     );
@@ -518,6 +647,22 @@ WinTCExplorerWindowMode wintc_explorer_window_get_mode(
 )
 {
     return wnd->mode;
+}
+
+void wintc_explorer_window_toggle_sidebar(
+    WinTCExplorerWindow* wnd,
+    const gchar*         sidebar_id
+)
+{
+    const gchar* to_select =
+        g_strcmp0(wnd->active_sidebar_id, sidebar_id) == 0 ?
+            NULL : sidebar_id;
+
+    g_object_set(
+        wnd,
+        "active-sidebar", to_select,
+        NULL
+    );
 }
 
 //

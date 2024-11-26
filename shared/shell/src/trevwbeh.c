@@ -38,6 +38,15 @@ static void wintc_sh_tree_view_behaviour_set_property(
     GParamSpec*   pspec
 );
 
+static void wintc_sh_tree_view_behaviour_update_view(
+    WinTCShTreeViewBehaviour* behaviour,
+    WinTCShBrowser*           browser
+);
+
+static void clear_object_safe(
+    GObject* object
+);
+
 static void on_browser_load_changed(
     WinTCShBrowser*         self,
     WinTCShBrowserLoadEvent load_event,
@@ -132,12 +141,12 @@ static void wintc_sh_tree_view_behaviour_init(
                                  g_str_hash,
                                  g_str_equal,
                                  g_free,
-                                 g_object_unref
+                                 (GDestroyNotify) clear_object_safe
                              );
     self->map_hash_to_iter = g_hash_table_new_full(
                                  g_direct_hash,
                                  g_direct_equal,
-                                 g_free,
+                                 NULL,
                                  g_free
                              );
 }
@@ -225,13 +234,17 @@ static void wintc_sh_tree_view_behaviour_constructed(
         new_column
     );
 
-    // TEST: Attachment to browser to monitor for view switches
-    g_signal_connect(
+    // Hook up everything for getting this all started!
+    //
+    g_signal_connect_object(
         behaviour->browser,
         "load-changed",
         G_CALLBACK(on_browser_load_changed),
-        behaviour
+        behaviour,
+        G_CONNECT_DEFAULT
     );
+
+    wintc_sh_tree_view_behaviour_update_view(behaviour, behaviour->browser);
 
     (G_OBJECT_CLASS(wintc_sh_tree_view_behaviour_parent_class))
         ->constructed(object);
@@ -245,10 +258,11 @@ static void wintc_sh_tree_view_behaviour_dispose(
         WINTC_SH_TREE_VIEW_BEHAVIOUR(object);
 
     g_clear_object(&(behaviour->browser));
-    g_clear_object(&(behaviour->map_iter_to_view));
-    g_clear_object(&(behaviour->map_hash_to_iter));
     g_clear_object(&(behaviour->shext_host));
     g_clear_object(&(behaviour->tree_view));
+
+    g_hash_table_unref(g_steal_pointer(&(behaviour->map_iter_to_view)));
+    g_hash_table_unref(g_steal_pointer(&(behaviour->map_hash_to_iter)));
 
     (G_OBJECT_CLASS(wintc_sh_tree_view_behaviour_parent_class))
         ->dispose(object);
@@ -299,20 +313,17 @@ WinTCShTreeViewBehaviour* wintc_sh_tree_view_behaviour_new(
 }
 
 //
-// CALLBACKS
+// PRIVATE FUNCTIONS
 //
-static void on_browser_load_changed(
-    WinTCShBrowser*         self,
-    WinTCShBrowserLoadEvent load_event,
-    gpointer                user_data
+static void wintc_sh_tree_view_behaviour_update_view(
+    WinTCShTreeViewBehaviour* behaviour,
+    WinTCShBrowser*           browser
 )
 {
-    WinTCShTreeViewBehaviour* behaviour =
-        WINTC_SH_TREE_VIEW_BEHAVIOUR(user_data);
+    WinTCIShextView* current_view =
+        wintc_sh_browser_get_current_view(browser);
 
-    WinTCIShextView* current_view = wintc_sh_browser_get_current_view(self);
-
-    if (!current_view || load_event != WINTC_SH_BROWSER_LOAD_STARTED)
+    if (!current_view)
     {
         return;
     }
@@ -566,11 +577,12 @@ static void on_browser_load_changed(
         //
         if (new_view)
         {
-            g_signal_connect(
+            g_signal_connect_object(
                 view,
                 "items-added",
                 G_CALLBACK(on_view_items_added),
-                behaviour
+                behaviour,
+                G_CONNECT_DEFAULT
             );
 
             wintc_ishext_view_refresh_items(view);
@@ -589,6 +601,36 @@ static void on_browser_load_changed(
     }
 
     g_slist_free(list_views);
+}
+
+//
+// CALLBACKS
+//
+static void clear_object_safe(
+    GObject* object
+)
+{
+    if (object)
+    {
+        g_object_unref(object);
+    }
+}
+
+static void on_browser_load_changed(
+    WinTCShBrowser*         self,
+    WinTCShBrowserLoadEvent load_event,
+    gpointer                user_data
+)
+{
+    WinTCShTreeViewBehaviour* behaviour =
+        WINTC_SH_TREE_VIEW_BEHAVIOUR(user_data);
+
+    if (load_event != WINTC_SH_BROWSER_LOAD_STARTED)
+    {
+        return;
+    }
+
+    wintc_sh_tree_view_behaviour_update_view(behaviour, self);
 }
 
 static void on_view_items_added(

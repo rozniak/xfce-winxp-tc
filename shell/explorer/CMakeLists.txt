@@ -51,10 +51,14 @@ add_executable(
     wintc-explorer
     src/application.c
     src/application.h
+    src/loader.c
+    src/loader.h
     src/main.c
     src/resources.c
     src/sidebar.c
     src/sidebar.h
+    src/sidebars/favside.c
+    src/sidebars/favside.h
     src/sidebars/fldrside.c
     src/sidebars/fldrside.h
     src/sidebars/srchside.c

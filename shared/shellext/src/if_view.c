@@ -11,6 +11,7 @@ enum
 {
     SIGNAL_ITEMS_ADDED = 0,
     SIGNAL_ITEMS_REMOVED,
+    SIGNAL_REFRESHING,
     N_SIGNALS
 };
 
@@ -70,6 +71,18 @@ static void wintc_ishext_view_default_init(
             G_TYPE_NONE,
             1,
             G_TYPE_POINTER
+        );
+    wintc_ishext_view_signals[SIGNAL_REFRESHING] =
+        g_signal_new(
+            "refreshing",
+            iface_type,
+            G_SIGNAL_RUN_FIRST,
+            0,
+            NULL,
+            NULL,
+            g_cclosure_marshal_VOID__VOID,
+            G_TYPE_NONE,
+            0
         );
 }
 
@@ -213,6 +226,17 @@ void _wintc_ishext_view_items_removed(
         wintc_ishext_view_signals[SIGNAL_ITEMS_REMOVED],
         0,
         items
+    );
+}
+
+void _wintc_ishext_view_refreshing(
+    WinTCIShextView* view
+)
+{
+    g_signal_emit(
+        view,
+        wintc_ishext_view_signals[SIGNAL_REFRESHING],
+        0
     );
 }
 

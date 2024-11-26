@@ -129,6 +129,9 @@ void _wintc_ishext_view_items_removed(
     WinTCIShextView*     view,
     WinTCShextViewItem** items
 );
+void _wintc_ishext_view_refreshing(
+    WinTCIShextView* view
+);
 
 void wintc_shext_path_info_copy(
     WinTCShextPathInfo* dst,
