@@ -14,6 +14,12 @@ extern WinTCWndMgmtWindow* (*p_xfw_screen_get_active_window) (
 );
 extern WinTCWndMgmtScreen* (*p_xfw_screen_get_default) (void);
 
+extern gboolean (*p_xfw_window_activate) (
+    WinTCWndMgmtWindow* window,
+    void*               seat,
+    guint64             event_timestamp,
+    GError**            error
+);
 extern GdkPixbuf* (*p_xfw_window_get_icon) (
     WinTCWndMgmtWindow* window,
     gint                size,

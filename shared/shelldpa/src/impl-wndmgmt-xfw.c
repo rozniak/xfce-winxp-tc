@@ -74,12 +74,12 @@ static void xfw_window_minimize(
 
 static void xfw_window_unminimize(
     WinTCWndMgmtWindow* window,
-    WINTC_UNUSED(guint64 timestamp)
+    guint64             timestamp
 )
 {
     GError* error = NULL;
 
-    p_xfw_window_set_minimized(window, FALSE, &error);
+    p_xfw_window_activate(window, NULL, timestamp, &error);
 
     wintc_log_error_and_clear(&error);
 }

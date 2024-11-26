@@ -19,6 +19,12 @@ WinTCWndMgmtWindow* (*p_xfw_screen_get_active_window) (
 ) = NULL;
 WinTCWndMgmtScreen* (*p_xfw_screen_get_default) (void) = NULL;
 
+gboolean (*p_xfw_window_activate) (
+    WinTCWndMgmtWindow* window,
+    void*               seat,
+    guint64             event_timestamp,
+    GError**            error
+) = NULL;
 GdkPixbuf* (*p_xfw_window_get_icon) (
     WinTCWndMgmtWindow* window,
     gint                size,
@@ -64,6 +70,9 @@ gboolean init_dll_xfw()
     p_xfw_screen_get_default =
         dlsym(dl_xfw, "xfw_screen_get_default");
 
+    p_xfw_window_activate =
+        dlsym(dl_xfw, "xfw_window_activate");
+
     p_xfw_window_get_icon =
         dlsym(dl_xfw, "xfw_window_get_icon");
 
@@ -81,6 +90,7 @@ gboolean init_dll_xfw()
     if (
         p_xfw_screen_get_active_window == NULL ||
         p_xfw_screen_get_default       == NULL ||
+        p_xfw_window_activate          == NULL ||
         p_xfw_window_get_icon          == NULL ||
         p_xfw_window_get_name          == NULL ||
         p_xfw_window_is_skip_tasklist  == NULL ||
