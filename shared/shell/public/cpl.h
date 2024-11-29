@@ -17,7 +17,7 @@ typedef struct _WinTCShCplApplet
 //
 // PUBLIC FUNCTIONS
 //
-GSList* wintc_sh_cpl_applet_get_all(void);
+GList* wintc_sh_cpl_applet_get_all(void);
 
 gboolean wintc_sh_cpl_applet_is_executable(
     WinTCShCplApplet* applet

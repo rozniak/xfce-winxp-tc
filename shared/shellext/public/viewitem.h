@@ -17,11 +17,10 @@ typedef struct _WinTCShextViewItem
     gpointer priv;
 } WinTCShextViewItem;
 
-typedef struct _WinTCShextViewItemsAddedData
+typedef struct _WinTCShextViewItemsUpdate
 {
-    WinTCShextViewItem* items;
-    gint                num_items;
-    gboolean            done;
-} WinTCShextViewItemsAddedData;
+    GList*   data;
+    gboolean done;
+} WinTCShextViewItemsUpdate;
 
 #endif

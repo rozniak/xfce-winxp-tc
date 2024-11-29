@@ -34,7 +34,7 @@ static void wintc_sh_view_cpl_get_property(
 
 static gboolean wintc_sh_view_cpl_activate_item(
     WinTCIShextView*    view,
-    WinTCShextViewItem* item,
+    guint               item_hash,
     WinTCShextPathInfo* path_info,
     GError**            error
 );
@@ -83,8 +83,8 @@ struct _WinTCShViewCpl
 
     // State
     //
-    GSList* list_cpls;
-    GArray* view_items;
+    GList*      cpls;
+    GHashTable* map_items;
 };
 
 //
@@ -117,11 +117,8 @@ static void wintc_sh_view_cpl_class_init(
 }
 
 static void wintc_sh_view_cpl_init(
-    WinTCShViewCpl* self
-)
-{
-    self->view_items = g_array_new(FALSE, TRUE, sizeof (WinTCShextViewItem));
-}
+    WINTC_UNUSED(WinTCShViewCpl* self)
+) {}
 
 static void wintc_sh_view_cpl_ishext_view_interface_init(
     WinTCIShextViewInterface* iface
@@ -148,11 +145,17 @@ static void wintc_sh_view_cpl_finalize(
 {
     WinTCShViewCpl* view_cpl = WINTC_SH_VIEW_CPL(object);
 
-    g_clear_slist(
-        &(view_cpl->list_cpls),
+    g_clear_list(
+        &(view_cpl->cpls),
         (GDestroyNotify) wintc_sh_cpl_applet_free
     );
-    g_array_free(view_cpl->view_items, TRUE);
+
+    if (view_cpl->map_items)
+    {
+        g_hash_table_destroy(
+            g_steal_pointer(&(view_cpl->map_items))
+        );
+    }
 
     (G_OBJECT_CLASS(wintc_sh_view_cpl_parent_class))->finalize(object);
 }
@@ -185,13 +188,23 @@ static void wintc_sh_view_cpl_get_property(
 // INTERFACE METHODS (WinTCIShextView)
 //
 static gboolean wintc_sh_view_cpl_activate_item(
-    WINTC_UNUSED(WinTCIShextView* view),
-    WinTCShextViewItem* item,
+    WinTCIShextView*    view,
+    guint               item_hash,
     WinTCShextPathInfo* path_info,
     GError**            error
 )
 {
-    WinTCShCplApplet* applet = (WinTCShCplApplet*) item->priv;
+    WinTCShViewCpl* view_cpl = WINTC_SH_VIEW_CPL(view);
+
+    WinTCShCplApplet*   applet;
+    WinTCShextViewItem* item;
+
+    item   = (WinTCShextViewItem*)
+                 g_hash_table_lookup(
+                     view_cpl->map_items,
+                     GUINT_TO_POINTER(item_hash)
+                 );
+    applet = (WinTCShCplApplet*) item->priv;
 
     if (wintc_sh_cpl_applet_is_executable(applet))
     {
@@ -211,37 +224,32 @@ static void wintc_sh_view_cpl_refresh_items(
 
     _wintc_ishext_view_refreshing(view);
 
-    // Refresh list
-    //
-    g_clear_slist(
-        &(view_cpl->list_cpls),
+    g_clear_list(
+        &(view_cpl->cpls),
         (GDestroyNotify) wintc_sh_cpl_applet_free
     );
 
-    view_cpl->list_cpls = wintc_sh_cpl_applet_get_all();
-
-    g_array_remove_range(
-        view_cpl->view_items,
-        0,
-        view_cpl->view_items->len
-    );
-    g_array_set_size(
-        view_cpl->view_items,
-        g_slist_length(view_cpl->list_cpls)
-    );
+    if (view_cpl->map_items)
+    {
+        g_hash_table_destroy(
+            g_steal_pointer(&(view_cpl->map_items))
+        );
+    }
 
     // Create view items
     //
-    gint i = 0;
+    view_cpl->cpls      = wintc_sh_cpl_applet_get_all();
+    view_cpl->map_items = g_hash_table_new_full(
+                              g_direct_hash,
+                              g_direct_equal,
+                              NULL,
+                              (GDestroyNotify) g_free
+                          );
 
-    for (GSList* iter = view_cpl->list_cpls; iter; iter = iter->next)
+    for (GList* iter = view_cpl->cpls; iter; iter = iter->next)
     {
         WinTCShCplApplet*   applet    = (WinTCShCplApplet*) iter->data;
-        WinTCShextViewItem* view_item = &g_array_index(
-                                            view_cpl->view_items,
-                                            WinTCShextViewItem,
-                                            i
-                                        );
+        WinTCShextViewItem* view_item = g_new(WinTCShextViewItem, 1);
 
         view_item->display_name = applet->display_name;
         view_item->icon_name    = applet->icon_name ?
@@ -251,22 +259,25 @@ static void wintc_sh_view_cpl_refresh_items(
         view_item->hash         = g_str_hash(applet->exec);
         view_item->priv         = applet;
 
-        i++;
+        g_hash_table_insert(
+            view_cpl->map_items,
+            GUINT_TO_POINTER(view_item->hash),
+            view_item
+        );
     }
 
     // Provide update
     //
-    WinTCShextViewItemsAddedData update = { 0 };
+    WinTCShextViewItemsUpdate update = { 0 };
 
-    update.items     = &g_array_index(
-                           view_cpl->view_items,
-                           WinTCShextViewItem,
-                           0
-                       );
-    update.num_items = view_cpl->view_items->len;
-    update.done      = TRUE;
+    GList* items = g_hash_table_get_values(view_cpl->map_items);
+
+    update.data = items;
+    update.done = TRUE;
 
     _wintc_ishext_view_items_added(view, &update);
+
+    g_list_free(items);
 }
 
 static void wintc_sh_view_cpl_get_actions_for_item(

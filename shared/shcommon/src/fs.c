@@ -6,7 +6,7 @@
 //
 // PUBLIC FUNCTIONS
 //
-GSList* wintc_sh_fs_get_names_as_list(
+GList* wintc_sh_fs_get_names_as_list(
     const gchar* path,
     gboolean     full_names,
     GFileTest    test,
@@ -17,7 +17,7 @@ GSList* wintc_sh_fs_get_names_as_list(
     GDir*        dir;
     const gchar* dir_entry    = NULL;
     GSList*      dirs_to_enum = NULL;
-    GSList*      entries      = NULL;
+    GList*       entries      = NULL;
     GSList*      iter         = NULL;
 
     WINTC_SAFE_REF_CLEAR(error);
@@ -42,7 +42,7 @@ GSList* wintc_sh_fs_get_names_as_list(
         if (!dir)
         {
             g_slist_free_full(dirs_to_enum, g_free);
-            g_slist_free_full(entries,      g_free);
+            g_list_free_full(entries,       g_free);
             return NULL;
         }
 
@@ -71,7 +71,7 @@ GSList* wintc_sh_fs_get_names_as_list(
             if (!test || g_file_test(full_path, test))
             {
                 entries =
-                    g_slist_append(
+                    g_list_append(
                         entries,
                         g_strdup(full_names ? full_path : dir_entry)
                     );

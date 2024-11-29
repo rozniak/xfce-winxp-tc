@@ -16,10 +16,10 @@ enum
 
 enum
 {
-    COL_ICON_NAME = 0,
-    COL_ENTRY_NAME,
-    COL_VIEW_HASH,
-    NUM_COLS
+    COLUMN_ICON_NAME = 0,
+    COLUMN_ENTRY_NAME,
+    COLUMN_VIEW_HASH,
+    N_COLUMNS
 };
 
 //
@@ -54,9 +54,14 @@ static void on_browser_load_changed(
 );
 
 static void on_view_items_added(
-    WinTCIShextView*              view,
-    WinTCShextViewItemsAddedData* items_data,
-    gpointer                      user_data
+    WinTCIShextView*           view,
+    WinTCShextViewItemsUpdate* update,
+    gpointer                   user_data
+);
+static void on_view_items_removed(
+    WinTCIShextView*           view,
+    WinTCShextViewItemsUpdate* update,
+    gpointer                   user_data
 );
 
 //
@@ -216,7 +221,7 @@ static void wintc_sh_tree_view_behaviour_constructed(
         new_column,
         new_cell,
         "icon-name",
-        COL_ICON_NAME
+        COLUMN_ICON_NAME
     );
 
     new_cell = gtk_cell_renderer_text_new();
@@ -226,7 +231,7 @@ static void wintc_sh_tree_view_behaviour_constructed(
         new_column,
         new_cell,
         "text",
-        COL_ENTRY_NAME
+        COLUMN_ENTRY_NAME
     );
 
     gtk_tree_view_append_column(
@@ -493,9 +498,9 @@ static void wintc_sh_tree_view_behaviour_update_view(
                 gtk_tree_store_set(
                     behaviour->tree_model,
                     &next,
-                    COL_ICON_NAME,  wintc_ishext_view_get_icon_name(view),
-                    COL_ENTRY_NAME, wintc_ishext_view_get_display_name(view),
-                    COL_VIEW_HASH,  hash,
+                    COLUMN_ICON_NAME,  wintc_ishext_view_get_icon_name(view),
+                    COLUMN_ENTRY_NAME, wintc_ishext_view_get_display_name(view),
+                    COLUMN_VIEW_HASH,  hash,
                     -1
                 );
 
@@ -549,9 +554,9 @@ static void wintc_sh_tree_view_behaviour_update_view(
             gtk_tree_store_set(
                 behaviour->tree_model,
                 &next,
-                COL_ICON_NAME,  wintc_ishext_view_get_icon_name(next_view),
-                COL_ENTRY_NAME, wintc_ishext_view_get_display_name(next_view),
-                COL_VIEW_HASH,  hash,
+                COLUMN_ICON_NAME,  wintc_ishext_view_get_icon_name(next_view),
+                COLUMN_ENTRY_NAME, wintc_ishext_view_get_display_name(next_view),
+                COLUMN_VIEW_HASH,  hash,
                 -1
             );
 
@@ -581,6 +586,13 @@ static void wintc_sh_tree_view_behaviour_update_view(
                 view,
                 "items-added",
                 G_CALLBACK(on_view_items_added),
+                behaviour,
+                G_CONNECT_DEFAULT
+            );
+            g_signal_connect_object(
+                view,
+                "items-removed",
+                G_CALLBACK(on_view_items_removed),
                 behaviour,
                 G_CONNECT_DEFAULT
             );
@@ -634,9 +646,9 @@ static void on_browser_load_changed(
 }
 
 static void on_view_items_added(
-    WinTCIShextView*              view,
-    WinTCShextViewItemsAddedData* items_data,
-    gpointer                      user_data
+    WinTCIShextView*           view,
+    WinTCShextViewItemsUpdate* update,
+    gpointer                   user_data
 )
 {
     WinTCShTreeViewBehaviour* behaviour =
@@ -674,9 +686,9 @@ static void on_view_items_added(
     //
     WinTCShextViewItem* view_item;
 
-    for (gint i = 0; i < items_data->num_items; i++)
+    for (GList* iter = update->data; iter; iter = iter->next)
     {
-        view_item = &(items_data->items[i]);
+        view_item = iter->data;
 
         // Skip leaf nodes and nodes that already exist
         //
@@ -704,9 +716,9 @@ static void on_view_items_added(
         gtk_tree_store_set(
             behaviour->tree_model,
             &child,
-            COL_ICON_NAME,  view_item->icon_name,
-            COL_ENTRY_NAME, view_item->display_name,
-            COL_VIEW_HASH,  view_item->hash,
+            COLUMN_ICON_NAME,  view_item->icon_name,
+            COLUMN_ENTRY_NAME, view_item->display_name,
+            COLUMN_VIEW_HASH,  view_item->hash,
             -1
         );
 
@@ -717,6 +729,56 @@ static void on_view_items_added(
                 GTK_TREE_MODEL(behaviour->tree_model),
                 &child
             )
+        );
+    }
+}
+
+static void on_view_items_removed(
+    WINTC_UNUSED(WinTCIShextView* view),
+    WinTCShextViewItemsUpdate* update,
+    gpointer                   user_data
+)
+{
+    WinTCShTreeViewBehaviour* behaviour =
+        WINTC_SH_TREE_VIEW_BEHAVIOUR(user_data);
+
+    // Track down and bin via the maps
+    //
+    GtkTreeIter iter;
+
+    for (GList* upd_iter = update->data; upd_iter; upd_iter = upd_iter->next)
+    {
+        guint item_hash = GPOINTER_TO_UINT(upd_iter->data);
+
+        const gchar* iter_path =
+            g_hash_table_lookup(
+                behaviour->map_hash_to_iter,
+                GUINT_TO_POINTER(item_hash)
+            );
+
+        if (!iter_path)
+        {
+            continue;
+        }
+
+        gtk_tree_model_get_iter_from_string(
+            GTK_TREE_MODEL(behaviour->tree_model),
+            &iter,
+            iter_path
+        );
+
+        gtk_tree_store_remove(
+            behaviour->tree_model,
+            &iter
+        );
+
+        g_hash_table_remove(
+            behaviour->map_iter_to_view,
+            iter_path
+        );
+        g_hash_table_remove(
+            behaviour->map_hash_to_iter,
+            GUINT_TO_POINTER(item_hash)
         );
     }
 }

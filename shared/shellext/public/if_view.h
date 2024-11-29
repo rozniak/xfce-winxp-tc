@@ -36,7 +36,7 @@ struct _WinTCIShextViewInterface
 
     gboolean (*activate_item) (
         WinTCIShextView*    view,
-        WinTCShextViewItem* item,
+        guint               item_hash,
         WinTCShextPathInfo* path_info,
         GError**            error
     );
@@ -80,7 +80,7 @@ struct _WinTCIShextViewInterface
 //
 gboolean wintc_ishext_view_activate_item(
     WinTCIShextView*    view,
-    WinTCShextViewItem* item,
+    guint               item_hash,
     WinTCShextPathInfo* path_info,
     GError**            error
 );
@@ -122,12 +122,12 @@ gboolean wintc_ishext_view_has_parent(
 // PUBLIC FUNCTIONS
 //
 void _wintc_ishext_view_items_added(
-    WinTCIShextView*              view,
-    WinTCShextViewItemsAddedData* items
+    WinTCIShextView*           view,
+    WinTCShextViewItemsUpdate* update
 );
 void _wintc_ishext_view_items_removed(
-    WinTCIShextView*     view,
-    WinTCShextViewItem** items
+    WinTCIShextView*           view,
+    WinTCShextViewItemsUpdate* update
 );
 void _wintc_ishext_view_refreshing(
     WinTCIShextView* view

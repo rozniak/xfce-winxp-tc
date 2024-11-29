@@ -22,9 +22,9 @@ enum
 
 enum
 {
-    COLUMN_VIEWITEM = 0,
-    COLUMN_ICON,
-    COLUMN_DISPLAY_NAME,
+    COLUMN_ICON = 0,
+    COLUMN_ENTRY_NAME,
+    COLUMN_VIEW_HASH,
     N_COLUMNS
 };
 
@@ -53,14 +53,14 @@ static void wintc_sh_browser_set_property(
 );
 
 static void on_current_view_items_added(
-    WinTCIShextView*              view,
-    WinTCShextViewItemsAddedData* event_data,
-    gpointer                      user_data
+    WinTCIShextView*           view,
+    WinTCShextViewItemsUpdate* update,
+    gpointer                   user_data
 );
 static void on_current_view_items_removed(
-    WinTCIShextView*     view,
-    WinTCShextViewItem** items,
-    gpointer             user_data
+    WinTCIShextView*           view,
+    WinTCShextViewItemsUpdate* update,
+    gpointer                   user_data
 );
 static void on_current_view_refreshing(
     WinTCIShextView* view,
@@ -85,6 +85,10 @@ struct _WinTCShBrowser
     //
     WinTCIShextView* current_view;
     GtkListStore*    view_model;
+
+    gulong sigid_items_added;
+    gulong sigid_items_removed;
+    gulong sigid_refreshing;
 };
 
 //
@@ -142,9 +146,9 @@ static void wintc_sh_browser_init(
     self->view_model =
         gtk_list_store_new(
             3,
-            G_TYPE_POINTER,
             GDK_TYPE_PIXBUF,
-            G_TYPE_STRING
+            G_TYPE_STRING,
+            G_TYPE_UINT
         );
 }
 
@@ -218,7 +222,7 @@ WinTCShBrowser* wintc_sh_browser_new(
 
 gboolean wintc_sh_browser_activate_item(
     WinTCShBrowser*     browser,
-    WinTCShextViewItem* item,
+    guint               item_hash,
     GError**            error
 )
 {
@@ -238,7 +242,7 @@ gboolean wintc_sh_browser_activate_item(
     if (
         !wintc_ishext_view_activate_item(
             browser->current_view,
-            item,
+            item_hash,
             &path_info,
             &local_error
         )
@@ -388,29 +392,54 @@ gboolean wintc_sh_browser_set_location(
         return FALSE;
     }
 
+    // Disconnect from old view
+    //
+    if (browser->current_view)
+    {
+        g_signal_handler_disconnect(
+            browser->current_view,
+            browser->sigid_items_added
+        );
+        g_signal_handler_disconnect(
+            browser->current_view,
+            browser->sigid_items_removed
+        );
+        g_signal_handler_disconnect(
+            browser->current_view,
+            browser->sigid_refreshing
+        );
+
+        g_clear_object(&(browser->current_view));
+    }
+
     // Update the view
     //
-    g_clear_object(&(browser->current_view));
     browser->current_view = new_view;
 
-    g_signal_connect(
-        browser->current_view,
-        "items-added",
-        G_CALLBACK(on_current_view_items_added),
-        browser
-    );
-    g_signal_connect(
-        browser->current_view,
-        "items-removed",
-        G_CALLBACK(on_current_view_items_removed),
-        browser
-    );
-    g_signal_connect(
-        browser->current_view,
-        "refreshing",
-        G_CALLBACK(on_current_view_refreshing),
-        browser
-    );
+    browser->sigid_items_added =
+        g_signal_connect_object(
+            browser->current_view,
+            "items-added",
+            G_CALLBACK(on_current_view_items_added),
+            browser,
+            G_CONNECT_DEFAULT
+        );
+    browser->sigid_items_removed =
+        g_signal_connect_object(
+            browser->current_view,
+            "items-removed",
+            G_CALLBACK(on_current_view_items_removed),
+            browser,
+            G_CONNECT_DEFAULT
+        );
+    browser->sigid_refreshing =
+         g_signal_connect_object(
+            browser->current_view,
+            "refreshing",
+            G_CALLBACK(on_current_view_refreshing),
+            browser,
+            G_CONNECT_DEFAULT
+        );
 
     // Notify that we're loading...
     //
@@ -433,15 +462,15 @@ gboolean wintc_sh_browser_set_location(
 //
 static void on_current_view_items_added(
     WINTC_UNUSED(WinTCIShextView* view),
-    WinTCShextViewItemsAddedData* event_data,
-    gpointer                      user_data
+    WinTCShextViewItemsUpdate* update,
+    gpointer                   user_data
 )
 {
     WinTCShBrowser* browser = WINTC_SH_BROWSER(user_data);
 
-    for (int i = 0; i < event_data->num_items; i++)
+    for (GList* iter = update->data; iter; iter = iter->next)
     {
-        WinTCShextViewItem* item = &(event_data->items[i]);
+        WinTCShextViewItem* item = iter->data;
 
         // Load icon
         //
@@ -462,16 +491,16 @@ static void on_current_view_items_added(
         gtk_list_store_set(
             browser->view_model,
             &iter,
-            COLUMN_VIEWITEM,     item,
-            COLUMN_ICON,         icon,
-            COLUMN_DISPLAY_NAME, item->display_name,
+            COLUMN_ICON,       icon,
+            COLUMN_ENTRY_NAME, item->display_name,
+            COLUMN_VIEW_HASH,  item->hash,
             -1
         );
     }
 
     // Check if done
     //
-    if (event_data->done)
+    if (update->done)
     {
         WINTC_LOG_DEBUG("%s", "shell: current view finished refreshing");
 
@@ -486,18 +515,55 @@ static void on_current_view_items_added(
 
 static void on_current_view_items_removed(
     WINTC_UNUSED(WinTCIShextView* view),
-    WinTCShextViewItem** items,
-    WINTC_UNUSED(gpointer user_data)
+    WinTCShextViewItemsUpdate* update,
+    gpointer                   user_data
 )
 {
-    WinTCShextViewItem* p_item = items[0];
+    WinTCShBrowser* browser = WINTC_SH_BROWSER(user_data);
 
-    // FIXME: Proper implementation later, just print the names for now
+    // FIXME: Inefficient linear search - improve later
     //
-    while (p_item)
+    GtkTreeIter iter;
+    gboolean    searching;
+
+    for (GList* upd_iter = update->data; upd_iter; upd_iter = upd_iter->next)
     {
-        g_message("Item removed: %s", p_item->display_name);
-        p_item++;
+        guint item_hash = GPOINTER_TO_UINT(upd_iter->data);
+
+        searching =
+            gtk_tree_model_iter_children(
+                GTK_TREE_MODEL(browser->view_model),
+                &iter,
+                NULL
+            );
+
+        while (searching)
+        {
+            guint hash;
+
+            gtk_tree_model_get(
+                GTK_TREE_MODEL(browser->view_model),
+                &iter,
+                COLUMN_VIEW_HASH, &hash,
+                -1
+            );
+
+            if (item_hash == hash)
+            {
+                gtk_list_store_remove(
+                    browser->view_model,
+                    &iter
+                );
+
+                break;
+            }
+
+            searching =
+                gtk_tree_model_iter_next(
+                    GTK_TREE_MODEL(browser->view_model),
+                    &iter
+                );
+        }
     }
 }
 

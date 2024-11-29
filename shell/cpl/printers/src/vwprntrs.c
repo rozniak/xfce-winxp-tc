@@ -18,6 +18,10 @@ enum
 // STATIC DATA
 //
 
+// FIXME: Temp
+//
+static GHashTable* s_printers_map = NULL;
+
 // FIXME: Temporary, until we display printers
 //
 static WinTCShextViewItem s_temp_items[] = {
@@ -40,7 +44,7 @@ static void wintc_cpl_view_printers_get_property(
 
 static gboolean wintc_cpl_view_printers_activate_item(
     WinTCIShextView*    view,
-    WinTCShextViewItem* item,
+    guint               item_hash,
     WinTCShextPathInfo* path_info,
     GError**            error
 );
@@ -111,6 +115,15 @@ static void wintc_cpl_view_printers_class_init(
 
     g_free(temp);
 
+    s_printers_map =
+        g_hash_table_new(g_direct_hash, g_direct_equal);
+
+    g_hash_table_insert(
+        s_printers_map,
+        GUINT_TO_POINTER(s_temp_items[0].hash),
+        &(s_temp_items[0])
+    );
+
     // GObject initialisation
     //
     GObjectClass* object_class = G_OBJECT_CLASS(klass);
@@ -176,7 +189,7 @@ static void wintc_cpl_view_printers_get_property(
 //
 static gboolean wintc_cpl_view_printers_activate_item(
     WINTC_UNUSED(WinTCIShextView*    view),
-    WINTC_UNUSED(WinTCShextViewItem* item),
+    WINTC_UNUSED(guint               item_hash),
     WINTC_UNUSED(WinTCShextPathInfo* path_info),
     GError** error
 )
@@ -197,13 +210,16 @@ static void wintc_cpl_view_printers_refresh_items(
     // Emit the FPO printer for now
     // TODO: Implement this!
     //
-    WinTCShextViewItemsAddedData items = {
-        &(s_temp_items[0]),
-        G_N_ELEMENTS(s_temp_items),
-        TRUE
-    };
+    WinTCShextViewItemsUpdate update = { 0 };
 
-    _wintc_ishext_view_items_added(view, &items);
+    GList* items = g_hash_table_get_values(s_printers_map);
+
+    update.data = items;
+    update.done = TRUE;
+
+    _wintc_ishext_view_items_added(view, &update);
+
+    g_list_free(items);
 }
 
 static void wintc_cpl_view_printers_get_actions_for_item(

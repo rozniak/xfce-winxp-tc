@@ -4,7 +4,7 @@
 //
 // PUBLIC FUNCTIONS
 //
-GSList* wintc_sh_fs_get_names_as_list(
+GList* wintc_sh_fs_get_names_as_list(
     const gchar* path,
     gboolean     full_names,
     GFileTest    test,

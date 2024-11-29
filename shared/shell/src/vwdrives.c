@@ -17,6 +17,10 @@ enum
 // STATIC DATA
 //
 
+// FIXME: Temp
+//
+static GHashTable* s_drives_map = NULL;
+
 // FIXME: Temporary - only item is the drive root atm
 //
 static WinTCShextViewItem s_temp_items[] = {
@@ -40,7 +44,7 @@ static void wintc_sh_view_drives_get_property(
 
 static gboolean wintc_sh_view_drives_activate_item(
     WinTCIShextView*    view,
-    WinTCShextViewItem* item,
+    guint               item_data,
     WinTCShextPathInfo* path_info,
     GError**            error
 );
@@ -105,6 +109,8 @@ static void wintc_sh_view_drives_class_init(
     WinTCShViewDrivesClass* klass
 )
 {
+    s_drives_map = g_hash_table_new(g_direct_hash, g_direct_equal);
+
     // TEMP: Assign CPL view path
     //
     s_temp_items[1].priv = wintc_sh_path_for_guid(WINTC_SH_GUID_CPL);
@@ -113,6 +119,19 @@ static void wintc_sh_view_drives_class_init(
     //
     s_temp_items[0].hash = g_str_hash("/");
     s_temp_items[1].hash = g_str_hash(s_temp_items[1].priv);
+
+    // TEMP: Prepend items
+    //
+    g_hash_table_insert(
+        s_drives_map,
+        GUINT_TO_POINTER(s_temp_items[0].hash),
+        &(s_temp_items[0])
+    );
+    g_hash_table_insert(
+        s_drives_map,
+        GUINT_TO_POINTER(s_temp_items[1].hash),
+        &(s_temp_items[1])
+    );
 
     // GObject initialisation
     //
@@ -179,12 +198,19 @@ static void wintc_sh_view_drives_get_property(
 //
 static gboolean wintc_sh_view_drives_activate_item(
     WINTC_UNUSED(WinTCIShextView* view),
-    WinTCShextViewItem* item,
+    guint               item_hash,
     WinTCShextPathInfo* path_info,
     GError**            error
 )
 {
     WINTC_SAFE_REF_CLEAR(error);
+
+    WinTCShextViewItem* item =
+        (WinTCShextViewItem*)
+            g_hash_table_lookup(
+                s_drives_map,
+                GUINT_TO_POINTER(item_hash)
+            );
 
     // TODO: Handle properly, we're using temp items for now
     //
@@ -204,13 +230,16 @@ static void wintc_sh_view_drives_refresh_items(
     // Emit only the root '/' for now
     // TODO: Basically everything in My Computer!
     //
-    WinTCShextViewItemsAddedData items = {
-        &(s_temp_items[0]),
-        G_N_ELEMENTS(s_temp_items),
-        TRUE
-    };
+    WinTCShextViewItemsUpdate update = { 0 };
 
-    _wintc_ishext_view_items_added(view, &items);
+    GList* items = g_hash_table_get_values(s_drives_map);
+
+    update.data = items;
+    update.done = TRUE;
+
+    _wintc_ishext_view_items_added(view, &update);
+
+    g_list_free(items);
 }
 
 static void wintc_sh_view_drives_get_actions_for_item(

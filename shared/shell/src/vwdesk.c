@@ -17,6 +17,10 @@ enum
 // STATIC DATA
 //
 
+// FIXME: Temp
+//
+static GHashTable* s_desktop_map = NULL;
+
 // FIXME: LAZY AGAIN! Use shlang!!!!!! Temporary as well cos the user can
 //        toggle which items are present
 //
@@ -67,7 +71,7 @@ static void wintc_sh_view_desktop_get_property(
 
 static gboolean wintc_sh_view_desktop_activate_item(
     WinTCIShextView*    view,
-    WinTCShextViewItem* item,
+    guint               item_hash,
     WinTCShextPathInfo* path_info,
     GError**            error
 );
@@ -132,6 +136,8 @@ static void wintc_sh_view_desktop_class_init(
     WinTCShViewDesktopClass* klass
 )
 {
+    s_desktop_map = g_hash_table_new(g_direct_hash, g_direct_equal);
+
     // Assign GUID paths to built-in desktop items - kind of rubbish but
     // whatever
     //
@@ -155,6 +161,12 @@ static void wintc_sh_view_desktop_class_init(
 
             g_free(temp);
         }
+
+        g_hash_table_insert(
+            s_desktop_map,
+            GUINT_TO_POINTER(s_desktop_items[i].hash),
+            &(s_desktop_items[i])
+        );
     }
 
     // GObject initialization
@@ -222,22 +234,27 @@ static void wintc_sh_view_desktop_get_property(
 //
 static gboolean wintc_sh_view_desktop_activate_item(
     WINTC_UNUSED(WinTCIShextView* view),
-    WinTCShextViewItem* item,
+    guint               item_hash,
     WinTCShextPathInfo* path_info,
     GError**            error
 )
 {
     WINTC_SAFE_REF_CLEAR(error);
 
-    gchar* target = (gchar*) item->priv;
+    WinTCShextViewItem* item =
+        (WinTCShextViewItem*)
+            g_hash_table_lookup(
+                s_desktop_map,
+                GUINT_TO_POINTER(item_hash)
+            );
 
-    if (!target)
+    if (!(item->priv))
     {
         g_critical("%s", "shell: desk view can't activate item, no target");
         return FALSE;
     }
 
-    path_info->base_path = g_strdup(target);
+    path_info->base_path = g_strdup(item->priv);
 
     return TRUE;
 }
@@ -253,13 +270,16 @@ static void wintc_sh_view_desktop_refresh_items(
     // Just emit the default items for now
     // TODO: Should aggregate with user desktop files
     //
-    WinTCShextViewItemsAddedData items = {
-        &(s_desktop_items[0]),
-        G_N_ELEMENTS(s_desktop_items),
-        TRUE
-    };
+    WinTCShextViewItemsUpdate update = { 0 };
 
-    _wintc_ishext_view_items_added(view, &items);
+    GList* items = g_hash_table_get_values(s_desktop_map);
+
+    update.data = items;
+    update.done = TRUE;
+
+    _wintc_ishext_view_items_added(view, &update);
+
+    g_list_free(items);
 }
 
 static void wintc_sh_view_desktop_get_actions_for_item(

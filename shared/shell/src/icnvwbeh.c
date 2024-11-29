@@ -123,11 +123,11 @@ static void wintc_sh_icon_view_behaviour_constructed(
     );
     gtk_icon_view_set_pixbuf_column(
         GTK_ICON_VIEW(behaviour->icon_view),
-        1
+        0
     );
     gtk_icon_view_set_text_column(
         GTK_ICON_VIEW(behaviour->icon_view),
-        2
+        1
     );
 
     // Attach signals
@@ -218,19 +218,19 @@ static void on_icon_view_item_activated(
 
     if (gtk_tree_model_get_iter(model, &iter, path))
     {
-        GError*             error = NULL;
-        WinTCShextViewItem* item  = NULL;
+        GError* error = NULL;
+        guint   hash;
 
         gtk_tree_model_get(
             model,
             &iter,
-            0, &item, // FIXME: Guess we should make the columns public
+            2, &hash, // FIXME: Guess we should make the columns public
             -1
         );
 
         wintc_sh_browser_activate_item(
             behaviour->browser,
-            item,
+            hash,
             &error
         );
 

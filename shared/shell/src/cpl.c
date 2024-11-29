@@ -18,9 +18,9 @@ static const gchar* S_CPL_KEY_ICON_NAME    = "Icon";
 //
 // PUBLIC FUNCTIONS
 //
-GSList* wintc_sh_cpl_applet_get_all(void)
+GList* wintc_sh_cpl_applet_get_all(void)
 {
-    GSList* entries =
+    GList* entries =
         wintc_sh_fs_get_names_as_list(
             S_CPL_ENTRIES_DIR,
             TRUE,
@@ -35,12 +35,12 @@ GSList* wintc_sh_cpl_applet_get_all(void)
     }
 
     WinTCShCplApplet* applet;
-    GSList*           cpls     = NULL;
+    GList*            cpls     = NULL;
     GError*           error    = NULL;
     GKeyFile*         key_file = g_key_file_new();
     gboolean          success  = TRUE;
 
-    for (GSList* iter = entries; iter; iter = iter->next)
+    for (GList* iter = entries; iter; iter = iter->next)
     {
         WINTC_LOG_DEBUG("shell: cpl parse %s", (gchar*) iter->data);
 
@@ -107,7 +107,7 @@ GSList* wintc_sh_cpl_applet_get_all(void)
 
         if (success)
         {
-            cpls = g_slist_append(cpls, applet);
+            cpls = g_list_append(cpls, applet);
         }
         else
         {
@@ -119,7 +119,7 @@ GSList* wintc_sh_cpl_applet_get_all(void)
         success = TRUE;
     }
 
-    g_slist_free_full(entries, g_free);
+    g_list_free_full(entries, g_free);
     g_key_file_free(key_file);
 
     return cpls;

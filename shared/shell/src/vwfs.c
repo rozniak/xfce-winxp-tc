@@ -1,3 +1,4 @@
+#include <gio/gio.h>
 #include <glib.h>
 #include <wintc/comgtk.h>
 #include <wintc/exec.h>
@@ -44,7 +45,7 @@ static void wintc_sh_view_fs_set_property(
 
 static gboolean wintc_sh_view_fs_activate_item(
     WinTCIShextView*    view,
-    WinTCShextViewItem* item,
+    guint               item_hash,
     WinTCShextPathInfo* path_info,
     GError**            error
 );
@@ -83,6 +84,14 @@ static void clear_view_item(
     WinTCShextViewItem* item
 );
 
+static void on_file_monitor_changed(
+    GFileMonitor*     self,
+    GFile*            file,
+    GFile*            other_file,
+    GFileMonitorEvent event_type,
+    gpointer          user_data
+);
+
 //
 // GLIB OOP/CLASS INSTANCE DEFINITIONS
 //
@@ -97,9 +106,11 @@ struct _WinTCShViewFS
 
     // FS state
     //
-    GArray* items;
     gchar*  parent_path;
     gchar*  path;
+
+    GFileMonitor* fs_monitor;
+    GHashTable*   fs_map_entries;
 
     WinTCShextHost* shext_host;
 };
@@ -159,16 +170,8 @@ static void wintc_sh_view_fs_class_init(
 }
 
 static void wintc_sh_view_fs_init(
-    WinTCShViewFS* self
-)
-{
-    self->items = g_array_new(FALSE, TRUE, sizeof (WinTCShextViewItem));
-
-    g_array_set_clear_func(
-        self->items,
-        (GDestroyNotify) clear_view_item
-    );
-}
+    WINTC_UNUSED(WinTCShViewFS* self)
+) {}
 
 static void wintc_sh_view_fs_ishext_view_interface_init(
     WinTCIShextViewInterface* iface
@@ -193,9 +196,10 @@ static void wintc_sh_view_fs_dispose(
     GObject* object
 )
 {
-    WinTCShViewFS* view = WINTC_SH_VIEW_FS(object);
+    WinTCShViewFS* view_fs = WINTC_SH_VIEW_FS(object);
 
-    g_clear_object(&(view->shext_host));
+    g_clear_object(&(view_fs->fs_monitor));
+    g_clear_object(&(view_fs->shext_host));
 
     (G_OBJECT_CLASS(wintc_sh_view_fs_parent_class))->dispose(object);
 }
@@ -204,11 +208,17 @@ static void wintc_sh_view_fs_finalize(
     GObject* object
 )
 {
-    WinTCShViewFS* view = WINTC_SH_VIEW_FS(object);
+    WinTCShViewFS* view_fs = WINTC_SH_VIEW_FS(object);
 
-    g_array_free(view->items, TRUE);
-    g_free(view->parent_path);
-    g_free(view->path);
+    g_free(view_fs->parent_path);
+    g_free(view_fs->path);
+
+    if (view_fs->fs_map_entries)
+    {
+        g_hash_table_destroy(
+            g_steal_pointer(&(view_fs->fs_map_entries))
+        );
+    }
 
     (G_OBJECT_CLASS(wintc_sh_view_fs_parent_class))->finalize(object);
 }
@@ -280,7 +290,7 @@ static void wintc_sh_view_fs_set_property(
 //
 static gboolean wintc_sh_view_fs_activate_item(
     WinTCIShextView*    view,
-    WinTCShextViewItem* item,
+    guint               item_hash,
     WinTCShextPathInfo* path_info,
     GError**            error
 )
@@ -289,6 +299,24 @@ static gboolean wintc_sh_view_fs_activate_item(
     WinTCShViewFS* view_fs     = WINTC_SH_VIEW_FS(view);
 
     WINTC_SAFE_REF_CLEAR(error);
+
+    // Retrieve the item itself
+    //
+    WinTCShextViewItem* item =
+        (WinTCShextViewItem*)
+            g_hash_table_lookup(
+                view_fs->fs_map_entries,
+                GUINT_TO_POINTER(item_hash)
+            );
+
+    if (!item)
+    {
+        g_critical(
+            "%s",
+            "shell: fs - attempt to activate non-existent item"
+        );
+        return FALSE;
+    }
 
     // Retrieve MIME for the item
     //
@@ -348,9 +376,16 @@ static void wintc_sh_view_fs_refresh_items(
 
     _wintc_ishext_view_refreshing(view);
 
+    if (view_fs->fs_map_entries)
+    {
+        g_hash_table_destroy(
+            g_steal_pointer(&(view_fs->fs_map_entries))
+        );
+    }
+
     // FIXME: Error handling (no way of passing to caller)
     //
-    GSList* entries =
+    GList* entries =
         wintc_sh_fs_get_names_as_list(
             view_fs->path,
             FALSE,
@@ -359,31 +394,49 @@ static void wintc_sh_view_fs_refresh_items(
             NULL
         );
 
-    // Create actual array
-    // FIXME: list->array should probs be in comgtk
+    // Spawn file monitor if needed
+    //
+    if (!view_fs->fs_monitor)
+    {
+        GFile* this_dir = g_file_new_for_path(view_fs->path);
+
+        view_fs->fs_monitor =
+            g_file_monitor_directory(
+                this_dir,
+                0,
+                NULL,
+                NULL
+            );
+
+        if (view_fs->fs_monitor)
+        {
+            g_signal_connect(
+                view_fs->fs_monitor,
+                "changed",
+                G_CALLBACK(on_file_monitor_changed),
+                view_fs
+            );
+        }
+
+        g_object_unref(this_dir);
+    }
+
+    // Enumerate the entries now
     //
     gchar* entry_path;
-    gint   i = 0;
 
-    g_array_remove_range(
-        view_fs->items,
-        0,
-        view_fs->items->len
-    );
-    g_array_set_size(
-        view_fs->items,
-        g_slist_length(entries)
-    );
+    view_fs->fs_map_entries =
+        g_hash_table_new_full(
+            g_direct_hash,
+            g_direct_equal,
+            NULL,
+            (GDestroyNotify) clear_view_item
+        );
 
-    for (GSList* iter = entries; iter; iter = iter->next)
+    for (GList* iter = entries; iter; iter = iter->next)
     {
         gboolean            is_dir;
-        WinTCShextViewItem* item =
-            &g_array_index(
-                view_fs->items,
-                WinTCShextViewItem,
-                i
-            );
+        WinTCShextViewItem* item = g_new(WinTCShextViewItem, 1);
 
         entry_path =
             g_build_path(
@@ -402,24 +455,27 @@ static void wintc_sh_view_fs_refresh_items(
 
         g_free(entry_path);
 
-        i++;
+        g_hash_table_insert(
+            view_fs->fs_map_entries,
+            GUINT_TO_POINTER(item->hash),
+            item
+        );
     }
 
-    g_slist_free(entries);
+    g_list_free(entries);
 
     // Provide update
     //
-    WinTCShextViewItemsAddedData update = { 0 };
+    WinTCShextViewItemsUpdate update = { 0 };
 
-    update.items     = &g_array_index(
-                           view_fs->items,
-                           WinTCShextViewItem,
-                           0
-                       );
-    update.num_items = view_fs->items->len;
-    update.done      = TRUE;
+    GList* items = g_hash_table_get_values(view_fs->fs_map_entries);
+
+    update.data = items;
+    update.done = TRUE;
 
     _wintc_ishext_view_items_added(view, &update);
+
+    g_list_free(items);
 }
 
 static void wintc_sh_view_fs_get_actions_for_item(
@@ -536,5 +592,87 @@ static void clear_view_item(
     WinTCShextViewItem* item
 )
 {
-    g_clear_pointer(&(item->display_name), g_free);
+    g_free(item->display_name);
+    g_free(item);
+}
+
+static void on_file_monitor_changed(
+    WINTC_UNUSED(GFileMonitor* self),
+    GFile*            file,
+    WINTC_UNUSED(GFile* other_file),
+    GFileMonitorEvent event_type,
+    gpointer          user_data
+)
+{
+    WinTCShViewFS* view_fs = WINTC_SH_VIEW_FS(user_data);
+
+    GList*                    data      = NULL;
+    gchar*                    file_path = NULL;
+    gboolean                  is_dir;
+    WinTCShextViewItem*       item;
+    WinTCShextViewItemsUpdate update    = { 0 };
+
+    switch (event_type)
+    {
+        case G_FILE_MONITOR_EVENT_CREATED:
+            file_path = g_file_get_path(file);
+            is_dir    =
+                g_file_query_file_type(file, 0, NULL) == G_FILE_TYPE_DIRECTORY;
+
+            WINTC_LOG_DEBUG("shell: fs monitor - %s created", file_path);
+
+            item = g_new(WinTCShextViewItem, 1);
+
+            item->display_name = g_file_get_basename(file);
+            item->icon_name    = is_dir ? "inode-directory" : "empty";
+            item->is_leaf      = !is_dir;
+            item->hash         = g_str_hash(file_path);
+
+            g_hash_table_insert(
+                view_fs->fs_map_entries,
+                GUINT_TO_POINTER(item->hash),
+                item
+            );
+
+            // Issue update
+            //
+            data = g_list_prepend(data, item);
+
+            update.data = data;
+            update.done = TRUE;
+
+            _wintc_ishext_view_items_added(
+                WINTC_ISHEXT_VIEW(view_fs),
+                &update
+            );
+
+            break;
+
+        case G_FILE_MONITOR_EVENT_DELETED:
+            file_path = g_file_get_path(file);
+
+            WINTC_LOG_DEBUG("shell: fs monitor - %s deleted", file_path);
+
+            // Issue update
+            data =
+                g_list_prepend(
+                    data,
+                    GUINT_TO_POINTER(g_str_hash(file_path))
+                );
+
+            update.data = data;
+            update.done = TRUE;
+
+            _wintc_ishext_view_items_removed(
+                WINTC_ISHEXT_VIEW(view_fs),
+                &update
+            );
+
+            break;
+
+        default: break;
+    }
+
+    g_list_free(data);
+    g_free(file_path);
 }

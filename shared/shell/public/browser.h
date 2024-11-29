@@ -44,7 +44,7 @@ WinTCShBrowser* wintc_sh_browser_new(
 
 gboolean wintc_sh_browser_activate_item(
     WinTCShBrowser*     browser,
-    WinTCShextViewItem* item,
+    guint               item_hash,
     GError**            error
 );
 

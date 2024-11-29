@@ -91,7 +91,7 @@ static void wintc_ishext_view_default_init(
 //
 gboolean wintc_ishext_view_activate_item(
     WinTCIShextView*    view,
-    WinTCShextViewItem* item,
+    guint               item_hash,
     WinTCShextPathInfo* path_info,
     GError**            error
 )
@@ -101,7 +101,7 @@ gboolean wintc_ishext_view_activate_item(
 
     return iface->activate_item(
         view,
-        item,
+        item_hash,
         path_info,
         error
     );
@@ -204,28 +204,28 @@ void wintc_ishext_view_refresh_items(
 // PUBLIC FUNCTIONS
 //
 void _wintc_ishext_view_items_added(
-    WinTCIShextView*              view,
-    WinTCShextViewItemsAddedData* items
+    WinTCIShextView*           view,
+    WinTCShextViewItemsUpdate* update
 )
 {
     g_signal_emit(
         view,
         wintc_ishext_view_signals[SIGNAL_ITEMS_ADDED],
         0,
-        items
+        update
     );
 }
 
 void _wintc_ishext_view_items_removed(
-    WinTCIShextView*     view,
-    WinTCShextViewItem** items
+    WinTCIShextView*           view,
+    WinTCShextViewItemsUpdate* update
 )
 {
     g_signal_emit(
         view,
         wintc_ishext_view_signals[SIGNAL_ITEMS_REMOVED],
         0,
-        items
+        update
     );
 }
 
