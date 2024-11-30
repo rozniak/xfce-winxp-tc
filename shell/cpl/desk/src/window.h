@@ -31,7 +31,7 @@ typedef struct _WinTCCplDeskWindow
 
     // Desktop page
     //
-    GSList* list_wallpapers;
+    GList* list_wallpapers;
 
     GtkWidget* combo_style;
     GtkWidget* listbox_wallpapers;

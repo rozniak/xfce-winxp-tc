@@ -112,7 +112,7 @@ void wintc_cpl_desk_window_finalize_desktop_page(
     WinTCCplDeskWindow* wnd
 )
 {
-    g_slist_free_full(wnd->list_wallpapers, g_free);
+    g_list_free_full(wnd->list_wallpapers, g_free);
     g_clear_object(&(wnd->pixbuf_wallpaper));
 }
 
@@ -225,13 +225,12 @@ static void refresh_wallpaper_list(
     WinTCCplDeskWindow* wnd
 )
 {
-    g_slist_free_full(wnd->list_wallpapers, g_free);
+    g_list_free_full(wnd->list_wallpapers, g_free);
     wintc_container_clear(GTK_CONTAINER(wnd->listbox_wallpapers));
 
     // Load up wallpapers
     //
     GError* error = NULL;
-    GSList* iter  = NULL;
 
     wnd->list_wallpapers =
         wintc_sh_fs_get_names_as_list(
@@ -248,9 +247,7 @@ static void refresh_wallpaper_list(
         return;
     }
 
-    iter = wnd->list_wallpapers;
-
-    for (; iter; iter = iter->next)
+    for (GList* iter = wnd->list_wallpapers; iter; iter = iter->next)
     {
         add_wallpaper_to_list(wnd, (gchar*) iter->data);
     }
@@ -268,7 +265,7 @@ static void select_wallpaper_from_list(
         return;
     }
 
-    for (GSList* iter = wnd->list_wallpapers; iter; iter = iter->next)
+    for (GList* iter = wnd->list_wallpapers; iter; iter = iter->next)
     {
         if (g_strcmp0((gchar*) iter->data, path) == 0)
         {
@@ -293,7 +290,7 @@ static void select_wallpaper_from_list(
         GTK_LIST_BOX(wnd->listbox_wallpapers),
         gtk_list_box_get_row_at_index(
             GTK_LIST_BOX(wnd->listbox_wallpapers),
-            g_slist_length(wnd->list_wallpapers) - 1
+            g_list_length(wnd->list_wallpapers) - 1
         )
     );
 }
@@ -340,7 +337,7 @@ static void on_listbox_wallpapers_row_selected(
     const gchar* wallpaper_path;
 
     wallpaper_path =
-        g_slist_nth_data(
+        g_list_nth_data(
             wnd->list_wallpapers,
             gtk_list_box_row_get_index(row)
         );
