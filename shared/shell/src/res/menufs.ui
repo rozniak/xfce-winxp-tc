@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <menu id="menu">
+    <section>
+      <item>
+        <attribute name="action">control.no-op</attribute>
+        <attribute name="label">Customize This Folder...</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="action">control.no-op</attribute>
+        <attribute name="label">Paste</attribute>
+      </item>
+      <item>
+        <attribute name="action">control.no-op</attribute>
+        <attribute name="label">Paste Shortcut</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="action">control.no-op</attribute>
+        <attribute name="label">New</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="action">control.no-op</attribute>
+        <attribute name="label">Properties</attribute>
+      </item>
+    </section>
+  </menu>
+</interface>

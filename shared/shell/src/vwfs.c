@@ -4,6 +4,7 @@
 #include <wintc/exec.h>
 #include <wintc/shcommon.h>
 #include <wintc/shellext.h>
+#include <wintc/shlang.h>
 
 #include "../public/vwfs.h"
 
@@ -49,16 +50,6 @@ static gboolean wintc_sh_view_fs_activate_item(
     WinTCShextPathInfo* path_info,
     GError**            error
 );
-static void wintc_sh_view_fs_refresh_items(
-    WinTCIShextView* view
-);
-static void wintc_sh_view_fs_get_actions_for_item(
-    WinTCIShextView*    view,
-    WinTCShextViewItem* item
-);
-static void wintc_sh_view_fs_get_actions_for_view(
-    WinTCIShextView* view
-);
 static guint wintc_sh_view_fs_get_unique_hash(
     WinTCIShextView* view
 );
@@ -66,6 +57,13 @@ static const gchar* wintc_sh_view_fs_get_display_name(
     WinTCIShextView* view
 );
 static const gchar* wintc_sh_view_fs_get_icon_name(
+    WinTCIShextView* view
+);
+static GMenuModel* wintc_sh_view_fs_get_operations_for_item(
+    WinTCIShextView* view,
+    guint            item_hash
+);
+static GMenuModel* wintc_sh_view_fs_get_operations_for_view(
     WinTCIShextView* view
 );
 static void wintc_sh_view_fs_get_parent_path(
@@ -79,9 +77,32 @@ static void wintc_sh_view_fs_get_path(
 static gboolean wintc_sh_view_fs_has_parent(
     WinTCIShextView* view
 );
+static void wintc_sh_view_fs_refresh_items(
+    WinTCIShextView* view
+);
+static WinTCShextOperation* wintc_sh_view_fs_spawn_operation(
+    WinTCIShextView* view,
+    gint             operation_id,
+    GList*           targets,
+    GError**         error
+);
 
 static void clear_view_item(
     WinTCShextViewItem* item
+);
+
+static gboolean real_activate_item(
+    WinTCShViewFS*      view_fs,
+    WinTCShextViewItem* item,
+    WinTCShextPathInfo* path_info,
+    GError**            error
+);
+
+static gboolean shopr_open(
+    WinTCIShextView*     view,
+    WinTCShextOperation* operation,
+    GtkWindow*           wnd,
+    GError**             error
 );
 
 static void on_file_monitor_changed(
@@ -177,16 +198,17 @@ static void wintc_sh_view_fs_ishext_view_interface_init(
     WinTCIShextViewInterface* iface
 )
 {
-    iface->activate_item        = wintc_sh_view_fs_activate_item;
-    iface->refresh_items        = wintc_sh_view_fs_refresh_items;
-    iface->get_actions_for_item = wintc_sh_view_fs_get_actions_for_item;
-    iface->get_actions_for_view = wintc_sh_view_fs_get_actions_for_view;
-    iface->get_display_name     = wintc_sh_view_fs_get_display_name;
-    iface->get_icon_name        = wintc_sh_view_fs_get_icon_name;
-    iface->get_parent_path      = wintc_sh_view_fs_get_parent_path;
-    iface->get_path             = wintc_sh_view_fs_get_path;
-    iface->get_unique_hash      = wintc_sh_view_fs_get_unique_hash;
-    iface->has_parent           = wintc_sh_view_fs_has_parent;
+    iface->activate_item           = wintc_sh_view_fs_activate_item;
+    iface->get_display_name        = wintc_sh_view_fs_get_display_name;
+    iface->get_icon_name           = wintc_sh_view_fs_get_icon_name;
+    iface->get_operations_for_item = wintc_sh_view_fs_get_operations_for_item;
+    iface->get_operations_for_view = wintc_sh_view_fs_get_operations_for_view;
+    iface->get_parent_path         = wintc_sh_view_fs_get_parent_path;
+    iface->get_path                = wintc_sh_view_fs_get_path;
+    iface->get_unique_hash         = wintc_sh_view_fs_get_unique_hash;
+    iface->has_parent              = wintc_sh_view_fs_has_parent;
+    iface->refresh_items           = wintc_sh_view_fs_refresh_items;
+    iface->spawn_operation         = wintc_sh_view_fs_spawn_operation;
 }
 
 //
@@ -295,8 +317,7 @@ static gboolean wintc_sh_view_fs_activate_item(
     GError**            error
 )
 {
-    GError*        local_error = NULL;
-    WinTCShViewFS* view_fs     = WINTC_SH_VIEW_FS(view);
+    WinTCShViewFS* view_fs = WINTC_SH_VIEW_FS(view);
 
     WINTC_SAFE_REF_CLEAR(error);
 
@@ -318,51 +339,160 @@ static gboolean wintc_sh_view_fs_activate_item(
         return FALSE;
     }
 
-    // Retrieve MIME for the item
-    //
-    gchar*  next_path = g_build_path(
-                            G_DIR_SEPARATOR_S,
-                            view_fs->path,
-                            item->display_name,
-                            NULL
-                        );
-    gchar*  mime_type = wintc_query_mime_for_file(
-                            next_path,
-                            &local_error
-                        );
+    return real_activate_item(
+        view_fs,
+        item,
+        path_info,
+        error
+    );
+}
 
-    if (!mime_type)
+static const gchar* wintc_sh_view_fs_get_display_name(
+    WinTCIShextView* view
+)
+{
+    WinTCShViewFS* view_fs = WINTC_SH_VIEW_FS(view);
+
+    if (g_strcmp0(view_fs->path, "/") == 0)
     {
-        g_propagate_error(error, local_error);
-        return FALSE;
+        return view_fs->path;
     }
 
-    // Handle the item based on MIME, if it's a directory then we can set that
-    // as our next location - otherwise, it depends if there is a shell
-    // extension for handling the MIME type or not
+    // FIXME: This could be broken if the path itself contains an escaped dir
+    //        separator, cba for now
     //
-    if (g_strcmp0(mime_type, "inode/directory") == 0)
+    return g_strrstr(view_fs->path, G_DIR_SEPARATOR_S) + 1;
+}
+
+static const gchar* wintc_sh_view_fs_get_icon_name(
+    WINTC_UNUSED(WinTCIShextView* view)
+)
+{
+    return "inode-directory";
+}
+
+static GMenuModel* wintc_sh_view_fs_get_operations_for_item(
+    WinTCIShextView* view,
+    guint            item_hash
+)
+{
+    // Retrieve the view item itself
+    //
+    WinTCShViewFS* view_fs = WINTC_SH_VIEW_FS(view);
+
+    WinTCShextViewItem* view_item =
+        (WinTCShextViewItem*)
+            g_hash_table_lookup(
+                view_fs->fs_map_entries,
+                GUINT_TO_POINTER(item_hash)
+            );
+
+    if (!view_item)
     {
-        path_info->base_path = g_strdup_printf("file://%s", next_path);
+        g_critical("%s", "shell: fs - no such item for menu");
+        return NULL;
+    }
+
+    // FIXME: Extremely simplistic for now, does not cover shell extensions or
+    //        anything!
+    //
+    GtkBuilder* builder;
+    GMenuModel* menu;
+
+    builder =
+        gtk_builder_new_from_resource(
+            view_item->is_leaf ?
+              "/uk/oddmatics/wintc/shell/menufslf.ui" :
+              "/uk/oddmatics/wintc/shell/menufsvw.ui"
+        );
+
+    wintc_lc_builder_preprocess_widget_text(builder);
+
+    menu =
+        G_MENU_MODEL(
+            g_object_ref(
+                gtk_builder_get_object(builder, "menu")
+            )
+        );
+
+    g_object_unref(builder);
+
+    return menu;
+}
+
+static GMenuModel* wintc_sh_view_fs_get_operations_for_view(
+    WINTC_UNUSED(WinTCIShextView* view)
+)
+{
+    GtkBuilder* builder;
+    GMenuModel* menu;
+
+    builder =
+        gtk_builder_new_from_resource(
+            "/uk/oddmatics/wintc/shell/menufs.ui"
+        );
+
+    wintc_lc_builder_preprocess_widget_text(builder);
+
+    menu =
+        G_MENU_MODEL(
+            g_object_ref(
+                gtk_builder_get_object(builder, "menu")
+            )
+        );
+
+    g_object_unref(builder);
+
+    return menu;
+}
+
+static void wintc_sh_view_fs_get_parent_path(
+    WinTCIShextView*    view,
+    WinTCShextPathInfo* path_info
+)
+{
+    WinTCShViewFS* view_fs = WINTC_SH_VIEW_FS(view);
+
+    if (view_fs->parent_path)
+    {
+        path_info->base_path =
+            g_strdup_printf("file://%s", view_fs->parent_path);
     }
     else
     {
-        if (wintc_shext_host_has_view_for_mime(view_fs->shext_host, mime_type))
-        {
-            path_info->base_path = g_strdup_printf("file://%s", next_path);
-        }
-        else
-        {
-            if (!wintc_launch_command(next_path, &local_error))
-            {
-                g_propagate_error(error, local_error);
-            }
-        }
+        path_info->base_path =
+            g_strdup(
+                wintc_sh_get_place_path(
+                    WINTC_SH_PLACE_DRIVES
+                )
+            );
     }
+}
 
-    g_free(mime_type);
-    g_free(next_path);
+static void wintc_sh_view_fs_get_path(
+    WinTCIShextView*    view,
+    WinTCShextPathInfo* path_info
+)
+{
+    WinTCShViewFS* view_fs = WINTC_SH_VIEW_FS(view);
 
+    path_info->base_path =
+        g_strdup_printf("file://%s", view_fs->path);
+}
+
+static guint wintc_sh_view_fs_get_unique_hash(
+    WinTCIShextView* view
+)
+{
+    WinTCShViewFS* view_fs = WINTC_SH_VIEW_FS(view);
+
+    return g_str_hash(view_fs->path);
+}
+
+static gboolean wintc_sh_view_fs_has_parent(
+    WINTC_UNUSED(WinTCIShextView* view)
+)
+{
     return TRUE;
 }
 
@@ -478,93 +608,37 @@ static void wintc_sh_view_fs_refresh_items(
     g_list_free(items);
 }
 
-static void wintc_sh_view_fs_get_actions_for_item(
+static WinTCShextOperation* wintc_sh_view_fs_spawn_operation(
     WINTC_UNUSED(WinTCIShextView* view),
-    WINTC_UNUSED(WinTCShextViewItem* item)
+    gint   operation_id,
+    GList* targets,
+    WINTC_UNUSED(GError**         error)
 )
 {
-    g_critical("%s Not Implemented", __func__);
-}
-
-static void wintc_sh_view_fs_get_actions_for_view(
-    WINTC_UNUSED(WinTCIShextView* view)
-)
-{
-    g_critical("%s Not Implemented", __func__);
-}
-
-static const gchar* wintc_sh_view_fs_get_display_name(
-    WinTCIShextView* view
-)
-{
-    WinTCShViewFS* view_fs = WINTC_SH_VIEW_FS(view);
-
-    if (g_strcmp0(view_fs->path, "/") == 0)
+    if (operation_id > WINTC_SHEXT_KNOWN_OP_OPEN)
     {
-        return view_fs->path;
+        g_critical("Not implemented %s", __func__);
+        return NULL;
     }
 
-    // FIXME: This could be broken if the path itself contains an escaped dir
-    //        separator, cba for now
+    // Spawn op
     //
-    return g_strrstr(view_fs->path, G_DIR_SEPARATOR_S) + 1;
-}
+    WinTCShextOperation* ret = g_new(WinTCShextOperation, 1);
 
-static const gchar* wintc_sh_view_fs_get_icon_name(
-    WINTC_UNUSED(WinTCIShextView* view)
-)
-{
-    return "inode-directory";
-}
-
-static void wintc_sh_view_fs_get_parent_path(
-    WinTCIShextView*    view,
-    WinTCShextPathInfo* path_info
-)
-{
-    WinTCShViewFS* view_fs = WINTC_SH_VIEW_FS(view);
-
-    if (view_fs->parent_path)
+    switch (operation_id)
     {
-        path_info->base_path =
-            g_strdup_printf("file://%s", view_fs->parent_path);
+        case WINTC_SHEXT_KNOWN_OP_OPEN:
+            ret->func = shopr_open;
+            ret->priv = targets;
+            break;
+
+        default:
+            g_free(ret);
+            g_critical("%s", "shell: fs - invalid op");
+            return NULL;
     }
-    else
-    {
-        path_info->base_path =
-            g_strdup(
-                wintc_sh_get_place_path(
-                    WINTC_SH_PLACE_DRIVES
-                )
-            );
-    }
-}
 
-static void wintc_sh_view_fs_get_path(
-    WinTCIShextView*    view,
-    WinTCShextPathInfo* path_info
-)
-{
-    WinTCShViewFS* view_fs = WINTC_SH_VIEW_FS(view);
-
-    path_info->base_path =
-        g_strdup_printf("file://%s", view_fs->path);
-}
-
-static guint wintc_sh_view_fs_get_unique_hash(
-    WinTCIShextView* view
-)
-{
-    WinTCShViewFS* view_fs = WINTC_SH_VIEW_FS(view);
-
-    return g_str_hash(view_fs->path);
-}
-
-static gboolean wintc_sh_view_fs_has_parent(
-    WINTC_UNUSED(WinTCIShextView* view)
-)
-{
-    return TRUE;
+    return ret;
 }
 
 //
@@ -594,6 +668,136 @@ static void clear_view_item(
 {
     g_free(item->display_name);
     g_free(item);
+}
+
+static gboolean real_activate_item(
+    WinTCShViewFS*      view_fs,
+    WinTCShextViewItem* item,
+    WinTCShextPathInfo* path_info,
+    GError**            error
+)
+{
+    // If the target is a dir or has a shell extension then set that as
+    // the target path
+    //
+    gchar* next_path   = g_build_path(
+                             G_DIR_SEPARATOR_S,
+                             view_fs->path,
+                             item->display_name,
+                             NULL
+                         );
+    gchar* target_path = NULL;
+
+    if (!(item->is_leaf))
+    {
+        target_path = g_strdup_printf("file://%s", next_path);
+    }
+    else
+    {
+        gchar* mime_type = wintc_query_mime_for_file(next_path, error);
+
+        if (!mime_type)
+        {
+            g_free(next_path);
+            return FALSE;
+        }
+
+        if (wintc_shext_host_has_view_for_mime(view_fs->shext_host, mime_type))
+        {
+            target_path = g_strdup_printf("file://%s", next_path);
+        }
+    }
+
+    // If there is a target path, then either navigate there, or open a new
+    // window to navigate there
+    //
+    // Otherwise just run the command
+    //
+    gboolean success = TRUE;
+
+    if (target_path)
+    {
+        if (path_info)
+        {
+            path_info->base_path = target_path;
+        }
+        else
+        {
+            success = wintc_launch_command(target_path, error);
+
+            g_free(target_path);
+        }
+    }
+    else
+    {
+        success = wintc_launch_command(next_path, error);
+    }
+
+    g_free(next_path);
+
+    return success;
+}
+
+static gboolean shopr_open(
+    WinTCIShextView*     view,
+    WinTCShextOperation* operation,
+    WINTC_UNUSED(GtkWindow* wnd),
+    GError**             error
+)
+{
+    WinTCShViewFS* view_fs = WINTC_SH_VIEW_FS(view);
+
+    GList* targets = operation->priv;
+
+    if (!targets)
+    {
+        g_warning("%s", "shell: fs open op - no files specified?");
+        return TRUE;
+    }
+
+    // Iterate over to activate the items
+    //
+    GError*  local_error = NULL;
+    gboolean success     = TRUE;
+
+    for (GList* iter = targets; iter; iter = iter->next)
+    {
+        WinTCShextViewItem* item =
+            g_hash_table_lookup(
+                view_fs->fs_map_entries,
+                iter->data
+            );
+
+        if (!item)
+        {
+            continue;
+        }
+
+        // Valid - attempt launch
+        //
+        // Only store the first error
+        //
+        if (
+            !real_activate_item(
+                view_fs,
+                item,
+                NULL,
+                local_error ? NULL : &local_error
+            )
+        )
+        {
+            success = FALSE;
+        }
+    }
+
+    if (!success && local_error)
+    {
+        g_propagate_error(error, local_error);
+    }
+
+    g_list_free(targets);
+
+    return success;
 }
 
 static void on_file_monitor_changed(

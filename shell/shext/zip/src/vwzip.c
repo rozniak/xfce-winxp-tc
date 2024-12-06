@@ -45,14 +45,11 @@ static gboolean wintc_view_zip_activate_item(
     WinTCShextPathInfo* path_info,
     GError**            error
 );
-static void wintc_view_zip_refresh_items(
-    WinTCIShextView* view
+static GMenuModel* wintc_view_zip_get_operations_for_item(
+    WinTCIShextView* view,
+    guint            item_hash
 );
-static void wintc_view_zip_get_actions_for_item(
-    WinTCIShextView*    view,
-    WinTCShextViewItem* item
-);
-static void wintc_view_zip_get_actions_for_view(
+static GMenuModel* wintc_view_zip_get_operations_for_view(
     WinTCIShextView* view
 );
 static const gchar* wintc_view_zip_get_display_name(
@@ -73,6 +70,9 @@ static guint wintc_view_zip_get_unique_hash(
     WinTCIShextView* view
 );
 static gboolean wintc_view_zip_has_parent(
+    WinTCIShextView* view
+);
+static void wintc_view_zip_refresh_items(
     WinTCIShextView* view
 );
 
@@ -172,16 +172,16 @@ static void wintc_view_zip_ishext_view_interface_init(
     WinTCIShextViewInterface* iface
 )
 {
-    iface->activate_item        = wintc_view_zip_activate_item;
-    iface->refresh_items        = wintc_view_zip_refresh_items;
-    iface->get_actions_for_item = wintc_view_zip_get_actions_for_item;
-    iface->get_actions_for_view = wintc_view_zip_get_actions_for_view;
-    iface->get_display_name     = wintc_view_zip_get_display_name;
-    iface->get_icon_name        = wintc_view_zip_get_icon_name;
-    iface->get_parent_path      = wintc_view_zip_get_parent_path;
-    iface->get_path             = wintc_view_zip_get_path;
-    iface->get_unique_hash      = wintc_view_zip_get_unique_hash;
-    iface->has_parent           = wintc_view_zip_has_parent;
+    iface->activate_item           = wintc_view_zip_activate_item;
+    iface->get_operations_for_item = wintc_view_zip_get_operations_for_item;
+    iface->get_operations_for_view = wintc_view_zip_get_operations_for_view;
+    iface->get_display_name        = wintc_view_zip_get_display_name;
+    iface->get_icon_name           = wintc_view_zip_get_icon_name;
+    iface->get_parent_path         = wintc_view_zip_get_parent_path;
+    iface->get_path                = wintc_view_zip_get_path;
+    iface->get_unique_hash         = wintc_view_zip_get_unique_hash;
+    iface->has_parent              = wintc_view_zip_has_parent;
+    iface->refresh_items           = wintc_view_zip_refresh_items;
 }
 
 //
@@ -312,120 +312,21 @@ static gboolean wintc_view_zip_activate_item(
     return FALSE;
 }
 
-static void wintc_view_zip_refresh_items(
-    WinTCIShextView* view
+static GMenuModel* wintc_view_zip_get_operations_for_item(
+    WINTC_UNUSED(WinTCIShextView* view),
+    WINTC_UNUSED(guint            item_hash)
 )
 {
-    WinTCViewZip* view_zip = WINTC_VIEW_ZIP(view);
-
-    WINTC_LOG_DEBUG("%s", "shext-zip: refresh zip view");
-
-    _wintc_ishext_view_refreshing(view);
-
-    if (view_zip->map_items)
-    {
-        g_hash_table_destroy(
-            g_steal_pointer(&(view_zip->map_items))
-        );
-    }
-
-    view_zip->map_items =
-        g_hash_table_new_full(
-            g_direct_hash,
-            g_direct_equal,
-            NULL,
-            (GDestroyNotify) clear_view_item
-        );
-
-    // Open the archive
-    //
-    const gchar* path = view_zip->zip_uri + strlen("file://");
-
-    gint   zip_error = 0;
-    zip_t* zip_file  = zip_open(path, 0, &zip_error);
-
-    if (!zip_file)
-    {
-        zip_error_t zip_error_st;
-
-        zip_error_init_with_code(&zip_error_st, zip_error);
-
-        // FIXME: Need a proper way of returning error to caller!
-        g_critical(
-            "shext-zip: can't open %s , %s",
-            path,
-            zip_error_strerror(&zip_error_st)
-        );
-
-        zip_error_fini(&zip_error_st);
-
-        return;
-    }
-
-    // Read through the entries
-    // FIXME: Probably want to cap max num of entries? Check zip bombs to see
-    //        what happens - don't want to get nuked by a crazy zip archive
-    //
-    gint64 n_entries = zip_get_num_entries(zip_file, 0);
-
-    for (gint64 i = 0; i < n_entries; i++)
-    {
-        const gchar* entry_name = zip_get_name(zip_file, (guint64) i, 0);
-
-        // Only want to add the entries in the current relative dir
-        //
-        gint name_offset = 0;
-
-        if (!zip_entry_is_in_dir(view_zip->rel_path, entry_name, &name_offset))
-        {
-            continue;
-        }
-
-        gchar*              entry_copy = g_strdup(entry_name);
-        WinTCShextViewItem* item       = g_new(WinTCShextViewItem, 1);
-
-        item->display_name = entry_copy + name_offset;
-        item->is_leaf      = !g_str_has_suffix(entry_name, G_DIR_SEPARATOR_S);
-        item->icon_name    = item->is_leaf ? "empty" : "inode-directory";
-        item->hash         = zip_entry_hash(path, entry_name);
-        item->priv         = entry_copy;
-
-        g_hash_table_insert(
-            view_zip->map_items,
-            GUINT_TO_POINTER(item->hash),
-            item
-        );
-    }
-
-    zip_close(zip_file);
-
-    // Emit the entries
-    //
-    WinTCShextViewItemsUpdate update = { 0 };
-
-    GList* items = g_hash_table_get_values(view_zip->map_items);
-
-    update.data = items;
-    update.done = TRUE;
-
-    _wintc_ishext_view_items_added(view, &update);
-
-    g_list_free(items);
+    g_warning("%s Not Implemented", __func__);
+    return NULL;
 }
 
-static void wintc_view_zip_get_actions_for_item(
-    WINTC_UNUSED(WinTCIShextView*    view),
-    WINTC_UNUSED(WinTCShextViewItem* item)
-)
-{
-    g_critical("%s Not Implemented", __func__);
-}
-
-static void wintc_view_zip_get_actions_for_view(
+static GMenuModel* wintc_view_zip_get_operations_for_view(
     WINTC_UNUSED(WinTCIShextView* view)
 )
 {
-    g_critical("%s Not Implemented", __func__);
+    g_warning("%s Not Implemented", __func__);
+    return NULL;
 }
 
 static const gchar* wintc_view_zip_get_display_name(
@@ -560,6 +461,107 @@ static gboolean wintc_view_zip_has_parent(
 )
 {
     return TRUE;
+}
+
+static void wintc_view_zip_refresh_items(
+    WinTCIShextView* view
+)
+{
+    WinTCViewZip* view_zip = WINTC_VIEW_ZIP(view);
+
+    WINTC_LOG_DEBUG("%s", "shext-zip: refresh zip view");
+
+    _wintc_ishext_view_refreshing(view);
+
+    if (view_zip->map_items)
+    {
+        g_hash_table_destroy(
+            g_steal_pointer(&(view_zip->map_items))
+        );
+    }
+
+    view_zip->map_items =
+        g_hash_table_new_full(
+            g_direct_hash,
+            g_direct_equal,
+            NULL,
+            (GDestroyNotify) clear_view_item
+        );
+
+    // Open the archive
+    //
+    const gchar* path = view_zip->zip_uri + strlen("file://");
+
+    gint   zip_error = 0;
+    zip_t* zip_file  = zip_open(path, 0, &zip_error);
+
+    if (!zip_file)
+    {
+        zip_error_t zip_error_st;
+
+        zip_error_init_with_code(&zip_error_st, zip_error);
+
+        // FIXME: Need a proper way of returning error to caller!
+        g_critical(
+            "shext-zip: can't open %s , %s",
+            path,
+            zip_error_strerror(&zip_error_st)
+        );
+
+        zip_error_fini(&zip_error_st);
+
+        return;
+    }
+
+    // Read through the entries
+    // FIXME: Probably want to cap max num of entries? Check zip bombs to see
+    //        what happens - don't want to get nuked by a crazy zip archive
+    //
+    gint64 n_entries = zip_get_num_entries(zip_file, 0);
+
+    for (gint64 i = 0; i < n_entries; i++)
+    {
+        const gchar* entry_name = zip_get_name(zip_file, (guint64) i, 0);
+
+        // Only want to add the entries in the current relative dir
+        //
+        gint name_offset = 0;
+
+        if (!zip_entry_is_in_dir(view_zip->rel_path, entry_name, &name_offset))
+        {
+            continue;
+        }
+
+        gchar*              entry_copy = g_strdup(entry_name);
+        WinTCShextViewItem* item       = g_new(WinTCShextViewItem, 1);
+
+        item->display_name = entry_copy + name_offset;
+        item->is_leaf      = !g_str_has_suffix(entry_name, G_DIR_SEPARATOR_S);
+        item->icon_name    = item->is_leaf ? "empty" : "inode-directory";
+        item->hash         = zip_entry_hash(path, entry_name);
+        item->priv         = entry_copy;
+
+        g_hash_table_insert(
+            view_zip->map_items,
+            GUINT_TO_POINTER(item->hash),
+            item
+        );
+    }
+
+    zip_close(zip_file);
+
+    // Emit the entries
+    //
+    WinTCShextViewItemsUpdate update = { 0 };
+
+    GList* items = g_hash_table_get_values(view_zip->map_items);
+
+    update.data = items;
+    update.done = TRUE;
+
+    _wintc_ishext_view_items_added(view, &update);
+
+    g_list_free(items);
 }
 
 //

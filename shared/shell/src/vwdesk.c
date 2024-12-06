@@ -75,20 +75,17 @@ static gboolean wintc_sh_view_desktop_activate_item(
     WinTCShextPathInfo* path_info,
     GError**            error
 );
-static void wintc_sh_view_desktop_refresh_items(
-    WinTCIShextView* view
-);
-static void wintc_sh_view_desktop_get_actions_for_item(
-    WinTCIShextView*    view,
-    WinTCShextViewItem* item
-);
-static void wintc_sh_view_desktop_get_actions_for_view(
-    WinTCIShextView* view
-);
 static const gchar* wintc_sh_view_desktop_get_display_name(
     WinTCIShextView* view
 );
 static const gchar* wintc_sh_view_desktop_get_icon_name(
+    WinTCIShextView* view
+);
+static GMenuModel* wintc_sh_view_desktop_get_operations_for_item(
+    WinTCIShextView* view,
+    guint            item_hash
+);
+static GMenuModel* wintc_sh_view_desktop_get_operations_for_view(
     WinTCIShextView* view
 );
 static void wintc_sh_view_desktop_get_parent_path(
@@ -104,6 +101,15 @@ static guint wintc_sh_view_desktop_get_unique_hash(
 );
 static gboolean wintc_sh_view_desktop_has_parent(
     WinTCIShextView* view
+);
+static void wintc_sh_view_desktop_refresh_items(
+    WinTCIShextView* view
+);
+static WinTCShextOperation* wintc_sh_view_desktop_spawn_operation(
+    WinTCIShextView* view,
+    gint             operation_id,
+    GList*           targets,
+    GError**         error
 );
 
 //
@@ -190,16 +196,19 @@ static void wintc_sh_view_desktop_ishext_view_interface_init(
     WinTCIShextViewInterface* iface
 )
 {
-    iface->activate_item        = wintc_sh_view_desktop_activate_item;
-    iface->refresh_items        = wintc_sh_view_desktop_refresh_items;
-    iface->get_actions_for_item = wintc_sh_view_desktop_get_actions_for_item;
-    iface->get_actions_for_view = wintc_sh_view_desktop_get_actions_for_view;
-    iface->get_display_name     = wintc_sh_view_desktop_get_display_name;
-    iface->get_icon_name        = wintc_sh_view_desktop_get_icon_name;
-    iface->get_parent_path      = wintc_sh_view_desktop_get_parent_path;
-    iface->get_path             = wintc_sh_view_desktop_get_path;
-    iface->get_unique_hash      = wintc_sh_view_desktop_get_unique_hash;
-    iface->has_parent           = wintc_sh_view_desktop_has_parent;
+    iface->activate_item           = wintc_sh_view_desktop_activate_item;
+    iface->get_display_name        = wintc_sh_view_desktop_get_display_name;
+    iface->get_icon_name           = wintc_sh_view_desktop_get_icon_name;
+    iface->get_operations_for_item =
+        wintc_sh_view_desktop_get_operations_for_item;
+    iface->get_operations_for_view =
+        wintc_sh_view_desktop_get_operations_for_view;
+    iface->get_parent_path         = wintc_sh_view_desktop_get_parent_path;
+    iface->get_path                = wintc_sh_view_desktop_get_path;
+    iface->get_unique_hash         = wintc_sh_view_desktop_get_unique_hash;
+    iface->has_parent              = wintc_sh_view_desktop_has_parent;
+    iface->refresh_items           = wintc_sh_view_desktop_refresh_items;
+    iface->spawn_operation         = wintc_sh_view_desktop_spawn_operation;
 }
 
 //
@@ -259,44 +268,6 @@ static gboolean wintc_sh_view_desktop_activate_item(
     return TRUE;
 }
 
-static void wintc_sh_view_desktop_refresh_items(
-    WinTCIShextView* view
-)
-{
-    WINTC_LOG_DEBUG("%s", "shell: refresh desktop view");
-
-    _wintc_ishext_view_refreshing(view);
-
-    // Just emit the default items for now
-    // TODO: Should aggregate with user desktop files
-    //
-    WinTCShextViewItemsUpdate update = { 0 };
-
-    GList* items = g_hash_table_get_values(s_desktop_map);
-
-    update.data = items;
-    update.done = TRUE;
-
-    _wintc_ishext_view_items_added(view, &update);
-
-    g_list_free(items);
-}
-
-static void wintc_sh_view_desktop_get_actions_for_item(
-    WINTC_UNUSED(WinTCIShextView*    view),
-    WINTC_UNUSED(WinTCShextViewItem* item)
-)
-{
-    g_critical("%s Not Implemented", __func__);
-}
-
-static void wintc_sh_view_desktop_get_actions_for_view(
-    WINTC_UNUSED(WinTCIShextView* view)
-)
-{
-    g_critical("%s Not Implemented", __func__);
-}
-
 static const gchar* wintc_sh_view_desktop_get_display_name(
     WINTC_UNUSED(WinTCIShextView* view)
 )
@@ -310,6 +281,23 @@ static const gchar* wintc_sh_view_desktop_get_icon_name(
 )
 {
     return "user-desktop";
+}
+
+static GMenuModel* wintc_sh_view_desktop_get_operations_for_item(
+    WINTC_UNUSED(WinTCIShextView* view),
+    WINTC_UNUSED(guint            item_hash)
+)
+{
+    g_warning("%s Not Implemented", __func__);
+    return NULL;
+}
+
+static GMenuModel* wintc_sh_view_desktop_get_operations_for_view(
+    WINTC_UNUSED(WinTCIShextView* view)
+)
+{
+    g_warning("%s Not Implemented", __func__);
+    return NULL;
 }
 
 static void wintc_sh_view_desktop_get_parent_path(
@@ -340,6 +328,40 @@ static gboolean wintc_sh_view_desktop_has_parent(
 )
 {
     return FALSE;
+}
+
+static void wintc_sh_view_desktop_refresh_items(
+    WinTCIShextView* view
+)
+{
+    WINTC_LOG_DEBUG("%s", "shell: refresh desktop view");
+
+    _wintc_ishext_view_refreshing(view);
+
+    // Just emit the default items for now
+    // TODO: Should aggregate with user desktop files
+    //
+    WinTCShextViewItemsUpdate update = { 0 };
+
+    GList* items = g_hash_table_get_values(s_desktop_map);
+
+    update.data = items;
+    update.done = TRUE;
+
+    _wintc_ishext_view_items_added(view, &update);
+
+    g_list_free(items);
+}
+
+static WinTCShextOperation* wintc_sh_view_desktop_spawn_operation(
+    WINTC_UNUSED(WinTCIShextView* view),
+    WINTC_UNUSED(gint             operation_id),
+    WINTC_UNUSED(GList*           targets),
+    WINTC_UNUSED(GError**         error)
+)
+{
+    g_critical("Not implemented %s", __func__);
+    return NULL;
 }
 
 //

@@ -11,6 +11,7 @@
 #include "@LIB_HEADER_DIR@/list.h"
 #include "@LIB_HEADER_DIR@/marshal.h"
 #include "@LIB_HEADER_DIR@/memory.h"
+#include "@LIB_HEADER_DIR@/menu.h"
 #include "@LIB_HEADER_DIR@/msgbox.h"
 #include "@LIB_HEADER_DIR@/profile.h"
 #include "@LIB_HEADER_DIR@/regex.h"

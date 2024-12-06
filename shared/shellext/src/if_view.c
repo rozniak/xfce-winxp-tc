@@ -107,27 +107,6 @@ gboolean wintc_ishext_view_activate_item(
     );
 }
 
-void wintc_ishext_view_get_actions_for_item(
-    WinTCIShextView*    view,
-    WinTCShextViewItem* item
-)
-{
-    WinTCIShextViewInterface* iface =
-        WINTC_ISHEXT_VIEW_GET_IFACE(view);
-
-    iface->get_actions_for_item(view, item);
-}
-
-void wintc_ishext_view_get_actions_for_view(
-    WinTCIShextView* view
-)
-{
-    WinTCIShextViewInterface* iface =
-        WINTC_ISHEXT_VIEW_GET_IFACE(view);
-
-    iface->get_actions_for_view(view);
-}
-
 const gchar* wintc_ishext_view_get_display_name(
     WinTCIShextView* view
 )
@@ -146,6 +125,27 @@ const gchar* wintc_ishext_view_get_icon_name(
         WINTC_ISHEXT_VIEW_GET_IFACE(view);
 
     return iface->get_icon_name(view);
+}
+
+GMenuModel* wintc_ishext_view_get_operations_for_item(
+    WinTCIShextView* view,
+    guint            item_hash
+)
+{
+    WinTCIShextViewInterface* iface =
+        WINTC_ISHEXT_VIEW_GET_IFACE(view);
+
+    return iface->get_operations_for_item(view, item_hash);
+}
+
+GMenuModel* wintc_ishext_view_get_operations_for_view(
+    WinTCIShextView* view
+)
+{
+    WinTCIShextViewInterface* iface =
+        WINTC_ISHEXT_VIEW_GET_IFACE(view);
+
+    return iface->get_operations_for_view(view);
 }
 
 void wintc_ishext_view_get_parent_path(
@@ -198,6 +198,24 @@ void wintc_ishext_view_refresh_items(
         WINTC_ISHEXT_VIEW_GET_IFACE(view);
 
     iface->refresh_items(view);
+}
+
+WinTCShextOperation* wintc_ishext_view_spawn_operation(
+    WinTCIShextView* view,
+    gint             operation_id,
+    GList*           targets,
+    GError**         error
+)
+{
+    WinTCIShextViewInterface* iface =
+        WINTC_ISHEXT_VIEW_GET_IFACE(view);
+
+    return iface->spawn_operation(
+        view,
+        operation_id,
+        targets,
+        error
+    );
 }
 
 //

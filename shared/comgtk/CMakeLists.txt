@@ -24,6 +24,7 @@ include(../../packaging/cmake-inc/libraries/CMakeLists.txt)
 include(../../packaging/cmake-inc/linking/CMakeLists.txt)
 include(../../packaging/cmake-inc/packaging/CMakeLists.txt)
 
+wintc_resolve_library(gio-2.0  GIO)
 wintc_resolve_library(glib-2.0 GLIB)
 wintc_resolve_library(gtk+-3.0 GTK3)
 
@@ -50,6 +51,8 @@ add_library(
     public/marshal.h
     src/memory.c
     public/memory.h
+    src/menu.c
+    public/menu.h
     src/msgbox.c
     public/msgbox.h
     src/profile.c
@@ -85,18 +88,21 @@ target_include_directories(
     libwintc-comgtk
     SYSTEM
     BEFORE
+    PRIVATE ${GIO_INCLUDE_DIRS}
     PRIVATE ${GLIB_INCLUDE_DIRS}
     PRIVATE ${GTK3_INCLUDE_DIRS}
 )
 
 target_link_directories(
     libwintc-comgtk
+    PRIVATE ${GIO_LIBRARY_DIRS}
     PRIVATE ${GLIB_LIBRARY_DIRS}
     PRIVATE ${GTK3_LIBRARY_DIRS}
 )
 
 target_link_libraries(
     libwintc-comgtk
+    PRIVATE ${GIO_LIBRARIES}
     PRIVATE ${GLIB_LIBRARIES}
     PRIVATE ${GTK3_LIBRARIES}
 )

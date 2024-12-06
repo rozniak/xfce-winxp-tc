@@ -28,6 +28,9 @@ wintc_resolve_library(wintc-comgtk   WINTC_COMGTK)
 wintc_resolve_library(wintc-exec     WINTC_EXEC)
 wintc_resolve_library(wintc-shcommon WINTC_SHCOMMON)
 wintc_resolve_library(wintc-shellext WINTC_SHELLEXT)
+wintc_resolve_library(wintc-shlang   WINTC_SHLANG)
+
+wintc_compile_resources()
 
 add_library(
     libwintc-shell
@@ -39,6 +42,7 @@ add_library(
     public/error.h
     src/icnvwbeh.c
     public/icnvwbeh.h
+    src/resources.c
     src/trevwbeh.c
     public/trevwbeh.h
     src/nmspace.c
@@ -76,6 +80,7 @@ target_include_directories(
     PRIVATE ${WINTC_EXEC_INCLUDE_DIRS}
     PRIVATE ${WINTC_SHCOMMON_INCLUDE_DIRS}
     PRIVATE ${WINTC_SHELLEXT_INCLUDE_DIRS}
+    PRIVATE ${WINTC_SHLANG_INCLUDE_DIRS}
 )
 
 target_link_directories(
@@ -87,6 +92,7 @@ target_link_directories(
     PRIVATE ${WINTC_EXEC_LIBRARY_DIRS}
     PRIVATE ${WINTC_SHCOMMON_LIBRARY_DIRS}
     PRIVATE ${WINTC_SHELLEXT_LIBRARY_DIRS}
+    PRIVATE ${WINTC_SHLANG_LIBRARY_DIRS}
 )
 
 target_link_libraries(
@@ -98,6 +104,7 @@ target_link_libraries(
     PRIVATE ${WINTC_EXEC_LIBRARIES}
     PRIVATE ${WINTC_SHCOMMON_LIBRARIES}
     PRIVATE ${WINTC_SHELLEXT_LIBRARIES}
+    PRIVATE ${WINTC_SHLANG_LIBRARIES}
 )
 
 # Installation

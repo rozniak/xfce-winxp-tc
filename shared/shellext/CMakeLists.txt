@@ -41,6 +41,7 @@ add_library(
     src/if_view.c
     public/if_view.h
     public/viewitem.h
+    public/viewops.h
 )
 
 set_target_properties(

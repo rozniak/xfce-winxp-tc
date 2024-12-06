@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <menu id="menu">
+    <section>
+      <item>
+        <attribute name="label">View</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label">Arrange Icons By</attribute>
+      </item>
+      <item>
+        <attribute name="label">Refresh</attribute>
+      </item>
+    </section>
+  </menu>
+</interface>

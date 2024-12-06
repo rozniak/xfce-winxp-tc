@@ -6,5 +6,6 @@
 #include "@LIB_HEADER_DIR@/host.h"
 #include "@LIB_HEADER_DIR@/if_view.h"
 #include "@LIB_HEADER_DIR@/viewitem.h"
+#include "@LIB_HEADER_DIR@/viewops.h"
 
 #endif

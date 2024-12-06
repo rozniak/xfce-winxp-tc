@@ -7,6 +7,7 @@
 #include <gtk/gtk.h>
 
 #include "viewitem.h"
+#include "viewops.h"
 
 //
 // PUBLIC STRUCTURES
@@ -41,18 +42,17 @@ struct _WinTCIShextViewInterface
         GError**            error
     );
 
-    void (*get_actions_for_item) (
-        WinTCIShextView*    view,
-        WinTCShextViewItem* item
-    );
-    void (*get_actions_for_view) (
-        WinTCIShextView* view
-    );
-
     const gchar* (*get_display_name) (
         WinTCIShextView* view
     );
     const gchar* (*get_icon_name) (
+        WinTCIShextView* view
+    );
+    GMenuModel* (*get_operations_for_item) (
+        WinTCIShextView* view,
+        guint            item_hash
+    );
+    GMenuModel* (*get_operations_for_view) (
         WinTCIShextView* view
     );
     void (*get_parent_path) (
@@ -73,6 +73,13 @@ struct _WinTCIShextViewInterface
     void (*refresh_items) (
         WinTCIShextView* view
     );
+
+    WinTCShextOperation* (*spawn_operation) (
+        WinTCIShextView* view,
+        gint             operation_id,
+        GList*           targets,
+        GError**         error
+    );
 };
 
 //
@@ -89,18 +96,17 @@ void wintc_ishext_view_refresh_items(
     WinTCIShextView* view
 );
 
-void wintc_ishext_view_get_actions_for_item(
-    WinTCIShextView*    view,
-    WinTCShextViewItem* item
-);
-void wintc_ishext_view_get_actions_for_view(
-    WinTCIShextView* view
-);
-
 const gchar* wintc_ishext_view_get_display_name(
     WinTCIShextView* view
 );
 const gchar* wintc_ishext_view_get_icon_name(
+    WinTCIShextView* view
+);
+GMenuModel* wintc_ishext_view_get_operations_for_item(
+    WinTCIShextView* view,
+    guint            item_hash
+);
+GMenuModel* wintc_ishext_view_get_operations_for_view(
     WinTCIShextView* view
 );
 void wintc_ishext_view_get_parent_path(
@@ -116,6 +122,12 @@ guint wintc_ishext_view_get_unique_hash(
 );
 gboolean wintc_ishext_view_has_parent(
     WinTCIShextView* view
+);
+WinTCShextOperation* wintc_ishext_view_spawn_operation(
+    WinTCIShextView* view,
+    gint             operation_id,
+    GList*           targets,
+    GError**         error
 );
 
 //
