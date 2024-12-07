@@ -3,6 +3,11 @@
 
 <Menu>
     <DefaultAppDirs/>
+    <DefaultDirectoryDirs/>
+
+    <Layout>
+        <Merge type="all" />
+    </Layout>
 
     <Menu>
         <Name>Accessories</Name>
@@ -104,4 +109,6 @@
             <Category>X-XFCE</Category>
         </Exclude>
     </Menu>
+
+    <DefaultMergeDirs/>
 </Menu>

@@ -255,7 +255,7 @@ void create_personal_menu(
     //
     GarconMenu* programs_menu    = garcon_menu_new_for_path(
                                        WINTC_ASSETS_DIR
-                                       "/shell-res/start-menu.menu"
+                                       "/shell-res/applications.menu"
                                    );
     GtkWidget*  programs_submenu = garcon_gtk_menu_new(programs_menu);
 
