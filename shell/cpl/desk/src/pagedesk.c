@@ -4,6 +4,7 @@
 #include <wintc/comctl.h>
 #include <wintc/comgtk.h>
 #include <wintc/shcommon.h>
+#include <wintc/shlang.h>
 #include <wintc/syscfg.h>
 
 #include "monitor.h"
@@ -16,7 +17,8 @@
 //
 static void add_wallpaper_to_list(
     WinTCCplDeskWindow* wnd,
-    const gchar*        path
+    const gchar*        path,
+    gboolean            new_item
 );
 static void redraw_wallpaper_preview(
     WinTCCplDeskWindow* wnd
@@ -29,6 +31,12 @@ static void select_wallpaper_from_list(
     const gchar*        path
 );
 
+static void action_browse(
+    GSimpleAction* action,
+    GVariant*      parameter,
+    gpointer       user_data
+);
+
 static void on_combo_style_changed(
     GtkComboBox* self,
     gpointer     user_data
@@ -38,6 +46,19 @@ static void on_listbox_wallpapers_row_selected(
     GtkListBoxRow* row,
     gpointer       user_data
 );
+
+//
+// STATIC DATA
+//
+static GActionEntry s_actions[] = {
+    {
+        .name           = "browse",
+        .activate       = action_browse,
+        .parameter_type = NULL,
+        .state          = NULL,
+        .change_state   = NULL
+    }
+};
 
 //
 // PUBLIC FUNCTIONS
@@ -53,6 +74,23 @@ void wintc_cpl_desk_window_append_desktop_page(
         "listbox-wallpapers", &(wnd->listbox_wallpapers),
         "monitor",            &(wnd->monitor_desktop),
         NULL
+    );
+
+    // Define GActions
+    //
+    GSimpleActionGroup* action_group = g_simple_action_group_new();
+
+    g_action_map_add_action_entries(
+        G_ACTION_MAP(action_group),
+        s_actions,
+        G_N_ELEMENTS(s_actions),
+        wnd
+    );
+
+    gtk_widget_insert_action_group(
+        wnd->notebook_main,
+        "desktop",
+        G_ACTION_GROUP(action_group)
     );
 
     // Connect signals
@@ -121,7 +159,8 @@ void wintc_cpl_desk_window_finalize_desktop_page(
 //
 static void add_wallpaper_to_list(
     WinTCCplDeskWindow* wnd,
-    const gchar*        path
+    const gchar*        path,
+    gboolean            new_item
 )
 {
     gchar*     filename = g_path_get_basename(path);
@@ -138,6 +177,17 @@ static void add_wallpaper_to_list(
     gtk_widget_show(label);
 
     g_free(filename);
+
+    // Do we need to add this item to the backing list?
+    //
+    if (new_item)
+    {
+        wnd->list_wallpapers =
+            g_list_append(
+                wnd->list_wallpapers,
+                g_strdup(path)
+            );
+    }
 }
 
 static void redraw_wallpaper_preview(
@@ -249,7 +299,7 @@ static void refresh_wallpaper_list(
 
     for (GList* iter = wnd->list_wallpapers; iter; iter = iter->next)
     {
-        add_wallpaper_to_list(wnd, (gchar*) iter->data);
+        add_wallpaper_to_list(wnd, (gchar*) iter->data, FALSE);
     }
 }
 
@@ -276,6 +326,11 @@ static void select_wallpaper_from_list(
                     i
                 )
             );
+
+            wintc_list_box_queue_scroll_to_selected(
+                GTK_LIST_BOX(wnd->listbox_wallpapers)
+            );
+
             return;
         }
 
@@ -284,7 +339,7 @@ static void select_wallpaper_from_list(
 
     // The path isn't in the listbox, so add it and select last item
     //
-    add_wallpaper_to_list(wnd, path);
+    add_wallpaper_to_list(wnd, path, TRUE);
 
     gtk_list_box_select_row(
         GTK_LIST_BOX(wnd->listbox_wallpapers),
@@ -293,11 +348,87 @@ static void select_wallpaper_from_list(
             g_list_length(wnd->list_wallpapers) - 1
         )
     );
+
+    wintc_list_box_queue_scroll_to_selected(
+        GTK_LIST_BOX(wnd->listbox_wallpapers)
+    );
 }
 
 //
 // CALLBACKS
 //
+static void action_browse(
+    WINTC_UNUSED(GSimpleAction* action),
+    WINTC_UNUSED(GVariant*      parameter),
+    gpointer user_data
+)
+{
+    WinTCCplDeskWindow* wnd = WINTC_CPL_DESK_WINDOW(user_data);
+
+    //
+    // FIXME: No support for Active Desktop at the moment, hence the lack of
+    //        Background Files and Web page filters
+    //
+
+    // Set up image filters
+    //
+    static const gchar* k_filters[] = {
+        "image/bmp",
+        "image/gif",
+        "image/jpeg",
+        "image/jpg",
+        "image/png"
+    };
+
+    GtkFileFilter* filter_images = gtk_file_filter_new();
+
+    gtk_file_filter_set_name(
+        filter_images,
+        "All Picture Files (*.bmp;*.gif;*.jpg;*.jpeg;*.dib;*.png)"
+    );
+
+    for (gulong i = 0; i < G_N_ELEMENTS(k_filters); i++)
+    {
+        gtk_file_filter_add_mime_type(
+            filter_images,
+            k_filters[i]
+        );
+    }
+
+    // Set up dialog
+    //
+    GtkWidget* dlg =
+        gtk_file_chooser_dialog_new(
+            wintc_lc_get_control_text(WINTC_CTLTXT_BROWSE, WINTC_PUNC_NONE),
+            GTK_WINDOW(wnd),
+            GTK_FILE_CHOOSER_ACTION_OPEN,
+            wintc_lc_get_control_text(WINTC_CTLTXT_CANCEL, WINTC_PUNC_NONE),
+            GTK_RESPONSE_CANCEL,
+            wintc_lc_get_control_text(WINTC_CTLTXT_OPEN, WINTC_PUNC_NONE),
+            GTK_RESPONSE_ACCEPT,
+            NULL
+        );
+
+    gtk_file_chooser_add_filter(
+        GTK_FILE_CHOOSER(dlg),
+        filter_images
+    );
+
+    // Launch dialog
+    //
+    gint result = gtk_dialog_run(GTK_DIALOG(dlg));
+
+    if (result == GTK_RESPONSE_ACCEPT)
+    {
+        select_wallpaper_from_list(
+            wnd,
+            gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dlg))
+        );
+    }
+
+    gtk_widget_destroy(dlg);
+}
+
 static void on_combo_style_changed(
     GtkComboBox* self,
     gpointer     user_data

@@ -47,6 +47,8 @@ add_library(
     public/icons.h
     src/list.c
     public/list.h
+    src/listbox.c
+    public/listbox.h
     src/marshal.c
     public/marshal.h
     src/memory.c

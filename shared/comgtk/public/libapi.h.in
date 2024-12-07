@@ -9,6 +9,7 @@
 #include "@LIB_HEADER_DIR@/errors.h"
 #include "@LIB_HEADER_DIR@/icons.h"
 #include "@LIB_HEADER_DIR@/list.h"
+#include "@LIB_HEADER_DIR@/listbox.h"
 #include "@LIB_HEADER_DIR@/marshal.h"
 #include "@LIB_HEADER_DIR@/memory.h"
 #include "@LIB_HEADER_DIR@/menu.h"
