@@ -26,6 +26,7 @@ wintc_resolve_library(gtk+-3.0       GTK3)
 wintc_resolve_library(wintc-comctl   WINTC_COMCTL)
 wintc_resolve_library(wintc-comgtk   WINTC_COMGTK)
 wintc_resolve_library(wintc-shcommon WINTC_SHCOMMON)
+wintc_resolve_library(wintc-shellext WINTC_SHELLEXT)
 wintc_resolve_library(wintc-shlang   WINTC_SHLANG)
 
 wintc_compile_resources()
@@ -35,8 +36,11 @@ add_executable(
     wintc-cpl-sysdm
     src/application.c
     src/application.h
+    src/intapi.h
     src/main.c
     src/meta.h
+    src/pagegen.c
+    src/pagegen.h
     src/resources.c
     src/window.c
     src/window.h
@@ -61,6 +65,7 @@ target_include_directories(
     PRIVATE ${WINTC_COMCTL_INCLUDE_DIRS}
     PRIVATE ${WINTC_COMGTK_INCLUDE_DIRS}
     PRIVATE ${WINTC_SHCOMMON_INCLUDE_DIRS}
+    PRIVATE ${WINTC_SHELLEXT_INCLUDE_DIRS}
     PRIVATE ${WINTC_SHLANG_INCLUDE_DIRS}
 )
 
@@ -71,6 +76,7 @@ target_link_directories(
     PRIVATE ${WINTC_COMCTL_LIBRARY_DIRS}
     PRIVATE ${WINTC_COMGTK_LIBRARY_DIRS}
     PRIVATE ${WINTC_SHCOMMON_LIBRARY_DIRS}
+    PRIVATE ${WINTC_SHELLEXT_LIBRARY_DIRS}
     PRIVATE ${WINTC_SHLANG_LIBRARY_DIRS}
 )
 
@@ -81,6 +87,7 @@ target_link_libraries(
     PRIVATE ${WINTC_COMCTL_LIBRARIES}
     PRIVATE ${WINTC_COMGTK_LIBRARIES}
     PRIVATE ${WINTC_SHCOMMON_LIBRARIES}
+    PRIVATE ${WINTC_SHELLEXT_LIBRARIES}
     PRIVATE ${WINTC_SHLANG_LIBRARIES}
 )
 

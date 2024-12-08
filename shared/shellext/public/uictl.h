@@ -32,4 +32,8 @@ WinTCShextUIController* wintc_shext_ui_controller_new_from_type(
     WinTCIShextUIHost* ui_host
 );
 
+WinTCIShextUIHost* wintc_shext_ui_controller_get_ui_host(
+    WinTCShextUIController* ui_ctl
+);
+
 #endif
