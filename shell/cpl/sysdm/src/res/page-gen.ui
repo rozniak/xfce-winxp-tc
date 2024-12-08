@@ -45,6 +45,7 @@
             <property name="position">0</property>
           </packing>
         </child>
+
         <child>
           <object class="GtkBox">
             <property name="visible">True</property>
@@ -58,6 +59,7 @@
                 <property name="xalign">0.0</property>
 
                 <style>
+                  <class name="wintc-mb-sm" />
                   <class name="wintc-mt-lg" />
                 </style>
               </object>
@@ -75,7 +77,9 @@
                 <property name="xalign">0.0</property>
 
                 <style>
+                  <class name="wintc-mb-sm" />
                   <class name="wintc-ml-lg" />
+                  <class name="wintc-mt-sm" />
                 </style>
               </object>
               <packing>
@@ -92,7 +96,9 @@
                 <property name="xalign">0.0</property>
 
                 <style>
+                  <class name="wintc-mb-sm" />
                   <class name="wintc-ml-lg" />
+                  <class name="wintc-mt-sm" />
                 </style>
               </object>
               <packing>
@@ -109,13 +115,185 @@
                 <property name="xalign">0.0</property>
 
                 <style>
+                  <class name="wintc-mb-sm" />
                   <class name="wintc-ml-lg" />
+                  <class name="wintc-mt-sm" />
                 </style>
               </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
                 <property name="position">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="label-sp">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="label">Service Pack 3</property>
+                <property name="xalign">0.0</property>
+
+                <style>
+                  <class name="wintc-mb-sm" />
+                  <class name="wintc-ml-lg" />
+                  <class name="wintc-mt-sm" />
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">4</property>
+              </packing>
+            </child>
+
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="label">Registered to:</property>
+                <property name="xalign">0.0</property>
+
+                <style>
+                  <class name="wintc-mb-sm" />
+                  <class name="wintc-mt-md" />
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">5</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="label-reguser">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="label">Rory Fewell</property>
+                <property name="xalign">0.0</property>
+
+                <style>
+                  <class name="wintc-mb-sm" />
+                  <class name="wintc-ml-lg" />
+                  <class name="wintc-mt-sm" />
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">6</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="label-regorg">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="label">Unknown Organization</property>
+                <property name="xalign">0.0</property>
+
+                <style>
+                  <class name="wintc-mb-sm" />
+                  <class name="wintc-ml-lg" />
+                  <class name="wintc-mt-sm" />
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">7</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="label-regid">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="label">2224-459584-48585-9-9433</property>
+                <property name="xalign">0.0</property>
+
+                <style>
+                  <class name="wintc-mb-sm" />
+                  <class name="wintc-ml-lg" />
+                  <class name="wintc-mt-sm" />
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">8</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="xalign">0.0</property>
+
+                <style>
+                  <class name="wintc-mb-sm" />
+                  <class name="wintc-ml-lg" />
+                  <class name="wintc-mt-sm" />
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">9</property>
+              </packing>
+            </child>
+
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="label">Computer:</property>
+                <property name="xalign">0.0</property>
+
+                <style>
+                  <class name="wintc-mb-sm" />
+                  <class name="wintc-mt-md" />
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">10</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="label-cpuid">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="label">Intel Itanium</property>
+                <property name="xalign">0.0</property>
+
+                <style>
+                  <class name="wintc-mb-sm" />
+                  <class name="wintc-ml-lg" />
+                  <class name="wintc-mt-sm" />
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">11</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="label-stats">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="label">1 GHz, 1.00 GB of RAM</property>
+                <property name="xalign">0.0</property>
+
+                <style>
+                  <class name="wintc-mb-sm" />
+                  <class name="wintc-ml-lg" />
+                  <class name="wintc-mt-sm" />
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">12</property>
               </packing>
             </child>
           </object>
