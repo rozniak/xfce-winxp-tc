@@ -82,6 +82,11 @@ static void switch_mode_to(
     WinTCExplorerWindowMode mode
 );
 
+static void action_about(
+    GSimpleAction* action,
+    GVariant*      parameter,
+    gpointer       user_data
+);
 static void action_nav_go(
     GSimpleAction* action,
     GVariant*      parameter,
@@ -121,6 +126,13 @@ static const gchar* S_TITLE_FORMAT_INTERNET =
     "%s - Microsoft Internet Explorer";
 
 static GActionEntry s_window_actions[] = {
+    {
+        .name           = "about",
+        .activate       = action_about,
+        .parameter_type = NULL,
+        .state          = NULL,
+        .change_state   = NULL
+    },
     {
         .name           = "nav-go",
         .activate       = action_nav_go,
@@ -1025,6 +1037,17 @@ static void switch_mode_to(
 //
 // CALLBACKS
 //
+static void action_about(
+    WINTC_UNUSED(GSimpleAction* action),
+    WINTC_UNUSED(GVariant*      parameter),
+    gpointer user_data
+)
+{
+    WinTCExplorerWindow* wnd = WINTC_EXPLORER_WINDOW(user_data);
+
+    wintc_sh_about(GTK_WINDOW(wnd), "Windows", NULL, NULL);
+}
+
 static void action_nav_go(
     WINTC_UNUSED(GSimpleAction* action),
     GVariant* parameter,

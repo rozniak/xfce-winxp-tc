@@ -2,6 +2,7 @@
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
 #include <wintc/comgtk.h>
+#include <wintc/shell.h>
 #include <wintc/shlang.h>
 
 #include "application.h"
@@ -54,6 +55,11 @@ static void action_notimpl(
     gpointer       user_data
 );
 
+static void action_about(
+    GSimpleAction* action,
+    GVariant*      parameter,
+    gpointer       user_data
+);
 static void action_exit(
     GSimpleAction* action,
     GVariant*      parameter,
@@ -103,6 +109,13 @@ static GActionEntry s_window_actions[] = {
         .change_state   = NULL
     },
 
+    {
+        .name           = "about",
+        .activate       = action_about,
+        .parameter_type = NULL,
+        .state          = NULL,
+        .change_state   = NULL
+    },
     {
         .name           = "exit",
         .activate       = action_exit,
@@ -521,6 +534,17 @@ static void action_notimpl(
     );
 
     wintc_nice_error_and_clear(&error);
+}
+
+static void action_about(
+    WINTC_UNUSED(GSimpleAction* action),
+    WINTC_UNUSED(GVariant* parameter),
+    gpointer user_data
+)
+{
+    WinTCNotepadWindow* wnd = WINTC_NOTEPAD_WINDOW(user_data);
+
+    wintc_sh_about(GTK_WINDOW(wnd), "Notepad", NULL, "wintc-notepad");
 }
 
 static void action_exit(

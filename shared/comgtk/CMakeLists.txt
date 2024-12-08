@@ -36,6 +36,8 @@ add_library(
     src/application.c
     public/application.h
     public/assets.h
+    src/builder.c
+    public/builder.h
     public/debug.h
     src/container.c
     public/container.h

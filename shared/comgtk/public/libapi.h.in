@@ -3,6 +3,7 @@
 
 #include "@LIB_HEADER_DIR@/application.h"
 #include "@LIB_HEADER_DIR@/assets.h"
+#include "@LIB_HEADER_DIR@/builder.h"
 #include "@LIB_HEADER_DIR@/container.h"
 #include "@LIB_HEADER_DIR@/debug.h"
 #include "@LIB_HEADER_DIR@/defprocs.h"

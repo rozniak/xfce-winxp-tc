@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.40.0 -->
 <interface>
   <requires lib="gtk+" version="3.24"/>
   <object class="GtkBox" id="main-box">
@@ -311,7 +310,7 @@
                   <object class="GtkMenuItem">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <property name="action-name">win.notimpl</property>
+                    <property name="action-name">win.about</property>
                     <property name="label" translatable="yes">About Notepad</property>
                     <property name="use-underline">True</property>
                   </object>

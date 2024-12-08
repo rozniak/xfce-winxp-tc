@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
   <gresource prefix="/uk/oddmatics/wintc/shell">
+    <!-- DIALOGS -->
+    <file>dlgabout.ui</file>
+
     <!-- MENUS -->
     <file>menuctx.ui</file>
     <file>menufs.ui</file>

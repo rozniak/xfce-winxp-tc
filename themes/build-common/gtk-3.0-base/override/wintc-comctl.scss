@@ -7,8 +7,15 @@
  * Author(s): Rory Fewell <roryf@oddmatics.uk>
  */
 
+$metric_sm: 2px;
 $metric_md: 6px;
 $metric_lg: 12px;
+
+/** small **/
+.wintc-mb-sm { margin-bottom: $metric_sm; }
+.wintc-ml-sm { margin-left:   $metric_sm; }
+.wintc-mr-sm { margin-right:  $metric_sm; }
+.wintc-mt-sm { margin-top:    $metric_sm; }
 
 /** medium **/
 .wintc-mb-md { margin-bottom: $metric_md; }

@@ -24,11 +24,13 @@ include(../../packaging/cmake-inc/resources/CMakeLists.txt)
 wintc_resolve_library(gdk-pixbuf-2.0 GDK_PIXBUF)
 wintc_resolve_library(glib-2.0       GLIB)
 wintc_resolve_library(gtk+-3.0       GTK3)
+wintc_resolve_library(wintc-comctl   WINTC_COMCTL)
 wintc_resolve_library(wintc-comgtk   WINTC_COMGTK)
 wintc_resolve_library(wintc-exec     WINTC_EXEC)
 wintc_resolve_library(wintc-shcommon WINTC_SHCOMMON)
 wintc_resolve_library(wintc-shellext WINTC_SHELLEXT)
 wintc_resolve_library(wintc-shlang   WINTC_SHLANG)
+wintc_resolve_library(wintc-winbrand WINTC_WINBRAND)
 
 wintc_compile_resources()
 
@@ -38,6 +40,8 @@ add_library(
     public/browser.h
     src/cpl.c
     public/cpl.h
+    src/dialog.c
+    public/dialog.h
     src/error.c
     public/error.h
     src/icnvwbeh.c
@@ -76,11 +80,13 @@ target_include_directories(
     PRIVATE ${GDK_PIXBUF_INCLUDE_DIRS}
     PRIVATE ${GLIB_INCLUDE_DIRS}
     PRIVATE ${GTK3_INCLUDE_DIRS}
+    PRIVATE ${WINTC_COMCTL_INCLUDE_DIRS}
     PRIVATE ${WINTC_COMGTK_INCLUDE_DIRS}
     PRIVATE ${WINTC_EXEC_INCLUDE_DIRS}
     PRIVATE ${WINTC_SHCOMMON_INCLUDE_DIRS}
     PRIVATE ${WINTC_SHELLEXT_INCLUDE_DIRS}
     PRIVATE ${WINTC_SHLANG_INCLUDE_DIRS}
+    PRIVATE ${WINTC_WINBRAND_INCLUDE_DIRS}
 )
 
 target_link_directories(
@@ -88,11 +94,13 @@ target_link_directories(
     PRIVATE ${GDK_PIXBUF_LIBRARY_DIRS}
     PRIVATE ${GLIB_LIBRARY_DIRS}
     PRIVATE ${GTK3_LIBRARY_DIRS}
+    PRIVATE ${WINTC_COMCTL_LIBRARY_DIRS}
     PRIVATE ${WINTC_COMGTK_LIBRARY_DIRS}
     PRIVATE ${WINTC_EXEC_LIBRARY_DIRS}
     PRIVATE ${WINTC_SHCOMMON_LIBRARY_DIRS}
     PRIVATE ${WINTC_SHELLEXT_LIBRARY_DIRS}
     PRIVATE ${WINTC_SHLANG_LIBRARY_DIRS}
+    PRIVATE ${WINTC_WINBRAND_LIBRARY_DIRS}
 )
 
 target_link_libraries(
@@ -100,11 +108,13 @@ target_link_libraries(
     PRIVATE ${GDK_PIXBUF_LIBRARIES}
     PRIVATE ${GLIB_LIBRARIES}
     PRIVATE ${GTK3_LIBRARIES}
+    PRIVATE ${WINTC_COMCTL_LIBRARIES}
     PRIVATE ${WINTC_COMGTK_LIBRARIES}
     PRIVATE ${WINTC_EXEC_LIBRARIES}
     PRIVATE ${WINTC_SHCOMMON_LIBRARIES}
     PRIVATE ${WINTC_SHELLEXT_LIBRARIES}
     PRIVATE ${WINTC_SHLANG_LIBRARIES}
+    PRIVATE ${WINTC_WINBRAND_LIBRARIES}
 )
 
 # Installation

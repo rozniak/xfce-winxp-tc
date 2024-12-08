@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <object class="GtkApplicationWindow" id="main-wnd">
+    <property name="can-focus">False</property>
+    <property name="icon-name">help-browser</property>
+    <property name="resizable">False</property>
+    <property name="title" translatable="yes">About %s</property>
+    <property name="type-hint">GDK_WINDOW_TYPE_HINT_MENU</property>
+
+    <child>
+      <object class="GtkGrid">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <child>
+          <object class="GtkImage" id="img-banner">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+          </object>
+          <packing>
+            <property name="left-attach">0</property>
+            <property name="top-attach">0</property>
+            <property name="width">2</property>
+          </packing>
+        </child>
+
+        <child>
+          <object class="GtkImage" id="img-strip">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+          </object>
+          <packing>
+            <property name="left-attach">0</property>
+            <property name="top-attach">1</property>
+            <property name="width">2</property>
+          </packing>
+        </child>
+
+        <child>
+          <object class="GtkBox">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="orientation">vertical</property>
+
+            <child>
+              <object class="GtkImage" id="img-icon">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="height-request">32</property>
+                <property name="width-request">32</property>
+
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+
+            <style>
+              <class name="wintc-ml-lg" />
+              <class name="wintc-mr-lg" />
+              <class name="wintc-mt-md" />
+            </style>
+          </object>
+          <packing>
+            <property name="left-attach">0</property>
+            <property name="top-attach">2</property>
+          </packing>
+        </child>
+
+        <child>
+          <object class="GtkBox">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="orientation">vertical</property>
+            <property name="halign">GTK_ALIGN_FILL</property>
+            <property name="hexpand">True</property>
+
+            <child>
+              <object class="GtkLabel" id="label-appname">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="label" translatable="no">Microsoft ® %s</property>
+                <property name="xalign">0.0</property>
+
+                <style>
+                  <class name="wintc-mb-sm" />
+                  <class name="wintc-mt-md" />
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+
+            <child>
+              <object class="GtkLabel" id="label-kernel">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="halign">GTK_ALIGN_START</property>
+                <property name="label" translatable="no">Version %s (%s)%s</property>
+                <property name="max-width-chars">54</property>
+                <property name="wrap">True</property>
+                <property name="xalign">0.0</property>
+
+                <style>
+                  <class name="wintc-mb-sm" />
+                  <class name="wintc-mt-sm" />
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="label" translatable="no">Copyright © 1985-2005 Microsoft Corporation</property>
+                <property name="xalign">0.0</property>
+
+                <style>
+                  <class name="wintc-mb-lg" />
+                  <class name="wintc-mt-sm" />
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
+
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="halign">GTK_ALIGN_START</property>
+                <property name="label" translatable="yes">This product is licensed under the terms of the End User License Agreement to:</property>
+                <property name="max-width-chars">46</property>
+                <property name="wrap">True</property>
+                <property name="xalign">0.0</property>
+
+                <style>
+                  <class name="wintc-mb-sm" />
+                  <class name="wintc-mt-lg" />
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">3</property>
+              </packing>
+            </child>
+
+            <child>
+              <object class="GtkLabel" id="label-user">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="label" translatable="no">%s</property>
+                <property name="xalign">0.0</property>
+
+                <style>
+                  <class name="wintc-mb-lg" />
+                  <class name="wintc-ml-md" />
+                  <class name="wintc-mt-sm" />
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">4</property>
+              </packing>
+            </child>
+
+            <child>
+              <object class="GtkSeparator">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="orientation">horizontal</property>
+
+                <style>
+                  <class name="wintc-mt-lg" />
+                  <class name="wintc-mb-sm" />
+                  <class name="wintc-mr-md" />
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">5</property>
+              </packing>
+            </child>
+
+            <child>
+              <object class="GtkLabel" id="label-stats">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="label" translatable="no">Physical memory available to Windows: %lu KB</property>
+                <property name="xalign">0.0</property>
+
+                <style>
+                  <class name="wintc-mt-sm" />
+                  <class name="wintc-mb-lg" />
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">6</property>
+              </packing>
+            </child>
+
+            <child>
+              <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="orientation">horizontal</property>
+
+                <child>
+                  <object class="GtkButton" id="btn-ok">
+                    <property name="label" translatable="yes">OK</property>
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="receives-default">True</property>
+                    <property name="action-name">win.ok</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="pack-type">end</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+
+                <style>
+                  <class name="wintc-button-box" />
+                  <class name="wintc-mb-lg" />
+                  <class name="wintc-mr-lg" />
+                  <class name="wintc-mt-lg" />
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">7</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="left-attach">1</property>
+            <property name="top-attach">2</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

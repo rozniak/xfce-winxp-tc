@@ -3,9 +3,16 @@
  * Adwaita theme, to be overridden by the WinTC themes
  *
  * Default sizing¬
+ *   sm: 2px
  *   md: 8px
  *   lg: 16px
  */
+
+/** small **/
+.wintc-mb-sm { margin-bottom: 2px; }
+.wintc-ml-sm { margin-left:   2px; }
+.wintc-mr-sm { margin-right:  2px; }
+.wintc-mt-sm { margin-top:    2px; }
 
 /** medium **/
 .wintc-mb-md { margin-bottom: 8px; }

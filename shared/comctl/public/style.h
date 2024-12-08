@@ -13,6 +13,11 @@
 
 #define WINTC_CTL_BUTTON_CSS_CLASS "wintc-button"
 
+#define WINTC_CTL_MARGINB_SM_CSS_CLASS "wintc-mb-sm"
+#define WINTC_CTL_MARGINL_SM_CSS_CLASS "wintc-ml-sm"
+#define WINTC_CTL_MARGINR_SM_CSS_CLASS "wintc-mr-sm"
+#define WINTC_CTL_MARGINT_SM_CSS_CLASS "wintc-mt-sm"
+
 #define WINTC_CTL_MARGINB_MD_CSS_CLASS "wintc-mb-md"
 #define WINTC_CTL_MARGINL_MD_CSS_CLASS "wintc-ml-md"
 #define WINTC_CTL_MARGINR_MD_CSS_CLASS "wintc-mr-md"

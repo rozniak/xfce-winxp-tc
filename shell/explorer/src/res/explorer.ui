@@ -501,6 +501,7 @@
                         <property name="can-focus">False</property>
                         <property name="label" translatable="yes">About Windows</property>
                         <property name="use-underline">True</property>
+                        <property name="action-name">win.about</property>
                       </object>
                     </child>
                   </object>
