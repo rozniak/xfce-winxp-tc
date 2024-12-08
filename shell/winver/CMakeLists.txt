@@ -26,6 +26,7 @@ wintc_resolve_library(wintc-comctl   WINTC_COMCTL)
 wintc_resolve_library(wintc-comgtk   WINTC_COMGTK)
 wintc_resolve_library(wintc-shell    WINTC_SHELL)
 wintc_resolve_library(wintc-winbrand WINTC_WINBRAND)
+wintc_resolve_library(wintc-shellext WINTC_SHELLEXT)
 
 add_executable(
     wintc-winver
@@ -56,6 +57,7 @@ target_include_directories(
     PRIVATE ${WINTC_COMGTK_INCLUDE_DIRS}
     PRIVATE ${WINTC_SHELL_INCLUDE_DIRS}
     PRIVATE ${WINTC_WINBRAND_INCLUDE_DIRS}
+    PRIVATE ${WINTC_SHELLEXT_INCLUDE_DIRS}
 )
 
 target_link_directories(
@@ -67,6 +69,7 @@ target_link_directories(
     PRIVATE ${WINTC_COMGTK_LIBRARY_DIRS}
     PRIVATE ${WINTC_SHELL_LIBRARY_DIRS}
     PRIVATE ${WINTC_WINBRAND_LIBRARY_DIRS}
+    PRIVATE ${WINTC_SHELLEXT_LIBRARY_DIRS}
 )
 
 target_link_libraries(
@@ -78,6 +81,7 @@ target_link_libraries(
     PRIVATE ${WINTC_COMGTK_LIBRARIES}
     PRIVATE ${WINTC_SHELL_LIBRARIES}
     PRIVATE ${WINTC_WINBRAND_LIBRARIES}
+    PRIVATE ${WINTC_SHELLEXT_LIBRARIES}
 )
 
 # FreeBSD requires linking to libsysinfo port

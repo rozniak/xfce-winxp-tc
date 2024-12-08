@@ -3,3 +3,4 @@ bt,rt:gtk3
 bt,rt:wintc-comgtk
 bt,rt:wintc-shcommon
 bt,rt:wintc-shlang
+bt,rt:wintc-shellext
