@@ -1,6 +1,9 @@
 #include <glib.h>
 #include <gtk/gtk.h>
+#include <pwd.h>
+#include <sys/sysinfo.h>
 #include <wintc/comgtk.h>
+#include <wintc/exec.h>
 #include <wintc/shellext.h>
 #include <wintc/shlang.h>
 
@@ -13,6 +16,10 @@
 static void wintc_cpl_sysdm_page_general_constructed(
     GObject* object
 );
+
+static gchar* get_cpu_name(void);
+static gdouble get_cpu_speed(void);
+static gdouble get_total_ram(void);
 
 //
 // GTK OOP CLASS/INSTANCE DEFINITIONS
@@ -60,6 +67,11 @@ static void wintc_cpl_sysdm_page_general_constructed(
     GtkWidget* label_skued   = NULL;
     GtkWidget* label_skuver  = NULL;
 
+    GtkWidget* label_reguser = NULL;
+
+    GtkWidget* label_cpuid   = NULL;
+    GtkWidget* label_stats   = NULL;
+
     wintc_lc_builder_preprocess_widget_text(builder);
 
     wintc_builder_get_objects(
@@ -67,8 +79,55 @@ static void wintc_cpl_sysdm_page_general_constructed(
         "label-skuname", &label_skuname,
         "label-skued",   &label_skued,
         "label-skuver",  &label_skuver,
+        "label-reguser", &label_reguser,
+        "label-cpuid",   &label_cpuid,
+        "label-stats",   &label_stats,
         NULL
     );
+
+    // Update data in the view
+    //
+    gchar*         cpu_id    = get_cpu_name();
+    struct passwd* user_pwd  = getpwuid(getuid());
+
+    gdouble      cpu_speed     = get_cpu_speed();
+    const gchar* cpu_speed_fmt = "%.0f MHz";
+    gchar*       cpu_speed_str = NULL;
+
+    gdouble      stat_ram     = get_total_ram() / 1000000.0f;
+    const gchar* stat_ram_fmt = "%.0f MB";
+    gchar*       stat_ram_str = NULL;
+
+    gchar* stats_str;
+
+    if (cpu_speed > 1000.0f)
+    {
+        cpu_speed     /= 1000.0f;
+        cpu_speed_fmt  = "%.2f GHz";
+    }
+
+    if (stat_ram > 1000.0f)
+    {
+        stat_ram     /= 1000.0f;
+        stat_ram_fmt  = "%.2f GB";
+    }
+
+    cpu_speed_str =
+        g_strdup_printf(
+            cpu_speed_fmt,
+            cpu_speed
+        );
+    stat_ram_str =
+        g_strdup_printf(
+            stat_ram_fmt,
+            stat_ram
+        );
+    stats_str =
+        g_strdup_printf(
+            "%s, %s of RAM",
+            cpu_speed_str,
+            stat_ram_str
+        );
 
     gtk_label_set_text(
         GTK_LABEL(label_skuname),
@@ -82,6 +141,23 @@ static void wintc_cpl_sysdm_page_general_constructed(
         GTK_LABEL(label_skuver),
         wintc_build_get_tagline()
     );
+    gtk_label_set_text(
+        GTK_LABEL(label_reguser),
+        user_pwd->pw_name
+    );
+    gtk_label_set_text(
+        GTK_LABEL(label_cpuid),
+        cpu_id
+    );
+    gtk_label_set_text(
+        GTK_LABEL(label_stats),
+        stats_str
+    );
+
+    g_free(cpu_id);
+    g_free(cpu_speed_str);
+    g_free(stat_ram_str);
+    g_free(stats_str);
 
     // Insert page into host
     //
@@ -103,4 +179,72 @@ static void wintc_cpl_sysdm_page_general_constructed(
     //
     (G_OBJECT_CLASS(wintc_cpl_sysdm_page_general_parent_class))
         ->constructed(object);
+}
+
+//
+// PRIVATE FUNCTIONS
+//
+static gchar* get_cpu_name(void)
+{
+    // Will not work on FreeBSD
+    //
+    GError* error  = NULL;
+    gchar*  output = NULL;
+
+    if (
+        !wintc_launch_command_sync(
+            "sh -c \"lscpu | grep 'Model name' | sed -e 's/Model name: //g'\"",
+            &output,
+            NULL,
+            &error
+        )
+    )
+    {
+        wintc_log_error_and_clear(&error);
+    }
+
+    if (output)
+    {
+        output = g_strstrip(output);
+    }
+
+    return output;
+}
+
+static gdouble get_cpu_speed(void)
+{
+    // Will not work on FreeBSD
+    //
+    GError* error  = NULL;
+    gchar*  output = NULL;
+    gdouble ret    = 0.0f;
+
+    if (
+        !wintc_launch_command_sync(
+            "sh -c \"lscpu | grep 'CPU max MHz' | sed -e 's/CPU max MHz: //g'\"",
+            &output,
+            NULL,
+            &error
+        )
+    )
+    {
+        wintc_log_error_and_clear(&error);
+    }
+
+    if (output)
+    {
+        ret = g_strtod(output, NULL);
+        g_free(output);
+    }
+
+    return ret;
+}
+
+static gdouble get_total_ram(void)
+{
+    struct sysinfo stats;
+
+    sysinfo(&stats);
+
+    return (gdouble) stats.totalram;
 }

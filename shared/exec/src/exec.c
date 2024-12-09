@@ -20,18 +20,29 @@ typedef gboolean (*CmdParseFunc) (
 //
 // FORWARD DECLARATIONS
 //
+static gboolean do_command(
+    const gchar* cmdline,
+    gboolean     async,
+    gchar**      standard_output,
+    gchar**      standard_error,
+    GError**     out_error
+);
+
+static gchar** parse_cmdline(
+    const gchar* cmdline,
+    GError**     out_error
+);
+
 static gboolean parse_file_in_cmdline(
     const gchar* cmdline,
     gchar**      out_cmdline,
     GError**     out_error
 );
-
 static gboolean parse_unc_path_in_cmdline(
     const gchar* cmdline,
     gchar**      out_cmdline,
     GError**     out_error
 );
-
 static gboolean parse_url_in_cmdline(
     const gchar* cmdline,
     gchar**      out_cmdline,
@@ -65,18 +76,119 @@ gboolean wintc_launch_command(
     GError**     out_error
 )
 {
+    return do_command(
+        cmdline,
+        TRUE,
+        NULL,
+        NULL,
+        out_error
+    );
+}
+
+gboolean wintc_launch_command_sync(
+    const gchar* cmdline,
+    gchar**      standard_output,
+    gchar**      standard_error,
+    GError**     out_error
+)
+{
+    return do_command(
+        cmdline,
+        FALSE,
+        standard_output,
+        standard_error,
+        out_error
+    );
+}
+
+//
+// PRIVATE FUNCTIONS
+//
+static gboolean do_command(
+    const gchar* cmdline,
+    gboolean     async,
+    gchar**      standard_output,
+    gchar**      standard_error,
+    GError**     out_error
+)
+{
+    gchar**  argv;
+    gchar*   display;
+    gboolean success;
+
+    WINTC_LOG_USER_DEBUG("Launching %s", cmdline);
+
+    argv = parse_cmdline(cmdline, out_error);
+
+    if (!argv)
+    {
+        return FALSE;
+    }
+
+    display =
+        g_strdup(
+            gdk_display_get_name(gdk_display_get_default())
+        );
+
+    if (async)
+    {
+        success =
+            g_spawn_async(
+                NULL,
+                argv,
+                NULL,
+                0,
+                (GSpawnChildSetupFunc) set_display,
+                display,
+                NULL,
+                out_error
+            );
+    }
+    else
+    {
+        success =
+            g_spawn_sync(
+                NULL,
+                argv,
+                NULL,
+                0,
+                (GSpawnChildSetupFunc) set_display,
+                display,
+                standard_output,
+                standard_error,
+                NULL,
+                out_error
+            );
+    }
+
+    g_free(display);
+    g_strfreev(argv);
+
+    if (!success)
+    {
+        WINTC_LOG_USER_DEBUG("Failed to launch.");
+
+        return FALSE;
+    }
+
+    WINTC_LOG_USER_DEBUG("Done.");
+
+    return TRUE;
+}
+
+static gchar** parse_cmdline(
+    const gchar* cmdline,
+    GError**     out_error
+)
+{
     gchar**       argv;
-    gchar*        display      = NULL;
     gboolean      done_parsing = FALSE;
     GError*       error        = NULL;
     CmdParseFunc* pparser;
     gchar*        real_cmdline = NULL;
     gchar*        tmp_cmdline  = g_strdup(cmdline);
-    gboolean      success;
 
     WINTC_SAFE_REF_CLEAR(out_error);
-
-    WINTC_LOG_USER_DEBUG("Launching %s", cmdline);
 
     // Iterate through parsers
     //
@@ -94,7 +206,7 @@ gboolean wintc_launch_command(
             g_free(real_cmdline);
             g_free(tmp_cmdline);
 
-            return FALSE;
+            return NULL;
         }
 
         WINTC_LOG_USER_DEBUG("Parse result: %s", real_cmdline);
@@ -119,48 +231,12 @@ gboolean wintc_launch_command(
     if (argv == NULL)
     {
         g_propagate_error(out_error, error);
-        return FALSE;
+        return NULL;
     }
 
-    // Launch now!
-    //
-    display =
-        g_strdup(
-            gdk_display_get_name(gdk_display_get_default())
-        );
-
-    success =
-        g_spawn_async(
-            NULL,
-            argv,
-            NULL,
-            0,
-            (GSpawnChildSetupFunc) set_display,
-            display,
-            NULL,
-            &error
-        );
-
-    g_free(display);
-    g_strfreev(argv);
-
-    if (!success)
-    {
-        WINTC_LOG_USER_DEBUG("Failed to launch: %s", error->message);
-
-        g_propagate_error(out_error, error);
-
-        return FALSE;
-    }
-
-    WINTC_LOG_USER_DEBUG("Done.");
-
-    return TRUE;
+    return argv;
 }
 
-//
-// PRIVATE FUNCTIONS
-//
 static gboolean parse_file_in_cmdline(
     const gchar* cmdline,
     gchar**      out_cmdline,

@@ -177,7 +177,6 @@
           <object class="GtkLabel" id="label-sp">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
-            <property name="label">Service Pack 3</property>
             <property name="xalign">0.0</property>
 
             <style>
@@ -215,7 +214,6 @@
           <object class="GtkLabel" id="label-reguser">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
-            <property name="label">Rory Fewell</property>
             <property name="xalign">0.0</property>
 
             <style>
@@ -253,7 +251,6 @@
           <object class="GtkLabel" id="label-regid">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
-            <property name="label">2224-459584-48585-9-9433</property>
             <property name="xalign">0.0</property>
 
             <style>
@@ -309,7 +306,9 @@
           <object class="GtkLabel" id="label-cpuid">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
-            <property name="label">Intel Itanium</property>
+            <property name="halign">GTK_ALIGN_START</property>
+            <property name="max-width-chars">26</property>
+            <property name="wrap">True</property>
             <property name="xalign">0.0</property>
 
             <style>
@@ -328,7 +327,9 @@
           <object class="GtkLabel" id="label-stats">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
-            <property name="label">1 GHz, 1.00 GB of RAM</property>
+            <property name="halign">GTK_ALIGN_START</property>
+            <property name="max-width-chars">26</property>
+            <property name="wrap">True</property>
             <property name="xalign">0.0</property>
 
             <style>
