@@ -236,26 +236,39 @@ static gdouble get_cpu_speed(void)
 {
     // Will not work on FreeBSD
     //
+    static const gchar* k_methods[] = {
+        "sh -c \"lscpu | grep 'CPU max MHz' | sed -e 's/CPU max MHz: //g'\"",
+        "sh -c \"lscpu -e=MHZ | grep '[[:digit:]]' | sort -r | head -n 1\""
+    };
+
     GError* error  = NULL;
     gchar*  output = NULL;
     gdouble ret    = 0.0f;
 
-    if (
-        !wintc_launch_command_sync(
-            "sh -c \"lscpu | grep 'CPU max MHz' | sed -e 's/CPU max MHz: //g'\"",
-            &output,
-            NULL,
-            &error
+    for (gulong i = 0; i < G_N_ELEMENTS(k_methods); i++)
+    {
+        if (
+            !wintc_launch_command_sync(
+                k_methods[i],
+                &output,
+                NULL,
+                &error
+            )
         )
-    )
-    {
-        wintc_log_error_and_clear(&error);
-    }
+        {
+            wintc_log_error_and_clear(&error);
+            continue;
+        }
 
-    if (output)
-    {
         ret = g_strtod(output, NULL);
         g_free(output);
+
+        // Was this method successful?
+        //
+        if (ret > 0.0f)
+        {
+            break; 
+        }
     }
 
     return ret;
