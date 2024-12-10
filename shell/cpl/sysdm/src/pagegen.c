@@ -102,7 +102,7 @@ static void wintc_cpl_sysdm_page_general_constructed(
     const gchar* cpu_speed_fmt = "%.0f MHz";
     gchar*       cpu_speed_str = NULL;
 
-    gdouble      stat_ram     = get_total_ram() / 1000000.0f;
+    gdouble      stat_ram     = (get_total_ram() / 1024.0f) / 1024.0f;
     const gchar* stat_ram_fmt = "%.0f MB";
     gchar*       stat_ram_str = NULL;
 
@@ -114,9 +114,9 @@ static void wintc_cpl_sysdm_page_general_constructed(
         cpu_speed_fmt  = "%.2f GHz";
     }
 
-    if (stat_ram > 1000.0f)
+    if (stat_ram > 1024.0f)
     {
-        stat_ram     /= 1000.0f;
+        stat_ram     /= 1024.0f;
         stat_ram_fmt  = "%.2f GB";
     }
 
