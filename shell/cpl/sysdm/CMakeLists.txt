@@ -109,12 +109,10 @@ add_dependencies(
 wintc_configure_and_install_packaging()
 wintc_install_icons_into_package()
 
-if (${WINTC_PKGMGR} STREQUAL "deb")
-    install(
-        DIRECTORY res/deb/
-        DESTINATION ${WINTC_ASSETS_INSTALL_DIR}/dist-logo
-    )
-endif()
+install(
+    DIRECTORY res/${WINTC_PKGMGR}/
+    DESTINATION ${WINTC_ASSETS_INSTALL_DIR}/dist-logo
+)
 
 install(
     FILES sysdm.desktop
