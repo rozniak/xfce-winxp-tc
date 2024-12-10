@@ -1,3 +1,4 @@
+#include <gdk-pixbuf/gdk-pixbuf.h>
 #include <glib.h>
 #include <gtk/gtk.h>
 #include <pwd.h>
@@ -17,9 +18,10 @@ static void wintc_cpl_sysdm_page_general_constructed(
     GObject* object
 );
 
-static gchar* get_cpu_name(void);
-static gdouble get_cpu_speed(void);
-static gdouble get_total_ram(void);
+static gchar*     get_cpu_name(void);
+static gdouble    get_cpu_speed(void);
+static GdkPixbuf* get_distro_logo(void);
+static gdouble    get_total_ram(void);
 
 //
 // GTK OOP CLASS/INSTANCE DEFINITIONS
@@ -63,6 +65,9 @@ static void wintc_cpl_sysdm_page_general_constructed(
             "/uk/oddmatics/wintc/cpl-sysdm/page-gen.ui"
         );
 
+    GtkWidget* label_dist   = NULL;
+    GtkWidget* img_distlogo = NULL;
+
     GtkWidget* label_skuname = NULL;
     GtkWidget* label_skued   = NULL;
     GtkWidget* label_skuver  = NULL;
@@ -76,6 +81,8 @@ static void wintc_cpl_sysdm_page_general_constructed(
 
     wintc_builder_get_objects(
         builder,
+        "label-dist",    &label_dist,
+        "img-distlogo",  &img_distlogo,
         "label-skuname", &label_skuname,
         "label-skued",   &label_skued,
         "label-skuver",  &label_skuver,
@@ -88,6 +95,7 @@ static void wintc_cpl_sysdm_page_general_constructed(
     // Update data in the view
     //
     gchar*         cpu_id    = get_cpu_name();
+    GdkPixbuf*     dist_logo = get_distro_logo();
     struct passwd* user_pwd  = getpwuid(getuid());
 
     gdouble      cpu_speed     = get_cpu_speed();
@@ -153,6 +161,19 @@ static void wintc_cpl_sysdm_page_general_constructed(
         GTK_LABEL(label_stats),
         stats_str
     );
+
+    if (dist_logo)
+    {
+        gtk_image_set_from_pixbuf(
+            GTK_IMAGE(img_distlogo),
+            dist_logo
+        );
+        g_object_unref(dist_logo);
+    }
+    else
+    {
+        gtk_label_set_text(GTK_LABEL(label_dist), "");
+    }
 
     g_free(cpu_id);
     g_free(cpu_speed_str);
@@ -238,6 +259,45 @@ static gdouble get_cpu_speed(void)
     }
 
     return ret;
+}
+
+static GdkPixbuf* get_distro_logo(void)
+{
+    gchar* distro = NULL;
+
+    if (
+        !wintc_launch_command_sync(
+            "sh -c \"lsb_release --id --short\"",
+            &distro,
+            NULL,
+            NULL
+        )
+    )
+    {
+        return NULL;
+    }
+
+    distro = g_strstrip(distro);
+
+    // Attempt to load the logo
+    //
+    GdkPixbuf* logo;
+    gchar*     path = g_strdup_printf(
+                          "%s/dist-logo/%s.png",
+                          WINTC_ASSETS_DIR,
+                          distro
+                      );
+
+    logo =
+        gdk_pixbuf_new_from_file(
+            path,
+            NULL
+        );
+
+    g_free(distro);
+    g_free(path);
+
+    return logo;
 }
 
 static gdouble get_total_ram(void)

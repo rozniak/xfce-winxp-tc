@@ -21,6 +21,7 @@ include(../../../packaging/cmake-inc/locale/CMakeLists.txt)
 include(../../../packaging/cmake-inc/packaging/CMakeLists.txt)
 include(../../../packaging/cmake-inc/resources/CMakeLists.txt)
 
+wintc_resolve_library(gdk-pixbuf-2.0 GDK_PIXBUF)
 wintc_resolve_library(glib-2.0       GLIB)
 wintc_resolve_library(gtk+-3.0       GTK3)
 wintc_resolve_library(wintc-comctl   WINTC_COMCTL)
@@ -61,6 +62,7 @@ target_compile_options(
 target_include_directories(
     wintc-cpl-sysdm
     SYSTEM
+    PRIVATE ${GDK_PIXBUF_INCLUDE_DIRS}
     PRIVATE ${GLIB_INCLUDE_DIRS}
     PRIVATE ${GTK3_INCLUDE_DIRS}
     PRIVATE ${WINTC_COMCTL_INCLUDE_DIRS}
@@ -73,6 +75,7 @@ target_include_directories(
 
 target_link_directories(
     wintc-cpl-sysdm
+    PRIVATE ${GDK_PIXBUF_LIBRARY_DIRS}
     PRIVATE ${GLIB_LIBRARY_DIRS}
     PRIVATE ${GTK3_LIBRARY_DIRS}
     PRIVATE ${WINTC_COMCTL_LIBRARY_DIRS}
@@ -85,6 +88,7 @@ target_link_directories(
 
 target_link_libraries(
     wintc-cpl-sysdm
+    PRIVATE ${GDK_PIXBUF_LIBRARIES}
     PRIVATE ${GLIB_LIBRARIES}
     PRIVATE ${GTK3_LIBRARIES}
     PRIVATE ${WINTC_COMCTL_LIBRARIES}
@@ -104,6 +108,13 @@ add_dependencies(
 #
 wintc_configure_and_install_packaging()
 wintc_install_icons_into_package()
+
+if (${WINTC_PKGMGR} STREQUAL "deb")
+    install(
+        DIRECTORY res/deb/
+        DESTINATION ${WINTC_ASSETS_INSTALL_DIR}/dist-logo
+    )
+endif()
 
 install(
     FILES sysdm.desktop
