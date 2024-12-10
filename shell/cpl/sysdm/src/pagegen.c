@@ -280,7 +280,7 @@ static GdkPixbuf* get_distro_logo(void)
 
     if (
         !wintc_launch_command_sync(
-            "sh -c \"lsb_release --id --short\"",
+            "sh -c \"cat /etc/os-release | grep '^ID=' | cut -d'=' -f2\"",
             &distro,
             NULL,
             NULL
