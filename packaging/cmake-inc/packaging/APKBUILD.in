@@ -7,7 +7,7 @@ arch="@ALPINE_ARCHITECTURE@"
 license="@ALPINE_LICENCE@"
 depends="@DEPENDS@"
 url="https://github.com/rozniak/xfce-winxp-tc"
-options="!check"
+options="!check !tracedeps"
 
 build()
 {
