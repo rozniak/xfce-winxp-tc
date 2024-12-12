@@ -29,11 +29,13 @@ if (${CMAKE_BUILD_TYPE} STREQUAL Debug)
     add_compile_definitions(WINTC_CHECKED)
 endif()
 
-# Enable ASAN for checked builds - but NOT for musl targets!!
+# Enable ASAN for checked builds
+#   - Do not enable for musl targets or FreeBSD
 #
 if (
     NOT ${WINTC_PKGMGR}     STREQUAL apk  AND
-    NOT ${WINTC_PKGMGR_EXT} STREQUAL musl
+    NOT ${WINTC_PKGMGR_EXT} STREQUAL musl AND
+    NOT ${WINTC_PKGMGR}     STREQUAL bsdpkg
 )
     if (${CMAKE_BUILD_TYPE} STREQUAL Debug)
         add_compile_options(-fsanitize=address -fno-omit-frame-pointer)
