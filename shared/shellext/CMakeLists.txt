@@ -38,8 +38,12 @@ add_library(
     src/host.c
     public/host.h
     src/host_priv.h
+    src/if_uihost.c
+    public/if_uihost.h
     src/if_view.c
     public/if_view.h
+    src/uictl.c
+    public/uictl.h
     public/viewitem.h
     public/viewops.h
 )

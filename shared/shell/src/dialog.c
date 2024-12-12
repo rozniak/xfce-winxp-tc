@@ -1,9 +1,9 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <glib.h>
 #include <gtk/gtk.h>
+#include <pwd.h>
 #include <sys/sysinfo.h>
 #include <sys/utsname.h>
-#include <pwd.h>
 #include <unistd.h>
 #include <wintc/comctl.h>
 #include <wintc/comgtk.h>
@@ -127,7 +127,11 @@ void wintc_sh_about(
     );
     wintc_widget_printf(
         label_stats,
+#ifdef WINTC_PKGMGR_BSDPKG
+        stats.totalram
+#else
         stats.totalram / 1024
+#endif
     );
 
     if (icon_name)

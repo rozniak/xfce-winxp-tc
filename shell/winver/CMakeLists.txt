@@ -84,25 +84,6 @@ target_link_libraries(
     PRIVATE ${WINTC_SHELLEXT_LIBRARIES}
 )
 
-# FreeBSD requires linking to libsysinfo port
-#
-if (${WINTC_PKGMGR} STREQUAL "bsdpkg")
-    wintc_resolve_library(libsysinfo SYSINFO)
-
-    target_include_directories(
-        wintc-winver
-        PRIVATE ${SYSINFO_INCLUDE_DIRS}
-    )
-    target_link_directories(
-        wintc-winver
-        PRIVATE ${SYSINFO_LIBRARY_DIRS}
-    )
-    target_link_libraries(
-        wintc-winver
-        PRIVATE ${SYSINFO_LIBRARIES}
-    )
-endif()
-
 # Installation
 #
 wintc_configure_and_install_packaging()
