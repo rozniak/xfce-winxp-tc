@@ -4,7 +4,8 @@ import struct
 
 from io import BytesIO
 from pathlib import Path
-from PIL import Image
+#from PIL import Image
+from PIL import Image, _binary, BmpImagePlugin
 
 def main():
     parser = argparse.ArgumentParser(
@@ -32,43 +33,51 @@ def main():
     rt_bitmap_entry = pe.DIRECTORY_ENTRY_RESOURCE.entries[rt_bitmap_idx]
 
     for entry in rt_bitmap_entry.directory.entries:
+        print(entry.name)
+
         # Based on resource string example in pefile:
         # https://github.com/erocarrera/pefile/blob/wiki/ReadingResourceStrings.md
         #
         # Just testing dumping out all bitmaps for now
         #
-        # NOTE: Appears pillow does not handle 32bpp bitmaps - see the radio
-        #       button output, should have an alpha channel
-        #
-        # FIXME: Crappy stuff below for reconstructing the 14 byte header, not
-        #        actually necessary as the bug is in Pillow - code left here
-        #        just in case
-        #
-        #        Realistically need to fix the BMP/DIB reading in Pillow
-        #          See issue #352 discussion
-        #
         data_rva = entry.directory.entries[0].data.struct.OffsetToData
         size = entry.directory.entries[0].data.struct.Size
-
-        print(entry.name)
-
         data = pe.get_memory_mapped_image()[data_rva:data_rva+size]
 
-        datafile = BytesIO(data)
+        filename = "out/" + str(entry.name) + ".bmp"
 
-        fixed = bytearray(datafile.getbuffer().nbytes + 14)
+        with open(filename, "wb") as myFile:
+              myFile.write(data)
 
-        todata = struct.unpack("I", datafile.getbuffer()[:4])[0] + 14
-        header = struct.pack("<ccIHHI", b"B", b"M", len(fixed), 0, 0, todata)
+        # Convert the 32bpp to output a PNG - normally Pillow doesn't support
+        # reading the alpha channel, because MS' documentation for BMP/DIB
+        # files says its unused
+        #
+        # Obviously Windows itself uses it, so we need it - a helpful developer
+        # from the Pillow project supplied the below snippet to read the alpha
+        # channel
+        # https://github.com/python-pillow/Pillow/issues/8594#issuecomment-2541337200
+        #
+        im = Image.open(filename)
 
-        fixed[0:13] = header
-        fixed[14:len(fixed) - 1] = datafile.getbuffer()
+        if (
+            im.format == "DIB" and
+            im.info["compression"] ==
+                BmpImagePlugin.BmpImageFile.COMPRESSIONS["RAW"]
+        ):
+            bits = None
+            with open(filename, "rb") as fp:
+                header_size = _binary.i32le(fp.read(4))
+                if header_size == 40:
+                    header_data = fp.read(header_size - 4)
+                    bits = _binary.i16le(header_data, 10)
+            if bits == 32:
+                im._mode = "RGBA"
+                args = list(im.tile[0].args)
+                args[0] = "BGRA"
+                im.tile = [im.tile[0]._replace(args=tuple(args))]
 
-        with open("out/" + str(entry.name) + ".bmp", "wb") as myFile:
-              myFile.write(fixed)
-
-        img = Image.open("out/" + str(entry.name) + ".bmp", "r", [ "BMP" ])
-        img.save("out/" + str(entry.name) + ".png")
+        im.save("out/" + str(entry.name) + ".png")
 
 
 if __name__ == "__main__":
