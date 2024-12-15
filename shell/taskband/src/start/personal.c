@@ -1062,6 +1062,13 @@ static void on_personal_menu_hide(
     WinTCTaskbandToolbar* toolbar       = WINTC_TASKBAND_TOOLBAR(user_data);
     WinTCToolbarStart*    toolbar_start = WINTC_TOOLBAR_START(user_data);
 
+    // Track the last closed time, important for toggling the menu properly
+    //   (see toolbar.c)
+    //
+    toolbar_start->time_menu_closed = g_get_monotonic_time();
+
+    // Sync Start button state
+    //
     toolbar_start->sync_button = TRUE;
     gtk_toggle_button_set_active(
         GTK_TOGGLE_BUTTON(toolbar->widget_root),

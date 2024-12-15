@@ -33,7 +33,7 @@ static void wintc_taskband_window_dispose(
     GObject* object
 );
 
-static void wintc_taskband_window_create_toolbar(
+static WinTCTaskbandToolbar* wintc_taskband_window_create_toolbar(
     WinTCTaskbandWindow* taskband,
     GType                toolbar_type,
     gboolean             expand
@@ -71,13 +71,13 @@ struct _WinTCTaskbandWindow
 
     // UI
     //
-    GtkWidget*     main_box;
-
-    GtkWidget*     notification_area;
-    GtkWidget*     start_button;
-    GtkWidget*     taskbuttons;
+    GtkWidget* main_box;
 
     GSList* toolbars;
+
+    WinTCTaskbandToolbar* toolbar_notifarea;
+    WinTCTaskbandToolbar* toolbar_start;
+    WinTCTaskbandToolbar* toolbar_taskbuttons;
 };
 
 //
@@ -168,10 +168,19 @@ GtkWidget* wintc_taskband_window_new(
     );
 }
 
+void wintc_taskband_window_toggle_start_menu(
+    WinTCTaskbandWindow* taskband
+)
+{
+    wintc_toolbar_start_toggle_menu(
+        WINTC_TOOLBAR_START(taskband->toolbar_start)
+    );
+}
+
 //
 // PRIVATE FUNCTIONS
 //
-static void wintc_taskband_window_create_toolbar(
+static WinTCTaskbandToolbar* wintc_taskband_window_create_toolbar(
     WinTCTaskbandWindow* taskband,
     GType                toolbar_type,
     gboolean             expand
@@ -197,6 +206,8 @@ static void wintc_taskband_window_create_toolbar(
     );
 
     gtk_widget_show_all(root);
+
+    return toolbar;
 }
 
 //
@@ -217,27 +228,30 @@ static gboolean on_window_map_event(
         switch (s_layout[i])
         {
             case WINTC_TASKBAND_TOOLBAR_START:
-                wintc_taskband_window_create_toolbar(
-                    taskband,
-                    WINTC_TYPE_TOOLBAR_START,
-                    FALSE
-                );
+                taskband->toolbar_start =
+                    wintc_taskband_window_create_toolbar(
+                        taskband,
+                        WINTC_TYPE_TOOLBAR_START,
+                        FALSE
+                    );
                 break;
 
             case WINTC_TASKBAND_TOOLBAR_BUTTONS:
-                wintc_taskband_window_create_toolbar(
-                    taskband,
-                    WINTC_TYPE_TOOLBAR_TASK_BUTTONS,
-                    TRUE
-                );
+                taskband->toolbar_taskbuttons =
+                    wintc_taskband_window_create_toolbar(
+                        taskband,
+                        WINTC_TYPE_TOOLBAR_TASK_BUTTONS,
+                        TRUE
+                    );
                 break;
 
             case WINTC_TASKBAND_TOOLBAR_NOTIFICATION_AREA:
-                wintc_taskband_window_create_toolbar(
-                    taskband,
-                    WINTC_TYPE_TOOLBAR_NOTIF_AREA,
-                    FALSE
-                );
+                taskband->toolbar_notifarea =
+                    wintc_taskband_window_create_toolbar(
+                        taskband,
+                        WINTC_TYPE_TOOLBAR_NOTIF_AREA,
+                        FALSE
+                    );
                 break;
 
             case WINTC_TASKBAND_TOOLBAR_QUICK_ACCESS:

@@ -55,6 +55,15 @@ static const GOptionEntry S_OPTIONS[] = {
         "Quit a running Windows taskband instance.",
         NULL
     },
+    {
+        "start",
+        's',
+        G_OPTION_FLAG_NONE,
+        G_OPTION_ARG_NONE,
+        NULL,
+        "Toggle the Start menu open or closed.",
+        NULL
+    },
     { 0 }
 };
 
@@ -140,15 +149,27 @@ static gint wintc_taskband_application_command_line(
     GApplicationCommandLine* command_line
 )
 {
+    WinTCTaskbandApplication* taskband_app =
+        WINTC_TASKBAND_APPLICATION(application);
+
     GVariantDict* options =
         g_application_command_line_get_options_dict(command_line);
 
-    // Just check for --quit
+    // --quit takes priority
     //
     if (g_variant_dict_contains(options, "quit"))
     {
         g_application_quit(application);
         return 0;
+    }
+
+    // Handle action switches
+    //
+    if (g_variant_dict_contains(options, "start"))
+    {
+        wintc_taskband_window_toggle_start_menu(
+            WINTC_TASKBAND_WINDOW(taskband_app->host_window)
+        );
     }
 
     g_application_activate(application);

@@ -124,6 +124,32 @@ static void wintc_toolbar_start_dispose(
 }
 
 //
+// PUBLIC FUNCTIONS
+//
+void wintc_toolbar_start_toggle_menu(
+    WinTCToolbarStart* toolbar_start
+)
+{
+    WinTCTaskbandToolbar* toolbar = WINTC_TASKBAND_TOOLBAR(toolbar_start);
+
+    GtkToggleButton* start_button = GTK_TOGGLE_BUTTON(toolbar->widget_root);
+
+    // Rate-limit toggling, prevents glitchy behaviour especially when launched
+    // via cmdline/keyboard shortcut (so the menu loses focus then immediately
+    // toggles open)
+    //
+    if (g_get_monotonic_time() - toolbar_start->time_menu_closed < 150000)
+    {
+        return;
+    }
+
+    gtk_toggle_button_set_active(
+        start_button,
+        !gtk_toggle_button_get_active(start_button)
+    );
+}
+
+//
 // CALLBACKS
 //
 static void on_start_button_toggled(

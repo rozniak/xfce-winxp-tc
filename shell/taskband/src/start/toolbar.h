@@ -4,6 +4,8 @@
 #include <glib.h>
 #include <gtk/gtk.h>
 
+#include "shared.h"
+
 //
 // GTK OOP BOILERPLATE
 //
@@ -15,6 +17,13 @@
 #define WINTC_TOOLBAR_START_GET_CLASS       (G_TYPE_INSTANCE_GET_CLASS((obj), WINTC_TYPE_TOOLBAR_START, WinTCToolbarStart))
 
 GType wintc_toolbar_start_get_type(void) G_GNUC_CONST;
+
+//
+// PUBLIC FUNCTIONS
+//
+void wintc_toolbar_start_toggle_menu(
+    WinTCToolbarStart* toolbar_start
+);
 
 #endif
 

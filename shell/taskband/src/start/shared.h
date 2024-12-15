@@ -49,6 +49,8 @@ typedef struct _WinTCToolbarStart
     //
     gboolean sync_button;
     gboolean sync_menu_should_close;
+
+    gint64 time_menu_closed;
 } WinTCToolbarStart;
 
 #endif

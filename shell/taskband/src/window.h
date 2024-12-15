@@ -28,5 +28,9 @@ GtkWidget* wintc_taskband_window_new(
     WinTCTaskbandApplication* app
 );
 
+void wintc_taskband_window_toggle_start_menu(
+    WinTCTaskbandWindow* taskband
+);
+
 #endif
 
