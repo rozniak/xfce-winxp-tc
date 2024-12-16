@@ -290,7 +290,25 @@ static void wintc_sh_view_fs_set_property(
             break;
 
         case PROP_PATH:
-            view->path = g_value_dup_string(value);
+        {
+            const gchar* raw_path = g_value_get_string(value);
+            gint         path_len = g_utf8_strlen(raw_path, -1);
+
+            // Strip off trailing /, unless this is literally /
+            //
+            if (path_len > 1 && g_str_has_suffix(raw_path, "/"))
+            {
+                view->path =
+                    g_utf8_substring(
+                        raw_path,
+                        0,
+                        g_utf8_strlen(raw_path, -1) - 1
+                    );
+            }
+            else
+            {
+                view->path = g_strdup(raw_path);
+            }
 
             // Create parent path string
             //
@@ -300,6 +318,7 @@ static void wintc_sh_view_fs_set_property(
             }
 
             break;
+        }
 
         default:
             G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
