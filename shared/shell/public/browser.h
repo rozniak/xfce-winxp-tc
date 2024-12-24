@@ -61,10 +61,6 @@ void wintc_sh_browser_get_location(
     WinTCShextPathInfo* path_info
 );
 
-GtkTreeModel* wintc_sh_browser_get_model(
-    WinTCShBrowser* browser
-);
-
 WinTCShextHost* wintc_sh_browser_get_shext_host(
     WinTCShBrowser* browser
 );

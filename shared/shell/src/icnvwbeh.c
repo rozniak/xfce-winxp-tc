@@ -15,6 +15,14 @@ enum
     PROP_ICON_VIEW
 };
 
+enum
+{
+    COLUMN_ICON = 0,
+    COLUMN_ENTRY_NAME,
+    COLUMN_VIEW_HASH,
+    N_COLUMNS
+};
+
 //
 // FORWARD DECLARATIONS
 //
@@ -29,6 +37,10 @@ static void wintc_sh_icon_view_behaviour_set_property(
     guint         prop_id,
     const GValue* value,
     GParamSpec*   pspec
+);
+
+static void wintc_sh_icon_view_behaviour_update_view(
+    WinTCShIconViewBehaviour* behaviour
 );
 
 static void action_view_operation(
@@ -46,6 +58,27 @@ static void on_icon_view_item_activated(
     GtkIconView* self,
     GtkTreePath* path,
     gpointer     user_data
+);
+
+static void on_browser_load_changed(
+    WinTCShBrowser*          self,
+    WinTCShBrowserLoadEvent* load_event,
+    gpointer                 user_data
+);
+
+static void on_current_view_items_added(
+    WinTCIShextView*           view,
+    WinTCShextViewItemsUpdate* update,
+    gpointer                   user_data
+);
+static void on_current_view_items_removed(
+    WinTCIShextView*           view,
+    WinTCShextViewItemsUpdate* update,
+    gpointer                   user_data
+);
+static void on_current_view_refreshing(
+    WinTCIShextView* view,
+    gpointer         user_data
 );
 
 //
@@ -77,6 +110,15 @@ struct _WinTCShIconViewBehaviour
 
     WinTCShBrowser* browser;
     GtkWidget*      icon_view;
+
+    // View state
+    //
+    WinTCIShextView* current_view;
+    GtkListStore*    list_model;
+
+    gulong sigid_items_added;
+    gulong sigid_items_removed;
+    gulong sigid_refreshing;
 };
 
 //
@@ -142,6 +184,16 @@ static void wintc_sh_icon_view_behaviour_constructed(
         return;
     }
 
+    // Set up view model
+    //
+    behaviour->list_model =
+        gtk_list_store_new(
+            3,
+            GDK_TYPE_PIXBUF,
+            G_TYPE_STRING,
+            G_TYPE_UINT
+        );
+
     // Define GActions
     //
     GSimpleActionGroup* action_group = g_simple_action_group_new();
@@ -180,7 +232,7 @@ static void wintc_sh_icon_view_behaviour_constructed(
     //
     gtk_icon_view_set_model(
         GTK_ICON_VIEW(behaviour->icon_view),
-        wintc_sh_browser_get_model(behaviour->browser)
+        GTK_TREE_MODEL(behaviour->list_model)
     );
     gtk_icon_view_set_pixbuf_column(
         GTK_ICON_VIEW(behaviour->icon_view),
@@ -211,6 +263,18 @@ static void wintc_sh_icon_view_behaviour_constructed(
         behaviour
     );
 
+    // Hook up to shell browser
+    //
+    wintc_sh_icon_view_behaviour_update_view(behaviour);
+
+    g_signal_connect_object(
+        behaviour->browser,
+        "load-changed",
+        G_CALLBACK(on_browser_load_changed),
+        behaviour,
+        G_CONNECT_DEFAULT
+    );
+
     (G_OBJECT_CLASS(wintc_sh_icon_view_behaviour_parent_class))
         ->constructed(object);
 }
@@ -229,6 +293,7 @@ static void wintc_sh_icon_view_behaviour_dispose(
         GTK_ICON_VIEW(behaviour->icon_view)
     );
 
+    g_clear_object(&(behaviour->current_view));
     g_clear_object(&(behaviour->browser));
     g_clear_object(&(behaviour->icon_view));
 
@@ -278,6 +343,76 @@ WinTCShIconViewBehaviour* wintc_sh_icon_view_behaviour_new(
             NULL
         )
     );
+}
+
+//
+// PRIVATE FUNCTIONS
+//
+static void wintc_sh_icon_view_behaviour_update_view(
+    WinTCShIconViewBehaviour* behaviour
+)
+{
+    WinTCIShextView* new_view =
+        wintc_sh_browser_get_current_view(behaviour->browser);
+
+    if (behaviour->current_view == new_view)
+    {
+        return;
+    }
+
+    // Detach from old view
+    //
+    if (behaviour->current_view)
+    {
+        g_signal_handler_disconnect(
+            behaviour->current_view,
+            behaviour->sigid_items_added
+        );
+        g_signal_handler_disconnect(
+            behaviour->current_view,
+            behaviour->sigid_items_removed
+        );
+        g_signal_handler_disconnect(
+            behaviour->current_view,
+            behaviour->sigid_refreshing
+        );
+
+        g_clear_object(&(behaviour->current_view));
+    }
+
+    // Update the view
+    //
+    if (!new_view)
+    {
+        return;
+    }
+
+    behaviour->current_view = g_object_ref(new_view);
+
+    behaviour->sigid_items_added =
+        g_signal_connect_object(
+            behaviour->current_view,
+            "items-added",
+            G_CALLBACK(on_current_view_items_added),
+            behaviour,
+            G_CONNECT_DEFAULT
+        );
+    behaviour->sigid_items_removed =
+        g_signal_connect_object(
+            behaviour->current_view,
+            "items-removed",
+            G_CALLBACK(on_current_view_items_removed),
+            behaviour,
+            G_CONNECT_DEFAULT
+        );
+    behaviour->sigid_refreshing =
+        g_signal_connect_object(
+            behaviour->current_view,
+            "refreshing",
+            G_CALLBACK(on_current_view_refreshing),
+            behaviour,
+            G_CONNECT_DEFAULT
+        );
 }
 
 //
@@ -354,8 +489,6 @@ static void action_view_operation(
             item_hashes, // Ownership transferred
             &error
         );
-
-//    g_list_free(item_hashes);
 
     if (!operation)
     {
@@ -578,4 +711,127 @@ static void on_icon_view_item_activated(
             wintc_display_error_and_clear(&error);
         }
     }
+}
+
+static void on_browser_load_changed(
+    WINTC_UNUSED(WinTCShBrowser* self),
+    WinTCShBrowserLoadEvent* load_event,
+    gpointer                 user_data
+)
+{
+    WinTCShIconViewBehaviour* behaviour =
+        WINTC_SH_ICON_VIEW_BEHAVIOUR(user_data);
+
+    if (load_event != WINTC_SH_BROWSER_LOAD_STARTED)
+    {
+        return;
+    }
+
+    wintc_sh_icon_view_behaviour_update_view(behaviour);
+}
+
+static void on_current_view_items_added(
+    WINTC_UNUSED(WinTCIShextView* view),
+    WinTCShextViewItemsUpdate* update,
+    gpointer                   user_data
+)
+{
+    WinTCShIconViewBehaviour* behaviour =
+        WINTC_SH_ICON_VIEW_BEHAVIOUR(user_data);
+
+    for (GList* iter = update->data; iter; iter = iter->next)
+    {
+        WinTCShextViewItem* item = iter->data;
+
+        // Load icon
+        //
+        GtkIconTheme* icon_theme = gtk_icon_theme_get_default();
+        GdkPixbuf*    icon       = gtk_icon_theme_load_icon(
+                                       icon_theme,
+                                       item->icon_name,
+                                       32,
+                                       GTK_ICON_LOOKUP_FORCE_SIZE,
+                                       NULL // FIXME: Error handling
+                                   );
+
+        // Push to model
+        //
+        GtkTreeIter iter;
+
+        gtk_list_store_append(behaviour->list_model, &iter);
+        gtk_list_store_set(
+            behaviour->list_model,
+            &iter,
+            COLUMN_ICON,       icon,
+            COLUMN_ENTRY_NAME, item->display_name,
+            COLUMN_VIEW_HASH,  item->hash,
+            -1
+        );
+    }
+}
+
+static void on_current_view_items_removed(
+    WINTC_UNUSED(WinTCIShextView* view),
+    WinTCShextViewItemsUpdate* update,
+    gpointer                   user_data
+)
+{
+    WinTCShIconViewBehaviour* behaviour =
+        WINTC_SH_ICON_VIEW_BEHAVIOUR(user_data);
+
+    // FIXME: Inefficient linear search - improve later
+    //
+    GtkTreeIter iter;
+    gboolean    searching;
+
+    for (GList* upd_iter = update->data; upd_iter; upd_iter = upd_iter->next)
+    {
+        guint item_hash = GPOINTER_TO_UINT(upd_iter->data);
+
+        searching =
+            gtk_tree_model_iter_children(
+                GTK_TREE_MODEL(behaviour->list_model),
+                &iter,
+                NULL
+            );
+
+        while (searching)
+        {
+            guint hash;
+
+            gtk_tree_model_get(
+                GTK_TREE_MODEL(behaviour->list_model),
+                &iter,
+                COLUMN_VIEW_HASH, &hash,
+                -1
+            );
+
+            if (item_hash == hash)
+            {
+                gtk_list_store_remove(
+                    behaviour->list_model,
+                    &iter
+                );
+
+                break;
+            }
+
+            searching =
+                gtk_tree_model_iter_next(
+                    GTK_TREE_MODEL(behaviour->list_model),
+                    &iter
+                );
+        }
+    }
+}
+
+static void on_current_view_refreshing(
+    WINTC_UNUSED(WinTCIShextView* view),
+    gpointer user_data
+)
+{
+    WinTCShIconViewBehaviour* behaviour =
+        WINTC_SH_ICON_VIEW_BEHAVIOUR(user_data);
+
+    gtk_list_store_clear(behaviour->list_model);
 }
