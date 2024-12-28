@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Resource Viewer (WinTC)
+Comment=Development tool for viewing resources in the WinTC project.
+Exec=wintc-resvwr
+Icon=wintc-resvwr
+Terminal=false
+StartupNotify=false
+Type=Application
+Categories=Development;GTK;

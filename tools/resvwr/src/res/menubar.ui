@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <menu id="menubar">
+    <submenu>
+      <attribute name="label">File</attribute>
+
+      <section>
+        <item>
+          <attribute name="accel">&lt;Control&gt;O</attribute>
+          <attribute name="action">win.open</attribute>
+          <attribute name="label">Open</attribute>
+        </item>
+      </section>
+      <section>
+        <item>
+          <attribute name="accel">F5</attribute>
+          <attribute name="action">win.refresh</attribute>
+          <attribute name="label">Refresh</attribute>
+        </item>
+      </section>
+      <section>
+        <item>
+          <attribute name="accel">&lt;Alt&gt;F4</attribute>
+          <attribute name="action">win.exit</attribute>
+          <attribute name="label">Exit</attribute>
+        </item>
+      </section>
+    </submenu>
+  </menu>
+</interface>

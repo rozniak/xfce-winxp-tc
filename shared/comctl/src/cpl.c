@@ -25,7 +25,7 @@ void wintc_ctl_cpl_notebook_append_page_from_resource(
     //
     wintc_lc_builder_preprocess_widget_text(builder);
 
-    box_page    = GTK_WIDGET(gtk_builder_get_object(builder, "page-box"));
+    box_page    = GTK_WIDGET(gtk_builder_get_object(builder, "page"));
     label_title = GTK_WIDGET(gtk_builder_get_object(builder, "label-title"));
 
     gtk_notebook_append_page(

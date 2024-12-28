@@ -1,6 +1,7 @@
 #ifndef __WINTC_COMGTK_H__
 #define __WINTC_COMGTK_H__
 
+#include "@LIB_HEADER_DIR@/accelerator.h"
 #include "@LIB_HEADER_DIR@/application.h"
 #include "@LIB_HEADER_DIR@/assets.h"
 #include "@LIB_HEADER_DIR@/builder.h"

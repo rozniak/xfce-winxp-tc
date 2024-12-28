@@ -12,9 +12,9 @@ void wintc_builder_get_objects(
     ...
 )
 {
-    va_list     ap;
-    GtkWidget** next_dst;
-    gchar*      next_name;
+    va_list   ap;
+    GObject** next_dst;
+    gchar*    next_name;
 
     va_start(ap, builder);
 
@@ -22,8 +22,8 @@ void wintc_builder_get_objects(
 
     while (next_name)
     {
-        next_dst  = va_arg(ap, GtkWidget**);
-        *next_dst = GTK_WIDGET(gtk_builder_get_object(builder, next_name));
+        next_dst  = va_arg(ap, GObject**);
+        *next_dst = gtk_builder_get_object(builder, next_name);
 
         next_name = va_arg(ap, gchar*);
     }

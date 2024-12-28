@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/uk/oddmatics/wintc/tools/resvwr">
+    <file>menubar.ui</file>
+    <file>resvwr.ui</file>
+  </gresource>
+</gresources>

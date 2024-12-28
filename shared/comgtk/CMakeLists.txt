@@ -33,6 +33,8 @@ configure_file(src/version.c.in   ${PROJECT_ROOT}/src/version.c   @ONLY)
 
 add_library(
     libwintc-comgtk
+    src/accelerator.c
+    public/accelerator.h
     src/application.c
     public/application.h
     public/assets.h
