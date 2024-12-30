@@ -505,18 +505,44 @@ static GtkWidget* create_personal_menu_item(
 )
 {
     GtkWidget* box           = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-    GtkWidget* image_icon    = gtk_image_new_from_icon_name(
-                                   icon_name,
-                                   GTK_ICON_SIZE_MENU
-                               );
+    GtkWidget* image_icon    = gtk_image_new();
     GtkWidget* label_program = gtk_label_new(program_name);
     GtkWidget* menu_item     = gtk_menu_item_new();
 
-    gtk_image_set_pixel_size(
-        GTK_IMAGE(image_icon),
-        PROGRAM_ICON_SIZE
-    );
+    // Attempt to load the icon...
+    //
+    GdkPixbuf* pixbuf_icon =
+        gtk_icon_theme_load_icon(
+            gtk_icon_theme_get_default(),
+            icon_name ? icon_name : "application-x-generic",
+            PROGRAM_ICON_SIZE,
+            GTK_ICON_LOOKUP_FORCE_SIZE,
+            NULL
+        );
 
+    if (!pixbuf_icon)
+    {
+        gtk_icon_theme_load_icon(
+            gtk_icon_theme_get_default(),
+            "application-x-generic",
+            PROGRAM_ICON_SIZE,
+            GTK_ICON_LOOKUP_FORCE_SIZE,
+            NULL
+        );
+    }
+
+    if (pixbuf_icon)
+    {
+        gtk_image_set_from_pixbuf(
+            GTK_IMAGE(image_icon),
+            pixbuf_icon
+        );
+
+        g_object_unref(pixbuf_icon);
+    }
+
+    // Set up label properties
+    //
     gtk_label_set_line_wrap(
         GTK_LABEL(label_program),
         TRUE
@@ -528,6 +554,15 @@ static GtkWidget* create_personal_menu_item(
     gtk_label_set_xalign(
         GTK_LABEL(label_program),
         0.0
+    );
+
+    // Ensure image widget always requests the right size, in case no icon was
+    // loaded
+    //
+    gtk_widget_set_size_request(
+        image_icon,
+        PROGRAM_ICON_SIZE,
+        PROGRAM_ICON_SIZE
     );
 
     // Pack icon first...
