@@ -673,9 +673,15 @@ static GtkWidget* create_personal_menu_item_from_desktop_entry(
     if (entry)
     {
         GAppInfo* app_info  = G_APP_INFO(entry);
-        gchar*    icon_name = g_path_get_basename(
-                                  g_app_info_get_executable(app_info)
-                              );
+        gchar*    icon_name = g_desktop_app_info_get_string(entry, "Icon");
+
+        if (!icon_name) // If no icon, try the executable name...
+        {
+            icon_name =
+                g_path_get_basename(
+                    g_app_info_get_executable(app_info)
+                );
+        }
 
         menu_item =
             create_personal_menu_item(
