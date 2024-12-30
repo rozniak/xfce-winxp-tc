@@ -22,7 +22,8 @@ struct _TaskButtonBar
 {
     GtkContainer __parent__;
 
-    GSList* buttons;
+    GSList*        buttons;
+    gboolean       flip_bias;
     WindowMonitor* window_monitor;
 };
 
@@ -83,6 +84,10 @@ static gboolean taskbutton_bar_has_button(
     GtkToggleButton* button
 );
 
+static gboolean cb_timeout_taskband_flip_bias(
+    gpointer user_data
+);
+
 //
 // GTK TYPE DEFINITIONS & CTORS
 //
@@ -126,6 +131,23 @@ static void taskbutton_bar_init(
     gtk_widget_set_has_window(GTK_WIDGET(self), FALSE);
 
     wintc_widget_add_style_class(GTK_WIDGET(self), "wintc-taskbuttons");
+
+    // HACK: A workaround when launching - initial windows populated by WNCK
+    //       are in the reverse order to how they were opened (so the oldest
+    //       window will appear last instead of first)
+    //
+    //       Set the 'bias' initially to prepend the window buttons and then
+    //       after a time out, flip the bias to normal to append newer buttons
+    //
+    //       This is very crude but not sure of any alternative solutions...
+    //
+    self->flip_bias = TRUE;
+
+    g_timeout_add(
+        500,
+        (GSourceFunc) cb_timeout_taskband_flip_bias,
+        self
+    );
 }
 
 //
@@ -163,8 +185,18 @@ static void taskbutton_bar_add(
 
     gtk_widget_set_parent(widget, GTK_WIDGET(container));
 
-    taskbutton_bar->buttons =
-        g_slist_append(taskbutton_bar->buttons, widget);
+    if (taskbutton_bar->flip_bias)
+    {
+        taskbutton_bar->buttons =
+            g_slist_prepend(taskbutton_bar->buttons, widget);
+    }
+    else
+    {
+        taskbutton_bar->buttons =
+            g_slist_append(taskbutton_bar->buttons, widget);
+    }
+
+    gtk_widget_queue_resize(GTK_WIDGET(container));
 }
 
 static GType taskbutton_bar_child_type(
@@ -422,4 +454,18 @@ static gboolean taskbutton_bar_has_button(
 )
 {
     return g_slist_find(taskbutton_bar->buttons, button) != NULL;
+}
+
+//
+// CALLBACKS
+//
+static gboolean cb_timeout_taskband_flip_bias(
+    gpointer user_data
+)
+{
+    TaskButtonBar* taskbutton_bar = TASKBUTTON_BAR(user_data);
+
+    taskbutton_bar->flip_bias = FALSE;
+
+    return G_SOURCE_REMOVE;
 }
