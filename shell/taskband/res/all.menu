@@ -13,6 +13,7 @@
     </Include>
 
     <Exclude>
+        <Category>Screensaver</Category>
         <Category>Settings</Category>
         <Category>X-XFCE</Category>
     </Exclude>
