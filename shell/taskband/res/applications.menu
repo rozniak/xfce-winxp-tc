@@ -110,5 +110,18 @@
         </Exclude>
     </Menu>
 
+    <Menu>
+        <Name>Other</Name>
+        <OnlyUnallocated/>
+        <Include>
+            <All/>
+        </Include>
+        <Exclude>
+            <Category>Screensaver</Category>
+            <Category>Settings</Category>
+            <Category>X-XFCE</Category>
+        </Exclude>
+    </Menu>
+
     <DefaultMergeDirs/>
 </Menu>
