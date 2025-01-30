@@ -73,9 +73,10 @@ static void do_navigation_local(
     WinTCExplorerWindow* wnd,
     const gchar*         specified_path
 );
-static void prepare_new_location(
+static gboolean prepare_new_location(
     const gchar*        specified_path,
-    WinTCShextPathInfo* local_path_info
+    WinTCShextPathInfo* local_path_info,
+    GError**            error
 );
 static void switch_mode_to(
     WinTCExplorerWindow*    wnd,
@@ -701,7 +702,7 @@ static void do_navigation(
 
         if (!regex_looks_webish)
         {
-            wintc_display_error_and_clear(&error);
+            wintc_display_error_and_clear(&error, GTK_WINDOW(wnd));
             return;
         }
     }
@@ -785,10 +786,19 @@ static void do_navigation_local(
         &(wnd->local_path)
     );
 
-    prepare_new_location(
-        specified_path,
-        &path_info
-    );
+    if (
+        !prepare_new_location(
+            specified_path,
+            &path_info,
+            &error
+        )
+    )
+    {
+        wintc_nice_error_and_clear(&error, GTK_WINDOW(wnd));
+        wintc_shext_path_info_free_data(&path_info);
+
+        return;
+    }
 
     // Attempt the navigation
     //
@@ -807,24 +817,23 @@ static void do_navigation_local(
     }
     else
     {
-        wintc_nice_error_and_clear(&error);
+        wintc_nice_error_and_clear(&error, GTK_WINDOW(wnd));
     }
 
     wintc_shext_path_info_free_data(&path_info);
 }
 
-static void prepare_new_location(
+static gboolean prepare_new_location(
     const gchar*        specified_path,
-    WinTCShextPathInfo* local_path_info
+    WinTCShextPathInfo* local_path_info,
+    GError**            error
 )
 {
-    GError*       error            = NULL;
-    const GRegex* regex_uri_scheme = wintc_regex_uri_scheme(&error);
+    const GRegex* regex_uri_scheme = wintc_regex_uri_scheme(error);
 
     if (!regex_uri_scheme)
     {
-        wintc_nice_error_and_clear(&error);
-        return;
+        return FALSE;
     }
 
     // If the path starts with '::' then assume it's a GUID and shouldn't be
@@ -836,7 +845,7 @@ static void prepare_new_location(
 
         local_path_info->base_path = g_strdup(specified_path);
 
-        return;
+        return TRUE;
     }
 
     // If the path starts with a leading slash '/' then assume an absolute file
@@ -849,7 +858,7 @@ static void prepare_new_location(
         local_path_info->base_path =
             g_strdup_printf("file://%s", specified_path);
 
-        return;
+        return TRUE;
     }
 
     // If the path is a URL, handle it here
@@ -869,7 +878,7 @@ static void prepare_new_location(
 
         local_path_info->base_path = g_strdup(specified_path);
 
-        return;
+        return TRUE;
     }
 
     // Here we assume it's a relative path
@@ -878,6 +887,8 @@ static void prepare_new_location(
     g_free(local_path_info->extended_path);
 
     local_path_info->extended_path = g_strdup(specified_path);
+
+    return TRUE;
 }
 
 static void switch_mode_to(

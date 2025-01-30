@@ -6,6 +6,7 @@
 #include <wintc/shellext.h>
 #include <wintc/shlang.h>
 
+#include "../public/fsclipbd.h"
 #include "../public/vwfs.h"
 
 //
@@ -104,6 +105,12 @@ static gboolean shopr_open(
     GtkWindow*           wnd,
     GError**             error
 );
+static gboolean shopr_paste(
+    WinTCIShextView*     view,
+    WinTCShextOperation* operation,
+    GtkWindow*           wnd,
+    GError**             error
+);
 
 static void on_file_monitor_changed(
     GFileMonitor*     self,
@@ -133,7 +140,8 @@ struct _WinTCShViewFS
     GFileMonitor* fs_monitor;
     GHashTable*   fs_map_entries;
 
-    WinTCShextHost* shext_host;
+    WinTCShFSClipboard* fs_clipboard;
+    WinTCShextHost*     shext_host;
 };
 
 //
@@ -191,8 +199,11 @@ static void wintc_sh_view_fs_class_init(
 }
 
 static void wintc_sh_view_fs_init(
-    WINTC_UNUSED(WinTCShViewFS* self)
-) {}
+    WinTCShViewFS* self
+)
+{
+    self->fs_clipboard = wintc_sh_fs_clipboard_new();
+}
 
 static void wintc_sh_view_fs_ishext_view_interface_init(
     WinTCIShextViewInterface* iface
@@ -220,6 +231,7 @@ static void wintc_sh_view_fs_dispose(
 {
     WinTCShViewFS* view_fs = WINTC_SH_VIEW_FS(object);
 
+    g_clear_object(&(view_fs->fs_clipboard));
     g_clear_object(&(view_fs->fs_monitor));
     g_clear_object(&(view_fs->shext_host));
 
@@ -634,12 +646,6 @@ static WinTCShextOperation* wintc_sh_view_fs_spawn_operation(
     WINTC_UNUSED(GError**         error)
 )
 {
-    if (operation_id > WINTC_SHEXT_KNOWN_OP_OPEN)
-    {
-        g_critical("Not implemented %s", __func__);
-        return NULL;
-    }
-
     // Spawn op
     //
     WinTCShextOperation* ret = g_new(WinTCShextOperation, 1);
@@ -649,6 +655,10 @@ static WinTCShextOperation* wintc_sh_view_fs_spawn_operation(
         case WINTC_SHEXT_KNOWN_OP_OPEN:
             ret->func = shopr_open;
             ret->priv = targets;
+            break;
+
+        case WINTC_SHEXT_KNOWN_OP_PASTE:
+            ret->func = shopr_paste;
             break;
 
         default:
@@ -817,6 +827,23 @@ static gboolean shopr_open(
     g_list_free(targets);
 
     return success;
+}
+
+static gboolean shopr_paste(
+    WinTCIShextView*     view,
+    WINTC_UNUSED(WinTCShextOperation* operation),
+    GtkWindow*           wnd,
+    GError**             error
+)
+{
+    WinTCShViewFS* view_fs = WINTC_SH_VIEW_FS(view);
+
+    return wintc_sh_fs_clipboard_paste(
+        view_fs->fs_clipboard,
+        view_fs->path,
+        wnd,
+        error
+    );
 }
 
 static void on_file_monitor_changed(

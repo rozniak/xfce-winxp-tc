@@ -117,7 +117,7 @@ static void wintc_welcome_ui_remove(
 
 static void wintc_welcome_ui_change_state(
     WinTCWelcomeUI* welcome_ui,
-    WinTCGinaState    next_state
+    WinTCGinaState  next_state
 );
 static void wintc_welcome_ui_internal_add(
     WinTCWelcomeUI* welcome_ui,
@@ -811,7 +811,10 @@ static gboolean on_timeout_delay_done(
                 )
             )
             {
-                wintc_nice_error_and_clear(&error);
+                wintc_nice_error_and_clear(
+                    &error,
+                    wintc_widget_get_toplevel_window(GTK_WIDGET(welcome_ui))
+                );
 
                 wintc_welcome_ui_change_state(
                     welcome_ui,

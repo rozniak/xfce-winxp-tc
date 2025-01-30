@@ -245,7 +245,7 @@ static void action_apply(
 
     if (!wintc_cpl_desk_settings_apply(wnd->settings, &error))
     {
-        wintc_nice_error_and_clear(&error);
+        wintc_nice_error_and_clear(&error, GTK_WINDOW(wnd));
     }
 }
 
@@ -297,7 +297,7 @@ static gboolean on_window_map_event(
 
     if (!wintc_cpl_desk_settings_load(wnd->settings, &error))
     {
-        wintc_nice_error_and_clear(&error);
+        wintc_nice_error_and_clear(&error, GTK_WINDOW(wnd));
         return FALSE;
     }
 

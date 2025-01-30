@@ -293,7 +293,7 @@ static void refresh_wallpaper_list(
 
     if (!wnd->list_wallpapers)
     {
-        wintc_nice_error_and_clear(&error);
+        wintc_nice_error_and_clear(&error, GTK_WINDOW(wnd));
         return;
     }
 
@@ -483,7 +483,7 @@ static void on_listbox_wallpapers_row_selected(
 
     if (!wnd->pixbuf_wallpaper)
     {
-        wintc_nice_error_and_clear(&error);
+        wintc_nice_error_and_clear(&error, GTK_WINDOW(wnd));
         return;
     }
 

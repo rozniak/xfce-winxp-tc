@@ -41,10 +41,14 @@ add_library(
     src/builder.c
     public/builder.h
     public/debug.h
+    src/clipbd.c
+    public/clipbd.h
     src/container.c
     public/container.h
     src/defprocs.c
     public/defprocs.h
+    src/delegate.c
+    public/delegate.h
     src/errors.c
     public/errors.h
     src/icons.c

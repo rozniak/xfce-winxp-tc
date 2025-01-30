@@ -4,6 +4,7 @@
 #include <wintc/shlang.h>
 
 #include "../public/browser.h"
+#include "../public/fsclipbd.h"
 #include "../public/icnvwbeh.h"
 
 //
@@ -43,6 +44,11 @@ static void wintc_sh_icon_view_behaviour_update_view(
     WinTCShIconViewBehaviour* behaviour
 );
 
+static void action_paste_operation(
+    GSimpleAction* action,
+    GVariant*      parameter,
+    gpointer       user_data
+);
 static void action_view_operation(
     GSimpleAction* action,
     GVariant*      parameter,
@@ -88,6 +94,13 @@ static GSimpleAction* s_action_noop = NULL;
 
 static GActionEntry s_actions[] = {
     {
+        .name           = "paste-op",
+        .activate       = action_paste_operation,
+        .parameter_type = "i",
+        .state          = NULL,
+        .change_state   = NULL
+    },
+    {
         .name           = "view-op",
         .activate       = action_view_operation,
         .parameter_type = "i",
@@ -119,6 +132,10 @@ struct _WinTCShIconViewBehaviour
     gulong sigid_items_added;
     gulong sigid_items_removed;
     gulong sigid_refreshing;
+
+    // Misc. stuff for actions
+    //
+    WinTCShFSClipboard* fs_clipboard;
 };
 
 //
@@ -184,6 +201,10 @@ static void wintc_sh_icon_view_behaviour_constructed(
         return;
     }
 
+    // Spawn the FS clipboard
+    //
+    behaviour->fs_clipboard = wintc_sh_fs_clipboard_new();
+
     // Set up view model
     //
     behaviour->list_model =
@@ -224,6 +245,19 @@ static void wintc_sh_icon_view_behaviour_constructed(
         behaviour->icon_view,
         "control",
         G_ACTION_GROUP(action_group)
+    );
+
+    // Bind special action states
+    //
+    GAction* action_paste_op =
+        g_action_map_lookup_action(G_ACTION_MAP(action_group), "paste-op");
+
+    g_object_bind_property(
+        behaviour->fs_clipboard,
+        "can-paste",
+        action_paste_op,
+        "enabled",
+        G_BINDING_DEFAULT
     );
 
     g_object_unref(action_group);
@@ -296,6 +330,7 @@ static void wintc_sh_icon_view_behaviour_dispose(
     g_clear_object(&(behaviour->current_view));
     g_clear_object(&(behaviour->browser));
     g_clear_object(&(behaviour->icon_view));
+    g_clear_object(&(behaviour->fs_clipboard));
 
     (G_OBJECT_CLASS(wintc_sh_icon_view_behaviour_parent_class))
         ->dispose(object);
@@ -418,6 +453,27 @@ static void wintc_sh_icon_view_behaviour_update_view(
 //
 // CALLBACKS
 //
+static void action_paste_operation(
+    WINTC_UNUSED(GSimpleAction* action),
+    GVariant* parameter,
+    gpointer  user_data
+)
+{
+    WinTCShIconViewBehaviour* behaviour =
+        WINTC_SH_ICON_VIEW_BEHAVIOUR(user_data);
+
+    // Forward to normal view op
+    //
+    g_action_group_activate_action(
+        gtk_widget_get_action_group(
+            behaviour->icon_view,
+            "control"
+        ),
+        "view-op",
+        parameter
+    );
+}
+
 static void action_view_operation(
     WINTC_UNUSED(GSimpleAction* action),
     GVariant*      parameter,
@@ -481,6 +537,9 @@ static void action_view_operation(
     WinTCIShextView*     view         = wintc_sh_browser_get_current_view(
                                             behaviour->browser
                                         );
+    GtkWindow*           wnd          = wintc_widget_get_toplevel_window(
+                                            behaviour->icon_view
+                                        );
 
     operation =
         wintc_ishext_view_spawn_operation(
@@ -492,23 +551,18 @@ static void action_view_operation(
 
     if (!operation)
     {
-        wintc_display_error_and_clear(&error);
+        wintc_display_error_and_clear(
+            &error,
+            wnd
+        );
         return;
     }
 
     // Execute!
     //
-    GtkWidget* toplevel = gtk_widget_get_toplevel(behaviour->icon_view);
-    GtkWindow* wnd      = NULL;
-
-    if (GTK_IS_WINDOW(toplevel))
-    {
-        wnd = GTK_WINDOW(toplevel);
-    }
-
     if (!(operation->func) (view, operation, wnd, &error))
     {
-        wintc_display_error_and_clear(&error);
+        wintc_display_error_and_clear(&error, wnd);
     }
 
     g_free(operation);
@@ -708,7 +762,10 @@ static void on_icon_view_item_activated(
 
         if (error)
         {
-            wintc_display_error_and_clear(&error);
+            wintc_display_error_and_clear(
+                &error,
+                wintc_widget_get_toplevel_window(GTK_WIDGET(self))
+            );
         }
     }
 }

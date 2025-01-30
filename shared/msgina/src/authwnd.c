@@ -140,8 +140,8 @@ static void wintc_gina_auth_window_init(
                                      &err_bannerx
                                  );
 
-    wintc_display_error_and_clear(&err_banner);
-    wintc_display_error_and_clear(&err_bannerx);
+    wintc_display_error_and_clear(&err_banner, NULL);
+    wintc_display_error_and_clear(&err_bannerx, NULL);
 
     // Set up branding box
     //
@@ -594,7 +594,7 @@ static gboolean on_timeout_delay_done(
                 )
             )
             {
-                wintc_nice_error_and_clear(&error);
+                wintc_nice_error_and_clear(&error, GTK_WINDOW(window));
 
                 wintc_gina_auth_window_change_state(
                     window,

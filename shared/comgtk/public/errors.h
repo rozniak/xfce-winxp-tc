@@ -4,6 +4,7 @@
 #define __COMGTK_ERRORS_H__
 
 #include <glib.h>
+#include <gtk/gtk.h>
 
 #define WINTC_GENERAL_ERROR wintc_general_error_quark()
 
@@ -28,9 +29,11 @@ typedef enum
  * GError object.
  *
  * @param error A reference to the GError storage location.
+ * @param wnd   The window to own the dialog, if applicable.
  */
 void wintc_display_error_and_clear(
-    GError** error
+    GError**   error,
+    GtkWindow* wnd
 );
 
 GQuark wintc_general_error_quark(void);
@@ -50,9 +53,11 @@ void wintc_log_error_and_clear(
  * clears the associated GError object.
  *
  * @param error A reference to the GError storage location.
+ * @param wnd   The window to own the dialog, if applicable.
  */
 void wintc_nice_error_and_clear(
-    GError** error
+    GError**   error,
+    GtkWindow* wnd
 );
 
 #endif

@@ -239,6 +239,7 @@ static void wintc_resvwr_window_refresh(
         GMenuModel* menu;
         GMenuModel* menubar;
         GtkWidget*  main_box;
+        GtkWidget*  main_wnd;
         GtkWidget*  page;
         GtkWidget*  toolbar;
 
@@ -246,6 +247,7 @@ static void wintc_resvwr_window_refresh(
             builder,
             "label-title", &label_title,
             "main-box",    &main_box,
+            "main-wnd",    &main_wnd,
             "menu",        &menu,
             "menubar",     &menubar,
             "page",        &page,
@@ -259,6 +261,28 @@ static void wintc_resvwr_window_refresh(
                 GTK_CONTAINER(wnd->scrollwnd_view),
                 main_box
             );
+        }
+        else if (main_wnd)
+        {
+            GtkWidget* box_wrapper = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+            GtkWidget* child       = gtk_bin_get_child(GTK_BIN(main_wnd));
+
+            g_object_ref(child);
+
+            gtk_container_remove(
+                GTK_CONTAINER(main_wnd),
+                child
+            );
+            gtk_container_add(
+                GTK_CONTAINER(box_wrapper),
+                child
+            );
+            gtk_container_add(
+                GTK_CONTAINER(wnd->scrollwnd_view),
+                box_wrapper
+            );
+
+            g_object_unref(child);
         }
         else if (menu || menubar)
         {

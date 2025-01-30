@@ -9,12 +9,14 @@
     </section>
     <section>
       <item>
-        <attribute name="action">control.no-op</attribute>
+        <attribute name="action">control.paste-op</attribute>
         <attribute name="label">Paste</attribute>
+        <attribute name="target" type="i">6</attribute>
       </item>
       <item>
-        <attribute name="action">control.no-op</attribute>
+        <attribute name="action">control.paste-op</attribute>
         <attribute name="label">Paste Shortcut</attribute>
+        <attribute name="target" type="i">7</attribute>
       </item>
     </section>
     <section>

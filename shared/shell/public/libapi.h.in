@@ -5,6 +5,7 @@
 #include "@LIB_HEADER_DIR@/cpl.h"
 #include "@LIB_HEADER_DIR@/dialog.h"
 #include "@LIB_HEADER_DIR@/error.h"
+#include "@LIB_HEADER_DIR@/fsclipbd.h"
 #include "@LIB_HEADER_DIR@/icnvwbeh.h"
 #include "@LIB_HEADER_DIR@/nmspace.h"
 #include "@LIB_HEADER_DIR@/trevwbeh.h"

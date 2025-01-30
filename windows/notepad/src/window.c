@@ -523,6 +523,8 @@ static void action_notimpl(
     WINTC_UNUSED(gpointer       user_data)
 )
 {
+    WinTCNotepadWindow* wnd = WINTC_NOTEPAD_WINDOW(user_data);
+
     GError* error = NULL;
 
     g_set_error(
@@ -533,7 +535,7 @@ static void action_notimpl(
         "Action not implemented."
     );
 
-    wintc_nice_error_and_clear(&error);
+    wintc_nice_error_and_clear(&error, GTK_WINDOW(wnd));
 }
 
 static void action_about(
@@ -744,7 +746,10 @@ static void action_open(
                                 )
                             )
                             {
-                                wintc_display_error_and_clear(&error);
+                                wintc_display_error_and_clear(
+                                    &error,
+                                    GTK_WINDOW(wnd)
+                                );
                             }
                             break;
 
@@ -770,13 +775,19 @@ static void action_open(
                 }
                 else
                 {
-                    wintc_display_error_and_clear(&error);
+                    wintc_display_error_and_clear(
+                        &error,
+                        GTK_WINDOW(wnd)
+                    );
                 }
             }
         }
         else
         {
-            wintc_display_error_and_clear(&error);
+            wintc_display_error_and_clear(
+                &error,
+                GTK_WINDOW(wnd)
+            );
         }
 
         g_free(file_contents);
@@ -893,12 +904,12 @@ static void action_save_as(
             }
             else
             {
-                wintc_display_error_and_clear(&error);
+                wintc_display_error_and_clear(&error, GTK_WINDOW(wnd));
             }
         }
         else
         {
-            wintc_display_error_and_clear(&error);
+            wintc_display_error_and_clear(&error, GTK_WINDOW(wnd));
         }
 
         g_free(file_contents);

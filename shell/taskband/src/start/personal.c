@@ -868,7 +868,7 @@ static void refresh_personal_menu(
 
     if (!garcon_menu_load(all_entries, NULL, &error))
     {
-        wintc_display_error_and_clear(&error);
+        wintc_display_error_and_clear(&error, NULL);
         return;
     }
 
@@ -970,7 +970,7 @@ static void on_button_power_clicked(
 
     if (!wintc_launch_action(GPOINTER_TO_INT(user_data), &error))
     {
-        wintc_nice_error_and_clear(&error);
+        wintc_nice_error_and_clear(&error, NULL);
     }
 }
 
@@ -997,7 +997,7 @@ static void on_event_box_userpic_clicked(
         "Cannot edit user pic yet!"
     );
 
-    wintc_nice_error_and_clear(&error);
+    wintc_nice_error_and_clear(&error, NULL);
 }
 
 static void on_menu_item_launcher_activate(
@@ -1027,7 +1027,7 @@ static void on_menu_item_launcher_activate(
 
     if (error)
     {
-        wintc_nice_error_and_clear(&error);
+        wintc_nice_error_and_clear(&error, NULL);
     }
 }
 

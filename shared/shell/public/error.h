@@ -7,7 +7,8 @@
 
 typedef enum
 {
-    WINTC_SHELL_ERROR_PLACEHOLDER // TEMP
+    WINTC_SHELL_ERROR_CLIPBOARD_EMPTY,
+    WINTC_SHELL_ERROR_CLIPBOARD_GET_FAILED
 } WinTCShellError;
 
 GQuark wintc_shell_error_quark(void);

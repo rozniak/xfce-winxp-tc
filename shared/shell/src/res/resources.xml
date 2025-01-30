@@ -3,6 +3,7 @@
   <gresource prefix="/uk/oddmatics/wintc/shell">
     <!-- DIALOGS -->
     <file>dlgabout.ui</file>
+    <file>dlgfsop.ui</file>
 
     <!-- MENUS -->
     <file>menuctx.ui</file>

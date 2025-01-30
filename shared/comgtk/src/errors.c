@@ -15,13 +15,14 @@ G_DEFINE_QUARK(wintc-general-error-quark, wintc_general_error)
 // PUBLIC FUNCTIONS
 //
 void wintc_display_error_and_clear(
-    GError** error
+    GError**   error,
+    GtkWindow* wnd
 )
 {
     RETURN_IF_NO_ERROR(error)
 
     wintc_messagebox_show(
-        NULL,
+        wnd,
         (*error)->message,
         "",
         GTK_BUTTONS_OK,
@@ -43,7 +44,8 @@ void wintc_log_error_and_clear(
 }
 
 void wintc_nice_error_and_clear(
-    GError** error
+    GError**   error,
+    GtkWindow* wnd
 )
 {
     RETURN_IF_NO_ERROR(error)
@@ -63,7 +65,7 @@ void wintc_nice_error_and_clear(
     if (message != NULL)
     {
         wintc_messagebox_show(
-            NULL,
+            wnd,
             message,
             "",
             GTK_BUTTONS_OK,
@@ -74,6 +76,6 @@ void wintc_nice_error_and_clear(
     }
     else
     {
-        wintc_display_error_and_clear(error);
+        wintc_display_error_and_clear(error, wnd);
     }
 }
