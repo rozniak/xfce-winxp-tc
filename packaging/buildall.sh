@@ -24,6 +24,7 @@ SH_CHKDEPS="${SCRIPTDIR}/chkdeps.sh"
 SH_DISTID="${SCRIPTDIR}/distid.sh"
 SH_GENTAG="${BLDUTILS_ROOT}/gentag/gentag.sh"
 SH_PACKAGE="${SCRIPTDIR}/package.sh"
+SH_ZZZINC="${SCRIPTDIR}/zzz_inc.sh"
 
 
 
@@ -32,11 +33,12 @@ SH_PACKAGE="${SCRIPTDIR}/package.sh"
 #
 OPT_BUILDLIST="${TARGETS_PATH}"
 OPT_CHECKED=0
+OPT_DIST_TARGET=
 OPT_OUTPUT_DIR=""
 OPT_SKU="xpclient-pro"
 OPT_SKIP_PACKAGING=0
 
-while getopts "c:dho:s:z" opt;
+while getopts "c:dho:s:t:z" opt;
 do
     case "${opt}" in
         c)
@@ -48,12 +50,14 @@ do
             ;;
 
         h)
-            echo "Usage: buildall.sh [-chosz]"
+            echo "Usage: buildall.sh [-cdhostz]"
+            echo ""
             echo " -c : provide a list of components (default 'targets')"
             echo " -d : produce checked build"
             echo " -h : display this help screen"
             echo " -o : specify output directory for packages"
-            echo " -s : specify SKU to build (default xpclient-pro)"
+            echo " -s : specify SKU to build (default 'xpclient-pro')"
+            echo " -t : specify the distro target (don't autodetect)"
             echo " -z : skip packaging steps, compile only"
             echo ""
 
@@ -66,6 +70,10 @@ do
 
         s)
             OPT_SKU="${OPTARG}"
+            ;;
+
+        t)
+            OPT_DIST_TARGET="${OPTARG}"
             ;;
 
         z)
@@ -137,7 +145,7 @@ build_component()
 
     if [[ $? -gt 0 ]]
     then
-        echo "buildall: Compile failure, bailing."
+        echo "buildall: Compile failure, bailing." >&2
         exit 1
     fi
 
@@ -178,7 +186,7 @@ check_present()
 
     if [[ ! -f "${check_path}" ]]
     then
-        echo "${check_path} not found - this should never happen!!"
+        echo "buildall: ${check_path} not found - this should never happen!!" >&2
         exit 1
     fi
 }
@@ -192,11 +200,26 @@ check_present "${SH_CHKDEPS}"
 check_present "${SH_DISTID}"
 check_present "${SH_GENTAG}"
 check_present "${SH_PACKAGE}"
+check_present "${SH_ZZZINC}"
 
 if [[ ! -f "${OPT_BUILDLIST}" ]]
 then
-    echo "Build list not found or readable: ${OPT_BUILDLIST}"
+    echo "buildall: Build list not found or readable: ${OPT_BUILDLIST}" >&2
     exit 1
+fi
+
+# Pull includes
+#
+. "${SH_ZZZINC}"
+
+if [[ ! -z "${OPT_DIST_TARGET}" ]]
+then
+    zzz_dist_target_to_vars "${OPT_DIST_TARGET}"
+
+    if [[ $? -gt 0 ]]
+    then
+        exit 1
+    fi
 fi
 
 # Identify our distro
@@ -205,7 +228,6 @@ fi
 
 if [[ $? -gt 0 ]]
 then
-    echo "Failed to identify distribution."
     exit 1
 fi
 
@@ -222,7 +244,7 @@ then
     build_type="checked"
 fi
 
-echo "Doing full system build for ${tag} (${cur_arch}, ${DIST_ID}-${DIST_ID_EXT}) (${build_type})"
+echo "buildall: Doing full system build for ${tag} (${cur_arch}, ${DIST_ID}-${DIST_ID_EXT}) (${build_type})"
 
 # Handle output dir for packaging
 #
@@ -237,11 +259,11 @@ then
 
     if [[ ! -d "${OPT_OUTPUT_DIR}" ]]
     then
-        echo "Cannot ensure output directory "${OPT_OUTPUT_DIR}" exists."
+        echo "buildall: Cannot ensure output directory "${OPT_OUTPUT_DIR}" exists." >&2
         exit 1
     fi
 else
-    echo "Packaging will be skipped for this session."
+    echo "buildall: Packaging will be skipped for this session."
 fi
 
 # Check system deps
@@ -250,7 +272,7 @@ fi
 
 if [[ $? -gt 0 ]]
 then
-    echo "Dependencies check unsatisfied or failed."
+    echo "buildall: Dependencies check unsatisfied or failed." >&2
     exit 1
 fi
 
@@ -261,4 +283,4 @@ do
     build_component "${rel_target_dir}"
 done {targets_fd}<"${OPT_BUILDLIST}"
 
-echo "Build complete for ${tag} (${build_type})"
+echo "buildall: Build complete for ${tag} (${build_type})"

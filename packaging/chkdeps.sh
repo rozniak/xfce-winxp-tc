@@ -18,6 +18,7 @@ SCRIPTDIR=`dirname "$0"`
 REPO_ROOT=`realpath "${SCRIPTDIR}/.."`
 
 SH_DISTID="${SCRIPTDIR}/distid.sh"
+SH_ZZZINC="${SCRIPTDIR}/zzz_inc.sh"
 DEPMAP_PY="${REPO_ROOT}/tools/bldutils/depmap/depmap.py"
 
 
@@ -26,9 +27,10 @@ DEPMAP_PY="${REPO_ROOT}/tools/bldutils/depmap/depmap.py"
 # ARGUMENTS
 #
 OPT_BUILDLIST="${SCRIPTDIR}/targets"
+OPT_DIST_TARGET=""
 OPT_USE_LOCAL_LIBS=0
 
-while getopts "c:hl" opt;
+while getopts "c:hlt:" opt;
 do
     case "${opt}" in
         c)
@@ -36,11 +38,12 @@ do
             ;;
 
         h)
-            echo "Usage: chkdeps.sh [-chl]"
+            echo "Usage: chkdeps.sh [-chlt]"
             echo ""
             echo " -c : provide a list of components (default 'targets')"
             echo " -h : display this help screen"
             echo " -l : use wintc libraries compiled here, not system"
+            echo " -t : specify the distro target (don't autodetect)"
             echo ""
 
             exit 0
@@ -48,6 +51,10 @@ do
 
         l)
             OPT_USE_LOCAL_LIBS=1
+            ;;
+
+        t)
+            OPT_DIST_TARGET="${OPTARG}"
             ;;
     esac
 done
@@ -77,7 +84,7 @@ check_deps()
 
     if [[ $? -gt 0 ]]
     then
-        echo "Failed to map dependencies."
+        echo "chkdeps: Failed to map dependencies." >&2
         exit 1
     fi
 
@@ -141,7 +148,7 @@ check_deps()
 
                     if [[ $found_pkg -eq 0 ]]
                     then
-                        echo "${pkg_name} is unavailable for your distro."
+                        echo "chkdeps: ${pkg_name} is unavailable for your distro." >&2
                         exit 1
                     fi
                 fi
@@ -180,7 +187,7 @@ check_deps()
                 xbps-query --show "${pkg_name}" >/dev/null 2>&1
                 ;;
             *)
-                echo "Package format not implemented!"
+                echo "chkdeps: Package format not implemented!" >&2
                 exit 1
                 ;;
         esac
@@ -199,20 +206,40 @@ check_deps()
 #
 if [[ ! -f "${SH_DISTID}" ]]
 then
-    echo "distid.sh not found - this should never happen!!"
+    echo "chkdeps: distid.sh not found - this should never happen!!" >&2
+    exit 1
+fi
+
+if [[ ! -f "${SH_ZZZINC}" ]]
+then
+    echo "chkdeps: zzz_inc.sh not found - this should never happen!!" >&2
     exit 1
 fi
 
 if [[ ! -f "${DEPMAP_PY}" ]]
 then
-    echo "depmap tool not found - this should never happen!!"
+    echo "chkdeps: depmap tool not found - this should never happen!!" >&2
     exit 1
 fi
 
 if [[ ! -f "${OPT_BUILDLIST}" ]]
 then
-    echo "Build list not found or readable: ${OPT_BUILDLIST}"
+    echo "chkdeps: Build list not found or readable: ${OPT_BUILDLIST}" >&2
     exit 1
+fi
+
+# Pull includes
+#
+. "${SH_ZZZINC}"
+
+if [[ ! -z "${OPT_DIST_TARGET}" ]]
+then
+    zzz_dist_target_to_vars "${OPT_DIST_TARGET}"
+
+    if [[ $? -gt 0 ]]
+    then
+        exit 1
+    fi
 fi
 
 # Identify our distro
@@ -221,7 +248,6 @@ fi
 
 if [[ $? -gt 0 ]]
 then
-    echo "Failed to identify distribution."
     exit 1
 fi
 
@@ -236,7 +262,7 @@ done {buildlist_fd}<"${OPT_BUILDLIST}"
 #
 if [[ "${#g_needed_pkgs[@]}" -eq 0 ]]
 then
-    echo "All dependencies verified."
+    echo "chkdeps: All dependencies OK!" >&2
     exit 0
 fi
 
