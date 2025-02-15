@@ -79,6 +79,22 @@ check_deps()
         return 0
     fi
 
+    # Unsure of the exact cause, but sometimes when users download the project
+    # via the 'Download ZIP' option on GitHub, symlinks become normal files
+    #
+    # Here we check if the first line of the deps file is valid - if it isn't,
+    # it's very likely to be a symlink, so resolve it and then continue as
+    # normal
+    #
+    local dep_firstline=$(cat "${full_deps_path}" | head --lines=1)
+
+    if [[ ! "${dep_firstline}" =~ ^(bt|rt|bt,rt): ]]
+    then
+        full_deps_path=`realpath "${full_target_dir}/${dep_firstline}"`
+    fi
+
+    # Ask depmap to map the dependencies to distro packages
+    #
     local required_deps
     required_deps=`python3 ${DEPMAP_PY} ${full_deps_path} ${DIST_ID}`
 
