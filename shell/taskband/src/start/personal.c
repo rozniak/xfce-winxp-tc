@@ -12,6 +12,7 @@
 
 #include "../toolbar.h"
 #include "menumod.h"
+#include "mfu.h"
 #include "personal.h"
 #include "shared.h"
 #include "toolbar.h"
@@ -1023,6 +1024,7 @@ static void on_menu_item_launcher_activate(
     else
     {
         wintc_launch_command(tuple->user_data, &error);
+        wintc_toolbar_start_mfu_bump_entry(tuple->user_data);
     }
 
     if (error)

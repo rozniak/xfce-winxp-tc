@@ -55,6 +55,8 @@ set(
     src/window.h
     src/start/menumod.c
     src/start/menumod.h
+    src/start/mfu.c
+    src/start/mfu.h
     src/start/personal.c
     src/start/personal.h
     src/start/shared.h
