@@ -252,6 +252,28 @@ void create_personal_menu(
         toolbar_start
     );
 
+    // Retrieve the master programs list - we use this for the pins and MFU
+    // list
+    //
+    GError* error = NULL;
+
+    toolbar_start->personal.garcon_all_entries =
+        garcon_menu_new_for_path(
+            WINTC_ASSETS_DIR "/shell-res/all.menu"
+        );
+
+    if (
+        !garcon_menu_load(
+            toolbar_start->personal.garcon_all_entries,
+            NULL,
+            &error
+        )
+    )
+    {
+        wintc_display_error_and_clear(&error, NULL);
+        return;
+    }
+
     // Attach All Programs submenu
     //
     GarconMenu* programs_menu    = garcon_menu_new_for_path(
@@ -862,20 +884,14 @@ static void refresh_personal_menu(
     //        For now we simply grab the first items that are pulled in via the
     //        all.menu file
     //
-    GarconMenu* all_entries = garcon_menu_new_for_path(
-                                  WINTC_ASSETS_DIR "/shell-res/all.menu"
-                              );
-    GError*     error       = NULL;
-
-    if (!garcon_menu_load(all_entries, NULL, &error))
-    {
-        wintc_display_error_and_clear(&error, NULL);
-        return;
-    }
 
     // Loop over to add the items
     //
-    GList*      elements = garcon_menu_get_elements(all_entries);
+    GList* elements =
+        garcon_menu_get_elements(
+            toolbar_start->personal.garcon_all_entries
+        );
+
     GList* li = elements;
     gint   i  = 0;
 

@@ -1,6 +1,8 @@
 #ifndef __SHARED_START_H__
 #define __SHARED_START_H__
 
+#include <garcon/garcon.h>
+
 //
 // INTERNAL STRUCTS
 //
@@ -25,6 +27,10 @@ typedef struct _PersonalStartMenuData
     // Custom style contexts
     //
     GtkStyleProvider* style_userpic;
+
+    // Garcon stuff
+    //
+    GarconMenu* garcon_all_entries;
 
     // Signal tuples
     //
