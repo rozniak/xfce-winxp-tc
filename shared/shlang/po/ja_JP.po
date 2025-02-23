@@ -230,16 +230,16 @@ msgid "Favorites"
 msgstr "お気に入り(A)"
 
 msgid "My Documents"
-msgstr "My Documents"
+msgstr "マイ ドキュメント"
 
 msgid "My Music"
-msgstr "My Music"
+msgstr "マイ ミュージック"
 
 msgid "My Pictures"
-msgstr "My Pictures"
+msgstr "マイ ピクチャ"
 
 msgid "My Recent Documents"
-msgstr "最近使ったファイル"
+msgstr "最近使ったファイル(D)"
 
 msgid "Recycle Bin"
 msgstr "ごみ箱"
@@ -258,7 +258,7 @@ msgid "My Network Places"
 msgstr "マイ ネットワーク"
 
 msgid "Control Panel"
-msgstr "コントロール パネル"
+msgstr "コントロール パネル(C)"
 
 msgid "Network Connections"
 msgstr "ネットワーク接続"

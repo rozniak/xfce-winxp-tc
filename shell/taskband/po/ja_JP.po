@@ -49,7 +49,7 @@ msgstr ""
 "ユーザーに切り替えるオプションを提供します。"
 
 msgid "Turn Off Computer"
-msgstr "コンピュータの終了"
+msgstr "終了オプション(U)"
 
 msgid ""
 "Provides options for turning off or restarting your computer, or for "
@@ -128,7 +128,7 @@ msgstr ""
 "どを集中して参照できる場所を開きます。"
 
 msgid "Help and Support"
-msgstr "ヘルプとサポート"
+msgstr "ヘルプとサポート(H)"
 
 msgid ""
 "Opens a window where you can pick search options and work with search "
