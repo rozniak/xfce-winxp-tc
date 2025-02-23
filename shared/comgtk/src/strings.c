@@ -6,6 +6,21 @@
 //
 // PUBLIC FUNCTIONS
 //
+const gchar* wintc_basename(
+    const gchar* path
+)
+{
+    const gchar* last_sep =
+        strrchr(path, G_DIR_SEPARATOR);
+
+    if (last_sep)
+    {
+        return last_sep + 1;
+    }
+
+    return path;
+}
+
 gchar* wintc_str_set_prefix(
     const gchar* str,
     const gchar* prefix

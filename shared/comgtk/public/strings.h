@@ -10,6 +10,16 @@
 //
 
 /**
+ * Gets the last component of a path.
+ *
+ * @param path The path.
+ * @return A pointer to the last component of the path.
+ */
+const gchar* wintc_basename(
+    const gchar* path
+);
+
+/**
  * Copies a string, ensuring it has the specified prefix.
  *
  * @param str    The string.

@@ -13,6 +13,7 @@
 #include "../toolbar.h"
 #include "menumod.h"
 #include "personal.h"
+#include "progmenu.h"
 #include "shared.h"
 #include "toolbar.h"
 #include "util.h"
@@ -124,6 +125,14 @@ void create_personal_menu(
 {
     GtkBuilder* builder;
     WinTCTaskbandToolbar* toolbar = WINTC_TASKBAND_TOOLBAR(toolbar_start);
+
+    GError* error = NULL;
+
+    if (!wintc_toolbar_start_progmenu_init(&error))
+    {
+        wintc_display_error_and_clear(&error, NULL);
+        return;
+    }
 
     // Set default states
     //
@@ -253,15 +262,9 @@ void create_personal_menu(
 
     // Attach All Programs submenu
     //
-    GarconMenu* programs_menu    = garcon_menu_new_for_path(
-                                       WINTC_ASSETS_DIR
-                                       "/shell-res/applications.menu"
-                                   );
-    GtkWidget*  programs_submenu = garcon_gtk_menu_new(programs_menu);
-
     gtk_menu_item_set_submenu(
         GTK_MENU_ITEM(toolbar_start->personal.menuitem_all_programs),
-        programs_submenu
+        wintc_toolbar_start_progmenu_new_gtk_menu()
     );
 
     // Transfer to popup

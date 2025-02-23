@@ -57,6 +57,8 @@ set(
     src/start/menumod.h
     src/start/personal.c
     src/start/personal.h
+    src/start/progmenu.c
+    src/start/progmenu.h
     src/start/shared.h
     src/start/toolbar.c
     src/start/toolbar.h
