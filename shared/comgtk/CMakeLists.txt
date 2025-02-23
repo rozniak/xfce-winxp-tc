@@ -51,6 +51,8 @@ add_library(
     public/delegate.h
     src/errors.c
     public/errors.h
+    src/hashtable.c
+    public/hashtable.h
     src/icons.c
     public/icons.h
     src/list.c
