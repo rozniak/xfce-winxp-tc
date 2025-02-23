@@ -518,7 +518,7 @@
                           <object class="GtkLabel">
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
-                            <property name="label" translatable="yes">Connect To...</property>
+                            <property name="label" translatable="yes">Connect To</property>
                             <property name="max-width-chars">24</property>
                             <property name="tooltip-text" translatable="yes">Connects to other computers, networks, and the Internet.</property>
                             <property name="wrap">True</property>
