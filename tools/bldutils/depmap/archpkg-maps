@@ -6,6 +6,7 @@ gdk-pixbuf2-->bt,rt-->gdk-pixbuf2
 glib2-->bt-->glib2-devel
 glib2-->rt-->glib2
 gtk3-->bt,rt-->gtk3
+gtk4-->bt,rt-->gtk4
 lightdm-->bt,rt-->lightdm
 msgfmt-->bt,rt-->gettext
 networkmanager-->bt,rt-->networkmanager

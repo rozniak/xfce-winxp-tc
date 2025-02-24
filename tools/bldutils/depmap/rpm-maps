@@ -11,6 +11,8 @@ glib2-->bt-->glib2-devel
 glib2-->rt-->glib2
 gtk3-->bt-->gtk3-devel
 gtk3-->rt-->gtk3
+gtk4-->bt-->gtk4-devel
+gtk4-->rt-->gtk4
 lightdm-->bt-->lightdm-gobject-devel
 lightdm-->rt-->lightdm-gobject
 msgfmt-->bt,rt-->gettext

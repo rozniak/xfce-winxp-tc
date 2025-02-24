@@ -5,6 +5,7 @@ garcon-gtk3-->bt,rt-->garcon
 gdk-pixbuf2-->bt,rt-->gdk-pixbuf2
 glib2-->bt,rt-->glib
 gtk3-->bt,rt-->gtk3
+gtk4-->bt,rt-->gtk4
 lightdm-->bt,rt-->lightdm
 msgfmt-->bt,rt-->gettext
 networkmanager-->bt,rt-->NULL

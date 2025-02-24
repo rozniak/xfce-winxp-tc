@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Hello (WinTC Sample / GTK4)
+Comment=WinTC demonstration hello program (GTK4).
+Exec=wintc-hello
+Icon=wintc-hello
+Terminal=false
+StartupNotify=false
+Type=Application
+Categories=Utility;GTK;
