@@ -1,0 +1,6 @@
+THEME_BASENAME=Windows XP style
+THEME_DESCRIPTION=Windows XP (Olive Green) visual style for XFCE.
+THEME_DISPLAYNAME=Windows XP style (Olive Green)
+THEME_MAINTAINER=Rory Fewell <roryf@oddmatics.uk>
+THEME_RAWNAME=luna-homestead
+THEME_VARIANT=Olive Green

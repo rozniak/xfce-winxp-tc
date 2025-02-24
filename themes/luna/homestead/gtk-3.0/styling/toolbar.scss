@@ -1,0 +1,27 @@
+/**
+ * toolbar.scss - Luna (Olive Green) Style Toolbar Style Constants
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ *            unexp <https://github.com/unexp>
+ */
+
+$menu_separator_thickness: $separator_thickness;
+
+//
+// TOOLBAR
+//
+$toolbar_styles:
+    wintc_define_props_borders(
+        $toolbar_styles,
+        false,
+        solid,
+        0,
+        0,
+        2,
+        0,
+        undefined,
+        url('../Resources/toolbar_border.png')
+    );
