@@ -3,6 +3,7 @@
 
 #include "@LIB_HEADER_DIR@/animctl.h"
 #include "@LIB_HEADER_DIR@/cpl.h"
+#include "@LIB_HEADER_DIR@/menubind.h"
 #include "@LIB_HEADER_DIR@/style.h"
 
 #endif
