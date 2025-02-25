@@ -18,7 +18,7 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 msgid "Run"
-msgstr "実行"
+msgstr "ファイル名を指是して実行"
 
 msgid ""
 "Type the name of a program, folder, document, or Internet resource, and "
