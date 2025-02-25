@@ -1,5 +1,6 @@
 #include <glib.h>
 #include <gtk/gtk.h>
+#include <wintc/comctl.h>
 #include <wintc/comgtk.h>
 
 #include "application.h"
@@ -136,7 +137,12 @@ static void wintc_menu_test_window_init(
 
     // Create GTK menu, bind model, attach as submenu
     //
-    GtkWidget* bound_submenu = gtk_menu_new_from_model(G_MENU_MODEL(menu));
+    GtkWidget* bound_submenu = gtk_menu_new();
+
+    wintc_ctl_menu_binding_new(
+        GTK_MENU(bound_submenu),
+        G_MENU_MODEL(menu)
+    ); 
 
     gtk_menu_item_set_submenu(
         GTK_MENU_ITEM(menu_item_host),
