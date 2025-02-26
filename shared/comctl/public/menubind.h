@@ -21,8 +21,9 @@ G_DECLARE_FINAL_TYPE(
 // PUBLIC FUNCTIONS
 //
 WinTCCtlMenuBinding* wintc_ctl_menu_binding_new(
-    GtkMenu*    menu,
-    GMenuModel* menu_model
+    GtkMenuShell* menu_shell,
+    GMenuModel*   menu_model,
+    gboolean      with_separators
 );
 
 #endif

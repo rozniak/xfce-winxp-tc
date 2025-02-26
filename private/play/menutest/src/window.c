@@ -6,20 +6,9 @@
 #include "application.h"
 #include "window.h"
 
+// Change this to use either our binding or GTK
 //
-// STATIC DATA
-//
-static gchar* S_MENU_ITEMS[] = {
-    "Item 1", "folder",
-    "Item 2", "computer",
-    "Item 3", "add"
-};
-
-static gchar* S_SUBMENU_ITEMS[] = {
-    "Subitem 1", "search",
-    "Subitem 2", "printer",
-    "Subitem 3", "drive-optical"
-};
+#define TEST_USE_CTL_BINDING 0
 
 //
 // GTK OOP CLASS/INSTANCE DEFINITIONS
@@ -59,95 +48,43 @@ static void wintc_menu_test_window_init(
         200
     );
 
+    // Retrieve menu model
+    //
+    GtkBuilder* builder =
+        gtk_builder_new_from_resource(
+            "/uk/oddmatics/wintc/samples/menutest/menubar.ui"
+        );
+
+    GMenuModel* model =
+        G_MENU_MODEL(gtk_builder_get_object(builder, "menu"));
+
+    g_object_ref(model);
+
+    g_object_unref(builder);
+
     // Create a boring menu strip
     //
-    GtkWidget* menu_bar       = gtk_menu_bar_new();
-    GtkWidget* menu_item_host = gtk_menu_item_new_with_label("Menu");
+    GtkWidget* menu_bar = gtk_menu_bar_new();
 
-    gtk_menu_shell_append(
-        GTK_MENU_SHELL(menu_bar),
-        menu_item_host
-    );
+    if (TEST_USE_CTL_BINDING)
+    {
+        wintc_ctl_menu_binding_new(
+            GTK_MENU_SHELL(menu_bar),
+            model,
+            FALSE
+        );
+    }
+    else
+    {
+        gtk_menu_shell_bind_model(
+            GTK_MENU_SHELL(menu_bar),
+            model,
+            NULL,
+            FALSE
+        );
+    }
 
     gtk_container_add(GTK_CONTAINER(box_container), menu_bar);
-
-    // Create a GMenu structure...
-    //
-    GMenu* menu = g_menu_new();
-
-    // ...start with the submenu
-    //
-    GMenu*     submenu      = g_menu_new();
-    GMenuItem* submenu_item = g_menu_item_new(NULL, NULL);
-
-    for (gsize i = 0; i < G_N_ELEMENTS(S_SUBMENU_ITEMS); i += 2)
-    {
-        GMenuItem* menu_item = g_menu_item_new(NULL, NULL);
-
-        g_menu_item_set_label(
-            menu_item,
-            S_SUBMENU_ITEMS[i]
-        );
-        g_menu_item_set_icon(
-            menu_item,
-            g_themed_icon_new(S_SUBMENU_ITEMS[i + 1])
-        );
-
-        g_menu_append_item(submenu, menu_item);
-
-        g_object_unref(menu_item);
-    }
-
-    g_menu_item_set_label(
-        submenu_item,
-        "Submenu"
-    );
-    g_menu_item_set_icon(
-        submenu_item,
-        g_themed_icon_new("applications-other")
-    );
-    g_menu_item_set_submenu(
-        submenu_item,
-        G_MENU_MODEL(submenu)
-    );
-
-    g_menu_append_item(menu, submenu_item);
-
-    g_object_unref(submenu_item);
-
-    // ..create the rest of the menu items
-    //
-    for (gsize i = 0; i < G_N_ELEMENTS(S_MENU_ITEMS); i += 2)
-    {
-        GMenuItem* menu_item = g_menu_item_new(NULL, NULL);
-
-        g_menu_item_set_label(
-            menu_item,
-            S_MENU_ITEMS[i]
-        );
-        g_menu_item_set_icon(
-            menu_item,
-            g_themed_icon_new(S_MENU_ITEMS[i + 1])
-        );
-
-        g_menu_append_item(menu, menu_item);
-
-        g_object_unref(menu_item);
-    }
-
-    // Create GTK menu, bind model, attach as submenu
-    //
-    GtkWidget* bound_submenu = gtk_menu_new();
-
-    wintc_ctl_menu_binding_new(
-        GTK_MENU(bound_submenu),
-        G_MENU_MODEL(menu)
-    ); 
-
-    gtk_menu_item_set_submenu(
-        GTK_MENU_ITEM(menu_item_host),
-        bound_submenu
-    );
 
     // Show!
     //

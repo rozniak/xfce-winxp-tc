@@ -9,8 +9,9 @@
 //
 enum
 {
-    PROP_MENU = 1,
-    PROP_MENU_MODEL
+    PROP_MENU_SHELL = 1,
+    PROP_MENU_MODEL,
+    PROP_WITH_SEPARATORS
 };
 
 //
@@ -50,8 +51,9 @@ typedef struct _WinTCCtlMenuBinding
 {
     GObject __parent__;
 
-    GtkMenu*    menu;
-    GMenuModel* menu_model;
+    GtkMenuShell* menu_shell;
+    GMenuModel*   menu_model;
+    gboolean      with_separators;
 } WinTCCtlMenuBinding;
 
 //
@@ -76,12 +78,12 @@ static void wintc_ctl_menu_binding_class_init(
 
     g_object_class_install_property(
         object_class,
-        PROP_MENU,
+        PROP_MENU_SHELL,
         g_param_spec_object(
-            "menu",
-            "Menu",
-            "The GTK menu to manage.",
-            GTK_TYPE_MENU,
+            "menu-shell",
+            "MenuShell",
+            "The GTK menu shell to manage.",
+            GTK_TYPE_MENU_SHELL,
             G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY
         )
     );
@@ -93,6 +95,17 @@ static void wintc_ctl_menu_binding_class_init(
             "MenuModel",
             "The menu model to bind to.",
             G_TYPE_MENU_MODEL,
+            G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY
+        )
+    );
+    g_object_class_install_property(
+        object_class,
+        PROP_WITH_SEPARATORS,
+        g_param_spec_boolean(
+            "with-separators",
+            "WithSeparators",
+            "Whether to spawn separators on the top level.",
+            FALSE,
             G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY
         )
     );
@@ -111,7 +124,9 @@ static void wintc_ctl_menu_binding_constructed(
 {
     WinTCCtlMenuBinding* menu_binding = WINTC_CTL_MENU_BINDING(object);
 
-    wintc_container_clear(GTK_CONTAINER(menu_binding->menu));
+    wintc_container_clear(
+        GTK_CONTAINER(menu_binding->menu_shell)
+    );
 
     // Iterate over the menu model
     //
@@ -132,7 +147,7 @@ static void wintc_ctl_menu_binding_constructed(
         )
         {
             gtk_menu_shell_append(
-                GTK_MENU_SHELL(menu_binding->menu),
+                menu_binding->menu_shell,
                 gtk_menu_item_new_with_label(label)
             );
 
@@ -150,7 +165,7 @@ static void wintc_ctl_menu_binding_dispose(
 {
     WinTCCtlMenuBinding* menu_binding = WINTC_CTL_MENU_BINDING(object);
 
-    g_clear_object(&(menu_binding->menu));
+    g_clear_object(&(menu_binding->menu_shell));
     g_clear_object(&(menu_binding->menu_model));
 
     (G_OBJECT_CLASS(wintc_ctl_menu_binding_parent_class))
@@ -183,8 +198,8 @@ static void wintc_ctl_menu_binding_set_property(
 
     switch (prop_id)
     {
-        case PROP_MENU:
-            menu_binding->menu =
+        case PROP_MENU_SHELL:
+            menu_binding->menu_shell =
                 g_value_dup_object(value);
 
             break;
@@ -192,6 +207,12 @@ static void wintc_ctl_menu_binding_set_property(
         case PROP_MENU_MODEL:
             menu_binding->menu_model =
                 g_value_dup_object(value);
+
+            break;
+
+        case PROP_WITH_SEPARATORS:
+            menu_binding->with_separators =
+                g_value_get_boolean(value);
 
             break;
 
@@ -205,15 +226,17 @@ static void wintc_ctl_menu_binding_set_property(
 // PUBLIC FUNCTIONS
 //
 WinTCCtlMenuBinding* wintc_ctl_menu_binding_new(
-    GtkMenu*    menu,
-    GMenuModel* menu_model
+    GtkMenuShell* menu_shell,
+    GMenuModel*   menu_model,
+    gboolean      with_separators
 )
 {
     return WINTC_CTL_MENU_BINDING(
         g_object_new(
             WINTC_TYPE_CTL_MENU_BINDING,
-            "menu",       menu,
-            "menu-model", menu_model,
+            "menu-shell",      menu_shell,
+            "menu-model",      menu_model,
+            "with-separators", with_separators,
             NULL
         )
     );
