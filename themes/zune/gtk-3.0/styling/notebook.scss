@@ -99,7 +99,7 @@ $notebook_tab_bottom_styles:
         undefined,
         undefined,
         undefined,
-        linear-gradient(0deg, rgba(252,252,251,1) 0%, rgba(240,240,234,1) 100%)
+        linear-gradient(0deg, rgba(255,255,255,1) 0%, rgba(240,240,240,1) 50%, rgba(198,198,198,1) 100%)
     );
 $notebook_tab_bottom_styles:
     wintc_define_props_borders(
@@ -144,7 +144,7 @@ $notebook_tab_left_styles:
         undefined,
         undefined,
         undefined,
-        linear-gradient(90deg, rgba(252,252,251,1) 0%, rgba(240,240,234,1) 100%)
+        linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(240,240,240,1) 50%, rgba(198,198,198,1) 100%)
     );
 $notebook_tab_left_styles:
     wintc_define_props_borders(
@@ -189,7 +189,7 @@ $notebook_tab_right_styles:
         undefined,
         undefined,
         undefined,
-        linear-gradient(270deg, rgba(252,252,251,1) 0%, rgba(240,240,234,1) 100%)
+        linear-gradient(270deg, rgba(255,255,255,1) 0%, rgba(240,240,240,1) 50%, rgba(198,198,198,1) 100%)
     );
 $notebook_tab_right_styles:
     wintc_define_props_borders(
@@ -234,7 +234,7 @@ $notebook_tab_top_styles:
         undefined,
         undefined,
         undefined,
-        linear-gradient(180deg, rgba(252,252,251,1) 0%, rgba(240,240,234,1) 100%)
+        linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(240,240,240,1) 50%, rgba(198,198,198,1) 100%)
     );
 $notebook_tab_top_styles:
     wintc_define_props_borders(

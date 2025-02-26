@@ -22,7 +22,7 @@ $start_menu_places_column_width: 176px;
 
 $start_menu_popup_menu_vmargin: 1px;
 
-$start_menu_separator_thickness: $separator_thickness;
+$start_menu_separator_thickness: 0px;
 
 
 //
@@ -305,7 +305,7 @@ $start_menu_programs_column_styles:
         false,
         solid,
         3,
-        0,
+        6,
         1,
         2,
         undefined,
@@ -339,16 +339,17 @@ $start_menu_programs_column_styles:
         undefined
     );
 
-
 $start_menu_programs_separator_styles:
-    wintc_define_props_bg(
+    wintc_define_props_borders(
         $start_menu_programs_separator_styles,
         false,
+        solid,
+        1,
+        1,
+        1,
+        1,
         undefined,
-        undefined,
-        undefined,
-        undefined,
-        linear-gradient(90deg, rgba(44,44,44,1) 0%, rgba(40,40,40,1) 25%, rgba(33,33,33,1) 50%, rgba(40,40,40,1) 75%, rgba(44,44,44,1) 100%)
+        url("../Resources/start_programs_separator.png")
     );
 
 $start_menu_programs_menuitem_mime_prgtxt_styles:
@@ -490,16 +491,17 @@ $start_menu_places_column_styles:
         #FFFFFF,
         undefined
     );
-
 $start_menu_places_separator_styles:
-    wintc_define_props_bg(
+    wintc_define_props_borders(
         $start_menu_places_separator_styles,
         false,
+        solid,
+        1,
+        1,
+        2,
+        1,
         undefined,
-        undefined,
-        undefined,
-        undefined,
-        linear-gradient(90deg, rgba(102,102,102,1) 0%, rgba(93,93,93,1) 25%, rgba(83,83,83,1) 50%, rgba(93,93,93,1) 75%, rgba(102,102,102,1) 100%)
+        url('../Resources/start_places_separator.png')
     );
 
 
