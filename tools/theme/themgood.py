@@ -77,7 +77,11 @@ def main():
                 args[0] = "BGRA"
                 im.tile = [im.tile[0]._replace(args=tuple(args))]
 
-        im.save("out/" + str(entry.name) + ".png")
+        try:
+            im.save("out/" + str(entry.name) + ".png")
+        except Exception as e:
+            print("Unhappy with " + str(entry.name))
+            print(e)
 
 
 if __name__ == "__main__":
