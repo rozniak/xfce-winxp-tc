@@ -88,7 +88,7 @@ $headerbar_backdrop_styles:
         undefined,
         undefined,
         undefined,
-        linear-gradient(180deg, rgba(146,172,231,1) 0%, rgba(146,172,231,1) 5%, rgba(128,157,227,1) 8%, rgba(118,131,217,1) 18%, rgba(118,131,217,1) 26%, rgba(118,131,217,1) 64%, rgba(126,152,229,1) 95%, rgba(120,138,221,1) 100%)
+        linear-gradient(180deg, rgba(84,84,84,1) 0%, rgba(84,84,84,1) 3%, rgba(39,39,39,1) 4%, rgba(46,46,46,1) 35%, rgba(64,64,64,1) 53%, rgba(76,76,76,1) 100%)
     );
 $headerbar_backdrop_styles:
     wintc_define_props_borders(
@@ -111,7 +111,7 @@ $headerbar_maximized_styles:
         undefined,
         undefined,
         undefined,
-        linear-gradient(180deg, rgba(35,133,255,1) 0%, rgba(35,133,255,1) 3%, rgba(0,85,234,1) 6%, rgba(0,67,211,1) 15%, rgba(0,58,217,1) 56%, rgba(0,85,244,1) 80%, rgba(0,85,241,1) 93%, rgba(0,58,217,1) 100%)
+        linear-gradient(180deg, rgba(133,133,133,1) 0%, rgba(133,133,133,1) 2%, rgba(111,111,111,1) 3%, rgba(84,84,84,1) 46%, rgba(61,61,61,1) 48%, rgba(41,41,41,1) 100%)
     );
 $headerbar_maximized_styles:
     wintc_define_props_borders(
@@ -134,7 +134,7 @@ $headerbar_maximized_backdrop_styles:
         undefined,
         undefined,
         undefined,
-        linear-gradient(180deg, rgba(146,172,231,1) 0%, rgba(146,172,231,1) 3%, rgba(128,157,227,1) 5%, rgba(118,131,217,1) 18%, rgba(118,131,217,1) 26%, rgba(118,131,217,1) 64%, rgba(126,152,229,1) 95%, rgba(120,138,221,1) 100%)
+        linear-gradient(180deg, rgba(85,85,85,1) 0%, rgba(85,85,85,1) 2%, rgba(39,39,39,1) 3%, rgba(46,46,46,1) 40%, rgba(52,52,52,1) 41%, rgba(66,66,66,1) 60%, rgba(76,76,76,1) 100%)
     );
 $headerbar_maximized_backdrop_styles:
     wintc_define_props_borders(
@@ -162,7 +162,7 @@ $caption_button_styles:
         undefined,
         undefined,
         url('../Resources/caption_button.png'),
-        linear-gradient(170deg, rgba(154,183,250,1) 0%, rgba(49,107,244,1) 15%, rgba(19,105,244,1) 65%, rgba(2,90,240,1) 100%)
+        linear-gradient(180deg, rgba(103,103,103,1) 0%, rgba(90,90,90,1) 40%, rgba(63,63,63,1) 50%, rgba(79,79,79,1) 100%)
     );
 $caption_button_styles:
     wintc_define_props_borders(
@@ -193,7 +193,7 @@ $caption_button_hover_styles:
         undefined,
         undefined,
         url('../Resources/caption_button_hover.png'),
-        linear-gradient(170deg, rgba(164,194,255,1) 0%, rgba(56,121,252,1) 15%, rgba(31,151,253,1) 80%, rgba(17,132,250,1) 100%)
+        linear-gradient(180deg, rgba(112,112,112,1) 0%, rgba(112,112,112,1) 5%, rgba(101,101,101,1) 48%, rgba(90,90,90,1) 50%, rgba(112,112,112,1) 75%)
     );
 $caption_button_hover_styles:
     wintc_define_props_borders(
@@ -219,7 +219,7 @@ $caption_button_press_styles:
         undefined,
         undefined,
         url('../Resources/caption_button_press.png'),
-        linear-gradient(170deg, rgba(0,56,130,1) 0%, rgba(0,77,178,1) 20%, rgba(0,94,195,1) 80%, rgba(0,91,192,1) 100%)
+        linear-gradient(180deg, rgba(48,48,48,1) 0%, rgba(48,48,48,1) 5%, rgba(44,44,44,1) 45%, rgba(32,32,32,1) 50%, rgba(49,49,49,1) 100%)
     );
 $caption_button_press_styles:
     wintc_define_props_borders(
@@ -237,7 +237,7 @@ $caption_button_press_styles:
     wintc_define_props_fg(
         $caption_button_press_styles,
         false,
-        #78A2D8,
+        #BABBBC,
         undefined
     );
 
@@ -269,7 +269,7 @@ $caption_button_inactive_styles:
     wintc_define_props_fg(
         $caption_button_inactive_styles,
         false,
-        #8C9DE7,
+        #A9AAAB,
         undefined
     );
 
@@ -345,7 +345,7 @@ $caption_button_backdrop_press_styles:
     wintc_define_props_fg(
         $caption_button_backdrop_press_styles,
         false,
-        #97B0E2,
+        #BABBBC,
         undefined
     );
 
@@ -377,7 +377,7 @@ $caption_button_backdrop_inactive_styles:
     wintc_define_props_fg(
         $caption_button_backdrop_inactive_styles,
         false,
-        #919FE6,
+        #A9AAAB,
         undefined
     );
 
@@ -455,7 +455,7 @@ $close_button_press_styles:
     wintc_define_props_fg(
         $close_button_press_styles,
         false,
-        #DF9A88,
+        #DF9A87,
         undefined
     );
 
@@ -485,7 +485,7 @@ $close_button_inactive_styles:
     wintc_define_props_fg(
         $close_button_inactive_styles,
         false,
-        #9598CC,
+        #A9AAAB,
         undefined
     );
 
@@ -593,6 +593,6 @@ $close_button_backdrop_inactive_styles:
     wintc_define_props_fg(
         $close_button_backdrop_inactive_styles,
         false,
-        #A0A2D8,
+        #A9AAAB,
         undefined
     );
