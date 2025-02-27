@@ -49,7 +49,7 @@ $spinbutton_button_styles:
         undefined,
         undefined,
         undefined,
-        linear-gradient(148deg, rgba(219,230,253,1) 0%, rgba(203,217,251,1) 15%, rgba(176,199,244,1) 100%)
+        linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(233,233,233,1) 50%, rgba(211,211,211,1) 100%)
     );
 $spinbutton_button_styles:
     wintc_define_props_border_radius(
@@ -66,14 +66,14 @@ $spinbutton_button_styles:
         1,
         1,
         1,
-        #B6C9F4,
+        #9B9B9B,
         none
     );
 $spinbutton_button_styles:
     wintc_define_props_fg(
         $spinbutton_button_styles,
         false,
-        #4D6185,
+        #323232,
         undefined
     );
 
@@ -85,7 +85,7 @@ $spinbutton_button_hover_styles:
         undefined,
         undefined,
         undefined,
-        linear-gradient(148deg, rgba(254,255,255,1) 0%, rgba(223,241,253,1) 15%, rgba(190,226,253,1) 100%)
+        linear-gradient(180deg, rgba(245,232,161,1) 0%, rgba(239,206,132,1) 50%, rgba(238,202,135,1) 100%)
     );
 $spinbutton_button_hover_styles:
     wintc_define_props_borders(
@@ -96,7 +96,7 @@ $spinbutton_button_hover_styles:
         undefined,
         undefined,
         undefined,
-        #8EA7E3,
+        #E5A254,
         none
     );
 
@@ -108,7 +108,7 @@ $spinbutton_button_press_styles:
         undefined,
         undefined,
         undefined,
-        linear-gradient(320deg, rgba(202,216,235,1) 0%, rgba(162,179,240,1) 15%, rgba(105,145,242,1) 100%)
+        linear-gradient(180deg, rgba(201,201,201,1) 0%, rgba(240,240,240,1) 25%, rgba(255,255,255,1) 50%)
     );
 $spinbutton_button_press_styles:
     wintc_define_props_borders(
@@ -119,7 +119,7 @@ $spinbutton_button_press_styles:
         undefined,
         undefined,
         undefined,
-        #8591D8,
+        #686868,
         none
     );
 
@@ -131,7 +131,7 @@ $spinbutton_button_inactive_styles:
         undefined,
         undefined,
         undefined,
-        linear-gradient(148deg, rgba(245,245,242,1) 0%, rgba(236,236,228,1) 15%, rgba(231,231,222,1) 100%)
+        linear-gradient(148deg, rgba(248,248,248,1) 0%, rgba(240,240,240,1) 15%, rgba(238,238,238,1) 100%)
     );
 $spinbutton_button_inactive_styles:
     wintc_define_props_borders(
@@ -142,7 +142,7 @@ $spinbutton_button_inactive_styles:
         undefined,
         undefined,
         undefined,
-        #E9E9E1,
+        #EBEBEB,
         none
     );
 $spinbutton_button_inactive_styles:

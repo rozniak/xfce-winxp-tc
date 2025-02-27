@@ -247,7 +247,7 @@ $scrollbar_horz_slider_styles:
         undefined,
         undefined,
         url('../Resources/scrollbar_horz_gripper.png'),
-        linear-gradient(180deg, rgba(200,216,251,1) 0%, rgba(185,205,251,1) 100%)
+        linear-gradient(180deg, rgba(248,248,248,1) 0%, rgba(233,233,233,1) 50%, rgba(212,212,212,1) 100%)
     );
 $scrollbar_horz_slider_styles:
     wintc_define_props_borders(
@@ -271,7 +271,7 @@ $scrollbar_horz_slider_hover_styles:
         undefined,
         undefined,
         url('../Resources/scrollbar_horz_gripper_hover.png'),
-        linear-gradient(180deg, rgba(214,231,255,1) 0%, rgba(202,224,255,1) 100%)
+        linear-gradient(180deg, rgba(254,254,254,1) 0%, rgba(235,235,235,1) 50%, rgba(209,209,209,1) 100%)
     );
 $scrollbar_horz_slider_hover_styles:
     wintc_define_props_borders(
@@ -295,7 +295,7 @@ $scrollbar_horz_slider_press_styles:
         undefined,
         undefined,
         url('../Resources/scrollbar_horz_gripper_press.png'),
-        linear-gradient(180deg, rgba(170,192,249,1) 0%, rgba(142,174,239,1) 100%)
+        linear-gradient(180deg, rgba(205,205,205,1) 0%, rgba(229,229,229,1) 50%, rgba(253,253,253,1) 100%)
     );
 $scrollbar_horz_slider_press_styles:
     wintc_define_props_borders(
@@ -386,7 +386,7 @@ $scrollbar_vert_slider_styles:
         undefined,
         undefined,
         url('../Resources/scrollbar_vert_gripper.png'),
-        linear-gradient(90deg, rgba(200,216,251,1) 0%, rgba(185,205,251,1) 100%)
+        linear-gradient(90deg, rgba(248,248,248,1) 0%, rgba(233,233,233,1) 50%, rgba(212,212,212,1) 100%)
     );
 $scrollbar_vert_slider_styles:
     wintc_define_props_borders(
@@ -410,7 +410,7 @@ $scrollbar_vert_slider_hover_styles:
         undefined,
         undefined,
         url('../Resources/scrollbar_vert_gripper_hover.png'),
-        linear-gradient(90deg, rgba(214,231,255,1) 0%, rgba(202,224,255,1) 100%)
+        linear-gradient(90deg, rgba(254,254,254,1) 0%, rgba(235,235,235,1) 50%, rgba(209,209,209,1) 100%)
     );
 $scrollbar_vert_slider_hover_styles:
     wintc_define_props_borders(
@@ -434,7 +434,7 @@ $scrollbar_vert_slider_press_styles:
         undefined,
         undefined,
         url('../Resources/scrollbar_vert_gripper_press.png'),
-        linear-gradient(90deg, rgba(170,192,249,1) 0%, rgba(142,174,239,1) 100%)
+        linear-gradient(90deg, rgba(205,205,205,1) 0%, rgba(229,229,229,1) 50%, rgba(253,253,253,1) 100%)
     );
 $scrollbar_vert_slider_press_styles:
     wintc_define_props_borders(
