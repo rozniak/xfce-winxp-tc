@@ -1,0 +1,6 @@
+THEME_BASENAME=Zune style
+THEME_DESCRIPTION=Zune visual style for XFCE.
+THEME_DISPLAYNAME=Zune style
+THEME_MAINTAINER=Rory Fewell <roryf@oddmatics.uk>
+THEME_RAWNAME=zune
+THEME_VARIANT=Default
