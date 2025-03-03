@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <menu id="menu">
+    <submenu>
+      <attribute name="label">Example menu</attribute>
+
+      <section>
+        <item>
+          <attribute name="label">Item 1</attribute>
+          <attribute name="icon">add</attribute>
+        </item>
+        <item>
+          <attribute name="label">Item 2</attribute>
+          <attribute name="icon">find</attribute>
+        </item>
+        <item>
+          <attribute name="label">Item 3</attribute>
+          <attribute name="icon">paste</attribute>
+        </item>
+      </section>
+      <section>
+        <item>
+          <attribute name="label">Item 4</attribute>
+          <attribute name="icon">computer</attribute>
+        </item>
+        <item>
+          <attribute name="label">Item 5</attribute>
+          <attribute name="icon">printer</attribute>
+        </item>
+        <item>
+          <attribute name="label">Item 6</attribute>
+          <attribute name="icon">drive-optical</attribute>
+        </item>
+      </section>
+    </submenu>
+    <submenu>
+      <attribute name="label">Second menu</attribute>
+
+      <section>
+        <item>
+          <attribute name="label">Item 1</attribute>
+          <attribute name="icon">add</attribute>
+        </item>
+        <item>
+          <attribute name="label">Item 2</attribute>
+          <attribute name="icon">find</attribute>
+        </item>
+        <item>
+          <attribute name="label">Item 3</attribute>
+          <attribute name="icon">paste</attribute>
+        </item>
+      </section>
+
+      <submenu>
+        <attribute name="label">More</attribute>
+        <attribute name="icon">applications-other</attribute>
+
+        <section>
+          <item>
+            <attribute name="label">Item 1</attribute>
+            <attribute name="icon">add</attribute>
+          </item>
+          <item>
+            <attribute name="label">Item 2</attribute>
+            <attribute name="icon">copy</attribute>
+          </item>
+        </section>
+      </submenu>
+    </submenu>
+  </menu>
+</interface>
