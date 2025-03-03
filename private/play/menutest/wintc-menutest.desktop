@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Menu Test (WinTC Test)
+Comment=WinTC menu binding test program.
+Exec=wintc-menutest
+Icon=wintc-menutest
+Terminal=false
+StartupNotify=false
+Type=Application
+Categories=Utility;GTK;

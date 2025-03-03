@@ -37,6 +37,8 @@ add_library(
     public/animctl.h
     src/cpl.c
     public/cpl.h
+    src/menubind.c
+    public/menubind.h
     src/style.c
     public/style.h
 )
