@@ -6,6 +6,7 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <wintc/comctl.h>
 #include <wintc/comgtk.h>
 #include <wintc/exec.h>
 #include <wintc/shcommon.h>
@@ -203,7 +204,9 @@ gboolean wintc_toolbar_start_progmenu_init(
     return TRUE;
 }
 
-GtkWidget* wintc_toolbar_start_progmenu_new_gtk_menu()
+GtkWidget* wintc_toolbar_start_progmenu_new_gtk_menu(
+    WinTCCtlMenuBinding** menu_binding
+)
 {
     if (!S_INIT_DONE)
     {
@@ -233,7 +236,15 @@ GtkWidget* wintc_toolbar_start_progmenu_new_gtk_menu()
 
     // Create the menu
     //
-    GtkWidget* menu = gtk_menu_new_from_model(G_MENU_MODEL(S_MENU_PROGRAMS));
+    GtkWidget* menu = gtk_menu_new();
+
+    gtk_menu_set_reserve_toggle_size(GTK_MENU(menu), FALSE);
+
+    *menu_binding =
+        wintc_ctl_menu_binding_new(
+            GTK_MENU_SHELL(menu),
+            G_MENU_MODEL(S_MENU_PROGRAMS)
+        );
 
     gtk_widget_insert_action_group(
         menu,
@@ -576,7 +587,7 @@ static GMenu* wintc_toolbar_start_progmenu_menu_from_filelist(
 
             g_menu_item_set_icon(
                 submenu_item,
-                g_themed_icon_new("add")
+                s_icon_programs
             );
             g_menu_item_set_label(
                 submenu_item,
