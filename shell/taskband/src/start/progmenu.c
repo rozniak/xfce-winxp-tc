@@ -6,6 +6,7 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <wintc/comctl.h>
 #include <wintc/comgtk.h>
 #include <wintc/exec.h>
 #include <wintc/shcommon.h>
@@ -47,6 +48,10 @@ static const gchar* wintc_toolbar_start_progmenu_filter_entry(
 static GMenu* wintc_toolbar_start_progmenu_menu_from_filelist(
     GList*       files,
     GHashTable** map_dir_to_menu
+);
+static void wintc_toolbar_start_progmenu_menu_insert_sorted(
+    GMenu*     menu,
+    GMenuItem* menu_item
 );
 
 static gboolean create_symlink(
@@ -186,8 +191,6 @@ gboolean wintc_toolbar_start_progmenu_init(
             );
     }
 
-    files = g_list_sort(files, (GCompareFunc) g_ascii_strcasecmp);
-
     // Construct the menu
     //
     S_MENU_PROGRAMS =
@@ -203,7 +206,9 @@ gboolean wintc_toolbar_start_progmenu_init(
     return TRUE;
 }
 
-GtkWidget* wintc_toolbar_start_progmenu_new_gtk_menu()
+GtkWidget* wintc_toolbar_start_progmenu_new_gtk_menu(
+    WinTCCtlMenuBinding** menu_binding
+)
 {
     if (!S_INIT_DONE)
     {
@@ -233,7 +238,15 @@ GtkWidget* wintc_toolbar_start_progmenu_new_gtk_menu()
 
     // Create the menu
     //
-    GtkWidget* menu = gtk_menu_new_from_model(G_MENU_MODEL(S_MENU_PROGRAMS));
+    GtkWidget* menu = gtk_menu_new();
+
+    gtk_menu_set_reserve_toggle_size(GTK_MENU(menu), FALSE);
+
+    *menu_binding =
+        wintc_ctl_menu_binding_new(
+            GTK_MENU_SHELL(menu),
+            G_MENU_MODEL(S_MENU_PROGRAMS)
+        );
 
     gtk_widget_insert_action_group(
         menu,
@@ -447,7 +460,7 @@ static GMenu* wintc_toolbar_start_progmenu_menu_from_filelist(
 
     // Construct the menus from this file list
     //
-    gint len_root = strlen(S_DIR_START_MENU);
+    gint len_root = g_utf8_strlen(S_DIR_START_MENU, -1);
 
     for (GList* iter = files; iter; iter = iter->next)
     {
@@ -460,7 +473,11 @@ static GMenu* wintc_toolbar_start_progmenu_menu_from_filelist(
         // Pull the directory components out of the path to check the submenu
         // that should own this item
         //
-        const gchar* dir_end   = strrchr(entry_path, G_DIR_SEPARATOR);
+        const gchar* dir_end   = g_utf8_strrchr(
+                                     entry_path,
+                                     -1,
+                                     G_DIR_SEPARATOR
+                                 );
         const gchar* dir_start = entry_path + len_root;
 
         gchar* rel_dir = g_malloc0((dir_end - dir_start) + 1);
@@ -513,7 +530,10 @@ static GMenu* wintc_toolbar_start_progmenu_menu_from_filelist(
             g_app_info_get_name(G_APP_INFO(entry))
         );
 
-        g_menu_append_item(menu_owner, new_item);
+        wintc_toolbar_start_progmenu_menu_insert_sorted(
+            menu_owner,
+            new_item
+        );
 
         g_free(cmd);
         g_object_unref(new_item);
@@ -553,7 +573,7 @@ static GMenu* wintc_toolbar_start_progmenu_menu_from_filelist(
         {
             // Retrieve the parent path
             //
-            const gchar* dir_end = strrchr(iter, G_DIR_SEPARATOR);
+            const gchar* dir_end = g_utf8_strrchr(iter, -1, G_DIR_SEPARATOR);
 
             gchar* parent = g_malloc0(dir_end - iter + 1);
 
@@ -576,7 +596,7 @@ static GMenu* wintc_toolbar_start_progmenu_menu_from_filelist(
 
             g_menu_item_set_icon(
                 submenu_item,
-                g_themed_icon_new("add")
+                s_icon_programs
             );
             g_menu_item_set_label(
                 submenu_item,
@@ -597,7 +617,7 @@ static GMenu* wintc_toolbar_start_progmenu_menu_from_filelist(
 
             if (parent_menu)
             {
-                g_menu_prepend_item(
+                wintc_toolbar_start_progmenu_menu_insert_sorted(
                     parent_menu,
                     submenu_item
                 );
@@ -640,6 +660,183 @@ static GMenu* wintc_toolbar_start_progmenu_menu_from_filelist(
     g_list_free(submenu_keys);
 
     return menu;
+}
+
+static void wintc_toolbar_start_progmenu_menu_insert_sorted(
+    GMenu*     menu,
+    GMenuItem* menu_item
+)
+{
+    gint idx_start = 0;
+    gint idx_end   = 0;
+    gint n_items   = g_menu_model_get_n_items(G_MENU_MODEL(menu));
+
+    // Easy case - no items? Prepend
+    //
+    if (!n_items)
+    {
+        g_menu_prepend_item(menu, menu_item);
+        return;
+    }
+
+    // Find the end of submenu items
+    //
+    gint n_submenu_items = 0;
+
+    for (; n_submenu_items < n_items; n_submenu_items++)
+    {
+        // Hit a normal item? We've already hit the end then
+        //
+        if (
+            !g_menu_model_get_item_link(
+                G_MENU_MODEL(menu),
+                n_submenu_items,
+                G_MENU_LINK_SUBMENU
+            )
+        )
+        {
+            break;
+        }
+    }
+
+    // Set the start/end depending on whether we need to insert a normal item
+    // or submenu item
+    //
+    if (g_menu_item_get_link(menu_item, G_MENU_LINK_SUBMENU))
+    {
+        if (n_submenu_items)
+        {
+            idx_end = n_submenu_items - 1;
+        }
+    }
+    else
+    {
+        if (n_submenu_items)
+        {
+            idx_start = n_submenu_items;
+        }
+
+        idx_end = n_items - 1;
+    }
+
+    // Binary search and insert
+    //
+    gint   idx_mid;
+    gchar* cmp_name = NULL;
+    gchar* our_name = NULL;
+    gint   res;
+
+    g_menu_item_get_attribute(
+        menu_item,
+        G_MENU_ATTRIBUTE_LABEL,
+        "s",
+        &our_name
+    );
+
+    WINTC_UTF8_TRANSFORM(our_name, g_utf8_casefold);
+
+    while (idx_end - idx_start > 1)
+    {
+        idx_mid = idx_start + ((idx_end - idx_start) / 2);
+
+        g_menu_model_get_item_attribute(
+            G_MENU_MODEL(menu),
+            idx_mid,
+            G_MENU_ATTRIBUTE_LABEL,
+            "s",
+            &cmp_name
+        );
+
+        WINTC_UTF8_TRANSFORM(cmp_name, g_utf8_casefold);
+
+        res = g_utf8_collate(our_name, cmp_name);
+
+        if (res < 0)
+        {
+            idx_end = idx_mid;
+        }
+        else if (res > 0)
+        {
+            idx_start = idx_mid;
+        }
+        else
+        {
+            idx_start = idx_mid;
+            idx_end   = idx_mid;
+        }
+
+        g_free(cmp_name);
+    }
+
+    // If we found an exact location, insert there
+    //
+    if (idx_start == idx_end)
+    {
+        g_menu_insert_item(
+            menu,
+            idx_start,
+            menu_item
+        );
+
+        g_free(our_name);
+
+        return;
+    }
+
+    // Otherwise determine between start and end
+    //
+    g_menu_model_get_item_attribute(
+        G_MENU_MODEL(menu),
+        idx_start,
+        G_MENU_ATTRIBUTE_LABEL,
+        "s",
+        &cmp_name
+    );
+
+    WINTC_UTF8_TRANSFORM(cmp_name, g_utf8_casefold);
+
+    if (g_utf8_collate(our_name, cmp_name) < 0)
+    {
+        g_menu_insert_item(
+            menu,
+            idx_start,
+            menu_item
+        );
+    }
+    else
+    {
+        g_free(cmp_name);
+
+        g_menu_model_get_item_attribute(
+            G_MENU_MODEL(menu),
+            idx_end,
+            G_MENU_ATTRIBUTE_LABEL,
+            "s",
+            &cmp_name
+        );
+
+        WINTC_UTF8_TRANSFORM(cmp_name, g_utf8_casefold);
+
+        if (g_utf8_collate(our_name, cmp_name) < 0)
+        {
+            g_menu_insert_item(
+                menu,
+                idx_end,
+                menu_item
+            );
+        }
+        else
+        {
+            g_menu_insert_item(
+                menu,
+                idx_end + 1,
+                menu_item
+            );
+        }
+    }
+
+    g_free(cmp_name);
+    g_free(our_name);
 }
 
 static gboolean create_symlink(
