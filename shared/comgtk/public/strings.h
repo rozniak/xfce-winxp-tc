@@ -5,6 +5,32 @@
 
 #include <glib.h>
 
+/**
+ * @def WINTC_STR_TRANSFORM(strvar, strfn)
+ *
+ * Convenience macro for doing an ASCII transformation in place, use this macro
+ * for things like WINTC_STR_TRANSFORM(my_string, g_ascii_tolower).
+ */
+#define WINTC_STR_TRANSFORM(strvar, strfn) \
+{ \
+    gchar* wstrtmp = strfn(strvar); \
+    g_free(strvar); \
+    strvar = wstrtmp; \
+}
+
+/**
+ * @def WINTC_UTF8_TRANSFORM(strvar, strfn)
+ *
+ * Convenience macro for doing a UTF-8 transformation in place, use this macro
+ * for things like WINTC_UTF8_TRANSFORM(my_string, g_utf8_casefold).
+ */
+#define WINTC_UTF8_TRANSFORM(strvar, strfn) \
+{ \
+    gchar* wstrtmp = strfn(strvar, -1); \
+    g_free(strvar); \
+    strvar = wstrtmp; \
+}
+
 //
 // PUBLIC FUNCTIONS
 //

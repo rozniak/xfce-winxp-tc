@@ -7,6 +7,7 @@ bt,rt:glib2
 bt,rt:gtk3
 bt,rt:networkmanager
 bt,rt:upower-glib
+bt,rt:wintc-comctl
 bt,rt:wintc-comgtk
 bt,rt:wintc-exec
 bt,rt:wintc-shcommon
