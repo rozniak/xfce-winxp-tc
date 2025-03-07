@@ -24,6 +24,8 @@ typedef struct _WinTCCtlMenuBindingMenu
     GMenuModel*   menu_model;
 
     GList* sections;
+
+    gulong sigid_items_changed;
 } WinTCCtlMenuBindingMenu;
 
 typedef struct _WinTCCtlMenuBindingSection
@@ -78,6 +80,14 @@ static void wintc_ctl_menu_binding_track_menu(
 
 static void wintc_ctl_menu_binding_menu_free(
     WinTCCtlMenuBindingMenu* menu
+);
+
+static void on_menu_model_menu_items_changed(
+    GMenuModel* model,
+    gint        position,
+    gint        removed,
+    gint        added,
+    gpointer    user_data
 );
 
 //
@@ -537,6 +547,8 @@ static void wintc_ctl_menu_binding_insert_item(
         g_free(label);
     }
 
+    gtk_widget_show_all(menu_item);
+
     // Do we have a submenu for this item?
     //
     GMenuModel* submenu_model =
@@ -643,7 +655,8 @@ static void wintc_ctl_menu_binding_insert_item(
 
     // Need to iterate through sections to find where to add this item
     //
-    gint i = 0;
+    gboolean found_pos = TRUE;
+    gint     i         = 0;
 
     while (i < dst_pos)
     {
@@ -657,7 +670,7 @@ static void wintc_ctl_menu_binding_insert_item(
             i + subsection->item_count >= dst_pos
         )
         {
-            real_pos += (dst_pos - i);
+            real_pos  += (dst_pos - i);
             break;
         }
 
@@ -665,6 +678,7 @@ static void wintc_ctl_menu_binding_insert_item(
         //
         if (!(iter->next))
         {
+            found_pos = FALSE;
             break;
         }
 
@@ -681,6 +695,18 @@ static void wintc_ctl_menu_binding_insert_item(
         {
             i += subsection->item_count;
         }
+    }
+
+    // If we found where to insert, then get that sorted
+    //
+    if (found_pos)
+    {
+        WinTCCtlMenuBindingSection* found_section =
+            (WinTCCtlMenuBindingSection*) iter->data;
+
+        found_section->item_count++;
+        gtk_menu_shell_insert(menu->menu_shell, menu_item, real_pos);
+        return;
     }
 
     // If we fell out, we need to add the item to the end of the menu
@@ -725,6 +751,19 @@ static void wintc_ctl_menu_binding_track_menu(
     tracker->menu_model   = menu_model;
     tracker->sections     = NULL;
 
+    WINTC_LOG_DEBUG(
+        "comctl - menu binding - new menu tracker: %p",
+        (void*) tracker
+    );
+
+    tracker->sigid_items_changed =
+        g_signal_connect(
+            menu_model,
+            "items-changed",
+            G_CALLBACK(on_menu_model_menu_items_changed),
+            tracker
+        );
+
     menu_binding->tracked_menus =
         g_slist_append(
             menu_binding->tracked_menus,
@@ -752,4 +791,36 @@ static void wintc_ctl_menu_binding_menu_free(
 {
     g_clear_list(&(menu->sections), (GDestroyNotify) g_free);
     g_free(menu);
+}
+
+//
+// CALLBACKS
+//
+static void on_menu_model_menu_items_changed(
+    GMenuModel* model,
+    gint        position,
+    gint        removed,
+    gint        added,
+    gpointer    user_data
+)
+{
+    WinTCCtlMenuBindingMenu* menu = (WinTCCtlMenuBindingMenu*) user_data;
+
+    WINTC_LOG_DEBUG(
+        "comctl - menubind - update pos %d, remove %d, add %d",
+        position,
+        removed,
+        added
+    );
+
+    //
+    // FIXME: Implement removal
+    //
+
+    // Handle new items
+    //
+    for (gint i = position; i < position + added; i++)
+    {
+        wintc_ctl_menu_binding_insert_item(menu, model, i, i);
+    }
 }
