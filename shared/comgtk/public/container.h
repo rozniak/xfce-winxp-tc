@@ -18,4 +18,16 @@ void wintc_container_clear(
     GtkContainer* container
 );
 
+/**
+ * Gets the nth child widget of a container.
+ *
+ * @param container The container.
+ * @param pos       The index of the widget.
+ * @return The child widget at position N in the container.
+ */
+GtkWidget* wintc_container_get_nth_child(
+    GtkContainer* container,
+    gint          pos
+);
+
 #endif
