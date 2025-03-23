@@ -6,6 +6,7 @@
 
 #include "../toolbar.h"
 #include "personal.h"
+#include "progmenu.h"
 #include "shared.h"
 #include "toolbar.h"
 
@@ -44,6 +45,7 @@ static void wintc_toolbar_start_init(
 )
 {
     GtkBuilder*           builder;
+    GError*               error   = NULL;
     WinTCTaskbandToolbar* toolbar = WINTC_TASKBAND_TOOLBAR(self);
 
     // Default states
@@ -65,6 +67,14 @@ static void wintc_toolbar_start_init(
         GTK_STYLE_PROVIDER(css),
         GTK_STYLE_PROVIDER_PRIORITY_FALLBACK
     );
+
+    // Initialize progmenu
+    //
+    if (!wintc_toolbar_start_progmenu_init(&error))
+    {
+        wintc_display_error_and_clear(&error, NULL);
+        return;
+    }
 
     // Create root widget (Start button)
     //
@@ -119,6 +129,10 @@ static void wintc_toolbar_start_dispose(
     //        the classic menu is available
     //
     destroy_personal_menu(toolbar_start);
+
+    // Destroy progmenu - ensures the data will be saved
+    //
+    wintc_toolbar_start_progmenu_destroy();
 
     (G_OBJECT_CLASS(wintc_toolbar_start_parent_class))->dispose(object);
 }

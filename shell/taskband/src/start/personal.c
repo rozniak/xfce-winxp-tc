@@ -127,14 +127,6 @@ void create_personal_menu(
     GtkBuilder* builder;
     WinTCTaskbandToolbar* toolbar = WINTC_TASKBAND_TOOLBAR(toolbar_start);
 
-    GError* error = NULL;
-
-    if (!wintc_toolbar_start_progmenu_init(&error))
-    {
-        wintc_display_error_and_clear(&error, NULL);
-        return;
-    }
-
     // Set default states
     //
     toolbar_start->personal.sync_menu_refresh = TRUE;

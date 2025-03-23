@@ -8,6 +8,7 @@
 //
 // PUBLIC FUNCTIONS
 //
+void wintc_toolbar_start_progmenu_destroy(void);
 gboolean wintc_toolbar_start_progmenu_init(
     GError** error
 );
