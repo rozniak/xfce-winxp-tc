@@ -218,3 +218,24 @@ guint wintc_strv_length(
 
     return i;
 }
+
+gchar* wintc_substr(
+    const gchar* start,
+    const gchar* end
+)
+{
+    if (end < start)
+    {
+        g_critical("substr: invalid substring requested");
+        return NULL;
+    }
+
+    gchar* buf = g_malloc0(end - start + 1);
+
+    if (start != end)
+    {
+        memcpy(buf, start, end - start);
+    }
+
+    return buf;
+}

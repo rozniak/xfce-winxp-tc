@@ -97,6 +97,11 @@ static void wintc_toolbar_start_progmenu_menu_insert_sorted(
     GMenu*     menu,
     GMenuItem* menu_item
 );
+static void wintc_toolbar_start_progmenu_menu_new_entry(
+    GMenu*       menu,
+    GHashTable*  map_dir_to_menu,
+    const gchar* entry_path
+);
 
 static gboolean create_symlink(
     const gchar* rel_path,
@@ -118,6 +123,14 @@ static const gchar* filter_libreoffice(
 );
 static const gchar* filter_qt_dev_tools(
     GDesktopAppInfo* entry
+);
+
+static void on_file_monitor_dir_start_menu_changed(
+    GFileMonitor*     monitor,
+    GFile*            file,
+    GFile*            other_file,
+    GFileMonitorEvent event_type,
+    gpointer          user_data
 );
 
 //
@@ -247,6 +260,23 @@ gboolean wintc_toolbar_start_progmenu_init(
 
     g_list_free_full(files, g_free);
 
+    // Set up file monitor for the start menu dir
+    //
+    GFile* start_menu_dir = g_file_new_for_path(S_DIR_START_MENU);
+
+    GFileMonitor* monitor = g_file_monitor_file(start_menu_dir, G_FILE_MONITOR_NONE, NULL, NULL);
+
+    g_signal_connect(
+        monitor,
+        "changed",
+        G_CALLBACK(on_file_monitor_dir_start_menu_changed),
+        NULL
+    );
+
+    g_object_unref(start_menu_dir);
+
+    // We're all finished!
+    //
     S_INIT_DONE = TRUE;
 
     return TRUE;
@@ -875,7 +905,7 @@ static void wintc_toolbar_start_progmenu_new_entry(
             //   - If the destination is different, delete the mapping
             //   - Otherwise, nothing to do!
             //
-            if (mapping->mapped_path != dst_rel_path)
+            if (g_strcmp0(mapping->mapped_path, dst_rel_path) != 0)
             {
                 if (!wintc_toolbar_start_progmenu_delete_entry(entry_path, src_id))
                 {
@@ -955,7 +985,7 @@ static void wintc_toolbar_start_progmenu_save_mappings(
 }
 
 static GMenu* wintc_toolbar_start_progmenu_menu_from_filelist(
-    GList*       files,
+    GList*      files,
     GHashTable** map_dir_to_menu
 )
 {
@@ -973,204 +1003,18 @@ static GMenu* wintc_toolbar_start_progmenu_menu_from_filelist(
 
     // Construct the menus from this file list
     //
-    gint len_root = g_utf8_strlen(S_DIR_START_MENU, -1);
-
     for (GList* iter = files; iter; iter = iter->next)
     {
-        const gchar*     entry_path = (gchar*) iter->data;
-        GDesktopAppInfo* entry =
-            g_desktop_app_info_new_from_filename(entry_path);
+        const gchar* entry_path = (gchar*) iter->data;
 
         WINTC_LOG_DEBUG("start menu - found: %s", (gchar*) iter->data);
 
-        // Pull the directory components out of the path to check the submenu
-        // that should own this item
-        //
-        const gchar* dir_end   = g_utf8_strrchr(
-                                     entry_path,
-                                     -1,
-                                     G_DIR_SEPARATOR
-                                 );
-        const gchar* dir_start = entry_path + len_root;
-
-        gchar* rel_dir = g_malloc0((dir_end - dir_start) + 1);
-
-        if (dir_start != dir_end)
-        {
-            memcpy(rel_dir, dir_start, dir_end - dir_start);
-        }
-
-        // Fetch the menu
-        //
-        GMenu* menu_owner =
-            g_hash_table_lookup(*map_dir_to_menu, rel_dir);
-
-        if (!menu_owner)
-        {
-            menu_owner = g_menu_new();
-
-            g_hash_table_insert(
-                *map_dir_to_menu,
-                rel_dir,
-                menu_owner
-            );
-        }
-        else
-        {
-            g_free(rel_dir); // No longer needed
-        }
-
-        // Set up the cmdline
-        //
-        gchar* cmd = wintc_desktop_app_info_get_command(entry);
-
-        // Create the menu item
-        //
-        if (cmd)
-        {
-            GMenuItem* new_item = g_menu_item_new(NULL, NULL);
-            GVariant*  variant  = g_variant_new_string(cmd);
-
-            g_menu_item_set_action_and_target_value(
-                new_item,
-                "progmenu.launch",
-                variant
-            );
-            g_menu_item_set_icon(
-                new_item,
-                g_app_info_get_icon(G_APP_INFO(entry))
-            );
-            g_menu_item_set_label(
-                new_item,
-                g_app_info_get_name(G_APP_INFO(entry))
-            );
-
-            wintc_toolbar_start_progmenu_menu_insert_sorted(
-                menu_owner,
-                new_item
-            );
-
-            g_object_unref(new_item);
-        }
-
-        g_free(cmd);
-        g_object_unref(entry);
+        wintc_toolbar_start_progmenu_menu_new_entry(
+            menu,
+            *map_dir_to_menu,
+            entry_path
+        );
     }
-
-    // Link up submenus
-    //
-    GList* submenu_keys = g_hash_table_get_keys(*map_dir_to_menu);
-
-    for (GList* iter = submenu_keys; iter; iter = iter->next)
-    {
-        gchar* this_dir = (gchar*) iter->data;
-
-        if (g_strcmp0(this_dir, "") == 0)
-        {
-            continue;
-        }
-
-        // Hold onto this menu
-        //
-        GMenu* this_menu =
-            g_hash_table_lookup(
-                *map_dir_to_menu,
-                this_dir
-            );
-
-        // Nav up dir components to find parent menus, it could be that a menu
-        // does not exist for a parent yet!
-        //
-        // strdup simplifies things so we can just free()
-        //
-        GMenu* cur_menu = this_menu;
-        gchar* iter     = g_strdup(this_dir);
-
-        while (iter)
-        {
-            // Retrieve the parent path
-            //
-            const gchar* dir_end = g_utf8_strrchr(iter, -1, G_DIR_SEPARATOR);
-
-            gchar* parent = g_malloc0(dir_end - iter + 1);
-
-            memcpy(parent, iter, dir_end - iter);
-
-            // Create the menu item for the submenu
-            //
-            static GIcon* s_icon_programs = NULL;
-
-            if (!s_icon_programs)
-            {
-                s_icon_programs = g_themed_icon_new("applications-other");
-            }
-
-            GMenuItem* submenu_item = g_menu_item_new(NULL, NULL);
-
-            g_menu_item_set_icon(
-                submenu_item,
-                s_icon_programs
-            );
-            g_menu_item_set_label(
-                submenu_item,
-                dir_end + 1
-            );
-            g_menu_item_set_submenu(
-                submenu_item,
-                G_MENU_MODEL(cur_menu)
-            );
-
-            // Check if the parent exists
-            //
-            GMenu* parent_menu =
-                g_hash_table_lookup(
-                    *map_dir_to_menu,
-                    parent
-                );
-
-            if (parent_menu)
-            {
-                wintc_toolbar_start_progmenu_menu_insert_sorted(
-                    parent_menu,
-                    submenu_item
-                );
-
-                // No more work required
-                g_free(parent);
-                g_object_unref(submenu_item);
-                break;
-            }
-
-            // Parent doesn't exist, create it...
-            //
-            parent_menu = g_menu_new();
-
-            g_hash_table_insert(
-                *map_dir_to_menu,
-                parent,
-                parent_menu
-            );
-
-            // ...add us to it and continue iterating, because this new menu
-            // will need to be added to its parent too
-            //
-            g_menu_prepend_item(
-                parent_menu,
-                submenu_item
-            );
-
-            g_object_unref(submenu_item);
-
-            cur_menu = parent_menu;
-
-            g_free(iter);
-            iter = parent;
-        }
-
-        g_free(iter);
-    }
-
-    g_list_free(submenu_keys);
 
     return menu;
 }
@@ -1352,6 +1196,177 @@ static void wintc_toolbar_start_progmenu_menu_insert_sorted(
     g_free(our_name);
 }
 
+static void wintc_toolbar_start_progmenu_menu_new_entry(
+    WINTC_UNUSED(GMenu* menu),
+    GHashTable*  map_dir_to_menu,
+    const gchar* entry_path
+)
+{
+    GDesktopAppInfo* entry =
+        g_desktop_app_info_new_from_filename(entry_path);
+
+    if (!entry)
+    {
+        g_warning(
+            "start menu - new menu item - not a desktop entry: %s",
+            entry_path
+        );
+
+        return;
+    }
+
+    // Create the menu item for the entry
+    //
+    gchar*     cmd      = wintc_desktop_app_info_get_command(entry);
+    GMenuItem* new_item = NULL;
+
+    if (!cmd)
+    {
+        WINTC_LOG_DEBUG(
+            "start menu - no command for %s, skipping",
+            entry_path
+        );
+
+        g_object_unref(entry);
+        return;
+    }
+
+    GVariant* variant  = g_variant_new_string(cmd);
+
+    new_item = g_menu_item_new(NULL, NULL);
+
+    g_menu_item_set_action_and_target_value(
+        new_item,
+        "progmenu.launch",
+        variant
+    );
+    g_menu_item_set_icon(
+        new_item,
+        g_app_info_get_icon(G_APP_INFO(entry))
+    );
+    g_menu_item_set_label(
+        new_item,
+        g_app_info_get_name(G_APP_INFO(entry))
+    );
+
+    g_object_unref(entry);
+    g_free(cmd);
+
+    // Pull the directory components out of the path to check the submenu
+    // that should own this item
+    //
+    const gchar* dir_end   = g_utf8_strrchr(
+                                 entry_path,
+                                 -1,
+                                 G_DIR_SEPARATOR
+                             );
+    const gchar* dir_start = entry_path + g_utf8_strlen(S_DIR_START_MENU, -1);
+
+    gchar* rel_dir = wintc_substr(dir_start, dir_end);
+
+    // Fetch the menu
+    //
+    GMenu* menu_owner =
+        g_hash_table_lookup(map_dir_to_menu, rel_dir);
+
+    if (!menu_owner)
+    {
+        WINTC_LOG_DEBUG("start menu - new menu at %s", rel_dir);
+
+        menu_owner = g_menu_new();
+
+        g_hash_table_insert(
+            map_dir_to_menu,
+            g_strdup(rel_dir),
+            menu_owner
+        );
+
+        // Follow back up the chain if we need to create parent submenus
+        //
+        gchar* iter_dir;
+        GMenu* menu_iter = menu_owner;
+
+        while (TRUE)
+        {
+            iter_dir =
+                wintc_substr(
+                    rel_dir,
+                    g_utf8_strrchr(rel_dir, -1, G_DIR_SEPARATOR)
+                );
+
+            // Create the submenu item
+            //
+            static GIcon* s_icon_programs = NULL;
+
+            if (!s_icon_programs)
+            {
+                s_icon_programs = g_themed_icon_new("applications-other");
+            }
+
+            GMenuItem* submenu_item = g_menu_item_new(NULL, NULL);
+
+            g_menu_item_set_icon(
+                submenu_item,
+                s_icon_programs
+            );
+            g_menu_item_set_label(
+                submenu_item,
+                g_utf8_strrchr(rel_dir, -1, G_DIR_SEPARATOR) + 1
+            );
+            g_menu_item_set_submenu(
+                submenu_item,
+                G_MENU_MODEL(menu_iter)
+            );
+
+            // Locate the parent menu
+            //
+            menu_iter =
+                g_hash_table_lookup(
+                    map_dir_to_menu,
+                    iter_dir
+                );
+
+            if (!menu_iter)
+            {
+                menu_iter = g_menu_new();
+
+                g_hash_table_insert(
+                    map_dir_to_menu,
+                    g_strdup(iter_dir),
+                    menu_iter
+                );
+
+                wintc_toolbar_start_progmenu_menu_insert_sorted(
+                    menu_iter,
+                    submenu_item
+                );
+            }
+            else
+            {
+                wintc_toolbar_start_progmenu_menu_insert_sorted(
+                    menu_iter,
+                    submenu_item
+                );
+
+                break;
+            }
+
+            g_object_unref(submenu_item);
+
+            g_free(rel_dir);
+            rel_dir = iter_dir;
+        }
+    }
+
+    wintc_toolbar_start_progmenu_menu_insert_sorted(
+        menu_owner,
+        new_item
+    );
+
+    g_object_unref(new_item);
+    g_free(rel_dir);
+}
+
 static gboolean create_symlink(
     const gchar* rel_path,
     const gchar* entry_name,
@@ -1520,4 +1535,28 @@ static const gchar* filter_qt_dev_tools(
     }
 
     return NULL;
+}
+
+static void on_file_monitor_dir_start_menu_changed(
+    WINTC_UNUSED(GFileMonitor* monitor),
+    GFile*            file,
+    WINTC_UNUSED(GFile* other_file),
+    GFileMonitorEvent event_type,
+    WINTC_UNUSED(gpointer user_data)
+)
+{
+    switch (event_type)
+    {
+        case G_FILE_MONITOR_EVENT_CREATED:
+            wintc_toolbar_start_progmenu_menu_new_entry(
+                S_MENU_PROGRAMS,
+                S_MAP_DIR_TO_MENU,
+                g_file_peek_path(file)
+            );
+            break;
+
+        default:
+            WINTC_LOG_DEBUG("start menu - not handled event %d", event_type);
+            break;
+    }
 }

@@ -148,4 +148,16 @@ guint wintc_strv_length(
     const gchar** str_array
 );
 
+/**
+ * Extracts a substring from one string to create a new string.
+ *
+ * @param start A pointer to the start of the substring.
+ * @param end   A pointer to the end of the substring.
+ * @return A copy of the substring.
+ */
+gchar* wintc_substr(
+    const gchar* start,
+    const gchar* end
+);
+
 #endif
