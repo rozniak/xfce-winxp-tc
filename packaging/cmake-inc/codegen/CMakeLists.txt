@@ -53,3 +53,45 @@ function(wintc_gdbus_codegen XML_FILE OUT_FILE_NOEXT CP_PUBLIC)
         )
     endif()
 endfunction()
+
+# Define function for glib-genmashal
+#
+function(wintc_glib_genmarshal)
+    find_program(GLIB_GENMARSHAL glib-genmarshal REQUIRED)
+
+    add_custom_command(
+        OUTPUT
+            ${CMAKE_CURRENT_SOURCE_DIR}/src/marshal.h
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/src
+        COMMAND ${GLIB_GENMARSHAL}
+        ARGS
+            --header
+            --prefix wintc_cclosure_marshal
+            --output marshal.h
+            marshals.list
+        VERBATIM
+        DEPENDS
+            src/marshals.list
+    )
+    add_custom_command(
+        OUTPUT
+            ${CMAKE_CURRENT_SOURCE_DIR}/src/marshal.c
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/src
+        COMMAND ${GLIB_GENMARSHAL}
+        ARGS
+            --body
+            --prefix wintc_cclosure_marshal
+            --output marshal.c
+            marshals.list
+        VERBATIM
+        DEPENDS
+            src/marshals.list
+    )
+
+    add_custom_target(
+        marshal-codegen
+        DEPENDS
+            src/marshal.c
+            src/marshal.h
+    )
+endfunction()

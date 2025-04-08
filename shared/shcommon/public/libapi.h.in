@@ -2,6 +2,7 @@
 #define __WINTC_SHCOMMON_H__
 
 #include "@LIB_HEADER_DIR@/fs.h"
+#include "@LIB_HEADER_DIR@/monitor.h"
 #include "@LIB_HEADER_DIR@/path.h"
 #include "@LIB_HEADER_DIR@/places.h"
 

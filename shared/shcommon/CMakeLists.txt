@@ -13,9 +13,12 @@ set(PROJECT_MAINTAINER "Rory Fewell <roryf@oddmatics.uk>")
 
 set(PROJECT_ROOT ${CMAKE_CURRENT_LIST_DIR})
 
+set(WINTC_NO_PEDANTIC_COMPILE true) # Necessary for glib-genmarshal
+
 include(GNUInstallDirs)
 
 include(../../packaging/cmake-inc/common/CMakeLists.txt)
+include(../../packaging/cmake-inc/codegen/CMakeLists.txt)
 include(../../packaging/cmake-inc/libraries/CMakeLists.txt)
 include(../../packaging/cmake-inc/linking/CMakeLists.txt)
 include(../../packaging/cmake-inc/packaging/CMakeLists.txt)
@@ -24,10 +27,16 @@ wintc_resolve_library(glib-2.0     GLIB)
 wintc_resolve_library(gtk+-3.0     GTK3)
 wintc_resolve_library(wintc-comgtk WINTC_COMGTK)
 
+wintc_glib_genmarshal()
+
 add_library(
     libwintc-shcommon
     src/fs.c
     public/fs.h
+    src/marshal.c
+    src/marshal.h
+    src/monitor.c
+    public/monitor.h
     src/path.c
     public/path.h
     src/places.c

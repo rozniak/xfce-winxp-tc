@@ -125,6 +125,13 @@ static const gchar* filter_qt_dev_tools(
     GDesktopAppInfo* entry
 );
 
+static void on_file_monitor_dir_programs_changed(
+    GFileMonitor*     monitor,
+    GFile*            file,
+    GFile*            other_file,
+    GFileMonitorEvent event_type,
+    gpointer          user_data
+);
 static void on_file_monitor_dir_start_menu_changed(
     GFileMonitor*     monitor,
     GFile*            file,
@@ -198,6 +205,8 @@ gboolean wintc_toolbar_start_progmenu_init(
     GError** error
 )
 {
+    GError* local_error = NULL;
+
     if (S_INIT_DONE)
     {
         return TRUE;
@@ -264,16 +273,62 @@ gboolean wintc_toolbar_start_progmenu_init(
     //
     GFile* start_menu_dir = g_file_new_for_path(S_DIR_START_MENU);
 
-    GFileMonitor* monitor = g_file_monitor_file(start_menu_dir, G_FILE_MONITOR_NONE, NULL, NULL);
+    WinTCShDirMonitorRecursive* monitor =
+        wintc_sh_fs_monitor_directory_recursive(
+            start_menu_dir,
+            G_FILE_MONITOR_NONE,
+            NULL,
+            &local_error
+        );
 
-    g_signal_connect(
-        monitor,
-        "changed",
-        G_CALLBACK(on_file_monitor_dir_start_menu_changed),
-        NULL
-    );
+    if (monitor)
+    {
+        g_signal_connect(
+            monitor,
+            "changed",
+            G_CALLBACK(on_file_monitor_dir_start_menu_changed),
+            NULL
+        );
+    }
+    else
+    {
+        wintc_log_error_and_clear(&local_error);
+    }
 
     g_object_unref(start_menu_dir);
+
+    // Set up file monitors for application directories
+    //
+    GFile* system_app_dir =
+        g_file_new_for_path(
+            wintc_toolbar_start_progmenu_get_src_path(
+                WINTC_PROGMENU_SRC_SYSTEM
+            )
+        );
+
+    GFileMonitor* monitor2 =
+        g_file_monitor_directory(
+            system_app_dir,
+            G_FILE_MONITOR_NONE,
+            NULL,
+            &local_error
+        );
+
+    if (monitor2)
+    {
+        g_signal_connect(
+            monitor2,
+            "changed",
+            G_CALLBACK(on_file_monitor_dir_programs_changed),
+            GINT_TO_POINTER(WINTC_PROGMENU_SRC_SYSTEM)
+        );
+    }
+    else
+    {
+        wintc_log_error_and_clear(&local_error);
+    }
+
+    g_object_unref(system_app_dir);
 
     // We're all finished!
     //
@@ -844,6 +899,18 @@ static void wintc_toolbar_start_progmenu_new_entry(
 )
 {
     WINTC_LOG_DEBUG("start menu - analyse %s", entry_path);
+
+    // Is this actually an entry?
+    //
+    if (!g_str_has_suffix(entry_path, ".desktop"))
+    {
+        WINTC_LOG_DEBUG(
+            "start menu - new entry - not a .desktop: %s (skipped)",
+            entry_path
+        );
+
+        return;
+    }
 
     // Check relative path - do we know of this entry already?
     //
@@ -1537,6 +1604,40 @@ static const gchar* filter_qt_dev_tools(
     return NULL;
 }
 
+static void on_file_monitor_dir_programs_changed(
+    WINTC_UNUSED(GFileMonitor* monitor),
+    GFile*            file,
+    WINTC_UNUSED(GFile* other_file),
+    GFileMonitorEvent event_type,
+    gpointer          user_data
+)
+{
+    WinTCProgMenuSource src_id = GPOINTER_TO_INT(user_data);
+
+    switch (event_type)
+    {
+        case G_FILE_MONITOR_EVENT_CREATED:
+            WINTC_LOG_DEBUG(
+                "start menu - monitor progs - new entry: %s",
+                g_file_peek_path(file)
+            );
+
+            wintc_toolbar_start_progmenu_new_entry(
+                g_file_peek_path(file),
+                src_id
+            );
+
+            break;
+
+        default:
+            WINTC_LOG_DEBUG(
+                "start menu - monitor progs - not handled event %d",
+                event_type
+            );
+            break;
+    }
+}
+
 static void on_file_monitor_dir_start_menu_changed(
     WINTC_UNUSED(GFileMonitor* monitor),
     GFile*            file,
@@ -1548,15 +1649,24 @@ static void on_file_monitor_dir_start_menu_changed(
     switch (event_type)
     {
         case G_FILE_MONITOR_EVENT_CREATED:
+            WINTC_LOG_DEBUG(
+                "start menu - monitor menu - new start menu entry: %s",
+                g_file_peek_path(file)
+            );
+
             wintc_toolbar_start_progmenu_menu_new_entry(
                 S_MENU_PROGRAMS,
                 S_MAP_DIR_TO_MENU,
                 g_file_peek_path(file)
             );
+
             break;
 
         default:
-            WINTC_LOG_DEBUG("start menu - not handled event %d", event_type);
+            WINTC_LOG_DEBUG(
+                "start menu - monitor menu - not handled event %d",
+                event_type
+            );
             break;
     }
 }

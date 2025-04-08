@@ -1,6 +1,8 @@
 #ifndef __SHCOMMON_FS_H__
 #define __SHCOMMON_FS_H__
 
+#include <glib.h>
+
 //
 // PUBLIC FUNCTIONS
 //
