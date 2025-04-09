@@ -548,6 +548,48 @@ static const gchar* wintc_toolbar_start_progmenu_filter_entry(
         return NULL;
     }
 
+    // Is this a WINE program?
+    //
+    if (
+        g_str_has_prefix(
+            g_desktop_app_info_get_filename(entry),
+            wintc_toolbar_start_progmenu_get_src_path(WINTC_PROGMENU_SRC_WINE)
+        )
+    )
+    {
+        static gchar* rel_path = NULL;
+
+        g_free(g_steal_pointer(&rel_path));
+
+        const gchar* full_path = g_desktop_app_info_get_filename(entry);
+
+        const gchar* end_wine =
+            g_utf8_strrchr(
+                full_path,
+                -1,
+                G_DIR_SEPARATOR
+            );
+
+        const gchar* start_wine =
+            full_path +
+            g_utf8_strlen(
+                wintc_toolbar_start_progmenu_get_src_path(
+                    WINTC_PROGMENU_SRC_WINE
+                ),
+                -1
+            );
+
+        rel_path =  wintc_substr(start_wine, end_wine);
+
+        WINTC_LOG_DEBUG(
+            "start menu - filter - suggest (via WINE), %s/%s",
+            rel_path,
+            basename
+        );
+
+        return rel_path;
+    }
+
     // Check if this entry has a direct mapping
     //
     const gchar* known_target =
@@ -752,6 +794,7 @@ static const gchar* wintc_toolbar_start_progmenu_get_src_path(
                         "share",
                         "applications",
                         "wine",
+                        "Programs",
                         NULL
                     );
             }
