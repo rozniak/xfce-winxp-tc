@@ -27,6 +27,9 @@ enum
 static void wintc_sh_dir_monitor_recursive_constructed(
     GObject* object
 );
+static void wintc_sh_dir_monitor_recursive_dispose(
+    GObject* object
+);
 static void wintc_sh_dir_monitor_recursive_get_property(
     GObject*    object,
     guint       prop_id,
@@ -89,6 +92,7 @@ static void wintc_sh_dir_monitor_recursive_class_init(
     GObjectClass* object_class = G_OBJECT_CLASS(klass);
 
     object_class->constructed  = wintc_sh_dir_monitor_recursive_constructed;
+    object_class->dispose      = wintc_sh_dir_monitor_recursive_dispose;
     object_class->get_property = wintc_sh_dir_monitor_recursive_get_property;
     object_class->set_property = wintc_sh_dir_monitor_recursive_set_property;
 
@@ -181,7 +185,12 @@ static void wintc_sh_dir_monitor_recursive_constructed(
         );
 
     monitor_recursive->map_rel_path_to_monitor =
-        g_hash_table_new(g_str_hash, g_str_equal);
+        g_hash_table_new_full(
+            g_str_hash,
+            g_str_equal,
+            (GDestroyNotify) g_free,
+            (GDestroyNotify) g_object_unref
+        );
 
     for (GList* iter = files; iter; iter = iter->next)
     {
@@ -219,6 +228,24 @@ static void wintc_sh_dir_monitor_recursive_constructed(
     }
 
     g_list_free_full(files, (GDestroyNotify) g_free);
+}
+
+static void wintc_sh_dir_monitor_recursive_dispose(
+    GObject* object
+)
+{
+    WinTCShDirMonitorRecursive* monitor_recursive =
+        WINTC_SH_DIR_MONITOR_RECURSIVE(object);
+
+    g_clear_object(&(monitor_recursive->file_root));
+    g_clear_object(&(monitor_recursive->monitor_root));
+
+    g_hash_table_destroy(
+        g_steal_pointer(&(monitor_recursive->map_rel_path_to_monitor))
+    );
+
+    (G_OBJECT_CLASS(wintc_sh_dir_monitor_recursive_parent_class))
+        ->dispose(object);
 }
 
 static void wintc_sh_dir_monitor_recursive_get_property(
