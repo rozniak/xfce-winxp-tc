@@ -183,6 +183,9 @@ static GMenu* S_MENU_PROGRAMS = NULL;
 static GHashTable* S_MAP_DIR_TO_MENU             = NULL;
 static GHashTable* S_MAP_SRC_REL_PATH_TO_MAPPING = NULL;
 
+static WinTCShDirMonitorRecursive* S_MONITOR_START = NULL;
+static GSList*                     S_MONITORS      = NULL;
+
 static GActionEntry S_ACTIONS[] = {
     {
         .name           = "launch",
@@ -273,7 +276,7 @@ gboolean wintc_toolbar_start_progmenu_init(
     //
     GFile* start_menu_dir = g_file_new_for_path(S_DIR_START_MENU);
 
-    WinTCShDirMonitorRecursive* monitor =
+    S_MONITOR_START =
         wintc_sh_fs_monitor_directory_recursive(
             start_menu_dir,
             G_FILE_MONITOR_NONE,
@@ -281,10 +284,10 @@ gboolean wintc_toolbar_start_progmenu_init(
             &local_error
         );
 
-    if (monitor)
+    if (S_MONITOR_START)
     {
         g_signal_connect(
-            monitor,
+            S_MONITOR_START,
             "changed",
             G_CALLBACK(on_file_monitor_dir_start_menu_changed),
             NULL
@@ -299,36 +302,63 @@ gboolean wintc_toolbar_start_progmenu_init(
 
     // Set up file monitors for application directories
     //
-    GFile* system_app_dir =
-        g_file_new_for_path(
-            wintc_toolbar_start_progmenu_get_src_path(
-                WINTC_PROGMENU_SRC_SYSTEM
-            )
-        );
+    WinTCProgMenuSource locations[] = {
+        WINTC_PROGMENU_SRC_HOME,
+        WINTC_PROGMENU_SRC_LOCAL,
+        WINTC_PROGMENU_SRC_SYSTEM,
+        WINTC_PROGMENU_SRC_WINE
+    };
 
-    GFileMonitor* monitor2 =
-        g_file_monitor_directory(
-            system_app_dir,
-            G_FILE_MONITOR_NONE,
-            NULL,
-            &local_error
-        );
-
-    if (monitor2)
+    for (gsize i = 0; i < G_N_ELEMENTS(locations); i++)
     {
+        WinTCProgMenuSource src_id = locations[i];
+
+        const gchar* monitor_path =
+            wintc_toolbar_start_progmenu_get_src_path(src_id);
+
+        if (!monitor_path)
+        {
+            continue;
+        }
+
+        GFile* monitor_file = g_file_new_for_path(monitor_path);
+
+        GObject* monitor = NULL;
+
+        if (src_id == WINTC_PROGMENU_SRC_WINE)
+        {
+            monitor =
+                G_OBJECT(
+                    wintc_sh_fs_monitor_directory_recursive(
+                        monitor_file,
+                        G_FILE_MONITOR_NONE,
+                        NULL,
+                        NULL // FIXME: Error handling
+                    )
+                );
+        }
+        else
+        {
+            monitor =
+                G_OBJECT(
+                    g_file_monitor_directory(
+                        monitor_file,
+                        G_FILE_MONITOR_NONE,
+                        NULL,
+                        NULL // FIXME: Error handling
+                    )
+                );
+        }
+
+        S_MONITORS = g_slist_append(S_MONITORS, monitor);
+
         g_signal_connect(
-            monitor2,
+            monitor,
             "changed",
             G_CALLBACK(on_file_monitor_dir_programs_changed),
-            GINT_TO_POINTER(WINTC_PROGMENU_SRC_SYSTEM)
+            GINT_TO_POINTER(src_id)
         );
     }
-    else
-    {
-        wintc_log_error_and_clear(&local_error);
-    }
-
-    g_object_unref(system_app_dir);
 
     // We're all finished!
     //
