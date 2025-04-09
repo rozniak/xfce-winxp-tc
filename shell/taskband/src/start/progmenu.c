@@ -1491,7 +1491,7 @@ static gboolean create_symlink(
         g_build_path(G_DIR_SEPARATOR_S, S_DIR_START_MENU, rel_path, NULL);
 
     if (
-        mkdir(
+        g_mkdir_with_parents(
             full_dir_path,
             S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH
         ) < 0
