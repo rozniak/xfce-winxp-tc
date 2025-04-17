@@ -193,6 +193,14 @@ function(wintc_configure_and_install_packaging)
             set(ALPINE_LICENCE non-free) # Unsure if correct
         endif()
 
+        # Handle build options
+        #
+        if (${CMAKE_BUILD_TYPE} STREQUAL "Release")
+            set(ALPINE_APKBUILD_OPTIONS "!check !tracedeps")
+        else()
+            set(ALPINE_APKBUILD_OPTIONS "!check !tracedeps !strip")
+        endif()
+
         configure_file(${WINTC_ALPINE_APKBUILD_IN_PATH} APKBUILD @ONLY)
     elseif (${WINTC_PKGMGR} STREQUAL "archpkg")
         message(STATUS "Outputting build for Arch Linux packaging")

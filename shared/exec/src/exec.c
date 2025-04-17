@@ -115,6 +115,7 @@ static gboolean do_command(
     gchar**  argv;
     gchar*   display;
     gboolean success;
+    gint     wait_status = 0;
 
     WINTC_LOG_USER_DEBUG("Launching %s", cmdline);
 
@@ -156,7 +157,7 @@ static gboolean do_command(
                 display,
                 standard_output,
                 standard_error,
-                NULL,
+                &wait_status,
                 out_error
             );
     }
@@ -167,6 +168,18 @@ static gboolean do_command(
     if (!success)
     {
         WINTC_LOG_USER_DEBUG("Failed to launch.");
+
+        return FALSE;
+    }
+
+    if (
+        !g_spawn_check_wait_status(
+            wait_status,
+            out_error
+        )
+    )
+    {
+        WINTC_LOG_USER_DEBUG("Process exited abnormally.");
 
         return FALSE;
     }

@@ -224,7 +224,8 @@ static gchar* get_cpu_name(void)
 {
     static const gchar* k_methods[] = {
         "sh -c \"lscpu | grep 'Model name' | sed -e 's/Model name: //g'\"",
-        "sh -c \"sysctl hw.model | cut -d':' -f2\""
+        "sh -c \"sysctl hw.model | cut -d':' -f2\"",
+        "sh -c \"cat /proc/cpuinfo | grep 'model name' | head -n 1 | cut -d':' -f2\""
     };
 
     GError* error  = NULL;
@@ -249,7 +250,7 @@ static gchar* get_cpu_name(void)
         {
             if (strlen(output) == 0)
             {
-                g_free(output);
+                g_free(g_steal_pointer(&output));
             }
             else
             {
@@ -267,7 +268,8 @@ static gdouble get_cpu_speed(void)
     static const gchar* k_methods[] = {
         "sh -c \"lscpu | grep 'CPU max MHz' | sed -e 's/CPU max MHz: //g'\"",
         "sh -c \"lscpu -e=MHZ | grep '[[:digit:]]' | sort -r | head -n 1\"",
-        "sh -c \"sysctl dev.cpu.0.freq | cut -d':' -f2\""
+        "sh -c \"sysctl dev.cpu.0.freq | cut -d':' -f2\"",
+        "sh -c \"cat /proc/cpuinfo | grep 'cpu MHz' | head -n 1 | cut -d':' -f2\""
     };
 
     GError* error  = NULL;
