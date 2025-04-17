@@ -35,3 +35,18 @@ void wintc_freenv(
 
     g_free(mem);
 }
+
+void wintc_memcpy_ref(
+    void*       dst_buf,
+    glong       offset,
+    const void* src_buf,
+    size_t      n
+)
+{
+    if (!dst_buf)
+    {
+        return;
+    }
+
+    memcpy(dst_buf + offset, src_buf, n);
+}

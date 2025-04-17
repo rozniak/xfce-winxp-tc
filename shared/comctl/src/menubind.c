@@ -24,6 +24,8 @@ typedef struct _WinTCCtlMenuBindingMenu
     GMenuModel*   menu_model;
 
     GList* sections;
+
+    gulong sigid_items_changed;
 } WinTCCtlMenuBindingMenu;
 
 typedef struct _WinTCCtlMenuBindingSection
@@ -70,6 +72,11 @@ static void wintc_ctl_menu_binding_insert_item(
     gint                     src_pos,
     gint                     dst_pos
 );
+static void wintc_ctl_menu_binding_remove_item(
+    WinTCCtlMenuBindingMenu* menu,
+    GMenuModel*              menu_model,
+    gint                     src_pos
+);
 static void wintc_ctl_menu_binding_track_menu(
     WinTCCtlMenuBinding* menu_binding,
     GtkMenuShell*        menu_shell,
@@ -78,6 +85,14 @@ static void wintc_ctl_menu_binding_track_menu(
 
 static void wintc_ctl_menu_binding_menu_free(
     WinTCCtlMenuBindingMenu* menu
+);
+
+static void on_menu_model_menu_items_changed(
+    GMenuModel* model,
+    gint        position,
+    gint        removed,
+    gint        added,
+    gpointer    user_data
 );
 
 //
@@ -481,6 +496,11 @@ static void wintc_ctl_menu_binding_insert_item(
         gtk_widget_set_margin_end(img_icon, 6); // Got this from Mousepad
         gtk_widget_set_size_request(img_icon, 16, 16);
 
+        gtk_menu_item_set_reserve_indicator(
+            GTK_MENU_ITEM(menu_item),
+            TRUE
+        );
+
         if (icon)
         {
             gtk_image_set_from_gicon(
@@ -536,6 +556,8 @@ static void wintc_ctl_menu_binding_insert_item(
 
         g_free(label);
     }
+
+    gtk_widget_show_all(menu_item);
 
     // Do we have a submenu for this item?
     //
@@ -645,7 +667,7 @@ static void wintc_ctl_menu_binding_insert_item(
     //
     gint i = 0;
 
-    while (i < dst_pos)
+    while (i < dst_pos && iter)
     {
         WinTCCtlMenuBindingSection* subsection =
             (WinTCCtlMenuBindingSection*) iter->data;
@@ -658,13 +680,6 @@ static void wintc_ctl_menu_binding_insert_item(
         )
         {
             real_pos += (dst_pos - i);
-            break;
-        }
-
-        // No where else to go?
-        //
-        if (!(iter->next))
-        {
             break;
         }
 
@@ -683,10 +698,55 @@ static void wintc_ctl_menu_binding_insert_item(
         }
     }
 
+    // If we found where to insert, then get that sorted
+    //
+    if (iter)
+    {
+        WinTCCtlMenuBindingSection* found_section =
+            (WinTCCtlMenuBindingSection*) iter->data;
+
+        // If this is a real section, look for a fake section before it to
+        // insert into instead
+        //
+        if (found_section->menu_model && iter->prev)
+        {
+            WinTCCtlMenuBindingSection* prev_section =
+                (WinTCCtlMenuBindingSection*) iter->prev->data;
+
+            if (!(prev_section->menu_model))
+            {
+                found_section = prev_section;
+            }
+        }
+
+        // Do we have a fake section? If not, create a new one before the real
+        // section
+        //
+        if (found_section->menu_model)
+        {
+            found_section = g_new(WinTCCtlMenuBindingSection, 1);
+
+            found_section->parent_menu = menu;
+            found_section->menu_model  = NULL;
+            found_section->item_count  = 0; // Will be incremented in a moment
+
+            menu->sections =
+                g_list_insert_before(
+                    menu->sections,
+                    iter,
+                    found_section
+                );
+        }
+
+        found_section->item_count++;
+        gtk_menu_shell_insert(menu->menu_shell, menu_item, real_pos);
+        return;
+    }
+
     // If we fell out, we need to add the item to the end of the menu
     //
     WinTCCtlMenuBindingSection* last_section =
-        (WinTCCtlMenuBindingSection*) iter->data;
+        (WinTCCtlMenuBindingSection*) (g_list_last(menu->sections))->data;
 
     if (last_section->menu_model)
     {
@@ -709,6 +769,158 @@ static void wintc_ctl_menu_binding_insert_item(
     gtk_menu_shell_append(menu->menu_shell, menu_item);
 }
 
+static void wintc_ctl_menu_binding_remove_item(
+    WinTCCtlMenuBindingMenu* menu,
+    GMenuModel*              menu_model,
+    gint                     src_pos
+)
+{
+    gboolean is_subsection = menu_model != menu->menu_model;
+
+    // Let's fine the position of the item to bin!
+    //
+    gint real_pos = 0;
+
+    if (is_subsection)
+    {
+        for (GList* iter = menu->sections; iter; iter = iter->next)
+        {
+            WinTCCtlMenuBindingSection* check_section =
+                (WinTCCtlMenuBindingSection*) iter->data;
+
+            if (!(check_section->menu_model))
+            {
+                real_pos += check_section->item_count;
+                continue;
+            }
+
+            if (check_section->menu_model == menu_model)
+            {
+                real_pos += src_pos;
+
+                check_section->item_count--;
+
+                gtk_widget_destroy(
+                    wintc_container_get_nth_child(
+                        GTK_CONTAINER(menu->menu_shell),
+                        real_pos
+                    )
+                );
+
+                // Handle when we just destroyed the last item in a section
+                //
+                if (!(check_section->item_count))
+                {
+                    menu->sections =
+                        g_list_delete_link(
+                            menu->sections,
+                            iter
+                        );
+                }
+
+                return;
+            }
+        }
+    }
+    else
+    {
+        gint i = 0;
+
+        for (GList* iter = menu->sections; iter; iter = iter->next)
+        {
+            WinTCCtlMenuBindingSection* check_section =
+                (WinTCCtlMenuBindingSection*) iter->data;
+
+            if (i == src_pos)
+            {
+                // If the item referred to is the section itself, we need to
+                // delete the entire section
+                //
+                if (check_section->menu_model)
+                {
+                    for (gint j = 0; j < check_section->item_count; j++)
+                    {
+                        gtk_widget_destroy(
+                            wintc_container_get_nth_child(
+                                GTK_CONTAINER(menu->menu_shell),
+                                real_pos
+                            )
+                        );
+                    }
+
+                    menu->sections =
+                        g_list_delete_link(
+                            menu->sections,
+                            iter
+                        );
+
+                    return;
+                }
+                else
+                {
+                    check_section->item_count--;
+
+                    gtk_widget_destroy(
+                        wintc_container_get_nth_child(
+                            GTK_CONTAINER(menu->menu_shell),
+                            real_pos
+                        )
+                    );
+
+                    if (!(check_section->item_count))
+                    {
+                        menu->sections =
+                            g_list_delete_link(
+                                menu->sections,
+                                iter
+                            );
+                    }
+                }
+
+                return;
+            }
+
+            // Keep looking...
+            //
+            // If this section is real, then no fancy stuff is required - if
+            // it's a 'fake' section then we need to check whether src_pos is
+            // inside it
+            //
+            if (check_section->menu_model)
+            {
+                i++;
+                real_pos += check_section->item_count;
+            }
+            else
+            {
+                if (i + check_section->item_count > src_pos)
+                {
+                    real_pos += src_pos - i; 
+
+                    check_section->item_count--;
+
+                    gtk_widget_destroy(
+                        wintc_container_get_nth_child(
+                            GTK_CONTAINER(menu->menu_shell),
+                            real_pos
+                        )
+                    );
+
+                    return;
+                }
+
+                i        += check_section->item_count;
+                real_pos += check_section->item_count;
+            }
+        }
+    }
+
+    g_critical(
+        "%s",
+        "comctl - menu binding - somehow failed to find menu item to delete?"
+    );
+}
+
 static void wintc_ctl_menu_binding_track_menu(
     WinTCCtlMenuBinding* menu_binding,
     GtkMenuShell*        menu_shell,
@@ -724,6 +936,19 @@ static void wintc_ctl_menu_binding_track_menu(
     tracker->menu_shell   = menu_shell;
     tracker->menu_model   = menu_model;
     tracker->sections     = NULL;
+
+    WINTC_LOG_DEBUG(
+        "comctl - menu binding - new menu tracker: %p",
+        (void*) tracker
+    );
+
+    tracker->sigid_items_changed =
+        g_signal_connect(
+            menu_model,
+            "items-changed",
+            G_CALLBACK(on_menu_model_menu_items_changed),
+            tracker
+        );
 
     menu_binding->tracked_menus =
         g_slist_append(
@@ -752,4 +977,39 @@ static void wintc_ctl_menu_binding_menu_free(
 {
     g_clear_list(&(menu->sections), (GDestroyNotify) g_free);
     g_free(menu);
+}
+
+//
+// CALLBACKS
+//
+static void on_menu_model_menu_items_changed(
+    GMenuModel* model,
+    gint        position,
+    gint        removed,
+    gint        added,
+    gpointer    user_data
+)
+{
+    WinTCCtlMenuBindingMenu* menu = (WinTCCtlMenuBindingMenu*) user_data;
+
+    WINTC_LOG_DEBUG(
+        "comctl - menubind - update pos %d, remove %d, add %d",
+        position,
+        removed,
+        added
+    );
+
+    // Removed items
+    //
+    for (gint i = position; i < position + removed; i++)
+    {
+        wintc_ctl_menu_binding_remove_item(menu, model, i);
+    }
+
+    // Added items
+    //
+    for (gint i = position; i < position + added; i++)
+    {
+        wintc_ctl_menu_binding_insert_item(menu, model, i, i);
+    }
 }

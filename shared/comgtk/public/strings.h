@@ -70,6 +70,24 @@ gchar* wintc_str_set_suffix(
 );
 
 /**
+ * Duplicates part of a string from the start and ending at the first
+ * occurrence of the specified delimiter (exclusive, so the delimiter will not
+ * be included).
+ *
+ * @param str The string.
+ * @param len The maximum length of str to use, -1 for null terminated string.
+ * @param c   The character to look for.
+ * @param pos If not NULL, a storage location for position after the delimiter.
+ * @return The new string, a complete copy of the string if c wasn't found.
+ */
+gchar* wintc_strdup_nextchr(
+    const gchar*  str,
+    gssize        len,
+    gunichar      c,
+    const gchar** pos
+);
+
+/**
  * Duplicates a string and replaces the string at the destination with it - if
  * there was a string at the destination pointer, it will be freed.
  *
@@ -128,6 +146,18 @@ gchar* wintc_strsubst(
  */
 guint wintc_strv_length(
     const gchar** str_array
+);
+
+/**
+ * Extracts a substring from one string to create a new string.
+ *
+ * @param start A pointer to the start of the substring.
+ * @param end   A pointer to the end of the substring.
+ * @return A copy of the substring.
+ */
+gchar* wintc_substr(
+    const gchar* start,
+    const gchar* end
 );
 
 #endif

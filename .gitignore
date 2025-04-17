@@ -19,6 +19,8 @@ mui-stuff/
 [Bb]uild/
 config.h
 libapi.h
+marshal.c
+marshal.h
 meta.h
 resources.c
 *.deb

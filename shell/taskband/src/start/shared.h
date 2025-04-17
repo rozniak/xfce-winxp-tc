@@ -5,6 +5,8 @@
 #include <gtk/gtk.h>
 #include <wintc/comctl.h>
 
+#include "progmenu.h"
+
 //
 // INTERNAL STRUCTS
 //
@@ -50,6 +52,8 @@ typedef struct _WinTCToolbarStart
     // Personal data struct
     //
     PersonalStartMenuData personal;
+
+    WinTCToolbarStartProgmenu* progmenu;
 
     // UI state
     //

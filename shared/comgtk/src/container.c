@@ -22,3 +22,18 @@ void wintc_container_clear(
 
     g_list_free(children);
 }
+
+GtkWidget* wintc_container_get_nth_child(
+    GtkContainer* container,
+    gint          pos
+)
+{
+    GList* children = gtk_container_get_children(container);
+
+    GtkWidget* nth_child =
+        GTK_WIDGET(g_list_nth_data(children, pos));
+
+    g_list_free(children);
+
+    return nth_child;
+}

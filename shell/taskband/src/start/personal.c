@@ -127,14 +127,6 @@ void create_personal_menu(
     GtkBuilder* builder;
     WinTCTaskbandToolbar* toolbar = WINTC_TASKBAND_TOOLBAR(toolbar_start);
 
-    GError* error = NULL;
-
-    if (!wintc_toolbar_start_progmenu_init(&error))
-    {
-        wintc_display_error_and_clear(&error, NULL);
-        return;
-    }
-
     // Set default states
     //
     toolbar_start->personal.sync_menu_refresh = TRUE;
@@ -266,6 +258,7 @@ void create_personal_menu(
     gtk_menu_item_set_submenu(
         GTK_MENU_ITEM(toolbar_start->personal.menuitem_all_programs),
         wintc_toolbar_start_progmenu_new_gtk_menu(
+            toolbar_start->progmenu,
             &(toolbar_start->personal.all_programs_binding)
         )
     );
@@ -857,6 +850,9 @@ static void refresh_personal_menu(
             _("E-mail")
         )
     );
+
+    g_object_unref(entry_internet);
+    g_object_unref(entry_email);
 
     // Add separator between defaults & MFU
     //

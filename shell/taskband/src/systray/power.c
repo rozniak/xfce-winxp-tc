@@ -143,6 +143,8 @@ static void wintc_notification_power_constructed(
 
     update_client_on_battery(power, power->up_client);
 
+    g_ptr_array_unref(all_devices);
+
     (G_OBJECT_CLASS(
         wintc_notification_power_parent_class
     ))->constructed(object);

@@ -1,6 +1,7 @@
 #include <glib.h>
 #include <string.h>
 
+#include "../public/shorthand.h"
 #include "../public/strings.h"
 
 //
@@ -57,6 +58,43 @@ gchar* wintc_str_set_suffix(
             suffix
         );
     }
+}
+
+gchar* wintc_strdup_nextchr(
+    const gchar*  str,
+    gssize        len,
+    gunichar      c,
+    const gchar** pos
+)
+{
+    const gchar* end;
+
+    if (!str)
+    {
+        WINTC_SAFE_REF_SET(pos, NULL);
+        return NULL;
+    }
+
+    end = g_utf8_strchr(str, len, c);
+
+    if (pos)
+    {
+        WINTC_SAFE_REF_SET(pos, end ? end + 1 : NULL);
+    }
+
+    if (!end)
+    {
+        return g_strdup(str);
+    }
+
+    // Allocate new string
+    //
+    gint   diff = end - str;
+    gchar* buf  = g_malloc0(diff + 1);
+
+    memcpy(buf, str, diff);
+
+    return buf;
 }
 
 void wintc_strdup_replace(
@@ -179,4 +217,25 @@ guint wintc_strv_length(
     for (i = 0; str_array[i]; i++);
 
     return i;
+}
+
+gchar* wintc_substr(
+    const gchar* start,
+    const gchar* end
+)
+{
+    if (end < start)
+    {
+        g_critical("substr: invalid substring requested");
+        return NULL;
+    }
+
+    gchar* buf = g_malloc0(end - start + 1);
+
+    if (start != end)
+    {
+        memcpy(buf, start, end - start);
+    }
+
+    return buf;
 }
