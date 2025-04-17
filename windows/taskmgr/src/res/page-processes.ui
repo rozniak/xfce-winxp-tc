@@ -61,5 +61,12 @@
         <property name="position">1</property>
       </packing>
     </child>
+
+    <style>
+      <class name="wintc-mb-lg" />
+      <class name="wintc-ml-lg" />
+      <class name="wintc-mr-lg" />
+      <class name="wintc-mt-lg" />
+    </style>
   </object>
 </interface>

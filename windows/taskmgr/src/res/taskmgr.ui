@@ -268,6 +268,13 @@
       <object class="GtkNotebook" id="main-notebook">
         <property name="visible">True</property>
         <property name="can-focus">True</property>
+
+        <style>
+          <class name="wintc-mb-md" />
+          <class name="wintc-ml-md" />
+          <class name="wintc-mr-md" />
+          <class name="wintc-mt-md" />
+        </style>
       </object>
       <packing>
         <property name="expand">True</property>
@@ -287,6 +294,13 @@
             <property name="visible">True</property>
             <property name="can-focus">False</property>
             <property name="label" translatable="yes">Processes: %d</property>
+
+            <style>
+              <class name="wintc-mb-sm" />
+              <class name="wintc-ml-sm" />
+              <class name="wintc-mr-sm" />
+              <class name="wintc-mt-sm" />
+            </style>
           </object>
         </child>
       </object>
