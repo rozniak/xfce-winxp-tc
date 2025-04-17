@@ -460,8 +460,8 @@ static void wintc_ctl_menu_binding_insert_item(
 
     // Get action information
     //
-    gchar*    action_name = NULL;
-    GVariant* action_target;
+    gchar*    action_name   = NULL;
+    GVariant* action_target = NULL;
 
     if (
         g_menu_model_get_item_attribute(
