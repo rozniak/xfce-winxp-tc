@@ -282,7 +282,7 @@ static gboolean parse_file_in_cmdline(
     //
     if (
         file_mime != NULL &&
-        g_strcmp0(file_mime, "application/x-sharedlib") != 0
+        g_strcmp0(file_mime, "application/x-executable") != 0
     )
     {
         WINTC_LOG_USER_DEBUG("Not an executable, will look for handler.");

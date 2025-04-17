@@ -66,16 +66,16 @@ then
 
             ;;
 
-            # xbps must be either musl or glibc
-            #
-            xbps)
-                case "${DIST_ID_EXT}" in
-                    glibc | musl)
-                        l_target_valid=1
-                        ;;
-                esac
+        # xbps must be either musl or glibc
+        #
+        xbps)
+            case "${DIST_ID_EXT}" in
+                glibc | musl)
+                    l_target_valid=1
+                    ;;
+            esac
 
-                ;;
+            ;;
     esac
 
     if [[ $l_target_valid -eq 1 ]]
@@ -157,8 +157,6 @@ then
     else
         set_pkgmgr "xbps" "glibc"
     fi
-
-    return 0
 fi
 
 # If we were just double-checking the already-set DIST_ID to make sure we have

@@ -366,7 +366,7 @@ static void on_browse_button_clicked(
     gtk_file_filter_add_pattern(filter_all_files, "*");
 
     gtk_file_filter_set_name(filter_programs, _("Programs"));
-    gtk_file_filter_add_mime_type(filter_programs, "application/x-sharedlib");
+    gtk_file_filter_add_mime_type(filter_programs, "application/x-executable");
 
     // Set up file dialog
     //
