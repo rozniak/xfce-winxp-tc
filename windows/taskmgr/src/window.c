@@ -1,6 +1,7 @@
 #include <glib.h>
 #include <gtk/gtk.h>
 #include <wintc/comgtk.h>
+#include <wintc/shell.h>
 #include <wintc/shellext.h>
 #include <wintc/shlang.h>
 
@@ -29,6 +30,50 @@ static GtkWidget* wintc_taskmgr_window_get_ext_widget(
     GType              expected_type,
     gpointer           ctx
 );
+
+static void action_notimpl(
+    GSimpleAction* action,
+    GVariant*      parameter,
+    gpointer       user_data
+);
+
+static void action_about(
+    GSimpleAction* action,
+    GVariant*      parameter,
+    gpointer       user_data
+);
+static void action_exit(
+    GSimpleAction* action,
+    GVariant*      parameter,
+    gpointer       user_data
+);
+
+//
+// STATIC DATA
+//
+static GActionEntry s_window_actions[] = {
+    {
+        .name           = "notimpl",
+        .activate       = action_notimpl,
+        .parameter_type = NULL,
+        .state          = NULL,
+        .change_state   = NULL
+    },
+    {
+        .name           = "about",
+        .activate       = action_about,
+        .parameter_type = NULL,
+        .state          = NULL,
+        .change_state   = NULL
+    },
+    {
+        .name           = "exit",
+        .activate       = action_exit,
+        .parameter_type = NULL,
+        .state          = NULL,
+        .change_state   = NULL
+    }
+};
 
 //
 // GTK OOP CLASS/INSTANCE DEFINITIONS
@@ -80,6 +125,17 @@ static void wintc_taskmgr_window_init(
     GtkBuilder* builder;
     GtkWidget*  main_box = NULL;
 
+    // Define GActions
+    //
+    g_action_map_add_action_entries(
+        G_ACTION_MAP(self),
+        s_window_actions,
+        G_N_ELEMENTS(s_window_actions),
+        self
+    );
+
+    // Initialize UI
+    //
     builder =
         gtk_builder_new_from_resource(
             "/uk/oddmatics/wintc/taskmgr/taskmgr.ui"
@@ -224,4 +280,55 @@ GtkWidget* wintc_taskmgr_window_new(
             NULL
         )
     );
+}
+
+//
+// CALLBACKS
+//
+static void action_notimpl(
+    WINTC_UNUSED(GSimpleAction* action),
+    WINTC_UNUSED(GVariant*      parameter),
+    gpointer user_data
+)
+{
+    WinTCTaskmgrWindow* wnd = WINTC_TASKMGR_WINDOW(user_data);
+
+    GError* error = NULL;
+
+    g_set_error(
+        &error,
+        WINTC_GENERAL_ERROR,
+        WINTC_GENERAL_ERROR_NOTIMPL,
+        "%s",
+        "Action not implemented."
+    );
+
+    wintc_nice_error_and_clear(&error, GTK_WINDOW(wnd));
+}
+
+static void action_about(
+    WINTC_UNUSED(GSimpleAction* action),
+    WINTC_UNUSED(GVariant*      parameter),
+    gpointer user_data
+)
+{
+    WinTCTaskmgrWindow* wnd = WINTC_TASKMGR_WINDOW(user_data);
+
+    wintc_sh_about(
+        GTK_WINDOW(wnd),
+        "Windows Task Manager",
+        NULL,
+        "taskmgr"
+    );
+}
+
+static void action_exit(
+    WINTC_UNUSED(GSimpleAction* action),
+    WINTC_UNUSED(GVariant*      parameter),
+    gpointer user_data
+)
+{
+    WinTCTaskmgrWindow* wnd = WINTC_TASKMGR_WINDOW(user_data);
+
+    gtk_widget_destroy(GTK_WIDGET(wnd));
 }
