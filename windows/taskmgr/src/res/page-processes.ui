@@ -42,6 +42,7 @@
             <property name="visible">True</property>
             <property name="can-focus">True</property>
             <property name="label" translatable="yes">Show processes from all users</property>
+            <property name="sensitive">False</property>
           </object>
           <packing>
             <property name="expand">True</property>
@@ -62,6 +63,10 @@
             <property name="position">1</property>
           </packing>
         </child>
+
+        <style>
+          <class name="wintc-mt-md" />
+        </style>
       </object>
       <packing>
         <property name="expand">False</property>
