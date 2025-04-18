@@ -15,6 +15,7 @@
       <object class="GtkScrolledWindow">
         <property name="visible">True</property>
         <property name="can-focus">True</property>
+        <property name="overlay-scrolling">False</property>
         <property name="shadow-type">in</property>
 
         <child>
@@ -56,6 +57,7 @@
             <property name="visible">True</property>
             <property name="can-focus">True</property>
             <property name="label" translatable="yes">End Process</property>
+            <property name="sensitive">False</property>
           </object>
           <packing>
             <property name="expand">False</property>

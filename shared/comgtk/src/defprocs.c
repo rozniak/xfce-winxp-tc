@@ -3,6 +3,7 @@
 
 #include "../public/defprocs.h"
 #include "../public/shorthand.h"
+#include "../public/window.h"
 
 //
 // PUBLIC FUNCTIONS
@@ -30,5 +31,15 @@ void wintc_menu_shell_select_on_enter(
     gtk_menu_shell_select_item(
         menu_shell,
         widget
+    );
+}
+
+void wintc_button_close_window_on_clicked(
+    GtkButton* self,
+    WINTC_UNUSED(gpointer user_data)
+)
+{
+    gtk_window_close(
+        wintc_widget_get_toplevel_window(GTK_WIDGET(self))
     );
 }

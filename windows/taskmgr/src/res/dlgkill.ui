@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <object class="GtkWindow" id="main-wnd">
+    <property name="can-focus">False</property>
+    <property name="resizable">False</property>
+    <property name="title" translatable="yes">Task Manager Warning</property>
+    <property name="type-hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
+
+    <child>
+      <object class="GtkBox">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="orientation">vertical</property>
+
+        <child>
+          <object class="GtkBox">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="orientation">horizontal</property>
+
+            <child>
+              <object class="GtkImage">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="icon-name">dialog-warning</property>
+                <property name="pixel-size">32</property>
+                <property name="yalign">0.0</property>
+
+                <style>
+                  <class name="wintc-mr-lg" />
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="label" translatable="yes">WARNING: Terminating a process can cause undesired results including loss of data and system instability. The process will not be given the chance to save its state or data before it is terminated. Are you sure you want to terminate the process?</property>
+                <property name="max-width-chars">46</property>
+                <property name="wrap">TRUE</property>
+                <property name="xalign">0.0</property>
+
+                <style>
+                  <class name="wintc-mr-sm" />
+                </style>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkBox">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="orientation">horizontal</property>
+            <property name="halign">GTK_ALIGN_CENTER</property>
+
+            <child>
+              <object class="GtkButton" id="button-yes">
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
+                <property name="label" translatable="no">%CTL_YES%</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="button-no">
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
+                <property name="label" translatable="no">%CTL_NO%</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+
+            <style>
+              <class name="wintc-button-box" />
+              <class name="wintc-mt-lg" />
+            </style>
+          </object>
+        </child>
+
+        <style>
+          <class name="wintc-mb-lg" />
+          <class name="wintc-ml-lg" />
+          <class name="wintc-mr-lg" />
+          <class name="wintc-mt-lg" />
+        </style>
+      </object>
+    </child>
+  </object>
+</interface>
