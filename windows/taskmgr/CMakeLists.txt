@@ -41,6 +41,8 @@ add_executable(
     src/meta.h
     src/pageproc.c
     src/pageproc.h
+    src/procmon.c
+    src/procmon.h
     src/resources.c
     src/window.c
     src/window.h
