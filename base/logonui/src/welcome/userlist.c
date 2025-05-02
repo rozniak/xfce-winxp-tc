@@ -377,6 +377,13 @@ static void wintc_welcome_user_list_init(
         G_CALLBACK(on_button_go_clicked),
         self
     );
+    
+    g_signal_connect(
+        self->entry_password,
+        "activate",
+        G_CALLBACK(on_button_go_clicked),
+        self
+);
 
     // Add style classes
     //
