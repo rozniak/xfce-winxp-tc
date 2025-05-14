@@ -8,6 +8,7 @@
 #include "@LIB_HEADER_DIR@/fsclipbd.h"
 #include "@LIB_HEADER_DIR@/icnvwbeh.h"
 #include "@LIB_HEADER_DIR@/nmspace.h"
+#include "@LIB_HEADER_DIR@/sound.h"
 #include "@LIB_HEADER_DIR@/trevwbeh.h"
 #include "@LIB_HEADER_DIR@/vwcpl.h"
 #include "@LIB_HEADER_DIR@/vwdesk.h"

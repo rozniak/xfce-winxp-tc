@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/uk/oddmatics/wintc/taskmgr">
+    <file>dlgkill.ui</file>
+    <file>taskmgr.ui</file>
+    <file>page-processes.ui</file>
+  </gresource>
+</gresources>

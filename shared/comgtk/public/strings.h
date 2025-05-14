@@ -70,6 +70,16 @@ gchar* wintc_str_set_suffix(
 );
 
 /**
+ * Duplicates the substring in an array of delimiter separated values by the
+ * specified index.
+ */
+gchar* wintc_strdup_delimited(
+    const gchar* str,
+    gchar*       delim_str,
+    guint        index
+);
+
+/**
  * Duplicates part of a string from the start and ending at the first
  * occurrence of the specified delimiter (exclusive, so the delimiter will not
  * be included).
@@ -152,7 +162,7 @@ guint wintc_strv_length(
  * Extracts a substring from one string to create a new string.
  *
  * @param start A pointer to the start of the substring.
- * @param end   A pointer to the end of the substring.
+ * @param end   A pointer to the end of the substring or NULL.
  * @return A copy of the substring.
  */
 gchar* wintc_substr(

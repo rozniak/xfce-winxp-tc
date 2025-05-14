@@ -17,7 +17,7 @@
  */
 void wintc_menu_shell_deselect_on_leave(
     GtkWidget*    widget,
-    WINTC_UNUSED(GdkEvent* event),
+    GdkEvent*     event,
     GtkMenuShell* menu_shell
 );
 
@@ -26,8 +26,16 @@ void wintc_menu_shell_deselect_on_leave(
  */
 void wintc_menu_shell_select_on_enter(
     GtkWidget*    widget,
-    WINTC_UNUSED(GdkEvent* event),
+    GdkEvent*     event,
     GtkMenuShell* menu_shell
+);
+
+/**
+ * Callback for closing the toplevel window upon a GtkButton clicked event.
+ */
+void wintc_button_close_window_on_clicked(
+    GtkButton* self,
+    gpointer   user_data
 );
 
 #endif

@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk+" version="3.24"/>
+  <object class="GtkBox" id="main-box">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="orientation">vertical</property>
+
+    <child>
+      <object class="GtkMenuBar" id="main-menubar">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+
+        <child>
+          <object class="GtkMenuItem">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="label" translatable="yes">%CTL_FILEMENU%</property>
+
+            <child type="submenu">
+              <object class="GtkMenu">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+
+                <child>
+                  <object class="GtkMenuItem">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="action-name">win.notimpl</property>
+                    <property name="label" translatable="yes">New Task (Run...)</property>
+                    <property name="use-underline">True</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkSeparatorMenuItem">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkMenuItem">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="action-name">win.exit</property>
+                    <property name="label" translatable="yes">Exit Task Manager</property>
+                    <property name="use-underline">True</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkMenuItem">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="label" translatable="yes">Options</property>
+
+            <child type="submenu">
+              <object class="GtkMenu">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+
+                <child>
+                  <object class="GtkMenuItem">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="action-name">win.notimpl</property>
+                    <property name="label" translatable="yes">Always On Top</property>
+                    <property name="use-underline">True</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkMenuItem">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="action-name">win.notimpl</property>
+                    <property name="label" translatable="yes">Minimize On Use</property>
+                    <property name="use-underline">True</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkMenuItem">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="action-name">win.notimpl</property>
+                    <property name="label" translatable="yes">Hide When Minimized</property>
+                    <property name="use-underline">True</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkMenuItem">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="action-name">win.notimpl</property>
+                    <property name="label" translatable="yes">Show 16-bit tasks</property>
+                    <property name="use-underline">True</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkMenuItem">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="label" translatable="yes">%CTL_VIEWMENU%</property>
+
+            <child type="submenu">
+              <object class="GtkMenu">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+
+                <child>
+                  <object class="GtkMenuItem">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="action-name">win.notimpl</property>
+                    <property name="label" translatable="yes">Refresh Now</property>
+                    <property name="use-underline">True</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkMenuItem">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="label" translatable="yes">Update Speed</property>
+                    <property name="use-underline">True</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkSeparatorMenuItem">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkMenuItem">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="action-name">win.notimpl</property>
+                    <property name="label" translatable="yes">Select Columns</property>
+                    <property name="use-underline">True</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkMenuItem">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="label" translatable="yes">Shut Down</property>
+
+            <child type="submenu">
+              <object class="GtkMenu">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+
+                <child>
+                  <object class="GtkMenuItem">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="action-name">win.notimpl</property>
+                    <property name="label" translatable="yes">Stand By</property>
+                    <property name="use-underline">True</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkMenuItem">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="action-name">win.notimpl</property>
+                    <property name="label" translatable="yes">Hibernate</property>
+                    <property name="use-underline">True</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkMenuItem">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="action-name">win.notimpl</property>
+                    <property name="label" translatable="yes">Turn Off</property>
+                    <property name="use-underline">True</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkMenuItem">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="action-name">win.notimpl</property>
+                    <property name="label" translatable="yes">Restart</property>
+                    <property name="use-underline">True</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkMenuItem">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="action-name">win.notimpl</property>
+                    <property name="label" translatable="yes">Log Off %s</property>
+                    <property name="use-underline">True</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkMenuItem">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="action-name">win.notimpl</property>
+                    <property name="label" translatable="yes">Switch User</property>
+                    <property name="use-underline">True</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkMenuItem">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="label" translatable="yes">%CTL_HELPMENU%</property>
+
+            <child type="submenu">
+              <object class="GtkMenu">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+
+                <child>
+                  <object class="GtkMenuItem">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="action-name">win.notimpl</property>
+                    <property name="label" translatable="yes">Task Manager Help Topics</property>
+                    <property name="use-underline">True</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkSeparatorMenuItem">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkMenuItem">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="action-name">win.about</property>
+                    <property name="label" translatable="yes">About Task Manager</property>
+                    <property name="use-underline">True</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">False</property>
+        <property name="position">0</property>
+      </packing>
+    </child>
+
+    <child>
+      <object class="GtkNotebook" id="main-notebook">
+        <property name="visible">True</property>
+        <property name="can-focus">True</property>
+
+        <style>
+          <class name="wintc-mb-md" />
+          <class name="wintc-ml-md" />
+          <class name="wintc-mr-md" />
+          <class name="wintc-mt-md" />
+        </style>
+      </object>
+      <packing>
+        <property name="expand">True</property>
+        <property name="fill">True</property>
+        <property name="position">1</property>
+      </packing>
+    </child>
+
+    <child>
+      <object class="GtkBox" id="box-status">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="orientation">horizontal</property>
+
+        <child>
+          <object class="GtkLabel" id="label-procs">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="label" translatable="yes">Processes: %d</property>
+
+            <style>
+              <class name="wintc-mb-sm" />
+              <class name="wintc-ml-sm" />
+              <class name="wintc-mr-sm" />
+              <class name="wintc-mt-sm" />
+            </style>
+          </object>
+        </child>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">False</property>
+        <property name="position">2</property>
+      </packing>
+    </child>
+  </object>
+</interface>

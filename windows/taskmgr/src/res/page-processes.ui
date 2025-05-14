@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk+" version="3.24"/>
+  <object class="GtkLabel" id="label-title">
+    <property name="visible">True</property>
+    <property name="can-focus">True</property>
+    <property name="label" translatable="yes">Processes</property>
+  </object>
+  <object class="GtkBox" id="page">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="orientation">vertical</property>
+
+    <child>
+      <object class="GtkScrolledWindow">
+        <property name="visible">True</property>
+        <property name="can-focus">True</property>
+        <property name="overlay-scrolling">False</property>
+        <property name="shadow-type">in</property>
+
+        <child>
+          <object class="GtkTreeView" id="tree-view">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+          </object>
+        </child>
+      </object>
+      <packing>
+        <property name="expand">True</property>
+        <property name="fill">True</property>
+        <property name="position">0</property>
+      </packing>
+    </child>
+
+    <child>
+      <object class="GtkBox">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="orientation">horizontal</property>
+
+        <child>
+          <object class="GtkCheckButton" id="check-allusers">
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <property name="label" translatable="yes">Show processes from all users</property>
+            <property name="sensitive">False</property>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+
+        <child>
+          <object class="GtkButton" id="button-endproc">
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <property name="label" translatable="yes">End Process</property>
+            <property name="sensitive">False</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+
+        <style>
+          <class name="wintc-mt-md" />
+        </style>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">False</property>
+        <property name="position">1</property>
+      </packing>
+    </child>
+
+    <style>
+      <class name="wintc-mb-lg" />
+      <class name="wintc-ml-lg" />
+      <class name="wintc-mr-lg" />
+      <class name="wintc-mt-lg" />
+    </style>
+  </object>
+</interface>

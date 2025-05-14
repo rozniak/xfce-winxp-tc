@@ -21,16 +21,18 @@ include(../../packaging/cmake-inc/linking/CMakeLists.txt)
 include(../../packaging/cmake-inc/packaging/CMakeLists.txt)
 include(../../packaging/cmake-inc/resources/CMakeLists.txt)
 
-wintc_resolve_library(gdk-pixbuf-2.0 GDK_PIXBUF)
-wintc_resolve_library(glib-2.0       GLIB)
-wintc_resolve_library(gtk+-3.0       GTK3)
-wintc_resolve_library(wintc-comctl   WINTC_COMCTL)
-wintc_resolve_library(wintc-comgtk   WINTC_COMGTK)
-wintc_resolve_library(wintc-exec     WINTC_EXEC)
-wintc_resolve_library(wintc-shcommon WINTC_SHCOMMON)
-wintc_resolve_library(wintc-shellext WINTC_SHELLEXT)
-wintc_resolve_library(wintc-shlang   WINTC_SHLANG)
-wintc_resolve_library(wintc-winbrand WINTC_WINBRAND)
+wintc_resolve_library(libcanberra      CANBERRA)
+wintc_resolve_library(libcanberra-gtk3 CANBERRA_GTK3)
+wintc_resolve_library(gdk-pixbuf-2.0   GDK_PIXBUF)
+wintc_resolve_library(glib-2.0         GLIB)
+wintc_resolve_library(gtk+-3.0         GTK3)
+wintc_resolve_library(wintc-comctl     WINTC_COMCTL)
+wintc_resolve_library(wintc-comgtk     WINTC_COMGTK)
+wintc_resolve_library(wintc-exec       WINTC_EXEC)
+wintc_resolve_library(wintc-shcommon   WINTC_SHCOMMON)
+wintc_resolve_library(wintc-shellext   WINTC_SHELLEXT)
+wintc_resolve_library(wintc-shlang     WINTC_SHLANG)
+wintc_resolve_library(wintc-winbrand   WINTC_WINBRAND)
 
 wintc_compile_resources()
 
@@ -51,6 +53,8 @@ add_library(
     src/icnvwbeh.c
     public/icnvwbeh.h
     src/resources.c
+    public/sound.h
+    src/sound.c
     src/trevwbeh.c
     public/trevwbeh.h
     src/nmspace.c
@@ -81,6 +85,8 @@ target_include_directories(
     libwintc-shell
     SYSTEM
     BEFORE
+    PRIVATE ${CANBERRA_INCLUDE_DIRS}
+    PRIVATE ${CANBERRA_GTK3_INCLUDE_DIRS}
     PRIVATE ${GDK_PIXBUF_INCLUDE_DIRS}
     PRIVATE ${GLIB_INCLUDE_DIRS}
     PRIVATE ${GTK3_INCLUDE_DIRS}
@@ -95,6 +101,8 @@ target_include_directories(
 
 target_link_directories(
     libwintc-shell
+    PRIVATE ${CANBERRA_LIBRARY_DIRS}
+    PRIVATE ${CANBERRA_GTK3_LIBRARY_DIRS}
     PRIVATE ${GDK_PIXBUF_LIBRARY_DIRS}
     PRIVATE ${GLIB_LIBRARY_DIRS}
     PRIVATE ${GTK3_LIBRARY_DIRS}
@@ -109,6 +117,8 @@ target_link_directories(
 
 target_link_libraries(
     libwintc-shell
+    PRIVATE ${CANBERRA_LIBRARIES}
+    PRIVATE ${CANBERRA_GTK3_LIBRARIES}
     PRIVATE ${GDK_PIXBUF_LIBRARIES}
     PRIVATE ${GLIB_LIBRARIES}
     PRIVATE ${GTK3_LIBRARIES}

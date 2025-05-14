@@ -1,9 +1,8 @@
-bt,rt:canberra
-bt,rt:canberra-gtk3
-bt,rt:gdk-pixbuf2
 bt,rt:glib2
 bt,rt:gtk3
+bt,rt:wintc-comctl
 bt,rt:wintc-comgtk
-bt,rt:wintc-exec
 bt,rt:wintc-shcommon
+bt,rt:wintc-shell
 bt,rt:wintc-shellext
+bt,rt:wintc-shlang

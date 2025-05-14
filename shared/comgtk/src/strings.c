@@ -60,6 +60,35 @@ gchar* wintc_str_set_suffix(
     }
 }
 
+gchar* wintc_strdup_delimited(
+    const gchar* str,
+    gchar*       delim_str,
+    guint        index
+)
+{
+    gint         delim_len = strlen(delim_str); 
+    const gchar* next      = str;
+
+    for (guint i = 0; i < index; i++)
+    {
+        if (next != str)
+        {
+            next += delim_len; // Advance past the delimiter
+        }
+
+        next = strstr(next, delim_str);
+
+        if (!next)
+        {
+            return NULL;
+        }
+    }
+
+    next += delim_len;
+
+    return wintc_substr(next, strstr(next, delim_str));
+}
+
 gchar* wintc_strdup_nextchr(
     const gchar*  str,
     gssize        len,
@@ -224,6 +253,11 @@ gchar* wintc_substr(
     const gchar* end
 )
 {
+    if (!end)
+    {
+        end = start + strlen(start);
+    }
+
     if (end < start)
     {
         g_critical("substr: invalid substring requested");
