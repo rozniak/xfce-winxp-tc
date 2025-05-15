@@ -267,14 +267,17 @@ static gboolean timeout_process_monitor(
 
     // Acquire the total CPU time stats
     //
-    guint total_cpu_delta;
-    guint total_cpu_time;
+    guint total_cpu_delta = 0;
+    guint total_cpu_time  = 0;
 
     process_get_totals(
         &total_cpu_time
     );
 
-    total_cpu_delta = total_cpu_time - procmon->last_cpu_time;
+    if (total_cpu_time)
+    {
+        total_cpu_delta = total_cpu_time - procmon->last_cpu_time;
+    }
 
     // We store a mapping of PIDs that we found to check against later
     //
