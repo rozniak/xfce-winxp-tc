@@ -377,6 +377,13 @@ static void wintc_welcome_user_list_init(
         G_CALLBACK(on_button_go_clicked),
         self
     );
+    
+    g_signal_connect(
+        self->entry_password,
+        "activate",
+        G_CALLBACK(on_button_go_clicked),
+        self
+);
 
     // Add style classes
     //
@@ -1047,6 +1054,8 @@ static void on_logon_session_attempt_complete(
         user_list->entry_password,
         TRUE
     );
+
+    gtk_widget_grab_focus(user_list->entry_password);
 }
 
 static void on_button_go_clicked(
