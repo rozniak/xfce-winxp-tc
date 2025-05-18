@@ -20,6 +20,28 @@ int main(
 
     gtk_init(&argc, &argv);
 
+    const gchar* shell_programs[] = {
+        "xfwm4 --compositor=on",
+        "wintc-desktop",
+        "wintc-taskband"
+    };
+
+    for (gsize i = 0; i < G_N_ELEMENTS(shell_programs); i++)
+    {
+        if (
+            !wintc_launch_command(
+                shell_programs[i],
+                &error
+            )
+        )
+        {
+            g_critical("%s", "Failed to start shell program.");
+            wintc_log_error_and_clear(&error);
+
+            return EXIT_FAILURE;
+        }
+    }
+
     // Test running a program 'til exit
     //
     if (
