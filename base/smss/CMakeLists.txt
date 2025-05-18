@@ -82,11 +82,11 @@ configure_file(
 )
 
 install(
-    FILES ${CMAKE_BINARY_DIR}/startwintc
-    DESTINATION ${WINTC_ASSETS_INSTALL_DIR}/smss
+    PROGRAMS ${CMAKE_BINARY_DIR}/startwintc
+    DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 install(
-    FILES ${CMAKE_BINARY_DIR}/xinitrc
+    PROGRAMS ${CMAKE_BINARY_DIR}/xinitrc
     DESTINATION ${WINTC_ASSETS_INSTALL_DIR}/smss
 )
 install(
