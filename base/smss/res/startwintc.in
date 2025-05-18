@@ -1,0 +1,2 @@
+#!/usr/bin/env sh
+xinit @CMAKE_INSTALL_PREFIX@/@WINTC_ASSETS_INSTALL_DIR@/smss/xinitrc
