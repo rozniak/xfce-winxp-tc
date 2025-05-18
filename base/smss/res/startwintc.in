@@ -1,2 +1,6 @@
 #!/usr/bin/env sh
-xinit @CMAKE_INSTALL_PREFIX@/@WINTC_ASSETS_INSTALL_DIR@/smss/xinitrc
+
+# FIXME: This might only work on systemd due to XDG_VTNR, figure out what to
+#        do on other init systems
+#
+xinit @CMAKE_INSTALL_PREFIX@/@WINTC_ASSETS_INSTALL_DIR@/smss/xinitrc -- /etc/X11/xinit/xserverrc vt$XDG_VTNR
