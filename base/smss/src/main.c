@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <wintc/comgtk.h>
 #include <wintc/exec.h>
+#include <wintc/shell.h>
 
 //
 // ENTRY POINT
@@ -41,6 +42,8 @@ int main(
             return EXIT_FAILURE;
         }
     }
+
+    wintc_sh_play_sound(WINTC_SHELL_SND_STARTWIN);
 
     // Test running a program 'til exit
     //
