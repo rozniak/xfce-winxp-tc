@@ -1,4 +1,18 @@
-.npwrdlg label.turn-off
+.npwrdlg
+{
+    border-radius: 5px;
+}
+
+.npwrdlg label.title
 {
     font-size: 14pt;
+    font-weight: bold;
+    margin: 4px 10px;
+}
+
+.npwrdlg button
+{
+    margin:     4px;
+    min-height: 50px;
+    min-width:  50px;
 }
