@@ -44,6 +44,8 @@ add_library(
     public/state.h
     src/stripctl.c
     src/stripctl.h
+    public/xfsm.h
+    src/xfsm.c
 )
 
 set_target_properties(
