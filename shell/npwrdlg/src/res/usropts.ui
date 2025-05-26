@@ -66,6 +66,7 @@
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
+                <signal name="clicked" handler="on_log_off_button_clicked" swapped="no"/>
                 <style>
                   <class name="log-off"/>
                 </style>
