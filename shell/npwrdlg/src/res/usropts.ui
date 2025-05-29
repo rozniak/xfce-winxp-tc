@@ -45,11 +45,12 @@
             <property name="visible">True</property>
             <property name="can-focus">False</property>
             <child>
-              <object class="GtkButton">
+              <object class="GtkButton" id="button-switch-user">
                 <property name="label" translatable="yes">Switch User</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
+                <signal name="clicked" handler="on_button_switch_user_clicked" swapped="no"/>
                 <style>
                   <class name="switch-user"/>
                 </style>
@@ -61,12 +62,12 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton">
+              <object class="GtkButton" id="button-log-off">
                 <property name="label" translatable="yes">Log Off</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
-                <signal name="clicked" handler="on_log_off_button_clicked" swapped="no"/>
+                <signal name="clicked" handler="on_button_log_off_clicked" swapped="no"/>
                 <style>
                   <class name="log-off"/>
                 </style>
@@ -99,12 +100,12 @@
         <property name="visible">True</property>
         <property name="can-focus">False</property>
         <child>
-          <object class="GtkButton">
+          <object class="GtkButton" id="button-cancel">
             <property name="label" translatable="yes">Cancel</property>
             <property name="visible">True</property>
             <property name="can-focus">True</property>
             <property name="receives-default">True</property>
-            <signal name="clicked" handler="on_cancel_button_clicked" swapped="no"/>
+            <signal name="clicked" handler="on_button_cancel_clicked" swapped="no"/>
             <style>
               <class name="cancel"/>
             </style>

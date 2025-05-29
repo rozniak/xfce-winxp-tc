@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.38.2 -->
 <interface>
   <requires lib="gtk+" version="3.24"/>
   <object class="GtkBox" id="main-box">
@@ -46,11 +45,12 @@
             <property name="visible">True</property>
             <property name="can-focus">False</property>
             <child>
-              <object class="GtkButton">
+              <object class="GtkButton" id="button-stand-by">
                 <property name="label" translatable="yes">Stand By</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
+                <signal name="clicked" handler="on_button_stand_by_clicked" swapped="no"/>
                 <style>
                   <class name="standby"/>
                 </style>
@@ -62,11 +62,12 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton">
+              <object class="GtkButton" id="button-turn-off">
                 <property name="label" translatable="yes">Turn Off</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
+                <signal name="clicked" handler="on_button_turn_off_clicked" swapped="no"/>
                 <style>
                   <class name="turn-off"/>
                 </style>
@@ -78,11 +79,12 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton">
+              <object class="GtkButton" id="button-restart">
                 <property name="label" translatable="yes">Restart</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
+                <signal name="clicked" handler="on_button_restart_clicked" swapped="no"/>
                 <style>
                   <class name="restart"/>
                 </style>
@@ -115,12 +117,12 @@
         <property name="visible">True</property>
         <property name="can-focus">False</property>
         <child>
-          <object class="GtkButton">
+          <object class="GtkButton" id="button-cancel">
             <property name="label" translatable="yes">Cancel</property>
             <property name="visible">True</property>
             <property name="can-focus">True</property>
             <property name="receives-default">True</property>
-            <signal name="clicked" handler="on_cancel_button_clicked" swapped="no"/>
+            <signal name="clicked" handler="on_button_cancel_clicked" swapped="no"/>
             <style>
               <class name="cancel"/>
             </style>

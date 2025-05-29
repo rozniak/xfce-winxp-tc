@@ -7,6 +7,15 @@
 #include "application.h"
 #include "dialog.h"
 
+#define WINTC_NPWRDLG_SM_CALL(func) \
+    { \
+        GError* sm_error = NULL; \
+        if (!func(dlg->sm_xfce, &sm_error)) \
+        { \
+            wintc_display_error_and_clear(&sm_error, GTK_WINDOW(dlg)); \
+        } \
+    }
+
 //
 // PRIVATE ENUMS
 //
@@ -36,16 +45,16 @@ struct _WinTCNewPwrDlgDialog
 
     // State
     //
+    gint             dialog_kind;
     WinTCGinaSmXfce* sm_xfce;
 };
 
 //
 // FORWARD DECLARATIONS
 //
-static void wintc_npwrdlg_dialog_finalize(
+static void wintc_npwrdlg_dialog_constructed(
     GObject* object
 );
-
 static void wintc_npwrdlg_dialog_set_property(
     GObject*      object,
     guint         prop_id,
@@ -53,11 +62,27 @@ static void wintc_npwrdlg_dialog_set_property(
     GParamSpec*   pspec
 );
 
-static void on_cancel_button_clicked(
+static void on_button_cancel_clicked(
     GtkButton* button,
     gpointer   user_data
 );
-static void on_log_off_button_clicked(
+static void on_button_log_off_clicked(
+    GtkButton* button,
+    gpointer   user_data
+);
+static void on_button_restart_clicked(
+    GtkButton* button,
+    gpointer   user_data
+);
+static void on_button_shut_down_clicked(
+    GtkButton* button,
+    gpointer   user_data
+);
+static void on_button_stand_by_clicked(
+    GtkButton* button,
+    gpointer   user_data
+);
+static void on_button_switch_user_clicked(
     GtkButton* button,
     gpointer   user_data
 );
@@ -81,7 +106,7 @@ static void wintc_npwrdlg_dialog_class_init(
 {
     GObjectClass* object_class = G_OBJECT_CLASS(klass);
 
-    object_class->finalize     = wintc_npwrdlg_dialog_finalize;
+    object_class->constructed  = wintc_npwrdlg_dialog_constructed;
     object_class->set_property = wintc_npwrdlg_dialog_set_property;
 
     g_object_class_install_property (
@@ -116,21 +141,114 @@ static void wintc_npwrdlg_dialog_init(
     );
 
     self->sm_xfce = wintc_gina_sm_xfce_new();
-
-    //
-    // Window population is done via set_property as we need to determine
-    // the intended dialog based on dialog-kind property
-    //
 }
 
 //
 // CLASS VIRTUAL METHODS
 //
-static void wintc_npwrdlg_dialog_finalize(
+static void wintc_npwrdlg_dialog_constructed(
     GObject* object
 )
 {
-    (*G_OBJECT_CLASS(wintc_npwrdlg_dialog_parent_class)->finalize) (object);
+    WinTCNewPwrDlgDialog* dlg = WINTC_NPWRDLG_DIALOG(object);
+
+    GtkBuilder* builder;
+
+    switch (dlg->dialog_kind)
+    {
+        case DIALOG_KIND_POWER_OPTIONS:
+            builder =
+                gtk_builder_new_from_resource(
+                    "/uk/oddmatics/wintc/npwrdlg/pwropts.ui"
+                );
+
+            gtk_builder_add_callback_symbols(
+                builder,
+                "on_button_restart_clicked",
+                G_CALLBACK(on_button_restart_clicked),
+                NULL
+            );
+            gtk_builder_add_callback_symbols(
+                builder,
+                "on_button_shut_down_clicked",
+                G_CALLBACK(on_button_shut_down_clicked),
+                NULL
+            );
+            gtk_builder_add_callback_symbols(
+                builder,
+                "on_button_stand_by_clicked",
+                G_CALLBACK(on_button_stand_by_clicked),
+                NULL
+            );
+
+            break;
+
+        case DIALOG_KIND_USER_OPTIONS:
+            builder =
+                gtk_builder_new_from_resource(
+                    "/uk/oddmatics/wintc/npwrdlg/usropts.ui"
+                );
+
+            gtk_builder_add_callback_symbols(
+                builder,
+                "on_button_log_off_clicked",
+                G_CALLBACK(on_button_log_off_clicked),
+                NULL
+            );
+            gtk_builder_add_callback_symbols(
+                builder,
+                "on_button_switch_user_clicked",
+                G_CALLBACK(on_button_switch_user_clicked),
+                NULL
+            );
+
+            break;
+    }
+
+    gtk_builder_add_callback_symbols(
+        builder,
+        "on_button_cancel_clicked",
+        G_CALLBACK(on_button_cancel_clicked),
+        NULL
+    );
+
+    gtk_builder_connect_signals(
+        builder,
+        dlg
+    );
+
+    // Link up UI
+    //
+    GtkWidget* button_restart;
+    GtkWidget* button_shut_down;
+    GtkWidget* button_stand_by;
+    GtkWidget* main_box;
+
+    wintc_builder_get_objects(
+        builder,
+        "main-box",         &main_box,
+        "button-restart",   &button_restart,
+        "button-shut-down", &button_shut_down,
+        "button-stand-by",  &button_stand_by,
+        NULL
+    );
+
+    gtk_widget_set_sensitive(
+        button_restart,
+        wintc_gina_sm_xfce_can_restart(dlg->sm_xfce)
+    );
+    gtk_widget_set_sensitive(
+        button_shut_down,
+        wintc_gina_sm_xfce_can_shut_down(dlg->sm_xfce)
+    );
+    gtk_widget_set_sensitive(
+        button_stand_by,
+        wintc_gina_sm_xfce_can_sleep(dlg->sm_xfce)
+    );
+
+    gtk_container_add(GTK_CONTAINER(dlg), main_box);
+
+    g_object_unref(G_OBJECT(builder));
 }
 
 static void wintc_npwrdlg_dialog_set_property(
@@ -142,62 +260,10 @@ static void wintc_npwrdlg_dialog_set_property(
 {
     WinTCNewPwrDlgDialog* dlg = WINTC_NPWRDLG_DIALOG(object);
 
-    GtkBuilder* builder;
-    GtkWidget*  main_box;
-
     switch (prop_id)
     {
-        //
-        // FIXME: Makes far more sense to move the UI stuff into the
-        //        constructed method, rather than here
-        //
         case PROP_DIALOG_KIND:
-            // Populate the window based on dialog kind
-            //
-            switch (g_value_get_int(value))
-            {
-                case DIALOG_KIND_POWER_OPTIONS:
-                    builder =
-                        gtk_builder_new_from_resource(
-                            "/uk/oddmatics/wintc/npwrdlg/pwropts.ui"
-                        );
-
-                    break;
-
-                case DIALOG_KIND_USER_OPTIONS:
-                    builder =
-                        gtk_builder_new_from_resource(
-                            "/uk/oddmatics/wintc/npwrdlg/usropts.ui"
-                        );
-
-                    gtk_builder_add_callback_symbols(
-                        builder,
-                        "on_log_off_button_clicked",
-                        G_CALLBACK(on_log_off_button_clicked),
-                        NULL
-                    );
-
-                    break;
-            }
-
-            gtk_builder_add_callback_symbols(
-                builder,
-                "on_cancel_button_clicked",
-                G_CALLBACK(on_cancel_button_clicked),
-                NULL
-            );
-
-            gtk_builder_connect_signals(
-                builder,
-                dlg
-            );
-
-            main_box = GTK_WIDGET(gtk_builder_get_object(builder, "main-box"));
-
-            gtk_container_add(GTK_CONTAINER(dlg), main_box);
-
-            g_object_unref(G_OBJECT(builder));
-
+            dlg->dialog_kind = g_value_get_int(value);
             break;
 
         default:
@@ -240,7 +306,7 @@ GtkWidget* wintc_npwrdlg_dialog_new_for_user_options(
 //
 // CALLBACKS
 //
-static void on_cancel_button_clicked(
+static void on_button_cancel_clicked(
     GtkButton* button,
     WINTC_UNUSED(gpointer user_data)
 )
@@ -253,14 +319,54 @@ static void on_cancel_button_clicked(
     }
 }
 
-static void on_log_off_button_clicked(
+static void on_button_log_off_clicked(
     WINTC_UNUSED(GtkButton* button),
     gpointer user_data
 )
 {
     WinTCNewPwrDlgDialog* dlg = WINTC_NPWRDLG_DIALOG(user_data);
 
-    wintc_gina_sm_xfce_request_log_off(dlg->sm_xfce);
+    WINTC_NPWRDLG_SM_CALL(wintc_gina_sm_xfce_log_off);
+}
+
+static void on_button_restart_clicked(
+    WINTC_UNUSED(GtkButton* button),
+    gpointer user_data
+)
+{
+    WinTCNewPwrDlgDialog* dlg = WINTC_NPWRDLG_DIALOG(user_data);
+
+    WINTC_NPWRDLG_SM_CALL(wintc_gina_sm_xfce_restart);
+}
+
+static void on_button_shut_down_clicked(
+    WINTC_UNUSED(GtkButton* button),
+    gpointer user_data
+)
+{
+    WinTCNewPwrDlgDialog* dlg = WINTC_NPWRDLG_DIALOG(user_data);
+
+    WINTC_NPWRDLG_SM_CALL(wintc_gina_sm_xfce_shut_down);
+}
+
+static void on_button_stand_by_clicked(
+    WINTC_UNUSED(GtkButton* button),
+    gpointer user_data
+)
+{
+    WinTCNewPwrDlgDialog* dlg = WINTC_NPWRDLG_DIALOG(user_data);
+
+    WINTC_NPWRDLG_SM_CALL(wintc_gina_sm_xfce_sleep);
+}
+
+static void on_button_switch_user_clicked(
+    WINTC_UNUSED(GtkButton* button),
+    gpointer user_data
+)
+{
+    WinTCNewPwrDlgDialog* dlg = WINTC_NPWRDLG_DIALOG(user_data);
+
+    WINTC_NPWRDLG_SM_CALL(wintc_gina_sm_xfce_switch_user);
 }
 
 static void on_window_destroyed(
