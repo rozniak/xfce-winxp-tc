@@ -21,6 +21,10 @@ G_DECLARE_FINAL_TYPE(
 //
 WinTCGinaSmXfce* wintc_gina_sm_xfce_new(void);
 
+gboolean wintc_gina_sm_xfce_is_valid(
+    WinTCGinaSmXfce* sm_xfce
+);
+
 gboolean wintc_gina_sm_xfce_can_restart(
     WinTCGinaSmXfce* sm_xfce
 );

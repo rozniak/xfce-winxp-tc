@@ -74,15 +74,15 @@ static void on_button_restart_clicked(
     GtkButton* button,
     gpointer   user_data
 );
-static void on_button_shut_down_clicked(
-    GtkButton* button,
-    gpointer   user_data
-);
 static void on_button_stand_by_clicked(
     GtkButton* button,
     gpointer   user_data
 );
 static void on_button_switch_user_clicked(
+    GtkButton* button,
+    gpointer   user_data
+);
+static void on_button_turn_off_clicked(
     GtkButton* button,
     gpointer   user_data
 );
@@ -153,6 +153,9 @@ static void wintc_npwrdlg_dialog_constructed(
     WinTCNewPwrDlgDialog* dlg = WINTC_NPWRDLG_DIALOG(object);
 
     GtkBuilder* builder;
+    GtkWidget*  button_restart;
+    GtkWidget*  button_stand_by;
+    GtkWidget*  button_turn_off;
 
     switch (dlg->dialog_kind)
     {
@@ -170,15 +173,36 @@ static void wintc_npwrdlg_dialog_constructed(
             );
             gtk_builder_add_callback_symbols(
                 builder,
-                "on_button_shut_down_clicked",
-                G_CALLBACK(on_button_shut_down_clicked),
+                "on_button_stand_by_clicked",
+                G_CALLBACK(on_button_stand_by_clicked),
                 NULL
             );
             gtk_builder_add_callback_symbols(
                 builder,
-                "on_button_stand_by_clicked",
-                G_CALLBACK(on_button_stand_by_clicked),
+                "on_button_turn_off_clicked",
+                G_CALLBACK(on_button_turn_off_clicked),
                 NULL
+            );
+
+            wintc_builder_get_objects(
+                builder,
+                "button-restart",  &button_restart,
+                "button-stand-by", &button_stand_by,
+                "button-turn-off", &button_turn_off,
+                NULL
+            );
+
+            gtk_widget_set_sensitive(
+                button_restart,
+                wintc_gina_sm_xfce_can_restart(dlg->sm_xfce)
+            );
+            gtk_widget_set_sensitive(
+                button_stand_by,
+                wintc_gina_sm_xfce_can_sleep(dlg->sm_xfce)
+            );
+            gtk_widget_set_sensitive(
+                button_turn_off,
+                wintc_gina_sm_xfce_can_shut_down(dlg->sm_xfce)
             );
 
             break;
@@ -217,33 +241,14 @@ static void wintc_npwrdlg_dialog_constructed(
         dlg
     );
 
-    // Link up UI
+    // Insert into parent
     //
-    GtkWidget* button_restart;
-    GtkWidget* button_shut_down;
-    GtkWidget* button_stand_by;
     GtkWidget* main_box;
 
     wintc_builder_get_objects(
         builder,
-        "main-box",         &main_box,
-        "button-restart",   &button_restart,
-        "button-shut-down", &button_shut_down,
-        "button-stand-by",  &button_stand_by,
+        "main-box", &main_box,
         NULL
-    );
-
-    gtk_widget_set_sensitive(
-        button_restart,
-        wintc_gina_sm_xfce_can_restart(dlg->sm_xfce)
-    );
-    gtk_widget_set_sensitive(
-        button_shut_down,
-        wintc_gina_sm_xfce_can_shut_down(dlg->sm_xfce)
-    );
-    gtk_widget_set_sensitive(
-        button_stand_by,
-        wintc_gina_sm_xfce_can_sleep(dlg->sm_xfce)
     );
 
     gtk_container_add(GTK_CONTAINER(dlg), main_box);
@@ -339,16 +344,6 @@ static void on_button_restart_clicked(
     WINTC_NPWRDLG_SM_CALL(wintc_gina_sm_xfce_restart);
 }
 
-static void on_button_shut_down_clicked(
-    WINTC_UNUSED(GtkButton* button),
-    gpointer user_data
-)
-{
-    WinTCNewPwrDlgDialog* dlg = WINTC_NPWRDLG_DIALOG(user_data);
-
-    WINTC_NPWRDLG_SM_CALL(wintc_gina_sm_xfce_shut_down);
-}
-
 static void on_button_stand_by_clicked(
     WINTC_UNUSED(GtkButton* button),
     gpointer user_data
@@ -367,6 +362,16 @@ static void on_button_switch_user_clicked(
     WinTCNewPwrDlgDialog* dlg = WINTC_NPWRDLG_DIALOG(user_data);
 
     WINTC_NPWRDLG_SM_CALL(wintc_gina_sm_xfce_switch_user);
+}
+
+static void on_button_turn_off_clicked(
+    WINTC_UNUSED(GtkButton* button),
+    gpointer user_data
+)
+{
+    WinTCNewPwrDlgDialog* dlg = WINTC_NPWRDLG_DIALOG(user_data);
+
+    WINTC_NPWRDLG_SM_CALL(wintc_gina_sm_xfce_shut_down);
 }
 
 static void on_window_destroyed(
