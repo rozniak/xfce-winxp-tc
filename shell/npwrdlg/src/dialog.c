@@ -33,24 +33,6 @@ enum
 };
 
 //
-// GTK OOP CLASS/INSTANCE DEFINITIONS
-//
-struct _WinTCNewPwrDlgDialogClass
-{
-    GtkApplicationWindowClass __parent__;
-};
-
-struct _WinTCNewPwrDlgDialog
-{
-    GtkApplicationWindow __parent__;
-
-    // State
-    //
-    gint             dialog_kind;
-    WinTCGinaSmXfce* sm_xfce;
-};
-
-//
 // FORWARD DECLARATIONS
 //
 static void wintc_npwrdlg_dialog_constructed(
@@ -91,6 +73,19 @@ static void on_window_destroyed(
     GtkWidget* widget,
     gpointer   user_data
 );
+
+//
+// GTK OOP CLASS/INSTANCE DEFINITIONS
+//
+struct _WinTCNewPwrDlgDialog
+{
+    GtkApplicationWindow __parent__;
+
+    // State
+    //
+    gint             dialog_kind;
+    WinTCGinaSmXfce* sm_xfce;
+};
 
 //
 // GTK TYPE DEFINITION & CTORS
