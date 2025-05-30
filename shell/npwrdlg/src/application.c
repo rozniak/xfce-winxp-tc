@@ -3,6 +3,7 @@
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
 #include <wintc/comgtk.h>
+#include <wintc/msgina.h>
 
 #include "application.h"
 #include "dialog.h"
@@ -137,8 +138,52 @@ WinTCNewPwrDlgApplication* wintc_npwrdlg_application_new(void)
 // CALLBACKS
 //
 static void wintc_npwrdlg_application_activate(
-    WINTC_UNUSED(GApplication* application)
-) {}
+    GApplication* application
+)
+{
+    WinTCNewPwrDlgApplication* pwr_app = WINTC_NPWRDLG_APPLICATION(application);
+
+    static GtkWidget* wnd = NULL;
+
+    if (wnd)
+    {
+        return;
+    }
+
+    // Spawn the session manager interface
+    //
+    WinTCGinaSmXfce* sm_xfce = wintc_gina_sm_xfce_new();
+
+    if (!wintc_gina_sm_xfce_is_valid(sm_xfce))
+    {
+        // FIXME: Localise
+        //
+        wintc_messagebox_show(
+            NULL,
+            "Failed to connect to the session manager.",
+            "Error",
+            GTK_BUTTONS_OK,
+            GTK_MESSAGE_ERROR
+        );
+
+        return;
+    }
+
+    // All good for spawning the dialog
+    //
+    if (s_cmd_usropts)
+    {
+        wnd = wintc_npwrdlg_dialog_new_for_user_options(pwr_app, sm_xfce);
+    }
+    else
+    {
+        wnd = wintc_npwrdlg_dialog_new_for_power_options(pwr_app, sm_xfce);
+    }
+
+    gtk_widget_show_all(wnd);
+
+    g_object_unref(sm_xfce); // Dialog takes its own reference
+}
 
 static void wintc_npwrdlg_application_open(
     WINTC_UNUSED(GApplication* application),
@@ -169,21 +214,6 @@ static void wintc_npwrdlg_application_startup(
         GTK_STYLE_PROVIDER(styles),
         GTK_STYLE_PROVIDER_PRIORITY_FALLBACK
     );
-
-    // Spawn dialog
-    //
-    GtkWidget* wnd;
-
-    if (s_cmd_usropts)
-    {
-        wnd = wintc_npwrdlg_dialog_new_for_user_options(pwr_app);
-    }
-    else
-    {
-        wnd = wintc_npwrdlg_dialog_new_for_power_options(pwr_app);
-    }
-
-    gtk_widget_show_all(wnd);
 }
 
 static void wintc_npwrdlg_application_shutdown(

@@ -22,6 +22,7 @@
 enum // Class properties
 {
     PROP_DIALOG_KIND = 1,
+    PROP_SM,
     N_PROPERTIES
 };
 
@@ -109,16 +110,27 @@ static void wintc_npwrdlg_dialog_class_init(
     object_class->constructed  = wintc_npwrdlg_dialog_constructed;
     object_class->set_property = wintc_npwrdlg_dialog_set_property;
 
-    g_object_class_install_property (
+    g_object_class_install_property(
         object_class,
         PROP_DIALOG_KIND,
-        g_param_spec_int (
+        g_param_spec_int(
             "dialog-kind",
             "DialogKind",
             "The kind of power options dialog to display.",
             DIALOG_KIND_POWER_OPTIONS,
             DIALOG_KIND_USER_OPTIONS,
             DIALOG_KIND_POWER_OPTIONS,
+            G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY
+        )
+    );
+    g_object_class_install_property(
+        object_class,
+        PROP_SM,
+        g_param_spec_object(
+            "session-manager",
+            "SessionManager",
+            "The session management interface object.",
+            WINTC_TYPE_GINA_SM_XFCE,
             G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY
         )
     );
@@ -139,8 +151,6 @@ static void wintc_npwrdlg_dialog_init(
         G_CALLBACK(on_window_destroyed),
         NULL
     );
-
-    self->sm_xfce = wintc_gina_sm_xfce_new();
 }
 
 //
@@ -271,6 +281,10 @@ static void wintc_npwrdlg_dialog_set_property(
             dlg->dialog_kind = g_value_get_int(value);
             break;
 
+        case PROP_SM:
+            dlg->sm_xfce = g_value_dup_object(value);
+            break;
+
         default:
             G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
             break;
@@ -281,28 +295,32 @@ static void wintc_npwrdlg_dialog_set_property(
 // PUBLIC FUNCTIONS
 //
 GtkWidget* wintc_npwrdlg_dialog_new_for_power_options(
-    WinTCNewPwrDlgApplication* app
+    WinTCNewPwrDlgApplication* app,
+    WinTCGinaSmXfce*           sm_xfce
 )
 {
     return GTK_WIDGET(
         g_object_new(
             TYPE_WINTC_NPWRDLG_DIALOG,
-            "application", GTK_APPLICATION(app),
-            "dialog-kind", DIALOG_KIND_POWER_OPTIONS,
+            "application",     GTK_APPLICATION(app),
+            "dialog-kind",     DIALOG_KIND_POWER_OPTIONS,
+            "session-manager", sm_xfce,
             NULL
         )
     );
 }
 
 GtkWidget* wintc_npwrdlg_dialog_new_for_user_options(
-    WinTCNewPwrDlgApplication* app
+    WinTCNewPwrDlgApplication* app,
+    WinTCGinaSmXfce*           sm_xfce
 )
 {
     return GTK_WIDGET(
         g_object_new(
             TYPE_WINTC_NPWRDLG_DIALOG,
-            "application", GTK_APPLICATION(app),
-            "dialog-kind", DIALOG_KIND_USER_OPTIONS,
+            "application",     GTK_APPLICATION(app),
+            "dialog-kind",     DIALOG_KIND_USER_OPTIONS,
+            "session-manager", sm_xfce,
             NULL
         )
     );
