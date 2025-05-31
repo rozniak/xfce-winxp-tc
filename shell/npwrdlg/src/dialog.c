@@ -13,7 +13,9 @@
         if (!func(dlg->sm_xfce, &sm_error)) \
         { \
             wintc_display_error_and_clear(&sm_error, GTK_WINDOW(dlg)); \
+            return; \
         } \
+        gtk_window_close(GTK_WINDOW(dlg)); \
     }
 
 //
