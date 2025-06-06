@@ -39,11 +39,15 @@ add_library(
     public/challenge.h
     src/error.c
     public/error.h
+    src/exitwnd.c
+    public/exitwnd.h
     src/logon.c
     public/logon.h
     public/state.h
     src/stripctl.c
     src/stripctl.h
+    public/xfsm.h
+    src/xfsm.c
 )
 
 set_target_properties(

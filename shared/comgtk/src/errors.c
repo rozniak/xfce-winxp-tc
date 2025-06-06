@@ -32,6 +32,25 @@ void wintc_display_error_and_clear(
     g_clear_error(error);
 }
 
+gboolean wintc_filter_error(
+    GError*  error,
+    GQuark   domain,
+    gint     code,
+    GError** out_error
+)
+{
+    if (
+        error->domain == domain &&
+        error->code   == code
+    )
+    {
+        g_propagate_error(out_error, error);
+        return TRUE;
+    }
+
+    return FALSE;
+}
+
 void wintc_log_error_and_clear(
     GError** error
 )

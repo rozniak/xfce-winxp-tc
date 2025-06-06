@@ -2,79 +2,66 @@
 #include <wintc/comgtk.h>
 
 #include "../public/action.h"
+#include "../public/errors.h"
 #include "../public/exec.h"
+
+//
+// FORWARD DECLARATIONS
+//
+gboolean launch_exo_fm(
+    const gchar* target,
+    GError**     error
+);
 
 //
 // PUBLIC FUNCTIONS
 //
 gboolean wintc_launch_action(
     WinTCAction action_id,
-    GError**    out_error
+    GError**    error
 )
 {
-    gchar*   cmdline;
-    gboolean ret;
-
     switch (action_id)
     {
         case WINTC_ACTION_MYDOCS:
-            cmdline =
-                g_strdup_printf(
-                    "exo-open --launch FileManager %s",
-                    g_get_user_special_dir(G_USER_DIRECTORY_DOCUMENTS)
+            return
+                launch_exo_fm(
+                    g_get_user_special_dir(G_USER_DIRECTORY_DOCUMENTS),
+                    error
                 );
-            break;
 
         case WINTC_ACTION_MYPICS:
-            cmdline =
-                g_strdup_printf(
-                    "exo-open --launch FileManager %s",
-                    g_get_user_special_dir(G_USER_DIRECTORY_PICTURES)
+            return
+                launch_exo_fm(
+                    g_get_user_special_dir(G_USER_DIRECTORY_PICTURES),
+                    error
                 );
-            break;
 
         case WINTC_ACTION_MYMUSIC:
-            cmdline =
-                g_strdup_printf(
-                    "exo-open --launch FileManager %s",
-                    g_get_user_special_dir(G_USER_DIRECTORY_MUSIC)
+            return
+                launch_exo_fm(
+                    g_get_user_special_dir(G_USER_DIRECTORY_MUSIC),
+                    error
                 );
-            break;
 
         // TODO: There isn't really a good option for this at the moment, maybe if we
         //       implement an Explorer replica we can have it open a view of disks
         //
         case WINTC_ACTION_MYCOMP:
-            cmdline =
-                g_strdup_printf(
-                    "%s",
-                    "exo-open --launch FileManager /"
+            return
+                launch_exo_fm(
+                    "/",
+                    error
                 );
-            break;
 
         case WINTC_ACTION_CONTROL:
-            cmdline =
-                g_strdup_printf(
-                    "%s",
-                    "xfce4-settings-manager"
-                );
-            break;
+            return wintc_launch_command("xfce4-settings-manager", error);
 
         case WINTC_ACTION_MIMEMGMT:
-            cmdline =
-                g_strdup_printf(
-                    "%s",
-                    "xfce4-mime-settings"
-                );
-            break;
+            return wintc_launch_command("xfce4-mime-settings", error);
 
         case WINTC_ACTION_PRINTERS:
-            cmdline =
-                g_strdup_printf(
-                    "%s",
-                    "system-config-printer"
-                );
-            break;
+            return wintc_launch_command("system-config-printer", error);
 
         case WINTC_ACTION_RUN:
             // TODO: In future we will handle missing components gracefully (say, if
@@ -82,30 +69,31 @@ gboolean wintc_launch_action(
             //
             //       See issue #134 for details
             //
-            cmdline =
-                g_strdup_printf(
-                    "%s",
-                    "run"
-                );
-            break;
+            return wintc_launch_command("run", error);
 
-        // TODO: One day write our own log off and shut down dialogs, and execute
-        //       them here
-        //
         case WINTC_ACTION_LOGOFF:
-        case WINTC_ACTION_SHUTDOWN:
-            cmdline =
-                g_strdup_printf(
-                    "%s",
-                    "xfce4-session-logout"
+            return
+                wintc_launch_command_with_fallbacks(
+                    error,
+                    "wintc-exitwin --user-options",
+                    "xfce4-session-logout",
+                    NULL
                 );
-            break;
+
+        case WINTC_ACTION_SHUTDOWN:
+            return
+                wintc_launch_command_with_fallbacks(
+                    error,
+                    "wintc-exitwin --power-options",
+                    "xfce4-session-logout",
+                    NULL
+                );
 
         // Default to 'not implemented' error
         //
         default:
             g_set_error(
-                out_error,
+                error,
                 WINTC_GENERAL_ERROR,
                 WINTC_GENERAL_ERROR_NOTIMPL,
                 "Action code is not implemented: %d",
@@ -114,8 +102,26 @@ gboolean wintc_launch_action(
 
             return FALSE;
     }
+}
 
-    ret = wintc_launch_command(cmdline, out_error);
+//
+// PRIVATE FUNCTIONS
+//
+gboolean launch_exo_fm(
+    const gchar* target,
+    GError**     error
+)
+{
+    gchar*   cmdline;
+    gboolean ret;
+
+    cmdline =
+        g_strdup_printf(
+            "exo-open --launch FileManager %s",
+            target
+        );
+
+    ret = wintc_launch_command(cmdline, error);
 
     g_free(cmdline);
 

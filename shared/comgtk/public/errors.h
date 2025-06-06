@@ -36,6 +36,22 @@ void wintc_display_error_and_clear(
     GtkWindow* wnd
 );
 
+/**
+ * Filters for a particular error code, and propagates it if there is a match.
+ *
+ * @param error     The error to filter.
+ * @param domain    The error domain.
+ * @param code      The error code.
+ * @param out_error The error location to propagate to.
+ * @return True if the error was filtered.
+ */
+gboolean wintc_filter_error(
+    GError*  error,
+    GQuark   domain,
+    gint     code,
+    GError** out_error
+);
+
 GQuark wintc_general_error_quark(void);
 
 /**

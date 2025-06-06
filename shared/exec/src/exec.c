@@ -6,6 +6,7 @@
 
 #include "../public/desktop.h"
 #include "../public/mime.h"
+#include "../public/errors.h"
 #include "../public/exec.h"
 
 //
@@ -99,6 +100,85 @@ gboolean wintc_launch_command_sync(
         standard_error,
         out_error
     );
+}
+
+gboolean wintc_launch_command_with_fallbacks(
+    GError**     error,
+    const gchar* cmdline,
+    ...
+)
+{
+    GError* local_error = NULL;
+
+    // Attempt main cmdline
+    //
+    if (wintc_launch_command(cmdline, &local_error))
+    {
+        return TRUE;
+    }
+
+    // Failed, catch all except file not found
+    //
+    if (
+        wintc_filter_error(
+            local_error,
+            G_FILE_ERROR,
+            G_FILE_ERROR_NOENT,
+            error
+        )
+    )
+    {
+        return FALSE;
+    }
+
+    g_clear_error(&local_error);
+
+    // Failed... continue to try fallbacks one by one until one works
+    //
+    va_list      ap;
+    const gchar* next_cmdline;
+
+    va_start(ap, cmdline);
+
+    next_cmdline = va_arg(ap, gchar*);
+
+    while (next_cmdline)
+    {
+        if (wintc_launch_command(cmdline, &local_error))
+        {
+            va_end(ap);
+            return TRUE;
+        }
+
+        if (
+            wintc_filter_error(
+                local_error,
+                G_FILE_ERROR,
+                G_FILE_ERROR_NOENT,
+                error
+            )
+        )
+        {
+            return FALSE;
+        }
+
+        g_clear_error(&local_error);
+
+        next_cmdline = va_arg(ap, gchar*);
+    }
+
+    va_end(ap);
+
+    // Failed to find any of the fallbacks
+    //
+    g_set_error(
+        error,
+        WINTC_EXEC_ERROR,
+        WINTC_EXEC_ERROR_FELLTHRU,
+        "The program and its alternatives are not present on the system."
+    );
+
+    return FALSE;
 }
 
 //

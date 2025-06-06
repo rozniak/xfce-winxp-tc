@@ -1,0 +1,18 @@
+.wintc-exitwnd
+{
+    border-radius: 5px;
+}
+
+.wintc-exitwnd label.title
+{
+    font-size: 14pt;
+    font-weight: bold;
+    margin: 4px 10px;
+}
+
+.wintc-exitwnd button
+{
+    margin:     4px;
+    min-height: 50px;
+    min-width:  50px;
+}

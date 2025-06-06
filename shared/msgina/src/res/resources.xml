@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
-    <gresource prefix="/uk/oddmatics/wintc/msgina">
-        <file>authwnd.css</file>
-    </gresource>
+  <gresource prefix="/uk/oddmatics/wintc/msgina">
+    <file>authwnd.css</file>
+    <file>exitwnd.css</file>
+    <file>pwropts.ui</file>
+    <file>usropts.ui</file>
+  </gresource>
 </gresources>

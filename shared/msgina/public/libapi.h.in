@@ -3,7 +3,9 @@
 
 #include "@LIB_HEADER_DIR@/authwnd.h"
 #include "@LIB_HEADER_DIR@/challenge.h"
+#include "@LIB_HEADER_DIR@/exitwnd.h"
 #include "@LIB_HEADER_DIR@/logon.h"
 #include "@LIB_HEADER_DIR@/state.h"
+#include "@LIB_HEADER_DIR@/xfsm.h"
 
 #endif

@@ -17,6 +17,7 @@ shell/cpl/desk
 shell/cpl/printers
 shell/cpl/sysdm
 shell/desktop
+shell/exitwin
 shell/explorer
 shell/run
 shell/shext/zip

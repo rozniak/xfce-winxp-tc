@@ -970,15 +970,41 @@ static gboolean recent_filter_exclude_directories(
 }
 
 static void on_button_power_clicked(
-    WINTC_UNUSED(GtkButton* button),
-    gpointer user_data
+    GtkButton* button,
+    gpointer   user_data
 )
 {
     GError* error = NULL;
 
+    gtk_widget_hide(
+        GTK_WIDGET(
+            wintc_widget_get_toplevel_window(GTK_WIDGET(button))
+        )
+    );
+
     if (!wintc_launch_action(GPOINTER_TO_INT(user_data), &error))
     {
-        wintc_nice_error_and_clear(&error, NULL);
+        if (
+            error->domain == WINTC_EXEC_ERROR &&
+            error->code   == WINTC_EXEC_ERROR_FELLTHRU
+        )
+        {
+            g_clear_error(&error);
+
+            // Localise
+            //
+            wintc_messagebox_show(
+                NULL,
+                "Unable to find any programs for exiting the session.",
+                "Windows",
+                GTK_BUTTONS_OK,
+                GTK_MESSAGE_ERROR
+            );
+        }
+        else
+        {
+            wintc_nice_error_and_clear(&error, NULL);
+        }
     }
 }
 

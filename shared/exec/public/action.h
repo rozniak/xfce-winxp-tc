@@ -57,7 +57,7 @@ typedef enum
  */
 gboolean wintc_launch_action(
     WinTCAction action_id,
-    GError**    out_error
+    GError**    error
 );
 
 #endif
