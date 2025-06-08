@@ -4,12 +4,12 @@
 #include <wintc/comgtk.h>
 
 #include "../public/exitwnd.h"
-#include "../public/xfsm.h"
+#include "../public/if_sm.h"
 
 #define WINTC_GINA_EXITWND_SM_CALL(func) \
     { \
         GError* sm_error = NULL; \
-        if (!func(dlg->sm_xfce, &sm_error)) \
+        if (!func(dlg->sm, &sm_error)) \
         { \
             wintc_display_error_and_clear(&sm_error, GTK_WINDOW(dlg)); \
             return; \
@@ -87,8 +87,8 @@ struct _WinTCGinaExitWindow
 
     // State
     //
-    gint             dialog_kind;
-    WinTCGinaSmXfce* sm_xfce;
+    gint          dialog_kind;
+    WinTCIGinaSm* sm;
 };
 
 //
@@ -130,7 +130,7 @@ static void wintc_gina_exit_window_class_init(
             "session-manager",
             "SessionManager",
             "The session management interface object.",
-            WINTC_TYPE_GINA_SM_XFCE,
+            WINTC_TYPE_IGINA_SM,
             G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY
         )
     );
@@ -219,15 +219,15 @@ static void wintc_gina_exit_window_constructed(
 
             gtk_widget_set_sensitive(
                 button_restart,
-                wintc_gina_sm_xfce_can_restart(dlg->sm_xfce)
+                wintc_igina_sm_can_restart(dlg->sm)
             );
             gtk_widget_set_sensitive(
                 button_stand_by,
-                wintc_gina_sm_xfce_can_sleep(dlg->sm_xfce)
+                wintc_igina_sm_can_sleep(dlg->sm)
             );
             gtk_widget_set_sensitive(
                 button_turn_off,
-                wintc_gina_sm_xfce_can_shut_down(dlg->sm_xfce)
+                wintc_igina_sm_can_shut_down(dlg->sm)
             );
 
             break;
@@ -294,7 +294,7 @@ static void wintc_gina_exit_window_dispose(
 {
     WinTCGinaExitWindow* dlg = WINTC_GINA_EXIT_WINDOW(object);
 
-    g_clear_object(&(dlg->sm_xfce));
+    g_clear_object(&(dlg->sm));
 
     (G_OBJECT_CLASS(wintc_gina_exit_window_parent_class))->dispose(object);
 }
@@ -315,7 +315,7 @@ static void wintc_gina_exit_window_set_property(
             break;
 
         case PROP_SM:
-            dlg->sm_xfce = g_value_dup_object(value);
+            dlg->sm = g_value_dup_object(value);
             break;
 
         default:
@@ -328,7 +328,7 @@ static void wintc_gina_exit_window_set_property(
 // PUBLIC FUNCTIONS
 //
 GtkWidget* wintc_gina_exit_window_new_for_power_options(
-    WinTCGinaSmXfce* sm_xfce
+    WinTCIGinaSm* sm
 )
 {
     GtkWidget* wnd =
@@ -336,7 +336,7 @@ GtkWidget* wintc_gina_exit_window_new_for_power_options(
             g_object_new(
                 WINTC_TYPE_GINA_EXIT_WINDOW,
                 "dialog-kind",     DIALOG_KIND_POWER_OPTIONS,
-                "session-manager", sm_xfce,
+                "session-manager", sm,
                 NULL
             )
         );
@@ -355,7 +355,7 @@ GtkWidget* wintc_gina_exit_window_new_for_power_options(
 }
 
 GtkWidget* wintc_gina_exit_window_new_for_user_options(
-    WinTCGinaSmXfce* sm_xfce
+    WinTCIGinaSm* sm
 )
 {
     GtkWidget* wnd =
@@ -363,7 +363,7 @@ GtkWidget* wintc_gina_exit_window_new_for_user_options(
             g_object_new(
                 WINTC_TYPE_GINA_EXIT_WINDOW,
                 "dialog-kind",     DIALOG_KIND_USER_OPTIONS,
-                "session-manager", sm_xfce,
+                "session-manager", sm,
                 NULL
             )
         );
@@ -404,7 +404,7 @@ static void on_button_log_off_clicked(
 {
     WinTCGinaExitWindow* dlg = WINTC_GINA_EXIT_WINDOW(user_data);
 
-    WINTC_GINA_EXITWND_SM_CALL(wintc_gina_sm_xfce_log_off);
+    WINTC_GINA_EXITWND_SM_CALL(wintc_igina_sm_log_off);
 }
 
 static void on_button_restart_clicked(
@@ -414,7 +414,7 @@ static void on_button_restart_clicked(
 {
     WinTCGinaExitWindow* dlg = WINTC_GINA_EXIT_WINDOW(user_data);
 
-    WINTC_GINA_EXITWND_SM_CALL(wintc_gina_sm_xfce_restart);
+    WINTC_GINA_EXITWND_SM_CALL(wintc_igina_sm_restart);
 }
 
 static void on_button_stand_by_clicked(
@@ -424,7 +424,7 @@ static void on_button_stand_by_clicked(
 {
     WinTCGinaExitWindow* dlg = WINTC_GINA_EXIT_WINDOW(user_data);
 
-    WINTC_GINA_EXITWND_SM_CALL(wintc_gina_sm_xfce_sleep);
+    WINTC_GINA_EXITWND_SM_CALL(wintc_igina_sm_sleep);
 }
 
 static void on_button_switch_user_clicked(
@@ -434,7 +434,7 @@ static void on_button_switch_user_clicked(
 {
     WinTCGinaExitWindow* dlg = WINTC_GINA_EXIT_WINDOW(user_data);
 
-    WINTC_GINA_EXITWND_SM_CALL(wintc_gina_sm_xfce_switch_user);
+    WINTC_GINA_EXITWND_SM_CALL(wintc_igina_sm_switch_user);
 }
 
 static void on_button_turn_off_clicked(
@@ -444,7 +444,7 @@ static void on_button_turn_off_clicked(
 {
     WinTCGinaExitWindow* dlg = WINTC_GINA_EXIT_WINDOW(user_data);
 
-    WINTC_GINA_EXITWND_SM_CALL(wintc_gina_sm_xfce_shut_down);
+    WINTC_GINA_EXITWND_SM_CALL(wintc_igina_sm_shut_down);
 }
 
 static void on_window_destroyed(

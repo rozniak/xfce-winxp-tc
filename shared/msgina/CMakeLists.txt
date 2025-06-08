@@ -41,6 +41,8 @@ add_library(
     public/error.h
     src/exitwnd.c
     public/exitwnd.h
+    src/if_sm.c
+    public/if_sm.h
     src/logon.c
     public/logon.h
     public/state.h
