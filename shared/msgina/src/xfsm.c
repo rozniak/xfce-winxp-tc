@@ -149,18 +149,8 @@ static void wintc_gina_sm_xfce_dispose(
 }
 
 //
-// PUBLIC FUNCTIONS
+// INTERFACE METHODS (WinTCIGinaSm)
 //
-WinTCGinaSmXfce* wintc_gina_sm_xfce_new(void)
-{
-    return WINTC_GINA_SM_XFCE(
-        g_object_new(
-            WINTC_TYPE_GINA_SM_XFCE,
-            NULL
-        )
-    );
-}
-
 gboolean wintc_gina_sm_xfce_is_valid(
     WinTCIGinaSm* sm
 )
@@ -285,6 +275,19 @@ gboolean wintc_gina_sm_xfce_switch_user(
         WINTC_GINA_SM_XFCE(sm),
         "SwitchUser",
         error
+    );
+}
+
+//
+// PUBLIC FUNCTIONS
+//
+WinTCGinaSmXfce* wintc_gina_sm_xfce_new(void)
+{
+    return WINTC_GINA_SM_XFCE(
+        g_object_new(
+            WINTC_TYPE_GINA_SM_XFCE,
+            NULL
+        )
     );
 }
 

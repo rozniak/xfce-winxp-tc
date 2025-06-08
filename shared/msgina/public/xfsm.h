@@ -13,7 +13,7 @@ G_DECLARE_FINAL_TYPE(
     wintc_gina_sm_xfce,
     WINTC,
     GINA_SM_XFCE,
-    GObject // FIXME: one day, implement a session management interface
+    GObject
 )
 
 //
