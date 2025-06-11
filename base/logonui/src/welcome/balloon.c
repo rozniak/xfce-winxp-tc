@@ -1,4 +1,6 @@
 #include "balloon.h"
+#include <wintc/comgtk.h>
+#include <wintc/msgina.h>
 
 struct _Balloon {
     GtkWindow parent_instance;
@@ -165,8 +167,8 @@ balloon_new(BalloonType type, GtkWidget* target_widget) {
 }
 
 
-static gboolean draw_arrow(GtkWidget *widget, cairo_t *cr, gpointer data) {
-    gboolean show_right = (gboolean) data;
+static gboolean draw_arrow(WINTC_UNUSED(GtkWidget *widget), cairo_t *cr, gpointer data) {
+    gboolean show_right = GPOINTER_TO_INT(data); 
 
     int x_start;
     int x_end;
@@ -208,7 +210,7 @@ GtkWidget* balloon_create_arrow_widget(gboolean show_right) {
     gtk_widget_set_hexpand(area, TRUE);
     gtk_widget_set_vexpand(area, FALSE);
     gtk_widget_set_size_request(area, 20, 20);
-    g_signal_connect(area, "draw", G_CALLBACK(draw_arrow), show_right);
+    g_signal_connect(area, "draw", G_CALLBACK(draw_arrow), GINT_TO_POINTER(show_right));
     return area;
 }
 
@@ -244,12 +246,12 @@ static void configure_base_balloon(GtkWidget *widget) {
 
     GtkWidget* overlay = gtk_overlay_new();
 
-    GtkBox *box = GTK_BOX(gtk_box_new(GTK_ORIENTATION_VERTICAL, 0));
+    GtkWidget *box =gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     gtk_style_context_add_class(gtk_widget_get_style_context(box), "balloon-tooltip");
     gtk_widget_set_valign(GTK_WIDGET(box), GTK_ALIGN_START);
     gtk_widget_set_margin_top(GTK_WIDGET(box), 19);
 
-    GtkBox *header = GTK_BOX(gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0));
+    GtkWidget *header = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
     self->icon = gtk_image_new();
     self->title = gtk_label_new("");
     gtk_widget_set_valign(GTK_WIDGET(self->title), GTK_ALIGN_START);
@@ -259,7 +261,7 @@ static void configure_base_balloon(GtkWidget *widget) {
     gtk_box_pack_start(GTK_BOX(header), GTK_WIDGET(self->icon), FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(header), GTK_WIDGET(self->title), TRUE, TRUE, 0);
 
-    GtkBox* content = GTK_BOX(gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0));
+    GtkWidget* content = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
     gtk_widget_set_margin_top(GTK_WIDGET(content), 5);
     gtk_style_context_add_class(gtk_widget_get_style_context(content), "error-popup-content");
 
@@ -290,19 +292,19 @@ static void configure_base_balloon(GtkWidget *widget) {
 }
 
 static void configure_balloon_style(Balloon *self) {
-    configure_base_balloon(self);
+    configure_base_balloon(GTK_WIDGET(self));
     switch (self->alert_type) {
         case BALLOON_TYPE_ERROR:
             gtk_image_set_from_file(GTK_IMAGE(self->icon), "src/res/error.png");
             gtk_label_set_text(GTK_LABEL(self->title), "Did you forget your password?");
 
-            gtk_label_set_text(GTK_WIDGET(self->message), "Please type your password again.\n"
+            gtk_label_set_text(GTK_LABEL(self->message), "Please type your password again.\n"
                                                           "Be sure to use the correct uppercase and lowercase letters.");
             break;
         case BALLOON_TYPE_WARNING:
             gtk_image_set_from_file(GTK_IMAGE(self->icon), "src/res/exclamation.png");
             gtk_label_set_text(GTK_LABEL(self->title), "Caps Lock is On");
-            gtk_label_set_text(self->message, "Having Caps Lock on may cause you to enter your password incorrectly.\n\n"
+            gtk_label_set_text(GTK_LABEL(self->message), "Having Caps Lock on may cause you to enter your password incorrectly.\n\n"
                                                           "You should press Caps Lock to turn it off before entering your password.");
             break;
         default:
@@ -321,7 +323,7 @@ static void balloon_constructed(GObject *object) {
 
 static void on_target_widget_destroyed(gpointer data, GObject *destroyed_object) {
     Balloon *self = BALLOON_WIDGET(data);
-    if (self->target_widget == destroyed_object) {
+    if (self->target_widget == GTK_WIDGET(destroyed_object)) {
         self->target_widget = NULL;
         gtk_widget_destroy(GTK_WIDGET(self));
     }
