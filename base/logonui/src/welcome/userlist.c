@@ -133,7 +133,9 @@ static void wintc_welcome_user_list_class_init(
     WinTCWelcomeUserListClass* klass
 )
 {
-    GObjectClass* object_class = G_OBJECT_CLASS(klass);
+    GtkContainerClass* container_class = GTK_CONTAINER_CLASS(klass);
+    GObjectClass*      object_class    = G_OBJECT_CLASS(klass);
+    GtkWidgetClass*    widget_class    = GTK_WIDGET_CLASS(klass);
 
     object_class->get_property = wintc_welcome_user_list_get_property;
     object_class->set_property = wintc_welcome_user_list_set_property;
@@ -244,7 +246,7 @@ static void wintc_welcome_user_list_finalize(
     GObject* gobject
 )
 {
-//    WinTCWelcomeUserList* user_list = WINTC_WELCOME_USER_LIST(gobject);
+    WinTCWelcomeUserList* user_list = WINTC_WELCOME_USER_LIST(gobject);
 
     hide_balloon(user_list);
 
