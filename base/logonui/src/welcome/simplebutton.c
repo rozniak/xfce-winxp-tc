@@ -195,9 +195,9 @@ static gboolean simple_button_reset_image(gpointer user_data) {
 
 GtkWidget* simple_button_new_with_pixbufs(GdkPixbuf *idle_pixbuf, 
                                            GdkPixbuf *activated_pixbuf) {
-    return g_object_new(simple_button_get_type(),
+    return GTK_WIDGET(g_object_new(simple_button_get_type(),
                        "idle-pixbuf", idle_pixbuf,
                        "activated-pixbuf", activated_pixbuf,
-                       NULL);
+                       NULL));
 }
 
