@@ -203,7 +203,7 @@ struct UserListItem
     WinTCWelcomeUserList* parent; 
 
     gchar *name;
-
+    LightDMUser *user;
     // State flags used for UI behavior
     // Carefully managed by each action
     gboolean faded;
@@ -692,7 +692,14 @@ static gboolean on_password_focus_gain(GtkWidget *widget, WINTC_UNUSED(GdkEvent 
 
 static void login_attempt(UserListItem *item) 
 {
+    WinTCWelcomeUserList *self = item->parent;
     show_balloon_under_widget(item, BALLOON_TYPE_ERROR);
+
+    wintc_gina_logon_session_try_logon(
+        self->logon_session,
+        item->name,
+        gtk_entry_get_text(GTK_ENTRY(item->password))
+    );
 }
 
 static gboolean on_password_caps_pressed(WINTC_UNUSED(GtkWidget *widget), GdkEventKey *event, gpointer user_data)
@@ -957,6 +964,11 @@ GtkWidget *create_userlist_widget(WinTCWelcomeUserList *self)
     list = g_list_append(list, "User 2");
     list = g_list_append(list, "User 3");
 
+    GList *users =
+    lightdm_user_list_get_users(
+        lightdm_user_list_get_instance()
+    );
+
     GtkWidget *top_box_event_wrapper = gtk_event_box_new();
     gtk_widget_set_hexpand(top_box_event_wrapper, TRUE);
     gtk_widget_set_vexpand(top_box_event_wrapper, TRUE);
@@ -966,20 +978,21 @@ GtkWidget *create_userlist_widget(WinTCWelcomeUserList *self)
 
     gtk_box_pack_start(GTK_BOX(main_box), top_box_event_wrapper, TRUE, TRUE, 0);
 
-    for (GList *l = list; l != NULL; l = l->next)
+    for (GList *l = users; l != NULL; l = l->next)
     {
         const char *str = (const char *)l->data;
         UserListItem *item = g_new0(UserListItem, 1);
-
+        item->user = (LightDMUser *)l->data; 
+        item->name = g_strdup(lightdm_user_get_name(item->user));
         item->parent = self; 
-        item->name = g_strdup(str);
+        // item->name = g_strdup(str);
         item->selected = FALSE;
         item->faded = FALSE;
 
-        item->tile = gdk_pixbuf_new_from_file("src/res/tile.png", NULL);
-        item->tile_hot = gdk_pixbuf_new_from_file("src/res/tilehot.png", NULL);
+        item->tile = gdk_pixbuf_new_from_file("/uk/oddmatics/wintc/logonui/tile.png", NULL);
+        item->tile_hot = gdk_pixbuf_new_from_file("/uk/oddmatics/wintc/logonui/tilehot.png", NULL);
         {
-            GdkPixbuf *profile_image = gdk_pixbuf_new_from_file("src/res/userpic.png", NULL);
+            GdkPixbuf *profile_image = gdk_pixbuf_new_from_file("/uk/oddmatics/wintc/logonui/userpic.png", NULL);
             gdk_pixbuf_composite(profile_image, item->tile, 5, 5, 48, 48, 
                                  0, 0, 1.0, 1.0, GDK_INTERP_BILINEAR, 255);
             gdk_pixbuf_composite(profile_image, item->tile_hot, 5, 5, 48, 48, 
@@ -1007,8 +1020,8 @@ GtkWidget *create_userlist_widget(WinTCWelcomeUserList *self)
         gtk_style_context_add_class(gtk_widget_get_style_context(item->instruction), "password-label");
         
         {
-            GdkPixbuf *go_idle = gdk_pixbuf_new_from_file("src/res/gobtn.png", NULL);
-            GdkPixbuf *go_activated = gdk_pixbuf_new_from_file("src/res/gobtna.png", NULL);
+            GdkPixbuf *go_idle = gdk_pixbuf_new_from_file("/uk/oddmatics/wintc/logonui/gobtn.png", NULL);
+            GdkPixbuf *go_activated = gdk_pixbuf_new_from_file("/uk/oddmatics/wintc/logonui/gobtna.png", NULL);
             item->go_button = simple_button_new_with_pixbufs(go_idle, go_activated);
             g_object_unref(go_idle);
             g_object_unref(go_activated);
@@ -1023,7 +1036,7 @@ GtkWidget *create_userlist_widget(WinTCWelcomeUserList *self)
         GtkWidget *layout = gtk_fixed_new();
 
         {
-            GdkPixbuf *bg_pix = gdk_pixbuf_new_from_file("src/res/usersel.png", NULL);
+            GdkPixbuf *bg_pix = gdk_pixbuf_new_from_file("/uk/oddmatics/wintc/logonui/usersel.png", NULL);
             bg_pix = gdk_pixbuf_scale_simple(bg_pix, 348, 72, GDK_INTERP_BILINEAR);
             item->background = gtk_image_new_from_pixbuf(bg_pix);
             g_object_unref(bg_pix);
