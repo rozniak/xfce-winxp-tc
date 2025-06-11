@@ -45,6 +45,8 @@ add_executable(
     src/welcome/ui.h
     src/welcome/userlist.c
     src/welcome/userlist.h
+    src/welcome/balloon.c
+    src/welcome/balloon.h
     src/welcome/simplebutton.c
     src/welcome/simplebutton.h
 )
