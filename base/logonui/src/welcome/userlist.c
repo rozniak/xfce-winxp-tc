@@ -25,12 +25,12 @@ enum
 //
 struct _WinTCWelcomeUserListClass
 {
-    GtkContainerClass __parent__;
+    GtkBoxClass __parent__;
 };
 
 struct _WinTCWelcomeUserList
 {
-    GtkContainer __parent__;
+    GtkBox __parent__;
 
     // State flags
     //
@@ -63,23 +63,11 @@ static void wintc_welcome_user_list_get_property(
     GParamSpec* pspec
 );
 static void wintc_welcome_user_list_realize(
-    GtkWidget* gobject
+    GtkWidget* widget,
+    gpointer user_data
 );
 static void wintc_welcome_user_list_finalize(
     GObject* gobject
-);
-static void wintc_welcome_user_list_add(
-    WINTC_UNUSED(GtkContainer* container),
-    WINTC_UNUSED(GtkWidget*    widget)
-);
-static void wintc_welcome_user_list_remove(
-    WINTC_UNUSED(GtkContainer* container),
-    WINTC_UNUSED(GtkWidget*    widget)
-);
-
-static void wintc_welcome_user_list_internal_add(
-    WinTCWelcomeUserList* user_list,
-    GtkWidget*            widget
 );
 
 typedef struct UserListItem UserListItem;
@@ -126,27 +114,25 @@ GtkWidget *create_userlist_widget(WinTCWelcomeUserList *self);
 G_DEFINE_TYPE(
     WinTCWelcomeUserList,
     wintc_welcome_user_list,
-    GTK_TYPE_CONTAINER
+    GTK_TYPE_BOX
 )
 
 static void wintc_welcome_user_list_class_init(
     WinTCWelcomeUserListClass* klass
 )
 {
-    GtkContainerClass* container_class = GTK_CONTAINER_CLASS(klass);
-    GtkWidgetClass*    widget_class    = GTK_WIDGET_CLASS(klass);
+    // GtkContainerClass* container_class = GTK_CONTAINER_CLASS(klass);
+    // GtkWidgetClass*    widget_class    = GTK_WIDGET_CLASS(klass);
     GObjectClass*      object_class    = G_OBJECT_CLASS(klass);
 
     object_class->get_property = wintc_welcome_user_list_get_property;
     object_class->set_property = wintc_welcome_user_list_set_property;
     object_class->finalize     = wintc_welcome_user_list_finalize;
 
-    widget_class->realize = wintc_welcome_user_list_realize;
+    // widget_class->realize = wintc_welcome_user_list_realize;
 
-    container_class->add = wintc_welcome_user_list_add;
-    container_class->remove = wintc_welcome_user_list_remove;
-    
-
+    // container_class->add = wintc_welcome_user_list_add;
+    // container_class->remove = wintc_welcome_user_list_remove;
 
     g_object_class_install_property(
         object_class,
@@ -165,37 +151,25 @@ static void wintc_welcome_user_list_init(
     WinTCWelcomeUserList* self
 )
 {
-    gtk_widget_set_has_window(GTK_WIDGET(self), TRUE);
 
     self->balloon = NULL;
     self->timeout_id = 0;
 
-    self->box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+    self->box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+    // GtkWidget *hello_label = gtk_label_new("HALLO HELLO WIE HHEIB DU");
+    // gtk_box_pack_start(GTK_BOX(self->box), hello_label, FALSE, FALSE, 0);
     self->box = GTK_WIDGET(create_userlist_widget(self));
 
-    wintc_welcome_user_list_internal_add(
-        self,
-        self->box
+
+    gtk_box_pack_start(
+        GTK_BOX(self),
+        self->box,
+        TRUE,
+        TRUE,
+        0
     );
 
-
-    // Set up image resources
-    //
-   
-    // Set up widgets
-    //
-
-
-    // Add style classes
-    //
-
-    // Retrieve users
-    //
-    // self->users =
-    //     lightdm_user_list_get_users(
-    //         lightdm_user_list_get_instance()
-    //     );
-
+    g_signal_connect(GTK_WIDGET(self), "realize", G_CALLBACK(wintc_welcome_user_list_realize), self);
 }
 
 struct UserListItem
@@ -204,6 +178,7 @@ struct UserListItem
 
     gchar *name;
     LightDMUser *user;
+
     // State flags used for UI behavior
     // Carefully managed by each action
     gboolean faded;
@@ -228,10 +203,18 @@ struct UserListItem
 // CLASS VIRTUAL METHODS
 //
 static void wintc_welcome_user_list_realize(
-    GtkWidget* gobject
+    GtkWidget* widget,
+    gpointer user_data
 )
 {
-    WinTCWelcomeUserList* user_list = WINTC_WELCOME_USER_LIST(gobject);
+    WinTCWelcomeUserList* user_list = WINTC_WELCOME_USER_LIST(widget);
+    user_data = user_data;
+    if (user_list->box) {
+        gtk_widget_show_all(user_list->box);
+        if (!gtk_widget_get_realized(user_list->box)) {
+            gtk_widget_realize(user_list->box);
+        }
+    }
 
     GtkWidget *toplevel = gtk_widget_get_toplevel(GTK_WIDGET(user_list));
     
@@ -240,6 +223,8 @@ static void wintc_welcome_user_list_realize(
                          G_CALLBACK(on_outside_click), user_list);
         g_signal_connect(toplevel, "key-press-event", G_CALLBACK(on_key_pressed), user_list);
     }
+
+
 }
 
 static void wintc_welcome_user_list_finalize(
@@ -324,23 +309,13 @@ static void wintc_welcome_user_list_set_property(
     }
 }
 
-static void wintc_welcome_user_list_add(
-    WINTC_UNUSED(GtkContainer* container),
-    WINTC_UNUSED(GtkWidget*    widget)
-)
-{
-    g_critical("%s", "wintc_welcome_user_list_add - not allowed!");
-}
-
-static void wintc_welcome_user_list_remove(
-    WINTC_UNUSED(GtkContainer* container),
-    WINTC_UNUSED(GtkWidget*    widget)
-)
-{
-    g_critical("%s", "wintc_welcome_user_list_remove - not allowed!");
-}
-
-
+// static void wintc_welcome_user_list_add(
+//     WINTC_UNUSED(GtkContainer* container),
+//     WINTC_UNUSED(GtkWidget*    widget)
+// )
+// {
+//     g_critical("%s", "wintc_welcome_user_list_add - not allowed!");
+// }
 
 
 
@@ -365,17 +340,6 @@ GtkWidget* wintc_welcome_user_list_new(
 //
 // PRIVATE FUNCTIONS
 //
-static void wintc_welcome_user_list_internal_add(
-    WinTCWelcomeUserList* user_list,
-    GtkWidget*            widget
-)
-{
-    gtk_widget_set_parent(widget, GTK_WIDGET(user_list));
-
-    // user_list->child_widgets =
-    //     g_slist_append(user_list->child_widgets, widget);
-}
-
 static void item_blur(GtkWidget *widget)
 {
     gtk_style_context_remove_class(gtk_widget_get_style_context(widget), "unblur");
@@ -980,7 +944,7 @@ GtkWidget *create_userlist_widget(WinTCWelcomeUserList *self)
 
     for (GList *l = users; l != NULL; l = l->next)
     {
-        const char *str = (const char *)l->data;
+        // const char *str = (const char *)l->data;
         UserListItem *item = g_new0(UserListItem, 1);
         item->user = (LightDMUser *)l->data; 
         item->name = g_strdup(lightdm_user_get_name(item->user));
@@ -989,10 +953,10 @@ GtkWidget *create_userlist_widget(WinTCWelcomeUserList *self)
         item->selected = FALSE;
         item->faded = FALSE;
 
-        item->tile = gdk_pixbuf_new_from_file("/uk/oddmatics/wintc/logonui/tile.png", NULL);
-        item->tile_hot = gdk_pixbuf_new_from_file("/uk/oddmatics/wintc/logonui/tilehot.png", NULL);
+        item->tile = gdk_pixbuf_new_from_resource("/uk/oddmatics/wintc/logonui/tile.png", NULL);
+        item->tile_hot = gdk_pixbuf_new_from_resource("/uk/oddmatics/wintc/logonui/tilehot.png", NULL);
         {
-            GdkPixbuf *profile_image = gdk_pixbuf_new_from_file("/uk/oddmatics/wintc/logonui/userpic.png", NULL);
+            GdkPixbuf *profile_image = gdk_pixbuf_new_from_resource("/uk/oddmatics/wintc/logonui/userpic.png", NULL);
             gdk_pixbuf_composite(profile_image, item->tile, 5, 5, 48, 48, 
                                  0, 0, 1.0, 1.0, GDK_INTERP_BILINEAR, 255);
             gdk_pixbuf_composite(profile_image, item->tile_hot, 5, 5, 48, 48, 
@@ -1001,7 +965,7 @@ GtkWidget *create_userlist_widget(WinTCWelcomeUserList *self)
         }
 
         item->picture = gtk_image_new_from_pixbuf(item->tile);
-        item->username_label = gtk_label_new(str);
+        item->username_label = gtk_label_new(item->name);
         gtk_style_context_add_class(gtk_widget_get_style_context(item->username_label), "user-label");
 
         item->password = gtk_entry_new();
@@ -1020,8 +984,8 @@ GtkWidget *create_userlist_widget(WinTCWelcomeUserList *self)
         gtk_style_context_add_class(gtk_widget_get_style_context(item->instruction), "password-label");
         
         {
-            GdkPixbuf *go_idle = gdk_pixbuf_new_from_file("/uk/oddmatics/wintc/logonui/gobtn.png", NULL);
-            GdkPixbuf *go_activated = gdk_pixbuf_new_from_file("/uk/oddmatics/wintc/logonui/gobtna.png", NULL);
+            GdkPixbuf *go_idle = gdk_pixbuf_new_from_resource("/uk/oddmatics/wintc/logonui/gobtn.png", NULL);
+            GdkPixbuf *go_activated = gdk_pixbuf_new_from_resource("/uk/oddmatics/wintc/logonui/gobtna.png", NULL);
             item->go_button = simple_button_new_with_pixbufs(go_idle, go_activated);
             g_object_unref(go_idle);
             g_object_unref(go_activated);
@@ -1036,7 +1000,7 @@ GtkWidget *create_userlist_widget(WinTCWelcomeUserList *self)
         GtkWidget *layout = gtk_fixed_new();
 
         {
-            GdkPixbuf *bg_pix = gdk_pixbuf_new_from_file("/uk/oddmatics/wintc/logonui/usersel.png", NULL);
+            GdkPixbuf *bg_pix = gdk_pixbuf_new_from_resource("/uk/oddmatics/wintc/logonui/usersel.png", NULL);
             bg_pix = gdk_pixbuf_scale_simple(bg_pix, 348, 72, GDK_INTERP_BILINEAR);
             item->background = gtk_image_new_from_pixbuf(bg_pix);
             g_object_unref(bg_pix);
