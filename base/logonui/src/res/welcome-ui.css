@@ -62,7 +62,7 @@
 
 .password-box {
     border: 1px solid #00309C;
-    
+    font-family: "Tahoma", inherit;
     border-radius: 5px;
     font-size: 16pt;
 }
