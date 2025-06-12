@@ -152,7 +152,7 @@ static void wintc_welcome_ui_class_init(
     gtk_style_context_add_provider_for_screen(
         gdk_screen_get_default(),
         GTK_STYLE_PROVIDER(klass->css_provider),
-        GTK_STYLE_PROVIDER_PRIORITY_FALLBACK
+        GTK_STYLE_PROVIDER_PRIORITY_APPLICATION
     );
 }
 
