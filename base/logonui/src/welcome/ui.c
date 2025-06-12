@@ -224,17 +224,11 @@ static void wintc_welcome_ui_finalize(
     GObject* gobject
 )
 {
-    // WinTCWelcomeUI* welcome_ui = WINTC_WELCOME_UI(gobject);
+    WinTCWelcomeUI* welcome_ui = WINTC_WELCOME_UI(gobject);
 
-    // Bin graphical resources
-    //
-
-    // Bin additional references held for the boxes
-    //
-    // g_object_unref(welcome_ui->welcome_box);
-    // g_object_unref(welcome_ui->login_box);
-    // g_object_unref(welcome_ui->wait_box);
-
+    g_object_unref(welcome_ui->welcome_box);
+    g_object_unref(welcome_ui->login_box);
+    g_object_unref(welcome_ui->wait_box);
 
     (G_OBJECT_CLASS(wintc_welcome_ui_parent_class))->finalize(gobject);
 }
@@ -292,8 +286,6 @@ static void wintc_welcome_ui_change_state(
     WinTCGinaState    next_state
 )
 {
-    // return;
-
     // Disable current state, if any
     //
     switch (welcome_ui->current_state)
@@ -356,7 +348,7 @@ static void wintc_welcome_ui_change_state(
             );
             gtk_container_add(
                 GTK_CONTAINER(welcome_ui->box_container),
-                welcome_ui->wait_box
+                welcome_ui->welcome_box
             );
             break;
 
@@ -546,7 +538,11 @@ GtkWidget* build_wait_box(void) {
     gtk_widget_set_halign(wait_box, GTK_ALIGN_END);
     gtk_widget_set_valign(wait_box, GTK_ALIGN_CENTER);
 
-    GtkWidget *label = gtk_label_new("Windows is starting up...");
+    // FIXME: The wait box shoulld appear with a margin of about 20%
+    //        not a fixed value.
+    gtk_widget_set_margin_end(wait_box, 200);
+
+    GtkWidget *label = gtk_label_new("Please wait...");
     gtk_label_set_xalign(GTK_LABEL(label), 1.0f);
     gtk_style_context_add_class(gtk_widget_get_style_context(label), "wait-label");
 
