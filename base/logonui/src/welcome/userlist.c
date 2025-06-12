@@ -868,8 +868,11 @@ gboolean balloon_unblur_callback(gpointer user_data)
     return G_SOURCE_REMOVE; 
 }
 
+// FIXME: Currently the balloon cannot be shown nicely without a compositor.
+//        Disabled until a better solution is found.
 void show_balloon_under_widget(UserListItem *item, BalloonType type) 
 {
+    return;
     WinTCWelcomeUserList *self = item->parent; 
     
     hide_balloon(self);
@@ -970,7 +973,7 @@ GtkWidget *create_userlist_widget(WinTCWelcomeUserList *self)
 
         item->password = gtk_entry_new();
         gtk_entry_set_visibility(GTK_ENTRY(item->password), FALSE);
-        g_object_set(item->password, "caps-lock-warning", FALSE, NULL);
+        // g_object_set(item->password, "caps-lock-warning", FALSE, NULL); // Normally disabled, but required due to balloon issues
         gtk_style_context_add_class(gtk_widget_get_style_context(item->password), "password-box");
         gtk_widget_set_size_request(item->password, 164, 27);
 
@@ -1059,16 +1062,35 @@ GtkWidget *create_userlist_widget(WinTCWelcomeUserList *self)
 //
 // CALLBACKS
 //
-
 static void on_logon_session_attempt_complete(
     WINTC_UNUSED(WinTCGinaLogonSession* logon_session),
-    WINTC_UNUSED(WinTCGinaResponse response),
+    WinTCGinaResponse response,
     gpointer          user_data
 )
 {
     WinTCWelcomeUserList* user_list = WINTC_WELCOME_USER_LIST(user_data);
-    hide_balloon(user_list);
+
     // Reset the UI state after any logon attempt
     //
+    hide_balloon(user_list);
+    for (GList *l = user_list->list; l != NULL; l = l->next)
+    {
+        UserListItem *item = (UserListItem *)l->data;
+        gtk_entry_set_text(GTK_ENTRY(item->password), "");
+    }
+    
+    if (response == WINTC_GINA_RESPONSE_FAIL) {
+        // Show a message box indicating the logon attempt failed
+        // This is a placeholder for the actual error balloon implementation
+        wintc_messagebox_show(
+            GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(user_list))),
+            "Did you forget your password?\n\n"
+                "Please type your password again.\n"
+                "Be sure to use the correct uppercase and lowercase letters.",
+            "", // BUG: Caption doesn't display
+            GTK_BUTTONS_OK,
+            GTK_MESSAGE_ERROR
+        );
+    }
 }
 
