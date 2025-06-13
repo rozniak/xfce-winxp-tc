@@ -40,7 +40,7 @@ struct _WinTCWelcomeUserList
     //
     GtkWidget *overlay_wrapper;
 
-    GtkWidget *fixed_layout;
+    GtkWidget *balloon_wrapper;
     GtkWidget *box; 
 
     GList *list;
@@ -162,10 +162,11 @@ static void wintc_welcome_user_list_init(
 
     self->overlay_wrapper = gtk_overlay_new();
 
-    self->fixed_layout = gtk_fixed_new();
-    gtk_widget_set_hexpand(self->fixed_layout, TRUE);
-    gtk_widget_set_vexpand(self->fixed_layout, TRUE);
-    g_signal_connect(self->fixed_layout, "realize", G_CALLBACK(on_wrapper_realize), NULL);
+    // Replace fixed layout with a box
+    self->balloon_wrapper = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+    gtk_widget_set_hexpand(self->balloon_wrapper, TRUE);
+    gtk_widget_set_vexpand(self->balloon_wrapper, TRUE);
+    g_signal_connect(self->balloon_wrapper, "realize", G_CALLBACK(on_wrapper_realize), NULL);
 
     self->box = GTK_WIDGET(create_userlist_widget(self));
     gtk_widget_set_hexpand(self->box, TRUE);
@@ -178,7 +179,7 @@ static void wintc_welcome_user_list_init(
 
     gtk_overlay_add_overlay(
         GTK_OVERLAY(self->overlay_wrapper),
-        self->fixed_layout
+        self->balloon_wrapper
     );
 
     gtk_box_pack_start(
@@ -781,10 +782,10 @@ gboolean on_list_item_clicked(WINTC_UNUSED(GtkWidget *widget), WINTC_UNUSED(GdkE
 void hide_balloon(WinTCWelcomeUserList *self)
 {
     if (self->balloon) {
-        gtk_container_remove(GTK_CONTAINER(self->fixed_layout), self->balloon);
+        gtk_container_remove(GTK_CONTAINER(self->balloon_wrapper), self->balloon);
         gtk_widget_destroy(self->balloon);
         self->balloon = NULL;
-        gtk_widget_show_all(self->fixed_layout);
+        gtk_widget_show_all(self->balloon_wrapper);
 
     }
     if (self->timeout_id != 0) {
@@ -818,29 +819,35 @@ void show_balloon_under_widget(UserListItem *item, BalloonType type)
     
     // Clear any existing balloon
     hide_balloon(self);
+    
+    self->balloon = balloon_new(type, item->password);
+    gtk_widget_set_halign(self->balloon, GTK_ALIGN_START);
+    gtk_widget_set_valign(self->balloon, GTK_ALIGN_START);
+    gtk_style_context_add_class(gtk_widget_get_style_context(self->balloon), "transparent");
 
     GtkAllocation allocation;
     gtk_widget_get_allocation(item->password, &allocation);
 
     gint x, y;
     gtk_widget_translate_coordinates(
-        item->background,                  
-        self->fixed_layout,             
+        item->picture, // Use picture as an anchor for positioning as other widgets may not be realized yet
+        self->balloon_wrapper,             
         0,                               
         0,                               
         &x,                               
         &y                               
     );
 
-    self->balloon = balloon_new(type, item->password);
-    gtk_style_context_add_class(gtk_widget_get_style_context(self->balloon), "transparent");
+    gtk_widget_set_margin_start(self->balloon, x + 70);
+    gtk_widget_set_margin_top(self->balloon, y + 60);
 
     self->timeout_id = g_timeout_add(6000, (GSourceFunc)balloon_timeout_callback, self);
     g_idle_add((GSourceFunc)balloon_unblur_callback, self);
 
-    gtk_fixed_put(GTK_FIXED(self->fixed_layout), self->balloon, x+70, y+70);
+    gtk_box_pack_start(GTK_BOX(self->balloon_wrapper), self->balloon, TRUE, TRUE, 0);
 
-    gtk_widget_show_all(self->fixed_layout);
+
+    gtk_widget_show_all(self->balloon_wrapper);
     gtk_widget_queue_resize(GTK_WIDGET(self->balloon));
 }
 
