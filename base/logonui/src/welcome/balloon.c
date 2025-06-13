@@ -3,19 +3,17 @@
 #include <wintc/msgina.h>
 
 struct _Balloon {
-    GtkWindow parent_instance;
+    GtkBox __parent__;
 
     BalloonType alert_type; 
     GtkWidget* target_widget; 
-
-    gboolean show_right;
 
     GtkWidget* icon;
     GtkWidget* title;
     GtkWidget* message;
 };
 
-G_DEFINE_TYPE(Balloon, balloon, GTK_TYPE_WINDOW)
+G_DEFINE_TYPE(Balloon, balloon, GTK_TYPE_BOX)
 
 enum {
     PROP_0,
@@ -48,7 +46,6 @@ static void balloon_constructed(GObject *object);
 static void balloon_finalize(GObject *object);
 
 static void on_target_widget_destroyed(gpointer data, GObject *destroyed_object);
-gboolean can_show_right(GtkWidget *target_widget);
 static void configure_base_balloon(GtkWidget *widget);
 static void configure_balloon_style(Balloon *self);
 
@@ -134,20 +131,8 @@ static void balloon_finalize(GObject *object) {
 static void balloon_init(Balloon *self) {
     self->alert_type = BALLOON_TYPE_WARNING;
     self->target_widget = NULL;
-    self->show_right = FALSE;
 
-    gtk_window_set_decorated(GTK_WINDOW(self), FALSE);
-    gtk_window_set_resizable(GTK_WINDOW(self), FALSE);
-    gtk_window_set_skip_taskbar_hint(GTK_WINDOW(self), TRUE);
-    gtk_window_set_keep_above(GTK_WINDOW(self), TRUE);
-
-    // Enable transparency
-    gtk_widget_set_app_paintable(GTK_WIDGET(self), TRUE);
-    GdkScreen *screen = gtk_widget_get_screen(GTK_WIDGET(self));
-    GdkVisual *visual = gdk_screen_get_rgba_visual(screen);
-    if (visual != NULL) {
-        gtk_widget_set_visual(GTK_WIDGET(self), visual);
-    }
+    gtk_orientable_set_orientation(GTK_ORIENTABLE(self), GTK_ORIENTATION_VERTICAL);
 }
 
 GtkWidget *
@@ -156,19 +141,17 @@ balloon_new(BalloonType type, GtkWidget* target_widget) {
     g_return_val_if_fail(GTK_IS_WIDGET(target_widget), NULL);
 
     Balloon *balloon = g_object_new(BALLOON_TYPE_CONTAINER, 
-                                    "type", GTK_WINDOW_POPUP,
                                     "alert-type", type,
                                     "target-widget", target_widget,
                                     NULL);
     
-    balloon->show_right = can_show_right(target_widget);
 
     return GTK_WIDGET(balloon);
 }
 
-
-static gboolean draw_arrow(WINTC_UNUSED(GtkWidget *widget), cairo_t *cr, gpointer data) {
-    gboolean show_right = GPOINTER_TO_INT(data); 
+static gboolean draw_arrow(WINTC_UNUSED(GtkWidget *widget), cairo_t *cr, WINTC_UNUSED(gpointer data)) {
+    // FIXME: In future the baloon should be able to show the arrow on the left or right side.
+    gboolean show_right = TRUE;
 
     int x_start;
     int x_end;
@@ -205,34 +188,13 @@ static gboolean draw_arrow(WINTC_UNUSED(GtkWidget *widget), cairo_t *cr, gpointe
     return FALSE;
 }
 
-GtkWidget* balloon_create_arrow_widget(gboolean show_right) {
+GtkWidget* balloon_create_arrow_widget() {
     GtkWidget *area = gtk_drawing_area_new();
     gtk_widget_set_hexpand(area, TRUE);
     gtk_widget_set_vexpand(area, FALSE);
     gtk_widget_set_size_request(area, 20, 20);
-    g_signal_connect(area, "draw", G_CALLBACK(draw_arrow), GINT_TO_POINTER(show_right));
+    g_signal_connect(area, "draw", G_CALLBACK(draw_arrow), NULL);
     return area;
-}
-
-gboolean can_show_right(GtkWidget *target_widget) {
-    GdkDisplay *display = gdk_display_get_default();
-    GdkMonitor *monitor = gdk_display_get_primary_monitor(display);
-    int display_width = 0;
-
-    if (monitor) {
-        GdkRectangle geometry;
-        gdk_monitor_get_geometry(monitor, &geometry);
-        display_width = geometry.width;
-    }
-
-    GtkAllocation allocation;
-    gtk_widget_get_allocation(target_widget, &allocation);
-
-    int x, y;
-    GdkWindow* window = gtk_widget_get_window(target_widget);
-    gdk_window_get_origin(window, &x, &y);
-
-    return (display_width - x) > 305;
 }
 
 static void configure_base_balloon(GtkWidget *widget) {
@@ -242,16 +204,19 @@ static void configure_base_balloon(GtkWidget *widget) {
         g_warning("Balloon target widget is not set correctly or doesn't exist. This balloon will not be positioned correctly.");
     } 
 
-    gboolean show_right = can_show_right(self->target_widget);
-
     GtkWidget* overlay = gtk_overlay_new();
+    gtk_widget_set_hexpand(overlay, TRUE);
+    gtk_widget_set_vexpand(overlay, TRUE);
 
     GtkWidget *box =gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+    gtk_widget_set_hexpand(box, TRUE);
+    gtk_widget_set_vexpand(box, TRUE);
     gtk_style_context_add_class(gtk_widget_get_style_context(box), "balloon-tooltip");
     gtk_widget_set_valign(GTK_WIDGET(box), GTK_ALIGN_START);
     gtk_widget_set_margin_top(GTK_WIDGET(box), 19);
 
     GtkWidget *header = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+    gtk_widget_set_hexpand(GTK_WIDGET(header), TRUE);
     self->icon = gtk_image_new();
     self->title = gtk_label_new("");
     gtk_widget_set_valign(GTK_WIDGET(self->title), GTK_ALIGN_START);
@@ -271,7 +236,7 @@ static void configure_base_balloon(GtkWidget *widget) {
     gtk_label_set_line_wrap(GTK_LABEL(self->message), TRUE);
     gtk_label_set_line_wrap_mode(GTK_LABEL(self->message), PANGO_WRAP_WORD); 
     gtk_label_set_justify(GTK_LABEL(self->message), GTK_JUSTIFY_LEFT);        
-    gtk_widget_set_halign(self->message, GTK_ALIGN_START);
+    gtk_widget_set_halign(self->message, GTK_ALIGN_FILL);
     gtk_widget_set_valign(self->message, GTK_ALIGN_START);
 
     gtk_box_pack_start(GTK_BOX(content), GTK_WIDGET(self->message), TRUE, TRUE, 0);
@@ -279,30 +244,31 @@ static void configure_base_balloon(GtkWidget *widget) {
     gtk_box_pack_start(GTK_BOX(box), GTK_WIDGET(header), FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(box), GTK_WIDGET(content), TRUE, TRUE, 0);
 
-    GtkWidget* arrow = balloon_create_arrow_widget(show_right);
+    GtkWidget* arrow = balloon_create_arrow_widget();
     gtk_widget_set_halign(arrow, GTK_ALIGN_START);
     gtk_widget_set_valign(arrow, GTK_ALIGN_START);
 
     gtk_container_add(GTK_CONTAINER(overlay), GTK_WIDGET(box));
     gtk_overlay_add_overlay(GTK_OVERLAY(overlay), arrow);
 
-    gtk_container_add(GTK_CONTAINER(self), overlay);
+    gtk_box_pack_start(GTK_BOX(self), overlay, TRUE, TRUE, 0);
     
     gtk_widget_show_all(GTK_WIDGET(self));
 }
 
 static void configure_balloon_style(Balloon *self) {
     configure_base_balloon(GTK_WIDGET(self));
+
     switch (self->alert_type) {
         case BALLOON_TYPE_ERROR:
-            gtk_image_set_from_file(GTK_IMAGE(self->icon), "src/res/error.png");
+            gtk_image_set_from_resource(GTK_IMAGE(self->icon), "/uk/oddmatics/wintc/logonui/error.png");
             gtk_label_set_text(GTK_LABEL(self->title), "Did you forget your password?");
 
             gtk_label_set_text(GTK_LABEL(self->message), "Please type your password again.\n"
                                                           "Be sure to use the correct uppercase and lowercase letters.");
             break;
         case BALLOON_TYPE_WARNING:
-            gtk_image_set_from_file(GTK_IMAGE(self->icon), "src/res/exclamation.png");
+            gtk_image_set_from_resource(GTK_IMAGE(self->icon), "/uk/oddmatics/wintc/logonui/exclamation.png");
             gtk_label_set_text(GTK_LABEL(self->title), "Caps Lock is On");
             gtk_label_set_text(GTK_LABEL(self->message), "Having Caps Lock on may cause you to enter your password incorrectly.\n\n"
                                                           "You should press Caps Lock to turn it off before entering your password.");
@@ -316,7 +282,6 @@ static void configure_balloon_style(Balloon *self) {
 static void balloon_constructed(GObject *object) {
     Balloon *self = BALLOON_WIDGET(object);
     configure_balloon_style(self);
-
 
     G_OBJECT_CLASS(balloon_parent_class)->constructed(object);
 }
