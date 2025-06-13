@@ -89,7 +89,7 @@ void userlist_navigate_down(
 gboolean on_list_hover_enter(GtkWidget *widget, GdkEvent *event, gpointer user_data);
 gboolean on_list_hover_leave(GtkWidget *widget, GdkEventCrossing *event, gpointer user_data);
 gboolean on_list_item_hover_enter(GtkWidget *widget, GdkEvent *event, gpointer user_data);
-gboolean on_list_item_hover_leave(GtkWidget *widget, GdkEvent *event, gpointer user_data);
+gboolean on_list_item_hover_leave(GtkWidget *widget, GdkEventCrossing *event, gpointer user_data);
 gboolean on_list_item_clicked(GtkWidget *widget, GdkEvent *event, gpointer user_data);
 void hot(UserListItem *item);
 void idle(UserListItem *item);
@@ -104,12 +104,12 @@ static gboolean on_key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer u
 static void item_blur(GtkWidget *widget);
 static void item_unblur(GtkWidget *widget);
 static void item_unblur_fast(GtkWidget *widget);
-void show_balloon_under_widget(UserListItem *item, BalloonType type);
-void hide_balloon(WinTCWelcomeUserList *self);
+static void show_balloon_under_widget(UserListItem *item, BalloonType type);
+static void hide_balloon(WinTCWelcomeUserList *self);
 static gboolean balloon_timeout_callback(gpointer user_data);
-gboolean balloon_unblur_callback(gpointer user_data);
+static gboolean balloon_unblur_callback(gpointer user_data);
 
-GtkWidget *create_userlist_widget(WinTCWelcomeUserList *self);
+static GtkWidget *create_userlist_widget(WinTCWelcomeUserList *self);
 
 //
 // GTK TYPE DEFINITIONS & CTORS
@@ -252,11 +252,25 @@ static void wintc_welcome_user_list_finalize(
 {
     WinTCWelcomeUserList* user_list = WINTC_WELCOME_USER_LIST(gobject);
 
+    if (user_list->logon_session) {
+        g_signal_handlers_disconnect_by_data(user_list->logon_session, user_list);
+    }
+
+    if (user_list->timeout_id != 0) {
+        g_source_remove(user_list->timeout_id);
+        user_list->timeout_id = 0;
+    }
+
     hide_balloon(user_list);
 
     for (GList *l = user_list->list; l != NULL; l = l->next)
     {
         UserListItem *item = (UserListItem *)l->data;
+
+        if (item->event) {
+            g_signal_handlers_disconnect_by_data(item->event, item);
+        }
+        
         g_object_unref(item->background);
         g_object_unref(item->picture);
         g_object_unref(item->username_label);
@@ -273,7 +287,7 @@ static void wintc_welcome_user_list_finalize(
     user_list->list = NULL;
 
     GtkWidget *toplevel = gtk_widget_get_toplevel(GTK_WIDGET(user_list));
-    if (GTK_IS_WINDOW(toplevel)) {
+    if (toplevel && GTK_IS_WINDOW(toplevel)) {
         g_signal_handlers_disconnect_by_data(toplevel, user_list);
     }
 
@@ -488,6 +502,12 @@ gboolean on_list_item_hover_enter(WINTC_UNUSED(GtkWidget *widget), WINTC_UNUSED(
 {
     UserListItem *item = (UserListItem *)user_data;
 
+    GdkWindow *window = gtk_widget_get_window(widget);
+    GdkDisplay *display = gdk_window_get_display(window);
+    GdkCursor *cursor = gdk_cursor_new_from_name(display, "pointer");
+    gdk_window_set_cursor(window, cursor);
+    g_object_unref(cursor);
+
     if (item->selected)
     {
         return FALSE;
@@ -499,11 +519,20 @@ gboolean on_list_item_hover_enter(WINTC_UNUSED(GtkWidget *widget), WINTC_UNUSED(
     item_unblur(item->picture);
 
     item->hovered = TRUE;
+
+    
+    
     return FALSE;
 }
 
-gboolean on_list_item_hover_leave(WINTC_UNUSED(GtkWidget *widget), WINTC_UNUSED(GdkEvent *event), gpointer user_data)
+gboolean on_list_item_hover_leave(WINTC_UNUSED(GtkWidget *widget), WINTC_UNUSED(GdkEventCrossing *event), gpointer user_data)
 {
+    if (event->detail == GDK_NOTIFY_INFERIOR)
+    {
+        return FALSE;
+    }
+
+
     UserListItem *item = (UserListItem *)user_data;
     item->hovered = FALSE;
 
@@ -516,6 +545,9 @@ gboolean on_list_item_hover_leave(WINTC_UNUSED(GtkWidget *widget), WINTC_UNUSED(
 
         gtk_widget_show_all(item->layout);
     }
+
+    GdkWindow *window = gtk_widget_get_window(widget);
+    gdk_window_set_cursor(window, NULL); 
     return FALSE;
 }
 
@@ -779,7 +811,7 @@ gboolean on_list_item_clicked(WINTC_UNUSED(GtkWidget *widget), WINTC_UNUSED(GdkE
     return FALSE;
 }
 
-void hide_balloon(WinTCWelcomeUserList *self)
+static void hide_balloon(WinTCWelcomeUserList *self)
 {
     if (self->balloon) {
         gtk_container_remove(GTK_CONTAINER(self->balloon_wrapper), self->balloon);
@@ -803,7 +835,7 @@ static gboolean balloon_timeout_callback(gpointer user_data)
     return FALSE; 
 }
 
-gboolean balloon_unblur_callback(gpointer user_data)
+static gboolean balloon_unblur_callback(gpointer user_data)
 {
     WinTCWelcomeUserList *self = (WinTCWelcomeUserList *)user_data;
     if (self->balloon) {
@@ -813,7 +845,7 @@ gboolean balloon_unblur_callback(gpointer user_data)
     return G_SOURCE_REMOVE; 
 }
 
-void show_balloon_under_widget(UserListItem *item, BalloonType type) 
+static void show_balloon_under_widget(UserListItem *item, BalloonType type) 
 {
     WinTCWelcomeUserList *self = item->parent; 
     
@@ -851,7 +883,7 @@ void show_balloon_under_widget(UserListItem *item, BalloonType type)
     gtk_widget_queue_resize(GTK_WIDGET(self->balloon));
 }
 
-GtkWidget *create_userlist_widget(WinTCWelcomeUserList *self)
+static GtkWidget *create_userlist_widget(WinTCWelcomeUserList *self)
 {
     GtkWidget *scrollable = gtk_scrolled_window_new(NULL, NULL);
     gtk_widget_set_hexpand(scrollable, FALSE);
