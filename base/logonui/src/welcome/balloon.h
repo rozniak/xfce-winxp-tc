@@ -7,10 +7,10 @@
 G_BEGIN_DECLS
 
 #define BALLOON_TYPE_CONTAINER (balloon_get_type())
-G_DECLARE_FINAL_TYPE(Balloon, balloon, BALLOON, WIDGET, GtkWindow)
+G_DECLARE_FINAL_TYPE(Balloon, balloon, BALLOON, WIDGET, GtkBox)
 
 struct _BalloonClass {
-    GtkWindowClass parent_class;
+    GtkBoxClass parent_class;
 };
 
 typedef enum {
