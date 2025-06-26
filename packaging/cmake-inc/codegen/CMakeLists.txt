@@ -2,7 +2,10 @@ cmake_minimum_required(VERSION 3.12)
 
 # Define function for gdbus-codegen
 #
-function(wintc_gdbus_codegen XML_FILE OUT_FILE_NOEXT CP_PUBLIC)
+set(WINTC_DBUS_DEFAULT_IF_PREFIX uk.oddmatics.wintc.)
+set(WINTC_DBUS_DEFAULT_C_PREFIX  ZWin)
+
+function(wintc_gdbus_codegen XML_FILE OUT_FILE_NOEXT IF_PREFIX C_PREFIX CP_PUBLIC)
     find_program(GDBUS_CODEGEN gdbus-codegen REQUIRED)
 
     add_custom_command(
@@ -12,10 +15,9 @@ function(wintc_gdbus_codegen XML_FILE OUT_FILE_NOEXT CP_PUBLIC)
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/src
         COMMAND ${GDBUS_CODEGEN}
         ARGS
-            --interface-prefix uk.oddmatics.wintc.
+            --interface-prefix ${IF_PREFIX}
             --generate-c-code ${OUT_FILE_NOEXT}
-            --c-namespace ZWin
-            --c-generate-object-manager
+            --c-namespace ${C_PREFIX}
             ${XML_FILE}
         VERBATIM
         DEPENDS

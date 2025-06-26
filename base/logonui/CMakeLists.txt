@@ -37,6 +37,8 @@ add_executable(
     wintc-logonui
     src/main.c
     src/resources.c
+    src/settings.c
+    src/settings.h
     src/window.c
     src/window.h
     src/classic/ui.c

@@ -2,6 +2,7 @@
 #include <gtk/gtk.h>
 #include <wintc/comgtk.h>
 
+#include "settings.h"
 #include "window.h"
 
 //
@@ -12,9 +13,9 @@ int main(
     char* argv[]
 )
 {
-    GtkWidget* window;
-
     gtk_init(&argc, &argv);
+
+    WinTCLogonUISettings* settings = wintc_logonui_settings_new();
 
     // Set up theme
     // FIXME: There should probably be an API for this rather than directly
@@ -31,7 +32,9 @@ int main(
 
     // Create the window and launch
     //
-    window = wintc_logonui_window_new();
+    GtkWidget* window = wintc_logonui_window_new(settings);
+
+    g_object_unref(settings);
 
     gtk_widget_show_all(window);
 

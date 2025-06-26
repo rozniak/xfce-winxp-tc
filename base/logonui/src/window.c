@@ -3,6 +3,7 @@
 #include <gtk/gtk.h>
 #include <wintc/comgtk.h>
 
+#include "settings.h"
 #include "window.h"
 #include "classic/ui.h"
 #include "welcome/ui.h"
@@ -12,28 +13,20 @@
 //
 enum
 {
-    PROP_PREFER_CLASSIC_LOGON = 1,
+    PROP_NULL,
+    PROP_SETTINGS,
     N_PROPERTIES
-};
-
-//
-// GTK OOP CLASS/INSTANCE DEFINITIONS
-//
-struct _WinTCLogonUIWindowClass
-{
-    GtkWindowClass __parent__;
-};
-
-struct _WinTCLogonUIWindow
-{
-    GtkWindow __parent__;
-
-    GtkWidget* login_ui;
 };
 
 //
 // FORWARD DECLARATIONS
 //
+static void wintc_logonui_window_constructed(
+    GObject* object
+);
+static void wintc_logonui_window_dispose(
+    GObject* object
+);
 static void wintc_logonui_window_set_property(
     GObject*      object,
     guint         prop_id,
@@ -52,6 +45,22 @@ static void on_window_realize(
 );
 
 //
+// STATIC DATA
+//
+static GParamSpec* wintc_logonui_window_properties[N_PROPERTIES] = { 0 };
+
+//
+// GTK OOP CLASS/INSTANCE DEFINITIONS
+//
+struct _WinTCLogonUIWindow
+{
+    GtkWindow __parent__;
+
+    GtkWidget*            login_ui;
+    WinTCLogonUISettings* settings;
+};
+
+//
 // GTK TYPE DEFINITIONS & CTORS
 //
 G_DEFINE_TYPE(
@@ -66,18 +75,23 @@ static void wintc_logonui_window_class_init(
 {
     GObjectClass* object_class = G_OBJECT_CLASS(klass);
 
+    object_class->constructed  = wintc_logonui_window_constructed;
+    object_class->dispose      = wintc_logonui_window_dispose;
     object_class->set_property = wintc_logonui_window_set_property;
 
-    g_object_class_install_property(
-        object_class,
-        PROP_PREFER_CLASSIC_LOGON,
-        g_param_spec_boolean(
-            "prefer-classic-logon",
-            "PreferClassicLogon",
-            "Prefer to use the classic logon user-interface.",
-            FALSE,
+    wintc_logonui_window_properties[PROP_SETTINGS] =
+        g_param_spec_object(
+            "settings",
+            "Settings",
+            "The object for providing configuration settings.",
+            WINTC_TYPE_LOGONUI_SETTINGS,
             G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY
-        )
+        );
+
+    g_object_class_install_properties(
+        object_class,
+        N_PROPERTIES,
+        wintc_logonui_window_properties
     );
 }
 
@@ -123,15 +137,61 @@ static void wintc_logonui_window_init(
         G_CALLBACK(on_window_realize),
         NULL
     );
-
-    //
-    // Welcome/Classic UI is decided/init'd in set_property
-    //
 }
 
 //
 // CLASS VIRTUAL METHODS
 //
+static void wintc_logonui_window_constructed(
+    GObject* object
+)
+{
+    (G_OBJECT_CLASS(wintc_logonui_window_parent_class))
+        ->constructed(object);
+
+    WinTCLogonUIWindow* window = WINTC_LOGONUI_WINDOW(object);
+
+    // Create the logon session
+    //
+    WinTCGinaLogonSession* logon_session = wintc_gina_logon_session_new();
+
+    wintc_gina_logon_session_set_preferred_session(
+        logon_session,
+        wintc_logonui_settings_get_session(window->settings)
+    );
+
+    // FIXME: Server SKUs do not have welcome screen
+    //
+    if (wintc_logonui_settings_get_use_classic_logon(window->settings))
+    {
+        window->login_ui =
+            wintc_classic_ui_new(
+                logon_session
+            );
+    }
+    else
+    {
+        window->login_ui =
+            wintc_welcome_ui_new(
+                logon_session
+            );
+    }
+
+    g_object_unref(logon_session);
+}
+
+static void wintc_logonui_window_dispose(
+    GObject* object
+)
+{
+    WinTCLogonUIWindow* window = WINTC_LOGONUI_WINDOW(object);
+
+    g_clear_object(&(window->settings));
+
+    (G_OBJECT_CLASS(wintc_logonui_window_parent_class))
+        ->dispose(object);
+}
+
 static void wintc_logonui_window_set_property(
     GObject*      object,
     guint         prop_id,
@@ -143,18 +203,8 @@ static void wintc_logonui_window_set_property(
 
     switch (prop_id)
     {
-        case PROP_PREFER_CLASSIC_LOGON:
-            if (g_value_get_boolean(value))
-            {
-                window->login_ui =
-                    wintc_classic_ui_new();
-            }
-            else
-            {
-                window->login_ui =
-                    wintc_welcome_ui_new();
-            }
-
+        case PROP_SETTINGS:
+            window->settings = g_value_dup_object(value);
             break;
 
         default:
@@ -166,7 +216,9 @@ static void wintc_logonui_window_set_property(
 //
 // PUBLIC FUNCTIONS
 //
-GtkWidget* wintc_logonui_window_new()
+GtkWidget* wintc_logonui_window_new(
+    WinTCLogonUISettings* settings
+)
 {
     return GTK_WIDGET(
         g_object_new(
@@ -175,7 +227,7 @@ GtkWidget* wintc_logonui_window_new()
             "decorated",            FALSE,
             "resizable",            FALSE,
             "type-hint",            GDK_WINDOW_TYPE_HINT_DESKTOP,
-            "prefer-classic-logon", FALSE,
+            "settings",             settings,
             NULL
         )
     );

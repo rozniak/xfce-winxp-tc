@@ -96,7 +96,7 @@ static void wintc_exitwin_application_activate(
     //
     WinTCGinaSmXfce* sm_xfce = wintc_gina_sm_xfce_new();
 
-    if (!wintc_gina_sm_xfce_is_valid(sm_xfce))
+    if (!wintc_igina_sm_is_valid(WINTC_IGINA_SM(sm_xfce)))
     {
         // FIXME: Localise
         //
@@ -115,11 +115,17 @@ static void wintc_exitwin_application_activate(
     //
     if (s_cmd_usropts)
     {
-        wnd = wintc_gina_exit_window_new_for_user_options(sm_xfce);
+        wnd =
+            wintc_gina_exit_window_new_for_user_options(
+                WINTC_IGINA_SM(sm_xfce)
+            );
     }
     else
     {
-        wnd = wintc_gina_exit_window_new_for_power_options(sm_xfce);
+        wnd =
+            wintc_gina_exit_window_new_for_power_options(
+                WINTC_IGINA_SM(sm_xfce)
+            );
     }
 
     gtk_widget_show_all(wnd);

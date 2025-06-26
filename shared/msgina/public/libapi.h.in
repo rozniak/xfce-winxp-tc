@@ -4,8 +4,11 @@
 #include "@LIB_HEADER_DIR@/authwnd.h"
 #include "@LIB_HEADER_DIR@/challenge.h"
 #include "@LIB_HEADER_DIR@/exitwnd.h"
+#include "@LIB_HEADER_DIR@/if_authui.h"
+#include "@LIB_HEADER_DIR@/if_sm.h"
 #include "@LIB_HEADER_DIR@/logon.h"
 #include "@LIB_HEADER_DIR@/state.h"
+#include "@LIB_HEADER_DIR@/xdgsm.h"
 #include "@LIB_HEADER_DIR@/xfsm.h"
 
 #endif

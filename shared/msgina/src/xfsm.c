@@ -1,13 +1,53 @@
 #include <glib.h>
 #include <wintc/comgtk.h>
 
+#include "../public/if_sm.h"
 #include "../public/xfsm.h"
 
 //
 // FORWARD DECLARATIONS
 //
+static void wintc_gina_sm_xfce_igina_sm_interface_init(
+    WinTCIGinaSmInterface* iface
+);
+
 static void wintc_gina_sm_xfce_dispose(
     GObject* object
+);
+
+gboolean wintc_gina_sm_xfce_is_valid(
+    WinTCIGinaSm* sm
+);
+
+gboolean wintc_gina_sm_xfce_can_restart(
+    WinTCIGinaSm* sm
+);
+gboolean wintc_gina_sm_xfce_can_shut_down(
+    WinTCIGinaSm* sm
+);
+gboolean wintc_gina_sm_xfce_can_sleep(
+    WinTCIGinaSm* sm
+);
+
+gboolean wintc_gina_sm_xfce_log_off(
+    WinTCIGinaSm* sm,
+    GError**      error
+);
+gboolean wintc_gina_sm_xfce_restart(
+    WinTCIGinaSm* sm,
+    GError**      error
+);
+gboolean wintc_gina_sm_xfce_shut_down(
+    WinTCIGinaSm* sm,
+    GError**      error
+);
+gboolean wintc_gina_sm_xfce_sleep(
+    WinTCIGinaSm* sm,
+    GError**      error
+);
+gboolean wintc_gina_sm_xfce_switch_user(
+    WinTCIGinaSm* sm,
+    GError**      error
 );
 
 static gboolean wintc_gina_sm_xfce_call_can(
@@ -35,10 +75,14 @@ typedef struct _WinTCGinaSmXfce
 //
 // GTK TYPE DEFINITIONS & CTORS
 //
-G_DEFINE_TYPE(
+G_DEFINE_TYPE_WITH_CODE(
     WinTCGinaSmXfce,
     wintc_gina_sm_xfce,
-    G_TYPE_OBJECT
+    G_TYPE_OBJECT,
+    G_IMPLEMENT_INTERFACE(
+        WINTC_TYPE_IGINA_SM,
+        wintc_gina_sm_xfce_igina_sm_interface_init
+    )
 )
 
 static void wintc_gina_sm_xfce_class_init(
@@ -75,6 +119,21 @@ static void wintc_gina_sm_xfce_init(
     }
 }
 
+static void wintc_gina_sm_xfce_igina_sm_interface_init(
+    WinTCIGinaSmInterface* iface
+)
+{
+    iface->is_valid      = wintc_gina_sm_xfce_is_valid;
+    iface->can_restart   = wintc_gina_sm_xfce_can_restart;
+    iface->can_shut_down = wintc_gina_sm_xfce_can_shut_down;
+    iface->can_sleep     = wintc_gina_sm_xfce_can_sleep;
+    iface->log_off       = wintc_gina_sm_xfce_log_off;
+    iface->restart       = wintc_gina_sm_xfce_restart;
+    iface->shut_down     = wintc_gina_sm_xfce_shut_down;
+    iface->sleep         = wintc_gina_sm_xfce_sleep;
+    iface->switch_user   = wintc_gina_sm_xfce_switch_user;
+}
+
 //
 // CLASS VIRTUAL METHODS
 //
@@ -90,6 +149,136 @@ static void wintc_gina_sm_xfce_dispose(
 }
 
 //
+// INTERFACE METHODS (WinTCIGinaSm)
+//
+gboolean wintc_gina_sm_xfce_is_valid(
+    WinTCIGinaSm* sm
+)
+{
+    return !!((WINTC_GINA_SM_XFCE(sm))->proxy);
+}
+
+gboolean wintc_gina_sm_xfce_can_restart(
+    WinTCIGinaSm* sm
+)
+{
+    return wintc_gina_sm_xfce_call_can(
+        WINTC_GINA_SM_XFCE(sm),
+        "CanRestart"
+    );
+}
+
+gboolean wintc_gina_sm_xfce_can_shut_down(
+    WinTCIGinaSm* sm
+)
+{
+    return wintc_gina_sm_xfce_call_can(
+        WINTC_GINA_SM_XFCE(sm),
+        "CanShutdown"
+    );
+}
+
+gboolean wintc_gina_sm_xfce_can_sleep(
+    WinTCIGinaSm* sm
+)
+{
+    return wintc_gina_sm_xfce_call_can(
+        WINTC_GINA_SM_XFCE(sm),
+        "CanHybridSleep"
+    );
+}
+
+gboolean wintc_gina_sm_xfce_log_off(
+    WinTCIGinaSm* sm,
+    GError**      error
+)
+{
+    return wintc_gina_sm_xfce_call_do(
+        WINTC_GINA_SM_XFCE(sm),
+        "Logout",
+        error
+    );
+}
+
+gboolean wintc_gina_sm_xfce_restart(
+    WinTCIGinaSm* sm,
+    GError**      error
+)
+{
+    if (
+        !wintc_gina_sm_xfce_call_can(
+            WINTC_GINA_SM_XFCE(sm),
+            "CanRestart"
+        )
+    )
+    {
+        return FALSE;
+    }
+
+    return wintc_gina_sm_xfce_call_do(
+        WINTC_GINA_SM_XFCE(sm),
+        "Restart",
+        error
+    );
+}
+
+gboolean wintc_gina_sm_xfce_shut_down(
+    WinTCIGinaSm* sm,
+    GError**      error
+)
+{
+    if (
+        !wintc_gina_sm_xfce_call_can(
+            WINTC_GINA_SM_XFCE(sm),
+            "CanShutdown"
+        )
+    )
+    {
+        return FALSE;
+    }
+
+    return wintc_gina_sm_xfce_call_do(
+        WINTC_GINA_SM_XFCE(sm),
+        "Shutdown",
+        error
+    );
+}
+
+gboolean wintc_gina_sm_xfce_sleep(
+    WinTCIGinaSm* sm,
+    GError**      error
+)
+{
+    if (
+        !wintc_gina_sm_xfce_call_can(
+            WINTC_GINA_SM_XFCE(sm),
+            "CanHybridSleep"
+        )
+    )
+    {
+        return FALSE;
+    }
+
+    return wintc_gina_sm_xfce_call_do(
+        WINTC_GINA_SM_XFCE(sm),
+        "HyrbidSleep",
+        error
+    );
+}
+
+gboolean wintc_gina_sm_xfce_switch_user(
+    WinTCIGinaSm* sm,
+    GError**      error
+)
+{
+    return wintc_gina_sm_xfce_call_do(
+        WINTC_GINA_SM_XFCE(sm),
+        "SwitchUser",
+        error
+    );
+}
+
+//
 // PUBLIC FUNCTIONS
 //
 WinTCGinaSmXfce* wintc_gina_sm_xfce_new(void)
@@ -99,133 +288,6 @@ WinTCGinaSmXfce* wintc_gina_sm_xfce_new(void)
             WINTC_TYPE_GINA_SM_XFCE,
             NULL
         )
-    );
-}
-
-gboolean wintc_gina_sm_xfce_is_valid(
-    WinTCGinaSmXfce* sm_xfce
-)
-{
-    return !!(sm_xfce->proxy);
-}
-
-gboolean wintc_gina_sm_xfce_can_restart(
-    WinTCGinaSmXfce* sm_xfce
-)
-{
-    return wintc_gina_sm_xfce_call_can(
-        sm_xfce,
-        "CanRestart"
-    );
-}
-
-gboolean wintc_gina_sm_xfce_can_shut_down(
-    WinTCGinaSmXfce* sm_xfce
-)
-{
-    return wintc_gina_sm_xfce_call_can(
-        sm_xfce,
-        "CanShutdown"
-    );
-}
-
-gboolean wintc_gina_sm_xfce_can_sleep(
-    WinTCGinaSmXfce* sm_xfce
-)
-{
-    return wintc_gina_sm_xfce_call_can(
-        sm_xfce,
-        "CanHybridSleep"
-    );
-}
-
-gboolean wintc_gina_sm_xfce_log_off(
-    WinTCGinaSmXfce* sm_xfce,
-    GError**         error
-)
-{
-    return wintc_gina_sm_xfce_call_do(
-        sm_xfce,
-        "Logout",
-        error
-    );
-}
-
-gboolean wintc_gina_sm_xfce_restart(
-    WinTCGinaSmXfce* sm_xfce,
-    GError**         error
-)
-{
-    if (
-        !wintc_gina_sm_xfce_call_can(
-            sm_xfce,
-            "CanRestart"
-        )
-    )
-    {
-        return FALSE;
-    }
-
-    return wintc_gina_sm_xfce_call_do(
-        sm_xfce,
-        "Restart",
-        error
-    );
-}
-
-gboolean wintc_gina_sm_xfce_shut_down(
-    WinTCGinaSmXfce* sm_xfce,
-    GError**         error
-)
-{
-    if (
-        !wintc_gina_sm_xfce_call_can(
-            sm_xfce,
-            "CanShutdown"
-        )
-    )
-    {
-        return FALSE;
-    }
-
-    return wintc_gina_sm_xfce_call_do(
-        sm_xfce,
-        "Shutdown",
-        error
-    );
-}
-
-gboolean wintc_gina_sm_xfce_sleep(
-    WinTCGinaSmXfce* sm_xfce,
-    GError**         error
-)
-{
-    if (
-        !wintc_gina_sm_xfce_call_can(
-            sm_xfce,
-            "CanHybridSleep"
-        )
-    )
-    {
-        return FALSE;
-    }
-
-    return wintc_gina_sm_xfce_call_do(
-        sm_xfce,
-        "HyrbidSleep",
-        error
-    );
-}
-
-gboolean wintc_gina_sm_xfce_switch_user(
-    WinTCGinaSmXfce* sm_xfce,
-    GError**         error
-)
-{
-    return wintc_gina_sm_xfce_call_do(
-        sm_xfce,
-        "SwitchUser",
-        error
     );
 }
 

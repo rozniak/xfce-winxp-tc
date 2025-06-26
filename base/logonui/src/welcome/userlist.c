@@ -38,60 +38,6 @@ enum
 };
 
 //
-// GTK OOP CLASS/INSTANCE DEFINITIONS
-//
-struct _WinTCWelcomeUserListClass
-{
-    GtkContainerClass __parent__;
-};
-
-struct _WinTCWelcomeUserList
-{
-    GtkContainer __parent__;
-
-    // UI
-    //
-    GdkWindow* hwnd;
-
-    GSList* child_widgets;
-
-    GtkWidget* box_auth;
-    GtkWidget* button_go;
-    GtkWidget* entry_password;
-
-    WinTCGinaLogonSession* logon_session;
-
-    // Control stuff
-    //
-    gint    selected_index;
-    GList*  users;
-
-    // Graphic resources
-    //
-    GdkPixbuf*       pixbuf_tile;
-    GdkPixbuf*       pixbuf_tilehot;
-    GdkPixbuf*       pixbuf_userpic;
-    GdkPixbuf*       pixbuf_usersel;
-    cairo_surface_t* surface_tile;
-    cairo_surface_t* surface_tilehot;
-    cairo_surface_t* surface_userpic;
-    cairo_surface_t* surface_usersel;
-
-    // Geometry
-    //
-    gint item_height;
-
-    GtkAdjustment* hadjustment;
-    GtkAdjustment* vadjustment;
-
-    gint hscroll_policy;
-    gint vscroll_policy;
-
-    gint scroll_x;
-    gint scroll_y;
-};
-
-//
 // FORWARD DECLARATIONS
 //
 static void wintc_welcome_user_list_finalize(
@@ -201,6 +147,60 @@ static void on_button_go_clicked(
     GtkButton* self,
     gpointer   user_data
 );
+
+//
+// GTK OOP CLASS/INSTANCE DEFINITIONS
+//
+struct _WinTCWelcomeUserListClass
+{
+    GtkContainerClass __parent__;
+};
+
+struct _WinTCWelcomeUserList
+{
+    GtkContainer __parent__;
+
+    // UI
+    //
+    GdkWindow* hwnd;
+
+    GSList* child_widgets;
+
+    GtkWidget* box_auth;
+    GtkWidget* button_go;
+    GtkWidget* entry_password;
+
+    WinTCGinaLogonSession* logon_session;
+
+    // Control stuff
+    //
+    gint    selected_index;
+    GList*  users;
+
+    // Graphic resources
+    //
+    GdkPixbuf*       pixbuf_tile;
+    GdkPixbuf*       pixbuf_tilehot;
+    GdkPixbuf*       pixbuf_userpic;
+    GdkPixbuf*       pixbuf_usersel;
+    cairo_surface_t* surface_tile;
+    cairo_surface_t* surface_tilehot;
+    cairo_surface_t* surface_userpic;
+    cairo_surface_t* surface_usersel;
+
+    // Geometry
+    //
+    gint item_height;
+
+    GtkAdjustment* hadjustment;
+    GtkAdjustment* vadjustment;
+
+    gint hscroll_policy;
+    gint vscroll_policy;
+
+    gint scroll_x;
+    gint scroll_y;
+};
 
 //
 // GTK TYPE DEFINITIONS & CTORS

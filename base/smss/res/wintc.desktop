@@ -1,0 +1,8 @@
+[Desktop Entry]
+Version=1.0
+Name=WinTC Session
+Comment=Use this session to run Windows as your desktop environment
+Exec=startwintc
+Icon=
+Type=Application
+DesktopNames=WINTC

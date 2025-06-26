@@ -1,0 +1,12 @@
+#!/usr/bin/env sh
+
+# For now, we must launch xfsettingsd first because it hosts the XSettings
+# protocol which GtkSettings reads from
+#
+# FIXME: regsvc should take over this role
+#
+xfsettingsd --disable-wm-check --replace --daemon
+
+# Launch the session with DBus
+#
+dbus-run-session -- smss

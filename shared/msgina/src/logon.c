@@ -15,19 +15,57 @@ enum
     N_SIGNALS
 };
 
+enum
+{
+    PROP_NULL,
+    PROP_PREFERRED_SESSION,
+    N_PROPERTIES
+};
+
+//
+// FORWARD DECLARATIONS
+//
+static void wintc_gina_logon_session_get_property(
+    GObject*    object,
+    guint       prop_id,
+    GValue*     value,
+    GParamSpec* pspec
+);
+static void wintc_gina_logon_session_set_property(
+    GObject*      object,
+    guint         prop_id,
+    const GValue* value,
+    GParamSpec*   pspec
+);
+
+static void wintc_gina_logon_session_reset_auth_state(
+    WinTCGinaLogonSession* logon_session
+);
+
+static gboolean lightdm_session_exists(
+    const gchar* session_name
+);
+
+static void on_greeter_authentication_complete(
+    LightDMGreeter* greeter,
+    gpointer        user_data
+);
+static void on_greeter_show_prompt(
+    LightDMGreeter* greeter,
+    gchar*          text,
+    WINTC_UNUSED(LightDMPromptType type),
+    gpointer        user_data
+);
+
 //
 // STATIC DATA
 //
-static gint wintc_gina_logon_session_signals[N_SIGNALS] = { 0 };
+static GParamSpec* wintc_gina_logon_session_properties[N_PROPERTIES] = { 0 };
+static gint        wintc_gina_logon_session_signals[N_SIGNALS]       = { 0 };
 
 //
 // GLIB OOP CLASS/INSTANCE DEFINITIONS
 //
-struct _WinTCGinaLogonSessionClass
-{
-    GObjectClass __parent__;
-};
-
 struct _WinTCGinaLogonSession
 {
     GObject __parent__;
@@ -35,27 +73,9 @@ struct _WinTCGinaLogonSession
     gboolean        auth_complete;
     gboolean        auth_ready;
     LightDMGreeter* greeter;
+    gchar*          preferred_session;
     gchar*          response_pwd;
 };
-
-//
-// FORWARD DECLARATIONS
-//
-static void reset_auth_state(
-    WinTCGinaLogonSession* logon_session
-);
-
-static void on_greeter_authentication_complete(
-    LightDMGreeter* greeter,
-    gpointer        user_data
-);
-
-static void on_greeter_show_prompt(
-    LightDMGreeter* greeter,
-    gchar*          text,
-    WINTC_UNUSED(LightDMPromptType type),
-    gpointer        user_data
-);
 
 //
 // GLIB TYPE DEFINITIONS & CTORS
@@ -72,6 +92,9 @@ static void wintc_gina_logon_session_class_init(
 {
     GObjectClass* object_class = G_OBJECT_CLASS(klass);
 
+    object_class->get_property = wintc_gina_logon_session_get_property;
+    object_class->set_property = wintc_gina_logon_session_set_property;
+
     wintc_gina_logon_session_signals[SIGNAL_ATTEMPT_COMPLETE] =
         g_signal_new(
             "attempt-complete",
@@ -85,6 +108,21 @@ static void wintc_gina_logon_session_class_init(
             1,
             G_TYPE_INT
         );
+
+    wintc_gina_logon_session_properties[PROP_PREFERRED_SESSION] =
+        g_param_spec_string(
+            "preferred-session",
+            "PreferredSession",
+            "The session that should be started upon successful logon.",
+            NULL,
+            G_PARAM_READWRITE | G_PARAM_EXPLICIT_NOTIFY
+        );
+
+    g_object_class_install_properties(
+        object_class,
+        N_PROPERTIES,
+        wintc_gina_logon_session_properties
+    );
 }
 
 static void wintc_gina_logon_session_init(
@@ -93,6 +131,52 @@ static void wintc_gina_logon_session_init(
 {
     self->auth_ready = FALSE;
     self->greeter    = NULL;
+}
+
+//
+// CLASS VIRTUAL METHODS
+//
+static void wintc_gina_logon_session_get_property(
+    GObject*    object,
+    guint       prop_id,
+    GValue*     value,
+    GParamSpec* pspec
+)
+{
+    WinTCGinaLogonSession* logon_session = WINTC_GINA_LOGON_SESSION(object);
+
+    switch (prop_id)
+    {
+        case PROP_PREFERRED_SESSION:
+            g_value_set_string(value, logon_session->preferred_session);
+            break;
+
+        default:
+            G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
+            break;
+    }
+}
+
+static void wintc_gina_logon_session_set_property(
+    GObject*      object,
+    guint         prop_id,
+    const GValue* value,
+    GParamSpec*   pspec
+)
+{
+    WinTCGinaLogonSession* logon_session = WINTC_GINA_LOGON_SESSION(object);
+
+    switch (prop_id)
+    {
+        case PROP_PREFERRED_SESSION:
+            logon_session->preferred_session = g_value_dup_string(value);
+            break;
+
+        default:
+            G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
+            break;
+
+    }
 }
 
 //
@@ -169,20 +253,13 @@ gboolean wintc_gina_logon_session_finish(
 
     if (!logon_session->auth_complete)
     {
-        g_warning("%s", "Attempt to complete incomplete logon.");
+        g_critical("%s", "GINA - Attempt to complete incomplete logon.");
         return FALSE;
     }
 
-    // Attempt to resolve a session, because we can't actually rely on LightDM
-    // having a default that is valid
+    // If there are no sessions, then we can't finish logging on
     //
-    GList*       avail_sessions = lightdm_get_sessions();
-    const gchar* def_session    = lightdm_greeter_get_default_session_hint(
-                                      logon_session->greeter
-                                  );
-    const gchar* use_session    = NULL;
-
-    if (!avail_sessions)
+    if (!lightdm_get_sessions())
     {
         // FIXME: This string will need localising, though there is no such
         //        string in Windows (or similar afaik) as this situation does
@@ -197,44 +274,107 @@ gboolean wintc_gina_logon_session_finish(
             "Logon cannot be completed."
         );
 
-        reset_auth_state(logon_session);
+        wintc_gina_logon_session_reset_auth_state(logon_session);
 
         return FALSE;
     }
 
-    for (GList* iter = avail_sessions; iter; iter = iter->next)
-    {
-        LightDMSession* session = (LightDMSession*) iter->data;
+    // Pull out preferred/default sessions and check they exist
+    //
+    const gchar* bak_session  = NULL;
+    const gchar* def_session  = lightdm_greeter_get_default_session_hint(
+                                    logon_session->greeter
+                                );
+    const gchar* pref_session = logon_session->preferred_session;
 
-        if (g_strcmp0(def_session, lightdm_session_get_key(session)) == 0)
+    if (!lightdm_session_exists(def_session))
+    {
+        def_session = NULL;
+    }
+
+    if (!lightdm_session_exists(pref_session))
+    {
+        pref_session = NULL;
+    }
+
+    // If there's no preferred sessions, try our own - otherwise fall back to
+    // the first one in the list
+    //
+    if (!def_session && !pref_session)
+    {
+        // FIXME: Commented out for now, until WinTC session is ready for prime
+        //        time
+        //
+        /**if (lightdm_session_exists("wintc"))
         {
-            use_session = def_session;
+            bak_session = "wintc";
+        }
+        else */if (lightdm_session_exists("xfce"))
+        {
+            bak_session = "xfce";
+        }
+        else
+        {
+            bak_session =
+                lightdm_session_get_key(
+                    (LightDMSession*) lightdm_get_sessions()->data
+                );
         }
     }
 
-    // If we didn't find the default session, just use the first one
+    // Attempt to start one of the sessions
     //
-    if (use_session == NULL)
-    {
-        use_session =
-            lightdm_session_get_key((LightDMSession*) avail_sessions->data);
-    }
-
-    // Perform the logon attempt
-    //
-    gboolean success =
+    if (
+        pref_session &&
         lightdm_greeter_start_session_sync(
             logon_session->greeter,
-            use_session,
+            pref_session,
             error
-        );
-
-    if (!success)
+        )
+    )
     {
-        reset_auth_state(logon_session);
+        return TRUE;
+    }
+    else
+    {
+        wintc_log_error_and_clear(error);
+
+        if (
+            def_session &&
+            lightdm_greeter_start_session_sync(
+                logon_session->greeter,
+                def_session,
+                error
+            )
+        )
+        {
+            return TRUE;
+        }
+        else
+        {
+            if (
+                lightdm_greeter_start_session_sync(
+                    logon_session->greeter,
+                    bak_session,
+                    error
+                )
+            )
+            {
+                return TRUE;
+            }
+        }
     }
 
-    return success;
+    wintc_gina_logon_session_reset_auth_state(logon_session);
+
+    return FALSE;
+}
+
+const gchar* wintc_gina_logon_session_get_preferred_session(
+    WinTCGinaLogonSession* logon_session
+)
+{
+    return logon_session->preferred_session;
 }
 
 gboolean wintc_gina_logon_session_is_available(
@@ -244,6 +384,20 @@ gboolean wintc_gina_logon_session_is_available(
     WINTC_LOG_DEBUG("GINA - polled");
 
     return logon_session->auth_ready;
+}
+
+void wintc_gina_logon_session_set_preferred_session(
+    WinTCGinaLogonSession* logon_session,
+    const gchar*           session
+)
+{
+    g_free(logon_session->preferred_session);
+    logon_session->preferred_session = g_strdup(session);
+
+    g_object_notify_by_pspec(
+        G_OBJECT(logon_session),
+        wintc_gina_logon_session_properties[PROP_PREFERRED_SESSION]
+    );
 }
 
 void wintc_gina_logon_session_try_logon(
@@ -274,13 +428,37 @@ void wintc_gina_logon_session_try_logon(
 //
 // PRIVATE FUNCTIONS
 //
-static void reset_auth_state(
+static void wintc_gina_logon_session_reset_auth_state(
     WinTCGinaLogonSession* logon_session
 )
 {
     logon_session->auth_complete = FALSE;
 
     lightdm_greeter_authenticate(logon_session->greeter, NULL, NULL);
+}
+
+static gboolean lightdm_session_exists(
+    const gchar* session_name
+)
+{
+    if (!session_name)
+    {
+        return FALSE;
+    }
+
+    GList* avail_sessions = lightdm_get_sessions();
+
+    for (GList* iter = avail_sessions; iter; iter = iter->next)
+    {
+        LightDMSession* session = (LightDMSession*) iter->data;
+
+        if (g_strcmp0(session_name, lightdm_session_get_key(session)) == 0)
+        {
+            return TRUE;
+        }
+    }
+
+    return FALSE;
 }
 
 //
@@ -313,7 +491,7 @@ static void on_greeter_authentication_complete(
     //
     if (!logon_session->auth_complete)
     {
-        reset_auth_state(logon_session);
+        wintc_gina_logon_session_reset_auth_state(logon_session);
     }
 }
 
@@ -351,4 +529,3 @@ static void on_greeter_show_prompt(
         g_critical("Unknown prompt: %s", text);
     }
 }
-

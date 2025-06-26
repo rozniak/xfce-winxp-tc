@@ -1,0 +1,5 @@
+bt,rt:glib2
+bt,rt:gtk3
+bt,rt:wintc-comgtk
+bt,rt:wintc-exec
+bt,rt:wintc-shell

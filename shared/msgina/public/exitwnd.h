@@ -4,7 +4,7 @@
 #include <glib.h>
 #include <gtk/gtk.h>
 
-#include "xfsm.h"
+#include "if_sm.h"
 
 //
 // GTK OOP BOILERPLATE
@@ -23,10 +23,10 @@ G_DECLARE_FINAL_TYPE(
 // PUBLIC FUNCTIONS
 //
 GtkWidget* wintc_gina_exit_window_new_for_power_options(
-    WinTCGinaSmXfce* sm_xfce
+    WinTCIGinaSm* sm
 );
 GtkWidget* wintc_gina_exit_window_new_for_user_options(
-    WinTCGinaSmXfce* sm_xfce
+    WinTCIGinaSm* sm
 );
 
 #endif
