@@ -11,6 +11,7 @@ export SETUPROOT
 # running distro and its init system before chaining onto the rest of setup
 #
 
+clear
 printf "%s\n" "Setup is inspecting your computer's hardware configuration...";
 
 # Probe for Python as we cannot run binaries at this point
@@ -23,6 +24,7 @@ then
 
     if [ $? != 0 ]
     then
+        clear
         printf "%s%s\n" \
             "Your system is missing the Python 3 interpreter, this is " \
             "required by setup. Setup will now exit.";
@@ -33,8 +35,9 @@ fi
 # Inspect the distro
 #
 . "$SETUPROOT/dal/detect.sh"
-export DIST_ID
-export DIST_ID_EXT
+export WSETUP_DIST_NAME
+export WSETUP_DIST_PKGFMT
+export WSETUP_DIST_PKGFMT_EXT
 
 # Chain to either text-mode or the setup autorun depending on whether we're
 # under a display manager

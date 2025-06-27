@@ -9,9 +9,9 @@ def wsetup_step_init(stdscr):
 
     # Check the current distro is one we know about
     #
-    dist_id = os.environ.get("DIST_ID")
+    dist_pkgfmt = os.environ.get("WSETUP_DIST_PKGFMT", "unsupported")
 
-    if dist_id == None or dist_id == "unsupported":
+    if dist_pkgfmt == "unsupported":
         wsetup_screen_write_simple(
             stdscr,
             0, 0,
@@ -94,6 +94,7 @@ def wsetup_step_welcome(stdscr):
 
     # TODO: We don't have any 'Recovery Console', left off for now, deal with
     #       in future perhaps
+    #
     wsetup_screen_write_simple(
         stdscr,
         5, 3,
@@ -166,29 +167,6 @@ def wsetup_step_eula(stdscr):
             return 5
 
 def wsetup_step_confirm_system(stdscr):
-    # Ident the distro we found to the user
-    #
-    env_dist_id = os.environ.get("DIST_ID")
-    env_dist_id_ext = os.environ.get("DIST_ID_EXT")
-
-    dist_name = "Unknown distribution"
-
-    if env_dist_id == "archpkg":
-        dist_name = "Arch Linux or derivative"
-    elif env_dist_id == "apk":
-        dist_name = "Alpine Linux"
-    elif env_dist_id == "bsdpkg":
-        dist_name = "FreeBSD"
-    elif env_dist_id == "deb":
-        dist_name = "Debian or derivative"
-    elif env_dist_id == "rpm":
-        dist_name = "Red Hat, Fedora, or other RPM-based distribution"
-    elif env_dist_id == "xbps":
-        if env_dist_id_ext == "glibc":
-            dist_name = "Void Linux (glibc)"
-        elif env_dist_id_ext == "musl":
-            dist_name = "Void Linux (musl)"
-
     # TUI update
     #
     wsetup_screen_clear(stdscr)
@@ -203,7 +181,7 @@ def wsetup_step_confirm_system(stdscr):
     wsetup_screen_write_simple(
         stdscr,
         3, 4,
-        dist_name,
+        os.environ.get("WSETUP_DIST_NAME"),
         curses.color_pair(COLOR_PAIR_NORMAL_TEXT)
     )
     wsetup_screen_write_simple(
