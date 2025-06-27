@@ -34,7 +34,7 @@ fi
 
 # Inspect the distro
 #
-. "$SETUPROOT/dal/detect.sh"
+. "$SETUPROOT/setup/dal/detect.sh"
 export WSETUP_DIST_NAME
 export WSETUP_DIST_PKGFMT
 export WSETUP_DIST_PKGFMT_EXT
@@ -44,7 +44,7 @@ export WSETUP_DIST_PKGFMT_EXT
 #
 if [ -z "$DISPLAY" ] && [ -z "$WAYLAND_DISPLAY" ]
 then
-    $python_path textmode/main.py
+    $python_path setup/textmode/main.py
 else
-    $python_path autorun/main.py
+    $python_path setup/autorun/main.py
 fi

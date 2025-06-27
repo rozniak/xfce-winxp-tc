@@ -17,6 +17,7 @@ mui-stuff/
 # Build output
 #
 [Bb]uild/
+relstage/
 config.h
 libapi.h
 marshal.c
@@ -24,6 +25,7 @@ marshal.h
 meta.h
 resources.c
 *.deb
+*.iso
 *.pkg
 *.pkg.tar.zst
 *.pot
