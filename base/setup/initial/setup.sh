@@ -19,10 +19,15 @@ python_path=`which python 2>/dev/null`
 
 if [ $? != 0 ]
 then
-    printf "%s%s\n" \
-        "Your system is missing the Python 3 interpreter, this is required " \
-        "by setup. Setup will now exit.";
-    exit 1;
+    python_path=`which python3 2>/dev/null`
+
+    if [ $? != 0 ]
+    then
+        printf "%s%s\n" \
+            "Your system is missing the Python 3 interpreter, this is " \
+            "required by setup. Setup will now exit.";
+        exit 1;
+    fi
 fi
 
 # Inspect the distro
@@ -36,8 +41,7 @@ export DIST_ID_EXT
 #
 if [ -z "$DISPLAY" ] && [ -z "$WAYLAND_DISPLAY" ]
 then
-    $python_path textmode/main.py;
+    $python_path textmode/main.py
 else
-    printf "%s\n" "GUI mode setup is not yet implemented. Sorry!"
-    exit 1
+    $python_path autorun/main.py
 fi
