@@ -154,15 +154,15 @@ static void wintc_cpl_sysdm_page_general_constructed(
 
     gtk_label_set_text(
         GTK_LABEL(label_skuname),
-        wintc_build_get_sku_name()
+        wintc_build_query(WINTC_VER_NAME)
     );
     gtk_label_set_text(
         GTK_LABEL(label_skued),
-        wintc_build_get_sku_edition()
+        wintc_build_query(WINTC_VER_SKU)
     );
     gtk_label_set_text(
         GTK_LABEL(label_skuver),
-        wintc_build_get_tagline()
+        wintc_build_query(WINTC_VER_SKU_TAGLINE)
     );
     gtk_label_set_text(
         GTK_LABEL(label_reguser),

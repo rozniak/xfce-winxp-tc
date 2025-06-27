@@ -19,13 +19,6 @@ include(../../packaging/cmake-inc/packaging/CMakeLists.txt)
 # Set up variables
 #
 set(OUT_PATH_RELEASE ${CMAKE_BINARY_DIR}/release)
-set(GENTAG_TOOL ${REPO_ROOT}/tools/bldutils/gentag/gentag.sh)
-
-execute_process(
-    COMMAND bash ${GENTAG_TOOL}
-    WORKING_DIRECTORY ${PROJECT_ROOT}
-    OUTPUT_VARIABLE REL_BUILD_TAG
-)
 
 if (${WINTC_SKU} MATCHES "^xpclient-(.+)")
     set(REL_SKU_NAME "Microsoft Windows XP")

@@ -86,13 +86,14 @@ if (NOT ${WINTC_SKU} IN_LIST WINTC_VALID_SKUS)
     )
 endif()
 
-
-# Define func for importing constants from a file
+# Define func for importing constants from text like
 #
-function(wintc_source_vars SOURCE_PATH)
-    file(STRINGS ${SOURCE_PATH} sourceLines)
-
-    foreach(line ${sourceLines})
+# VAR1=some value
+# VAR2=36
+# ...
+#
+function(wintc_source_vars SOURCE_LINES)
+    foreach(line ${SOURCE_LINES})
         if (${line} STREQUAL "")
             continue()
         endif()
@@ -103,3 +104,29 @@ function(wintc_source_vars SOURCE_PATH)
         set(${varIdentifier} ${varValue} PARENT_SCOPE)
     endforeach()
 endfunction()
+
+# Import version information
+#
+if (DEFINED ENV{WINTC_VER_TAG})
+    set(WINTC_VER_MAJOR $ENV{WINTC_VER_MAJOR})
+    set(WINTC_VER_MINOR $ENV{WINTC_VER_MINOR})
+    set(WINTC_VER_BUILD $ENV{WINTC_VER_BUILD})
+    set(WINTC_VER_DATETIME $ENV{WINTC_VER_DATETIME})
+    set(WINTC_VER_BRANCH $ENV{WINTC_VER_BRANCH})
+    set(WINTC_VER_DATESTAMP $ENV{WINTC_VER_DATESTAMP})
+    set(WINTC_VER_HASH $ENV{WINTC_VER_HASH})
+    set(WINTC_VER_USER $ENV{WINTC_VER_USER})
+    set(WINTC_VER_TAG $ENV{WINTC_VER_TAG})
+else()
+    execute_process(
+        COMMAND bash ${REPO_ROOT}/tools/bldutils/gentag/gentag.sh
+        WORKING_DIRECTORY ${REPO_ROOT}
+        OUTPUT_VARIABLE version_lines
+    )
+
+    string(REPLACE "\n" ";" version_lines ${version_lines})
+
+    wintc_source_vars("${version_lines}")
+endif()
+
+set(WINTC_VER_PROJECT "${WINTC_VER_MAJOR}.${WINTC_VER_MINOR}.${WINTC_VER_BUILD}.${WINTC_VER_DATETIME}")

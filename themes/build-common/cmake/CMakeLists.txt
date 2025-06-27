@@ -2,8 +2,11 @@ cmake_minimum_required(VERSION 3.12)
 
 # Import colour scheme and theme metadata
 #
-wintc_source_vars(${PROJECT_ROOT}/scheme)
-wintc_source_vars(${PROJECT_ROOT}/theme)
+file(STRINGS ${PROJECT_ROOT}/scheme scheme_lines)
+file(STRINGS ${PROJECT_ROOT}/theme  theme_lines)
+
+wintc_source_vars("${scheme_lines}")
+wintc_source_vars("${theme_lines}")
 
 # Import dir constants
 #

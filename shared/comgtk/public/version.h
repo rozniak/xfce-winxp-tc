@@ -6,6 +6,30 @@
 #include <glib.h>
 
 //
+// PUBLIC ENUMS
+//
+enum
+{
+    WINTC_VER_PRETTY_NAME,
+    WINTC_VER_NAME,
+    WINTC_VER_SKU,
+    WINTC_VER_SKU_TAGLINE,
+
+    WINTC_VER_MAJOR,
+    WINTC_VER_MINOR,
+    WINTC_VER_BUILD,
+    WINTC_VER_DATETIME,
+
+    WINTC_VER_BRANCH,
+    WINTC_VER_DATESTAMP,
+    WINTC_VER_HASH,
+    WINTC_VER_USER,
+
+    WINTC_VER_TAG,
+    WINTC_VER_PROJECT
+};
+
+//
 // PUBLIC FUNCTIONS
 //
 
@@ -17,38 +41,13 @@
 gboolean wintc_build_is_debug(void);
 
 /**
- * Retrieves the 'pretty name' of the installed version of WinTC.
+ * Queries information related to the installed version of WinTC.
  *
- * @return The 'pretty name' of the installed version of WinTC.
+ * @param query_id The ID of the version property to query.
+ * @return The string value corresponding to the query ID.
  */
-const gchar* wintc_build_get_pretty_name(void);
-
-/**
- * Retrieves the edition of the installed version of WinTC.
- *
- * @return The edition of the installed version of WinTC.
- */
-const gchar* wintc_build_get_sku_edition(void);
-
-/**
- * Retrieves the name of the installed version of WinTC.
- *
- * @return The name of the installed version of WinTC.
- */
-const gchar* wintc_build_get_sku_name(void);
-
-/**
- * Retrieves the build tag identifying the installed version of WinTC.
- *
- * @return The WinTC build tag.
- */
-const gchar* wintc_build_get_tag(void);
-
-/**
- * Retrieves the tagline of the installed version of WinTC.
- *
- * @return The tagline of the installed version of WinTC.
- */
-const gchar* wintc_build_get_tagline(void);
+const gchar* wintc_build_query(
+    guint query_id
+);
 
 #endif
