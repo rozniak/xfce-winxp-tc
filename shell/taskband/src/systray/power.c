@@ -111,39 +111,46 @@ static void wintc_notification_power_constructed(
     UpDevice*  device;
 
     power->up_client = up_client_new();
-    WINTC_LOG_DEBUG("Connected to upower");
-
-    all_devices = up_client_get_devices2(power->up_client);
-
-    for (guint i = 0; i < all_devices->len; i++)
+    if (power->up_client)
     {
-        device = all_devices->pdata[i];
+        WINTC_LOG_DEBUG("Connected to upower");
 
-        check_and_register_battery(power, device);
+        all_devices = up_client_get_devices2(power->up_client);
+
+        for (guint i = 0; i < all_devices->len; i++)
+        {
+            device = all_devices->pdata[i];
+
+            check_and_register_battery(power, device);
+        }
+
+        g_signal_connect(
+            power->up_client,
+            "device-added",
+            G_CALLBACK(on_up_client_device_added),
+            power
+        );
+        g_signal_connect(
+            power->up_client,
+            "device-removed",
+            G_CALLBACK(on_up_client_device_removed),
+            power
+        );
+        g_signal_connect(
+            power->up_client,
+            "notify::on-battery",
+            G_CALLBACK(on_up_client_battery_notify),
+            power
+        );
+
+        update_client_on_battery(power, power->up_client);
+
+        g_ptr_array_unref(all_devices);
     }
-
-    g_signal_connect(
-        power->up_client,
-        "device-added",
-        G_CALLBACK(on_up_client_device_added),
-        power
-    );
-    g_signal_connect(
-        power->up_client,
-        "device-removed",
-        G_CALLBACK(on_up_client_device_removed),
-        power
-    );
-    g_signal_connect(
-        power->up_client,
-        "notify::on-battery",
-        G_CALLBACK(on_up_client_battery_notify),
-        power
-    );
-
-    update_client_on_battery(power, power->up_client);
-
-    g_ptr_array_unref(all_devices);
+    else
+    {
+        g_warning("Failed to connect to upower");
+    }
 
     (G_OBJECT_CLASS(
         wintc_notification_power_parent_class
