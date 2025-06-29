@@ -1,7 +1,9 @@
 import curses
 import os
+import subprocess
 
 from wsetup_brand  import *
+from wsetup_pkg    import *
 from wsetup_screen import *
 
 def wsetup_step_init(stdscr):
@@ -211,4 +213,111 @@ def wsetup_step_confirm_system(stdscr):
         elif user_option == curses.KEY_ENTER or \
              user_option == ord("\n")        or \
              user_option == ord("\r"):
-            return 0 # TODO: Continue to install
+            return 6
+
+def wsetup_step_install_base(stdscr):
+    wsetup_screen_clear(stdscr)
+
+    wsetup_screen_write_direct(
+        stdscr,
+        wsetup_screen_get_scaled_y(stdscr, WSETUP_MAIN_Y + 3),
+        wsetup_screen_get_scaled_x(stdscr, 40) - 22,
+        "    Please wait while Setup copies files    \n" +
+        "    to the Windows installation folders.    \n" +
+        "This might take several minutes to complete.",
+        curses.color_pair(COLOR_PAIR_NORMAL_TEXT)
+    )
+
+    # Main box
+    #
+    box_h = 7
+    box_w = 68
+    box_y = wsetup_screen_get_scaled_y(stdscr, 20)
+    box_x = wsetup_screen_get_scaled_x(stdscr, 40) - int(box_w / 2)
+
+    wsetup_screen_draw_box(
+        stdscr,
+        box_y,
+        box_x,
+        box_h,
+        box_w
+    )
+
+    wsetup_screen_write_direct(
+        stdscr,
+        box_y + 1,
+        box_x + 2,
+        "Setup is copying files...",
+        curses.color_pair(COLOR_PAIR_NORMAL_TEXT)
+    )
+
+    # Progress box
+    #
+    progbox_h = 3
+    progbox_w = box_w - 10
+    progbox_y = box_y + 3
+    progbox_x = box_x + 5
+
+    wsetup_screen_draw_box(
+        stdscr,
+        progbox_y,
+        progbox_x,
+        progbox_h,
+        progbox_w
+    )
+
+    wsetup_screen_write_instructions(
+        stdscr,
+        [
+            "ENTER=Continue"
+        ]
+    )
+
+    # Install the base packages to get to phase 2
+    #
+    pkgcmd   = ""
+    pkgfmt   = os.environ.get("WSETUP_DIST_PKGFMT")
+    pkgnames = wsetup_pkg_get_pkgnames_basesystem()
+
+    if pkgfmt == "deb":
+        pkgcmd = f"apt-get install -y -o APT::Status-Fd=2 {pkgnames}"
+    else:
+        raise Exception(f"No install command for format {pkgfmt}")
+
+    process = subprocess.Popen(
+            pkgcmd.split(),
+            bufsize=1,
+            stderr=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            universal_newlines=True
+        )
+
+    while True:
+        cmd_out = process.stderr.readline()
+
+        if process.poll() is not None:
+            break
+
+        if cmd_out:
+            wsetup_screen_write_simple(
+                stdscr,
+                1, 0,
+                cmd_out.strip(),
+                curses.color_pair(COLOR_PAIR_NORMAL_TEXT)
+            )
+            stdscr.refresh()
+
+    wsetup_screen_write_simple(
+        stdscr,
+        1, 0,
+        "Finito",
+        curses.color_pair(COLOR_PAIR_NORMAL_TEXT)
+    )
+
+    # Input
+    #
+    while True:
+        user_option = stdscr.getch()
+
+        if user_option == curses.KEY_F0 + 3:
+            return 0

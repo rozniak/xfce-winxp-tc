@@ -11,9 +11,6 @@ export SETUPROOT
 # running distro and its init system before chaining onto the rest of setup
 #
 
-clear
-printf "%s\n" "Setup is inspecting your computer's hardware configuration...";
-
 # Probe for Python as we cannot run binaries at this point
 #
 python_path=`which python 2>/dev/null`
@@ -44,6 +41,15 @@ export WSETUP_DIST_PKGFMT_EXT
 #
 if [ -z "$DISPLAY" ] && [ -z "$WAYLAND_DISPLAY" ]
 then
+    if [ $(id -u) -ne 0 ]
+    then
+        printf "%s\n" "You must be root to run setup."
+        exit 1
+    fi
+
+    clear
+    printf "%s\n" "Setup is inspecting your computer's hardware configuration...";
+
     $python_path setup/textmode/main.py
 else
     $python_path setup/autorun/main.py
