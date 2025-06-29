@@ -10,7 +10,8 @@ def main(stdscr):
         wsetup_step_beta_notice,
         wsetup_step_welcome,
         wsetup_step_eula,
-        wsetup_step_confirm_system
+        wsetup_step_confirm_system,
+        wsetup_step_install_base
     ]
 
     current_step = 1
