@@ -1,4 +1,5 @@
 import curses
+import math
 
 from wsetup_brand import *
 
@@ -15,6 +16,11 @@ COLOR_PAIR_INSTRUCTIONS     = 4
 #
 WSETUP_MAIN_Y = 4
 WSETUP_MAIN_X = 3
+
+# Dimensions for scaling based on Windows setup (NT setup uses 80x50 text mode)
+#
+WSETUP_NATIVE_W = 80
+WSETUP_NATIVE_H = 50
 
 def wsetup_screen_init(stdscr):
     # Set up our colours
@@ -117,10 +123,86 @@ def wsetup_screen_write_instructions(stdscr, arr):
 
         cur_x += len(instruction) + 2
 
-def wsetup_screen_write_simple(stdscr, y, x, text, attr):
+def wsetup_screen_write_direct(stdscr, y, x, text, attr):
     cur_y = y
     lines = text.split("\n")
 
     for line in lines:
-        stdscr.addstr(WSETUP_MAIN_Y + cur_y, WSETUP_MAIN_X + x, line, attr)
+        stdscr.addstr(cur_y, x, line, attr)
         cur_y += 1
+
+def wsetup_screen_write_simple(stdscr, y, x, text, attr):
+    wsetup_screen_write_direct(stdscr, WSETUP_MAIN_Y + y, WSETUP_MAIN_X + x, text, attr)
+
+def wsetup_screen_draw_box(stdscr, y, x, height, width):
+    # Top left corner
+    #
+    stdscr.addch(
+        y, x,
+        curses.ACS_ULCORNER,
+        curses.color_pair(COLOR_PAIR_NORMAL_TEXT)
+    )
+
+    # Top middle
+    #
+    for i in range(x + 1, x + width - 1):
+        stdscr.addch(
+            y, i,
+            curses.ACS_HLINE,
+            curses.color_pair(COLOR_PAIR_NORMAL_TEXT)
+        )
+
+    # Top right corner
+    #
+    stdscr.addch(
+        y, x + width - 1,
+        curses.ACS_URCORNER,
+        curses.color_pair(COLOR_PAIR_NORMAL_TEXT)
+    )
+
+    # Middle
+    #
+    for i in range(y + 1, y + height - 1):
+        stdscr.addch(
+            i, x,
+            curses.ACS_VLINE,
+            curses.color_pair(COLOR_PAIR_NORMAL_TEXT)
+        )
+        stdscr.addch(
+            i, x + width - 1,
+            curses.ACS_VLINE,
+            curses.color_pair(COLOR_PAIR_NORMAL_TEXT)
+        )
+
+    # Bottom left corner
+    #
+    stdscr.addch(
+        y + height - 1, x,
+        curses.ACS_LLCORNER,
+        curses.color_pair(COLOR_PAIR_NORMAL_TEXT)
+    )
+
+    # Bottom middle
+    #
+    for i in range(x + 1, x + width - 1):
+        stdscr.addch(
+            y + height - 1, i,
+            curses.ACS_HLINE,
+            curses.color_pair(COLOR_PAIR_NORMAL_TEXT)
+        )
+
+    # Bottom right corner
+    #
+    stdscr.addch(
+        y + height - 1, x + width - 1,
+        curses.ACS_LRCORNER,
+        curses.color_pair(COLOR_PAIR_NORMAL_TEXT)
+    )
+            
+def wsetup_screen_get_scaled_x(stdscr, val):
+    height, width = stdscr.getmaxyx()
+    return math.floor((val / WSETUP_NATIVE_W) * width)
+
+def wsetup_screen_get_scaled_y(stdscr, val):
+    height, width = stdscr.getmaxyx()
+    return math.floor((val / WSETUP_NATIVE_H) * height)
