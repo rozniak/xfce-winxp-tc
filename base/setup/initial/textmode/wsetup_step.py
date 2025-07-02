@@ -309,10 +309,16 @@ def wsetup_step_install_base(stdscr):
 
                 wsetup_screen_write_simple(
                     stdscr,
-                    box_y + 1,
-                    wsetup_screen_get_scaled_x(stdscr, 40) - 2,
+                    box_y + 2,
+                    wsetup_screen_get_scaled_x(stdscr, 40) - 3,
                     progress,
                     curses.color_pair(COLOR_PAIR_NORMAL_TEXT)
+                )
+                wsetup_screen_draw_bar(
+                    stdscr,
+                    progbox_y + 1,
+                    progbox_x + 1,
+                    progbox_w - 2
                 )
 
                 stdscr.refresh()

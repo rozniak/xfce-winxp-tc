@@ -11,6 +11,7 @@ COLOR_PAIR_NORMAL_TEXT      = 1
 COLOR_PAIR_BRIGHT_TEXT      = 2
 COLOR_PAIR_HIGHLIGHT_OPTION = 3
 COLOR_PAIR_INSTRUCTIONS     = 4
+COLOR_PAIR_PROGRESS         = 5
 
 # Coords for the working area
 #
@@ -42,6 +43,11 @@ def wsetup_screen_init(stdscr):
         COLOR_PAIR_INSTRUCTIONS,
         curses.COLOR_BLACK,
         curses.COLOR_WHITE
+    )
+    curses.init_pair(
+        COLOR_PAIR_PROGRESS,
+        curses.COLOR_YELLOW,
+        curses.COLOR_BLUE
     )
 
     try:
@@ -133,6 +139,14 @@ def wsetup_screen_write_direct(stdscr, y, x, text, attr):
 
 def wsetup_screen_write_simple(stdscr, y, x, text, attr):
     wsetup_screen_write_direct(stdscr, WSETUP_MAIN_Y + y, WSETUP_MAIN_X + x, text, attr)
+
+def wsetup_screen_draw_bar(stdscr, y, x, width):
+    for i in range(width):
+        stdscr.addch(
+            y, x + i,
+            curses.ACS_BLOCK,
+            curses.color_pair(COLOR_PAIR_PROGRESS)
+        )
 
 def wsetup_screen_draw_box(stdscr, y, x, height, width):
     # Top left corner
