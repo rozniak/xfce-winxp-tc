@@ -221,6 +221,7 @@ def wsetup_step_install_base(stdscr):
     wsetup_screen_write_direct(
         stdscr,
         wsetup_screen_get_scaled_y(stdscr, WSETUP_MAIN_Y + 3),
+        wsetup_screen_get_scaled_x(stdscr, 40) - 22,
         "    Please wait while Setup copies files    \n" +
         "    to the Windows installation folders.    \n" +
         "This might take several minutes to complete.",
