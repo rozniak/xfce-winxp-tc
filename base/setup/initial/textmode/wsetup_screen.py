@@ -5,7 +5,6 @@ from wsetup_brand import *
 
 # Colours we need for setup
 #
-COLOR_BRIGHT_YELLOW = 14
 COLOR_BRIGHT_WHITE  = 15
 
 COLOR_PAIR_NORMAL_TEXT      = 1
@@ -46,18 +45,11 @@ def wsetup_screen_init(stdscr):
         curses.COLOR_WHITE
     )
 
-    try:
-        curses.init_pair(
-            COLOR_PAIR_PROGRESS,
-            COLOR_BRIGHT_YELLOW,
-            curses.COLOR_BLUE
-        )
-    except:
-        curses.init_pair(
-            COLOR_PAIR_PROGRESS,
-            curses.COLOR_YELLOW,
-            curses.COLOR_BLUE
-        )
+    curses.init_pair(
+        COLOR_PAIR_PROGRESS,
+        curses.COLOR_YELLOW,
+        curses.COLOR_BLUE
+    )
 
     try:
         curses.init_pair(
@@ -154,7 +146,7 @@ def wsetup_screen_draw_bar(stdscr, y, x, width):
         stdscr.addch(
             y, x + i,
             curses.ACS_BLOCK,
-            curses.color_pair(COLOR_PAIR_PROGRESS)
+            curses.color_pair(COLOR_PAIR_PROGRESS) | curses.A_BOLD
         )
 
 def wsetup_screen_draw_box(stdscr, y, x, height, width):
