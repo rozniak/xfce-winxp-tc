@@ -306,7 +306,7 @@ def wsetup_step_install_base(stdscr):
                 if not cmd_out.startswith("pmstatus"):
                     continue
 
-                progress = str(int(cmd_out.split(":")[2])) + "%"
+                progress = str(int(float(cmd_out.split(":")[2]))) + "%"
 
                 wsetup_screen_write_simple(
                     stdscr,
