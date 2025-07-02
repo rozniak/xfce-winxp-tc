@@ -266,13 +266,6 @@ def wsetup_step_install_base(stdscr):
         progbox_w
     )
 
-    wsetup_screen_write_instructions(
-        stdscr,
-        [
-            "ENTER=Continue"
-        ]
-    )
-
     # Install the base packages to get to phase 2
     #
     pkgcmd       = ""
@@ -306,7 +299,8 @@ def wsetup_step_install_base(stdscr):
                 if not cmd_out.startswith("pmstatus"):
                     continue
 
-                progress = str(int(float(cmd_out.split(":")[2]))) + "%"
+                pct      = float(cmd_out.split(":")[2])
+                progress = str(int(pct)) + "%"
 
                 wsetup_screen_write_direct(
                     stdscr,
@@ -319,7 +313,15 @@ def wsetup_step_install_base(stdscr):
                     stdscr,
                     progbox_y + 1,
                     progbox_x + 1,
-                    progbox_w - 2
+                    floor((pct / 100) * (progbox_w - 2))
+                )
+                # FIXME: Should be on the opposite side
+                #
+                wsetup_screen_write_instructions(
+                    stdscr,
+                    [
+                        "Installing " + cmd_out.split(":")[1]
+                    ]
                 )
 
                 stdscr.refresh()
