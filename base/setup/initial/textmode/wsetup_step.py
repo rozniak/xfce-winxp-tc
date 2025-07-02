@@ -34,7 +34,7 @@ def wsetup_step_beta_notice(stdscr):
         stdscr,
         0, 0,
         "Setup Notification:",
-        curses.color_pair(COLOR_PAIR_BRIGHT_TEXT)
+        curses.color_pair(COLOR_PAIR_NORMAL_TEXT) | curses.A_BOLD
     )
 
     wsetup_screen_write_simple(
@@ -82,7 +82,7 @@ def wsetup_step_welcome(stdscr):
         stdscr,
         0, 0,
         "Welcome to Setup.",
-        curses.color_pair(COLOR_PAIR_BRIGHT_TEXT)
+        curses.color_pair(COLOR_PAIR_NORMAL_TEXT) | curses.A_BOLD
     )
 
     wsetup_screen_write_simple(
