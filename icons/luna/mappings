@@ -316,7 +316,7 @@ status/battery-empty-->battery_empty
 status/battery-empty-charging-->battery_low_charging
 status/battery-full-->battery_full
 status/battery-full-charged-->battery_full_on_ac
-status/battery-full-charging-->battery_full_on_ac
+status/battery-full-charging-->battery_full_charging
 status/battery-good-->battery_medium
 status/battery-good-charging-->battery_medium_charging
 status/battery-low-->battery_low
