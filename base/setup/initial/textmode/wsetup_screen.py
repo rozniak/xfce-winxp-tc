@@ -5,7 +5,8 @@ from wsetup_brand import *
 
 # Colours we need for setup
 #
-COLOR_BRIGHT_WHITE = 15
+COLOR_BRIGHT_YELLOW = 14
+COLOR_BRIGHT_WHITE  = 15
 
 COLOR_PAIR_NORMAL_TEXT      = 1
 COLOR_PAIR_BRIGHT_TEXT      = 2
@@ -46,7 +47,7 @@ def wsetup_screen_init(stdscr):
     )
     curses.init_pair(
         COLOR_PAIR_PROGRESS,
-        curses.COLOR_YELLOW,
+        COLOR_BRIGHT_YELLOW,
         curses.COLOR_BLUE
     )
 
