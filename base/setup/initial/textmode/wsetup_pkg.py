@@ -39,11 +39,14 @@ def wsetup_pkg_get_pkgnames_basesystem():
 
     # Read complist.ini to set up the stuff we need to install for phase 2
     #
+    distpkgs_key = "DistPackages" + pkgfmt.title()
+
     complist = configparser.ConfigParser()
     complist.read(f"{setup_root}/setup/complist.ini")
 
-    libs_arr    = complist["BaseSystem"]["Libs"].split(",")
-    ourpkgs_arr = complist["BaseSystem"]["OurPackages"].split(",")
+    libs_arr     = complist["BaseSystem"]["Libs"].split(",")
+    ourpkgs_arr  = complist["BaseSystem"]["OurPackages"].split(",")
+    distpkgs_arr = complist["BaseSystem"][distpkgs_key].split(",")
 
     for i in range(len(libs_arr)):
         if libs_arr[i] == "":
@@ -51,18 +54,10 @@ def wsetup_pkg_get_pkgnames_basesystem():
 
         libs_arr[i] = f"{pkg_src_dir}/libwintc-{libs_arr[i]}{pkgfmt_fileext}"
 
-    libs = " ".join(libs_arr)
-
     for i in range(len(ourpkgs_arr)):
         if ourpkgs_arr[i] == "":
             continue
 
         ourpkgs_arr[i] = f"{pkg_src_dir}/{ourpkgs_arr[i]}{pkgfmt_fileext}"
 
-    ourpkgs = " ".join(ourpkgs_arr)
-
-    distpkgs = " ".join(
-            complist["BaseSystem"]["DistPackages" + pkgfmt.title()].split(",")
-        )
-
-    return f"{libs} {ourpkgs} {distpkgs}"
+    return (libs_arr + ourpkgs_arr + distpkgs_arr)

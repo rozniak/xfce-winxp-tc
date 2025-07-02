@@ -275,12 +275,13 @@ def wsetup_step_install_base(stdscr):
 
     # Install the base packages to get to phase 2
     #
-    pkgcmd   = ""
-    pkgfmt   = os.environ.get("WSETUP_DIST_PKGFMT")
-    pkgnames = wsetup_pkg_get_pkgnames_basesystem()
+    pkgcmd       = ""
+    pkgfmt       = os.environ.get("WSETUP_DIST_PKGFMT")
+    pkgnames_arr = wsetup_pkg_get_pkgnames_basesystem()
+    pkgnames     = " ".join(pkgnames_arr)
 
     if pkgfmt == "deb":
-        pkgcmd = f"apt-get install -y -o APT::Status-Fd=2 {pkgnames}"
+        pkgcmd = f"apt-get install -y -o APT::Status-Fd=1 {pkgnames}"
     else:
         raise Exception(f"No install command for format {pkgfmt}")
 
@@ -293,19 +294,26 @@ def wsetup_step_install_base(stdscr):
         )
 
     while True:
-        cmd_out = process.stderr.readline()
+        cmd_out = process.stdout.readline()
 
         if process.poll() is not None:
             break
 
         if cmd_out:
-            wsetup_screen_write_simple(
-                stdscr,
-                1, 0,
-                cmd_out.strip(),
-                curses.color_pair(COLOR_PAIR_NORMAL_TEXT)
-            )
-            stdscr.refresh()
+            if pkgfmt == "deb":
+                # Parse apt-get status output
+                #
+                if not cmd_out.startswith("pmstatus"):
+                    continue
+
+                wsetup_screen_write_simple(
+                    stdscr,
+                    1, 0,
+                    cmd_out.split(":")[2],
+                    curses.color_pair(COLOR_PAIR_NORMAL_TEXT)
+                )
+
+                stdscr.refresh()
 
     wsetup_screen_write_simple(
         stdscr,
