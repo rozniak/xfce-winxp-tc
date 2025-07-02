@@ -1,4 +1,5 @@
 import curses
+import math
 import os
 import subprocess
 
@@ -313,7 +314,7 @@ def wsetup_step_install_base(stdscr):
                     stdscr,
                     progbox_y + 1,
                     progbox_x + 1,
-                    floor((pct / 100) * (progbox_w - 2))
+                    math.floor((pct / 100) * (progbox_w - 2))
                 )
                 # FIXME: Should be on the opposite side
                 #
