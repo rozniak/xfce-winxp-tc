@@ -324,10 +324,11 @@ def wsetup_step_install_base(stdscr):
 
                 stdscr.refresh()
 
-    wsetup_screen_write_simple(
+    wsetup_screen_write_direct(
         stdscr,
-        1, 0,
-        "Finito",
+        box_y + 2,
+        wsetup_screen_get_scaled_x(stdscr, 40) - 3,
+        "100%",
         curses.color_pair(COLOR_PAIR_NORMAL_TEXT)
     )
 
