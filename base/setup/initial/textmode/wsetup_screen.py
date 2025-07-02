@@ -45,11 +45,19 @@ def wsetup_screen_init(stdscr):
         curses.COLOR_BLACK,
         curses.COLOR_WHITE
     )
-    curses.init_pair(
-        COLOR_PAIR_PROGRESS,
-        COLOR_BRIGHT_YELLOW,
-        curses.COLOR_BLUE
-    )
+
+    try:
+        curses.init_pair(
+            COLOR_PAIR_PROGRESS,
+            COLOR_BRIGHT_YELLOW,
+            curses.COLOR_BLUE
+        )
+    except:
+        curses.init_pair(
+            COLOR_PAIR_PROGRESS,
+            curses.COLOR_YELLOW,
+            curses.COLOR_BLUE
+        )
 
     try:
         curses.init_pair(
