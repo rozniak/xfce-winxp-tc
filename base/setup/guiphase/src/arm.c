@@ -119,16 +119,31 @@ gboolean wintc_setup_arm_system(void)
     {
         if (!strstr(linux_cmdline, "splash"))
         {
+            gchar* unquoted =
+                g_shell_unquote(linux_cmdline, &error);
+
+            if (!unquoted)
+            {
+                wintc_log_error_and_clear(&error);
+                return FALSE;
+            }
+
             gchar* new_linux_cmdline =
-                g_strdup_printf("%s splash", linux_cmdline);
+                g_strdup_printf("%s splash", unquoted);
+
+            gchar* quoted =
+                g_shell_quote(new_linux_cmdline);
+
+            g_free(unquoted);
+            g_free(new_linux_cmdline);
 
             g_free(linux_cmdline);
-            linux_cmdline = new_linux_cmdline;
+            linux_cmdline = quoted;
         }
     }
     else
     {
-        linux_cmdline = g_strdup("splash");
+        linux_cmdline = g_shell_quote("splash");
     }
 
     g_key_file_set_string(
