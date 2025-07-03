@@ -346,16 +346,18 @@ def wsetup_step_prepare_chain_to_gui(stdscr):
 
     # Text for this page
     #
-    page_text = "Please wait while Setup initializes your " +
-                WSETUP_BRAND_PRODUCT_NAME +
-                " configuration."
+    page_text = (
+        "Please wait while Setup initializes your " +
+        WSETUP_BRAND_PRODUCT_NAME +
+        " configuration."
+    )
 
     wsetup_screen_write_direct(
         stdscr,
         8,
         wsetup_screen_get_scaled_x(stdscr, 40) -
         wsetup_screen_get_scaled_x(stdscr, int(len(page_text) / 2)),
-        page_text
+        page_text,
         curses.color_pair(COLOR_PAIR_NORMAL_TEXT)
     )
 
