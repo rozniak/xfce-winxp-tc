@@ -115,6 +115,29 @@ def wsetup_screen_write_instructions(stdscr, arr):
 
         cur_x += len(instruction) + 2
 
+def wsetup_screen_write_status(stdscr, text):
+    height, width = stdscr.getmaxyx()
+
+    for i in range(width):
+        stdscr.addch(
+            height - 1, i,
+            ' ',
+            curses.color_pair(COLOR_PAIR_INSTRUCTIONS)
+        )
+
+    origin_x = len(text) - 1
+
+    stdscr.addch(
+        height - 1, origin_x -1,
+        curses.ACS_VLINE,
+        curses.color_pair(COLOR_PAIR_INSTRUCTIONS)
+    )
+    stdscr.addstr(
+        height - 1, origin_x,
+        text,
+        curses.color_pair(COLOR_PAIR_INSTRUCTIONS)
+    )
+
 def wsetup_screen_write_direct(stdscr, y, x, text, attr):
     cur_y = y
     lines = text.split("\n")
