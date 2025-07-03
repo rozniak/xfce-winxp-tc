@@ -55,7 +55,7 @@ int main(
     );
     g_option_context_add_group(
         ctx,
-        gtk_get_option_group(TRUE)
+        gtk_get_option_group(FALSE)
     );
 
     if (!g_option_context_parse(ctx, &argc, &argv, &error))
