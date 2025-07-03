@@ -125,7 +125,7 @@ def wsetup_screen_write_status(stdscr, text):
             curses.color_pair(COLOR_PAIR_INSTRUCTIONS)
         )
 
-    origin_x = len(text) - 1
+    origin_x = width - len(text) - 1
 
     stdscr.addch(
         height - 1, origin_x -1,
