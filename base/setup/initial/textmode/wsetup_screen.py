@@ -119,7 +119,7 @@ def wsetup_screen_write_status(stdscr, text):
     height, width = stdscr.getmaxyx()
 
     for i in range(width):
-        stdscr.addch(
+        stdscr.insch(
             height - 1, i,
             ' ',
             curses.color_pair(COLOR_PAIR_INSTRUCTIONS)
