@@ -306,8 +306,8 @@ def wsetup_step_install_base(stdscr):
                 pct      = float(cmd_split[2])
                 progress = str(int(pct)) + "%"
 
-                if len(cur_pkg) > 12:
-                    cur_pkg = cur_pkg[:12]
+                if len(cur_pkg) > 16:
+                    cur_pkg = cur_pkg[:16]
 
                 wsetup_screen_write_direct(
                     stdscr,
@@ -324,7 +324,7 @@ def wsetup_step_install_base(stdscr):
                 )
                 wsetup_screen_write_status(
                     stdscr,
-                    "Installing " + cur_pkg
+                    "Copying {package: <16}".format(package=cur_pkg)
                 )
 
                 stdscr.refresh()
