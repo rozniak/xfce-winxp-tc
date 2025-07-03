@@ -50,6 +50,7 @@ static gboolean parse_url_in_cmdline(
     GError**     out_error
 );
 
+static const gchar* get_display(void);
 static void set_display(
     const gchar* display
 );
@@ -206,10 +207,7 @@ static gboolean do_command(
         return FALSE;
     }
 
-    display =
-        g_strdup(
-            gdk_display_get_name(gdk_display_get_default())
-        );
+    display = g_strdup(get_display());
 
     if (async)
     {
@@ -630,11 +628,26 @@ static gboolean parse_url_in_cmdline(
     return TRUE;
 }
 
+static const gchar* get_display(void)
+{
+    GdkDisplay* display = gdk_display_get_default();
+
+    if (display)
+    {
+        return gdk_display_get_name(display);
+    }
+
+    return NULL;
+}
+
 static void set_display(
     const gchar* display
 )
 {
-    g_setenv("DISPLAY", display, TRUE);
+    if (display)
+    {
+        g_setenv("DISPLAY", display, TRUE);
+    }
 }
 
 static gchar** true_shell_parse_argv(
