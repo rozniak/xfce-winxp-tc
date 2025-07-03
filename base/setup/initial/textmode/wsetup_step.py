@@ -300,8 +300,14 @@ def wsetup_step_install_base(stdscr):
                 if not cmd_out.startswith("pmstatus"):
                     continue
 
-                pct      = float(cmd_out.split(":")[2])
+                cmd_split = cmd_out.split(":")
+
+                cur_pkg  = cmd_split[1]
+                pct      = float(cmd_split[2])
                 progress = str(int(pct)) + "%"
+
+                if len(cur_pkg) > 12:
+                    cur_pkg = cur_pkg[:12]
 
                 wsetup_screen_write_direct(
                     stdscr,
@@ -316,13 +322,9 @@ def wsetup_step_install_base(stdscr):
                     progbox_x + 1,
                     math.floor((pct / 100) * (progbox_w - 2))
                 )
-                # FIXME: Should be on the opposite side
-                #
-                wsetup_screen_write_instructions(
+                wsetup_screen_write_status(
                     stdscr,
-                    [
-                        "Installing " + cmd_out.split(":")[1]
-                    ]
+                    "Installing " + cur_pkg
                 )
 
                 stdscr.refresh()
