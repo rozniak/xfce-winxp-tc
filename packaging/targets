@@ -2,6 +2,7 @@ base/bootvid
 base/bldtag
 base/logonui
 base/regsvc
+base/setup/guiphase
 base/smss
 cursors/no-shadow/standard
 cursors/with-shadow/standard
