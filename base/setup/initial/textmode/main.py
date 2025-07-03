@@ -11,7 +11,7 @@ def main(stdscr):
         wsetup_step_welcome,
         wsetup_step_eula,
         wsetup_step_confirm_system,
-        wsetup_step_install_base
+        wsetup_step_install_base,
         wsetup_step_prepare_chain_to_gui
     ]
 
