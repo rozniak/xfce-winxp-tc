@@ -1,5 +1,5 @@
 [BaseSystem]
 Libs=@WSETUP_LIBLIST@
-OurPackages=wintc-setup-gui,wintc-theme-native,wintc-cursor-theme-standard-with-shadow
-DistPackagesDeb=lightdm,xfwm4,xfconf
+OurPackages=wintc-setup-gui,wintc-theme-native,wintc-cursor-theme-standard-with-shadow,wintc-bootvid
+DistPackagesDeb=lightdm,xfwm4,xfconf,plymouth
 # FIXME: Other distro packags here
