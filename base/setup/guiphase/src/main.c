@@ -138,6 +138,8 @@ int main(
     //
     GtkWidget* wnd_setup = wintc_setup_window_new();
 
+    wintc_setup_window_enable_throbbers(WINTC_SETUP_WINDOW(wnd_setup));
+
     // Create a billy basic test window (will be replaced by a wizard
     // eventually
     //

@@ -22,6 +22,7 @@ include(../../../packaging/cmake-inc/resources/CMakeLists.txt)
 
 wintc_resolve_library(glib-2.0       GLIB)
 wintc_resolve_library(gtk+-3.0       GTK3)
+wintc_resolve_library(wintc-comctl   WINTC_COMCTL)
 wintc_resolve_library(wintc-comgtk   WINTC_COMGTK)
 wintc_resolve_library(wintc-exec     WINTC_EXEC)
 wintc_resolve_library(wintc-shcommon WINTC_SHCOMMON)
@@ -57,6 +58,7 @@ target_include_directories(
     BEFORE
     PRIVATE ${GLIB_INCLUDE_DIRS}
     PRIVATE ${GTK3_INCLUDE_DIRS}
+    PRIVATE ${WINTC_COMCTL_INCLUDE_DIRS}
     PRIVATE ${WINTC_COMGTK_INCLUDE_DIRS}
     PRIVATE ${WINTC_EXEC_INCLUDE_DIRS}
     PRIVATE ${WINTC_SHCOMMON_INCLUDE_DIRS}
@@ -68,6 +70,7 @@ target_link_directories(
     wintc-setup-gui
     PRIVATE ${GLIB_LIBRARY_DIRS}
     PRIVATE ${GTK3_LIBRARY_DIRS}
+    PRIVATE ${WINTC_COMCTL_LIBRARY_DIRS}
     PRIVATE ${WINTC_COMGTK_LIBRARY_DIRS}
     PRIVATE ${WINTC_EXEC_LIBRARY_DIRS}
     PRIVATE ${WINTC_SHCOMMON_LIBRARY_DIRS}
@@ -79,6 +82,7 @@ target_link_libraries(
     wintc-setup-gui
     PRIVATE ${GLIB_LIBRARIES}
     PRIVATE ${GTK3_LIBRARIES}
+    PRIVATE ${WINTC_COMCTL_LIBRARIES}
     PRIVATE ${WINTC_COMGTK_LIBRARIES}
     PRIVATE ${WINTC_EXEC_LIBRARIES}
     PRIVATE ${WINTC_SHCOMMON_LIBRARIES}
