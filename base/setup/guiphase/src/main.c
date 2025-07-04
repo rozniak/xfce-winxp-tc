@@ -19,7 +19,8 @@ static void on_window_destroyed(
 //
 // STATIC DATA
 //
-static gboolean S_OPTION_ARM = FALSE;
+static gboolean S_OPTION_ARM  = FALSE;
+static gboolean S_OPTION_TEST = FALSE;
 
 static GOptionEntry S_ENTRIES[] = {
     {
@@ -29,6 +30,15 @@ static GOptionEntry S_ENTRIES[] = {
         G_OPTION_ARG_NONE,
         &S_OPTION_ARM,
         "Arm the system to boot into graphical-mode setup.",
+        NULL
+    },
+    {
+        "test",
+        't',
+        0,
+        G_OPTION_ARG_NONE,
+        &S_OPTION_TEST,
+        "Rory's testing mode.",
         NULL
     },
     G_OPTION_ENTRY_NULL
@@ -98,6 +108,7 @@ int main(
     // Fire up xfwm4
     //
     if (
+        !S_OPTION_TEST &&
         !wintc_launch_command(
             "xfwm4 --compositor=on",
             &error

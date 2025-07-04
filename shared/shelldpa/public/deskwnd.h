@@ -1,6 +1,7 @@
 #ifndef __SHELLDPA_DESKWND_H__
 #define __SHELLDPA_DESKWND_H__
 
+#include <gdk/gdk.h>
 #include <glib.h>
 #include <gtk/gtk.h>
 
@@ -17,9 +18,16 @@ G_DECLARE_DERIVABLE_TYPE(
     GtkApplicationWindow
 )
 
-struct _WinTCDpaDesktopWindowClass
+typedef struct _WinTCDpaDesktopWindowClass
 {
     GtkApplicationWindowClass __parent__;
-};
+} WinTCDpaDesktopWindowClass;
+
+//
+// PUBLIC FUNCTIONS
+//
+GdkMonitor* wintc_dpa_desktop_window_get_monitor(
+    WinTCDpaDesktopWindow* wnd
+);
 
 #endif
