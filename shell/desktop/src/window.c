@@ -274,7 +274,7 @@ static gboolean wintc_desktop_window_draw(
             s_tag =
                 g_strdup_printf(
                     "For testing purposes only. Build %s",
-                    wintc_build_get_tag()
+                    wintc_build_query(WINTC_VER_TAG)
                 );
         }
 

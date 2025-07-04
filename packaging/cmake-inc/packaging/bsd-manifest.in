@@ -1,5 +1,5 @@
 name: @ALT_PROJECT_NAME@
-version: "@PROJECT_VERSION@"
+version: "@WINTC_VER_PROJECT@"
 origin: wintc/@ALT_PROJECT_NAME@
 comment: @PROJECT_DESCRIPTION@
 arch: @CMAKE_SYSTEM_PROCESSOR@

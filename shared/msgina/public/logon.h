@@ -36,21 +36,15 @@
 //
 // GLIB BOILERPLATE
 //
-typedef struct _WinTCGinaLogonSessionClass WinTCGinaLogonSessionClass;
+#define WINTC_TYPE_GINA_LOGON_SESSION (wintc_gina_logon_session_get_type())
 
-/**
- * Represents a logon session for providing user authentication.
- */
-typedef struct _WinTCGinaLogonSession WinTCGinaLogonSession;
-
-#define WINTC_TYPE_GINA_LOGON_SESSION            (wintc_gina_logon_session_get_type())
-#define WINTC_GINA_LOGON_SESSION(obj)            (G_TYPE_CHECK_INSTANCE_CAST((obj), WINTC_TYPE_GINA_LOGON_SESSION, WinTCGinaLogonSession))
-#define WINTC_GINA_LOGON_SESSION_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST((klass), WINTC_TYPE_GINA_LOGON_SESSION, WinTCGinaLogonSession))
-#define IS_WINTC_GINA_LOGON_SESSION(obj)         (G_TYPE_CHECK_INSTANCE_TYPE((obj), WINTC_TYPE_GINA_LOGON_SESSION))
-#define IS_WINTC_GINA_LOGON_SESSION_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE((klass), WINTC_TYPE_GINA_LOGON_SESSION))
-#define WINTC_GINA_LOGON_SESSION_GET_CLASS(obj)  (G_TYPE_CHECK_INSTANCE_GET_CLASS((obj), WINTC_TYPE_GINA_LOGON_SESSION)
-
-GType wintc_gina_logon_session_get_type(void) G_GNUC_CONST;
+G_DECLARE_FINAL_TYPE(
+    WinTCGinaLogonSession,
+    wintc_gina_logon_session,
+    WINTC,
+    GINA_LOGON_SESSION,
+    GObject
+)
 
 //
 // PUBLIC FUNCTIONS
@@ -86,6 +80,16 @@ gboolean wintc_gina_logon_session_finish(
 );
 
 /**
+ * Gets the session that should be started upon successful logon.
+ *
+ * @param logon_session The logon session.
+ * @return The name of the session.
+ */
+const gchar* wintc_gina_logon_session_get_preferred_session(
+    WinTCGinaLogonSession* logon_screen
+);
+
+/**
  * Determines whether the logon session is ready for the user authentication
  * stage.
  *
@@ -94,6 +98,17 @@ gboolean wintc_gina_logon_session_finish(
  */
 gboolean wintc_gina_logon_session_is_available(
     WinTCGinaLogonSession* logon_session
+);
+
+/**
+ * Sets the session that should be started upon successful logon.
+ *
+ * @param logon_session The logon session.
+ * @param session       The name of the session.
+ */
+void wintc_gina_logon_session_set_preferred_session(
+    WinTCGinaLogonSession* logon_session,
+    const gchar*           session
 );
 
 /**

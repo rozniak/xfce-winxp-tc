@@ -28,7 +28,7 @@ wintc_resolve_library(gio-2.0  GIO)
 wintc_resolve_library(glib-2.0 GLIB)
 wintc_resolve_library(gtk+-3.0 GTK3)
 
-configure_file(public/assets.h.in ${PROJECT_ROOT}/public/assets.h @ONLY)
+configure_file(public/location.h.in ${PROJECT_ROOT}/public/location.h @ONLY)
 configure_file(src/version.c.in   ${PROJECT_ROOT}/src/version.c   @ONLY)
 
 add_library(
@@ -37,7 +37,6 @@ add_library(
     public/accelerator.h
     src/application.c
     public/application.h
-    public/assets.h
     src/builder.c
     public/builder.h
     public/debug.h
@@ -59,6 +58,7 @@ add_library(
     public/list.h
     src/listbox.c
     public/listbox.h
+    public/location.h
     src/marshal.c
     public/marshal.h
     src/memory.c

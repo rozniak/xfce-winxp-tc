@@ -30,7 +30,9 @@ wintc_resolve_library(wintc-comgtk WINTC_COMGTK)
 wintc_gdbus_codegen(
     dbus-if.xml
     reg-dbus
-    TRUE
+    ${WINTC_DBUS_DEFAULT_IF_PREFIX}
+    ${WINTC_DBUS_DEFAULT_C_PREFIX}
+    true
 )
 
 add_library(

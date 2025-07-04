@@ -1,6 +1,6 @@
 # Maintainer: Rory Fewell <roryf@oddmatics.uk>
 pkgname="@PROJECT_NAME@"
-pkgver="@PROJECT_VERSION@"
+pkgver="@WINTC_VER_PROJECT@"
 pkgrel=1
 pkgdesc="@PROJECT_DESCRIPTION@"
 arch="@ALPINE_ARCHITECTURE@"

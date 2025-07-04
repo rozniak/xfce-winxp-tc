@@ -1,5 +1,5 @@
 Package: @PROJECT_NAME@
-Version: @PROJECT_VERSION@
+Version: @WINTC_VER_PROJECT@
 Maintainer: @PROJECT_MAINTAINER@
 Architecture: @DEB_ARCHITECTURE@
 Section: @DEB_SECTION@

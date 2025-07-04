@@ -1,5 +1,5 @@
 pkgname="@ALT_PROJECT_NAME@"
-pkgver="@PROJECT_VERSION@"
+pkgver="@WINTC_VER_PROJECT@"
 pkgrel=1
 pkgdesc="@PROJECT_DESCRIPTION@"
 arch=("@ARCH_ARCHITECTURE@")

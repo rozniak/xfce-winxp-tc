@@ -118,7 +118,7 @@ void wintc_sh_about(
     wintc_widget_printf(
         label_kernel,
         kernel_info.release,
-        wintc_build_get_tag(),
+        wintc_build_query(WINTC_VER_TAG),
         wintc_build_is_debug() ? " (Debug)" : ""
     );
     wintc_widget_printf(

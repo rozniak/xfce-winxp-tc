@@ -1,0 +1,32 @@
+#!/usr/bin/env sh
+
+# Set up XDG vars
+#
+XDG_DATA_DIRS="/usr/local/share:/usr/share"
+export XDG_DATA_DIRS
+
+XDG_CONFIG_DIRS="/etc/xdg"
+export XDG_CONFIG_DIRS
+
+XDG_CONFIG_HOME=$HOME/.config
+export XDG_CONFIG_HOME
+
+XDG_CACHE_HOME=$HOME/.cache
+export XDG_CACHE_HOME
+
+DESKTOP_SESSION="WINTC"
+XDG_CURRENT_DESKTOP="WINTC"
+export DESKTOP_SESSION
+export XDG_CURRENT_DESKTOP
+
+# FIXME: This might only work on systemd due to XDG_VTNR, figure out what to
+#        do on other init systems
+#
+launch_exe="xinit"
+
+if [ ! -z "$DISPLAY" ]
+then
+    launch_exe="sh"
+fi
+
+$launch_exe @CMAKE_INSTALL_PREFIX@/@WINTC_ASSETS_INSTALL_DIR@/smss/xinitrc -- /etc/X11/xinit/xserverrc vt$XDG_VTNR

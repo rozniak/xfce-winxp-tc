@@ -9,19 +9,52 @@
 static const gchar* S_KEYFILE_GROUP = "Version";
 
 //
+// FORWARD DECLARATIONS
+//
+gboolean ensure_keyfile(void);
+gchar* get_keyfile_entry(
+    const gchar* key
+);
+
+//
 // STATIC DATA
 //
 static gboolean  s_keyfile_loaded;
 static GKeyFile* s_keyfile_version;
 
-//
-// FORWARD DECLARATIONS
-//
-gboolean ensure_keyfile(void);
-gchar* get_keyfile_entry(
-    const gchar* key,
-    const gchar* default_str
-);
+static const gchar* S_KEYS[] = {
+    "SkuPrettyName",
+    "SkuName",
+    "SkuEdition",
+    "SkuTagline",
+    "VersionMajor",
+    "VersionMinor",
+    "VersionBuild",
+    "VersionDatetime",
+    "BuildBranch",
+    "BuildDatestamp",
+    "BuildHash",
+    "BuildUser",
+    "BuildTag",
+    "VersionString"
+};
+static const gchar* S_DEFAULT_VALUES[] = {
+    "Unknown System",
+    "Unknown System",
+    "",
+    "",
+    "0",
+    "0",
+    "0",
+    "0",
+    "unknown",
+    "000000-0000",
+    "unknown",
+    "unknown",
+    "no tag",
+    "0.0.0.0"
+};
+static gchar* S_VALUES[G_N_ELEMENTS(S_KEYS)] = { 0 };
 
 //
 // PUBLIC FUNCTIONS
@@ -35,64 +68,41 @@ gboolean wintc_build_is_debug(void)
 #endif
 }
 
-const gchar* wintc_build_get_pretty_name(void)
+const gchar* wintc_build_query(
+    guint query_id
+)
 {
-    static gchar* pretty_name = NULL;
-
-    if (!pretty_name)
+    if (query_id >= G_N_ELEMENTS(S_KEYS))
     {
-        pretty_name = get_keyfile_entry("PrettyName", "Unknown System");
+        g_critical("comgtk: version query for %d is invalid", query_id);
+        return NULL;
     }
 
-    return pretty_name;
-}
-
-const gchar* wintc_build_get_sku_edition(void)
-{
-    static gchar* skued = NULL;
-
-    if (!skued)
+    // Does a value exist already?
+    //
+    if (S_VALUES[query_id])
     {
-        skued = get_keyfile_entry("SkuEdition", "");
+        return S_VALUES[query_id];
     }
 
-    return skued;
-}
-
-const gchar* wintc_build_get_sku_name(void)
-{
-    static gchar* skuname = NULL;
-
-    if (!skuname)
+    // Attempt to load from key file
+    //
+    if (ensure_keyfile())
     {
-        skuname = get_keyfile_entry("SkuName", "Unknown System");
+        S_VALUES[query_id] =
+            g_key_file_get_string(
+                s_keyfile_version,
+                S_KEYFILE_GROUP,
+                S_KEYS[query_id],
+                NULL
+            );
+
+        return S_VALUES[query_id];
     }
 
-    return skuname;
-}
-
-const gchar* wintc_build_get_tag(void)
-{
-    static gchar* build_tag = NULL;
-
-    if (!build_tag)
-    {
-        build_tag = get_keyfile_entry("BuildTag", "no tag");
-    }
-
-    return build_tag;
-}
-
-const gchar* wintc_build_get_tagline(void)
-{
-    static gchar* skuver = NULL;
-
-    if (!skuver)
-    {
-        skuver = get_keyfile_entry("SkuTagline", "");
-    }
-
-    return skuver;
+    // Otherwise return default value
+    //
+    return S_DEFAULT_VALUES[query_id];
 }
 
 //
@@ -123,22 +133,4 @@ gboolean ensure_keyfile(void)
     wintc_log_error_and_clear(&error);
 
     return s_keyfile_loaded;
-}
-
-gchar* get_keyfile_entry(
-    const gchar* key,
-    const gchar* default_str
-)
-{
-    if (ensure_keyfile())
-    {
-        return g_key_file_get_string(
-            s_keyfile_version,
-            S_KEYFILE_GROUP,
-            key,
-            NULL
-        );
-    }
-
-    return g_strdup_printf("%s", default_str);
 }

@@ -7,48 +7,24 @@
 #include "power.h"
 
 //
-// GTK OOP CLASS/INSTANCE DEFINITIONS
-//
-struct _WinTCNotificationPowerClass
-{
-    WinTCNotificationBehaviourClass __parent__;
-};
-
-struct _WinTCNotificationPower
-{
-    WinTCNotificationBehaviour __parent__;
-
-    // Power stuff
-    //
-    UpClient* up_client;
-    UpDevice* up_last_battery;
-    gchar*    up_last_battery_path;
-};
-
-//
 // FORWARD DECLARATIONS
 //
 static void wintc_notification_power_constructed(
     GObject* object
 );
-static void wintc_notification_power_finalize(
+static void wintc_notification_power_dispose(
     GObject* object
+);
+
+static void wintc_notification_power_register_main_battery(
+    WinTCNotificationPower* power
+);
+static void wintc_notification_power_update_icon(
+    WinTCNotificationPower* power
 );
 
 static UpDeviceLevel battery_pct_to_enum(
     gdouble percentage
-);
-static void check_and_register_battery(
-    WinTCNotificationPower* power,
-    UpDevice*               device
-);
-static void update_battery_battery_level(
-    WinTCNotificationPower* power,
-    UpDevice*               device
-);
-static void update_client_on_battery(
-    WinTCNotificationPower* power,
-    UpClient*               client
 );
 
 static void on_up_client_device_added(
@@ -73,6 +49,24 @@ static void on_up_device_battery_notify(
 );
 
 //
+// GTK OOP CLASS/INSTANCE DEFINITIONS
+//
+struct _WinTCNotificationPowerClass
+{
+    WinTCNotificationBehaviourClass __parent__;
+};
+
+struct _WinTCNotificationPower
+{
+    WinTCNotificationBehaviour __parent__;
+
+    // Power stuff
+    //
+    UpClient* up_client;
+    UpDevice* up_device_battery;
+};
+
+//
 // GTK TYPE DEFINITIONS & CTORS
 //
 G_DEFINE_TYPE(
@@ -88,7 +82,7 @@ static void wintc_notification_power_class_init(
     GObjectClass* object_class = G_OBJECT_CLASS(klass);
 
     object_class->constructed = wintc_notification_power_constructed;
-    object_class->finalize    = wintc_notification_power_finalize;
+    object_class->dispose     = wintc_notification_power_dispose;
 }
 
 static void wintc_notification_power_init(
@@ -102,25 +96,25 @@ static void wintc_notification_power_constructed(
     GObject* object
 )
 {
+    (G_OBJECT_CLASS(wintc_notification_power_parent_class))
+        ->constructed(object);
+
     WinTCNotificationPower* power = WINTC_NOTIFICATION_POWER(object);
 
     // Connect to upower, enumerate existing devices and attach signals for
     // picking up new ones
     //
-    GPtrArray* all_devices;
-    UpDevice*  device;
-
     power->up_client = up_client_new();
-    WINTC_LOG_DEBUG("Connected to upower");
 
-    all_devices = up_client_get_devices2(power->up_client);
-
-    for (guint i = 0; i < all_devices->len; i++)
+    if (!power->up_client)
     {
-        device = all_devices->pdata[i];
-
-        check_and_register_battery(power, device);
+        g_warning("%s", "taskband: power: Failed to connect to upower");
+        return;
     }
+
+    WINTC_LOG_DEBUG("taskband: power: Connected to upower");
+
+    wintc_notification_power_register_main_battery(power);
 
     g_signal_connect(
         power->up_client,
@@ -140,27 +134,19 @@ static void wintc_notification_power_constructed(
         G_CALLBACK(on_up_client_battery_notify),
         power
     );
-
-    update_client_on_battery(power, power->up_client);
-
-    g_ptr_array_unref(all_devices);
-
-    (G_OBJECT_CLASS(
-        wintc_notification_power_parent_class
-    ))->constructed(object);
 }
 
-static void wintc_notification_power_finalize(
+static void wintc_notification_power_dispose(
     GObject* object
 )
 {
     WinTCNotificationPower* power = WINTC_NOTIFICATION_POWER(object);
 
-    g_free(power->up_last_battery_path);
+    g_clear_object(&(power->up_device_battery));
+    g_clear_object(&(power->up_client));
 
-    (G_OBJECT_CLASS(
-        wintc_notification_power_parent_class
-    ))->finalize(object);
+    (G_OBJECT_CLASS(wintc_notification_power_parent_class))
+        ->dispose(object);
 }
 
 //
@@ -182,104 +168,137 @@ WinTCNotificationPower* wintc_notification_power_new(
 //
 // PRIVATE FUNCTIONS
 //
-static UpDeviceLevel battery_pct_to_enum(
-    gdouble percentage
+static void wintc_notification_power_register_main_battery(
+    WinTCNotificationPower* power
 )
 {
-    // FIXME: Not checked against Windows XP
+    // Reset state (for our sanity really)
     //
-    if (percentage <= 15.0f)
-    {
-        return UP_DEVICE_LEVEL_CRITICAL;
-    }
-    else if (percentage <= 25.0f)
-    {
-        return UP_DEVICE_LEVEL_LOW;
-    }
-    else if (percentage <= 75.0f)
-    {
-        return UP_DEVICE_LEVEL_NORMAL;
-    }
-    else if (percentage <= 90.0f)
-    {
-        return UP_DEVICE_LEVEL_HIGH;
-    }
-    else
-    {
-        return UP_DEVICE_LEVEL_FULL;
-    }
-}
+    g_clear_object(&(power->up_device_battery));
 
-static void check_and_register_battery(
-    WinTCNotificationPower* power,
-    UpDevice*               device
-)
-{
-    guint device_kind;
+    // ATM we can only raise one notification icon so just try to find 'a'
+    // battery and make that the main one
+    //
+    GPtrArray* all_devices = up_client_get_devices2(power->up_client);
+    gboolean   on_battery  = up_client_get_on_battery(power->up_client);
 
-    g_object_get(
-        device,
-        "kind", &device_kind,
-        NULL
-    );
+    for (guint i = 0; i < all_devices->len; i++)
+    {
+        UpDevice* device = (UpDevice*) all_devices->pdata[i];
+        guint     device_kind;
+        gboolean  power_supply;
+        guint     state;
 
-    if (device_kind != UP_DEVICE_KIND_BATTERY)
+        g_object_get(
+            device,
+            "kind",         &device_kind,
+            "power-supply", &power_supply,
+            "state",        &state,
+            NULL
+        );
+
+        if (device_kind == UP_DEVICE_KIND_BATTERY)
+        {
+            // This is the battery we want if:
+            //   - We're on battery, and this is the battery providing power
+            //   - We're not on battery, and this battery is charging
+            //
+            if (
+                (on_battery && power_supply) ||
+                (
+                    !on_battery &&
+                    (
+                        state == UP_DEVICE_STATE_CHARGING ||
+                        state == UP_DEVICE_STATE_FULLY_CHARGED
+                    )
+                )
+            )
+            {
+                power->up_device_battery = g_object_ref(device);
+                break;
+            }
+        }
+    }
+
+    g_ptr_array_unref(all_devices);
+
+    // Update the icon for current battery state
+    //
+    wintc_notification_power_update_icon(power);
+
+    // Connect up signals to monitor battery, assuming we have one?
+    //
+    if (!(power->up_device_battery))
     {
         return;
     }
 
-    update_battery_battery_level(power, device);
-
     g_signal_connect(
-        device,
+        power->up_device_battery,
         "notify::percentage",
         G_CALLBACK(on_up_device_battery_notify),
         power
     );
     g_signal_connect(
-        device,
+        power->up_device_battery,
         "notify::power-supply",
         G_CALLBACK(on_up_device_battery_notify),
         power
     );
     g_signal_connect(
-        device,
+        power->up_device_battery,
         "notify::state",
         G_CALLBACK(on_up_device_battery_notify),
         power
     );
 }
 
-static void update_battery_battery_level(
-    WinTCNotificationPower* power,
-    UpDevice*               device
+static void wintc_notification_power_update_icon(
+    WinTCNotificationPower* power
 )
 {
-    gdouble  percentage;
-    gboolean power_supply;
-    guint    state;
-
-    g_object_get(
-        device,
-        "percentage",   &percentage,
-        "power-supply", &power_supply,
-        "state",        &state,
-        NULL
-    );
-
-    if (!power_supply)
+    // Handle the situation where we have no battery, even if we're supposedly
+    // on battery supply
+    //
+    if (!(power->up_device_battery))
     {
+        if (up_client_get_on_battery(power->up_client))
+        {
+            g_object_set(
+                power,
+                "icon-name", "battery-missing",
+                NULL
+            );
+        }
+        else
+        {
+            g_object_set(
+                power,
+                "icon-name", "ac-adapter",
+                NULL
+            );
+        }
+
         return;
     }
 
-    // Update icon based on levels
+    // Okay we have a battery, so update the icon for it
     //
     // We do not use 'battery-level' from the upower API, because it's not
     // reliable (reports UP_DEVICE_LEVEL_NONE) -- so just use percentage
     //
-    const gchar* icon_name;
+    gdouble  percentage;
+    guint    state;
+
+    g_object_get(
+        power->up_device_battery,
+        "percentage",   &percentage,
+        "state",        &state,
+        NULL
+    );
 
     UpDeviceLevel battery_level = battery_pct_to_enum(percentage);
+    const gchar*  icon_name;
     gboolean      is_charging   = state == UP_DEVICE_STATE_CHARGING;
 
     switch (battery_level)
@@ -323,50 +342,33 @@ static void update_battery_battery_level(
         "icon-name", icon_name,
         NULL
     );
-
-    // Keep track of last battery, for when switching to-from AC power
-    //
-    const gchar* this_battery_path = up_device_get_object_path(device);
-
-    if (g_strcmp0(power->up_last_battery_path, this_battery_path) != 0)
-    {
-        g_free(power->up_last_battery_path);
-
-        power->up_last_battery      = device;
-        power->up_last_battery_path = g_strdup(this_battery_path);
-    }
 }
 
-static void update_client_on_battery(
-    WinTCNotificationPower* power,
-    UpClient*               client
+static UpDeviceLevel battery_pct_to_enum(
+    gdouble percentage
 )
 {
-    if (up_client_get_on_battery(client))
+    // FIXME: Not checked against Windows XP
+    //
+    if (percentage <= 15.0f)
     {
-        if (power->up_last_battery)
-        {
-            update_battery_battery_level(power, power->up_last_battery);
-        }
-        else
-        {
-            g_object_set(
-                power,
-                "icon-name", "battery-missing",
-                NULL
-            );
-        }
+        return UP_DEVICE_LEVEL_CRITICAL;
+    }
+    else if (percentage <= 25.0f)
+    {
+        return UP_DEVICE_LEVEL_LOW;
+    }
+    else if (percentage <= 75.0f)
+    {
+        return UP_DEVICE_LEVEL_NORMAL;
+    }
+    else if (percentage <= 90.0f)
+    {
+        return UP_DEVICE_LEVEL_HIGH;
     }
     else
     {
-        if (!power->up_last_battery)
-        {
-            g_object_set(
-                power,
-                "icon-name", "ac-adapter",
-                NULL
-            );
-        }
+        return UP_DEVICE_LEVEL_FULL;
     }
 }
 
@@ -375,48 +377,44 @@ static void update_client_on_battery(
 //
 static void on_up_client_device_added(
     WINTC_UNUSED(UpClient* up_client),
-    UpDevice* up_device,
-    gpointer  user_data
+    WINTC_UNUSED(UpDevice* up_device),
+    gpointer user_data
 )
 {
     WinTCNotificationPower* power = WINTC_NOTIFICATION_POWER(user_data);
 
-    check_and_register_battery(power, up_device);
+    wintc_notification_power_register_main_battery(power);
 }
 
 static void on_up_client_device_removed(
-    WINTC_UNUSED(UpClient*    up_client),
-    const gchar* object_path,
-    gpointer     user_data
+    WINTC_UNUSED(UpClient* up_client),
+    WINTC_UNUSED(const gchar* object_path),
+    gpointer user_data
 )
 {
     WinTCNotificationPower* power = WINTC_NOTIFICATION_POWER(user_data);
 
-    if (g_strcmp0(power->up_last_battery_path, object_path))
-    {
-        power->up_last_battery = NULL;
-        g_free(power->up_last_battery_path);
-    }
+    wintc_notification_power_register_main_battery(power);
 }
 
 static void on_up_client_battery_notify(
-    UpClient* up_client,
+    WINTC_UNUSED(UpClient* up_client),
     WINTC_UNUSED(GParamSpec* pspec),
-    gpointer  user_data
+    gpointer user_data
 )
 {
     WinTCNotificationPower* power = WINTC_NOTIFICATION_POWER(user_data);
 
-    update_client_on_battery(power, up_client);
+    wintc_notification_power_register_main_battery(power);
 }
 
 static void on_up_device_battery_notify(
-    UpDevice* up_device,
+    WINTC_UNUSED(UpDevice* up_device),
     WINTC_UNUSED(GParamSpec* pspec),
-    gpointer  user_data
+    gpointer user_data
 )
 {
     WinTCNotificationPower* power = WINTC_NOTIFICATION_POWER(user_data);
 
-    update_battery_battery_level(power, up_device);
+    wintc_notification_power_update_icon(power);
 }

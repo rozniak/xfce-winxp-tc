@@ -41,13 +41,19 @@ add_library(
     public/error.h
     src/exitwnd.c
     public/exitwnd.h
+    src/if_authui.c
+    public/if_authui.h
+    src/if_sm.c
+    public/if_sm.h
     src/logon.c
     public/logon.h
     public/state.h
     src/stripctl.c
     src/stripctl.h
-    public/xfsm.h
+    src/xdgsm.c
+    public/xdgsm.h
     src/xfsm.c
+    public/xfsm.h
 )
 
 set_target_properties(

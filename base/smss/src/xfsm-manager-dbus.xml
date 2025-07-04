@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    NOTE: This is straight from XFCE4, so we can roughly implement the session
+          manager API ourselves.
+-->
+
+<node name="/org/xfce/SessionManager">
+    <interface name="org.xfce.Session.Manager">
+        <annotation name="org.freedesktop.DBus.GLib.CSymbol"
+                    value="xfsm_manager_dbus"/>
+        <annotation name="org.freedesktop.DBus.GLib.ClientCSymbol"
+                    value="xfsm_manager_dbus_client"/>
+
+        <!--
+             (String, String, String) org.xfce.Session.Manager.GetInfo()
+
+             Returns:
+
+             @name: The session manager's name.
+             @version: The session manager's version.
+             @vendor: The vendor releasing the session manager.
+        -->
+        <method name="GetInfo">
+            <arg direction="out" name="name" type="s"/>
+            <arg direction="out" name="version" type="s"/>
+            <arg direction="out" name="vendor" type="s"/>
+        </method>
+
+        <!--
+             ObjectPath[] org.xfce.Session.Manager.ListClients()
+
+             Retrieves a list of session clients from the session
+             manager, as a list of D-Bus object paths.  These
+             object paths all support the org.xfce.Session.Client
+             interface.
+        -->
+        <method name="ListClients">
+            <arg direction="out" name="clients" type="ao"/>
+        </method>
+
+        <!--
+             Unsigned Int org.xfce.Session.Manager.GetState()
+
+             Queries the session manager for its current operating
+             state.  Valid values are:
+                 0  Startup: the session manager is starting up and
+                    restoring clients from the previous session.
+                 1  Idle: the session manager has started up and is
+                    waiting for client events.
+                 2  Checkpoint: the session manager is saving the
+                    client list and instructing clients to save state.
+                 3  Shutdown: the session manager is shutting down.
+                 4  Shutdown Phase 2: the session manager is shutting
+                    down and is allowing clients which have requested
+                    extra time to save their state to do so.
+        -->
+        <method name="GetState">
+            <arg direction="out" name="state" type="u"/>
+        </method>
+
+        <!--
+             void org.Xfce.Session.Manager.Checkpoint(String session_name)
+
+             @session_name: The name of the session to save.  Pass the
+                            empty string ("") to use the name of the
+                            currently-running session.
+
+             Instructs the session manager to save state and save all
+             client state, without ending the session.
+        -->
+        <method name="Checkpoint">
+            <arg direction="in" name="session_name" type="s"/>
+        </method>
+
+        <!--
+             void org.Xfce.Session.Manager.Logout
+        -->
+        <method name="Logout">
+            <arg direction="in" name="show_dialog" type="b"/>
+            <arg direction="in" name="allow_save" type="b"/>
+        </method>
+
+        <!--
+             void org.Xfce.Session.Manager.Shutdown
+        -->
+        <method name="Shutdown">
+            <arg direction="in" name="allow_save" type="b"/>
+        </method>
+
+        <!--
+             void org.Xfce.Session.Manager.CanShutdown
+        -->
+        <method name="CanShutdown">
+            <arg direction="out" name="can_shutdown" type="b"/>
+        </method>
+
+        <!--
+             void org.Xfce.Session.Manager.Restart
+        -->
+        <method name="Restart">
+            <arg direction="in" name="allow_save" type="b"/>
+        </method>
+
+        <!--
+             void org.Xfce.Session.Manager.CanRestart
+        -->
+        <method name="CanRestart">
+            <arg direction="out" name="can_restart" type="b"/>
+        </method>
+
+        <!--
+             void org.Xfce.Session.Manager.Suspend
+
+             This will possibly be removed in the future
+        -->
+        <method name="Suspend" />
+
+        <!--
+             void org.Xfce.Session.Manager.CanSuspend
+
+             This will possibly be removed in the future
+        -->
+        <method name="CanSuspend">
+            <arg direction="out" name="can_suspend" type="b"/>
+        </method>
+
+        <!--
+             void org.Xfce.Session.Manager.Hibernate
+
+             This will possibly be removed in the future
+        -->
+        <method name="Hibernate" />
+
+        <!--
+             void org.Xfce.Session.Manager.CanHibernate
+
+             This will possibly be removed in the future
+        -->
+        <method name="CanHibernate">
+            <arg direction="out" name="can_hibernate" type="b"/>
+        </method>
+
+        <!--
+             void org.Xfce.Session.Manager.HybridSleep
+
+             This will possibly be removed in the future
+        -->
+        <method name="HybridSleep" />
+
+        <!--
+             void org.Xfce.Session.Manager.CanHybridSleep
+
+             This will possibly be removed in the future
+        -->
+        <method name="CanHybridSleep">
+            <arg direction="out" name="can_hybrid_sleep" type="b"/>
+        </method>
+
+        <!--
+             void org.Xfce.Session.Manager.SwitchUser
+        -->
+        <method name="SwitchUser" />
+
+        <!--
+             ObjectPath[] org.Xfce.Session.Manager.RegisterClient
+
+             @app_id: The application identifier
+             @client_startup_id: Client startup identifier
+
+             Returns:
+             @client_id: The object path of the newly registered client
+
+             Register the caller as a Session Management client.
+        -->
+        <method name="RegisterClient">
+            <arg direction="in" name="app_id" type="s" />
+            <arg direction="in" name="client_startup_id" type="s" />
+            <arg direction="out" name="client_id" type="o" />
+        </method>
+
+        <!--
+             void org.Xfce.Session.Manager.UnregisterClient
+
+             @client_id: The object path of the previously registered client
+
+             Unregister the specified client from Session Management.
+        -->
+        <method name="UnregisterClient">
+            <arg direction="in" name="client_id" type="o" />
+        </method>
+
+        <!--
+             void org.Xfce.Session.Manager.Inhibit
+
+             @app_id: The application identifier
+             @toplevel_xid: The toplevel X window identifier
+             @reason: The reason for the inhibit
+             @flags: Flags that specify what should be inhibited
+
+             Returns:
+             @inhibit_cookie: The cookie
+
+             Proactively indicates that the calling application is performing
+             an action that should not be interrupted and sets a reason to be
+             displayed to the user when an interruption is about to take placea.
+        -->
+        <method name="Inhibit">
+            <arg type="s" name="app_id" direction="in" />
+            <arg type="u" name="toplevel_xid" direction="in" />
+            <arg type="s" name="reason" direction="in" />
+            <arg type="u" name="flags" direction="in" />
+            <arg type="u" name="inhibit_cookie" direction="out" />
+        </method>
+
+        <!--
+             void org.Xfce.Session.Manager.Uninhibit
+
+             @inhibit_cookie: The cookie
+
+             Cancel a previous call to Inhibit identified by the cookie.
+        -->
+        <method name="Uninhibit">
+            <arg type="u" name="inhibit_cookie" direction="in" />
+        </method>
+
+        <!--
+             void org.Xfce.Session.Manager.IsInhibited
+
+             @flags: Flags that spefify what should be inhibited
+
+             Returns:
+             @is_inhibited: Returns TRUE if any of the operations in the
+             bitfield flags are inhibited
+
+             Determine if operation(s) specified by the flags
+             are currently inhibited.  Flags are same as those accepted
+             by the Inhibit method.
+        -->
+        <method name="IsInhibited">
+            <arg type="u" name="flags" direction="in" />
+            <arg type="b" name="is_inhibited" direction="out" />
+        </method>
+
+        <!--
+             void org.xfce.Session.Manager.Lock
+
+             Returns:
+             @locked: Whether the call succeeded
+
+             Try to lock the session in various ways, depending on the configured
+             screensavers.
+        -->
+        <method name="Lock">
+            <arg type="b" name="locked" direction="out" />
+        </method>
+
+        <!--
+             void org.xfce.Session.Manager.StateChanged(Unsigned Int old_state,
+                                                        Unsigned Int new_state)
+
+             @old_state: The SM's previous state.
+             @new_state: The SM's new (current) state.
+
+             Emitted when the session manager's state changes.
+             See GetState() above for valid values for the
+             arguments.
+        -->
+        <signal name="StateChanged">
+            <arg name="old_state" type="u"/>
+            <arg name="new_state" type="u"/>
+        </signal>
+
+        <!--
+             void org.xfce.Session.Manager.ClientRegistered(ObjectPath client)
+
+             @client: A D-Bus object path.
+
+             Emitted when a new client is registered.
+        -->
+        <signal name="ClientRegistered">
+            <arg name="client" type="o"/>
+        </signal>
+
+        <!--
+             void org.xfce.Session.Manager.ShutdownCancelled()
+
+             Emitted when a previously-started shutdown has been
+             cancelled.
+        -->
+        <signal name="ShutdownCancelled"/>
+    </interface>
+</node>

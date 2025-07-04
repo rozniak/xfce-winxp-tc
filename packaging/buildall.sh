@@ -236,7 +236,18 @@ fi
 build_subdir="fre"
 build_type="free"
 cur_arch=`uname -m | xargs echo -n`
-tag=`${SH_GENTAG}`
+
+. $SH_GENTAG >/dev/null 2>&1
+
+export WINTC_VER_MAJOR
+export WINTC_VER_MINOR
+export WINTC_VER_BUILD
+export WINTC_VER_DATETIME
+export WINTC_VER_BRANCH
+export WINTC_VER_DATESTAMP
+export WINTC_VER_HASH
+export WINTC_VER_USER
+export WINTC_VER_TAG
 
 if [[ $OPT_CHECKED -eq 1 ]]
 then
@@ -244,7 +255,7 @@ then
     build_type="checked"
 fi
 
-echo "buildall: Doing full system build for ${tag} (${cur_arch}, ${DIST_ID}-${DIST_ID_EXT}) (${build_type})"
+echo "buildall: Doing full system build for ${WINTC_VER_TAG} (${cur_arch}, ${DIST_ID}-${DIST_ID_EXT}) (${build_type})"
 
 # Handle output dir for packaging
 #
@@ -252,7 +263,7 @@ if [[ $OPT_SKIP_PACKAGING -eq 0 ]]
 then
     if [[ "${OPT_OUTPUT_DIR}" == "" ]]
     then
-        OPT_OUTPUT_DIR="${CURDIR}/xptc/${tag}/${DIST_ID}/${DIST_ID_EXT}/${cur_arch}/${build_subdir}"
+        OPT_OUTPUT_DIR="${CURDIR}/xptc/${WINTC_VER_TAG}/${DIST_ID}/${DIST_ID_EXT}/${cur_arch}/${build_subdir}"
 
         mkdir -p "${OPT_OUTPUT_DIR}"
     fi
@@ -283,4 +294,4 @@ do
     build_component "${rel_target_dir}"
 done {targets_fd}<"${OPT_BUILDLIST}"
 
-echo "buildall: Build complete for ${tag} (${build_type})"
+echo "buildall: Build complete for ${WINTC_VER_TAG} (${build_type})"
