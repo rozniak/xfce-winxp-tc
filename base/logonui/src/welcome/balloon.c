@@ -2,6 +2,25 @@
 #include <wintc/comgtk.h>
 #include <wintc/msgina.h>
 
+//
+// PRIVATE ENUMS
+//
+enum {
+    PROP_0,
+    PROP_ALERT_TYPE,
+    PROP_TARGET_WIDGET,
+    N_PROPERTIES
+};
+
+//
+// GTK OOP CLASS/INSTANCE DEFINITIONS
+//
+struct _BalloonClass
+{
+    GtkBoxClass __parent__;
+};
+
+
 struct _Balloon {
     GtkBox __parent__;
 
@@ -13,14 +32,15 @@ struct _Balloon {
     GtkWidget* message;
 };
 
-G_DEFINE_TYPE(Balloon, balloon, GTK_TYPE_BOX)
+//
+// GTK TYPE DEFINITIONS & CTORS
+//
+G_DEFINE_TYPE(
+    Balloon,
+    balloon,
+    GTK_TYPE_BOX
+)
 
-enum {
-    PROP_0,
-    PROP_ALERT_TYPE,
-    PROP_TARGET_WIDGET,
-    N_PROPERTIES
-};
 
 static GParamSpec *properties[N_PROPERTIES];
 
@@ -82,7 +102,7 @@ static void
 balloon_set_property(GObject *object, guint prop_id, 
                             const GValue *value, GParamSpec *pspec)
 {
-    Balloon *self = BALLOON_WIDGET(object);
+    Balloon *self = BALLOON(object);
     
     switch (prop_id) {
         case PROP_ALERT_TYPE:
@@ -105,7 +125,7 @@ static void
 balloon_get_property(GObject *object, guint prop_id,
                             GValue *value, GParamSpec *pspec)
 {
-    Balloon *self = BALLOON_WIDGET(object);
+    Balloon *self = BALLOON(object);
     switch (prop_id) {
         case PROP_ALERT_TYPE:
             g_value_set_enum(value, self->alert_type);
@@ -120,7 +140,7 @@ balloon_get_property(GObject *object, guint prop_id,
 }
 
 static void balloon_finalize(GObject *object) {
-    Balloon *self = BALLOON_WIDGET(object);
+    Balloon *self = BALLOON(object);
     if (self->target_widget) {
         g_object_weak_unref(G_OBJECT(self->target_widget), 
                            (GWeakNotify)on_target_widget_destroyed, self);
@@ -135,6 +155,10 @@ static void balloon_init(Balloon *self) {
     gtk_orientable_set_orientation(GTK_ORIENTABLE(self), GTK_ORIENTATION_VERTICAL);
 }
 
+
+//
+// PUBLIC FUNCTIONS
+//
 GtkWidget *
 balloon_new(BalloonType type, GtkWidget* target_widget) {
     g_return_val_if_fail(type == BALLOON_TYPE_ERROR || type == BALLOON_TYPE_WARNING, NULL);
@@ -149,6 +173,9 @@ balloon_new(BalloonType type, GtkWidget* target_widget) {
     return GTK_WIDGET(balloon);
 }
 
+//
+// PRIVATE FUNCTIONS
+//
 static gboolean draw_arrow(WINTC_UNUSED(GtkWidget *widget), cairo_t *cr, WINTC_UNUSED(gpointer data)) {
     // FIXME: In future the baloon should be able to show the arrow on the left or right side.
     gboolean show_right = TRUE;
@@ -188,7 +215,7 @@ static gboolean draw_arrow(WINTC_UNUSED(GtkWidget *widget), cairo_t *cr, WINTC_U
     return FALSE;
 }
 
-GtkWidget* balloon_create_arrow_widget() {
+static GtkWidget* balloon_create_arrow_widget() {
     GtkWidget *area = gtk_drawing_area_new();
     gtk_widget_set_hexpand(area, TRUE);
     gtk_widget_set_vexpand(area, FALSE);
@@ -198,7 +225,7 @@ GtkWidget* balloon_create_arrow_widget() {
 }
 
 static void configure_base_balloon(GtkWidget *widget) {
-    Balloon *self = BALLOON_WIDGET(widget);
+    Balloon *self = BALLOON(widget);
 
     if (!self->target_widget || !GTK_IS_WIDGET(self->target_widget)) {
         g_warning("Balloon target widget is not set correctly or doesn't exist. This balloon will not be positioned correctly.");
@@ -280,14 +307,14 @@ static void configure_balloon_style(Balloon *self) {
 }
 
 static void balloon_constructed(GObject *object) {
-    Balloon *self = BALLOON_WIDGET(object);
+    Balloon *self = BALLOON(object);
     configure_balloon_style(self);
 
     G_OBJECT_CLASS(balloon_parent_class)->constructed(object);
 }
 
 static void on_target_widget_destroyed(gpointer data, GObject *destroyed_object) {
-    Balloon *self = BALLOON_WIDGET(data);
+    Balloon *self = BALLOON(data);
     if (self->target_widget == GTK_WIDGET(destroyed_object)) {
         self->target_widget = NULL;
         gtk_widget_destroy(GTK_WIDGET(self));
