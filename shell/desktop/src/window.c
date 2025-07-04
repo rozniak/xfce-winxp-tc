@@ -195,8 +195,7 @@ static gboolean wintc_desktop_window_draw(
     cairo_t*   cr
 )
 {
-    WinTCDpaDesktopWindow* dpa_wnd = WINTC_DPA_DESKTOP_WINDOW(widget);
-    WinTCDesktopWindow*    wnd     = WINTC_DESKTOP_WINDOW(widget);
+    WinTCDesktopWindow* wnd = WINTC_DESKTOP_WINDOW(widget);
 
     gint wnd_w = gtk_widget_get_allocated_width(widget);
     gint wnd_h = gtk_widget_get_allocated_height(widget);
@@ -259,7 +258,13 @@ static gboolean wintc_desktop_window_draw(
 
     // Rough watermark drawing
     //
-    if (gdk_monitor_is_primary(dpa_wnd->monitor))
+    if (
+        gdk_monitor_is_primary(
+            wintc_dpa_desktop_window_get_monitor(
+                WINTC_DPA_DESKTOP_WINDOW(wnd)
+            )
+        )
+    )
     {
         static gchar* s_tag = NULL;
 
