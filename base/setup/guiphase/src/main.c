@@ -140,6 +140,11 @@ int main(
 
     wintc_setup_window_enable_throbbers(WINTC_SETUP_WINDOW(wnd_setup));
 
+    wintc_setup_window_set_current_step(
+        WINTC_SETUP_WINDOW(wnd_setup),
+        WINTC_SETUP_STEP_INSTALLING_WINDOWS
+    );
+
     // Create a billy basic test window (will be replaced by a wizard
     // eventually
     //

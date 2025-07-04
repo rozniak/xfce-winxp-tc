@@ -6,6 +6,19 @@
 #include <wintc/shelldpa.h>
 
 //
+// PUBLIC ENUMS
+//
+enum
+{
+    WINTC_SETUP_STEP_COLLECTING_INFORMATION = 0,
+    WINTC_SETUP_STEP_DYNAMIC_UPDATE,
+    WINTC_SETUP_STEP_PREPARING_INSTALLATION,
+    WINTC_SETUP_STEP_INSTALLING_WINDOWS,
+    WINTC_SETUP_STEP_FINALIZING_INSTALLATION,
+    N_WINTC_SETUP_STEPS
+};
+
+//
 // GTK OOP BOILERPLATE
 //
 #define WINTC_TYPE_SETUP_WINDOW (wintc_setup_window_get_type())
@@ -28,6 +41,10 @@ void wintc_setup_window_disable_throbbers(
 );
 void wintc_setup_window_enable_throbbers(
     WinTCSetupWindow* wnd
+);
+void wintc_setup_window_set_current_step(
+    WinTCSetupWindow* wnd,
+    gint              step
 );
 
 #endif
