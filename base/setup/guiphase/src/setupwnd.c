@@ -34,6 +34,7 @@ struct _WinTCSetupWindow
     // UI
     //
     GtkWidget* box_bottom;
+    GtkWidget* grid_steps;
 };
 
 //
@@ -66,6 +67,7 @@ static void wintc_setup_window_init(
         GTK_BUILDER(builder),
         "main-box", &main_box,
         "box-bottom", &(self->box_bottom),
+        "grid-steps", &(self->grid_steps),
         NULL
     );
 
@@ -200,6 +202,66 @@ void wintc_setup_window_enable_throbbers(
     }
 
     g_object_unref(pixbuf_throbber);
+}
+
+void wintc_setup_window_set_current_step(
+    WinTCSetupWindow* wnd,
+    gint              step
+)
+{
+    if (step > N_WINTC_SETUP_STEPS)
+    {
+        g_critical("wsetupx: invalid step %d", step);
+        return;
+    }
+
+    // Iterate over and update steps
+    //
+    GList* children = gtk_container_get_children(
+                          GTK_CONTAINER(wnd->grid_steps)
+                      );
+    GList* iter     = g_list_reverse(children); // Grid is back to front
+
+    for (gint i = 0; i < N_WINTC_SETUP_STEPS; i++)
+    {
+        GtkWidget* image_bullet = GTK_WIDGET(iter->data);
+        GtkWidget* label_step   = GTK_WIDGET(iter->next->data);
+
+        GtkStyleContext* ctx = gtk_widget_get_style_context(label_step);
+
+        gtk_style_context_remove_class(ctx, "setup-step-complete");
+        gtk_style_context_remove_class(ctx, "setup-step-current");
+
+        if (i < step)
+        {
+            gtk_image_set_from_resource(
+                GTK_IMAGE(image_bullet),
+                "/uk/oddmatics/wintc/wsetupx/bulldone.png"
+            );
+
+            gtk_style_context_add_class(ctx, "setup-step-complete");
+        }
+        else if (i == step)
+        {
+            gtk_image_set_from_resource(
+                GTK_IMAGE(image_bullet),
+                "/uk/oddmatics/wintc/wsetupx/bullcur.png"
+            );
+
+            gtk_style_context_add_class(ctx, "setup-step-current");
+        }
+        else
+        {
+            gtk_image_set_from_resource(
+                GTK_IMAGE(image_bullet),
+                "/uk/oddmatics/wintc/wsetupx/bullnull.png"
+            );
+        }
+
+        iter = iter->next->next;
+    }
+
+    g_list_free(children);
 }
 
 //
