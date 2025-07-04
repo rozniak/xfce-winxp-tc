@@ -4,7 +4,7 @@ Before=display-manager.service
 
 [Service]
 # FIXME: Needs to be configured by CMake...
-ExecStart=startx /usr/share/wintc/setup/xinitrc
+ExecStart=startx /usr/share/wintc/wsetupx/xinitrc
 
 [Install]
 WantedBy=multi-user.target
