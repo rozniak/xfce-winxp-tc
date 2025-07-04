@@ -76,4 +76,5 @@ grid > label
     background: #08339B;
     border-top: 2px solid #000;
     border-image: url('resource:///uk/oddmatics/wintc/wsetupx/borderb.png') 2 0 0 0;
+    padding-right: 20px;
 }

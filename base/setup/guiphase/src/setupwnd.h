@@ -14,7 +14,7 @@ G_DECLARE_FINAL_TYPE(
     WinTCSetupWindow,
     wintc_setup_window,
     WINTC,
-    SEUTP_WINDOW,
+    SETUP_WINDOW,
     WinTCDpaDesktopWindow
 )
 
@@ -22,5 +22,12 @@ G_DECLARE_FINAL_TYPE(
 // PUBLIC FUNCTIONS
 //
 GtkWidget* wintc_setup_window_new();
+
+void wintc_setup_window_disable_throbbers(
+    WinTCSetupWindow* wnd
+);
+void wintc_setup_window_enable_throbbers(
+    WinTCSetupWindow* wnd
+);
 
 #endif
