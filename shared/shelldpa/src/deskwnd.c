@@ -1,3 +1,4 @@
+#include <gdk/gdk.h>
 #include <glib.h>
 #include <gtk/gtk.h>
 #include <wintc/comgtk.h>
@@ -49,9 +50,17 @@ static void window_setup_x11(
 );
 
 //
+// GTK OOP CLASS/INSTANCE DEFINITIONS
+//
+typedef struct _WinTCDpaDesktopWindowPrivate
+{
+    GdkMonitor* monitor;
+} WinTCDpaDesktopWindowPrivate;
+
+//
 // GTK TYPE DEFINITION & CTORS
 //
-G_DEFINE_TYPE_WITH_CODE(
+G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE(
     WinTCDpaDesktopWindow,
     wintc_dpa_desktop_window,
     GTK_TYPE_APPLICATION_WINDOW,
@@ -153,6 +162,19 @@ static void wintc_dpa_desktop_window_set_property(
 }
 
 //
+// PUBLIC FUNCTIONS
+//
+GdkMonitor* wintc_dpa_desktop_window_get_monitor(
+    WinTCDpaDesktopWindow* wnd
+)
+{
+    WinTCDpaDesktopWindowPrivate* priv =
+        wintc_dpa_desktop_window_get_instance_private(wnd);
+
+    return priv->monitor;
+}
+
+//
 // PRIVATE FUNCTIONS
 //
 static void window_setup_wayland(
@@ -162,6 +184,8 @@ static void window_setup_wayland(
     WinTCDpaDesktopWindowPrivate* priv =
         wintc_dpa_desktop_window_get_instance_private(wnd);
 
+    // Use layer shell to become a desktop window
+    //
     GtkWindow* window = GTK_WINDOW(wnd);
 
     p_gtk_layer_init_for_window(window);
@@ -184,6 +208,8 @@ static void window_setup_x11(
     WinTCDpaDesktopWindowPrivate* priv =
         wintc_dpa_desktop_window_get_instance_private(wnd);
 
+    // Directly size the window based on monitor geometry
+    //
     GdkRectangle geometry;
 
     gdk_monitor_get_geometry(priv->monitor, &geometry);
