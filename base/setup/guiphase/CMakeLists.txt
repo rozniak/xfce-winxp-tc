@@ -90,13 +90,28 @@ target_link_libraries(
 #
 wintc_configure_and_install_packaging()
 
+configure_file(
+    res/startwsetupx.in
+    startwsetupx
+    @ONLY
+)
+configure_file(
+    res/xinitrc.in
+    xinitrc
+    @ONLY
+)
+
 install(
     FILES res/wsetupx.service
-    DESTINATION ${WINTC_ASSETS_INSTALL_DIR}/setup
+    DESTINATION ${WINTC_ASSETS_INSTALL_DIR}/wsetupx
 )
 install(
-    FILES src/xinitrc
-    DESTINATION ${WINTC_ASSETS_INSTALL_DIR}/setup
+    PROGRAMS ${CMAKE_BINARY_DIR}/startwsetupx
+    DESTINATION ${CMAKE_INSTALL_BINDIR}
+)
+install(
+    FILES ${CMAKE_BINARY_DIR}/xinitrc
+    DESTINATION ${WINTC_ASSETS_INSTALL_DIR}/wsetupx
 )
 install(
     TARGETS wintc-setup-gui
