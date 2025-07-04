@@ -28,21 +28,15 @@
 //
 // GTK OOP BOILERPLATE
 //
-typedef struct _WinTCCtlAnimationClass WinTCCtlAnimationClass;
+#define WINTC_TYPE_CTL_ANIMATION (wintc_ctl_animation_get_type())
 
-/**
- * A WinTC animation control.
- */
-typedef struct _WinTCCtlAnimation WinTCCtlAnimation;
-
-#define WINTC_TYPE_CTL_ANIMATION            (wintc_ctl_animation_get_type())
-#define WINTC_CTL_ANIMATION(obj)            (G_TYPE_CHECK_INSTANCE_CAST((obj), WINTC_TYPE_CTL_ANIMATION, WinTCCtlAnimation))
-#define WINTC_CTL_ANIMATION_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST((klass), WINTC_TYPE_CTL_ANIMATION, WinTCCtlAnimation))
-#define IS_WINTC_CTL_ANIMATION(obj)         (G_TYPE_CHECK_INSTANCE_TYPE((obj), WINTC_TYPE_CTL_ANIMATION))
-#define IS_WINTC_CTL_ANIMATION_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE((klass), WINTC_TYPE_CTL_ANIMATION))
-#define WINTC_CTL_ANIMATION_GET_CLASS(obj)  (G_TYPE_CHECK_INSTANCE_GET_CLASS((obj), WINTC_TYPE_CTL_ANIMATION))
-
-GType wintc_ctl_animation_get_type(void) G_GNUC_CONST;
+G_DECLARE_FINAL_TYPE(
+    WinTCCtlAnimation,
+    wintc_ctl_animation,
+    WINTC,
+    CTL_ANIMATION,
+    GtkWidget
+)
 
 //
 // PUBLIC FUNCTIONS

@@ -18,6 +18,12 @@ enum
     N_PROPERTIES
 };
 
+enum
+{
+    SIGNAL_CYCLED = 0,
+    N_SIGNALS
+};
+
 //
 // PRIVATE STURCTURE DEFINITIONS
 //
@@ -29,6 +35,11 @@ typedef struct _WinTCCtlAnimationData
     gint frame_count;
     gint frame_height;
 } WinTCCtlAnimationData;
+
+//
+// STATIC DATA
+//
+static gint wintc_ctl_animation_signals[N_SIGNALS] = { 0 };
 
 //
 // GTK OOP CLASS/INSTANCE DEFINITIONS
@@ -53,6 +64,7 @@ struct _WinTCCtlAnimation
     gint                   current_frame;
     gint                   desired_repeats;
     gint                   last_frame;
+    gint                   last_repeats;
     gint64                 origin_frame_time;
     gint64                 per_frame_time;
     gint64                 playback_total_time;
@@ -149,6 +161,19 @@ static void wintc_ctl_animation_class_init(
         wintc_ctl_animation_get_preferred_width;
     widget_class->get_preferred_width_for_height =
         wintc_ctl_animation_get_preferred_width_for_height;
+
+    wintc_ctl_animation_signals[SIGNAL_CYCLED] =
+        g_signal_new(
+            "cycled",
+            G_TYPE_FROM_CLASS(object_class),
+            G_SIGNAL_RUN_FIRST,
+            0,
+            NULL,
+            NULL,
+            g_cclosure_marshal_VOID__VOID,
+            G_TYPE_NONE,
+            0
+        );
 
     g_object_class_install_property(
         object_class,
@@ -585,12 +610,14 @@ void wintc_ctl_animation_play(
     anim->current_frame       = 0;
     anim->last_frame          = 0;
     anim->desired_repeats     = 0;
+    anim->last_repeats        = 0;
     anim->origin_frame_time   = 0;
     anim->per_frame_time      = 0;
     anim->playback_total_time = 0;
 
     // Queue a draw regardless of what happens
     //
+    gtk_widget_queue_resize(GTK_WIDGET(anim));
     gtk_widget_queue_draw(GTK_WIDGET(anim));
 
     // Check we're being asked to actually play anything
@@ -718,6 +745,15 @@ static gboolean wintc_ctl_animation_step(
     gint64 within_frame = progress % anim->playback_total_time;
     gint   frame_no     = (gint) (within_frame / anim->per_frame_time);
 
+    if (repeat_no > anim->last_repeats)
+    {
+        g_signal_emit(
+            anim,
+            wintc_ctl_animation_signals[SIGNAL_CYCLED],
+            0
+        );
+    }
+
     if (
         anim->desired_repeats != WINTC_CTL_ANIMATION_INFINITE &&
         anim->desired_repeats <  repeat_no
@@ -732,6 +768,7 @@ static gboolean wintc_ctl_animation_step(
     }
 
     anim->current_frame = frame_no;
+    anim->last_repeats  = repeat_no;
 
     return G_SOURCE_CONTINUE;
 }
