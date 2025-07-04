@@ -6,7 +6,7 @@
 
 #include "arm.h"
 
-#define WINTC_SETUP_ASSETS_DIR WINTC_ASSETS_DIR "/setup"
+#define WINTC_SETUP_ASSETS_DIR WINTC_ASSETS_DIR "/wsetupx"
 
 //
 // PUBLIC FUNCTIONS

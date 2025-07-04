@@ -2,6 +2,7 @@
 #include <gtk/gtk.h>
 #include <stdlib.h>
 #include <wintc/comgtk.h>
+#include <wintc/exec.h>
 #include <wintc/shelldpa.h>
 
 #include "arm.h"
@@ -91,7 +92,20 @@ int main(
     if (!wintc_init_display_protocol_apis())
     {
         g_critical("%s", "Failed to resolve display protocol APIs.");
-        return 0;
+        return EXIT_FAILURE;
+    }
+
+    // Fire up xfwm4
+    //
+    if (
+        !wintc_launch_command(
+            "xfwm4 --compositor=on",
+            &error
+        )
+    )
+    {
+        wintc_log_error_and_clear(&error);
+        return EXIT_FAILURE;
     }
 
     // Set up styling
