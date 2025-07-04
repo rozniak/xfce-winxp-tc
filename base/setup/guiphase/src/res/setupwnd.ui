@@ -48,7 +48,7 @@
             <property name="orientation">vertical</property>
 
             <child>
-              <object class="GtkGrid">
+              <object class="GtkGrid" id="grid-steps">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <property name="orientation">horizontal</property>
@@ -194,6 +194,10 @@
                     <property name="can-focus">False</property>
                     <property name="label">Setup will complete in</property>
                     <property name="xalign">0.0</property>
+
+                    <style>
+                      <class name="setup-step-approx" />
+                    </style>
                   </object>
                   <packing>
                     <property name="left-attach">0</property>

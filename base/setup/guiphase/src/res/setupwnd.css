@@ -39,9 +39,16 @@ grid > *
     margin-top: 10px
 }
 
-grid > label
+.setup-step-complete,
+.setup-step-current,
+.setup-step-approx
 {
     font-weight: bold;
+}
+
+.setup-step-current
+{
+    color: #FF8000;
 }
 
 .setup-main
