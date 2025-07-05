@@ -15,49 +15,37 @@
 #define DELAY_SECONDS_POLL     1
 
 //
-// GTK OOP CLASS/INSTANCE DEFINITIONS
+// PRIVATE ENUMS
 //
-struct _WinTCWelcomeUIClass
+enum
 {
-    GtkContainerClass __parent__;
-
-    GtkCssProvider* css_provider;
-};
-
-struct _WinTCWelcomeUI
-{
-    GtkContainer __parent__;
-
-    GSList* child_widgets;
-
-    // Graphic resources
-    //
-
-    // Logo resources
-    //
-
-
-    // UI
-    //
-    GtkWidget* box_container; 
-    
-    GtkWidget* welcome_box;
-    GtkWidget* login_box;
-    GtkWidget* wait_box;
-
-    // State
-    //
-    WinTCGinaState         current_state;
-    WinTCGinaLogonSession* logon_session;
+    PROP_LOGON_SESSION = 1
 };
 
 //
 // FORWARD DECLARATIONS
 //
-static void wintc_welcome_ui_finalize(
-    GObject* gobject
+static void wintc_welcome_ui_igina_auth_ui_interface_init(
+    WinTCIGinaAuthUIInterface* iface
 );
-
+static void wintc_welcome_ui_constructed(
+    GObject* object
+);
+static void wintc_welcome_ui_dispose(
+    GObject* object
+);
+static void wintc_welcome_ui_get_property(
+    GObject*    object,
+    guint       prop_id,
+    GValue*     value,
+    GParamSpec* pspec
+);
+static void wintc_welcome_ui_set_property(
+    GObject*      object,
+    guint         prop_id,
+    const GValue* value,
+    GParamSpec*   pspec
+);
 static void wintc_welcome_ui_add(
     GtkContainer* container,
     GtkWidget*    widget
@@ -116,14 +104,53 @@ GtkWidget* create_bottom_separator_widget(void);
 GtkWidget* create_bottom_ribbon_widget(void);
 GtkWidget* create_shutdown_widget(void);
 
+
+//
+// GTK OOP CLASS/INSTANCE DEFINITIONS
+//
+struct _WinTCWelcomeUIClass
+{
+    GtkContainerClass __parent__;
+};
+
+struct _WinTCWelcomeUI
+{
+    GtkContainer __parent__;
+
+    GSList* child_widgets;
+
+    // UI
+    //
+    GtkWidget* box_container; 
+    
+    GtkWidget* welcome_box;
+    GtkWidget* login_box;
+    GtkWidget* wait_box;
+
+    // State
+    //
+    WinTCGinaState         current_state;
+    WinTCGinaLogonSession* logon_session;
+};
+
+
 //
 // GTK TYPE DEFINITIONS & CTORS
 //
-G_DEFINE_TYPE(
+G_DEFINE_TYPE_WITH_CODE(
     WinTCWelcomeUI,
     wintc_welcome_ui,
-    GTK_TYPE_CONTAINER
+    GTK_TYPE_CONTAINER,
+    G_IMPLEMENT_INTERFACE(
+        WINTC_TYPE_IGINA_AUTH_UI,
+        wintc_welcome_ui_igina_auth_ui_interface_init
+    )
 )
+
+static void wintc_welcome_ui_igina_auth_ui_interface_init(
+    WINTC_UNUSED(WinTCIGinaAuthUIInterface* iface)
+) {}
+
 
 static void wintc_welcome_ui_class_init(
     WinTCWelcomeUIClass* klass
@@ -133,8 +160,10 @@ static void wintc_welcome_ui_class_init(
     GtkWidgetClass*    widget_class    = GTK_WIDGET_CLASS(klass);
     GObjectClass*      object_class    = G_OBJECT_CLASS(klass);
 
-    object_class->finalize = wintc_welcome_ui_finalize;
-
+    object_class->constructed  = wintc_welcome_ui_constructed;
+    object_class->dispose      = wintc_welcome_ui_dispose;
+    object_class->get_property = wintc_welcome_ui_get_property;
+    object_class->set_property = wintc_welcome_ui_set_property;
 
     container_class->add    = wintc_welcome_ui_add;
     container_class->remove = wintc_welcome_ui_remove;
@@ -142,96 +171,140 @@ static void wintc_welcome_ui_class_init(
 
     widget_class->size_allocate = wintc_welcome_ui_size_allocate;
 
-    klass->css_provider = gtk_css_provider_new();
+    g_object_class_override_property(
+        object_class,
+        PROP_LOGON_SESSION,
+        "logon-session"
+    );
+    
+    GtkCssProvider* css_welcome = gtk_css_provider_new();
 
     gtk_css_provider_load_from_resource(
-        klass->css_provider,
+        css_welcome,
         "/uk/oddmatics/wintc/logonui/welcome-ui.css"
     );
 
     gtk_style_context_add_provider_for_screen(
         gdk_screen_get_default(),
-        GTK_STYLE_PROVIDER(klass->css_provider),
+        GTK_STYLE_PROVIDER(css_welcome),
         GTK_STYLE_PROVIDER_PRIORITY_APPLICATION
     );
 }
 
 static void wintc_welcome_ui_init(
-    WinTCWelcomeUI* self
+    WINTC_UNUSED(WinTCWelcomeUI* self)
 )
 {
-    gtk_widget_set_has_window(GTK_WIDGET(self), FALSE);
+}
 
-    // Set initial state
-    //
-    self->current_state = WINTC_GINA_STATE_NONE;
-    self->logon_session = wintc_gina_logon_session_new();
+//
+// CLASS VIRTUAL METHODS
+//
+static void wintc_welcome_ui_constructed(
+    GObject* object
+) {
+     (G_OBJECT_CLASS(wintc_welcome_ui_parent_class))
+        ->constructed(object);
+    
+    WinTCWelcomeUI* welcome_ui = WINTC_WELCOME_UI(object);
+
+    if (!(welcome_ui->logon_session))
+    {
+        g_critical("%s", "logonui: no logon session!");
+        return;
+    }
+
+
+    gtk_widget_set_has_window(GTK_WIDGET(welcome_ui), FALSE);
+
+
+    welcome_ui->current_state = WINTC_GINA_STATE_NONE;
 
     g_signal_connect(
-        self->logon_session,
+        welcome_ui->logon_session,
         "attempt-complete",
         G_CALLBACK(on_logon_session_attempt_complete),
-        self
+        welcome_ui
     );
 
-    // Set up image resources
     //
-       
-    // Set up 'Please wait...' box
-    self->wait_box = build_wait_box();
-
-    // Set up login box
+    // USER INTERFACE
     //
-    self->login_box = build_login_box(self->logon_session);
 
-    // Set up 'welcome' box
-    //
-    self->welcome_box = build_welcome_box();
+    welcome_ui->wait_box = build_wait_box();
+    welcome_ui->login_box = build_login_box(welcome_ui->logon_session);
+    welcome_ui->welcome_box = build_welcome_box();
 
+    welcome_ui->box_container = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 
-    // Set up container
-    //
-    self->box_container = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-    // gtk_box_pack_start(GTK_BOX(self->box_container), self->login_box, TRUE, TRUE, 0);
-
-    wintc_welcome_ui_internal_add(self, self->box_container);
-
-    // Add style classes
-    //
+    wintc_welcome_ui_internal_add(welcome_ui, welcome_ui->box_container);
 
     // Hold an additional reference to the boxes, so we can add/remove
     // them ourselves without them getting binned
     //
-    g_object_ref(self->welcome_box);
-    g_object_ref(self->login_box);
-    g_object_ref(self->wait_box);
+    g_object_ref(welcome_ui->welcome_box);
+    g_object_ref(welcome_ui->login_box);
+    g_object_ref(welcome_ui->wait_box);
 
     // Connect to realize signal to kick off everything when we're
     // actually live
     //
     g_signal_connect(
-        self,
+        welcome_ui,
         "realize",
         G_CALLBACK(on_self_realized),
         NULL
     );
 }
 
-//
-// CLASS VIRTUAL METHODS
-//
-static void wintc_welcome_ui_finalize(
-    GObject* gobject
-)
-{
-    WinTCWelcomeUI* welcome_ui = WINTC_WELCOME_UI(gobject);
+static void wintc_welcome_ui_dispose(
+    GObject* object
+) {
+    WinTCWelcomeUI* welcome_ui = WINTC_WELCOME_UI(object);
 
     g_object_unref(welcome_ui->welcome_box);
     g_object_unref(welcome_ui->login_box);
     g_object_unref(welcome_ui->wait_box);
 
-    (G_OBJECT_CLASS(wintc_welcome_ui_parent_class))->finalize(gobject);
+    (G_OBJECT_CLASS(wintc_welcome_ui_parent_class))->finalize(object);
 }
+
+static void wintc_welcome_ui_get_property(
+    GObject*    object,
+    guint       prop_id,
+    WINTC_UNUSED(GValue* value),
+    GParamSpec* pspec
+)
+{
+    switch (prop_id)
+    {
+        default:
+            G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
+            break;
+    }
+}
+
+static void wintc_welcome_ui_set_property(
+    GObject*      object,
+    guint         prop_id,
+    const GValue* value,
+    GParamSpec*   pspec
+)
+{
+    WinTCWelcomeUI* welcome_ui = WINTC_WELCOME_UI(object);
+
+    switch (prop_id)
+    {
+        case PROP_LOGON_SESSION:
+            welcome_ui->logon_session = g_value_dup_object(value);
+            break;
+
+        default:
+            G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
+            break;
+    }
+}
+
 
 static void wintc_welcome_ui_add(
     WINTC_UNUSED(GtkContainer* container),
@@ -266,13 +339,16 @@ static void wintc_welcome_ui_size_allocate(
 //
 // PUBLIC FUNCTIONS
 //
-GtkWidget* wintc_welcome_ui_new(void)
+GtkWidget* wintc_welcome_ui_new(
+    WinTCGinaLogonSession* logon_session
+)
 {
     return GTK_WIDGET(
         g_object_new(
             WINTC_TYPE_WELCOME_UI,
-            "hexpand", TRUE,
-            "vexpand", TRUE,
+            "hexpand",       TRUE,
+            "vexpand",       TRUE,
+            "logon-session", logon_session,
             NULL
         )
     );
