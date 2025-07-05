@@ -20,35 +20,7 @@ enum
     N_PROPERTIES
 };
 
-//
-// GTK OOP CLASS/INSTANCE DEFINITIONS
-//
-struct _WinTCWelcomeUserListClass
-{
-    GtkBoxClass __parent__;
-};
 
-struct _WinTCWelcomeUserList
-{
-    GtkBox __parent__;
-
-    // State flags
-    //
-    gboolean hovered;
-
-    // UI
-    //
-    GtkWidget *overlay_wrapper;
-
-    GtkWidget *balloon_wrapper;
-    GtkWidget *box; 
-
-    GList *list;
-    WinTCGinaLogonSession* logon_session;
-
-    GtkWidget *balloon;
-    guint timeout_id;
-};
 
 //
 // FORWARD DECLARATIONS
@@ -191,6 +163,36 @@ static void on_wrapper_realize(
     WINTC_UNUSED(gpointer user_data)
 );
 
+//
+// GTK OOP CLASS/INSTANCE DEFINITIONS
+//
+struct _WinTCWelcomeUserListClass
+{
+    GtkBoxClass __parent__;
+};
+
+struct _WinTCWelcomeUserList
+{
+    GtkBox __parent__;
+
+    // State flags
+    //
+    gboolean hovered;
+
+    // UI
+    //
+    GtkWidget *overlay_wrapper;
+
+    GtkWidget *balloon_wrapper;
+    GtkWidget *box; 
+
+    GList *list;
+    WinTCGinaLogonSession* logon_session;
+
+    GtkWidget *balloon;
+    guint timeout_id;
+};
+
 
 //
 // GTK TYPE DEFINITIONS & CTORS
@@ -236,7 +238,6 @@ static void wintc_welcome_user_list_init(
 
     self->overlay_wrapper = gtk_overlay_new();
 
-    // Replace fixed layout with a box
     self->balloon_wrapper = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     gtk_widget_set_hexpand(self->balloon_wrapper, TRUE);
     gtk_widget_set_vexpand(self->balloon_wrapper, TRUE);

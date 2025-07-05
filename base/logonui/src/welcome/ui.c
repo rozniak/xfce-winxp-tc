@@ -47,7 +47,6 @@ static void wintc_welcome_ui_set_property(
     const GValue* value,
     GParamSpec*   pspec
 );
-
 static void wintc_welcome_ui_add(
     GtkContainer* container,
     GtkWidget*    widget
@@ -106,6 +105,7 @@ GtkWidget* create_bottom_separator_widget(void);
 GtkWidget* create_bottom_ribbon_widget(void);
 GtkWidget* create_shutdown_widget(void);
 
+
 //
 // GTK OOP CLASS/INSTANCE DEFINITIONS
 //
@@ -120,17 +120,10 @@ struct _WinTCWelcomeUI
 
     GSList* child_widgets;
 
-    // Graphic resources
-    //
-
-    // Logo resources
-    //
-
-
     // UI
     //
-    GtkWidget* box_container;
-
+    GtkWidget* box_container; 
+    
     GtkWidget* welcome_box;
     GtkWidget* login_box;
     GtkWidget* wait_box;
@@ -171,7 +164,6 @@ static void wintc_welcome_ui_class_init(
     object_class->get_property = wintc_welcome_ui_get_property;
     object_class->set_property = wintc_welcome_ui_set_property;
 
-
     container_class->add    = wintc_welcome_ui_add;
     container_class->remove = wintc_welcome_ui_remove;
     container_class->forall = wintc_welcome_ui_forall;
@@ -184,8 +176,6 @@ static void wintc_welcome_ui_class_init(
         "logon-session"
     );
 
-    // Load up styles
-    //
     GtkCssProvider* css_welcome = gtk_css_provider_new();
 
     gtk_css_provider_load_from_resource(
@@ -235,30 +225,16 @@ static void wintc_welcome_ui_constructed(
     );
 
     //
-    // USER INTERFACE STUFF
+    // USER INTERFACE
     //
 
-    // Set up 'Please wait...' box
     welcome_ui->wait_box = build_wait_box();
-
-    // Set up login box
-    //
     welcome_ui->login_box = build_login_box(welcome_ui->logon_session);
-
-    // Set up 'welcome' box
-    //
     welcome_ui->welcome_box = build_welcome_box();
 
-
-    // Set up container
-    //
     welcome_ui->box_container = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-    // gtk_box_pack_start(GTK_BOX(self->box_container), self->login_box, TRUE, TRUE, 0);
 
     wintc_welcome_ui_internal_add(welcome_ui, welcome_ui->box_container);
-
-    // Add style classes
-    //
 
     // Hold an additional reference to the boxes, so we can add/remove
     // them ourselves without them getting binned
@@ -282,7 +258,7 @@ static void wintc_welcome_ui_dispose(
     GObject* object
 )
 {
-    WinTCWelcomeUI* welcome_ui = WINTC_WELCOME_UI(gobject);
+    WinTCWelcomeUI* welcome_ui = WINTC_WELCOME_UI(object);
 
     g_object_unref(welcome_ui->welcome_box);
     g_object_unref(welcome_ui->login_box);
@@ -326,6 +302,7 @@ static void wintc_welcome_ui_set_property(
             break;
     }
 }
+
 
 static void wintc_welcome_ui_add(
     WINTC_UNUSED(GtkContainer* container),

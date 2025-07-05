@@ -15,7 +15,7 @@ G_DECLARE_FINAL_TYPE(
     wintc_welcome_user_list,
     WINTC,
     WELCOME_USER_LIST,
-    GtkContainer
+    GtkBox
 )
 
 //
