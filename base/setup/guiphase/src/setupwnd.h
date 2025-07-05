@@ -36,6 +36,12 @@ G_DECLARE_FINAL_TYPE(
 //
 GtkWidget* wintc_setup_window_new();
 
+void wintc_setup_window_disable_billboards(
+    WinTCSetupWindow* wnd
+);
+void wintc_setup_window_enable_billboards(
+    WinTCSetupWindow* wnd
+);
 void wintc_setup_window_disable_throbbers(
     WinTCSetupWindow* wnd
 );
