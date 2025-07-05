@@ -140,6 +140,11 @@ int main(
 
     wintc_setup_window_enable_throbbers(WINTC_SETUP_WINDOW(wnd_setup));
 
+    wintc_setup_window_set_completion_minutes_approx(
+        WINTC_SETUP_WINDOW(wnd_setup),
+        45
+    );
+
     wintc_setup_window_set_current_step(
         WINTC_SETUP_WINDOW(wnd_setup),
         WINTC_SETUP_STEP_INSTALLING_WINDOWS

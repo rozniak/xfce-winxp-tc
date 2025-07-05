@@ -35,6 +35,7 @@ struct _WinTCSetupWindow
     //
     GtkWidget* box_bottom;
     GtkWidget* grid_steps;
+    GtkWidget* label_approx;
 };
 
 //
@@ -65,9 +66,10 @@ static void wintc_setup_window_init(
 
     wintc_builder_get_objects(
         GTK_BUILDER(builder),
-        "main-box", &main_box,
-        "box-bottom", &(self->box_bottom),
-        "grid-steps", &(self->grid_steps),
+        "main-box",     &main_box,
+        "box-bottom",   &(self->box_bottom),
+        "grid-steps",   &(self->grid_steps),
+        "label-approx", &(self->label_approx),
         NULL
     );
 
@@ -202,6 +204,21 @@ void wintc_setup_window_enable_throbbers(
     }
 
     g_object_unref(pixbuf_throbber);
+}
+
+void wintc_setup_window_set_completion_minutes_approx(
+    WinTCSetupWindow* wnd,
+    guint             minutes
+)
+{
+    gchar* text = g_strdup_printf("%d minutes", minutes);
+
+    gtk_label_set_text(
+        GTK_LABEL(wnd->label_approx),
+        text
+    );
+
+    g_free(text);
 }
 
 void wintc_setup_window_set_current_step(
