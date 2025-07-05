@@ -42,6 +42,10 @@ void wintc_setup_window_disable_throbbers(
 void wintc_setup_window_enable_throbbers(
     WinTCSetupWindow* wnd
 );
+void wintc_setup_window_set_completion_minutes_approx(
+    WinTCSetupWindow* wnd,
+    guint             minutes
+);
 void wintc_setup_window_set_current_step(
     WinTCSetupWindow* wnd,
     gint              step
