@@ -138,6 +138,7 @@ int main(
     //
     GtkWidget* wnd_setup = wintc_setup_window_new();
 
+    wintc_setup_window_enable_billboards(WINTC_SETUP_WINDOW(wnd_setup));
     wintc_setup_window_enable_throbbers(WINTC_SETUP_WINDOW(wnd_setup));
 
     wintc_setup_window_set_completion_minutes_approx(

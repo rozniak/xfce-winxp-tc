@@ -8,16 +8,45 @@
 
 #include "setupwnd.h"
 
+#define SECONDS_PER_BILLBOARD 35
 #define NUM_THROBBERS 5
 #define THROBBER_FRAMERATE 12
 
 //
 // FORWARD DECLARATIONS
 //
+static void wintc_setup_window_set_billboard(
+    WinTCSetupWindow* wnd,
+    guint             id
+);
+
 static void on_animation_throbber_cycled(
     WinTCCtlAnimation* anim,
     gpointer           user_data
 );
+static gboolean on_timeout_billboard(
+    gpointer user_data
+);
+
+//
+// STATIC DATA
+//
+const gchar* S_BILLBOARDS[] = {
+    "Welcome to WinTC Release Preview",
+    "Thanks for installing and trying out Windows Total Conversion Release Preview! It has been a long road to reach this first test release, and there's still plenty left to do.\n\nPlease report any bugs, feedback, or technical contributions you may have as this would be beneficial to improving the project.",
+
+    "Supporting your choice of system",
+    "One of the primary project goals is to support the many combinations of Linux and BSD systems people may be using. Windows Total Conversion should install, run, and adapt to your choice of distribution and system software automatically.\n\nYou can help by testing this release against your own personally configured setups, or simply against uncommon distributions or computers.",
+
+    "Familiar and fun, enjoy computing again",
+    "Software does not have to be so lifeless, the Windows Total Conversion project is driven by enthusiasm for fun and usefulness in computing.\n\nFeel free to toy around and personalize your environment, and know your bug reports will be taken seriously!",
+
+    "Help develop towards the next release",
+    "If you are a developer interested in Windows and Linux, consider playing with the source and chipping in. Developer guides are on the GitHub Wiki with information on building from source and getting familiar with making changes. Become familiar with the code inside-and-out, and enhance your knowlege of how desktop environments work.\n\nAsk any questions on GitHub Issues or Discussion boards - this is no big-cheese project so don't worry about getting your head bitten off! Interest in contribution or just plain playing with the source is welcome.",
+
+    "Thank you, and enjoy!",
+    "I sincerely hope you enjoy using Windows Total Conversion. Whilst this first release may be at the bottom of the mountain, it should be much less fuss for you to try out!\n\nThank you and have fun!\n\nRory"
+};
 
 //
 // GTK OOP CLASS/INSTANCE DEFINITIONS
@@ -36,6 +65,10 @@ struct _WinTCSetupWindow
     GtkWidget* box_bottom;
     GtkWidget* grid_steps;
     GtkWidget* label_approx;
+    GtkWidget* label_billboard_body;
+    GtkWidget* label_billboard_title;
+
+    guint id_timeout_billboards;
 };
 
 //
@@ -66,10 +99,12 @@ static void wintc_setup_window_init(
 
     wintc_builder_get_objects(
         GTK_BUILDER(builder),
-        "main-box",     &main_box,
-        "box-bottom",   &(self->box_bottom),
-        "grid-steps",   &(self->grid_steps),
-        "label-approx", &(self->label_approx),
+        "main-box",              &main_box,
+        "box-bottom",            &(self->box_bottom),
+        "grid-steps",            &(self->grid_steps),
+        "label-approx",          &(self->label_approx),
+        "label-billboard-body",  &(self->label_billboard_body),
+        "label-billboard-title", &(self->label_billboard_title),
         NULL
     );
 
@@ -120,6 +155,22 @@ GtkWidget* wintc_setup_window_new(void)
     );
 }
 
+void wintc_setup_window_disable_billboards(
+    WinTCSetupWindow* wnd
+)
+{
+    if (!(wnd->id_timeout_billboards))
+    {
+        return;
+    }
+
+    g_source_remove(wnd->id_timeout_billboards);
+    wnd->id_timeout_billboards = 0;
+
+    gtk_widget_set_visible(wnd->label_billboard_title, FALSE);
+    gtk_widget_set_visible(wnd->label_billboard_body,  FALSE);
+}
+
 void wintc_setup_window_disable_throbbers(
     WinTCSetupWindow* wnd
 )
@@ -127,6 +178,28 @@ void wintc_setup_window_disable_throbbers(
     wintc_container_clear(
         GTK_CONTAINER(wnd->box_bottom)
     );
+}
+
+void wintc_setup_window_enable_billboards(
+    WinTCSetupWindow* wnd
+)
+{
+    if (wnd->id_timeout_billboards)
+    {
+        return;
+    }
+
+    wintc_setup_window_set_billboard(wnd, 0);
+
+    gtk_widget_set_visible(wnd->label_billboard_title, TRUE);
+    gtk_widget_set_visible(wnd->label_billboard_body,  TRUE);
+
+    wnd->id_timeout_billboards =
+        g_timeout_add_seconds(
+            SECONDS_PER_BILLBOARD,
+            (GSourceFunc) on_timeout_billboard,
+            wnd
+        );
 }
 
 void wintc_setup_window_enable_throbbers(
@@ -282,6 +355,32 @@ void wintc_setup_window_set_current_step(
 }
 
 //
+// PRIVATE FUNCTIONS
+//
+static void wintc_setup_window_set_billboard(
+    WinTCSetupWindow* wnd,
+    guint             id
+)
+{
+    guint base_id = id * 2;
+
+    if (base_id >= G_N_ELEMENTS(S_BILLBOARDS))
+    {
+        g_critical("wsetupx: invalid billboard requested: %u", id);
+        return;
+    }
+
+    gtk_label_set_text(
+        GTK_LABEL(wnd->label_billboard_title),
+        S_BILLBOARDS[base_id]
+    );
+    gtk_label_set_text(
+        GTK_LABEL(wnd->label_billboard_body),
+        S_BILLBOARDS[base_id + 1]
+    );
+}
+
+//
 // CALLBACKS
 //
 static void on_animation_throbber_cycled(
@@ -328,4 +427,28 @@ static void on_animation_throbber_cycled(
     g_list_free(children);
 
     current_throbber = next_throbber;
+}
+
+static gboolean on_timeout_billboard(
+    gpointer user_data
+)
+{
+    static guint current_billboard = 0;
+
+    WinTCSetupWindow* wnd = WINTC_SETUP_WINDOW(user_data);
+
+    // Iterate to next billboard
+    //
+    guint next_billboard = current_billboard + 1;
+
+    if (next_billboard * 2 >= G_N_ELEMENTS(S_BILLBOARDS))
+    {
+        next_billboard = 0;
+    }
+
+    wintc_setup_window_set_billboard(wnd, next_billboard);
+
+    current_billboard = next_billboard;
+
+    return G_SOURCE_CONTINUE;
 }

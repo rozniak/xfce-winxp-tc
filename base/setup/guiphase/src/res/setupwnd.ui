@@ -248,10 +248,9 @@
             <property name="orientation">vertical</property>
 
             <child>
-              <object class="GtkLabel">
+              <object class="GtkLabel" id="label-billboard-title">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="label">Welcome to WinTC Release Preview</property>
                 <property name="max-width-chars">32</property>
                 <property name="wrap">True</property>
                 <property name="xalign">0.0</property>
@@ -267,12 +266,9 @@
               </packing>
             </child>
             <child>
-              <object class="GtkLabel">
+              <object class="GtkLabel" id="label-billboard-body">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="label">Thanks for installing and trying out Windows Total Conversion Release Preview! It has been a long road to reach this first test release, and there's still plenty left to do.
-
-Please report any bugs, feedback, or technical contributions you may have as this would be beneficial to improving the project.</property>
                 <property name="max-width-chars">48</property>
                 <property name="wrap">True</property>
                 <property name="xalign">0.0</property>
