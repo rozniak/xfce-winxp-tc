@@ -67,6 +67,8 @@ struct _WinTCSetupWindow
     GtkWidget* label_approx;
     GtkWidget* label_billboard_body;
     GtkWidget* label_billboard_title;
+    GtkWidget* label_progress;
+    GtkWidget* progress_step;
 
     guint id_timeout_billboards;
 };
@@ -105,6 +107,8 @@ static void wintc_setup_window_init(
         "label-approx",          &(self->label_approx),
         "label-billboard-body",  &(self->label_billboard_body),
         "label-billboard-title", &(self->label_billboard_title),
+        "label-progress",        &(self->label_progress),
+        "progress-step",         &(self->progress_step),
         NULL
     );
 
@@ -352,6 +356,33 @@ void wintc_setup_window_set_current_step(
     }
 
     g_list_free(children);
+}
+
+void wintc_setup_window_set_current_step_progress(
+    WinTCSetupWindow* wnd,
+    const gchar*      step_descr,
+    gdouble           fraction
+)
+{
+    if (fraction == 0.0f)
+    {
+        gtk_widget_set_visible(wnd->label_progress, FALSE);
+        gtk_widget_set_visible(wnd->progress_step,  FALSE);
+
+        return;
+    }
+
+    gtk_label_set_text(
+        GTK_LABEL(wnd->label_progress),
+        step_descr
+    );
+    gtk_progress_bar_set_fraction(
+        GTK_PROGRESS_BAR(wnd->progress_step),
+        fraction
+    );
+
+    gtk_widget_set_visible(wnd->label_progress, TRUE);
+    gtk_widget_set_visible(wnd->progress_step,  TRUE);
 }
 
 //
