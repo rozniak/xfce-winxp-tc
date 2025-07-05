@@ -150,6 +150,11 @@ int main(
         WINTC_SETUP_WINDOW(wnd_setup),
         WINTC_SETUP_STEP_INSTALLING_WINDOWS
     );
+    wintc_setup_window_set_current_step_progress(
+        WINTC_SETUP_WINDOW(wnd_setup),
+        "Installing devices",
+        0.4f
+    );
 
     // Create a billy basic test window (will be replaced by a wizard
     // eventually
