@@ -56,5 +56,10 @@ void wintc_setup_window_set_current_step(
     WinTCSetupWindow* wnd,
     gint              step
 );
+void wintc_setup_window_set_current_step_progress(
+    WinTCSetupWindow* wnd,
+    const gchar*      step_descr,
+    gdouble           fraction
+);
 
 #endif

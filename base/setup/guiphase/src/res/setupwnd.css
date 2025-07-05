@@ -51,6 +51,11 @@ grid > *
     color: #FF8000;
 }
 
+label.setup-step-progress
+{
+    margin-top: 30px;
+}
+
 .setup-main
 {
     background: url('resource:///uk/oddmatics/wintc/wsetupx/bgmain.png');
