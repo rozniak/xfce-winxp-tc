@@ -329,6 +329,10 @@ static void balloon_constructed(GObject *object) {
     configure_balloon_style(self);
 }
 
+//
+// CALLBACKS
+//
+
 static void on_target_widget_destroyed(gpointer data, GObject *destroyed_object) {
     WinTCWelcomeBalloon *self = WINTC_WELCOME_BALLOON(data);
     if (self->target_widget == GTK_WIDGET(destroyed_object)) {

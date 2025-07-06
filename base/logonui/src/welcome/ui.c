@@ -633,15 +633,9 @@ GtkWidget* build_wait_box(void) {
 GtkWidget* build_login_box(WinTCGinaLogonSession* logon_session) {
     GtkWidget *box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 
-    
-    // Set up top ribbon
-    //
     GtkWidget *top_ribbon = create_top_ribbon_widget();
     GtkWidget *top_separator = create_top_separator_widget();
     
-
-    // Set up content area
-    //
     GtkWidget* overlay = gtk_overlay_new();
 
     GtkWidget *content = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
@@ -698,8 +692,6 @@ GtkWidget* build_login_box(WinTCGinaLogonSession* logon_session) {
     gtk_overlay_add_overlay(GTK_OVERLAY(overlay), bglight);
 
 
-    // Set up bottom ribbon
-    //
     GtkWidget *bottom_separator = create_bottom_separator_widget();
 
     GtkWidget *bottom_ribbon = create_bottom_ribbon_widget();
@@ -837,10 +829,6 @@ GtkWidget* create_shutdown_widget(void) {
     
     return shutdown_window;
 }
-
-
-
-
 
 GtkWidget* create_footer_widget(void) {
     GtkWidget *footer = GTK_WIDGET(gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0));
