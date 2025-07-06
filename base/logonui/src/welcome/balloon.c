@@ -13,15 +13,49 @@ enum {
 };
 
 //
+// FORWARD DECLARATIONS
+//
+static void wintc_welcome_balloon_set_property(
+    GObject *object, 
+    guint prop_id, 
+    const GValue *value, 
+    GParamSpec *pspec
+);
+static void wintc_welcome_balloon_get_property(
+    GObject *object, 
+    guint prop_id,
+    GValue *value, 
+    GParamSpec *pspec
+);
+static void balloon_constructed(
+    GObject *object
+);
+static void balloon_finalize(
+    GObject *object
+);
+
+static void on_target_widget_destroyed(
+    gpointer data, 
+    GObject *destroyed_object
+);
+
+static void build_base_balloon(
+    GtkWidget *widget
+);
+static void configure_balloon_style(
+    WinTCWelcomeBalloon *self
+);
+
+//
 // GTK OOP CLASS/INSTANCE DEFINITIONS
 //
-struct _BalloonClass
+struct _WinTCWelcomeBalloonClass
 {
     GtkBoxClass __parent__;
 };
 
 
-struct _Balloon {
+struct _WinTCWelcomeBalloon {
     GtkBox __parent__;
 
     BalloonType alert_type; 
@@ -36,11 +70,10 @@ struct _Balloon {
 // GTK TYPE DEFINITIONS & CTORS
 //
 G_DEFINE_TYPE(
-    Balloon,
-    balloon,
+    WinTCWelcomeBalloon,
+    wintc_welcome_balloon,
     GTK_TYPE_BOX
 )
-
 
 static GParamSpec *properties[N_PROPERTIES];
 
@@ -57,24 +90,12 @@ GType balloon_type_get_type(void) {
     return type;
 }
 
-
-static void balloon_set_property(GObject *object, guint prop_id, 
-                            const GValue *value, GParamSpec *pspec);
-static void balloon_get_property(GObject *object, guint prop_id,
-                            GValue *value, GParamSpec *pspec);
-static void balloon_constructed(GObject *object);
-static void balloon_finalize(GObject *object);
-
-static void on_target_widget_destroyed(gpointer data, GObject *destroyed_object);
-static void configure_base_balloon(GtkWidget *widget);
-static void configure_balloon_style(Balloon *self);
-
-static void balloon_class_init(BalloonClass *klass) {
+static void wintc_welcome_balloon_class_init(WinTCWelcomeBalloonClass *klass) {
     GObjectClass *object_class = G_OBJECT_CLASS(klass);
     
-    object_class->set_property = balloon_set_property;
+    object_class->set_property = wintc_welcome_balloon_set_property;
     object_class->constructed = balloon_constructed;
-    object_class->get_property = balloon_get_property;
+    object_class->get_property = wintc_welcome_balloon_get_property;
     object_class->finalize = balloon_finalize;
     
     properties[PROP_ALERT_TYPE] = g_param_spec_enum(
@@ -98,11 +119,10 @@ static void balloon_class_init(BalloonClass *klass) {
 }
 
 
-static void
-balloon_set_property(GObject *object, guint prop_id, 
+static void wintc_welcome_balloon_set_property(GObject *object, guint prop_id, 
                             const GValue *value, GParamSpec *pspec)
 {
-    Balloon *self = BALLOON(object);
+    WinTCWelcomeBalloon *self = WINTC_WELCOME_BALLOON(object);
     
     switch (prop_id) {
         case PROP_ALERT_TYPE:
@@ -121,11 +141,10 @@ balloon_set_property(GObject *object, guint prop_id,
     }
 }
 
-static void
-balloon_get_property(GObject *object, guint prop_id,
+static void wintc_welcome_balloon_get_property(GObject *object, guint prop_id,
                             GValue *value, GParamSpec *pspec)
 {
-    Balloon *self = BALLOON(object);
+    WinTCWelcomeBalloon *self = WINTC_WELCOME_BALLOON(object);
     switch (prop_id) {
         case PROP_ALERT_TYPE:
             g_value_set_enum(value, self->alert_type);
@@ -140,15 +159,15 @@ balloon_get_property(GObject *object, guint prop_id,
 }
 
 static void balloon_finalize(GObject *object) {
-    Balloon *self = BALLOON(object);
+    WinTCWelcomeBalloon *self = WINTC_WELCOME_BALLOON(object);
     if (self->target_widget) {
         g_object_weak_unref(G_OBJECT(self->target_widget), 
                            (GWeakNotify)on_target_widget_destroyed, self);
     }
-    G_OBJECT_CLASS(balloon_parent_class)->finalize(object);
+    G_OBJECT_CLASS(wintc_welcome_balloon_parent_class)->finalize(object);
 }
 
-static void balloon_init(Balloon *self) {
+static void wintc_welcome_balloon_init(WinTCWelcomeBalloon *self) {
     self->alert_type = BALLOON_TYPE_WARNING;
     self->target_widget = NULL;
 
@@ -159,17 +178,14 @@ static void balloon_init(Balloon *self) {
 //
 // PUBLIC FUNCTIONS
 //
-GtkWidget *
-balloon_new(BalloonType type, GtkWidget* target_widget) {
+GtkWidget* wintc_welcome_balloon_new_with_type(BalloonType type, GtkWidget* target_widget) {
     g_return_val_if_fail(type == BALLOON_TYPE_ERROR || type == BALLOON_TYPE_WARNING, NULL);
     g_return_val_if_fail(GTK_IS_WIDGET(target_widget), NULL);
 
-    Balloon *balloon = g_object_new(BALLOON_TYPE_CONTAINER, 
+    WinTCWelcomeBalloon *balloon = g_object_new(wintc_welcome_balloon_get_type(), 
                                     "alert-type", type,
                                     "target-widget", target_widget,
                                     NULL);
-    
-
     return GTK_WIDGET(balloon);
 }
 
@@ -224,8 +240,8 @@ static GtkWidget* balloon_create_arrow_widget() {
     return area;
 }
 
-static void configure_base_balloon(GtkWidget *widget) {
-    Balloon *self = BALLOON(widget);
+static void build_base_balloon(GtkWidget *widget) {
+    WinTCWelcomeBalloon *self = WINTC_WELCOME_BALLOON(widget);
 
     if (!self->target_widget || !GTK_IS_WIDGET(self->target_widget)) {
         g_warning("Balloon target widget is not set correctly or doesn't exist. This balloon will not be positioned correctly.");
@@ -283,8 +299,8 @@ static void configure_base_balloon(GtkWidget *widget) {
     gtk_widget_show_all(GTK_WIDGET(self));
 }
 
-static void configure_balloon_style(Balloon *self) {
-    configure_base_balloon(GTK_WIDGET(self));
+static void configure_balloon_style(WinTCWelcomeBalloon *self) {
+    build_base_balloon(GTK_WIDGET(self));
 
     switch (self->alert_type) {
         case BALLOON_TYPE_ERROR:
@@ -307,14 +323,14 @@ static void configure_balloon_style(Balloon *self) {
 }
 
 static void balloon_constructed(GObject *object) {
-    Balloon *self = BALLOON(object);
-    configure_balloon_style(self);
+    G_OBJECT_CLASS(wintc_welcome_balloon_parent_class)->constructed(object);
 
-    G_OBJECT_CLASS(balloon_parent_class)->constructed(object);
+    WinTCWelcomeBalloon *self = WINTC_WELCOME_BALLOON(object);
+    configure_balloon_style(self);
 }
 
 static void on_target_widget_destroyed(gpointer data, GObject *destroyed_object) {
-    Balloon *self = BALLOON(data);
+    WinTCWelcomeBalloon *self = WINTC_WELCOME_BALLOON(data);
     if (self->target_widget == GTK_WIDGET(destroyed_object)) {
         self->target_widget = NULL;
         gtk_widget_destroy(GTK_WIDGET(self));

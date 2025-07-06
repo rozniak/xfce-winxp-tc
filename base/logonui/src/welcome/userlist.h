@@ -8,7 +8,7 @@
 //
 // GTK OOP BOILERPLATE
 //
-#define WINTC_TYPE_WELCOME_USER_LIST            (wintc_welcome_user_list_get_type())
+#define WINTC_TYPE_WELCOME_USER_LIST (wintc_welcome_user_list_get_type())
 
 G_DECLARE_FINAL_TYPE(
     WinTCWelcomeUserList,
