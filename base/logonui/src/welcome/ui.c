@@ -9,7 +9,7 @@
 #include "../window.h"
 #include "ui.h"
 #include "userlist.h"
-#include "simplebutton.h"
+#include "button.h"
 
 #define DELAY_SECONDS_AT_LEAST 2
 #define DELAY_SECONDS_POLL     1
@@ -54,26 +54,6 @@ static void wintc_welcome_ui_change_state(
     WinTCWelcomeUI* welcome_ui,
     WinTCGinaState  next_state
 );
-
-static void on_logon_session_attempt_complete(
-    WinTCGinaLogonSession* logon_session,
-    WinTCGinaResponse      response,
-    gpointer               user_data
-);
-static void wintc_welcome_ui_forall(
-    GtkContainer* container,
-    WINTC_UNUSED(gboolean include_internals),
-    GtkCallback   callback,
-    gpointer      callback_data
-);
-
-static gboolean on_timeout_delay_done(
-    gpointer user_data
-);
-static gboolean on_timeout_poll_ready(
-    gpointer user_data
-);
-
 static void wintc_welcome_ui_internal_add(
     WinTCWelcomeUI* welcome_ui,
     GtkWidget*      widget
@@ -90,6 +70,25 @@ static void wintc_welcome_ui_size_allocate(
     GtkWidget*     widget,
     GtkAllocation* allocation
 );
+static void wintc_welcome_ui_forall(
+    GtkContainer* container,
+    WINTC_UNUSED(gboolean include_internals),
+    GtkCallback   callback,
+    gpointer      callback_data
+);
+
+static void on_logon_session_attempt_complete(
+    WinTCGinaLogonSession* logon_session,
+    WinTCGinaResponse      response,
+    gpointer               user_data
+);
+
+static gboolean on_timeout_delay_done(
+    gpointer user_data
+);
+static gboolean on_timeout_poll_ready(
+    gpointer user_data
+);
 
 GtkWidget* build_welcome_box(void);
 GtkWidget* build_login_box(
@@ -104,6 +103,26 @@ GtkWidget* create_bottom_separator_widget(void);
 GtkWidget* create_bottom_ribbon_widget(void);
 GtkWidget* create_shutdown_widget(void);
 
+static gboolean on_shutdown_button_clicked(
+    WINTC_UNUSED(GtkWidget *widget), 
+    WINTC_UNUSED(GdkEvent *event), 
+    gpointer data
+);
+static gboolean on_shutdown_button_enter(
+    GtkWidget *widget, 
+    WINTC_UNUSED(GdkEvent *event), 
+    gpointer data
+);
+static gboolean on_shutdown_button_leave(
+    GtkWidget *widget, 
+    GdkEventCrossing *event, 
+    gpointer data
+);
+static gboolean on_cancel_pressed(
+    WINTC_UNUSED(GtkWidget *widget), 
+    WINTC_UNUSED(GdkEvent *event), 
+    gpointer data
+);
 
 //
 // GTK OOP CLASS/INSTANCE DEFINITIONS
@@ -146,6 +165,11 @@ G_DEFINE_TYPE_WITH_CODE(
         wintc_welcome_ui_igina_auth_ui_interface_init
     )
 )
+
+typedef struct {
+    GtkWidget* shutdown_button;
+    GtkWidget* shutdown_label;
+} ShutdownWidgets;
 
 static void wintc_welcome_ui_igina_auth_ui_interface_init(
     WINTC_UNUSED(WinTCIGinaAuthUIInterface* iface)
@@ -193,9 +217,7 @@ static void wintc_welcome_ui_class_init(
 
 static void wintc_welcome_ui_init(
     WINTC_UNUSED(WinTCWelcomeUI* self)
-)
-{
-}
+) {}
 
 //
 // CLASS VIRTUAL METHODS
@@ -230,7 +252,6 @@ static void wintc_welcome_ui_constructed(
     //
     // USER INTERFACE
     //
-
     welcome_ui->wait_box = build_wait_box();
     welcome_ui->login_box = build_login_box(welcome_ui->logon_session);
     welcome_ui->welcome_box = build_welcome_box();
@@ -305,6 +326,16 @@ static void wintc_welcome_ui_set_property(
     }
 }
 
+static void on_self_realized(
+    GtkWidget* self,
+    WINTC_UNUSED(gpointer user_data)
+)
+{
+    wintc_welcome_ui_change_state(
+        WINTC_WELCOME_UI(self),
+        WINTC_GINA_STATE_STARTING
+    );
+}
 
 static void wintc_welcome_ui_add(
     WINTC_UNUSED(GtkContainer* container),
@@ -334,6 +365,34 @@ static void wintc_welcome_ui_size_allocate(
     {
         gtk_widget_size_allocate(welcome_ui->box_container, allocation);
     }
+}
+
+static void wintc_welcome_ui_internal_add(
+    WinTCWelcomeUI* welcome_ui,
+    GtkWidget*      widget
+)
+{
+    gtk_widget_set_parent(widget, GTK_WIDGET(welcome_ui));
+
+    welcome_ui->child_widgets =
+        g_slist_append(welcome_ui->child_widgets, widget);
+}
+
+
+static void wintc_welcome_ui_forall(
+    GtkContainer* container,
+    WINTC_UNUSED(gboolean include_internals),
+    GtkCallback   callback,
+    gpointer      callback_data
+)
+{
+    WinTCWelcomeUI* welcome_ui = WINTC_WELCOME_UI(container);
+
+    g_slist_foreach(
+        welcome_ui->child_widgets,
+        (GFunc) callback,
+        callback_data
+    );
 }
 
 //
@@ -438,63 +497,6 @@ static void wintc_welcome_ui_change_state(
     welcome_ui->current_state = next_state;
 }
 
-static void wintc_welcome_ui_internal_add(
-    WinTCWelcomeUI* welcome_ui,
-    GtkWidget*      widget
-)
-{
-    gtk_widget_set_parent(widget, GTK_WIDGET(welcome_ui));
-
-    welcome_ui->child_widgets =
-        g_slist_append(welcome_ui->child_widgets, widget);
-}
-
-//
-// CALLBACKS
-//
-static void on_self_realized(
-    GtkWidget* self,
-    WINTC_UNUSED(gpointer user_data)
-)
-{
-    wintc_welcome_ui_change_state(
-        WINTC_WELCOME_UI(self),
-        WINTC_GINA_STATE_STARTING
-    );
-}
-
-static void on_logon_session_attempt_complete(
-    WINTC_UNUSED(WinTCGinaLogonSession* logon_session),
-    WinTCGinaResponse response,
-    gpointer          user_data
-)
-{
-    WinTCWelcomeUI* welcome_ui = WINTC_WELCOME_UI(user_data);
-
-    if (response == WINTC_GINA_RESPONSE_OKAY)
-    {
-        wintc_welcome_ui_change_state(
-            welcome_ui,
-            WINTC_GINA_STATE_LAUNCHING
-        );
-    }
-}
-static void wintc_welcome_ui_forall(
-    GtkContainer* container,
-    WINTC_UNUSED(gboolean include_internals),
-    GtkCallback   callback,
-    gpointer      callback_data
-)
-{
-    WinTCWelcomeUI* welcome_ui = WINTC_WELCOME_UI(container);
-
-    g_slist_foreach(
-        welcome_ui->child_widgets,
-        (GFunc) callback,
-        callback_data
-    );
-}
-
 static gboolean on_timeout_delay_done(
     gpointer user_data
 )
@@ -542,29 +544,6 @@ static gboolean on_timeout_delay_done(
     return G_SOURCE_REMOVE;
 }
 
-static gboolean on_timeout_poll_ready(
-    gpointer user_data
-)
-{
-    WinTCWelcomeUI* welcome_ui = WINTC_WELCOME_UI(user_data);
-
-    if (
-        wintc_gina_logon_session_is_available(
-            welcome_ui->logon_session
-        )
-    )
-    {
-        wintc_welcome_ui_change_state(
-            welcome_ui,
-            WINTC_GINA_STATE_PROMPT
-        );
-        return G_SOURCE_REMOVE;
-    }
-
-    return G_SOURCE_CONTINUE;
-}
-
-
 GtkWidget* build_welcome_box(void) {
     GtkWidget *welcome_screen = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     gtk_widget_set_hexpand(welcome_screen, TRUE);
@@ -593,7 +572,6 @@ GtkWidget* build_welcome_box(void) {
 
     return welcome_screen;
 }
-
 
 GtkWidget* build_wait_box(void) {
     GtkWidget *wait_screen = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
@@ -629,7 +607,6 @@ GtkWidget* build_wait_box(void) {
     gtk_box_pack_start(GTK_BOX(wait_box), label, FALSE, FALSE, 0);
 
     gtk_box_pack_end(GTK_BOX(content), wait_box, FALSE, FALSE, 0);
-
 
     GtkWidget* bglight = gtk_image_new_from_resource("/uk/oddmatics/wintc/logonui/bglight.png");
 
@@ -730,7 +707,6 @@ GtkWidget* build_login_box(WinTCGinaLogonSession* logon_session) {
     GtkWidget* footer_buttons = create_footer_widget();
     gtk_box_pack_start(GTK_BOX(bottom_ribbon), footer_buttons, FALSE, FALSE, 0);
 
-
     gtk_box_pack_start(GTK_BOX(box), top_ribbon, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(box), top_separator, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(box), overlay, TRUE, TRUE, 0);
@@ -739,9 +715,6 @@ GtkWidget* build_login_box(WinTCGinaLogonSession* logon_session) {
 
     return box;
 }
-
-
-
 
 GtkWidget* create_top_ribbon_widget(void) {
     GtkWidget *top_ribbon = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
@@ -792,21 +765,6 @@ GtkWidget* create_bottom_ribbon_widget(void) {
 
     return bottom_ribbon;
 }
-
-
-
-typedef struct {
-    GtkWidget* shutdown_button;
-    GtkWidget* shutdown_label;
-} ShutdownWidgets;
-
-gboolean on_cancel_pressed(WINTC_UNUSED(GtkWidget *widget), WINTC_UNUSED(GdkEvent *event), gpointer data) {
-    GtkWidget* shutdown_window = GTK_WIDGET(data);
-    gtk_widget_destroy(shutdown_window);
-    return TRUE;
-}
-
-
 
 GtkWidget* create_shutdown_widget(void) {
     GtkWidget *shutdown_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -880,42 +838,7 @@ GtkWidget* create_shutdown_widget(void) {
     return shutdown_window;
 }
 
-static gboolean on_shutdown_button_clicked(WINTC_UNUSED(GtkWidget *widget), WINTC_UNUSED(GdkEvent *event), gpointer data) {
-    ShutdownWidgets *widgets = (ShutdownWidgets *)data;
-    GtkButton* button = GTK_BUTTON(widgets->shutdown_button);
-    gtk_button_clicked(button);
-    gtk_widget_show_all(create_shutdown_widget());
-    return FALSE;
-}
 
-
-
-static gboolean on_shutdown_button_enter(GtkWidget *widget, WINTC_UNUSED(GdkEvent *event), gpointer data) {
-    ShutdownWidgets *widgets = (ShutdownWidgets *)data;
-    gtk_style_context_add_class(gtk_widget_get_style_context(widgets->shutdown_label), "underline");
-
-    GdkWindow *window = gtk_widget_get_window(widget);
-    GdkDisplay *display = gdk_window_get_display(window);
-    GdkCursor *cursor = gdk_cursor_new_from_name(display, "pointer");
-    gdk_window_set_cursor(window, cursor);
-    g_object_unref(cursor);
-
-    return FALSE;
-}
-
-static gboolean on_shutdown_button_leave(GtkWidget *widget, GdkEventCrossing *event, gpointer data) {
-    if (event->detail == GDK_NOTIFY_INFERIOR)
-    {
-        return FALSE;
-    }
-
-    ShutdownWidgets *widgets = (ShutdownWidgets *)data;
-    gtk_style_context_remove_class(gtk_widget_get_style_context(widgets->shutdown_label), "underline");
-
-    GdkWindow *window = gtk_widget_get_window(widget);
-    gdk_window_set_cursor(window, NULL); 
-    return FALSE;
-}
 
 
 
@@ -932,7 +855,7 @@ GtkWidget* create_footer_widget(void) {
 
     GdkPixbuf *idle_pixbuf = gdk_pixbuf_new_from_resource("/uk/oddmatics/wintc/logonui/shtdbtn.png", NULL);
     GdkPixbuf *active_pixbuf = gdk_pixbuf_new_from_resource("/uk/oddmatics/wintc/logonui/shtdbtna.png", NULL);
-    GtkWidget *shutdown_button = simple_button_new_with_pixbufs(idle_pixbuf, active_pixbuf);
+    GtkWidget *shutdown_button = wintc_welcome_button_new_with_pixbufs(idle_pixbuf, active_pixbuf);
     gtk_widget_set_margin_start(shutdown_button, 20);
     gtk_widget_set_can_focus(shutdown_button, FALSE);
 
@@ -966,8 +889,85 @@ GtkWidget* create_footer_widget(void) {
 
 }
 
+//
+// CALLBACKS
+//
+static void on_logon_session_attempt_complete(
+    WINTC_UNUSED(WinTCGinaLogonSession* logon_session),
+    WinTCGinaResponse response,
+    gpointer          user_data
+)
+{
+    WinTCWelcomeUI* welcome_ui = WINTC_WELCOME_UI(user_data);
 
+    if (response == WINTC_GINA_RESPONSE_OKAY)
+    {
+        wintc_welcome_ui_change_state(
+            welcome_ui,
+            WINTC_GINA_STATE_LAUNCHING
+        );
+    }
+}
 
+static gboolean on_timeout_poll_ready(
+    gpointer user_data
+)
+{
+    WinTCWelcomeUI* welcome_ui = WINTC_WELCOME_UI(user_data);
 
+    if (
+        wintc_gina_logon_session_is_available(
+            welcome_ui->logon_session
+        )
+    )
+    {
+        wintc_welcome_ui_change_state(
+            welcome_ui,
+            WINTC_GINA_STATE_PROMPT
+        );
+        return G_SOURCE_REMOVE;
+    }
 
+    return G_SOURCE_CONTINUE;
+}
 
+static gboolean on_shutdown_button_clicked(WINTC_UNUSED(GtkWidget *widget), WINTC_UNUSED(GdkEvent *event), gpointer data) {
+    ShutdownWidgets *widgets = (ShutdownWidgets *)data;
+    GtkButton* button = GTK_BUTTON(widgets->shutdown_button);
+    gtk_button_clicked(button);
+    gtk_widget_show_all(create_shutdown_widget());
+    return FALSE;
+}
+
+static gboolean on_shutdown_button_enter(GtkWidget *widget, WINTC_UNUSED(GdkEvent *event), gpointer data) {
+    ShutdownWidgets *widgets = (ShutdownWidgets *)data;
+    gtk_style_context_add_class(gtk_widget_get_style_context(widgets->shutdown_label), "underline");
+
+    GdkWindow *window = gtk_widget_get_window(widget);
+    GdkDisplay *display = gdk_window_get_display(window);
+    GdkCursor *cursor = gdk_cursor_new_from_name(display, "pointer");
+    gdk_window_set_cursor(window, cursor);
+    g_object_unref(cursor);
+
+    return FALSE;
+}
+
+static gboolean on_shutdown_button_leave(GtkWidget *widget, GdkEventCrossing *event, gpointer data) {
+    if (event->detail == GDK_NOTIFY_INFERIOR)
+    {
+        return FALSE;
+    }
+
+    ShutdownWidgets *widgets = (ShutdownWidgets *)data;
+    gtk_style_context_remove_class(gtk_widget_get_style_context(widgets->shutdown_label), "underline");
+
+    GdkWindow *window = gtk_widget_get_window(widget);
+    gdk_window_set_cursor(window, NULL); 
+    return FALSE;
+}
+
+static gboolean on_cancel_pressed(WINTC_UNUSED(GtkWidget *widget), WINTC_UNUSED(GdkEvent *event), gpointer data) {
+    GtkWidget* shutdown_window = GTK_WIDGET(data);
+    gtk_widget_destroy(shutdown_window);
+    return TRUE;
+}

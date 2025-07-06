@@ -49,8 +49,8 @@ add_executable(
     src/welcome/userlist.h
     src/welcome/balloon.c
     src/welcome/balloon.h
-    src/welcome/simplebutton.c
-    src/welcome/simplebutton.h
+    src/welcome/button.c
+    src/welcome/button.h
 )
 
 set_target_properties(
