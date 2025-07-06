@@ -746,6 +746,8 @@ static GtkWidget *build_userlist_widget(WinTCWelcomeUserList *self)
         item->picture = gtk_image_new_from_pixbuf(item->tile);
         item->username_label = gtk_label_new(item->name);
         gtk_style_context_add_class(gtk_widget_get_style_context(item->username_label), "user-label");
+        gtk_widget_set_size_request(item->username_label, 340, 27);
+        gtk_label_set_ellipsize(GTK_LABEL(item->username_label), PANGO_ELLIPSIZE_END);
 
         item->password = gtk_entry_new();
         gtk_entry_set_visibility(GTK_ENTRY(item->password), FALSE);
@@ -776,6 +778,9 @@ static GtkWidget *build_userlist_widget(WinTCWelcomeUserList *self)
         g_signal_connect(item->go_button, "clicked", G_CALLBACK(on_logon_button_clicked), item); 
 
         GtkWidget *event = gtk_event_box_new();
+        // FIXME: Fixed layout should be replaced with a grid layout to prevent sizing issues.
+        //        Current implementation is sized incorrectly if non-English/non-standard font
+        //        is used.
         GtkWidget *layout = gtk_fixed_new();
 
         {
