@@ -432,9 +432,19 @@ def wsetup_step_prepare_chain_to_gui(stdscr):
         ]
     )
 
+    stdscr.refresh()
+
+    # Arm graphical mode setup
     #
-    # FIXME: Call into wsetupx
-    #
+    try:
+        subprocess.run(
+            [ "wsetupx", "--arm" ],
+            capture_output=True,
+            check=True
+        )
+    except:
+        # FIXME: Again, display a proper error in setup
+        raise Exception("Failed to chain graphical phase");
 
     # Input
     #
