@@ -1,6 +1,7 @@
 import curses
 import math
 import os
+import shutil
 import subprocess
 
 from wsetup_brand  import *
@@ -216,6 +217,59 @@ def wsetup_step_confirm_system(stdscr):
              user_option == ord("\r"):
             return 6
 
+def wsetup_step_prep_install(stdscr):
+    wsetup_screen_clear(stdscr)
+
+    # Check package manager works
+    #
+    pkgcmd = ""
+    pkgfmt = os.environ.get("WSETUP_DIST_PKGFMT")
+
+    wsetup_screen_write_instructions(
+        stdscr,
+        [
+            "Updating package manager..."
+        ]
+    )
+
+    stdscr.refresh()
+
+    if pkgfmt == "deb":
+        pkgcmd = "apt update"
+    else:
+        raise Exception(f"No install command for format {pkgfmt}")
+
+    try:
+        subprocess.run(
+            pkgcmd.split(),
+            check=True
+        )
+    except:
+        # FIXME: Should display error screen when one exists
+        raise Exception(f"Package manager is unhappy, '{pkgcmd}' failed")
+
+    # Copy complist to tmpdir
+    #
+    setup_root = os.environ.get("SETUPROOT")
+
+    wsetup_screen_write_instructions(
+        stdscr,
+        [
+            "Creating list of files to be copied..."
+        ]
+    )
+
+    try:
+        shutil.copy(
+            f"{setup_root}/setup/complist.ini",
+            os.environ.get("WSETUP_STATE_ROOT")
+        )
+    except:
+        # FIXME: Ditto
+        raise Exception(f"Failed to copy complist.ini to setup state dir")
+
+    return 7
+
 def wsetup_step_install_base(stdscr):
     wsetup_screen_clear(stdscr)
 
@@ -251,6 +305,13 @@ def wsetup_step_install_base(stdscr):
         "Setup is copying files...",
         curses.color_pair(COLOR_PAIR_NORMAL_TEXT)
     )
+    wsetup_screen_write_direct(
+        stdscr,
+        box_y + 2,
+        wsetup_screen_get_scaled_x(stdscr, 40) - 3,
+        "0%",
+        curses.color_pair(COLOR_PAIR_NORMAL_TEXT)
+    )
 
     # Progress box
     #
@@ -266,6 +327,8 @@ def wsetup_step_install_base(stdscr):
         progbox_h,
         progbox_w
     )
+
+    stdscr.refresh()
 
     # Install the base packages to get to phase 2
     #
@@ -339,7 +402,7 @@ def wsetup_step_install_base(stdscr):
 
     stdscr.refresh()
 
-    return 7
+    return 8
 
 def wsetup_step_prepare_chain_to_gui(stdscr):
     wsetup_screen_clear(stdscr)

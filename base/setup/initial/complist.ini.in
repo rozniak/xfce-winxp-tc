@@ -1,5 +1,160 @@
 [BaseSystem]
 Libs=@WSETUP_LIBLIST@
 OurPackages=wintc-setup-gui,wintc-theme-native,wintc-cursor-theme-standard-with-shadow,wintc-bootvid
-DistPackagesDeb=lightdm,xfwm4,xfconf,plymouth
-# FIXME: Other distro packags here
+DistPackagesDeb=xfwm4,xfconf,plymouth
+# FIXME: Other distro packages here
+
+[ComponentRoot]
+TopLevelGroups=Accessories,DevOnly,Shell,VisualStyles
+AlwaysInstall=wintc-build-tag,wintc-regsvc,wintc-winver
+
+#
+# Group metadata
+#
+[Group.Accessories]
+Name=Accessories
+Components=Notepad,Taskmgr
+SubGroups=
+
+[Group.DevOnly]
+Name=Developer
+Components=Smss
+SubGroups=
+
+[Group.Shell]
+Name=System Shell
+Components=Desktop,ExitWin,Explorer,ShellRun,Taskband
+SubGroups=ShellCpl,ShellExt
+
+[Group.ShellCpl]
+Name=Control Panel Applets
+Components=CplDesk,CplPrinters,CplSysdm
+SubGroups=
+
+[Group.ShellExt]
+Name=Shell Extensions
+Components=ExtZip
+SubGroups=
+
+[Group.Personalisation]
+Name=Personalisation
+Components=FontsXP,IconsLuna,SoundsXP
+SubGroups=VisualStyles
+
+[Group.VisualStyles]
+Name=Visual Styles
+Components=ThemeNative,ThemePro,ThemeLunaBlue,ThemeLunaMetallic,ThemeLunaHomstead,ThemeZune
+SubGroups=
+
+#
+# Component metdata
+#
+[Component.Notepad]
+Name=Notepad
+Packages=wintc-notepad
+Description=The Notepad text editor.
+
+[Component.Taskmgr]
+Name=Task Manager
+Packages=wintc-taskmgr
+Description=Monitor and manage system processes and resources.
+
+[Component.Smss]
+Name=WinTC Session Manager
+Packages=wintc-smss
+Description=Provides a custom WinTC session that can be used instead of xfce4-session.
+
+[Component.Desktop]
+Name=Desktop
+Packages=wintc-desktop
+Description=The Windows desktop, replaces xfdesktop.
+
+[Component.ExitWin]
+Name=Exit Windows Stub
+Packages=wintc-exitwin
+Description=Launches the end session dialog, replaces xfce4-session-logout.
+
+[Component.Explorer]
+Name=Explorer
+Packages=wintc-explorer
+Description=The Windows Explorer file manager.
+
+[Component.ShellRun]
+Name=Run Dialog Stub
+Packages=wintc-shell-run
+Description=Launches the Run dialog, replaces xfce4-appfinder.
+
+[Component.Taskband]
+Name=Taskbar
+Packages=wintc-taskband
+Description=The Windows taskbar, replaces xfce4-panel.
+
+[Component.CplDesk]
+Name=Desktop Properties
+Packages=wintc-cpl-desk
+Description=The Desktop Properties applet.
+
+[Component.CplPrinters]
+Name=Printers and Faxes
+Packages=libwintc-cpl-printers
+Description=The Printers & Faxes shell extension.
+
+[Component.CplSysdm]
+Name=System Properties
+Packages=wintc-cpl-sysdm
+Description=The System Properties applet.
+
+[Component.ExtZip]
+Name=ZIP Files Extension
+Packages=libwintc-shext-zip
+Description=Support for ZIP files within the Windows shell.
+
+[Component.FontsXP]
+Name=Fonts (Windows XP)
+Packages=wintc-fonts-xp
+Description=The Windows XP font bundle.
+
+[Component.IconsLuna]
+Name=Icons (Windows XP)
+Packages=wintc-icon-theme-luna
+Description=The Windows XP icon set.
+
+[Component.SoundsXP]
+Name=Sounds (Windows XP)
+Packages=wintc-sound-theme-xp
+Description=The default Windows XP sound scheme.
+
+[Component.Wallpapers]
+Name=Desktop Wallpapers
+Packages=wintc-wallpapers
+Description=The collection of included desktop wallpapers.
+
+[Component.ThemeNative]
+Name=Windows Classic
+Packages=wintc-theme-native
+Description=The Windows Classic visual style.
+
+[Component.ThemePro]
+Name=Watercolor
+Packages=wintc-theme-professional
+Description=The Watercolor visual style.
+
+[Component.ThemeLunaBlue]
+Name=Windows XP style (Blue)
+Packages=wintc-theme-luna-blue
+Description=The Windows XP style (Blue) visual style.
+
+[Component.ThemeLunaMetallic]
+Name=Windows XP style (Silver)
+Packages=wintc-theme-luna-metallic
+Description=The Windows XP style (Silver) visual style.
+
+[Component.ThemeLunaHomestead]
+Name=Windows XP style (Olive Green)
+Packages=wintc-theme-luna-homestead
+Description=The Windows XP style (Olive Green) visual style.
+
+[Component.ThemeZune]
+Name=Zune style
+Packages=wintc-theme-zune
+Description=The Zune visual style.
