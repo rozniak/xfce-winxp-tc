@@ -97,13 +97,6 @@ int main(
     //
     // Continue to normal graphical mode setup
     //
-    gtk_init(&argc, &argv);
-
-    if (!wintc_init_display_protocol_apis())
-    {
-        g_critical("%s", "Failed to resolve display protocol APIs.");
-        return EXIT_FAILURE;
-    }
 
     // Fire up WM and stuff
     //
@@ -116,20 +109,36 @@ int main(
         "xfconf-query --channel xfwm4 --property /general/show_frame_shadow --set false",
         "xfconf-query --channel xfwm4 --property /general/show_popup_shadow --set false",
         "xfconf-query --channel xsettings --property /Gtk/CursorThemeName --set standard-with-shadow",
-        "xfwm4 --compositor=on"
     };
 
     if (!S_OPTION_TEST)
     {
         for (guint i = 0; i < G_N_ELEMENTS(s_startup); i++)
         {
-            if (!wintc_launch_command(s_startup[i], &error))
+            if (!wintc_launch_command_sync(s_startup[i], NULL, NULL, &error))
             {
                 wintc_log_error_and_clear(&error);
                 return EXIT_FAILURE;
             }
         }
+
+        if (!wintc_launch_command("xfwm4 --compositor=on", &error))
+        {
+            wintc_log_error_and_clear(&error);
+            return EXIT_FAILURE;
+        }
     }
+
+    // Spawn GTK
+    //
+    gtk_init(&argc, &argv);
+
+    if (!wintc_init_display_protocol_apis())
+    {
+        g_critical("%s", "Failed to resolve display protocol APIs.");
+        return EXIT_FAILURE;
+    }
+
 
     // Set up styling
     //
