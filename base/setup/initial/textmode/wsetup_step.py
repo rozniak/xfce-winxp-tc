@@ -242,6 +242,7 @@ def wsetup_step_prep_install(stdscr):
     try:
         subprocess.run(
             pkgcmd.split(),
+            capture_output=True,
             check=True
         )
     except:
