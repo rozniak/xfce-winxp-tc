@@ -26,6 +26,15 @@ XDG_CURRENT_DESKTOP="WINTC"
 export DESKTOP_SESSION
 export XDG_CURRENT_DESKTOP
 
+# Copy over default xfconf stuff
+#
+XFCONF_DIR=$XDG_CONFIG_HOME/xfce4/xfconf/xfce-perchannel-xml
+
+mkdir -p $XFCONF_DIR
+
+cp -f @CMAKE_INSTALL_PREFIX@/@WINTC_ASSETS_INSTALL_DIR@/wsetupx/xfwm4.xml $XFCONF_DIR
+cp -r @CMAKE_INSTALL_PREFIX@/@WINTC_ASSETS_INSTALL_DIR@/wsetupx/xsettings.xml $XFCONF_DIR
+
 # FIXME: This might only work on systemd due to XDG_VTNR, figure out what to
 #        do on other init systems
 #

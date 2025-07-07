@@ -98,33 +98,15 @@ int main(
     // Continue to normal graphical mode setup
     //
 
-    // Fire up WM and stuff
+    // Fire up XFWM4
     //
-    static const gchar* s_startup[] = {
-        "xfconf-query --channel xfwm4 --property /general/theme --set \"Windows Classic style\"",
-        "xfconf-query --channel xfwm4 --property /general/title_alignment --set left",
-        "xfconf-query --channel xfwm4 --property /general/title_font --set \"Tahoma Bold 8\"",
-        "xfconf-query --channel xfwm4 --property /general/show_dock_shadow --set false",
-        "xfconf-query --channel xfwm4 --property /general/show_frame_shadow --set false",
-        "xfconf-query --channel xfwm4 --property /general/show_popup_shadow --set false",
-    };
-
-    if (!S_OPTION_TEST)
+    if (
+        !S_OPTION_TEST &&
+        !wintc_launch_command("xfwm4 --compositor=on", &error)
+    )
     {
-        for (guint i = 0; i < G_N_ELEMENTS(s_startup); i++)
-        {
-            if (!wintc_launch_command_sync(s_startup[i], NULL, NULL, &error))
-            {
-                wintc_log_error_and_clear(&error);
-                return EXIT_FAILURE;
-            }
-        }
-
-        if (!wintc_launch_command("xfwm4 --compositor=on", &error))
-        {
-            wintc_log_error_and_clear(&error);
-            return EXIT_FAILURE;
-        }
+        wintc_log_error_and_clear(&error);
+        return EXIT_FAILURE;
     }
 
     // Spawn GTK
