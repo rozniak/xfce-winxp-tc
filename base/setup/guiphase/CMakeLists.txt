@@ -106,16 +106,16 @@ configure_file(
 )
 
 install(
-    FILES res/wsetupx.service
+    FILES
+        ${CMAKE_BINARY_DIR}/xinitrc
+        res/xfwm4.xml
+        res/xsettings.xml
+        res/wsetupx.service
     DESTINATION ${WINTC_ASSETS_INSTALL_DIR}/wsetupx
 )
 install(
     PROGRAMS ${CMAKE_BINARY_DIR}/startwsetupx
     DESTINATION ${CMAKE_INSTALL_BINDIR}
-)
-install(
-    FILES ${CMAKE_BINARY_DIR}/xinitrc
-    DESTINATION ${WINTC_ASSETS_INSTALL_DIR}/wsetupx
 )
 install(
     TARGETS wintc-setup-gui
