@@ -447,4 +447,10 @@ def wsetup_step_prepare_chain_to_gui(stdscr):
         raise Exception("Failed to chain graphical phase");
 
     # FIXME: Should show reboot screen
+    subprocess.run(
+        [ "reboot", "now" ],
+        capture_output=True,
+        check=True
+    )
+
     return 0
