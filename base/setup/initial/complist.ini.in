@@ -1,6 +1,6 @@
 [BaseSystem]
 Libs=@WSETUP_LIBLIST@
-OurPackages=wintc-setup-gui,wintc-theme-native,wintc-cursor-theme-standard-with-shadow,wintc-bootvid
+OurPackages=wintc-setup-gui,wintc-theme-native,wintc-cursor-theme-standard-with-shadow,wintc-bootvid,wintc-fonts-xp
 DistPackagesDeb=xfwm4,xfconf,plymouth
 # FIXME: Other distro packages here
 
@@ -38,7 +38,7 @@ SubGroups=
 
 [Group.Personalisation]
 Name=Personalisation
-Components=FontsXP,IconsLuna,SoundsXP
+Components=IconsLuna,SoundsXP
 SubGroups=VisualStyles
 
 [Group.VisualStyles]
@@ -108,11 +108,6 @@ Description=The System Properties applet.
 Name=ZIP Files Extension
 Packages=libwintc-shext-zip
 Description=Support for ZIP files within the Windows shell.
-
-[Component.FontsXP]
-Name=Fonts (Windows XP)
-Packages=wintc-fonts-xp
-Description=The Windows XP font bundle.
 
 [Component.IconsLuna]
 Name=Icons (Windows XP)
