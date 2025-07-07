@@ -105,18 +105,25 @@ int main(
         return EXIT_FAILURE;
     }
 
-    // Fire up xfwm4
+    // Fire up WM and stuff
     //
-    if (
-        !S_OPTION_TEST &&
-        !wintc_launch_command(
-            "xfwm4 --compositor=on",
-            &error
-        )
-    )
+    static const gchar* s_startup[] = {
+        "xfconf-query --channel xsettings --property /Net/ThemeName --set \"Windows Classic style\"",
+        "xfconf-query --channel xfwm4 --property /general/theme --set \"Windows Classic style\"",
+        "xfconf-query --channel xfwm4 --property /general/title_font --set \"Tahoma Bold 8\"",
+        "xfwm4 --compositor=on"
+    };
+
+    if (!S_OPTION_TEST)
     {
-        wintc_log_error_and_clear(&error);
-        return EXIT_FAILURE;
+        for (guint i = 0; i < G_N_ELEMENTS(s_startup); i++)
+        {
+            if (!wintc_launch_command(s_startup[i], &error))
+            {
+                wintc_log_error_and_clear(&error);
+                return EXIT_FAILURE;
+            }
+        }
     }
 
     // Set up styling
