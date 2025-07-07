@@ -29,6 +29,18 @@ then
     fi
 fi
 
+# Spawn the working dir for setup
+#
+WSETUP_STATE_ROOT="/var/tmp/.wintc-setup"
+
+if [ -d "$WSETUP_STATE_ROOT" ]
+then
+    rm -rf $WSETUP_STATE_ROOT
+fi
+
+mkdir -p $WSETUP_STATE_ROOT
+export WSETUP_STATE_ROOT
+
 # Inspect the distro
 #
 . "$SETUPROOT/setup/dal/detect.sh"
