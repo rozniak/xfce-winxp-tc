@@ -446,10 +446,5 @@ def wsetup_step_prepare_chain_to_gui(stdscr):
         # FIXME: Again, display a proper error in setup
         raise Exception("Failed to chain graphical phase");
 
-    # Input
-    #
-    while True:
-        user_option = stdscr.getch()
-
-        if user_option == curses.KEY_F0 + 3:
-            return 0
+    # FIXME: Should show reboot screen
+    return 0
