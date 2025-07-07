@@ -101,14 +101,12 @@ int main(
     // Fire up WM and stuff
     //
     static const gchar* s_startup[] = {
-        "xfconf-query --channel xsettings --property /Net/ThemeName --set \"Windows Classic style\"",
         "xfconf-query --channel xfwm4 --property /general/theme --set \"Windows Classic style\"",
         "xfconf-query --channel xfwm4 --property /general/title_alignment --set left",
         "xfconf-query --channel xfwm4 --property /general/title_font --set \"Tahoma Bold 8\"",
         "xfconf-query --channel xfwm4 --property /general/show_dock_shadow --set false",
         "xfconf-query --channel xfwm4 --property /general/show_frame_shadow --set false",
         "xfconf-query --channel xfwm4 --property /general/show_popup_shadow --set false",
-        "xfconf-query --channel xsettings --property /Gtk/CursorThemeName --set standard-with-shadow",
     };
 
     if (!S_OPTION_TEST)
@@ -139,6 +137,16 @@ int main(
         return EXIT_FAILURE;
     }
 
+    // Set GtkSettings, because xsettings never seems to work -_-
+    //
+    GtkSettings* settings = gtk_settings_get_default();
+
+    g_object_set(
+        settings,
+        "gtk-theme-name",        "Windows Classic style",
+        "gtk-cursor-theme-name", "standard-with-shadow",
+        NULL
+    );
 
     // Set up styling
     //
