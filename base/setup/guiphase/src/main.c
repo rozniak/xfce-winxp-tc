@@ -110,7 +110,12 @@ int main(
     static const gchar* s_startup[] = {
         "xfconf-query --channel xsettings --property /Net/ThemeName --set \"Windows Classic style\"",
         "xfconf-query --channel xfwm4 --property /general/theme --set \"Windows Classic style\"",
+        "xfconf-query --channel xfwm4 --property /general/title_alignment --set left",
         "xfconf-query --channel xfwm4 --property /general/title_font --set \"Tahoma Bold 8\"",
+        "xfconf-query --channel xfwm4 --property /general/show_dock_shadow --set false",
+        "xfconf-query --channel xfwm4 --property /general/show_frame_shadow --set false",
+        "xfconf-query --channel xfwm4 --property /general/show_popup_shadow --set false",
+        "xfconf-query --channel xsettings --property /Gtk/CursorThemeName --set standard-with-shadow",
         "xfwm4 --compositor=on"
     };
 
