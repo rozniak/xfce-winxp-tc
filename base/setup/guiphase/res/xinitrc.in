@@ -4,10 +4,6 @@
 #
 xfsettingsd --disable-wm-check --replace --daemon
 
-xfconf-query --channel xsettings --property /Net/ThemeName --set "Windows Classic style"
-xfconf-query --channel xfwm4 --property /general/theme --set "Windows Classic style"
-xfconf-query --channel xfwm4 --property /general/title_font --set "Tahoma Bold 8"
-
 # Launch setup
 #
 dbus-run-session -- wsetupx
