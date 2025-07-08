@@ -16,6 +16,19 @@ enum {
 };
 
 //
+// FORWARD DECLARATIONS
+//
+static void wintc_welcome_button_finalize(GObject* object);
+static void wintc_welcome_button_set_property(GObject *object, guint prop_id, 
+                            const GValue *value, GParamSpec *pspec);
+static void wintc_welcome_button_get_property(GObject *object, guint prop_id,
+                            GValue *value, GParamSpec *pspec);
+
+static void on_wintc_welcome_button_clicked(GtkButton *button);
+static void wintc_welcome_button_set_image_from_pixbuf(WinTCWelcomeButton *welcome_button, GdkPixbuf *pixbuf);
+static gboolean wintc_welcome_button_reset_image(gpointer user_data);
+
+//
 // GTK OOP CLASS/INSTANCE DEFINITIONS
 //
 struct _WinTCWelcomeButton {
@@ -30,20 +43,6 @@ struct _WinTCWelcomeButton {
 struct _WinTCWelcomeButtonClass {
     GtkButtonClass parent_class;
 };
-
-
-//
-// FORWARD DECLARATIONS
-//
-static void wintc_welcome_button_finalize(GObject* object);
-static void wintc_welcome_button_set_property(GObject *object, guint prop_id, 
-                            const GValue *value, GParamSpec *pspec);
-static void wintc_welcome_button_get_property(GObject *object, guint prop_id,
-                            GValue *value, GParamSpec *pspec);
-
-static void on_wintc_welcome_button_clicked(GtkButton *button);
-static void wintc_welcome_button_set_image_from_pixbuf(WinTCWelcomeButton *welcome_button, GdkPixbuf *pixbuf);
-static gboolean wintc_welcome_button_reset_image(gpointer user_data);
 
 //
 // GTK TYPE DEFINITIONS & CTORS
