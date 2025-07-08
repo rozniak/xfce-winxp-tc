@@ -670,7 +670,7 @@ static void show_balloon_under_widget(UserListItem *item, BalloonType type)
     g_idle_add((GSourceFunc)balloon_unblur_callback, user_list);
 
     // BUG: Because the balloon is shown in an overlay, it gets clipped by the overlay's size.
-    //      This could be fixed by moving the overlay to the top of the widget hierarchy,
+    //      This could be fixed by moving the balloon to ui.c and using event signals.
     gtk_box_pack_start(GTK_BOX(user_list->balloon_wrapper_box), user_list->balloon, TRUE, TRUE, 0);
     gtk_widget_show_all(user_list->balloon_wrapper_box);
 }
@@ -767,7 +767,16 @@ static GtkWidget *build_userlist_widget(WinTCWelcomeUserList *user_list)
         gtk_label_set_xalign(GTK_LABEL(item->username_label), 0.0);
         gtk_widget_set_valign(item->username_label, GTK_ALIGN_START);
         gtk_widget_set_vexpand(item->username_label, TRUE);
-        gtk_widget_set_margin_start(item->username_label, 10);
+        gtk_widget_set_margin_start(item->username_label, 12);
+
+        item->instruction_label = gtk_label_new("Type your password");
+        gtk_style_context_add_class(gtk_widget_get_style_context(item->instruction_label), "password-label");
+        gtk_label_set_xalign(GTK_LABEL(item->instruction_label), 0.0);
+        gtk_widget_set_valign(item->instruction_label, GTK_ALIGN_END);
+        gtk_widget_set_margin_start(item->instruction_label, 12);
+
+        g_signal_connect(item->instruction_label, "realize",
+                         G_CALLBACK(gtk_widget_hide), NULL);
 
         item->password_entry = gtk_entry_new();
         gtk_style_context_add_class(gtk_widget_get_style_context(item->password_entry), "password-box");
@@ -786,14 +795,6 @@ static GtkWidget *build_userlist_widget(WinTCWelcomeUserList *user_list)
                          G_CALLBACK(on_password_focus_gain), item);
         g_signal_connect(item->password_entry, "key-press-event", G_CALLBACK(on_password_caps_pressed), item); 
 
-        item->instruction_label = gtk_label_new("Type your password");
-        gtk_style_context_add_class(gtk_widget_get_style_context(item->instruction_label), "password-label");
-        gtk_label_set_xalign(GTK_LABEL(item->instruction_label), 0.0);
-        gtk_widget_set_margin_start(item->instruction_label, 10);
-        gtk_widget_set_margin_top(item->instruction_label, 0);
-
-        g_signal_connect(item->instruction_label, "realize",
-                         G_CALLBACK(gtk_widget_hide), NULL);
         
         {
             GdkPixbuf *go_idle = gdk_pixbuf_new_from_resource("/uk/oddmatics/wintc/logonui/gobtn.png", NULL);
@@ -847,7 +848,7 @@ static GtkWidget *build_userlist_widget(WinTCWelcomeUserList *user_list)
         gtk_widget_set_vexpand(top_row, FALSE);
         gtk_widget_set_halign(top_row, GTK_ALIGN_START);
         gtk_widget_set_valign(top_row, GTK_ALIGN_START);
-        gtk_widget_set_size_request(top_row, 290, 28);
+        gtk_widget_set_size_request(top_row, 290, 27);
         gtk_widget_set_margin_top(top_row, 5);
         
         gtk_box_pack_start(GTK_BOX(top_row), item->username_label, FALSE, FALSE, 0);
@@ -855,9 +856,10 @@ static GtkWidget *build_userlist_widget(WinTCWelcomeUserList *user_list)
 
         GtkWidget *middle_row = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
         gtk_widget_set_halign(middle_row, GTK_ALIGN_START);
-
+        // gtk_style_context_add_class(gtk_widget_get_style_context(middle_row), "red-bg");
+        gtk_widget_set_size_request(middle_row, -1, 16);
         gtk_box_pack_start(GTK_BOX(middle_row), item->instruction_label, FALSE, FALSE, 0);
-
+        
         GtkWidget *bottom_row = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 
         gtk_box_pack_start(GTK_BOX(bottom_row), item->password_entry, FALSE, FALSE, 0);
