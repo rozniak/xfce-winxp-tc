@@ -43,7 +43,7 @@ static void build_base_balloon(
     GtkWidget *widget
 );
 static void configure_balloon_style(
-    WinTCWelcomeBalloon *self
+    WinTCWelcomeBalloon *welcome_balloon
 );
 
 //
@@ -122,17 +122,17 @@ static void wintc_welcome_balloon_class_init(WinTCWelcomeBalloonClass *klass) {
 static void wintc_welcome_balloon_set_property(GObject *object, guint prop_id, 
                             const GValue *value, GParamSpec *pspec)
 {
-    WinTCWelcomeBalloon *self = WINTC_WELCOME_BALLOON(object);
+    WinTCWelcomeBalloon *welcome_balloon = WINTC_WELCOME_BALLOON(object);
     
     switch (prop_id) {
         case PROP_ALERT_TYPE:
-            self->alert_type = g_value_get_enum(value);
+            welcome_balloon->alert_type = g_value_get_enum(value);
             break;
         case PROP_TARGET_WIDGET:
-            self->target_widget = g_value_get_object(value);
-            if (self->target_widget) {
-                g_object_weak_ref(G_OBJECT(self->target_widget), 
-                                 (GWeakNotify)on_target_widget_destroyed, self);
+            welcome_balloon->target_widget = g_value_get_object(value);
+            if (welcome_balloon->target_widget) {
+                g_object_weak_ref(G_OBJECT(welcome_balloon->target_widget), 
+                                 (GWeakNotify)on_target_widget_destroyed, welcome_balloon);
             }
             break;
         default:
@@ -144,13 +144,13 @@ static void wintc_welcome_balloon_set_property(GObject *object, guint prop_id,
 static void wintc_welcome_balloon_get_property(GObject *object, guint prop_id,
                             GValue *value, GParamSpec *pspec)
 {
-    WinTCWelcomeBalloon *self = WINTC_WELCOME_BALLOON(object);
+    WinTCWelcomeBalloon *welcome_balloon = WINTC_WELCOME_BALLOON(object);
     switch (prop_id) {
         case PROP_ALERT_TYPE:
-            g_value_set_enum(value, self->alert_type);
+            g_value_set_enum(value, welcome_balloon->alert_type);
             break;
         case PROP_TARGET_WIDGET:
-            g_value_set_object(value, self->target_widget);
+            g_value_set_object(value, welcome_balloon->target_widget);
             break;
         default:
             G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
@@ -159,19 +159,19 @@ static void wintc_welcome_balloon_get_property(GObject *object, guint prop_id,
 }
 
 static void balloon_finalize(GObject *object) {
-    WinTCWelcomeBalloon *self = WINTC_WELCOME_BALLOON(object);
-    if (self->target_widget) {
-        g_object_weak_unref(G_OBJECT(self->target_widget), 
-                           (GWeakNotify)on_target_widget_destroyed, self);
+    WinTCWelcomeBalloon *welcome_balloon = WINTC_WELCOME_BALLOON(object);
+    if (welcome_balloon->target_widget) {
+        g_object_weak_unref(G_OBJECT(welcome_balloon->target_widget), 
+                           (GWeakNotify)on_target_widget_destroyed, welcome_balloon);
     }
     G_OBJECT_CLASS(wintc_welcome_balloon_parent_class)->finalize(object);
 }
 
-static void wintc_welcome_balloon_init(WinTCWelcomeBalloon *self) {
-    self->alert_type = BALLOON_TYPE_WARNING;
-    self->target_widget = NULL;
+static void wintc_welcome_balloon_init(WinTCWelcomeBalloon *welcome_balloon) {
+    welcome_balloon->alert_type = BALLOON_TYPE_WARNING;
+    welcome_balloon->target_widget = NULL;
 
-    gtk_orientable_set_orientation(GTK_ORIENTABLE(self), GTK_ORIENTATION_VERTICAL);
+    gtk_orientable_set_orientation(GTK_ORIENTABLE(welcome_balloon), GTK_ORIENTATION_VERTICAL);
 }
 
 
@@ -241,9 +241,9 @@ static GtkWidget* balloon_create_arrow_widget() {
 }
 
 static void build_base_balloon(GtkWidget *widget) {
-    WinTCWelcomeBalloon *self = WINTC_WELCOME_BALLOON(widget);
+    WinTCWelcomeBalloon *welcome_balloon = WINTC_WELCOME_BALLOON(widget);
 
-    if (!self->target_widget || !GTK_IS_WIDGET(self->target_widget)) {
+    if (!welcome_balloon->target_widget || !GTK_IS_WIDGET(welcome_balloon->target_widget)) {
         g_warning("Balloon target widget is not set correctly or doesn't exist. This balloon will not be positioned correctly.");
     } 
 
@@ -260,29 +260,29 @@ static void build_base_balloon(GtkWidget *widget) {
 
     GtkWidget *header = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
     gtk_widget_set_hexpand(GTK_WIDGET(header), TRUE);
-    self->icon = gtk_image_new();
-    self->title = gtk_label_new("");
-    gtk_widget_set_valign(GTK_WIDGET(self->title), GTK_ALIGN_START);
-    gtk_widget_set_halign(GTK_WIDGET(self->title), GTK_ALIGN_START);
-    gtk_style_context_add_class(gtk_widget_get_style_context(self->title), "error-popup-title");
+    welcome_balloon->icon = gtk_image_new();
+    welcome_balloon->title = gtk_label_new("");
+    gtk_widget_set_valign(GTK_WIDGET(welcome_balloon->title), GTK_ALIGN_START);
+    gtk_widget_set_halign(GTK_WIDGET(welcome_balloon->title), GTK_ALIGN_START);
+    gtk_style_context_add_class(gtk_widget_get_style_context(welcome_balloon->title), "error-popup-title");
 
-    gtk_box_pack_start(GTK_BOX(header), GTK_WIDGET(self->icon), FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(header), GTK_WIDGET(self->title), TRUE, TRUE, 0);
+    gtk_box_pack_start(GTK_BOX(header), GTK_WIDGET(welcome_balloon->icon), FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(header), GTK_WIDGET(welcome_balloon->title), TRUE, TRUE, 0);
 
     GtkWidget* content = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
     gtk_widget_set_margin_top(GTK_WIDGET(content), 5);
     gtk_style_context_add_class(gtk_widget_get_style_context(content), "error-popup-content");
 
-    self->message = gtk_label_new("");
-    gtk_label_set_max_width_chars(GTK_LABEL(self->message), 50);
-    gtk_label_set_xalign(GTK_LABEL(self->message), 0.0f);
-    gtk_label_set_line_wrap(GTK_LABEL(self->message), TRUE);
-    gtk_label_set_line_wrap_mode(GTK_LABEL(self->message), PANGO_WRAP_WORD); 
-    gtk_label_set_justify(GTK_LABEL(self->message), GTK_JUSTIFY_LEFT);        
-    gtk_widget_set_halign(self->message, GTK_ALIGN_FILL);
-    gtk_widget_set_valign(self->message, GTK_ALIGN_START);
+    welcome_balloon->message = gtk_label_new("");
+    gtk_label_set_max_width_chars(GTK_LABEL(welcome_balloon->message), 50);
+    gtk_label_set_xalign(GTK_LABEL(welcome_balloon->message), 0.0f);
+    gtk_label_set_line_wrap(GTK_LABEL(welcome_balloon->message), TRUE);
+    gtk_label_set_line_wrap_mode(GTK_LABEL(welcome_balloon->message), PANGO_WRAP_WORD); 
+    gtk_label_set_justify(GTK_LABEL(welcome_balloon->message), GTK_JUSTIFY_LEFT);        
+    gtk_widget_set_halign(welcome_balloon->message, GTK_ALIGN_FILL);
+    gtk_widget_set_valign(welcome_balloon->message, GTK_ALIGN_START);
 
-    gtk_box_pack_start(GTK_BOX(content), GTK_WIDGET(self->message), TRUE, TRUE, 0);
+    gtk_box_pack_start(GTK_BOX(content), GTK_WIDGET(welcome_balloon->message), TRUE, TRUE, 0);
 
     gtk_box_pack_start(GTK_BOX(box), GTK_WIDGET(header), FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(box), GTK_WIDGET(content), TRUE, TRUE, 0);
@@ -294,30 +294,30 @@ static void build_base_balloon(GtkWidget *widget) {
     gtk_container_add(GTK_CONTAINER(overlay), GTK_WIDGET(box));
     gtk_overlay_add_overlay(GTK_OVERLAY(overlay), arrow);
 
-    gtk_box_pack_start(GTK_BOX(self), overlay, TRUE, TRUE, 0);
+    gtk_box_pack_start(GTK_BOX(welcome_balloon), overlay, TRUE, TRUE, 0);
     
-    gtk_widget_show_all(GTK_WIDGET(self));
+    gtk_widget_show_all(GTK_WIDGET(welcome_balloon));
 }
 
-static void configure_balloon_style(WinTCWelcomeBalloon *self) {
-    build_base_balloon(GTK_WIDGET(self));
+static void configure_balloon_style(WinTCWelcomeBalloon *welcome_balloon) {
+    build_base_balloon(GTK_WIDGET(welcome_balloon));
 
-    switch (self->alert_type) {
+    switch (welcome_balloon->alert_type) {
         case BALLOON_TYPE_ERROR:
-            gtk_image_set_from_resource(GTK_IMAGE(self->icon), "/uk/oddmatics/wintc/logonui/error.png");
-            gtk_label_set_text(GTK_LABEL(self->title), "Did you forget your password?");
+            gtk_image_set_from_resource(GTK_IMAGE(welcome_balloon->icon), "/uk/oddmatics/wintc/logonui/error.png");
+            gtk_label_set_text(GTK_LABEL(welcome_balloon->title), "Did you forget your password?");
 
-            gtk_label_set_text(GTK_LABEL(self->message), "Please type your password again.\n"
+            gtk_label_set_text(GTK_LABEL(welcome_balloon->message), "Please type your password again.\n"
                                                           "Be sure to use the correct uppercase and lowercase letters.");
             break;
         case BALLOON_TYPE_WARNING:
-            gtk_image_set_from_resource(GTK_IMAGE(self->icon), "/uk/oddmatics/wintc/logonui/exclamation.png");
-            gtk_label_set_text(GTK_LABEL(self->title), "Caps Lock is On");
-            gtk_label_set_text(GTK_LABEL(self->message), "Having Caps Lock on may cause you to enter your password incorrectly.\n\n"
+            gtk_image_set_from_resource(GTK_IMAGE(welcome_balloon->icon), "/uk/oddmatics/wintc/logonui/exclamation.png");
+            gtk_label_set_text(GTK_LABEL(welcome_balloon->title), "Caps Lock is On");
+            gtk_label_set_text(GTK_LABEL(welcome_balloon->message), "Having Caps Lock on may cause you to enter your password incorrectly.\n\n"
                                                           "You should press Caps Lock to turn it off before entering your password.");
             break;
         default:
-            g_warning("Unknown alert type: %d", self->alert_type);
+            g_warning("Unknown alert type: %d", welcome_balloon->alert_type);
             break;
     }
 }
@@ -325,8 +325,8 @@ static void configure_balloon_style(WinTCWelcomeBalloon *self) {
 static void balloon_constructed(GObject *object) {
     G_OBJECT_CLASS(wintc_welcome_balloon_parent_class)->constructed(object);
 
-    WinTCWelcomeBalloon *self = WINTC_WELCOME_BALLOON(object);
-    configure_balloon_style(self);
+    WinTCWelcomeBalloon *welcome_balloon = WINTC_WELCOME_BALLOON(object);
+    configure_balloon_style(welcome_balloon);
 }
 
 //
@@ -334,9 +334,9 @@ static void balloon_constructed(GObject *object) {
 //
 
 static void on_target_widget_destroyed(gpointer data, GObject *destroyed_object) {
-    WinTCWelcomeBalloon *self = WINTC_WELCOME_BALLOON(data);
-    if (self->target_widget == GTK_WIDGET(destroyed_object)) {
-        self->target_widget = NULL;
-        gtk_widget_destroy(GTK_WIDGET(self));
+    WinTCWelcomeBalloon *welcome_balloon = WINTC_WELCOME_BALLOON(data);
+    if (welcome_balloon->target_widget == GTK_WIDGET(destroyed_object)) {
+        welcome_balloon->target_widget = NULL;
+        gtk_widget_destroy(GTK_WIDGET(welcome_balloon));
     }
 }

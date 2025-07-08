@@ -60,11 +60,27 @@
     font-family: "Tahoma", inherit;
 }
 
+/* DEBUG */
+.red-bg {
+    background-color: red;
+}
+
 .password-box {
-    border: 1px solid #00309C;
+    /* border: 1px solid #00309C; */
     font-family: "Tahoma", inherit;
     border-radius: 5px;
     font-size: 16pt;
+
+     border-top: 1px solid #7f7f7f;
+    border-left: 1px solid #7f7f7f;
+    border-right: 1px solid #dfdfdf;
+    border-bottom: 1px solid #dfdfdf;
+    
+    box-shadow: 
+        1px 0 0 0 #2d5aa0,     
+        0 1px 0 0 #2d5aa0,    
+        2px 0 0 0 #1a4480,    
+        0 2px 0 0 #1a4480;    
 }
 
 .user-label {

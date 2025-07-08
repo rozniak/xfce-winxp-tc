@@ -42,7 +42,7 @@ static void wintc_welcome_button_get_property(GObject *object, guint prop_id,
                             GValue *value, GParamSpec *pspec);
 
 static void on_wintc_welcome_button_clicked(GtkButton *button);
-static void wintc_welcome_button_set_image_from_pixbuf(WinTCWelcomeButton *self, GdkPixbuf *pixbuf);
+static void wintc_welcome_button_set_image_from_pixbuf(WinTCWelcomeButton *welcome_button, GdkPixbuf *pixbuf);
 static gboolean wintc_welcome_button_reset_image(gpointer user_data);
 
 //
@@ -95,14 +95,14 @@ static void wintc_welcome_button_class_init(WinTCWelcomeButtonClass *klass) {
     g_object_class_install_properties(object_class, N_PROPERTIES, properties);
 }
 
-static void wintc_welcome_button_init(WinTCWelcomeButton *self) {
+static void wintc_welcome_button_init(WinTCWelcomeButton *welcome_button) {
     gtk_style_context_add_class(
-        gtk_widget_get_style_context(GTK_WIDGET(self)),
+        gtk_widget_get_style_context(GTK_WIDGET(welcome_button)),
         "plain-button"
     );
     
-    self->press_delay = DEFAULT_PRESS_DELAY;
-    self->timeout_id = 0;
+    welcome_button->press_delay = DEFAULT_PRESS_DELAY;
+    welcome_button->timeout_id = 0;
 }
 
 static void wintc_welcome_button_set_property(GObject *object, guint prop_id, 
@@ -193,11 +193,11 @@ GtkWidget* wintc_welcome_button_new_with_pixbufs(GdkPixbuf *idle_pixbuf,
 // PRIVATE FUNCTIONS
 //
 
-static void wintc_welcome_button_set_image_from_pixbuf(WinTCWelcomeButton *self, GdkPixbuf *pixbuf) {
+static void wintc_welcome_button_set_image_from_pixbuf(WinTCWelcomeButton *welcome_button, GdkPixbuf *pixbuf) {
     if (!pixbuf) return;
     
     GtkWidget *image = gtk_image_new_from_pixbuf(pixbuf);
-    gtk_button_set_image(GTK_BUTTON(self), image);
+    gtk_button_set_image(GTK_BUTTON(welcome_button), image);
     gtk_widget_show(image);
 }
 
@@ -216,19 +216,19 @@ static gboolean wintc_welcome_button_reset_image(gpointer user_data) {
 // CALLBACKS
 //
 static void on_wintc_welcome_button_clicked(GtkButton *button) {
-    WinTCWelcomeButton *self = WINTC_WELCOME_BUTTON(button);
+    WinTCWelcomeButton *welcome_button = WINTC_WELCOME_BUTTON(button);
     
-    if (self->timeout_id > 0) {
-        g_source_remove(self->timeout_id);
-        self->timeout_id = 0;
+    if (welcome_button->timeout_id > 0) {
+        g_source_remove(welcome_button->timeout_id);
+        welcome_button->timeout_id = 0;
     }
     
-    if (self->activated_pixbuf) {
-        wintc_welcome_button_set_image_from_pixbuf(self, self->activated_pixbuf);
+    if (welcome_button->activated_pixbuf) {
+        wintc_welcome_button_set_image_from_pixbuf(welcome_button, welcome_button->activated_pixbuf);
     }
     
-    if (self->press_delay > 0) {
-        self->timeout_id = g_timeout_add(self->press_delay, 
-                                        wintc_welcome_button_reset_image, self);
+    if (welcome_button->press_delay > 0) {
+        welcome_button->timeout_id = g_timeout_add(welcome_button->press_delay, 
+                                        wintc_welcome_button_reset_image, welcome_button);
     }
 }

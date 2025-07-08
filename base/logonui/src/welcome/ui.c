@@ -653,6 +653,7 @@ GtkWidget* build_login_box(WinTCGinaLogonSession* logon_session) {
     gtk_widget_set_valign(bglight, GTK_ALIGN_START);
     gtk_widget_set_vexpand(bglight, FALSE);
 
+    // TODO: The logo should be configurable between the static and animated version.
     GtkWidget *logo = gtk_image_new_from_resource("/uk/oddmatics/wintc/logonui/logo.png");
     gtk_widget_set_margin_bottom(GTK_WIDGET(logo), 20);
     gtk_widget_set_halign(logo, GTK_ALIGN_END);
@@ -697,6 +698,7 @@ GtkWidget* build_login_box(WinTCGinaLogonSession* logon_session) {
     GtkWidget *bottom_ribbon = create_bottom_ribbon_widget();
 
     GtkWidget* footer_buttons = create_footer_widget();
+    
     gtk_box_pack_start(GTK_BOX(bottom_ribbon), footer_buttons, FALSE, FALSE, 0);
 
     gtk_box_pack_start(GTK_BOX(box), top_ribbon, FALSE, FALSE, 0);
