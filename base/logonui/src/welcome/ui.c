@@ -552,21 +552,32 @@ GtkWidget* build_welcome_box(void) {
 
     GtkWidget *top_ribbon = create_top_ribbon_widget();
     GtkWidget *top_separator = create_top_separator_widget();
-    GtkWidget *wrapper = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+
+    GtkWidget* overlay = gtk_overlay_new();
+
+    GtkWidget* bglight = gtk_image_new_from_resource("/uk/oddmatics/wintc/logonui/bglight.png");
+    gtk_widget_set_halign(bglight, GTK_ALIGN_START);
+    gtk_widget_set_valign(bglight, GTK_ALIGN_START);
+    gtk_widget_set_vexpand(bglight, FALSE);
+
+    GtkWidget *content = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 
     GtkWidget *welcome_label = gtk_label_new("Welcome");
     gtk_style_context_add_class(gtk_widget_get_style_context(welcome_label), "welcome-label");
     gtk_label_set_xalign(GTK_LABEL(welcome_label), 0.8f);
     gtk_label_set_yalign(GTK_LABEL(welcome_label), 0.5f);
 
-    gtk_box_pack_start(GTK_BOX(wrapper), welcome_label, TRUE, TRUE, 0);
+    gtk_box_pack_start(GTK_BOX(content), welcome_label, TRUE, TRUE, 0);
+
+    gtk_container_add(GTK_CONTAINER(overlay), content);
+    gtk_overlay_add_overlay(GTK_OVERLAY(overlay), bglight);
 
     GtkWidget *bottom_separator = create_bottom_separator_widget();
     GtkWidget *bottom_ribbon = create_bottom_ribbon_widget();
 
     gtk_box_pack_start(GTK_BOX(welcome_screen), top_ribbon, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(welcome_screen), top_separator, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(welcome_screen), wrapper, TRUE, TRUE, 0);
+    gtk_box_pack_start(GTK_BOX(welcome_screen), overlay, TRUE, TRUE, 0);
     gtk_box_pack_start(GTK_BOX(welcome_screen), bottom_separator, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(welcome_screen), bottom_ribbon, FALSE, FALSE, 0);
 
@@ -583,6 +594,11 @@ GtkWidget* build_wait_box(void) {
     GtkWidget *top_separator = create_top_separator_widget();
 
     GtkWidget* overlay = gtk_overlay_new();
+    
+    GtkWidget* bglight = gtk_image_new_from_resource("/uk/oddmatics/wintc/logonui/bglight.png");
+    gtk_widget_set_halign(bglight, GTK_ALIGN_START);
+    gtk_widget_set_valign(bglight, GTK_ALIGN_START);
+    gtk_widget_set_vexpand(bglight, FALSE);
 
     GtkWidget *content = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
     gtk_widget_set_hexpand(content, TRUE);
@@ -608,12 +624,6 @@ GtkWidget* build_wait_box(void) {
 
     gtk_box_pack_end(GTK_BOX(content), wait_box, FALSE, FALSE, 0);
 
-    GtkWidget* bglight = gtk_image_new_from_resource("/uk/oddmatics/wintc/logonui/bglight.png");
-
-    gtk_widget_set_halign(bglight, GTK_ALIGN_START);
-    gtk_widget_set_valign(bglight, GTK_ALIGN_START);
-    gtk_widget_set_vexpand(bglight, FALSE);
-
     gtk_container_add(GTK_CONTAINER(overlay), content);
     gtk_overlay_add_overlay(GTK_OVERLAY(overlay), bglight);
 
@@ -631,7 +641,7 @@ GtkWidget* build_wait_box(void) {
 }
 
 GtkWidget* build_login_box(WinTCGinaLogonSession* logon_session) {
-    GtkWidget *box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+    GtkWidget *login_screen = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 
     GtkWidget *top_ribbon = create_top_ribbon_widget();
     GtkWidget *top_separator = create_top_separator_widget();
@@ -692,7 +702,6 @@ GtkWidget* build_login_box(WinTCGinaLogonSession* logon_session) {
     gtk_container_add(GTK_CONTAINER(overlay), content);
     gtk_overlay_add_overlay(GTK_OVERLAY(overlay), bglight);
 
-
     GtkWidget *bottom_separator = create_bottom_separator_widget();
 
     GtkWidget *bottom_ribbon = create_bottom_ribbon_widget();
@@ -701,13 +710,13 @@ GtkWidget* build_login_box(WinTCGinaLogonSession* logon_session) {
     
     gtk_box_pack_start(GTK_BOX(bottom_ribbon), footer_buttons, FALSE, FALSE, 0);
 
-    gtk_box_pack_start(GTK_BOX(box), top_ribbon, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(box), top_separator, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(box), overlay, TRUE, TRUE, 0);
-    gtk_box_pack_start(GTK_BOX(box), bottom_separator, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(box), bottom_ribbon, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(login_screen), top_ribbon, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(login_screen), top_separator, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(login_screen), overlay, TRUE, TRUE, 0);
+    gtk_box_pack_start(GTK_BOX(login_screen), bottom_separator, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(login_screen), bottom_ribbon, FALSE, FALSE, 0);
 
-    return box;
+    return login_screen;
 }
 
 GtkWidget* create_top_ribbon_widget(void) {
