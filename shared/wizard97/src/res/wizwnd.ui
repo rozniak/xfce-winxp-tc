@@ -84,7 +84,11 @@
         </child>
 
         <style>
-          <class name="wintc-button-box"/>
+          <class name="wintc-button-box" />
+          <class name="wintc-mb-md" />
+          <class name="wintc-ml-md" />
+          <class name="wintc-mr-md" />
+          <class name="wintc-mt-md" />
         </style>
       </object>
       <packing>
