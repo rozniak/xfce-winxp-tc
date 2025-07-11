@@ -37,6 +37,8 @@ add_executable(
     src/arm.h
     src/main.c
     src/resources.c
+    src/setupclr.c
+    src/setupclr.h
     src/setupwnd.c
     src/setupwnd.h
 )
