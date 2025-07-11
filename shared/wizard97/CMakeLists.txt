@@ -21,8 +21,6 @@ include(../../packaging/cmake-inc/linking/CMakeLists.txt)
 include(../../packaging/cmake-inc/packaging/CMakeLists.txt)
 include(../../packaging/cmake-inc/resources/CMakeLists.txt)
 
-set(WINTC_BRAND_DIR ${WINTC_ASSETS_INSTALL_DIR}/brand)
-
 wintc_resolve_library(gdk-pixbuf-2.0 GDK_PIXBUF)
 wintc_resolve_library(glib-2.0       GLIB)
 wintc_resolve_library(gtk+-3.0       GTK3)

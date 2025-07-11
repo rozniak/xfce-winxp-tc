@@ -20,16 +20,30 @@ static GtkWidget* wintc_wizard97_window_create_page(
     WinTCWizard97Window* wiz_wnd,
     const gchar*         resource_path
 );
+static void wintc_wizard97_window_go_to_page(
+    WinTCWizard97Window* wiz_wnd,
+    guint                page
+);
 
 //
 // GTK OOP CLASS/INSTANCE DEFINITIONS
 //
 typedef struct __WinTCWizard97WindowPrivate
 {
+    // State
+    //
+    guint current_page;
+
+    // UI stuff
+    //
+    GtkWidget* box_page_area;
+
+    // Stuff we maintain an additional ref to
+    //
     GdkPixbuf* pixbuf_watermark;
     GdkPixbuf* pixbuf_header;
     GtkWidget* box_ext_page;
-    GList*     list_boxes_int_pages;
+    GList*     list_int_pages;
 } WinTCWizard97WindowPrivate;
 
 //
@@ -70,7 +84,7 @@ static void wintc_wizard97_window_dispose(
     g_clear_object(&(priv->pixbuf_header));
     g_clear_object(&(priv->box_ext_page));
     g_clear_list(
-        &(priv->list_boxes_int_pages),
+        &(priv->list_int_pages),
         (GDestroyNotify) g_object_unref
     );
 
@@ -153,9 +167,9 @@ void wintc_wizard97_window_init_wizard(
 
         if (box)
         {
-            priv->list_boxes_int_pages =
+            priv->list_int_pages =
                 g_list_append(
-                    priv->list_boxes_int_pages,
+                    priv->list_int_pages,
                     box
                 );
         }
@@ -190,6 +204,34 @@ void wintc_wizard97_window_init_wizard(
             wintc_log_error_and_clear(&error);
         }
     }
+
+    // Set up the window
+    //
+    GtkBuilder* builder =
+        gtk_builder_new_from_resource(
+            "/uk/oddmatics/wintc/wizard97/wizwnd.ui"
+        );
+
+    priv->box_page_area =
+        GTK_WIDGET(
+            gtk_builder_get_object(builder, "box-page-area")
+        );
+
+    gtk_container_add(
+        GTK_CONTAINER(wiz_wnd),
+        GTK_WIDGET(
+            gtk_builder_get_object(builder, "main-box")
+        )
+    );
+
+    g_object_unref(builder);
+
+    // Load the first page
+    //
+    wintc_wizard97_window_go_to_page(
+        wiz_wnd,
+        priv->box_ext_page ? 0 : 1
+    );
 }
 
 //
@@ -248,4 +290,70 @@ static GtkWidget* wintc_wizard97_window_create_page(
     g_object_unref(builder);
 
     return ret;
+}
+
+static void wintc_wizard97_window_go_to_page(
+    WinTCWizard97Window* wiz_wnd,
+    guint                page
+)
+{
+    WinTCWizard97WindowPrivate* priv =
+        wintc_wizard97_window_get_instance_private(
+            WINTC_WIZARD97_WINDOW(wiz_wnd)
+        );
+
+    GtkWidget* box_target = NULL;
+
+    if (page == 0)
+    {
+        if (priv->box_ext_page)
+        {
+            box_target = priv->box_ext_page;
+        }
+    }
+    else
+    {
+        box_target =
+            GTK_WIDGET(
+                g_list_nth_data(
+                    priv->list_int_pages,
+                    page - 1
+                )
+            );
+    }
+
+    if (!box_target)
+    {
+        g_critical("wizard97: invalid page selected: %u", page);
+        return;
+    }
+
+    // Remove any existing page from view
+    //
+    GList* children =
+        gtk_container_get_children(
+            GTK_CONTAINER(priv->box_page_area)
+        );
+
+    if (g_list_length(children))
+    {
+        gtk_container_remove(
+            GTK_CONTAINER(box_target),
+            GTK_WIDGET(children->data)
+        );
+    }
+
+    g_list_free(children);
+
+    // Pack the page now
+    //
+    gtk_box_pack_start(
+        GTK_BOX(priv->box_page_area),
+        box_target,
+        TRUE,
+        TRUE,
+        0
+    );
+
+    gtk_widget_show_all(box_target);
 }

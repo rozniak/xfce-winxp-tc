@@ -19,7 +19,7 @@ G_DECLARE_DERIVABLE_TYPE(
 
 struct _WinTCWizard97WindowClass
 {
-    GObjectClass __parent__;
+    GtkWindowClass __parent__;
 
     // Wizard stuff
     //
