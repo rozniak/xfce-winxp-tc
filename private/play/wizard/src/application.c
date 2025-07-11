@@ -1,5 +1,6 @@
 #include <glib.h>
 #include <gtk/gtk.h>
+#include <wintc/comctl.h>
 #include <wintc/comgtk.h>
 
 #include "application.h"
@@ -24,6 +25,9 @@ struct _WinTCWizardApplication
 static void wintc_wizard_application_activate(
     GApplication* application
 );
+static void wintc_wizard_application_startup(
+    GApplication* application
+);
 
 //
 // GTK TYPE DEFINITIONS & CTORS
@@ -41,6 +45,7 @@ static void wintc_wizard_application_class_init(
     GApplicationClass* application_class = G_APPLICATION_CLASS(klass);
 
     application_class->activate = wintc_wizard_application_activate;
+    application_class->startup  = wintc_wizard_application_startup;
 }
 
 static void wintc_wizard_application_init(
@@ -58,6 +63,16 @@ static void wintc_wizard_application_activate(
         wintc_wizard_window_new(WINTC_WIZARD_APPLICATION(application));
 
     gtk_widget_show_all(new_window);
+}
+
+static void wintc_wizard_application_startup(
+    GApplication* application
+)
+{
+    (G_APPLICATION_CLASS(wintc_wizard_application_parent_class))
+        ->startup(application);
+
+    wintc_ctl_install_default_styles();
 }
 
 //

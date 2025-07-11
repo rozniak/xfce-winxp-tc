@@ -142,6 +142,10 @@ void wintc_wizard97_window_init_wizard(
 
     GError* error = NULL;
 
+    // General GtkWindow setup
+    //
+    gtk_window_set_resizable(GTK_WINDOW(wiz_wnd), FALSE);
+
     // External page, if we have one!
     //
     if (wizard_class->resource_ext_page)
@@ -302,13 +306,15 @@ static void wintc_wizard97_window_go_to_page(
             WINTC_WIZARD97_WINDOW(wiz_wnd)
         );
 
-    GtkWidget* box_target = NULL;
+    GtkWidget*   box_target = NULL;
+    const gchar* wrapper_resource;
 
     if (page == 0)
     {
         if (priv->box_ext_page)
         {
-            box_target = priv->box_ext_page;
+            box_target       = priv->box_ext_page;
+            wrapper_resource = "/uk/oddmatics/wintc/wizard97/wizext.ui";
         }
     }
     else
@@ -320,6 +326,8 @@ static void wintc_wizard97_window_go_to_page(
                     page - 1
                 )
             );
+
+        wrapper_resource = "/uk/oddmatics/wintc/wizard97/wizint.ui";
     }
 
     if (!box_target)
@@ -345,15 +353,71 @@ static void wintc_wizard97_window_go_to_page(
 
     g_list_free(children);
 
-    // Pack the page now
+    // Construct the page within the appropriate page wrapper
     //
+    GtkWidget*  box_main;
+    GtkWidget*  box_wrapper;
+    GtkBuilder* builder = gtk_builder_new_from_resource(wrapper_resource);
+
+    wintc_builder_get_objects(
+        builder,
+        "main-box", &box_main,
+        "box-page", &box_wrapper,
+        NULL
+    );
+
+    if (page == 0) // Exterior page
+    {
+        GtkImage* img_watermark =
+            GTK_IMAGE(gtk_builder_get_object(builder, "img-watermark"));
+
+        gtk_image_set_from_pixbuf(
+            img_watermark,
+            priv->pixbuf_watermark
+        );
+
+        gtk_widget_set_size_request(
+            box_target,
+            317,
+            193
+        );
+    }
+    else // Interior page
+    {
+        GtkImage* img_header =
+            GTK_IMAGE(gtk_builder_get_object(builder, "img-header"));
+
+        gtk_image_set_from_pixbuf(
+            img_header,
+            priv->pixbuf_header
+        );
+
+        gtk_widget_set_size_request(
+            box_target,
+            317,
+            143
+        );
+    }
+
     gtk_box_pack_start(
-        GTK_BOX(priv->box_page_area),
+        GTK_BOX(box_wrapper),
         box_target,
         TRUE,
         TRUE,
         0
     );
 
+    // Pack the page now
+    //
+    gtk_box_pack_start(
+        GTK_BOX(priv->box_page_area),
+        box_main,
+        TRUE,
+        TRUE,
+        0
+    );
+
     gtk_widget_show_all(box_target);
+
+    g_object_unref(builder);
 }

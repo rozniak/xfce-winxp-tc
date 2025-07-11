@@ -37,8 +37,8 @@ static void wintc_wizard_window_class_init(
 
     wintc_wizard97_window_class_setup_from_resources(
         wizard_class,
-        "/uk/oddmatics/wintc/play/wizard/header.png",
         "/uk/oddmatics/wintc/play/wizard/watermk.png",
+        "/uk/oddmatics/wintc/play/wizard/header.png",
         "/uk/oddmatics/wintc/play/wizard/wizpgext.ui",
         "/uk/oddmatics/wintc/play/wizard/wizpgint.ui"
     );
