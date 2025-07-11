@@ -34,7 +34,7 @@ G_DECLARE_FINAL_TYPE(
 //
 // PUBLIC FUNCTIONS
 //
-GtkWidget* wintc_setup_window_new();
+GtkWidget* wintc_setup_window_new(void);
 
 void wintc_setup_window_disable_billboards(
     WinTCSetupWindow* wnd

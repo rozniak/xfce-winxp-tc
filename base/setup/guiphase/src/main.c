@@ -6,6 +6,7 @@
 #include <wintc/shelldpa.h>
 
 #include "arm.h"
+#include "setupclr.h"
 #include "setupwnd.h"
 
 //
@@ -166,6 +167,12 @@ int main(
         "Installing devices",
         0.4f
     );
+
+    // Create setup controller
+    //
+    WinTCSetupController* controller = wintc_setup_controller_new(wnd_setup);
+
+    wintc_setup_controller_begin(controller);
 
     // Create a billy basic test window (will be replaced by a wizard
     // eventually
