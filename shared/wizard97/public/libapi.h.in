@@ -1,0 +1,6 @@
+#ifndef __WINTC_WIZARD97_H__
+#define __WINTC_WIZARD97_H__
+
+#include "@LIB_HEADER_DIR@/wizwnd.h"
+
+#endif
