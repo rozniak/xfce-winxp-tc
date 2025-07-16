@@ -25,6 +25,12 @@ struct _WindowMonitor
     GHashTable*         window_manager_map;
 };
 
+typedef struct 
+{
+    WindowManagerSingle *window_manager;
+    guint64 timestamp;
+} ContextMenuCallbackData;
+
 //
 // FORWARD DECLARATIONS
 //
@@ -63,6 +69,22 @@ static gboolean on_window_button_button_released(
     GtkWidget*      self,
     GdkEventButton* event,
     gpointer        user_data
+);
+static gboolean on_context_menu_minimize_clicked(
+    GtkWidget* self,
+    gpointer user_data
+);
+static gboolean on_context_menu_maximize_clicked(
+    GtkWidget* self,
+    gpointer user_data
+);
+static gboolean on_context_menu_close_clicked(
+    GtkWidget* self,
+    gpointer user_data
+);
+static void free_context_menu_callback_data(
+    gpointer data,
+    GClosure *closure
 );
 
 static void window_manager_update_icon(
@@ -418,20 +440,119 @@ static gboolean on_window_button_button_released(
     GtkToggleButton*     toggle_button  = GTK_TOGGLE_BUTTON(self);
     WindowManagerSingle* window_manager = (WindowManagerSingle*) user_data;
 
-    if (gtk_toggle_button_get_active(toggle_button))
-    {
-        wintc_wndmgmt_window_minimize(
-            window_manager->managed_window
-        );
-    }
-    else
-    {
-        wintc_wndmgmt_window_unminimize(
-            window_manager->managed_window,
-            (guint64) event->time
-        );
+    switch (event->button) {
+        case GDK_BUTTON_PRIMARY:
+            if (gtk_toggle_button_get_active(toggle_button))
+            {
+                wintc_wndmgmt_window_minimize(
+                    window_manager->managed_window
+                );
+            }
+            else
+            {
+                wintc_wndmgmt_window_unminimize(
+                    window_manager->managed_window,
+                    (guint64) event->time
+                );
+            }
+            break;
+
+        case GDK_BUTTON_SECONDARY:
+            GtkWidget *context_menu = gtk_menu_new();
+
+            ContextMenuCallbackData* callback_data = g_new(ContextMenuCallbackData, 1);
+            callback_data->window_manager = window_manager;
+            callback_data->timestamp = (guint64) event->time;
+
+            GtkWidget *minmize_item = gtk_menu_item_new_with_label("Minimize");
+            g_signal_connect_data(
+                minmize_item, 
+                "activate", 
+                G_CALLBACK(on_context_menu_minimize_clicked), 
+                callback_data,
+                free_context_menu_callback_data,
+                0
+            );
+            GtkWidget *maximize_item = gtk_menu_item_new_with_label("Maximize");
+            g_signal_connect_data(
+                maximize_item, 
+                "activate", 
+                G_CALLBACK(on_context_menu_maximize_clicked), 
+                callback_data,
+                free_context_menu_callback_data,
+                0
+            );
+            GtkWidget *divider = gtk_separator_menu_item_new();
+            GtkWidget *close_item = gtk_menu_item_new_with_label("Close");
+            g_signal_connect_data(
+                close_item, 
+                "activate", 
+                G_CALLBACK(on_context_menu_close_clicked), 
+                callback_data,
+                free_context_menu_callback_data,
+                0
+            );
+            gtk_menu_shell_append(GTK_MENU_SHELL(context_menu), minmize_item);
+            gtk_menu_shell_append(GTK_MENU_SHELL(context_menu), maximize_item);
+            gtk_menu_shell_append(GTK_MENU_SHELL(context_menu), divider);
+            gtk_menu_shell_append(GTK_MENU_SHELL(context_menu), close_item);
+            gtk_widget_show_all(context_menu);
+
+            gtk_menu_popup_at_pointer(
+                GTK_MENU(context_menu),
+                (GdkEvent*) event
+            );
+            break;
+        default:
+            break;
     }
 
     return FALSE;
+}
+
+static gboolean on_context_menu_minimize_clicked(
+    WINTC_UNUSED(GtkWidget* self),
+    gpointer user_data
+)
+{
+    ContextMenuCallbackData* data = (ContextMenuCallbackData*) user_data;
+
+    wintc_wndmgmt_window_minimize(data->window_manager->managed_window);
+
+    return FALSE;
+}
+
+static gboolean on_context_menu_maximize_clicked(
+    WINTC_UNUSED(GtkWidget* self),
+    gpointer user_data
+)
+{
+    ContextMenuCallbackData* data = (ContextMenuCallbackData*) user_data;
+
+    wintc_wndmgmt_window_unminimize(data->window_manager->managed_window, data->timestamp);
+
+    return FALSE;
+}
+
+static gboolean on_context_menu_close_clicked(
+    WINTC_UNUSED(GtkWidget* self),
+    gpointer user_data
+)
+{
+    ContextMenuCallbackData *data = (ContextMenuCallbackData*) user_data;
+
+    wintc_wndmgmt_window_close(data->window_manager->managed_window, data->timestamp);
+
+    return FALSE;
+}
+
+static void free_context_menu_callback_data(
+    gpointer user_data,
+    WINTC_UNUSED(GClosure *closure)
+)
+{
+    WINTC_UNUSED(ContextMenuCallbackData* callback_data) = (ContextMenuCallbackData*) user_data;
+
+    g_free(callback_data);
 }
 
