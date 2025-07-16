@@ -51,6 +51,10 @@ extern void (*p_wnck_window_unminimize) (
     WinTCWndMgmtWindow* window,
     guint32             timestamp
 );
+extern void (*p_wnck_window_close) (
+    WinTCWndMgmtWindow* window,
+    guint32             timestamp
+);
 
 //
 // PUBLIC FUNCTIONS

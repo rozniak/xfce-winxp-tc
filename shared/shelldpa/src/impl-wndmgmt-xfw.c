@@ -21,6 +21,10 @@ static void xfw_window_unminimize(
     WinTCWndMgmtWindow* window,
     guint64             timestamp
 );
+static void xfw_window_close(
+    WinTCWndMgmtWindow* window,
+    guint64             timestamp
+);
 
 //
 // PUBLIC FUNCTIONS
@@ -43,6 +47,7 @@ gboolean init_wndmgmt_xfw_impl(void)
     wintc_wndmgmt_window_is_skip_tasklist  = p_xfw_window_is_skip_tasklist;
     wintc_wndmgmt_window_minimize          = &xfw_window_minimize;
     wintc_wndmgmt_window_unminimize        = &xfw_window_unminimize;
+    wintc_wndmgmt_window_close             = &xfw_window_close;
 
     return TRUE;
 }
@@ -80,6 +85,18 @@ static void xfw_window_unminimize(
     GError* error = NULL;
 
     p_xfw_window_activate(window, NULL, timestamp, &error);
+
+    wintc_log_error_and_clear(&error);
+}
+
+static void xfw_window_close(
+    WinTCWndMgmtWindow* window,
+    guint64             timestamp
+)
+{
+    GError* error = NULL;
+
+    p_xfw_window_close(window, timestamp, &error);
 
     wintc_log_error_and_clear(&error);
 }

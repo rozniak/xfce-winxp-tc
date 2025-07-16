@@ -36,6 +36,11 @@ extern void (*p_xfw_window_set_minimized) (
     gboolean            is_minimized,
     GError**            error
 );
+extern void (*p_xfw_window_close) (
+    WinTCWndMgmtWindow* window,
+    guint64             event_timestamp,
+    GError**            error
+);
 
 //
 // PUBLIC FUNCTIONS

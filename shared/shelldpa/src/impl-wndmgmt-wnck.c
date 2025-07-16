@@ -17,6 +17,10 @@ static void wnck_window_unminimize_real(
     WinTCWndMgmtWindow* window,
     guint64             timestamp
 );
+static void wnck_window_close_real(
+    WinTCWndMgmtWindow* window,
+    guint64             timestamp
+);
 
 //
 // PUBLIC FUNCTIONS
@@ -39,6 +43,8 @@ gboolean init_wndmgmt_wnck_impl(void)
     wintc_wndmgmt_window_is_skip_tasklist  = p_wnck_window_is_skip_tasklist;
     wintc_wndmgmt_window_minimize          = p_wnck_window_minimize;
     wintc_wndmgmt_window_unminimize        = &wnck_window_unminimize_real;
+    wintc_wndmgmt_window_close             = &wnck_window_close_real;
+
 
     p_wnck_set_client_type(WNCK_CLIENT_TYPE_PAGER);
 
@@ -108,6 +114,16 @@ static void wnck_window_unminimize_real(
 )
 {
     p_wnck_window_unminimize(
+        window,
+        (guint32) timestamp
+    );
+}
+static void wnck_window_close_real(
+    WinTCWndMgmtWindow* window,
+    guint64             timestamp
+)
+{
+    p_wnck_window_close(
         window,
         (guint32) timestamp
     );

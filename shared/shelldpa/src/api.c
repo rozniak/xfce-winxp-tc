@@ -48,6 +48,10 @@ void (*wintc_wndmgmt_window_unminimize) (
     WinTCWndMgmtWindow* window,
     guint64             timestamp
 ) = NULL;
+void (*wintc_wndmgmt_window_close) (
+    WinTCWndMgmtWindow* window,
+    guint64             timestamp
+) = NULL;
 
 //
 // FORWARD DECLARATIONS

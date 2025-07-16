@@ -41,6 +41,11 @@ void (*p_xfw_window_set_minimized) (
     gboolean            is_minimized,
     GError**            error
 ) = NULL;
+void (*p_xfw_window_close) (
+    WinTCWndMgmtWindow* window,
+    guint64             event_timestamp,
+    GError**            error
+) = NULL;
 
 //
 // PUBLIC FUNCTIONS
@@ -85,6 +90,9 @@ gboolean init_dll_xfw()
     p_xfw_window_set_minimized =
         dlsym(dl_xfw, "xfw_window_set_minimized");
 
+    p_xfw_window_close =
+        dlsym(dl_xfw, "xfw_window_close");
+
     // Check all symbols loaded
     //
     if (
@@ -94,7 +102,8 @@ gboolean init_dll_xfw()
         p_xfw_window_get_icon          == NULL ||
         p_xfw_window_get_name          == NULL ||
         p_xfw_window_is_skip_tasklist  == NULL ||
-        p_xfw_window_set_minimized     == NULL
+        p_xfw_window_set_minimized     == NULL ||
+        p_xfw_window_close             == NULL
     )
     {
         g_warning("%s", "libxfce4windowing loaded, but not all symbols");

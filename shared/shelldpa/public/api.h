@@ -176,4 +176,15 @@ extern void (*wintc_wndmgmt_window_unminimize) (
     guint64             timestamp
 );
 
+/**
+ * Closes the specified window.
+ *
+ * @param window    The window.
+ * @param timestamp The timestamp, for focus stealing prevention.
+ */
+extern void (*wintc_wndmgmt_window_close) (
+    WinTCWndMgmtWindow* window,
+    guint64             timestamp
+);
+
 #endif
