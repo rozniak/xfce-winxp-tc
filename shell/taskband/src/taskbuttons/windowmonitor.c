@@ -70,6 +70,10 @@ static gboolean on_window_button_button_released(
     GdkEventButton* event,
     gpointer        user_data
 );
+static void show_window_context_menu(
+    WindowManagerSingle* window_manager,
+    GdkEventButton* event
+);
 static gboolean on_context_menu_minimize_clicked(
     GtkWidget* self,
     gpointer user_data
@@ -458,49 +462,10 @@ static gboolean on_window_button_button_released(
             break;
 
         case GDK_BUTTON_SECONDARY:
-            GtkWidget *context_menu = gtk_menu_new();
-
-            ContextMenuCallbackData* callback_data = g_new(ContextMenuCallbackData, 1);
-            callback_data->window_manager = window_manager;
-            callback_data->timestamp = (guint64) event->time;
-
-            GtkWidget *minmize_item = gtk_menu_item_new_with_label("Minimize");
-            g_signal_connect_data(
-                minmize_item, 
-                "activate", 
-                G_CALLBACK(on_context_menu_minimize_clicked), 
-                callback_data,
-                free_context_menu_callback_data,
-                0
-            );
-            GtkWidget *maximize_item = gtk_menu_item_new_with_label("Maximize");
-            g_signal_connect_data(
-                maximize_item, 
-                "activate", 
-                G_CALLBACK(on_context_menu_maximize_clicked), 
-                callback_data,
-                free_context_menu_callback_data,
-                0
-            );
-            GtkWidget *divider = gtk_separator_menu_item_new();
-            GtkWidget *close_item = gtk_menu_item_new_with_label("Close");
-            g_signal_connect_data(
-                close_item, 
-                "activate", 
-                G_CALLBACK(on_context_menu_close_clicked), 
-                callback_data,
-                free_context_menu_callback_data,
-                0
-            );
-            gtk_menu_shell_append(GTK_MENU_SHELL(context_menu), minmize_item);
-            gtk_menu_shell_append(GTK_MENU_SHELL(context_menu), maximize_item);
-            gtk_menu_shell_append(GTK_MENU_SHELL(context_menu), divider);
-            gtk_menu_shell_append(GTK_MENU_SHELL(context_menu), close_item);
-            gtk_widget_show_all(context_menu);
-
-            gtk_menu_popup_at_pointer(
-                GTK_MENU(context_menu),
-                (GdkEvent*) event
+        
+            show_window_context_menu(
+                window_manager,
+                event
             );
             break;
         default:
@@ -508,6 +473,130 @@ static gboolean on_window_button_button_released(
     }
 
     return FALSE;
+}
+
+static void show_window_context_menu(
+    WindowManagerSingle* window_manager,
+    GdkEventButton* event
+)
+{
+    GtkWidget *context_menu = gtk_menu_new();
+    gtk_menu_set_reserve_toggle_size(GTK_MENU(context_menu), FALSE);
+
+    ContextMenuCallbackData* callback_data = g_new(ContextMenuCallbackData, 1);
+    callback_data->window_manager = window_manager;
+    callback_data->timestamp = event->time;
+
+
+    GtkWidget *minimize_item = gtk_menu_item_new();
+    gtk_widget_set_tooltip_text(minimize_item, "Minimize Window");
+
+
+    g_signal_connect_data(
+        minimize_item, 
+        "activate", 
+        G_CALLBACK(on_context_menu_minimize_clicked), 
+        callback_data,
+        free_context_menu_callback_data,
+        0
+    );
+    
+    GtkWidget *minimize_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+    GtkWidget *minimize_icon = gtk_image_new_from_icon_name(
+        "window-minimize-symbolic",
+        GTK_ICON_SIZE_MENU
+    );
+    gtk_widget_set_margin_end(minimize_icon, 10);
+    
+    GtkWidget *minimize_label = gtk_label_new("Minimize");
+    gtk_label_set_xalign(GTK_LABEL(minimize_label), 0.0);
+
+    gtk_box_pack_start(GTK_BOX(minimize_box), minimize_icon, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(minimize_box), minimize_label, TRUE, TRUE, 0);
+    
+    gtk_container_add(GTK_CONTAINER(minimize_item), minimize_box);
+
+
+    GtkWidget *maximize_item = gtk_menu_item_new();
+    gtk_widget_set_tooltip_text(maximize_item, "Maximize Window");
+
+
+    g_signal_connect_data(
+        maximize_item,
+        "activate",
+        G_CALLBACK(on_context_menu_maximize_clicked),
+        callback_data,
+        free_context_menu_callback_data,
+        0
+    );
+
+    GtkWidget *maximize_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+    
+    GtkWidget *maximize_icon = gtk_image_new_from_icon_name(
+        "window-maximize-symbolic",
+        GTK_ICON_SIZE_MENU
+    );
+    gtk_widget_set_margin_end(maximize_icon, 10);
+
+    GtkWidget *maximize_label = gtk_label_new("Maximize");
+    gtk_label_set_xalign(GTK_LABEL(maximize_label), 0.0);
+    
+
+    gtk_box_pack_start(GTK_BOX(maximize_box), maximize_icon, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(maximize_box), maximize_label, TRUE, TRUE, 0);   
+
+    gtk_container_add(GTK_CONTAINER(maximize_item), maximize_box);
+
+
+    GtkWidget *divider = gtk_separator_menu_item_new();
+
+
+    GtkWidget *close_item = gtk_menu_item_new();
+    gtk_widget_set_tooltip_text(close_item, "close Window");
+
+
+    g_signal_connect_data(
+        close_item,
+        "activate",
+        G_CALLBACK(on_context_menu_close_clicked),
+        callback_data,
+        free_context_menu_callback_data,
+        0
+    );      
+
+    GtkWidget *close_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+    GtkWidget *close_icon = gtk_image_new_from_icon_name(
+        "window-close-symbolic",
+        GTK_ICON_SIZE_MENU
+    );
+    gtk_widget_set_margin_end(close_icon, 10);
+
+    GtkWidget *close_label = gtk_label_new("Close");
+    gtk_label_set_xalign(GTK_LABEL(close_label), 0.0);
+
+    GtkWidget *hint_label = gtk_label_new("Alt+F4");
+    gtk_label_set_xalign(GTK_LABEL(hint_label), 1.0);
+    gtk_style_context_add_class(
+        gtk_widget_get_style_context(close_item),
+        "inactive"
+    );
+
+    gtk_box_pack_start(GTK_BOX(close_box), close_icon, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(close_box), close_label, TRUE, TRUE, 0);
+    gtk_box_pack_end(GTK_BOX(close_box), hint_label, FALSE, FALSE, 10);
+    
+    gtk_container_add(GTK_CONTAINER(close_item), close_box);
+
+    gtk_menu_shell_append(GTK_MENU_SHELL(context_menu), minimize_item);
+    gtk_menu_shell_append(GTK_MENU_SHELL(context_menu), maximize_item);
+    gtk_menu_shell_append(GTK_MENU_SHELL(context_menu), divider);
+    gtk_menu_shell_append(GTK_MENU_SHELL(context_menu), close_item);
+    gtk_widget_show_all(context_menu);
+
+    gtk_menu_popup_at_pointer(
+        GTK_MENU(context_menu),
+        (GdkEvent*) event
+    );
 }
 
 static gboolean on_context_menu_minimize_clicked(
