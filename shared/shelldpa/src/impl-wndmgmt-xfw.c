@@ -17,6 +17,9 @@ static GdkPixbuf* xfw_window_get_mini_icon(
 static void xfw_window_minimize(
     WinTCWndMgmtWindow* window
 );
+static void xfw_window_maximize(
+    WinTCWndMgmtWindow* window
+);
 static void xfw_window_unminimize(
     WinTCWndMgmtWindow* window,
     guint64             timestamp
@@ -45,7 +48,9 @@ gboolean init_wndmgmt_xfw_impl(void)
     wintc_wndmgmt_window_get_mini_icon     = &xfw_window_get_mini_icon;
     wintc_wndmgmt_window_get_name          = p_xfw_window_get_name;
     wintc_wndmgmt_window_is_skip_tasklist  = p_xfw_window_is_skip_tasklist;
+    wintc_wndmgmt_window_is_minimized      = p_xfw_window_is_minimized;
     wintc_wndmgmt_window_minimize          = &xfw_window_minimize;
+    wintc_wndmgmt_window_maximize          = &xfw_window_maximize;
     wintc_wndmgmt_window_unminimize        = &xfw_window_unminimize;
     wintc_wndmgmt_window_close             = &xfw_window_close;
 
@@ -75,6 +80,13 @@ static void xfw_window_minimize(
 )
 {
     p_xfw_window_set_minimized(window, TRUE, NULL);
+}
+
+static void xfw_window_maximize(
+    WinTCWndMgmtWindow* window
+)
+{
+    p_xfw_window_set_maximized(window, TRUE, NULL);
 }
 
 static void xfw_window_unminimize(

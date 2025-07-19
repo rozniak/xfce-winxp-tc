@@ -36,9 +36,17 @@ gchar* (*p_xfw_window_get_name) (
 gboolean (*p_xfw_window_is_skip_tasklist) (
     WinTCWndMgmtWindow* window
 ) = NULL;
+gboolean (*p_xfw_window_is_minimized) (
+    WinTCWndMgmtWindow* window
+) = NULL;
 void (*p_xfw_window_set_minimized) (
     WinTCWndMgmtWindow* window,
     gboolean            is_minimized,
+    GError**            error
+) = NULL;
+void (*p_xfw_window_set_maximized) (
+    WinTCWndMgmtWindow* window,
+    gboolean            is_maximized,
     GError**            error
 ) = NULL;
 void (*p_xfw_window_close) (
@@ -87,8 +95,14 @@ gboolean init_dll_xfw()
     p_xfw_window_is_skip_tasklist =
         dlsym(dl_xfw, "xfw_window_is_skip_tasklist");
 
+    p_xfw_window_is_minimized =
+        dlsym(dl_xfw, "xfw_window_is_minmized");
+
     p_xfw_window_set_minimized =
         dlsym(dl_xfw, "xfw_window_set_minimized");
+
+    p_xfw_window_set_maximized =
+        dlsym(dl_xfw, "xfw_window_set_maximized");
 
     p_xfw_window_close =
         dlsym(dl_xfw, "xfw_window_close");
@@ -102,7 +116,9 @@ gboolean init_dll_xfw()
         p_xfw_window_get_icon          == NULL ||
         p_xfw_window_get_name          == NULL ||
         p_xfw_window_is_skip_tasklist  == NULL ||
+        p_xfw_window_is_minimized       == NULL ||
         p_xfw_window_set_minimized     == NULL ||
+        p_xfw_window_set_maximized     == NULL ||
         p_xfw_window_close             == NULL
     )
     {

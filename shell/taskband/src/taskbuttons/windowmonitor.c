@@ -74,6 +74,10 @@ static void show_window_context_menu(
     WindowManagerSingle* window_manager,
     GdkEventButton* event
 );
+static gboolean on_context_menu_restore_clicked(
+    GtkWidget* self,
+    gpointer user_data
+);
 static gboolean on_context_menu_minimize_clicked(
     GtkWidget* self,
     gpointer user_data
@@ -84,6 +88,9 @@ static gboolean on_context_menu_maximize_clicked(
 );
 static gboolean on_context_menu_close_clicked(
     GtkWidget* self,
+    gpointer user_data
+);
+static gboolean maximize_window_callback(
     gpointer user_data
 );
 static void free_context_menu_callback_data(
@@ -270,6 +277,15 @@ static void window_manager_update_text(
         GTK_WIDGET(window_manager->button),
         new_text
     );
+}
+
+static gboolean maximize_window_callback(gpointer user_data)
+{
+    WinTCWndMgmtWindow* window = (WinTCWndMgmtWindow*) user_data;
+    
+    wintc_wndmgmt_window_maximize(window);
+    
+    return G_SOURCE_REMOVE;
 }
 
 //
@@ -462,7 +478,6 @@ static gboolean on_window_button_button_released(
             break;
 
         case GDK_BUTTON_SECONDARY:
-        
             show_window_context_menu(
                 window_manager,
                 event
@@ -487,6 +502,44 @@ static void show_window_context_menu(
     callback_data->window_manager = window_manager;
     callback_data->timestamp = event->time;
 
+    GtkWidget *restore_item = gtk_menu_item_new();
+    gtk_widget_set_tooltip_text(restore_item, "Restore Window");
+
+
+    g_signal_connect_data(
+        restore_item, 
+        "activate", 
+        G_CALLBACK(on_context_menu_restore_clicked), 
+        callback_data,
+        free_context_menu_callback_data,
+        0
+    );
+    
+    GtkWidget *restore_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+    GtkWidget *restore_icon = gtk_image_new_from_icon_name(
+        "window-restore-symbolic",
+        GTK_ICON_SIZE_MENU
+    );
+    gtk_widget_set_margin_end(restore_icon, 10);
+    
+    GtkWidget *restore_label = gtk_label_new("Restore");
+    gtk_label_set_xalign(GTK_LABEL(restore_label), 0.0);
+
+    gtk_box_pack_start(GTK_BOX(restore_box), restore_icon, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(restore_box), restore_label, TRUE, TRUE, 0);
+    
+    gtk_container_add(GTK_CONTAINER(restore_item), restore_box);
+
+    if (
+        wintc_wndmgmt_window_is_minimized(window_manager->managed_window)
+    )
+    {
+        gtk_widget_set_sensitive(restore_item, TRUE);
+    }
+    else
+    {
+        gtk_widget_set_sensitive(restore_item, FALSE);
+    }
 
     GtkWidget *minimize_item = gtk_menu_item_new();
     gtk_widget_set_tooltip_text(minimize_item, "Minimize Window");
@@ -520,7 +573,6 @@ static void show_window_context_menu(
     GtkWidget *maximize_item = gtk_menu_item_new();
     gtk_widget_set_tooltip_text(maximize_item, "Maximize Window");
 
-
     g_signal_connect_data(
         maximize_item,
         "activate",
@@ -553,8 +605,7 @@ static void show_window_context_menu(
 
     GtkWidget *close_item = gtk_menu_item_new();
     gtk_widget_set_tooltip_text(close_item, "close Window");
-
-
+                
     g_signal_connect_data(
         close_item,
         "activate",
@@ -571,15 +622,14 @@ static void show_window_context_menu(
     );
     gtk_widget_set_margin_end(close_icon, 10);
 
-    GtkWidget *close_label = gtk_label_new("Close");
+    GtkWidget *close_label = gtk_label_new("");
+    gtk_label_set_markup(GTK_LABEL(close_label), "<b>Close</b>");
     gtk_label_set_xalign(GTK_LABEL(close_label), 0.0);
 
-    GtkWidget *hint_label = gtk_label_new("Alt+F4");
+    GtkWidget *hint_label = gtk_label_new("");
+    gtk_label_set_markup(GTK_LABEL(hint_label), "<b>Alt+F4</b>");
     gtk_label_set_xalign(GTK_LABEL(hint_label), 1.0);
-    gtk_style_context_add_class(
-        gtk_widget_get_style_context(close_item),
-        "inactive"
-    );
+
 
     gtk_box_pack_start(GTK_BOX(close_box), close_icon, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(close_box), close_label, TRUE, TRUE, 0);
@@ -587,6 +637,7 @@ static void show_window_context_menu(
     
     gtk_container_add(GTK_CONTAINER(close_item), close_box);
 
+    gtk_menu_shell_append(GTK_MENU_SHELL(context_menu), restore_item);
     gtk_menu_shell_append(GTK_MENU_SHELL(context_menu), minimize_item);
     gtk_menu_shell_append(GTK_MENU_SHELL(context_menu), maximize_item);
     gtk_menu_shell_append(GTK_MENU_SHELL(context_menu), divider);
@@ -597,6 +648,18 @@ static void show_window_context_menu(
         GTK_MENU(context_menu),
         (GdkEvent*) event
     );
+}
+
+static gboolean on_context_menu_restore_clicked(
+    WINTC_UNUSED(GtkWidget* self),
+    gpointer user_data
+)
+{
+    ContextMenuCallbackData* data = (ContextMenuCallbackData*) user_data;
+
+    wintc_wndmgmt_window_unminimize(data->window_manager->managed_window, data->timestamp);
+
+    return FALSE;
 }
 
 static gboolean on_context_menu_minimize_clicked(
@@ -618,8 +681,24 @@ static gboolean on_context_menu_maximize_clicked(
 {
     ContextMenuCallbackData* data = (ContextMenuCallbackData*) user_data;
 
-    wintc_wndmgmt_window_unminimize(data->window_manager->managed_window, data->timestamp);
+    gboolean is_active = 
+        wintc_wndmgmt_screen_get_active_window(data->window_manager->parent_monitor->screen) == 
+                                               data->window_manager->managed_window;
 
+    if (is_active)
+    {
+        wintc_wndmgmt_window_maximize(data->window_manager->managed_window);
+    }
+    else
+    {
+       wintc_wndmgmt_window_unminimize(data->window_manager->managed_window, data->timestamp);
+       // HACK: Calling maximize immediately after unminimize can cause it not to actually maximize
+        g_timeout_add(
+            100,  
+            maximize_window_callback,
+            data->window_manager->managed_window
+        );
+    }
     return FALSE;
 }
 

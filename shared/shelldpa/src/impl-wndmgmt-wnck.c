@@ -41,7 +41,9 @@ gboolean init_wndmgmt_wnck_impl(void)
     wintc_wndmgmt_window_get_mini_icon     = &wnck_window_get_mini_icon_real;
     wintc_wndmgmt_window_get_name          = p_wnck_window_get_name;
     wintc_wndmgmt_window_is_skip_tasklist  = p_wnck_window_is_skip_tasklist;
+    wintc_wndmgmt_window_is_minimized      = p_wnck_window_is_minimized;
     wintc_wndmgmt_window_minimize          = p_wnck_window_minimize;
+    wintc_wndmgmt_window_maximize          = p_wnck_window_maximize;
     wintc_wndmgmt_window_unminimize        = &wnck_window_unminimize_real;
     wintc_wndmgmt_window_close             = &wnck_window_close_real;
 

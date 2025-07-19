@@ -44,7 +44,13 @@ extern gchar* (*p_wnck_window_get_name) (
 extern gboolean (*p_wnck_window_is_skip_tasklist) (
     WinTCWndMgmtWindow* window
 );
+extern gboolean (*p_wnck_window_is_minimized) (
+    WinTCWndMgmtWindow* window
+);
 extern void (*p_wnck_window_minimize) (
+    WinTCWndMgmtWindow* window
+);
+extern void (*p_wnck_window_maximize) (
     WinTCWndMgmtWindow* window
 );
 extern void (*p_wnck_window_unminimize) (

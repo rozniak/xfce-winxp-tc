@@ -157,11 +157,30 @@ extern gboolean (*wintc_wndmgmt_window_is_skip_tasklist) (
 );
 
 /**
+ * Checks if the specified window is minimized.
+ *
+ * @param window The window.
+ * @return True if the window is minimized.
+ */
+extern gboolean (*wintc_wndmgmt_window_is_minimized) (
+    WinTCWndMgmtWindow* window
+);
+
+/**
  * Minimizes the specified window.
  *
  * @param window The window.
  */
 extern void (*wintc_wndmgmt_window_minimize) (
+    WinTCWndMgmtWindow* window
+);
+
+/**
+ * Maximizes the specified window.
+ *
+ * @param window The window.
+ */
+extern void (*wintc_wndmgmt_window_maximize) (
     WinTCWndMgmtWindow* window
 );
 

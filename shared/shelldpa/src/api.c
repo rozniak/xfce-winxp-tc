@@ -41,7 +41,13 @@ gchar* (*wintc_wndmgmt_window_get_name) (
 gboolean (*wintc_wndmgmt_window_is_skip_tasklist) (
     WinTCWndMgmtWindow* window
 ) = NULL;
+gboolean (*wintc_wndmgmt_window_is_minimized) (
+    WinTCWndMgmtWindow* window
+) = NULL;
 void (*wintc_wndmgmt_window_minimize) (
+    WinTCWndMgmtWindow* window
+) = NULL;
+void (*wintc_wndmgmt_window_maximize) (
     WinTCWndMgmtWindow* window
 ) = NULL;
 void (*wintc_wndmgmt_window_unminimize) (
