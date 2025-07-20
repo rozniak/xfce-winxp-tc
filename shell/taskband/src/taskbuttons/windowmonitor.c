@@ -478,6 +478,18 @@ static gboolean on_window_button_button_released(
             break;
 
         case GDK_BUTTON_SECONDARY:
+            // Match XP behavior: if the window isn't minimized, display it on top
+            if (
+                !wintc_wndmgmt_window_is_minimized(
+                window_manager->managed_window
+                )
+            ) {
+                wintc_wndmgmt_window_unminimize(
+                    window_manager->managed_window,
+                    (guint64) event->time
+                );
+            }
+
             show_window_context_menu(
                 window_manager,
                 event
@@ -534,17 +546,6 @@ static void show_window_context_menu(
     gtk_box_pack_start(GTK_BOX(restore_box), restore_label, TRUE, TRUE, 0);
     
     gtk_container_add(GTK_CONTAINER(restore_item), restore_box);
-
-    if (
-        wintc_wndmgmt_window_is_minimized(window_manager->managed_window)
-    )
-    {
-        gtk_widget_set_sensitive(restore_item, TRUE);
-    }
-    else
-    {
-        gtk_widget_set_sensitive(restore_item, FALSE);
-    }
 
     GtkWidget *minimize_item = gtk_menu_item_new();
     gtk_widget_set_tooltip_text(minimize_item, "Minimize Window");
@@ -627,13 +628,11 @@ static void show_window_context_menu(
     );
     gtk_widget_set_margin_end(close_icon, 5);
 
-    GtkWidget *close_label = gtk_label_new("");
-    gtk_label_set_markup(GTK_LABEL(close_label), "<b>Close</b>");
+    GtkWidget *close_label = gtk_label_new("Close");
     gtk_label_set_xalign(GTK_LABEL(close_label), 0.0);
     gtk_widget_set_margin_end(close_label, 15);
 
-    GtkWidget *hint_label = gtk_label_new("");
-    gtk_label_set_markup(GTK_LABEL(hint_label), "<b>Alt+F4</b>");
+    GtkWidget *hint_label = gtk_label_new("Alt+F4");
     gtk_label_set_xalign(GTK_LABEL(hint_label), 1.0);
 
 
@@ -648,6 +647,31 @@ static void show_window_context_menu(
     gtk_menu_shell_append(GTK_MENU_SHELL(context_menu), maximize_item);
     gtk_menu_shell_append(GTK_MENU_SHELL(context_menu), divider);
     gtk_menu_shell_append(GTK_MENU_SHELL(context_menu), close_item);
+
+     if (
+        wintc_wndmgmt_window_is_minimized(window_manager->managed_window)
+    )
+    {
+        // Match XP behaviour: Make the restore item bold and disable minimize
+        PangoAttrList *attr_list = pango_attr_list_new();
+        pango_attr_list_insert(attr_list, pango_attr_weight_new(PANGO_WEIGHT_BOLD));
+        gtk_label_set_attributes(GTK_LABEL(restore_label), attr_list);
+        pango_attr_list_unref(attr_list);
+
+        gtk_widget_set_sensitive(minimize_item, FALSE);
+    }
+    else
+    {
+        // Match XP behaviour: Make the close item bold and disable restore
+        PangoAttrList *attr_list = pango_attr_list_new();
+        pango_attr_list_insert(attr_list, pango_attr_weight_new(PANGO_WEIGHT_BOLD));
+        gtk_label_set_attributes(GTK_LABEL(close_label), attr_list);
+        gtk_label_set_attributes(GTK_LABEL(hint_label), attr_list);
+        pango_attr_list_unref(attr_list);
+
+        gtk_widget_set_sensitive(restore_item, FALSE);
+    }
+
     gtk_widget_show_all(context_menu);
 
     gtk_menu_popup_at_pointer(
