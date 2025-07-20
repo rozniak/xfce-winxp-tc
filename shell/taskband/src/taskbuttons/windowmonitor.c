@@ -496,6 +496,10 @@ static void show_window_context_menu(
 )
 {
     GtkWidget *context_menu = gtk_menu_new();
+    gtk_style_context_add_class(
+        gtk_widget_get_style_context(context_menu),
+        "taskbuttons-contextmenu"
+    );
     gtk_menu_set_reserve_toggle_size(GTK_MENU(context_menu), FALSE);
 
     ContextMenuCallbackData* callback_data = g_new(ContextMenuCallbackData, 1);
@@ -516,11 +520,12 @@ static void show_window_context_menu(
     );
     
     GtkWidget *restore_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+
     GtkWidget *restore_icon = gtk_image_new_from_icon_name(
         "window-restore-symbolic",
         GTK_ICON_SIZE_MENU
     );
-    gtk_widget_set_margin_end(restore_icon, 10);
+    gtk_widget_set_margin_end(restore_icon, 5);
     
     GtkWidget *restore_label = gtk_label_new("Restore");
     gtk_label_set_xalign(GTK_LABEL(restore_label), 0.0);
@@ -559,7 +564,7 @@ static void show_window_context_menu(
         "window-minimize-symbolic",
         GTK_ICON_SIZE_MENU
     );
-    gtk_widget_set_margin_end(minimize_icon, 10);
+    gtk_widget_set_margin_end(minimize_icon, 5);
     
     GtkWidget *minimize_label = gtk_label_new("Minimize");
     gtk_label_set_xalign(GTK_LABEL(minimize_label), 0.0);
@@ -588,7 +593,7 @@ static void show_window_context_menu(
         "window-maximize-symbolic",
         GTK_ICON_SIZE_MENU
     );
-    gtk_widget_set_margin_end(maximize_icon, 10);
+    gtk_widget_set_margin_end(maximize_icon, 5);
 
     GtkWidget *maximize_label = gtk_label_new("Maximize");
     gtk_label_set_xalign(GTK_LABEL(maximize_label), 0.0);
@@ -604,7 +609,7 @@ static void show_window_context_menu(
 
 
     GtkWidget *close_item = gtk_menu_item_new();
-    gtk_widget_set_tooltip_text(close_item, "close Window");
+    gtk_widget_set_tooltip_text(close_item, "Close Window");
                 
     g_signal_connect_data(
         close_item,
@@ -620,11 +625,12 @@ static void show_window_context_menu(
         "window-close-symbolic",
         GTK_ICON_SIZE_MENU
     );
-    gtk_widget_set_margin_end(close_icon, 10);
+    gtk_widget_set_margin_end(close_icon, 5);
 
     GtkWidget *close_label = gtk_label_new("");
     gtk_label_set_markup(GTK_LABEL(close_label), "<b>Close</b>");
     gtk_label_set_xalign(GTK_LABEL(close_label), 0.0);
+    gtk_widget_set_margin_end(close_label, 15);
 
     GtkWidget *hint_label = gtk_label_new("");
     gtk_label_set_markup(GTK_LABEL(hint_label), "<b>Alt+F4</b>");
