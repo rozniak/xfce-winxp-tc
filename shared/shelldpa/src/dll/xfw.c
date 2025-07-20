@@ -96,7 +96,7 @@ gboolean init_dll_xfw()
         dlsym(dl_xfw, "xfw_window_is_skip_tasklist");
 
     p_xfw_window_is_minimized =
-        dlsym(dl_xfw, "xfw_window_is_minmized");
+        dlsym(dl_xfw, "xfw_window_is_minimized");
 
     p_xfw_window_set_minimized =
         dlsym(dl_xfw, "xfw_window_set_minimized");
@@ -116,7 +116,7 @@ gboolean init_dll_xfw()
         p_xfw_window_get_icon          == NULL ||
         p_xfw_window_get_name          == NULL ||
         p_xfw_window_is_skip_tasklist  == NULL ||
-        p_xfw_window_is_minimized       == NULL ||
+        p_xfw_window_is_minimized      == NULL ||
         p_xfw_window_set_minimized     == NULL ||
         p_xfw_window_set_maximized     == NULL ||
         p_xfw_window_close             == NULL
