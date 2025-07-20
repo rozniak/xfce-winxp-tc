@@ -579,10 +579,7 @@ static GtkWidget* create_personal_menu_item(
         FALSE,
         0
     );
-    gtk_menu_set_reserve_toggle_size(
-        GTK_MENU(menu_shell),
-        FALSE
-    );
+
     // ...then pack the program name/heading...
     //
     if (generic_name)
