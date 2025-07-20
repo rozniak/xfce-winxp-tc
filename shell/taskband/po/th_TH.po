@@ -19,26 +19,88 @@ msgstr ""
 msgid "All Programs"
 msgstr "โปรแกรมทั้งหมด"
 
+msgid ""
+"Chooses default programs for certain activities, such as Web browsing or "
+"sending e-mail, and specifies which programs are accessible from the Start "
+"menu, desktop, and other locations."
+msgstr ""
+"เลือกโปรแกรมเริ่มต้นสำหรับบางกิจกรรม เช่น การเบราว์เว็บหรือการส่งอีเมล "
+"และระบุโปรแกรมที่จะให้เข้าถึงใด้จากเมนู 'เริ่ม' เดสก์ท็อป หรือตำแหน่งอื่นๆ"
+
+msgid "Click here to begin"
+msgstr "คลิกที่นี่เพื่อเริ่มต้น"
+
+msgid "Close"
+msgstr "ปิด"
+
+msgid "Connect To"
+msgstr "เชื่อมต่อไปยัง"
+
+msgid "Connects to other computers, networks, and the Internet."
+msgstr "เชื่อมต่อไปยังเครื่องคอมพิวเตอร์ เครือข่าย และอินเทอร์เน็ตอื่น"
+
+msgid "Displays recently opened documents and folders."
+msgstr "แสดงเอกสารและโฟลเดอร์ที่เปิดล่าสุด"
+
+msgid "E-mail"
+msgstr "อีเมล"
+
+msgid ""
+"Gives access to, and information about, the disk drives, cameras, scanners, "
+"and other hardware connected to your computer."
+msgstr ""
+"ให้เข้าถึง และให้ข้อมูลเกี่ยวกับไดรฟ์ กล้อง สแกนเนอร์ และฮาร์ดแวร์อื่นที่เชื่อมต่อกับคอมพิวเตอร์ของคุณ"
+
+msgid "Help and Support"
+msgstr "บริการช่วยเหลือและวิธีใช้"
+
+msgid "Internet"
+msgstr "อินเทอร์เน็ต"
+
+msgid "Log Off"
+msgstr "ออกจากระบบ"
+
+#: src/taskbuttons/windowmonitor.c:600
+msgid "Maximize"
+msgstr ""
+
+msgid "Minimize"
+msgstr "ย่อเล็กสุด"
+
+msgid ""
+"Opens a central location for Help topics, tutorials, troubleshooting, and "
+"other support services."
+msgstr "เปิดแหล่งข้อมูลสำหรับหัวข้อวิธีใช้ บทช่วยสอน การแก้ไขปัญหา และบริการช่วยเหลืออื่นๆ"
+
+msgid "Opens a program, folder, document, or Web site."
+msgstr "เปิดโปรแกรม โฟลเดอร์ เอกสาร หรือเว็บไซต์"
+
+msgid ""
+"Opens a window where you can pick search options and work with search "
+"results."
+msgstr "เปิดหน้าต่างที่คุณสามารถเลือกตัวเลือกการค้นหาและทำงานกับผลลัพท์ของการค้นหาได้"
+
+msgid ""
+"Opens the My Documents folder, where you can store letters, reports, notes, "
+"and other kinds of documents."
+msgstr ""
+"เปิดโฟลเดอร์ 'เอกสารของฉัน' ซึ่งคุณสามารถเก็บจดหมาย รายงาน บันทึกย่อ "
+"และเอกสารประเภทอื่นได้"
+
+msgid ""
+"Opens the My Music folder, where you can store music and other audio files."
+msgstr "เปิดโฟลเดอร์ 'เพลงของฉัน' ซึ่งคุณสามารถเก็บแฟ้มดนตรี และแฟ้มเสียงประเภทอื่นได้"
+
+msgid ""
+"Opens the My Pictures folder, where you can store digital photos, images, "
+"and graphics files."
+msgstr "เปิดโฟลเดอร์ 'รูปภาพของฉัน' ซึ่งคุณสามารถเก็บแฟ้มรูปถ่ายดิจิทัล แฟ้มรูป และแฟ้มกราฟิกได้"
+
 msgid "Opens your Internet browser."
 msgstr "เปิดอินเทอร์เน็ตเบราว์เซอร์ของคุณ"
 
 msgid "Opens your e-mail program so you can send or read a message."
 msgstr "เปิดโปรแกรมอีเมลของคุณเพื่อให้คุณสามารถส่งหรืออ่านข้อความได้"
-
-msgid "Internet"
-msgstr "อินเทอร์เน็ต"
-
-msgid "E-mail"
-msgstr "อีเมล"
-
-msgid "start"
-msgstr "เริ่ม"
-
-msgid "Click here to begin"
-msgstr "คลิกที่นี่เพื่อเริ่มต้น"
-
-msgid "Log Off"
-msgstr "ออกจากระบบ"
 
 msgid ""
 "Provides options for closing your programs and logging off, or for leaving "
@@ -46,9 +108,6 @@ msgid ""
 msgstr ""
 "ให้ตัวเลือกสำหรับปิดโปรแกรมของคุณและออกจากระบบ "
 "หรือปล่อยให้โปรแกรมของคุณทำงานอยู่และสลับไปยังผู้ใช้อื่น"
-
-msgid "Turn Off Computer"
-msgstr "ปิดสวิตช์เครื่องคอมพิวเตอร์"
 
 msgid ""
 "Provides options for turning off or restarting your computer, or for "
@@ -58,31 +117,6 @@ msgstr ""
 "หรือโหมด 'ไฮเบอร์เนต'"
 
 msgid ""
-"Opens the My Documents folder, where you can store letters, reports, notes, "
-"and other kinds of documents."
-msgstr ""
-"เปิดโฟลเดอร์ 'เอกสารของฉัน' ซึ่งคุณสามารถเก็บจดหมาย รายงาน บันทึกย่อ "
-"และเอกสารประเภทอื่นได้"
-
-msgid "Displays recently opened documents and folders."
-msgstr "แสดงเอกสารและโฟลเดอร์ที่เปิดล่าสุด"
-
-msgid ""
-"Opens the My Pictures folder, where you can store digital photos, images, "
-"and graphics files."
-msgstr "เปิดโฟลเดอร์ 'รูปภาพของฉัน' ซึ่งคุณสามารถเก็บแฟ้มรูปถ่ายดิจิทัล แฟ้มรูป และแฟ้มกราฟิกได้"
-
-msgid ""
-"Opens the My Music folder, where you can store music and other audio files."
-msgstr "เปิดโฟลเดอร์ 'เพลงของฉัน' ซึ่งคุณสามารถเก็บแฟ้มดนตรี และแฟ้มเสียงประเภทอื่นได้"
-
-msgid ""
-"Gives access to, and information about, the disk drives, cameras, scanners, "
-"and other hardware connected to your computer."
-msgstr ""
-"ให้เข้าถึง และให้ข้อมูลเกี่ยวกับไดรฟ์ กล้อง สแกนเนอร์ และฮาร์ดแวร์อื่นที่เชื่อมต่อกับคอมพิวเตอร์ของคุณ"
-
-msgid ""
 "Provides options for you to customize the appearance and functionality of "
 "your computer, add or remove programs, and set up network connections and "
 "user accounts."
@@ -90,46 +124,25 @@ msgstr ""
 "ให้ตัวเลือกเพื่อให้คุณสามารถกำหนดลักษณะที่ปรากฏและหน้าที่ของคอมพิวเตอร์ของคุณเอง "
 "เพิ่มหรือเอาโปรแกรมออก และตั้งค่าการเชื่อมต่อเครือข่ายและบัญชีผู้ใช้"
 
-msgid ""
-"Chooses default programs for certain activities, such as Web browsing or "
-"sending e-mail, and specifies which programs are accessible from the Start "
-"menu, desktop, and other locations."
-msgstr ""
-"เลือกโปรแกรมเริ่มต้นสำหรับบางกิจกรรม เช่น การเบราว์เว็บหรือการส่งอีเมล "
-"และระบุโปรแกรมที่จะให้เข้าถึงใด้จากเมนู 'เริ่ม' เดสก์ท็อป หรือตำแหน่งอื่นๆ"
+msgid "Restore"
+msgstr "คืนค่า"
+
+msgid "Run..."
+msgstr "เรียกใช้..."
+
+msgid "Search"
+msgstr "ค้นหา"
 
 msgid "Set Program Access and Defaults"
 msgstr "ตั้งค่าการเข้าถึงและค่าเริ่มต้นของโปรแกรม"
-
-msgid "Connects to other computers, networks, and the Internet."
-msgstr "เชื่อมต่อไปยังเครื่องคอมพิวเตอร์ เครือข่าย และอินเทอร์เน็ตอื่น"
-
-msgid "Connect To"
-msgstr "เชื่อมต่อไปยัง"
 
 msgid "Shows installed printers and fax printers and helps you add new ones."
 msgstr ""
 "แสดงเครื่องพิมพ์และเครื่องพิมพ์โทรสารที่ได้รับการติดตั้ง "
 "และช่วยคุณเพิ่มเครื่องพิมพ์หรือเครื่องพิมพ์โทรสารใหม่"
 
-msgid ""
-"Opens a central location for Help topics, tutorials, troubleshooting, and "
-"other support services."
-msgstr "เปิดแหล่งข้อมูลสำหรับหัวข้อวิธีใช้ บทช่วยสอน การแก้ไขปัญหา และบริการช่วยเหลืออื่นๆ"
+msgid "Turn Off Computer"
+msgstr "ปิดสวิตช์เครื่องคอมพิวเตอร์"
 
-msgid "Help and Support"
-msgstr "บริการช่วยเหลือและวิธีใช้"
-
-msgid ""
-"Opens a window where you can pick search options and work with search "
-"results."
-msgstr "เปิดหน้าต่างที่คุณสามารถเลือกตัวเลือกการค้นหาและทำงานกับผลลัพท์ของการค้นหาได้"
-
-msgid "Search"
-msgstr "ค้นหา"
-
-msgid "Opens a program, folder, document, or Web site."
-msgstr "เปิดโปรแกรม โฟลเดอร์ เอกสาร หรือเว็บไซต์"
-
-msgid "Run..."
-msgstr "เรียกใช้..."
+msgid "start"
+msgstr "เริ่ม"

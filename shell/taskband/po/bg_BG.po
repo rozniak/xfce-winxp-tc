@@ -20,45 +20,72 @@ msgstr ""
 msgid "All Programs"
 msgstr "Всички програми"
 
-msgid "Opens your Internet browser."
-msgstr "Отваря вашия Интернет браузър."
-
-msgid "Opens your e-mail program so you can send or read a message."
+msgid ""
+"Chooses default programs for certain activities, such as Web browsing or "
+"sending e-mail, and specifies which programs are accessible from the Start "
+"menu, desktop, and other locations."
 msgstr ""
-"Отваря вашата e-mail програма, за да можете да изпращате или четете "
-"съобщение."
-
-msgid "Internet"
-msgstr "Интернет"
-
-msgid "E-mail"
-msgstr "E-mail"
-
-msgid "start"
-msgstr "старт"
+"Избира програми по подразбиране за определени дейности като Web браузър или "
+"електронна поща, както и до кои програми да има достъп от менюто \"Старт\", "
+"от работния плот и от други места."
 
 msgid "Click here to begin"
 msgstr "Щракнете тук, за да започнете"
 
+msgid "Close"
+msgstr "Затвори"
+
+msgid "Connect To"
+msgstr "Свържи се с"
+
+msgid "Connects to other computers, networks, and the Internet."
+msgstr "Свързва с други компютри, мрежи и Интернет."
+
+msgid "Displays recently opened documents and folders."
+msgstr "Показва последно отваряни документи и папки."
+
+msgid "E-mail"
+msgstr "E-mail"
+
+msgid ""
+"Gives access to, and information about, the disk drives, cameras, scanners, "
+"and other hardware connected to your computer."
+msgstr ""
+"Дава информация и достъп до дискови устройства, фотоапарати, скенери и друг "
+"хардуер, свързан към компютъра."
+
+msgid "Help and Support"
+msgstr "Помощ и поддръжка"
+
+msgid "Internet"
+msgstr "Интернет"
+
 msgid "Log Off"
 msgstr "Излизане"
 
-msgid ""
-"Provides options for closing your programs and logging off, or for leaving "
-"your programs running and switching to another user."
+#: src/taskbuttons/windowmonitor.c:600
+msgid "Maximize"
 msgstr ""
-"Предоставя опции за затваряне на програми и излизане, или за оставяне на "
-"програмите да се изпълняват и  превключване на друг потребител."
 
-msgid "Turn Off Computer"
-msgstr "Изключване на компютъра"
+msgid "Minimize"
+msgstr "Намали"
 
 msgid ""
-"Provides options for turning off or restarting your computer, or for "
-"activating Stand By or Hibernate modes."
+"Opens a central location for Help topics, tutorials, troubleshooting, and "
+"other support services."
 msgstr ""
-"Предоставя опции за изключване или рестартиране на компютъра или за "
-"активиране на режимите \"Готовност\" или  \"Заспиване\"."
+"Отваря централно местоположение за теми от \"Помощ\", уроци, отстраняване на "
+"неизправности и други поддържащи услуги."
+
+msgid "Opens a program, folder, document, or Web site."
+msgstr "Отваря програма, папка, документ или Web сайт."
+
+msgid ""
+"Opens a window where you can pick search options and work with search "
+"results."
+msgstr ""
+"Отваря прозорец, откъдето може да изберете опции на търсене и да работите с "
+"резултатите от търсенето."
 
 msgid ""
 "Opens the My Documents folder, where you can store letters, reports, notes, "
@@ -67,8 +94,11 @@ msgstr ""
 "Отваря папката \"Моите документи\", където може да съхранявате писма, "
 "отчети, бележки и друг тип документи."
 
-msgid "Displays recently opened documents and folders."
-msgstr "Показва последно отваряни документи и папки."
+msgid ""
+"Opens the My Music folder, where you can store music and other audio files."
+msgstr ""
+"Отваря папката \"Моята музика\", където може да съхранявате музика и други "
+"аудиофайлове."
 
 msgid ""
 "Opens the My Pictures folder, where you can store digital photos, images, "
@@ -77,18 +107,27 @@ msgstr ""
 "Отваря папката \"Моите картини\", където може да съхранявате цифрови снимки, "
 "изображения и графични файлове."
 
-msgid ""
-"Opens the My Music folder, where you can store music and other audio files."
+msgid "Opens your Internet browser."
+msgstr "Отваря вашия Интернет браузър."
+
+msgid "Opens your e-mail program so you can send or read a message."
 msgstr ""
-"Отваря папката \"Моята музика\", където може да съхранявате музика и други "
-"аудиофайлове."
+"Отваря вашата e-mail програма, за да можете да изпращате или четете "
+"съобщение."
 
 msgid ""
-"Gives access to, and information about, the disk drives, cameras, scanners, "
-"and other hardware connected to your computer."
+"Provides options for closing your programs and logging off, or for leaving "
+"your programs running and switching to another user."
 msgstr ""
-"Дава информация и достъп до дискови устройства, фотоапарати, скенери и друг "
-"хардуер, свързан към компютъра."
+"Предоставя опции за затваряне на програми и излизане, или за оставяне на "
+"програмите да се изпълняват и  превключване на друг потребител."
+
+msgid ""
+"Provides options for turning off or restarting your computer, or for "
+"activating Stand By or Hibernate modes."
+msgstr ""
+"Предоставя опции за изключване или рестартиране на компютъра или за "
+"активиране на режимите \"Готовност\" или  \"Заспиване\"."
 
 msgid ""
 "Provides options for you to customize the appearance and functionality of "
@@ -99,50 +138,24 @@ msgstr ""
 "за добавяне или отстраняване на програми, и за инсталиране на мрежови връзки "
 "и потребителски акаунти."
 
-msgid ""
-"Chooses default programs for certain activities, such as Web browsing or "
-"sending e-mail, and specifies which programs are accessible from the Start "
-"menu, desktop, and other locations."
-msgstr ""
-"Избира програми по подразбиране за определени дейности като Web браузър или "
-"електронна поща, както и до кои програми да има достъп от менюто \"Старт\", "
-"от работния плот и от други места."
+msgid "Restore"
+msgstr "Възстанови"
+
+msgid "Run..."
+msgstr "Изпълнение..."
+
+msgid "Search"
+msgstr "Търсене"
 
 msgid "Set Program Access and Defaults"
 msgstr "Задаване на достъп до програми и настройки по подразбиране"
-
-msgid "Connects to other computers, networks, and the Internet."
-msgstr "Свързва с други компютри, мрежи и Интернет."
-
-msgid "Connect To"
-msgstr "Свържи се с"
 
 msgid "Shows installed printers and fax printers and helps you add new ones."
 msgstr ""
 "Показва инсталираните принтери и факс принтери и ви помага да добавяте нови."
 
-msgid ""
-"Opens a central location for Help topics, tutorials, troubleshooting, and "
-"other support services."
-msgstr ""
-"Отваря централно местоположение за теми от \"Помощ\", уроци, отстраняване на "
-"неизправности и други поддържащи услуги."
+msgid "Turn Off Computer"
+msgstr "Изключване на компютъра"
 
-msgid "Help and Support"
-msgstr "Помощ и поддръжка"
-
-msgid ""
-"Opens a window where you can pick search options and work with search "
-"results."
-msgstr ""
-"Отваря прозорец, откъдето може да изберете опции на търсене и да работите с "
-"резултатите от търсенето."
-
-msgid "Search"
-msgstr "Търсене"
-
-msgid "Opens a program, folder, document, or Web site."
-msgstr "Отваря програма, папка, документ или Web сайт."
-
-msgid "Run..."
-msgstr "Изпълнение..."
+msgid "start"
+msgstr "старт"

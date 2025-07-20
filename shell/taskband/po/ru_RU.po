@@ -15,89 +15,11 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 msgid "All Programs"
 msgstr "Все программы"
-
-msgid "Opens your Internet browser."
-msgstr "Открытие обозревателя Интернета."
-
-msgid "Opens your e-mail program so you can send or read a message."
-msgstr ""
-"Открытие программы электронной почты, позволяющей отправлять и получать "
-"электронные сообщения."
-
-msgid "Internet"
-msgstr "Интернет"
-
-msgid "E-mail"
-msgstr "Электронная почта"
-
-msgid "start"
-msgstr "пуск"
-
-msgid "Click here to begin"
-msgstr "Начните работу с нажатия этой кнопки"
-
-msgid "Log Off"
-msgstr "Выход"
-
-msgid ""
-"Provides options for closing your programs and logging off, or for leaving "
-"your programs running and switching to another user."
-msgstr ""
-"Позволяет закрыть программы и завершить сеанс, или оставить программы "
-"работающими и переключиться на другого пользователя."
-
-msgid "Turn Off Computer"
-msgstr "Выключение компьютера"
-
-msgid ""
-"Provides options for turning off or restarting your computer, or for "
-"activating Stand By or Hibernate modes."
-msgstr ""
-"Позволяет выключить компьютер или перезагрузить его, или перейти в ждущий "
-"или спящий режим."
-
-msgid ""
-"Opens the My Documents folder, where you can store letters, reports, notes, "
-"and other kinds of documents."
-msgstr ""
-"Открывает папку \"Мои документы\", где можно хранить письма, отчеты, заметки "
-"и иные типы документов."
-
-msgid "Displays recently opened documents and folders."
-msgstr "Отображение недавно использовавшихся файлов и папок."
-
-msgid ""
-"Opens the My Pictures folder, where you can store digital photos, images, "
-"and graphics files."
-msgstr ""
-"Отрывает папку \"Мои рисунки\", где можно хранить цифровые фотографии, "
-"изображения и иные графические файлы."
-
-msgid ""
-"Opens the My Music folder, where you can store music and other audio files."
-msgstr ""
-"Открывает папку \"Моя музыка\", где можно хранить музыкальные или иные "
-"звуковые файлы."
-
-msgid ""
-"Gives access to, and information about, the disk drives, cameras, scanners, "
-"and other hardware connected to your computer."
-msgstr ""
-"Доступ и информация о дисках и других устройствах, подключенных к компьютеру."
-
-msgid ""
-"Provides options for you to customize the appearance and functionality of "
-"your computer, add or remove programs, and set up network connections and "
-"user accounts."
-msgstr ""
-"Позволяет настраивать вид и функциональные возможности компьютера, "
-"устанавливать и удалять программы,  настраивать сетевые подключения и "
-"учетные записи пользователей."
 
 msgid ""
 "Chooses default programs for certain activities, such as Web browsing or "
@@ -108,18 +30,44 @@ msgstr ""
 "для обзора Интернета или отправки почты, и разрешение доступа к ним из "
 "главного меню, с рабочего стола и из других мест."
 
-msgid "Set Program Access and Defaults"
-msgstr "Выбор программ по умолчанию"
+msgid "Click here to begin"
+msgstr "Начните работу с нажатия этой кнопки"
 
-msgid "Connects to other computers, networks, and the Internet."
-msgstr "Создание подключений к другим компьютерам, сетям или Интернету."
+msgid "Close"
+msgstr "Закрыть"
 
 msgid "Connect To"
 msgstr "Подключение"
 
-msgid "Shows installed printers and fax printers and helps you add new ones."
+msgid "Connects to other computers, networks, and the Internet."
+msgstr "Создание подключений к другим компьютерам, сетям или Интернету."
+
+msgid "Displays recently opened documents and folders."
+msgstr "Отображение недавно использовавшихся файлов и папок."
+
+msgid "E-mail"
+msgstr "Электронная почта"
+
+msgid ""
+"Gives access to, and information about, the disk drives, cameras, scanners, "
+"and other hardware connected to your computer."
 msgstr ""
-"Отображает уже установленные принтеры и факсы и позволяет добавить новые."
+"Доступ и информация о дисках и других устройствах, подключенных к компьютеру."
+
+msgid "Help and Support"
+msgstr "Справка и поддержка"
+
+msgid "Internet"
+msgstr "Интернет"
+
+msgid "Log Off"
+msgstr "Выход"
+
+msgid "Maximize"
+msgstr "Во весь экран"
+
+msgid "Minimize"
+msgstr "Свернуть"
 
 msgid ""
 "Opens a central location for Help topics, tutorials, troubleshooting, and "
@@ -128,8 +76,8 @@ msgstr ""
 "Открытие централизованного хранилища справочных файлов, диагностики и "
 "устранения неполадок, других служб технической поддержки."
 
-msgid "Help and Support"
-msgstr "Справка и поддержка"
+msgid "Opens a program, folder, document, or Web site."
+msgstr "Открытие программы, папки, документа или веб-узла."
 
 msgid ""
 "Opens a window where you can pick search options and work with search "
@@ -138,11 +86,75 @@ msgstr ""
 "Открытие окна для выбора параметров поиска и работы с результатами "
 "выполненного поиска."
 
-msgid "Search"
-msgstr "Поиск"
+msgid ""
+"Opens the My Documents folder, where you can store letters, reports, notes, "
+"and other kinds of documents."
+msgstr ""
+"Открывает папку \"Мои документы\", где можно хранить письма, отчеты, заметки "
+"и иные типы документов."
 
-msgid "Opens a program, folder, document, or Web site."
-msgstr "Открытие программы, папки, документа или веб-узла."
+msgid ""
+"Opens the My Music folder, where you can store music and other audio files."
+msgstr ""
+"Открывает папку \"Моя музыка\", где можно хранить музыкальные или иные "
+"звуковые файлы."
+
+msgid ""
+"Opens the My Pictures folder, where you can store digital photos, images, "
+"and graphics files."
+msgstr ""
+"Отрывает папку \"Мои рисунки\", где можно хранить цифровые фотографии, "
+"изображения и иные графические файлы."
+
+msgid "Opens your Internet browser."
+msgstr "Открытие обозревателя Интернета."
+
+msgid "Opens your e-mail program so you can send or read a message."
+msgstr ""
+"Открытие программы электронной почты, позволяющей отправлять и получать "
+"электронные сообщения."
+
+msgid ""
+"Provides options for closing your programs and logging off, or for leaving "
+"your programs running and switching to another user."
+msgstr ""
+"Позволяет закрыть программы и завершить сеанс, или оставить программы "
+"работающими и переключиться на другого пользователя."
+
+msgid ""
+"Provides options for turning off or restarting your computer, or for "
+"activating Stand By or Hibernate modes."
+msgstr ""
+"Позволяет выключить компьютер или перезагрузить его, или перейти в ждущий "
+"или спящий режим."
+
+msgid ""
+"Provides options for you to customize the appearance and functionality of "
+"your computer, add or remove programs, and set up network connections and "
+"user accounts."
+msgstr ""
+"Позволяет настраивать вид и функциональные возможности компьютера, "
+"устанавливать и удалять программы,  настраивать сетевые подключения и "
+"учетные записи пользователей."
+
+msgid "Restore"
+msgstr "Восстановить"
 
 msgid "Run..."
 msgstr "Выполнить..."
+
+msgid "Search"
+msgstr "Поиск"
+
+msgid "Set Program Access and Defaults"
+msgstr "Выбор программ по умолчанию"
+
+msgid "Shows installed printers and fax printers and helps you add new ones."
+msgstr ""
+"Отображает уже установленные принтеры и факсы и позволяет добавить новые."
+
+msgid "Turn Off Computer"
+msgstr "Выключение компьютера"
+
+msgid "start"
+msgstr "пуск"

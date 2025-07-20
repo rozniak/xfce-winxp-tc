@@ -1,5 +1,6 @@
 #include <glib.h>
 #include <gtk/gtk.h>
+#include <glib/gi18n.h>
 #include <pango/pango.h>
 #include <wintc/comgtk.h>
 #include <wintc/shelldpa.h>
@@ -519,7 +520,7 @@ static void show_window_context_menu(
     callback_data->timestamp = event->time;
 
     GtkWidget *restore_item = gtk_menu_item_new();
-    gtk_widget_set_tooltip_text(restore_item, "Restore Window");
+    gtk_widget_set_tooltip_text(restore_item, _("Restore Window"));
 
 
     g_signal_connect_data(
@@ -539,7 +540,7 @@ static void show_window_context_menu(
     );
     gtk_widget_set_margin_end(restore_icon, 5);
     
-    GtkWidget *restore_label = gtk_label_new("Restore");
+    GtkWidget *restore_label = gtk_label_new(_("Restore"));
     gtk_label_set_xalign(GTK_LABEL(restore_label), 0.0);
 
     gtk_box_pack_start(GTK_BOX(restore_box), restore_icon, FALSE, FALSE, 0);
@@ -548,7 +549,7 @@ static void show_window_context_menu(
     gtk_container_add(GTK_CONTAINER(restore_item), restore_box);
 
     GtkWidget *minimize_item = gtk_menu_item_new();
-    gtk_widget_set_tooltip_text(minimize_item, "Minimize Window");
+    gtk_widget_set_tooltip_text(minimize_item, _("Minimize Window"));
 
 
     g_signal_connect_data(
@@ -567,7 +568,7 @@ static void show_window_context_menu(
     );
     gtk_widget_set_margin_end(minimize_icon, 5);
     
-    GtkWidget *minimize_label = gtk_label_new("Minimize");
+    GtkWidget *minimize_label = gtk_label_new(_("Minimize"));
     gtk_label_set_xalign(GTK_LABEL(minimize_label), 0.0);
 
     gtk_box_pack_start(GTK_BOX(minimize_box), minimize_icon, FALSE, FALSE, 0);
@@ -577,7 +578,7 @@ static void show_window_context_menu(
 
 
     GtkWidget *maximize_item = gtk_menu_item_new();
-    gtk_widget_set_tooltip_text(maximize_item, "Maximize Window");
+    gtk_widget_set_tooltip_text(maximize_item, _("Maximize Window"));
 
     g_signal_connect_data(
         maximize_item,
@@ -596,7 +597,7 @@ static void show_window_context_menu(
     );
     gtk_widget_set_margin_end(maximize_icon, 5);
 
-    GtkWidget *maximize_label = gtk_label_new("Maximize");
+    GtkWidget *maximize_label = gtk_label_new(_("Maximize"));
     gtk_label_set_xalign(GTK_LABEL(maximize_label), 0.0);
     
 
@@ -610,7 +611,7 @@ static void show_window_context_menu(
 
 
     GtkWidget *close_item = gtk_menu_item_new();
-    gtk_widget_set_tooltip_text(close_item, "Close Window");
+    gtk_widget_set_tooltip_text(close_item, _("Close Window"));
                 
     g_signal_connect_data(
         close_item,
@@ -628,7 +629,7 @@ static void show_window_context_menu(
     );
     gtk_widget_set_margin_end(close_icon, 5);
 
-    GtkWidget *close_label = gtk_label_new("Close");
+    GtkWidget *close_label = gtk_label_new(_("Close"));
     gtk_label_set_xalign(GTK_LABEL(close_label), 0.0);
     gtk_widget_set_margin_end(close_label, 15);
 

@@ -20,43 +20,71 @@ msgstr ""
 msgid "All Programs"
 msgstr "Kõik programmid"
 
-msgid "Opens your Internet browser."
-msgstr "Avab teie Interneti-brauseri."
-
-msgid "Opens your e-mail program so you can send or read a message."
-msgstr "Avab teie meiliprogrammi, et saaksite sõnumeid saata või lugeda."
-
-msgid "Internet"
-msgstr "Internet"
-
-msgid "E-mail"
-msgstr "E-post"
-
-msgid "start"
-msgstr "start"
+msgid ""
+"Chooses default programs for certain activities, such as Web browsing or "
+"sending e-mail, and specifies which programs are accessible from the Start "
+"menu, desktop, and other locations."
+msgstr ""
+"Valib vaikeprogrammid kindlate tegevuste tarbeks (nt veebisirvimine või "
+"meilisõnumite saatmine) ja määrab, millistele programmidele pääseb juurde "
+"menüü Start kaudu, töölaualt ja mujalt."
 
 msgid "Click here to begin"
 msgstr "Alustamiseks klõpsake siin"
 
+msgid "Close"
+msgstr "Sule"
+
+msgid "Connect To"
+msgstr "Loo ühendus"
+
+msgid "Connects to other computers, networks, and the Internet."
+msgstr "Loob ühenduse muude arvutite, võrkude ja Internetiga."
+
+msgid "Displays recently opened documents and folders."
+msgstr "Kuvab viimati avatud dokumendid ja kaustad."
+
+msgid "E-mail"
+msgstr "E-post"
+
+msgid ""
+"Gives access to, and information about, the disk drives, cameras, scanners, "
+"and other hardware connected to your computer."
+msgstr ""
+"Annab juurdepääsu kettadraividele, kaameratele, skanneritele ja muule teie "
+"arvutiga ühendatud riistvarale ning pakub nende kohta teavet."
+
+msgid "Help and Support"
+msgstr "Spikker ja tugi"
+
+msgid "Internet"
+msgstr "Internet"
+
 msgid "Log Off"
 msgstr "Logi välja"
 
-msgid ""
-"Provides options for closing your programs and logging off, or for leaving "
-"your programs running and switching to another user."
+#: src/taskbuttons/windowmonitor.c:600
+msgid "Maximize"
 msgstr ""
-"Pakub võimalusi teie programmide sulgemiseks ja väljalogimiseks või "
-"programmide töötama jätmiseks ja mõne teise kasutaja aktiveerimiseks."
 
-msgid "Turn Off Computer"
-msgstr "Lülita arvuti välja"
+msgid "Minimize"
+msgstr "Minimeeri"
 
 msgid ""
-"Provides options for turning off or restarting your computer, or for "
-"activating Stand By or Hibernate modes."
+"Opens a central location for Help topics, tutorials, troubleshooting, and "
+"other support services."
 msgstr ""
-"Pakub võimalusi arvuti väljalülitamiseks või taaskäivitamiseks või puhke- "
-"või talveunerežiimi aktiveerimiseks."
+"Avab spikriteemade, õpikute, tõrkeotsingu ja muude tugiteenuste keskse "
+"asukoha."
+
+msgid "Opens a program, folder, document, or Web site."
+msgstr "Avab programmi, kausta, dokumendi või veebisaidi."
+
+msgid ""
+"Opens a window where you can pick search options and work with search "
+"results."
+msgstr ""
+"Avab akna, kus saate valida otsingusuvandeid ja töötada otsingutulemitega."
 
 msgid ""
 "Opens the My Documents folder, where you can store letters, reports, notes, "
@@ -65,8 +93,10 @@ msgstr ""
 "Avab kausta Minu dokumendid, kus saate talletada kirju, aruandeid, märkmeid "
 "ja muid dokumente."
 
-msgid "Displays recently opened documents and folders."
-msgstr "Kuvab viimati avatud dokumendid ja kaustad."
+msgid ""
+"Opens the My Music folder, where you can store music and other audio files."
+msgstr ""
+"Avab kausta Minu muusika, kus saate talletada muusikat ja muid helifaile."
 
 msgid ""
 "Opens the My Pictures folder, where you can store digital photos, images, "
@@ -75,17 +105,25 @@ msgstr ""
 "Avab kausta Minu pildid, kus saate talletada digitaalfotosid, pilte ja "
 "graafikafaile."
 
-msgid ""
-"Opens the My Music folder, where you can store music and other audio files."
-msgstr ""
-"Avab kausta Minu muusika, kus saate talletada muusikat ja muid helifaile."
+msgid "Opens your Internet browser."
+msgstr "Avab teie Interneti-brauseri."
+
+msgid "Opens your e-mail program so you can send or read a message."
+msgstr "Avab teie meiliprogrammi, et saaksite sõnumeid saata või lugeda."
 
 msgid ""
-"Gives access to, and information about, the disk drives, cameras, scanners, "
-"and other hardware connected to your computer."
+"Provides options for closing your programs and logging off, or for leaving "
+"your programs running and switching to another user."
 msgstr ""
-"Annab juurdepääsu kettadraividele, kaameratele, skanneritele ja muule teie "
-"arvutiga ühendatud riistvarale ning pakub nende kohta teavet."
+"Pakub võimalusi teie programmide sulgemiseks ja väljalogimiseks või "
+"programmide töötama jätmiseks ja mõne teise kasutaja aktiveerimiseks."
+
+msgid ""
+"Provides options for turning off or restarting your computer, or for "
+"activating Stand By or Hibernate modes."
+msgstr ""
+"Pakub võimalusi arvuti väljalülitamiseks või taaskäivitamiseks või puhke- "
+"või talveunerežiimi aktiveerimiseks."
 
 msgid ""
 "Provides options for you to customize the appearance and functionality of "
@@ -96,49 +134,24 @@ msgstr ""
 "lisamiseks või eemaldamiseks ja võrguühenduste ning kasutajakontode "
 "häälestamiseks."
 
-msgid ""
-"Chooses default programs for certain activities, such as Web browsing or "
-"sending e-mail, and specifies which programs are accessible from the Start "
-"menu, desktop, and other locations."
-msgstr ""
-"Valib vaikeprogrammid kindlate tegevuste tarbeks (nt veebisirvimine või "
-"meilisõnumite saatmine) ja määrab, millistele programmidele pääseb juurde "
-"menüü Start kaudu, töölaualt ja mujalt."
+msgid "Restore"
+msgstr "Taasta"
+
+msgid "Run..."
+msgstr "Käivita..."
+
+msgid "Search"
+msgstr "Otsing"
 
 msgid "Set Program Access and Defaults"
 msgstr "Sea programmidele juurdepääs ja vaikeväärtused"
-
-msgid "Connects to other computers, networks, and the Internet."
-msgstr "Loob ühenduse muude arvutite, võrkude ja Internetiga."
-
-msgid "Connect To"
-msgstr "Loo ühendus"
 
 msgid "Shows installed printers and fax printers and helps you add new ones."
 msgstr ""
 "Kuvab installitud printerid ja faksprinterid ja aitab teil uusi lisada."
 
-msgid ""
-"Opens a central location for Help topics, tutorials, troubleshooting, and "
-"other support services."
-msgstr ""
-"Avab spikriteemade, õpikute, tõrkeotsingu ja muude tugiteenuste keskse "
-"asukoha."
+msgid "Turn Off Computer"
+msgstr "Lülita arvuti välja"
 
-msgid "Help and Support"
-msgstr "Spikker ja tugi"
-
-msgid ""
-"Opens a window where you can pick search options and work with search "
-"results."
-msgstr ""
-"Avab akna, kus saate valida otsingusuvandeid ja töötada otsingutulemitega."
-
-msgid "Search"
-msgstr "Otsing"
-
-msgid "Opens a program, folder, document, or Web site."
-msgstr "Avab programmi, kausta, dokumendi või veebisaidi."
-
-msgid "Run..."
-msgstr "Käivita..."
+msgid "start"
+msgstr "start"
