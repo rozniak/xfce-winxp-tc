@@ -40,10 +40,20 @@ gchar* (*p_wnck_window_get_name) (
 gboolean (*p_wnck_window_is_skip_tasklist) (
     WinTCWndMgmtWindow* window
 ) = NULL;
+gboolean (*p_wnck_window_is_minimized) (
+    WinTCWndMgmtWindow* window
+) = NULL;
 void (*p_wnck_window_minimize) (
     WinTCWndMgmtWindow* window
 ) = NULL;
+void (*p_wnck_window_maximize) (
+    WinTCWndMgmtWindow* window
+) = NULL;
 void (*p_wnck_window_unminimize) (
+    WinTCWndMgmtWindow* window,
+    guint32             timestamp
+) = NULL;
+void (*p_wnck_window_close) (
     WinTCWndMgmtWindow* window,
     guint32             timestamp
 ) = NULL;
@@ -111,11 +121,20 @@ gboolean init_dll_wnck()
     p_wnck_window_is_skip_tasklist =
         dlsym(dl_wnck, "wnck_window_is_skip_tasklist");
 
+    p_wnck_window_is_minimized =
+        dlsym(dl_wnck, "wnck_window_is_minimized");
+
     p_wnck_window_minimize =
         dlsym(dl_wnck, "wnck_window_minimize");
 
+    p_wnck_window_maximize =
+        dlsym(dl_wnck, "wnck_window_maximize");
+
     p_wnck_window_unminimize =
         dlsym(dl_wnck, "wnck_window_unminimize");
+
+    p_wnck_window_close =
+        dlsym(dl_wnck, "wnck_window_close");   
 
     // Check all symbols loaded
     //
@@ -129,8 +148,10 @@ gboolean init_dll_wnck()
         p_wnck_window_get_mini_icon           == NULL ||
         p_wnck_window_get_name                == NULL ||
         p_wnck_window_is_skip_tasklist        == NULL ||
-        p_wnck_window_minimize                == NULL ||
-        p_wnck_window_unminimize              == NULL
+        p_wnck_window_is_minimized            == NULL ||
+        p_wnck_window_unminimize              == NULL ||
+        p_wnck_window_maximize                == NULL ||
+        p_wnck_window_close                   == NULL
     )
     {
         g_warning("%s", "libwnck loaded, but not all symbols.");

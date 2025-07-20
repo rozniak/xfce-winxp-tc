@@ -341,3 +341,7 @@ status/stock-dialog-error-->dialog_error
 status/stock-dialog-info-->dialog_info
 status/stock-dialog-warning-->dialog_warning
 status/user-trash-full-->bin_full
+ui/window-close-symbolic-->close_symbolic
+ui/window-maximize-symbolic-->maximize_symbolic
+ui/window-minimize-symbolic-->minimize_symbolic
+ui/window-restore-symbolic-->restore_symbolic

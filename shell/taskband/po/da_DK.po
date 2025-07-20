@@ -20,43 +20,71 @@ msgstr ""
 msgid "All Programs"
 msgstr "Alle programmer"
 
-msgid "Opens your Internet browser."
-msgstr "Åbner din Internetwebbrowser"
-
-msgid "Opens your e-mail program so you can send or read a message."
-msgstr "Åbner dit e-mail-program, så du kan sende og læse meddelelser"
-
-msgid "Internet"
-msgstr "Internet"
-
-msgid "E-mail"
-msgstr "E-mail"
-
-msgid "start"
-msgstr "start"
+msgid ""
+"Chooses default programs for certain activities, such as Web browsing or "
+"sending e-mail, and specifies which programs are accessible from the Start "
+"menu, desktop, and other locations."
+msgstr ""
+"Vælger standardprogrammer til bestemte handlinger, f.eks. brug af webbrowser "
+"eller afsendelse af e-mail, og hvilke programmer, der er tilgængelige i "
+"menuen Start, på skrivebordet og andre steder."
 
 msgid "Click here to begin"
 msgstr "Klik her for at starte"
 
+msgid "Close"
+msgstr "Luk"
+
+msgid "Connect To"
+msgstr "Opret forbindelse til"
+
+msgid "Connects to other computers, networks, and the Internet."
+msgstr "Opretter forbindelse til andre computere, netværk og Internettet"
+
+msgid "Displays recently opened documents and folders."
+msgstr "Viser de senest åbnede dokumenter og mapper"
+
+msgid "E-mail"
+msgstr "E-mail"
+
+msgid ""
+"Gives access to, and information about, the disk drives, cameras, scanners, "
+"and other hardware connected to your computer."
+msgstr ""
+"Giver adgang til og oplysninger om diskdrev, kameraer, scannere og anden "
+"hardware, der er tilsluttet computeren"
+
+msgid "Help and Support"
+msgstr "Hjælp og support"
+
+msgid "Internet"
+msgstr "Internet"
+
 msgid "Log Off"
 msgstr "Log af"
 
-msgid ""
-"Provides options for closing your programs and logging off, or for leaving "
-"your programs running and switching to another user."
-msgstr ""
-"Indstillinger for lukning af dine programmer og for at logge af eller lade "
-"programmerne køre og skifte til en anden bruger"
+msgid "Maximize"
+msgstr "Maksimer"
 
-msgid "Turn Off Computer"
-msgstr "Luk computeren"
+msgid "Minimize"
+msgstr "Minimer"
 
 msgid ""
-"Provides options for turning off or restarting your computer, or for "
-"activating Stand By or Hibernate modes."
+"Opens a central location for Help topics, tutorials, troubleshooting, and "
+"other support services."
 msgstr ""
-"Indstillinger for lukning og genstart af computeren, eller for aktivering af "
-"standby eller dvale"
+"Åbner en central placering for emner i Hjælp, selvstudier, fejlfinding og "
+"andre supporttjenester"
+
+msgid "Opens a program, folder, document, or Web site."
+msgstr "Åbner et program, en mappe, et dokument eller et websted"
+
+msgid ""
+"Opens a window where you can pick search options and work with search "
+"results."
+msgstr ""
+"Åbner et vindue, hvor du kan vælge søgekriterier og arbejde med "
+"søgeresultater"
 
 msgid ""
 "Opens the My Documents folder, where you can store letters, reports, notes, "
@@ -65,8 +93,9 @@ msgstr ""
 "Åbner mappen Dokumenter, hvor du kan gemme breve, rapporter, notater og "
 "andre slags dokumenter"
 
-msgid "Displays recently opened documents and folders."
-msgstr "Viser de senest åbnede dokumenter og mapper"
+msgid ""
+"Opens the My Music folder, where you can store music and other audio files."
+msgstr "Åbner mappen Musik, hvor du kan gemme musik og andre lydfiler"
 
 msgid ""
 "Opens the My Pictures folder, where you can store digital photos, images, "
@@ -75,16 +104,25 @@ msgstr ""
 "Åbner mappen Billeder, hvor du kan gemme digitale fotos, billeder og "
 "grafikfiler"
 
-msgid ""
-"Opens the My Music folder, where you can store music and other audio files."
-msgstr "Åbner mappen Musik, hvor du kan gemme musik og andre lydfiler"
+msgid "Opens your Internet browser."
+msgstr "Åbner din Internetwebbrowser"
+
+msgid "Opens your e-mail program so you can send or read a message."
+msgstr "Åbner dit e-mail-program, så du kan sende og læse meddelelser"
 
 msgid ""
-"Gives access to, and information about, the disk drives, cameras, scanners, "
-"and other hardware connected to your computer."
+"Provides options for closing your programs and logging off, or for leaving "
+"your programs running and switching to another user."
 msgstr ""
-"Giver adgang til og oplysninger om diskdrev, kameraer, scannere og anden "
-"hardware, der er tilsluttet computeren"
+"Indstillinger for lukning af dine programmer og for at logge af eller lade "
+"programmerne køre og skifte til en anden bruger"
+
+msgid ""
+"Provides options for turning off or restarting your computer, or for "
+"activating Stand By or Hibernate modes."
+msgstr ""
+"Indstillinger for lukning og genstart af computeren, eller for aktivering af "
+"standby eller dvale"
 
 msgid ""
 "Provides options for you to customize the appearance and functionality of "
@@ -95,50 +133,24 @@ msgstr ""
 "tilføjelse eller fjernelse af programmer og oprettelse af "
 "netværksforbindelser og brugerkonti"
 
-msgid ""
-"Chooses default programs for certain activities, such as Web browsing or "
-"sending e-mail, and specifies which programs are accessible from the Start "
-"menu, desktop, and other locations."
-msgstr ""
-"Vælger standardprogrammer til bestemte handlinger, f.eks. brug af webbrowser "
-"eller afsendelse af e-mail, og hvilke programmer, der er tilgængelige i "
-"menuen Start, på skrivebordet og andre steder."
+msgid "Restore"
+msgstr "Gendan"
+
+msgid "Run..."
+msgstr "Kør..."
+
+msgid "Search"
+msgstr "Søg"
 
 msgid "Set Program Access and Defaults"
 msgstr "Angiv programadgang og -standarder"
-
-msgid "Connects to other computers, networks, and the Internet."
-msgstr "Opretter forbindelse til andre computere, netværk og Internettet"
-
-msgid "Connect To"
-msgstr "Opret forbindelse til"
 
 msgid "Shows installed printers and fax printers and helps you add new ones."
 msgstr ""
 "Viser installerede printere og faxprintere og hjælper dig med at tilføje nye"
 
-msgid ""
-"Opens a central location for Help topics, tutorials, troubleshooting, and "
-"other support services."
-msgstr ""
-"Åbner en central placering for emner i Hjælp, selvstudier, fejlfinding og "
-"andre supporttjenester"
+msgid "Turn Off Computer"
+msgstr "Luk computeren"
 
-msgid "Help and Support"
-msgstr "Hjælp og support"
-
-msgid ""
-"Opens a window where you can pick search options and work with search "
-"results."
-msgstr ""
-"Åbner et vindue, hvor du kan vælge søgekriterier og arbejde med "
-"søgeresultater"
-
-msgid "Search"
-msgstr "Søg"
-
-msgid "Opens a program, folder, document, or Web site."
-msgstr "Åbner et program, en mappe, et dokument eller et websted"
-
-msgid "Run..."
-msgstr "Kør..."
+msgid "start"
+msgstr "start"

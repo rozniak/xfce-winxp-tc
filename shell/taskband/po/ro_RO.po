@@ -21,44 +21,72 @@ msgstr ""
 msgid "All Programs"
 msgstr "Toate programele"
 
-msgid "Opens your Internet browser."
-msgstr "Deschide browserul de Internet."
-
-msgid "Opens your e-mail program so you can send or read a message."
+msgid ""
+"Chooses default programs for certain activities, such as Web browsing or "
+"sending e-mail, and specifies which programs are accessible from the Start "
+"menu, desktop, and other locations."
 msgstr ""
-"Deschide programul de poştă electronică pentru a citi și trimite mesaje."
-
-msgid "Internet"
-msgstr "Internet"
-
-msgid "E-mail"
-msgstr "Poştă electronică"
-
-msgid "start"
-msgstr "start"
+"Alege programele implicite pentru anumite activităţi cum ar fi navigarea pe "
+"Web sau trimiterea de mesaje electronice şi specifică programele care sunt "
+"accesibile din meniul Start, din spaţiul de lucru şi din alte amplasări."
 
 msgid "Click here to begin"
 msgstr "Apăsaţi aici pentru a începe"
 
+msgid "Close"
+msgstr "Închidere"
+
+msgid "Connect To"
+msgstr "Conectare la"
+
+msgid "Connects to other computers, networks, and the Internet."
+msgstr "Se face conexiunea la alte computere, reţele şi Internet."
+
+msgid "Displays recently opened documents and folders."
+msgstr "Afişează documente şi foldere recent deschise."
+
+msgid "E-mail"
+msgstr "Poştă electronică"
+
+msgid ""
+"Gives access to, and information about, the disk drives, cameras, scanners, "
+"and other hardware connected to your computer."
+msgstr ""
+"Oferă informaţii şi se acordă acces la drivere de disc, camere digitale, "
+"scanere şi alte tipuri de hardware conectate la computer."
+
+msgid "Help and Support"
+msgstr "Ajutor şi Asistenţă"
+
+msgid "Internet"
+msgstr "Internet"
+
 msgid "Log Off"
 msgstr "Log Off"
 
-msgid ""
-"Provides options for closing your programs and logging off, or for leaving "
-"your programs running and switching to another user."
+#: src/taskbuttons/windowmonitor.c:600
+msgid "Maximize"
 msgstr ""
-"Furnizează opţiuni pentru închiderea programelor şi ieşirea din sesiune sau "
-"pentru lăsarea programelor în execuţie şi comutarea la un alt utilizator."
 
-msgid "Turn Off Computer"
-msgstr "Închidere computer"
+msgid "Minimize"
+msgstr "Minimizare"
 
 msgid ""
-"Provides options for turning off or restarting your computer, or for "
-"activating Stand By or Hibernate modes."
+"Opens a central location for Help topics, tutorials, troubleshooting, and "
+"other support services."
 msgstr ""
-"Furnizează opţiuni pentru închiderea şi repornirea computerului sau pentru "
-"activarea modurilor Stare de veghe sau Hibernare."
+"Se deschide o amplasare centrală pentru subiectele de Ajutor, asistenţi de "
+"instruire, depanare şi alte servicii de asistenţă."
+
+msgid "Opens a program, folder, document, or Web site."
+msgstr "Deschide un program, un folder, un document sau un site Web."
+
+msgid ""
+"Opens a window where you can pick search options and work with search "
+"results."
+msgstr ""
+"Deschide o fereastră unde se pot selecta opţiuni de căutare şi opera cu "
+"rezultatele căutării."
 
 msgid ""
 "Opens the My Documents folder, where you can store letters, reports, notes, "
@@ -67,8 +95,11 @@ msgstr ""
 "Deschide folderul Documentele mele, unde se pot stoca scrisori, rapoarte, "
 "note şi alte tipuri de documente personale."
 
-msgid "Displays recently opened documents and folders."
-msgstr "Afişează documente şi foldere recent deschise."
+msgid ""
+"Opens the My Music folder, where you can store music and other audio files."
+msgstr ""
+"Deschide folderul Muzica mea, unde se poate stoca muzică şi alte fişiere "
+"audio."
 
 msgid ""
 "Opens the My Pictures folder, where you can store digital photos, images, "
@@ -77,18 +108,26 @@ msgstr ""
 "Deschide folderul Imaginile mele, unde se pot stoca fotografii digitale, "
 "imagini şi fişiere grafice."
 
-msgid ""
-"Opens the My Music folder, where you can store music and other audio files."
+msgid "Opens your Internet browser."
+msgstr "Deschide browserul de Internet."
+
+msgid "Opens your e-mail program so you can send or read a message."
 msgstr ""
-"Deschide folderul Muzica mea, unde se poate stoca muzică şi alte fişiere "
-"audio."
+"Deschide programul de poştă electronică pentru a citi și trimite mesaje."
 
 msgid ""
-"Gives access to, and information about, the disk drives, cameras, scanners, "
-"and other hardware connected to your computer."
+"Provides options for closing your programs and logging off, or for leaving "
+"your programs running and switching to another user."
 msgstr ""
-"Oferă informaţii şi se acordă acces la drivere de disc, camere digitale, "
-"scanere şi alte tipuri de hardware conectate la computer."
+"Furnizează opţiuni pentru închiderea programelor şi ieşirea din sesiune sau "
+"pentru lăsarea programelor în execuţie şi comutarea la un alt utilizator."
+
+msgid ""
+"Provides options for turning off or restarting your computer, or for "
+"activating Stand By or Hibernate modes."
+msgstr ""
+"Furnizează opţiuni pentru închiderea şi repornirea computerului sau pentru "
+"activarea modurilor Stare de veghe sau Hibernare."
 
 msgid ""
 "Provides options for you to customize the appearance and functionality of "
@@ -99,51 +138,25 @@ msgstr ""
 "computerului, se adaugă şi se elimină programe şi se configurează conexiuni "
 "în reţea şi conturi utilizator."
 
-msgid ""
-"Chooses default programs for certain activities, such as Web browsing or "
-"sending e-mail, and specifies which programs are accessible from the Start "
-"menu, desktop, and other locations."
-msgstr ""
-"Alege programele implicite pentru anumite activităţi cum ar fi navigarea pe "
-"Web sau trimiterea de mesaje electronice şi specifică programele care sunt "
-"accesibile din meniul Start, din spaţiul de lucru şi din alte amplasări."
+msgid "Restore"
+msgstr "Restabilire"
+
+msgid "Run..."
+msgstr "Executare..."
+
+msgid "Search"
+msgstr "Căutare"
 
 msgid "Set Program Access and Defaults"
 msgstr "Setare Acces program şi implicite"
-
-msgid "Connects to other computers, networks, and the Internet."
-msgstr "Se face conexiunea la alte computere, reţele şi Internet."
-
-msgid "Connect To"
-msgstr "Conectare la"
 
 msgid "Shows installed printers and fax printers and helps you add new ones."
 msgstr ""
 "Afişează imprimantele şi imprimantele fax instalate şi vă ajută să adăugaţi "
 "altele noi."
 
-msgid ""
-"Opens a central location for Help topics, tutorials, troubleshooting, and "
-"other support services."
-msgstr ""
-"Se deschide o amplasare centrală pentru subiectele de Ajutor, asistenţi de "
-"instruire, depanare şi alte servicii de asistenţă."
+msgid "Turn Off Computer"
+msgstr "Închidere computer"
 
-msgid "Help and Support"
-msgstr "Ajutor şi Asistenţă"
-
-msgid ""
-"Opens a window where you can pick search options and work with search "
-"results."
-msgstr ""
-"Deschide o fereastră unde se pot selecta opţiuni de căutare şi opera cu "
-"rezultatele căutării."
-
-msgid "Search"
-msgstr "Căutare"
-
-msgid "Opens a program, folder, document, or Web site."
-msgstr "Deschide un program, un folder, un document sau un site Web."
-
-msgid "Run..."
-msgstr "Executare..."
+msgid "start"
+msgstr "start"
