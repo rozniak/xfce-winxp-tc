@@ -28,6 +28,12 @@ struct _WinTCWizard97WindowClass
 
     gchar* resource_ext_page;
     GList* list_resources_int_pages;
+
+    // Vfuncs
+    //
+    guint (*get_next_page) (
+        WinTCWizard97Window* wiz_wnd
+    );
 };
 
 //

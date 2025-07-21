@@ -44,6 +44,7 @@
             <property name="visible">True</property>
             <property name="can-focus">True</property>
             <property name="receives-default">True</property>
+            <property name="action-name">win.cancel</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -59,6 +60,7 @@
             <property name="visible">True</property>
             <property name="can-focus">True</property>
             <property name="receives-default">True</property>
+            <property name="action-name">win.next</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -74,6 +76,7 @@
             <property name="visible">True</property>
             <property name="can-focus">True</property>
             <property name="receives-default">True</property>
+            <property name="action-name">win.back</property>
           </object>
           <packing>
             <property name="expand">False</property>

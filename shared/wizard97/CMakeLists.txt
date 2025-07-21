@@ -31,8 +31,10 @@ wintc_compile_resources()
 add_library(
     libwintc-wizard97
     src/resources.c
-    public/wizwnd.h
+    src/wizpage.c
+    public/wizpage.h
     src/wizwnd.c
+    public/wizwnd.h
 )
 
 set_target_properties(

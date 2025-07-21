@@ -4,6 +4,7 @@
 #include <stdarg.h>
 #include <wintc/comgtk.h>
 
+#include "../public/wizpage.h"
 #include "../public/wizwnd.h"
 
 //
@@ -11,6 +12,10 @@
 //
 static void wintc_wizard97_window_dispose(
     GObject* object
+);
+
+static guint wintc_wizard97_window_get_next_page(
+    WinTCWizard97Window* wiz_wnd
 );
 
 static GtkBuilder* wintc_wizard97_window_create_builder(
@@ -22,17 +27,62 @@ static GtkWidget* wintc_wizard97_window_create_page(
 );
 static void wintc_wizard97_window_go_to_page(
     WinTCWizard97Window* wiz_wnd,
-    guint                page
+    guint                page,
+    gboolean             push_history
 );
+
+static void action_back(
+    GSimpleAction* action,
+    GVariant*      parameter,
+    gpointer       user_data
+);
+static void action_cancel(
+    GSimpleAction* action,
+    GVariant*      parameter,
+    gpointer       user_data
+);
+static void action_next(
+    GSimpleAction* action,
+    GVariant*      parameter,
+    gpointer       user_data
+);
+
+//
+// STATIC DATA
+//
+static const GActionEntry S_ACTIONS[] = {
+    {
+        .name           = "back",
+        .activate       = action_back,
+        .parameter_type = NULL,
+        .state          = NULL,
+        .change_state   = NULL
+    },
+    {
+        .name           = "cancel",
+        .activate       = action_cancel,
+        .parameter_type = NULL,
+        .state          = NULL,
+        .change_state   = NULL
+    },
+    {
+        .name           = "next",
+        .activate       = action_next,
+        .parameter_type = NULL,
+        .state          = NULL,
+        .change_state   = NULL
+    }
+};
 
 //
 // GTK OOP CLASS/INSTANCE DEFINITIONS
 //
-typedef struct __WinTCWizard97WindowPrivate
+typedef struct _WinTCWizard97WindowPrivate
 {
     // State
     //
-    guint current_page;
+    guint   current_page;
+    GSList* history;
 
     // UI stuff
     //
@@ -61,6 +111,7 @@ static void wintc_wizard97_window_class_init(
 {
     GObjectClass* object_class = G_OBJECT_CLASS(klass);
 
+    klass->get_next_page  = wintc_wizard97_window_get_next_page;
     object_class->dispose = wintc_wizard97_window_dispose;
 }
 
@@ -90,6 +141,18 @@ static void wintc_wizard97_window_dispose(
 
     (G_OBJECT_CLASS(wintc_wizard97_window_parent_class))
         ->dispose(object);
+}
+
+static guint wintc_wizard97_window_get_next_page(
+    WinTCWizard97Window* wiz_wnd
+)
+{
+    WinTCWizard97WindowPrivate* priv =
+        wintc_wizard97_window_get_instance_private(
+            WINTC_WIZARD97_WINDOW(wiz_wnd)
+        );
+
+    return priv->current_page + 1;
 }
 
 //
@@ -142,9 +205,30 @@ void wintc_wizard97_window_init_wizard(
 
     GError* error = NULL;
 
+    g_type_ensure(WINTC_TYPE_WIZARD97_PAGE);
+
     // General GtkWindow setup
     //
     gtk_window_set_resizable(GTK_WINDOW(wiz_wnd), FALSE);
+
+    // Add actions
+    //
+    GSimpleActionGroup* action_group = g_simple_action_group_new();
+
+    g_action_map_add_action_entries(
+        G_ACTION_MAP(action_group),
+        S_ACTIONS,
+        G_N_ELEMENTS(S_ACTIONS),
+        wiz_wnd
+    );
+
+    gtk_widget_insert_action_group(
+        GTK_WIDGET(wiz_wnd),
+        "win",
+        G_ACTION_GROUP(action_group)
+    );
+
+    g_object_unref(action_group);
 
     // External page, if we have one!
     //
@@ -234,7 +318,8 @@ void wintc_wizard97_window_init_wizard(
     //
     wintc_wizard97_window_go_to_page(
         wiz_wnd,
-        priv->box_ext_page ? 0 : 1
+        priv->box_ext_page ? 0 : 1,
+        FALSE
     );
 }
 
@@ -273,17 +358,16 @@ static GtkWidget* wintc_wizard97_window_create_page(
         )
     )
     {
-        GSList* objects = gtk_builder_get_objects(builder);
+        ret = GTK_WIDGET(gtk_builder_get_object(builder, "page"));
 
-        if (!GTK_IS_BOX(objects->data))
+        if (!WINTC_IS_WIZARD97_PAGE(ret))
         {
             g_critical(
-                "%s",
-                "wizard97: root ext page widget is not a GtkBox"
+                "wizard97: the resource at %s doesn't have a 'page'",
+                resource_path
             );
         }
 
-        ret = GTK_WIDGET(objects->data);
         g_object_ref(ret);
     }
     else
@@ -298,7 +382,8 @@ static GtkWidget* wintc_wizard97_window_create_page(
 
 static void wintc_wizard97_window_go_to_page(
     WinTCWizard97Window* wiz_wnd,
-    guint                page
+    guint                page,
+    gboolean             push_history
 )
 {
     WinTCWizard97WindowPrivate* priv =
@@ -338,20 +423,7 @@ static void wintc_wizard97_window_go_to_page(
 
     // Remove any existing page from view
     //
-    GList* children =
-        gtk_container_get_children(
-            GTK_CONTAINER(priv->box_page_area)
-        );
-
-    if (g_list_length(children))
-    {
-        gtk_container_remove(
-            GTK_CONTAINER(box_target),
-            GTK_WIDGET(children->data)
-        );
-    }
-
-    g_list_free(children);
+    wintc_container_clear(GTK_CONTAINER(priv->box_page_area));
 
     // Construct the page within the appropriate page wrapper
     //
@@ -417,7 +489,81 @@ static void wintc_wizard97_window_go_to_page(
         0
     );
 
-    gtk_widget_show_all(box_target);
+    gtk_widget_show_all(box_main);
 
     g_object_unref(builder);
+
+    // Update state
+    //
+    if (push_history)
+    {
+        priv->history =
+            g_slist_prepend(
+                priv->history,
+                GUINT_TO_POINTER(priv->current_page)
+            );
+    }
+
+    priv->current_page = page;
+}
+
+//
+// CALLBACKS
+//
+static void action_back(
+    WINTC_UNUSED(GSimpleAction* action),
+    WINTC_UNUSED(GVariant*      parameter),
+    gpointer user_data
+)
+{
+    WinTCWizard97WindowPrivate* priv =
+        wintc_wizard97_window_get_instance_private(
+            WINTC_WIZARD97_WINDOW(user_data)
+        );
+
+    // Check what page we should go to
+    //
+    guint prev_page;
+
+    if (!priv->history)
+    {
+        g_critical("%s", "wizard97: attempted to go back with no history");
+        return;
+    }
+
+    prev_page = GPOINTER_TO_UINT(priv->history->data);
+
+    // Go!
+    //
+    wintc_wizard97_window_go_to_page(
+        WINTC_WIZARD97_WINDOW(user_data),
+        prev_page,
+        FALSE
+    );
+}
+
+static void action_cancel(
+    WINTC_UNUSED(GSimpleAction* action),
+    WINTC_UNUSED(GVariant*      parameter),
+    gpointer user_data
+)
+{
+    gtk_window_close(GTK_WINDOW(user_data));
+}
+
+static void action_next(
+    WINTC_UNUSED(GSimpleAction* action),
+    WINTC_UNUSED(GVariant*      parameter),
+    gpointer user_data
+)
+{
+    WinTCWizard97Window*      wiz_wnd   = WINTC_WIZARD97_WINDOW(user_data);
+    WinTCWizard97WindowClass* wiz_class =
+        WINTC_WIZARD97_WINDOW_GET_CLASS(wiz_wnd);
+
+    wintc_wizard97_window_go_to_page(
+        WINTC_WIZARD97_WINDOW(user_data),
+        wiz_class->get_next_page(wiz_wnd),
+        TRUE
+    );
 }
