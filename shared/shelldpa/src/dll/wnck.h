@@ -47,6 +47,9 @@ extern gboolean (*p_wnck_window_is_skip_tasklist) (
 extern gboolean (*p_wnck_window_is_minimized) (
     WinTCWndMgmtWindow* window
 );
+extern gboolean (*p_wnck_window_is_maximized) (
+    WinTCWndMgmtWindow* window
+);
 extern void (*p_wnck_window_minimize) (
     WinTCWndMgmtWindow* window
 );

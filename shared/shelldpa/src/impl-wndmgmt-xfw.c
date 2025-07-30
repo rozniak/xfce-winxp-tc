@@ -49,6 +49,7 @@ gboolean init_wndmgmt_xfw_impl(void)
     wintc_wndmgmt_window_get_name          = p_xfw_window_get_name;
     wintc_wndmgmt_window_is_skip_tasklist  = p_xfw_window_is_skip_tasklist;
     wintc_wndmgmt_window_is_minimized      = p_xfw_window_is_minimized;
+    wintc_wndmgmt_window_is_maximized      = p_xfw_window_is_maximized;
     wintc_wndmgmt_window_minimize          = &xfw_window_minimize;
     wintc_wndmgmt_window_maximize          = &xfw_window_maximize;
     wintc_wndmgmt_window_unminimize        = &xfw_window_unminimize;

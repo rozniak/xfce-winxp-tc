@@ -44,6 +44,9 @@ gboolean (*wintc_wndmgmt_window_is_skip_tasklist) (
 gboolean (*wintc_wndmgmt_window_is_minimized) (
     WinTCWndMgmtWindow* window
 ) = NULL;
+gboolean (*wintc_wndmgmt_window_is_maximized) (
+    WinTCWndMgmtWindow* window
+) = NULL;
 void (*wintc_wndmgmt_window_minimize) (
     WinTCWndMgmtWindow* window
 ) = NULL;

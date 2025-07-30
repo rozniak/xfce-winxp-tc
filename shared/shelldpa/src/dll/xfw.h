@@ -34,6 +34,9 @@ extern gboolean (*p_xfw_window_is_skip_tasklist) (
 extern gboolean (*p_xfw_window_is_minimized) (
     WinTCWndMgmtWindow* window
 );
+extern gboolean (*p_xfw_window_is_maximized) (
+    WinTCWndMgmtWindow* window
+);
 extern void (*p_xfw_window_set_minimized) (
     WinTCWndMgmtWindow* window,
     gboolean            is_minimized,

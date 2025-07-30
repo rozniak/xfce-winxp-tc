@@ -167,6 +167,16 @@ extern gboolean (*wintc_wndmgmt_window_is_minimized) (
 );
 
 /**
+ * Checks if the specified window is maximized.
+ *
+ * @param window The window.
+ * @return True if the window is maximized.
+ */
+extern gboolean (*wintc_wndmgmt_window_is_maximized) (
+    WinTCWndMgmtWindow* window
+);
+
+/**
  * Minimizes the specified window.
  *
  * @param window The window.

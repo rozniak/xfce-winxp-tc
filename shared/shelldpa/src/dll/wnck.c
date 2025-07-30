@@ -43,6 +43,9 @@ gboolean (*p_wnck_window_is_skip_tasklist) (
 gboolean (*p_wnck_window_is_minimized) (
     WinTCWndMgmtWindow* window
 ) = NULL;
+gboolean (*p_wnck_window_is_maximized) (
+    WinTCWndMgmtWindow* window
+) = NULL;
 void (*p_wnck_window_minimize) (
     WinTCWndMgmtWindow* window
 ) = NULL;
@@ -123,6 +126,9 @@ gboolean init_dll_wnck()
 
     p_wnck_window_is_minimized =
         dlsym(dl_wnck, "wnck_window_is_minimized");
+    
+    p_wnck_window_is_maximized =
+        dlsym(dl_wnck, "wnck_window_is_maximized");
 
     p_wnck_window_minimize =
         dlsym(dl_wnck, "wnck_window_minimize");
@@ -135,7 +141,7 @@ gboolean init_dll_wnck()
 
     p_wnck_window_close =
         dlsym(dl_wnck, "wnck_window_close");   
-
+        
     // Check all symbols loaded
     //
     if (
@@ -149,6 +155,7 @@ gboolean init_dll_wnck()
         p_wnck_window_get_name                == NULL ||
         p_wnck_window_is_skip_tasklist        == NULL ||
         p_wnck_window_is_minimized            == NULL ||
+        p_wnck_window_is_maximized            == NULL ||
         p_wnck_window_unminimize              == NULL ||
         p_wnck_window_maximize                == NULL ||
         p_wnck_window_close                   == NULL
