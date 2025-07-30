@@ -15,92 +15,11 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n"
-"%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"(n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 msgid "All Programs"
 msgstr "Visos programos"
-
-msgid "Opens your Internet browser."
-msgstr "Atidaroma interneto naršyklė."
-
-msgid "Opens your e-mail program so you can send or read a message."
-msgstr ""
-"Atidaroma el. pašto programa, kuria naudojantis galima siųsti arba skaityti "
-"pranešimą."
-
-msgid "Internet"
-msgstr "Internetas"
-
-msgid "E-mail"
-msgstr "El. paštas"
-
-msgid "start"
-msgstr "pradėti"
-
-msgid "Click here to begin"
-msgstr "Pradėkite spustelėdami čia"
-
-msgid "Log Off"
-msgstr "Išsiregistruoti"
-
-msgid ""
-"Provides options for closing your programs and logging off, or for leaving "
-"your programs running and switching to another user."
-msgstr ""
-"Pateikiamos programų uždarymo ir išsiregistravimo pasirinktys arba "
-"pasirinktys, leidžiančios persijungiti į kitą  vartotoją  toliau vykdant "
-"ankstesnes programas."
-
-msgid "Turn Off Computer"
-msgstr "Kompiuterio išjungimas"
-
-msgid ""
-"Provides options for turning off or restarting your computer, or for "
-"activating Stand By or Hibernate modes."
-msgstr ""
-"Pateikiamos kompiuterio išjungimo ar pakartotinio paleidimo arba Pristabdymo "
-"ar Užmigdymo režimų aktyvinimo pasirinktys."
-
-msgid ""
-"Opens the My Documents folder, where you can store letters, reports, notes, "
-"and other kinds of documents."
-msgstr ""
-"Atidaromas aplankas Mano dokumentai, kuriame galima išsaugoti laiškus, "
-"ataskaitas, raštelius ir kitokio tipo dokumentus."
-
-msgid "Displays recently opened documents and folders."
-msgstr "Rodomi šiuo metu atidaryti dokumentai ir aplankai."
-
-msgid ""
-"Opens the My Pictures folder, where you can store digital photos, images, "
-"and graphics files."
-msgstr ""
-"Atidaromas aplankas Mano paveikslėliai, kuriame galima išsaugoti "
-"skaitmenines nuotraukas, vaizdus ir grafinius failus."
-
-msgid ""
-"Opens the My Music folder, where you can store music and other audio files."
-msgstr ""
-"Atidaromas aplankas Mano muzika, kuriame galima išsaugoti muzikos  įrašus ir "
-"kitokius garso failus."
-
-msgid ""
-"Gives access to, and information about, the disk drives, cameras, scanners, "
-"and other hardware connected to your computer."
-msgstr ""
-"Suteikiama prieiga prie diskų įrenginių, fotoaparatų, skanerių ir kitokios "
-"aparatūros, prijungtos prie kompiuterio, bei suteikiama informacija apie "
-"juos."
-
-msgid ""
-"Provides options for you to customize the appearance and functionality of "
-"your computer, add or remove programs, and set up network connections and "
-"user accounts."
-msgstr ""
-"Pateikiamos pasirinktys, skirtos kompiuterio išvaizdai ir veiksmingumui "
-"tinkinti, programoms pridėti arba šalinti ir tinklo ryšiams bei vartotojų "
-"abonentams nustatyti."
 
 msgid ""
 "Chooses default programs for certain activities, such as Web browsing or "
@@ -111,19 +30,47 @@ msgstr ""
 "internete ir siųsti el. paštą , ir tai, prie kurių programų galima prieiti "
 "per meniu „pradėti“, darbalaukį ir kitas vietas."
 
-msgid "Set Program Access and Defaults"
-msgstr "Nustatyti prieigą prie programos ir numatytąsias reikšmes"
+msgid "Click here to begin"
+msgstr "Pradėkite spustelėdami čia"
 
-msgid "Connects to other computers, networks, and the Internet."
-msgstr "Prisijungiama prie kitų kompiuterių, tinklų ir interneto."
+msgid "Close"
+msgstr "Uždaryti"
 
 msgid "Connect To"
 msgstr "Prijungti prie"
 
-msgid "Shows installed printers and fax printers and helps you add new ones."
+msgid "Connects to other computers, networks, and the Internet."
+msgstr "Prisijungiama prie kitų kompiuterių, tinklų ir interneto."
+
+msgid "Displays recently opened documents and folders."
+msgstr "Rodomi šiuo metu atidaryti dokumentai ir aplankai."
+
+msgid "E-mail"
+msgstr "El. paštas"
+
+msgid ""
+"Gives access to, and information about, the disk drives, cameras, scanners, "
+"and other hardware connected to your computer."
 msgstr ""
-"Rodomi įdiegti spausdintuvai ir faksogramų spausdintuvai bei padedama "
-"pridėti naujus."
+"Suteikiama prieiga prie diskų įrenginių, fotoaparatų, skanerių ir kitokios "
+"aparatūros, prijungtos prie kompiuterio, bei suteikiama informacija apie "
+"juos."
+
+msgid "Help and Support"
+msgstr "Žinynas ir palaikymas"
+
+msgid "Internet"
+msgstr "Internetas"
+
+msgid "Log Off"
+msgstr "Išsiregistruoti"
+
+#: src/taskbuttons/windowmonitor.c:600
+msgid "Maximize"
+msgstr ""
+
+msgid "Minimize"
+msgstr "Minimizuoti"
 
 msgid ""
 "Opens a central location for Help topics, tutorials, troubleshooting, and "
@@ -132,8 +79,8 @@ msgstr ""
 "Atidaroma centrinė žinyno temų, vadovėlių, trikčių šalinimo ir kitų "
 "palaikymo paslaugų vieta."
 
-msgid "Help and Support"
-msgstr "Žinynas ir palaikymas"
+msgid "Opens a program, folder, document, or Web site."
+msgstr "Atidaroma programa, aplankas, dokumentas ar svetainė."
 
 msgid ""
 "Opens a window where you can pick search options and work with search "
@@ -142,11 +89,77 @@ msgstr ""
 "Atidaromas langas, kuriame galima išrinkti ieškos pasirinktis ir dirbti su "
 "ieškos rezultatais."
 
-msgid "Search"
-msgstr "Ieška"
+msgid ""
+"Opens the My Documents folder, where you can store letters, reports, notes, "
+"and other kinds of documents."
+msgstr ""
+"Atidaromas aplankas Mano dokumentai, kuriame galima išsaugoti laiškus, "
+"ataskaitas, raštelius ir kitokio tipo dokumentus."
 
-msgid "Opens a program, folder, document, or Web site."
-msgstr "Atidaroma programa, aplankas, dokumentas ar svetainė."
+msgid ""
+"Opens the My Music folder, where you can store music and other audio files."
+msgstr ""
+"Atidaromas aplankas Mano muzika, kuriame galima išsaugoti muzikos  įrašus ir "
+"kitokius garso failus."
+
+msgid ""
+"Opens the My Pictures folder, where you can store digital photos, images, "
+"and graphics files."
+msgstr ""
+"Atidaromas aplankas Mano paveikslėliai, kuriame galima išsaugoti "
+"skaitmenines nuotraukas, vaizdus ir grafinius failus."
+
+msgid "Opens your Internet browser."
+msgstr "Atidaroma interneto naršyklė."
+
+msgid "Opens your e-mail program so you can send or read a message."
+msgstr ""
+"Atidaroma el. pašto programa, kuria naudojantis galima siųsti arba skaityti "
+"pranešimą."
+
+msgid ""
+"Provides options for closing your programs and logging off, or for leaving "
+"your programs running and switching to another user."
+msgstr ""
+"Pateikiamos programų uždarymo ir išsiregistravimo pasirinktys arba "
+"pasirinktys, leidžiančios persijungiti į kitą  vartotoją  toliau vykdant "
+"ankstesnes programas."
+
+msgid ""
+"Provides options for turning off or restarting your computer, or for "
+"activating Stand By or Hibernate modes."
+msgstr ""
+"Pateikiamos kompiuterio išjungimo ar pakartotinio paleidimo arba Pristabdymo "
+"ar Užmigdymo režimų aktyvinimo pasirinktys."
+
+msgid ""
+"Provides options for you to customize the appearance and functionality of "
+"your computer, add or remove programs, and set up network connections and "
+"user accounts."
+msgstr ""
+"Pateikiamos pasirinktys, skirtos kompiuterio išvaizdai ir veiksmingumui "
+"tinkinti, programoms pridėti arba šalinti ir tinklo ryšiams bei vartotojų "
+"abonentams nustatyti."
+
+msgid "Restore"
+msgstr "Atkurti"
 
 msgid "Run..."
 msgstr "Vykdyti..."
+
+msgid "Search"
+msgstr "Ieška"
+
+msgid "Set Program Access and Defaults"
+msgstr "Nustatyti prieigą prie programos ir numatytąsias reikšmes"
+
+msgid "Shows installed printers and fax printers and helps you add new ones."
+msgstr ""
+"Rodomi įdiegti spausdintuvai ir faksogramų spausdintuvai bei padedama "
+"pridėti naujus."
+
+msgid "Turn Off Computer"
+msgstr "Kompiuterio išjungimas"
+
+msgid "start"
+msgstr "pradėti"
