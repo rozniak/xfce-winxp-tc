@@ -31,12 +31,6 @@ static void wintc_welcome_user_list_set_property(
     const GValue* value,
     GParamSpec*   pspec
 );
-static void wintc_welcome_user_list_get_property(
-    GObject*    gobject,
-    guint       prop_id,
-    GValue*     value,
-    GParamSpec* pspec
-);
 static void wintc_welcome_user_list_realize(
     GtkWidget* widget,
     gpointer user_data
@@ -211,7 +205,6 @@ static void wintc_welcome_user_list_class_init(
     WINTC_UNUSED(GtkWidgetClass*    widget_class)    = GTK_WIDGET_CLASS(klass);
     GObjectClass*      object_class    = G_OBJECT_CLASS(klass);
 
-    object_class->get_property = wintc_welcome_user_list_get_property;
     object_class->set_property = wintc_welcome_user_list_set_property;
     object_class->finalize     = wintc_welcome_user_list_finalize;
 
@@ -223,7 +216,7 @@ static void wintc_welcome_user_list_class_init(
             "LogonSession",
             "The GINA logon session instance.",
             WINTC_TYPE_GINA_LOGON_SESSION,
-            G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY
+            G_PARAM_WRITABLE
         )
     );
 }
@@ -367,24 +360,6 @@ static void wintc_welcome_user_list_finalize(
     }
 
     (G_OBJECT_CLASS(wintc_welcome_user_list_parent_class))->finalize(gobject);
-}
-
-static void wintc_welcome_user_list_get_property(
-    GObject*    gobject,
-    guint       prop_id,
-    WINTC_UNUSED(GValue*     value),
-    GParamSpec* pspec
-)
-{
-    WINTC_UNUSED(WinTCWelcomeUserList* user_list) = WINTC_WELCOME_USER_LIST(gobject);
-
-    switch (prop_id)
-    {
-
-        default:
-            G_OBJECT_WARN_INVALID_PROPERTY_ID(gobject, prop_id, pspec);
-            break;
-    }
 }
 
 static void wintc_welcome_user_list_set_property(
@@ -804,7 +779,7 @@ static GtkWidget *build_userlist_widget(WinTCWelcomeUserList *user_list)
             g_object_unref(go_activated);
         }
 
-        gtk_style_context_add_class(gtk_widget_get_style_context(item->go_button), "plain-button");
+        gtk_style_context_add_class(gtk_widget_get_style_context(item->go_button), "undecorated");
         gtk_widget_set_can_focus(item->go_button, FALSE);
         gtk_widget_set_size_request(item->go_button, 22, 27);
         gtk_widget_set_margin_start(item->go_button, 13);
