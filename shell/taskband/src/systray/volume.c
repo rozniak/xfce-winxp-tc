@@ -163,6 +163,7 @@ static void wintc_notification_volume_constructed(
                             );
 
     gtk_scale_set_draw_value(GTK_SCALE(volume->scale_volume), FALSE);
+    gtk_range_set_increments(GTK_RANGE(volume->scale_volume), 0.05f, 0.1f);
     gtk_range_set_inverted(GTK_RANGE(volume->scale_volume), TRUE);
 
     wintc_widget_add_style_class(volume->popup_volmgmt, "wintc-volmgmt");
