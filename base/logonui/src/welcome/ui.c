@@ -46,35 +46,15 @@ static void wintc_welcome_ui_set_property(
     const GValue* value,
     GParamSpec*   pspec
 );
-static void wintc_welcome_ui_add(
-    GtkContainer* container,
-    GtkWidget*    widget
-);
+
 static void wintc_welcome_ui_change_state(
     WinTCWelcomeUI* welcome_ui,
     WinTCGinaState  next_state
 );
-static void wintc_welcome_ui_internal_add(
-    WinTCWelcomeUI* welcome_ui,
-    GtkWidget*      widget
-);
+
 static void on_self_realized(
     GtkWidget* self,
     WINTC_UNUSED(gpointer user_data)
-);
-static void wintc_welcome_ui_remove(
-    WINTC_UNUSED(GtkContainer* container),
-    WINTC_UNUSED(GtkWidget*    widget)
-);
-static void wintc_welcome_ui_size_allocate(
-    GtkWidget*     widget,
-    GtkAllocation* allocation
-);
-static void wintc_welcome_ui_forall(
-    GtkContainer* container,
-    WINTC_UNUSED(gboolean include_internals),
-    GtkCallback   callback,
-    gpointer      callback_data
 );
 
 static void on_logon_session_attempt_complete(
@@ -89,19 +69,6 @@ static gboolean on_timeout_delay_done(
 static gboolean on_timeout_poll_ready(
     gpointer user_data
 );
-
-GtkWidget* build_welcome_box(void);
-GtkWidget* build_login_box(
-    WinTCGinaLogonSession* logon_session
-);
-GtkWidget* build_wait_box(void);
-GtkWidget* create_footer_widget(void);
-GtkWidget* create_top_ribbon_widget(void);
-GtkWidget* create_top_separator_widget(void);
-GtkWidget* create_vertical_separator_widget(void);
-GtkWidget* create_bottom_separator_widget(void);
-GtkWidget* create_bottom_ribbon_widget(void);
-GtkWidget* create_shutdown_widget(void);
 
 static gboolean on_shutdown_button_clicked(
     WINTC_UNUSED(GtkWidget *widget), 
@@ -129,22 +96,26 @@ static gboolean on_cancel_pressed(
 //
 struct _WinTCWelcomeUIClass
 {
-    GtkContainerClass __parent__;
+    GtkWidgetClass __parent__;
 };
 
 struct _WinTCWelcomeUI
 {
-    GtkContainer __parent__;
-
-    GSList* child_widgets;
+    GtkWidget __parent__;
 
     // UI
     //
-    GtkWidget* box_container; 
-    
-    GtkWidget* welcome_box;
-    GtkWidget* login_box;
-    GtkWidget* wait_box;
+    GtkWidget* box_welcome;
+    GtkWidget* box_login;
+    GtkWidget* box_wait;
+
+    //
+
+    GtkWidget* box_header;
+    GtkWidget* box_body;
+    GtkWidget* box_footer;
+
+    GtkWidget* stack_main;
 
     // State
     //
@@ -159,7 +130,7 @@ struct _WinTCWelcomeUI
 G_DEFINE_TYPE_WITH_CODE(
     WinTCWelcomeUI,
     wintc_welcome_ui,
-    GTK_TYPE_CONTAINER,
+    GTK_TYPE_WIDGET,
     G_IMPLEMENT_INTERFACE(
         WINTC_TYPE_IGINA_AUTH_UI,
         wintc_welcome_ui_igina_auth_ui_interface_init
@@ -180,27 +151,52 @@ static void wintc_welcome_ui_class_init(
     WinTCWelcomeUIClass* klass
 )
 {
-    GtkContainerClass* container_class = GTK_CONTAINER_CLASS(klass);
-    GtkWidgetClass*    widget_class    = GTK_WIDGET_CLASS(klass);
-    GObjectClass*      object_class    = G_OBJECT_CLASS(klass);
+    GtkWidgetClass* widget_class = GTK_WIDGET_CLASS(klass);
+    GObjectClass*   object_class = G_OBJECT_CLASS(klass);
 
     object_class->constructed  = wintc_welcome_ui_constructed;
     object_class->dispose      = wintc_welcome_ui_dispose;
     object_class->get_property = wintc_welcome_ui_get_property;
     object_class->set_property = wintc_welcome_ui_set_property;
 
-    container_class->add    = wintc_welcome_ui_add;
-    container_class->remove = wintc_welcome_ui_remove;
-    container_class->forall = wintc_welcome_ui_forall;
-
-    widget_class->size_allocate = wintc_welcome_ui_size_allocate;
-
     g_object_class_override_property(
         object_class,
         PROP_LOGON_SESSION,
         "logon-session"
     );
-    
+
+    gtk_widget_class_set_template_from_resource(
+        widget_class,
+        "/uk/oddmatics/wintc/logonui/welcome.ui"
+    );
+
+    gtk_widget_class_bind_template_child_full(
+        widget_class,
+        "box-header",
+        FALSE,
+        G_STRUCT_OFFSET(WinTCWelcomeUI, box_header)
+    );
+    gtk_widget_class_bind_template_child_full(
+        widget_class,
+        "box-body",
+        FALSE,
+        G_STRUCT_OFFSET(WinTCWelcomeUI, box_body)
+    );
+    gtk_widget_class_bind_template_child_full(
+        widget_class,
+        "box-footer",
+        FALSE,
+        G_STRUCT_OFFSET(WinTCWelcomeUI, box_footer)
+    );
+    gtk_widget_class_bind_template_child_full(
+        widget_class,
+        "stack-main",
+        FALSE,
+        G_STRUCT_OFFSET(WinTCWelcomeUI, stack_main)
+    );
+
+    // Load up styles
+    //
     GtkCssProvider* css_welcome = gtk_css_provider_new();
 
     gtk_css_provider_load_from_resource(
@@ -216,8 +212,11 @@ static void wintc_welcome_ui_class_init(
 }
 
 static void wintc_welcome_ui_init(
-    WINTC_UNUSED(WinTCWelcomeUI* self)
-) {}
+    WinTCWelcomeUI* self
+)
+{
+    gtk_widget_init_template(GTK_WIDGET(self));
+}
 
 //
 // CLASS VIRTUAL METHODS
@@ -236,9 +235,7 @@ static void wintc_welcome_ui_constructed(
         return;
     }
 
-
     gtk_widget_set_has_window(GTK_WIDGET(welcome_ui), FALSE);
-
 
     welcome_ui->current_state = WINTC_GINA_STATE_NONE;
 
@@ -252,20 +249,50 @@ static void wintc_welcome_ui_constructed(
     //
     // USER INTERFACE
     //
-    welcome_ui->wait_box = build_wait_box();
-    welcome_ui->login_box = build_login_box(welcome_ui->logon_session);
-    welcome_ui->welcome_box = build_welcome_box();
+    GtkBuilder* builder = gtk_builder_new();
 
-    welcome_ui->box_container = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+    if (
+        !gtk_builder_add_from_resource(
+            builder,
+            "/uk/oddmatics/wintc/logonui/welcphs1.ui",
+            NULL
+        ) ||
+        !gtk_builder_add_from_resource(
+            builder,
+            "/uk/oddmatics/wintc/logonui/welcphs2.ui",
+            NULL
+        ) ||
+        !gtk_builder_add_from_resource(
+            builder,
+            "/uk/oddmatics/wintc/logonui/welcphs3.ui",
+            NULL
+        )
+    )
+    {
+        g_critical("%s", "logonui: unable to load resources");
+        return;
+    }
 
-    wintc_welcome_ui_internal_add(welcome_ui, welcome_ui->box_container);
+    wintc_builder_get_objects(
+        builder,
+        "box-wait",    &(welcome_ui->box_wait),
+        "box-login",   &(welcome_ui->box_login),
+        "box-welcome", &(welcome_ui->box_welcome),
+        NULL
+    );
 
-    // Hold an additional reference to the boxes, so we can add/remove
-    // them ourselves without them getting binned
-    //
-    g_object_ref(welcome_ui->welcome_box);
-    g_object_ref(welcome_ui->login_box);
-    g_object_ref(welcome_ui->wait_box);
+    gtk_container_add(
+        GTK_CONTAINER(welcome_ui->stack_main),
+        welcome_ui->box_wait
+    );
+    gtk_container_add(
+        GTK_CONTAINER(welcome_ui->stack_main),
+        welcome_ui->box_login
+    );
+    gtk_container_add(
+        GTK_CONTAINER(welcome_ui->stack_main),
+        welcome_ui->box_welcome
+    );
 
     // Connect to realize signal to kick off everything when we're
     // actually live
@@ -280,14 +307,17 @@ static void wintc_welcome_ui_constructed(
 
 static void wintc_welcome_ui_dispose(
     GObject* object
-) {
+)
+{
     WinTCWelcomeUI* welcome_ui = WINTC_WELCOME_UI(object);
 
-    g_object_unref(welcome_ui->welcome_box);
-    g_object_unref(welcome_ui->login_box);
-    g_object_unref(welcome_ui->wait_box);
+    gtk_widget_dispose_template(
+        GTK_WIDGET(welcome_ui),
+        WINTC_TYPE_WELCOME_UI
+    );
 
-    (G_OBJECT_CLASS(wintc_welcome_ui_parent_class))->finalize(object);
+    (G_OBJECT_CLASS(wintc_welcome_ui_parent_class))
+        ->dispose(object);
 }
 
 static void wintc_welcome_ui_get_property(
@@ -326,75 +356,6 @@ static void wintc_welcome_ui_set_property(
     }
 }
 
-static void on_self_realized(
-    GtkWidget* self,
-    WINTC_UNUSED(gpointer user_data)
-)
-{
-    wintc_welcome_ui_change_state(
-        WINTC_WELCOME_UI(self),
-        WINTC_GINA_STATE_STARTING
-    );
-}
-
-static void wintc_welcome_ui_add(
-    WINTC_UNUSED(GtkContainer* container),
-    WINTC_UNUSED(GtkWidget*    widget)
-)
-{
-    g_critical("%s", "wintc_welcome_ui_add - not allowed!");
-}
-
-static void wintc_welcome_ui_remove(
-    WINTC_UNUSED(GtkContainer* container),
-    WINTC_UNUSED(GtkWidget*    widget)
-)
-{
-    g_critical("%s", "wintc_welcome_ui_remove - not allowed!");
-}
-static void wintc_welcome_ui_size_allocate(
-    GtkWidget*     widget,
-    GtkAllocation* allocation
-)
-{
-    WinTCWelcomeUI* welcome_ui = WINTC_WELCOME_UI(widget);
-    
-    gtk_widget_set_allocation(widget, allocation);
-    
-    if (welcome_ui->box_container && gtk_widget_get_visible(welcome_ui->box_container))
-    {
-        gtk_widget_size_allocate(welcome_ui->box_container, allocation);
-    }
-}
-
-static void wintc_welcome_ui_internal_add(
-    WinTCWelcomeUI* welcome_ui,
-    GtkWidget*      widget
-)
-{
-    gtk_widget_set_parent(widget, GTK_WIDGET(welcome_ui));
-
-    welcome_ui->child_widgets =
-        g_slist_append(welcome_ui->child_widgets, widget);
-}
-
-
-static void wintc_welcome_ui_forall(
-    GtkContainer* container,
-    WINTC_UNUSED(gboolean include_internals),
-    GtkCallback   callback,
-    gpointer      callback_data
-)
-{
-    WinTCWelcomeUI* welcome_ui = WINTC_WELCOME_UI(container);
-
-    g_slist_foreach(
-        welcome_ui->child_widgets,
-        (GFunc) callback,
-        callback_data
-    );
-}
-
 //
 // PUBLIC FUNCTIONS
 //
@@ -421,34 +382,6 @@ static void wintc_welcome_ui_change_state(
     WinTCGinaState    next_state
 )
 {
-    // Disable current state, if any
-    //
-    switch (welcome_ui->current_state)
-    {
-        case WINTC_GINA_STATE_STARTING:
-            gtk_container_remove(
-                GTK_CONTAINER(welcome_ui->box_container),
-                welcome_ui->wait_box
-            );
-            break;
-
-        case WINTC_GINA_STATE_PROMPT:
-            gtk_container_remove(
-                GTK_CONTAINER(welcome_ui->box_container),
-                welcome_ui->login_box
-            );
-            break;
-
-        case WINTC_GINA_STATE_LAUNCHING:
-            gtk_container_remove(
-                GTK_CONTAINER(welcome_ui->box_container),
-                welcome_ui->wait_box
-            );
-            break;
-
-        default: break;
-    }
-
     // Set up new state
     //
     switch (next_state)
@@ -462,16 +395,16 @@ static void wintc_welcome_ui_change_state(
                 on_timeout_delay_done,
                 welcome_ui
             );
-            gtk_container_add(
-                GTK_CONTAINER(welcome_ui->box_container),
-                welcome_ui->wait_box
+            gtk_stack_set_visible_child(
+                GTK_CONTAINER(welcome_ui->stack_main),
+                welcome_ui->box_wait
             );
             break;
 
         case WINTC_GINA_STATE_PROMPT:
-            gtk_container_add(
-                GTK_CONTAINER(welcome_ui->box_container),
-                welcome_ui->login_box
+            gtk_stack_set_visible_child(
+                GTK_CONTAINER(welcome_ui->stack_main),
+                welcome_ui->box_login
             );
             break;
 
@@ -481,18 +414,14 @@ static void wintc_welcome_ui_change_state(
                 on_timeout_delay_done,
                 welcome_ui
             );
-            gtk_container_add(
-                GTK_CONTAINER(welcome_ui->box_container),
-                welcome_ui->welcome_box
+            gtk_stack_set_visible_child(
+                GTK_CONTAINER(welcome_ui->stack_main),
+                welcome_ui->box_welcome
             );
             break;
 
         default: break;
     }
-
-    gtk_widget_show_all(
-        welcome_ui->box_container
-    );
 
     welcome_ui->current_state = next_state;
 }
@@ -544,7 +473,7 @@ static gboolean on_timeout_delay_done(
     return G_SOURCE_REMOVE;
 }
 
-GtkWidget* build_welcome_box(void) {
+GtkWidget* build_box_welcome(void) {
     GtkWidget *welcome_screen = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     gtk_widget_set_hexpand(welcome_screen, TRUE);
     gtk_widget_set_vexpand(welcome_screen, TRUE);
@@ -584,7 +513,7 @@ GtkWidget* build_welcome_box(void) {
     return welcome_screen;
 }
 
-GtkWidget* build_wait_box(void) {
+GtkWidget* build_box_wait(void) {
     GtkWidget *wait_screen = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     gtk_widget_set_hexpand(wait_screen, TRUE);
     gtk_widget_set_vexpand(wait_screen, TRUE);
@@ -604,13 +533,13 @@ GtkWidget* build_wait_box(void) {
     gtk_widget_set_hexpand(content, TRUE);
     gtk_widget_set_vexpand(content, TRUE);
 
-    GtkWidget *wait_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-    gtk_widget_set_halign(wait_box, GTK_ALIGN_END);
-    gtk_widget_set_valign(wait_box, GTK_ALIGN_CENTER);
+    GtkWidget *box_wait = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+    gtk_widget_set_halign(box_wait, GTK_ALIGN_END);
+    gtk_widget_set_valign(box_wait, GTK_ALIGN_CENTER);
 
     // FIXME: The wait box shoulld appear with a margin of about 20%
     //        not a fixed value.
-    gtk_widget_set_margin_end(wait_box, 200);
+    gtk_widget_set_margin_end(box_wait, 200);
 
     GtkWidget *label = gtk_label_new("Please wait...");
     gtk_label_set_xalign(GTK_LABEL(label), 1.0f);
@@ -619,10 +548,10 @@ GtkWidget* build_wait_box(void) {
     GtkWidget *logo = gtk_image_new_from_resource("/uk/oddmatics/wintc/logonui/logo.png");
     gtk_widget_set_halign(logo, GTK_ALIGN_END);
 
-    gtk_box_pack_start(GTK_BOX(wait_box), logo, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(wait_box), label, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(box_wait), logo, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(box_wait), label, FALSE, FALSE, 0);
 
-    gtk_box_pack_end(GTK_BOX(content), wait_box, FALSE, FALSE, 0);
+    gtk_box_pack_end(GTK_BOX(content), box_wait, FALSE, FALSE, 0);
 
     gtk_container_add(GTK_CONTAINER(overlay), content);
     gtk_overlay_add_overlay(GTK_OVERLAY(overlay), bglight);
@@ -640,7 +569,7 @@ GtkWidget* build_wait_box(void) {
     return wait_screen;
 }
 
-GtkWidget* build_login_box(WinTCGinaLogonSession* logon_session) {
+GtkWidget* build_box_login(WinTCGinaLogonSession* logon_session) {
     GtkWidget *login_screen = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 
     GtkWidget *top_ribbon = create_top_ribbon_widget();
@@ -891,6 +820,17 @@ GtkWidget* create_footer_widget(void) {
 //
 // CALLBACKS
 //
+static void on_self_realized(
+    GtkWidget* self,
+    WINTC_UNUSED(gpointer user_data)
+)
+{
+    wintc_welcome_ui_change_state(
+        WINTC_WELCOME_UI(self),
+        WINTC_GINA_STATE_STARTING
+    );
+}
+
 static void on_logon_session_attempt_complete(
     WINTC_UNUSED(WinTCGinaLogonSession* logon_session),
     WinTCGinaResponse response,

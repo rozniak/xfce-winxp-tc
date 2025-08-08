@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <object class="GtkBox" id="box-wait">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="orientation">horizontal</property>
+
+    <child>
+      <object class="WinTCCtlAnimation" id="anim-logo">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">False</property>
+        <property name="position">0</property>
+      </packing>
+    </child>
+
+    <child>
+      <object class="GtkLabel">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="label">Please wait...</property>
+        <property name="xalign">1.0</property>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">False</property>
+        <property name="position">1</property>
+      </packing>
+    </child>
+
+    <style>
+      <class name="content" />
+    </style>
+  </object>
+</interface>
