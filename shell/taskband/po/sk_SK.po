@@ -20,82 +20,6 @@ msgstr ""
 msgid "All Programs"
 msgstr "Všetky programy"
 
-msgid "Opens your Internet browser."
-msgstr "Otvorí internetový prehľadávač."
-
-msgid "Opens your e-mail program so you can send or read a message."
-msgstr "Otvorí e-mailový program, ktorý umožňuje odosielanie a čítanie správ."
-
-msgid "Internet"
-msgstr "Internet"
-
-msgid "E-mail"
-msgstr "E-mail"
-
-msgid "start"
-msgstr "štart"
-
-msgid "Click here to begin"
-msgstr "Začnite kliknutím sem."
-
-msgid "Log Off"
-msgstr "Odhlásiť"
-
-msgid ""
-"Provides options for closing your programs and logging off, or for leaving "
-"your programs running and switching to another user."
-msgstr ""
-"Poskytne možnosti na ukončenie programov a odhlásenie alebo prepnutie "
-"používateľa bez ukončenia programov."
-
-msgid "Turn Off Computer"
-msgstr "Vypnutie počítača"
-
-msgid ""
-"Provides options for turning off or restarting your computer, or for "
-"activating Stand By or Hibernate modes."
-msgstr ""
-"Poskytne možnosti na vypnutie alebo reštartovanie počítača a aktivovanie "
-"úsporného režimu alebo režimu dlhodobého spánku."
-
-msgid ""
-"Opens the My Documents folder, where you can store letters, reports, notes, "
-"and other kinds of documents."
-msgstr ""
-"Otvorí priečinok Moje dokumenty. Do tohto priečinka môžete ukladať listy, "
-"správy, poznámky a ďalšie dokumenty."
-
-msgid "Displays recently opened documents and folders."
-msgstr "Zobrazí naposledy otvorené dokumenty a priečinky."
-
-msgid ""
-"Opens the My Pictures folder, where you can store digital photos, images, "
-"and graphics files."
-msgstr ""
-"Otvorí priečinok Obrázky. Do tohto priečinka môžete ukladať digitálne "
-"fotografie, obrázky a grafické súbory."
-
-msgid ""
-"Opens the My Music folder, where you can store music and other audio files."
-msgstr ""
-"Otvorí priečinok Hudba. Do tohto priečinka môžete ukladať hudbu a ďalšie "
-"zvukové súbory."
-
-msgid ""
-"Gives access to, and information about, the disk drives, cameras, scanners, "
-"and other hardware connected to your computer."
-msgstr ""
-"Poskytne prístup a informácie o diskových jednotkách, fotoaparátoch, "
-"skeneroch a ďalšom hardvéri, ktorý je pripojený k počítaču."
-
-msgid ""
-"Provides options for you to customize the appearance and functionality of "
-"your computer, add or remove programs, and set up network connections and "
-"user accounts."
-msgstr ""
-"Umožní prispôsobiť vzhľad a funkčnosť počítača, pridať alebo odstrániť "
-"programy a nastaviť sieťové pripojenia a používateľské kontá."
-
 msgid ""
 "Chooses default programs for certain activities, such as Web browsing or "
 "sending e-mail, and specifies which programs are accessible from the Start "
@@ -105,19 +29,45 @@ msgstr ""
 "alebo odosielanie e-mailov) a určí, ktoré programy sú prístupné z ponuky "
 "Štart, pracovnej plochy a ďalších miest."
 
-msgid "Set Program Access and Defaults"
-msgstr "Prístup k programom a predvolené programy"
+msgid "Click here to begin"
+msgstr "Začnite kliknutím sem."
 
-msgid "Connects to other computers, networks, and the Internet."
-msgstr "Vytvorí pripojenie na iné počítače, siete a Internet."
+msgid "Close"
+msgstr "Zavrieť"
 
 msgid "Connect To"
 msgstr "Pripojenie"
 
-msgid "Shows installed printers and fax printers and helps you add new ones."
+msgid "Connects to other computers, networks, and the Internet."
+msgstr "Vytvorí pripojenie na iné počítače, siete a Internet."
+
+msgid "Displays recently opened documents and folders."
+msgstr "Zobrazí naposledy otvorené dokumenty a priečinky."
+
+msgid "E-mail"
+msgstr "E-mail"
+
+msgid ""
+"Gives access to, and information about, the disk drives, cameras, scanners, "
+"and other hardware connected to your computer."
 msgstr ""
-"Zobrazí nainštalované tlačiarne, faxové tlačiarne a poskytne pomoc pri "
-"pridávaní nových."
+"Poskytne prístup a informácie o diskových jednotkách, fotoaparátoch, "
+"skeneroch a ďalšom hardvéri, ktorý je pripojený k počítaču."
+
+msgid "Help and Support"
+msgstr "Pomoc a technická podpora"
+
+msgid "Internet"
+msgstr "Internet"
+
+msgid "Log Off"
+msgstr "Odhlásiť"
+
+msgid "Maximize"
+msgstr "Maximalizovať"
+
+msgid "Minimize"
+msgstr "Minimalizovať"
 
 msgid ""
 "Opens a central location for Help topics, tutorials, troubleshooting, and "
@@ -126,8 +76,8 @@ msgstr ""
 "Otvorí hlavné umiestnenie tém pomocníka, kurzov, riešenia problémov a "
 "ostatných služieb technickej podpory."
 
-msgid "Help and Support"
-msgstr "Pomoc a technická podpora"
+msgid "Opens a program, folder, document, or Web site."
+msgstr "Spustí program alebo otvorí priečinok, dokument alebo webovú lokalitu."
 
 msgid ""
 "Opens a window where you can pick search options and work with search "
@@ -136,11 +86,73 @@ msgstr ""
 "Otvorí okno, v ktorom môžete vybrať možnosti hľadania a pracovať s "
 "výsledkami hľadania."
 
-msgid "Search"
-msgstr "Hľadať"
+msgid ""
+"Opens the My Documents folder, where you can store letters, reports, notes, "
+"and other kinds of documents."
+msgstr ""
+"Otvorí priečinok Moje dokumenty. Do tohto priečinka môžete ukladať listy, "
+"správy, poznámky a ďalšie dokumenty."
 
-msgid "Opens a program, folder, document, or Web site."
-msgstr "Spustí program alebo otvorí priečinok, dokument alebo webovú lokalitu."
+msgid ""
+"Opens the My Music folder, where you can store music and other audio files."
+msgstr ""
+"Otvorí priečinok Hudba. Do tohto priečinka môžete ukladať hudbu a ďalšie "
+"zvukové súbory."
+
+msgid ""
+"Opens the My Pictures folder, where you can store digital photos, images, "
+"and graphics files."
+msgstr ""
+"Otvorí priečinok Obrázky. Do tohto priečinka môžete ukladať digitálne "
+"fotografie, obrázky a grafické súbory."
+
+msgid "Opens your Internet browser."
+msgstr "Otvorí internetový prehľadávač."
+
+msgid "Opens your e-mail program so you can send or read a message."
+msgstr "Otvorí e-mailový program, ktorý umožňuje odosielanie a čítanie správ."
+
+msgid ""
+"Provides options for closing your programs and logging off, or for leaving "
+"your programs running and switching to another user."
+msgstr ""
+"Poskytne možnosti na ukončenie programov a odhlásenie alebo prepnutie "
+"používateľa bez ukončenia programov."
+
+msgid ""
+"Provides options for turning off or restarting your computer, or for "
+"activating Stand By or Hibernate modes."
+msgstr ""
+"Poskytne možnosti na vypnutie alebo reštartovanie počítača a aktivovanie "
+"úsporného režimu alebo režimu dlhodobého spánku."
+
+msgid ""
+"Provides options for you to customize the appearance and functionality of "
+"your computer, add or remove programs, and set up network connections and "
+"user accounts."
+msgstr ""
+"Umožní prispôsobiť vzhľad a funkčnosť počítača, pridať alebo odstrániť "
+"programy a nastaviť sieťové pripojenia a používateľské kontá."
+
+msgid "Restore"
+msgstr "Obnoviť"
 
 msgid "Run..."
 msgstr "Spustiť..."
+
+msgid "Search"
+msgstr "Hľadať"
+
+msgid "Set Program Access and Defaults"
+msgstr "Prístup k programom a predvolené programy"
+
+msgid "Shows installed printers and fax printers and helps you add new ones."
+msgstr ""
+"Zobrazí nainštalované tlačiarne, faxové tlačiarne a poskytne pomoc pri "
+"pridávaní nových."
+
+msgid "Turn Off Computer"
+msgstr "Vypnutie počítača"
+
+msgid "start"
+msgstr "štart"

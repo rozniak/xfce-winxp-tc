@@ -20,81 +20,6 @@ msgstr ""
 msgid "All Programs"
 msgstr "Alla program"
 
-msgid "Opens your Internet browser."
-msgstr "Öppnar din webbläsare."
-
-msgid "Opens your e-mail program so you can send or read a message."
-msgstr ""
-"Öppnar ditt e-postprogram så att du kan skicka och läsa e-postmeddelanden."
-
-msgid "Internet"
-msgstr "Internet"
-
-msgid "E-mail"
-msgstr "E-post"
-
-msgid "start"
-msgstr "Start"
-
-msgid "Click here to begin"
-msgstr "Klicka här om du vill starta"
-
-msgid "Log Off"
-msgstr "Logga ut"
-
-msgid ""
-"Provides options for closing your programs and logging off, or for leaving "
-"your programs running and switching to another user."
-msgstr ""
-"Alternativ för att stänga av program och logga ut eller för att låta program "
-"köras medan du byter till en annan användare."
-
-msgid "Turn Off Computer"
-msgstr "Stäng av datorn"
-
-msgid ""
-"Provides options for turning off or restarting your computer, or for "
-"activating Stand By or Hibernate modes."
-msgstr ""
-"Alternativ för avstängning, omstart och för aktivering av vilo- och "
-"vänteläge."
-
-msgid ""
-"Opens the My Documents folder, where you can store letters, reports, notes, "
-"and other kinds of documents."
-msgstr ""
-"Öppnar mappen Mina dokument där du kan lagra brev, rapporter, anteckningar "
-"och andra dokument."
-
-msgid "Displays recently opened documents and folders."
-msgstr "Visar nyligen öppnade dokument och mappar."
-
-msgid ""
-"Opens the My Pictures folder, where you can store digital photos, images, "
-"and graphics files."
-msgstr ""
-"Öppnar mappen Mina bilder där du kan lagra digitala bilder, foton och "
-"grafikfiler."
-
-msgid ""
-"Opens the My Music folder, where you can store music and other audio files."
-msgstr "Öppnar mappen Min musik där du kan lagra musik och andra ljudfiler."
-
-msgid ""
-"Gives access to, and information about, the disk drives, cameras, scanners, "
-"and other hardware connected to your computer."
-msgstr ""
-"Ger tillgång till och information om diskenheter, kameror, skannrar och "
-"annan maskinvara som är ansluten till datorn."
-
-msgid ""
-"Provides options for you to customize the appearance and functionality of "
-"your computer, add or remove programs, and set up network connections and "
-"user accounts."
-msgstr ""
-"Ger dig möjlighet att anpassa datorns utseende och funktioner, lägga till "
-"och ta bort program samt skapa nätverksanslutningar och användarkonton."
-
 msgid ""
 "Chooses default programs for certain activities, such as Web browsing or "
 "sending e-mail, and specifies which programs are accessible from the Start "
@@ -104,19 +29,45 @@ msgstr ""
 "och anger vilka program som är tillgängliga från Start-menyn, skrivbordet "
 "och andra platser."
 
-msgid "Set Program Access and Defaults"
-msgstr "Ange programåtkomst och standardprogram"
+msgid "Click here to begin"
+msgstr "Klicka här om du vill starta"
 
-msgid "Connects to other computers, networks, and the Internet."
-msgstr "Ansluter till andra datorer, nätverk och till Internet."
+msgid "Close"
+msgstr "Stäng"
 
 msgid "Connect To"
 msgstr "Anslut till"
 
-msgid "Shows installed printers and fax printers and helps you add new ones."
+msgid "Connects to other computers, networks, and the Internet."
+msgstr "Ansluter till andra datorer, nätverk och till Internet."
+
+msgid "Displays recently opened documents and folders."
+msgstr "Visar nyligen öppnade dokument och mappar."
+
+msgid "E-mail"
+msgstr "E-post"
+
+msgid ""
+"Gives access to, and information about, the disk drives, cameras, scanners, "
+"and other hardware connected to your computer."
 msgstr ""
-"Visar de skrivare och faxskrivare som är installerade och hjälper dig lägga "
-"till nya."
+"Ger tillgång till och information om diskenheter, kameror, skannrar och "
+"annan maskinvara som är ansluten till datorn."
+
+msgid "Help and Support"
+msgstr "Hjälp och support"
+
+msgid "Internet"
+msgstr "Internet"
+
+msgid "Log Off"
+msgstr "Logga ut"
+
+msgid "Maximize"
+msgstr "Maximera"
+
+msgid "Minimize"
+msgstr "Minimera"
 
 msgid ""
 "Opens a central location for Help topics, tutorials, troubleshooting, and "
@@ -125,8 +76,8 @@ msgstr ""
 "Öppnar en central plats för hjälpavsnitt, självstudier, felsökning och andra "
 "supporttjänster."
 
-msgid "Help and Support"
-msgstr "Hjälp och support"
+msgid "Opens a program, folder, document, or Web site."
+msgstr "Öppnar ett program, en mapp, ett dokument eller en webbplats."
 
 msgid ""
 "Opens a window where you can pick search options and work with search "
@@ -134,11 +85,72 @@ msgid ""
 msgstr ""
 "Öppnar ett fönster där du kan välja sökalternativ och arbeta med sökresultat."
 
-msgid "Search"
-msgstr "Sök"
+msgid ""
+"Opens the My Documents folder, where you can store letters, reports, notes, "
+"and other kinds of documents."
+msgstr ""
+"Öppnar mappen Mina dokument där du kan lagra brev, rapporter, anteckningar "
+"och andra dokument."
 
-msgid "Opens a program, folder, document, or Web site."
-msgstr "Öppnar ett program, en mapp, ett dokument eller en webbplats."
+msgid ""
+"Opens the My Music folder, where you can store music and other audio files."
+msgstr "Öppnar mappen Min musik där du kan lagra musik och andra ljudfiler."
+
+msgid ""
+"Opens the My Pictures folder, where you can store digital photos, images, "
+"and graphics files."
+msgstr ""
+"Öppnar mappen Mina bilder där du kan lagra digitala bilder, foton och "
+"grafikfiler."
+
+msgid "Opens your Internet browser."
+msgstr "Öppnar din webbläsare."
+
+msgid "Opens your e-mail program so you can send or read a message."
+msgstr ""
+"Öppnar ditt e-postprogram så att du kan skicka och läsa e-postmeddelanden."
+
+msgid ""
+"Provides options for closing your programs and logging off, or for leaving "
+"your programs running and switching to another user."
+msgstr ""
+"Alternativ för att stänga av program och logga ut eller för att låta program "
+"köras medan du byter till en annan användare."
+
+msgid ""
+"Provides options for turning off or restarting your computer, or for "
+"activating Stand By or Hibernate modes."
+msgstr ""
+"Alternativ för avstängning, omstart och för aktivering av vilo- och "
+"vänteläge."
+
+msgid ""
+"Provides options for you to customize the appearance and functionality of "
+"your computer, add or remove programs, and set up network connections and "
+"user accounts."
+msgstr ""
+"Ger dig möjlighet att anpassa datorns utseende och funktioner, lägga till "
+"och ta bort program samt skapa nätverksanslutningar och användarkonton."
+
+msgid "Restore"
+msgstr "Återställ"
 
 msgid "Run..."
 msgstr "Kör..."
+
+msgid "Search"
+msgstr "Sök"
+
+msgid "Set Program Access and Defaults"
+msgstr "Ange programåtkomst och standardprogram"
+
+msgid "Shows installed printers and fax printers and helps you add new ones."
+msgstr ""
+"Visar de skrivare och faxskrivare som är installerade och hjälper dig lägga "
+"till nya."
+
+msgid "Turn Off Computer"
+msgstr "Stäng av datorn"
+
+msgid "start"
+msgstr "Start"
