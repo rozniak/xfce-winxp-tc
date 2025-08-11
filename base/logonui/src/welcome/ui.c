@@ -139,11 +139,6 @@ G_DEFINE_TYPE_WITH_CODE(
     )
 )
 
-typedef struct {
-    GtkWidget* shutdown_button;
-    GtkWidget* shutdown_label;
-} ShutdownWidgets;
-
 static void wintc_welcome_ui_igina_auth_ui_interface_init(
     WINTC_UNUSED(WinTCIGinaAuthUIInterface* iface)
 ) {}
