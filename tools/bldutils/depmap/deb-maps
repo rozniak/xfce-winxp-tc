@@ -48,4 +48,4 @@ wintc-winbrand-->bt,rt-->libwintc-winbrand
 xcursorgen-->bt,rt-->x11-apps
 xdg-mime-->bt,rt-->xdg-utils
 zip-->bt-->libzip-dev
-zip-->rt-->libzip4
+zip-->rt-->libzip4|libzip5
