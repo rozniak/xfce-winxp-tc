@@ -20,43 +20,69 @@ msgstr ""
 msgid "All Programs"
 msgstr "すべてのプログラム(P)"
 
-msgid "Opens your Internet browser."
-msgstr "インターネット ブラウザを開きます。"
-
-msgid "Opens your e-mail program so you can send or read a message."
-msgstr "メッセージを送信したり読んだりできる電子メール プログラムを開きます。"
-
-msgid "Internet"
-msgstr "インターネット"
-
-msgid "E-mail"
-msgstr "電子メール"
-
-msgid "start"
-msgstr "スタート"
+msgid ""
+"Chooses default programs for certain activities, such as Web browsing or "
+"sending e-mail, and specifies which programs are accessible from the Start "
+"menu, desktop, and other locations."
+msgstr ""
+"Web 閲覧や電子メールの送信などの特定の操作のための既定のプログラムを選択し、"
+"どのプログラムをスタート メニュー、デスクトップおよびその他の場所からアクセス"
+"可能にするか指定します。"
 
 msgid "Click here to begin"
 msgstr "このボタンから始めます"
 
+msgid "Close"
+msgstr "閉じる"
+
+msgid "Connect To"
+msgstr "接続(T)"
+
+msgid "Connects to other computers, networks, and the Internet."
+msgstr "ほかのコンピュータ、ネットワーク、およびインターネットへ接続します。"
+
+msgid "Displays recently opened documents and folders."
+msgstr "最近開いたドキュメントやフォルダを表示します。"
+
+msgid "E-mail"
+msgstr "電子メール"
+
+msgid ""
+"Gives access to, and information about, the disk drives, cameras, scanners, "
+"and other hardware connected to your computer."
+msgstr ""
+"コンピュータに接続しているディスク ドライブ、カメラ、スキャナ、およびそのほか"
+"のハードウェアへアクセスしたり、その情報を得たりします。"
+
+msgid "Help and Support"
+msgstr "ヘルプとサポート(H)"
+
+msgid "Internet"
+msgstr "インターネット"
+
 msgid "Log Off"
 msgstr "ログオフ(L)"
 
-msgid ""
-"Provides options for closing your programs and logging off, or for leaving "
-"your programs running and switching to another user."
-msgstr ""
-"プログラムを閉じてログオフするオプションや、プログラムを実行したままで別の"
-"ユーザーに切り替えるオプションを提供します。"
+msgid "Maximize"
+msgstr "最大化(Z)"
 
-msgid "Turn Off Computer"
-msgstr "終了オプション(U)"
+msgid "Minimize"
+msgstr "最小化"
 
 msgid ""
-"Provides options for turning off or restarting your computer, or for "
-"activating Stand By or Hibernate modes."
+"Opens a central location for Help topics, tutorials, troubleshooting, and "
+"other support services."
 msgstr ""
-"コンピュータの終了や再起動のオプション、およびスタンバイ モードや休止モードの"
-"オプションを提供します。"
+"ヘルプのトピック、チュートリアル、トラブルシューティング、サポート サービスな"
+"どを集中して参照できる場所を開きます。"
+
+msgid "Opens a program, folder, document, or Web site."
+msgstr "プログラム、フォルダ、ドキュメントまたは Web サイトを開きます。"
+
+msgid ""
+"Opens a window where you can pick search options and work with search "
+"results."
+msgstr "検索オプションを選んだり、検索結果を得たりできるウィンドウを開きます。"
 
 msgid ""
 "Opens the My Documents folder, where you can store letters, reports, notes, "
@@ -65,8 +91,11 @@ msgstr ""
 "[マイ ドキュメント] フォルダが開き、手紙、レポート、メモなどのドキュメントを"
 "保管できます。"
 
-msgid "Displays recently opened documents and folders."
-msgstr "最近開いたドキュメントやフォルダを表示します。"
+msgid ""
+"Opens the My Music folder, where you can store music and other audio files."
+msgstr ""
+"[マイ ミュージック] フォルダが開き、音楽ファイルやオーディオ ファイルを保管で"
+"きます。"
 
 msgid ""
 "Opens the My Pictures folder, where you can store digital photos, images, "
@@ -75,18 +104,25 @@ msgstr ""
 "[マイ ピクチャ] フォルダが開き、デジタル写真、イメージ、グラフィック ファイル"
 "を保管できます。"
 
-msgid ""
-"Opens the My Music folder, where you can store music and other audio files."
-msgstr ""
-"[マイ ミュージック] フォルダが開き、音楽ファイルやオーディオ ファイルを保管で"
-"きます。"
+msgid "Opens your Internet browser."
+msgstr "インターネット ブラウザを開きます。"
+
+msgid "Opens your e-mail program so you can send or read a message."
+msgstr "メッセージを送信したり読んだりできる電子メール プログラムを開きます。"
 
 msgid ""
-"Gives access to, and information about, the disk drives, cameras, scanners, "
-"and other hardware connected to your computer."
+"Provides options for closing your programs and logging off, or for leaving "
+"your programs running and switching to another user."
 msgstr ""
-"コンピュータに接続しているディスク ドライブ、カメラ、スキャナ、およびそのほか"
-"のハードウェアへアクセスしたり、その情報を得たりします。"
+"プログラムを閉じてログオフするオプションや、プログラムを実行したままで別の"
+"ユーザーに切り替えるオプションを提供します。"
+
+msgid ""
+"Provides options for turning off or restarting your computer, or for "
+"activating Stand By or Hibernate modes."
+msgstr ""
+"コンピュータの終了や再起動のオプション、およびスタンバイ モードや休止モードの"
+"オプションを提供します。"
 
 msgid ""
 "Provides options for you to customize the appearance and functionality of "
@@ -97,49 +133,25 @@ msgstr ""
 "を行ったり、ネットワーク接続やユーザー アカウントを設定したりするオプションを"
 "提供します。"
 
-msgid ""
-"Chooses default programs for certain activities, such as Web browsing or "
-"sending e-mail, and specifies which programs are accessible from the Start "
-"menu, desktop, and other locations."
-msgstr ""
-"Web 閲覧や電子メールの送信などの特定の操作のための既定のプログラムを選択し、"
-"どのプログラムをスタート メニュー、デスクトップおよびその他の場所からアクセス"
-"可能にするか指定します。"
+msgid "Restore"
+msgstr "元に戻す(R)"
+
+msgid "Run..."
+msgstr "ファイル名を指定して実行(R)..."
+
+msgid "Search"
+msgstr "検索(S)"
 
 msgid "Set Program Access and Defaults"
 msgstr "プログラムのアクセスと既定の設定"
-
-msgid "Connects to other computers, networks, and the Internet."
-msgstr "ほかのコンピュータ、ネットワーク、およびインターネットへ接続します。"
-
-msgid "Connect To"
-msgstr "接続(T)"
 
 msgid "Shows installed printers and fax printers and helps you add new ones."
 msgstr ""
 "インストールしているプリンタや FAX を表示します。また新しいプリンタや FAX の"
 "インストールの手助けもします。"
 
-msgid ""
-"Opens a central location for Help topics, tutorials, troubleshooting, and "
-"other support services."
-msgstr ""
-"ヘルプのトピック、チュートリアル、トラブルシューティング、サポート サービスな"
-"どを集中して参照できる場所を開きます。"
+msgid "Turn Off Computer"
+msgstr "終了オプション(U)"
 
-msgid "Help and Support"
-msgstr "ヘルプとサポート(H)"
-
-msgid ""
-"Opens a window where you can pick search options and work with search "
-"results."
-msgstr "検索オプションを選んだり、検索結果を得たりできるウィンドウを開きます。"
-
-msgid "Search"
-msgstr "検索(S)"
-
-msgid "Opens a program, folder, document, or Web site."
-msgstr "プログラム、フォルダ、ドキュメントまたは Web サイトを開きます。"
-
-msgid "Run..."
-msgstr "ファイル名を指定して実行(R)..."
+msgid "start"
+msgstr "スタート"

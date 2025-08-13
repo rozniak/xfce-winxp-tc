@@ -20,26 +20,90 @@ msgstr ""
 msgid "All Programs"
 msgstr "모든 프로그램(P)"
 
+msgid ""
+"Chooses default programs for certain activities, such as Web browsing or "
+"sending e-mail, and specifies which programs are accessible from the Start "
+"menu, desktop, and other locations."
+msgstr ""
+"웹 브라우징이나 전자 메일 전송과 같은 작업에 사용할 기본 프로그램을 선택하"
+"고, 시작 메뉴와 바탕 화면, 기타 위치에서 액세스할 프로그램을 지정합니다."
+
+msgid "Click here to begin"
+msgstr "시작하려면 여기를 클릭하십시오."
+
+msgid "Close"
+msgstr "닫기"
+
+msgid "Connect To"
+msgstr "연결 대상(T)"
+
+msgid "Connects to other computers, networks, and the Internet."
+msgstr "다른 컴퓨터, 네트워크 및 인터넷에 연결합니다."
+
+msgid "Displays recently opened documents and folders."
+msgstr "최근에 열었던 문서 및 폴더를 표시합니다."
+
+msgid "E-mail"
+msgstr "전자 메일"
+
+msgid ""
+"Gives access to, and information about, the disk drives, cameras, scanners, "
+"and other hardware connected to your computer."
+msgstr ""
+"디스크 드라이브, 카메라, 스캐너 및 사용자 컴퓨터에 연결된 기타 하드웨어에 관"
+"한 액세스 및 정보를 줍니다."
+
+msgid "Help and Support"
+msgstr "도움말 및 지원"
+
+msgid "Internet"
+msgstr "인터넷"
+
+msgid "Log Off"
+msgstr "로그오프(L)"
+
+msgid "Maximize"
+msgstr "최대화(Z)"
+
+msgid "Minimize"
+msgstr "최소화"
+
+msgid ""
+"Opens a central location for Help topics, tutorials, troubleshooting, and "
+"other support services."
+msgstr ""
+"도움말 항목, 자습서, 문제 해결 및 기타 지원 서비스에 대한 정보를 한 눈에 볼 "
+"수 있는 창을 엽니다."
+
+msgid "Opens a program, folder, document, or Web site."
+msgstr "프로그램, 폴더, 문서 또는 웹 사이트를 엽니다."
+
+msgid ""
+"Opens a window where you can pick search options and work with search "
+"results."
+msgstr "검색 옵션을 선택하고 검색 결과로 작업할 창을 엽니다."
+
+msgid ""
+"Opens the My Documents folder, where you can store letters, reports, notes, "
+"and other kinds of documents."
+msgstr ""
+"편지, 보고서, 메모, 기타 문서를 저장할 수 있는 [내 문서] 폴더를 엽니다."
+
+msgid ""
+"Opens the My Music folder, where you can store music and other audio files."
+msgstr "음악 및 기타 오디오 파일을 저장할 수 있는 [내 음악] 폴더를 엽니다."
+
+msgid ""
+"Opens the My Pictures folder, where you can store digital photos, images, "
+"and graphics files."
+msgstr ""
+"디지털 사진, 이미지, 그래픽 파일을 저장할 수 있는 [내 그림] 폴더를 엽니다."
+
 msgid "Opens your Internet browser."
 msgstr "인터넷 브라우저를 엽니다."
 
 msgid "Opens your e-mail program so you can send or read a message."
 msgstr "메시지를 보내고 읽을 수 있도록 전자 메일 프로그램을 엽니다."
-
-msgid "Internet"
-msgstr "인터넷"
-
-msgid "E-mail"
-msgstr "전자 메일"
-
-msgid "start"
-msgstr "시작"
-
-msgid "Click here to begin"
-msgstr "시작하려면 여기를 클릭하십시오."
-
-msgid "Log Off"
-msgstr "로그오프(L)"
 
 msgid ""
 "Provides options for closing your programs and logging off, or for leaving "
@@ -47,9 +111,6 @@ msgid ""
 msgstr ""
 "프로그램을 닫고 로그오프하는 옵션 또는 프로그램을 실행하는 상태로 다른 사용자"
 "로 전환하는 옵션을 제공합니다."
-
-msgid "Turn Off Computer"
-msgstr "시스템 종료"
 
 msgid ""
 "Provides options for turning off or restarting your computer, or for "
@@ -59,32 +120,6 @@ msgstr ""
 "하는 옵션을 제공합니다."
 
 msgid ""
-"Opens the My Documents folder, where you can store letters, reports, notes, "
-"and other kinds of documents."
-msgstr ""
-"편지, 보고서, 메모, 기타 문서를 저장할 수 있는 [내 문서] 폴더를 엽니다."
-
-msgid "Displays recently opened documents and folders."
-msgstr "최근에 열었던 문서 및 폴더를 표시합니다."
-
-msgid ""
-"Opens the My Pictures folder, where you can store digital photos, images, "
-"and graphics files."
-msgstr ""
-"디지털 사진, 이미지, 그래픽 파일을 저장할 수 있는 [내 그림] 폴더를 엽니다."
-
-msgid ""
-"Opens the My Music folder, where you can store music and other audio files."
-msgstr "음악 및 기타 오디오 파일을 저장할 수 있는 [내 음악] 폴더를 엽니다."
-
-msgid ""
-"Gives access to, and information about, the disk drives, cameras, scanners, "
-"and other hardware connected to your computer."
-msgstr ""
-"디스크 드라이브, 카메라, 스캐너 및 사용자 컴퓨터에 연결된 기타 하드웨어에 관"
-"한 액세스 및 정보를 줍니다."
-
-msgid ""
 "Provides options for you to customize the appearance and functionality of "
 "your computer, add or remove programs, and set up network connections and "
 "user accounts."
@@ -92,48 +127,25 @@ msgstr ""
 "사용자 컴퓨터의 모양 및 기능을 지정하고 프로그램을 추가하거나 제거하며 네트워"
 "크 연결 및 사용자 계정을 설정하는 옵션을 제공합니다."
 
-msgid ""
-"Chooses default programs for certain activities, such as Web browsing or "
-"sending e-mail, and specifies which programs are accessible from the Start "
-"menu, desktop, and other locations."
-msgstr ""
-"웹 브라우징이나 전자 메일 전송과 같은 작업에 사용할 기본 프로그램을 선택하"
-"고, 시작 메뉴와 바탕 화면, 기타 위치에서 액세스할 프로그램을 지정합니다."
+msgid "Restore"
+msgstr "복원(R)"
+
+msgid "Run..."
+msgstr "실행(R)..."
+
+msgid "Search"
+msgstr "검색(S)"
 
 msgid "Set Program Access and Defaults"
 msgstr "기본 프로그램 설정"
-
-msgid "Connects to other computers, networks, and the Internet."
-msgstr "다른 컴퓨터, 네트워크 및 인터넷에 연결합니다."
-
-msgid "Connect To"
-msgstr "연결 대상(T)"
 
 msgid "Shows installed printers and fax printers and helps you add new ones."
 msgstr ""
 "설치되어 있는 프린터 및 팩스 프린터를 표시하며, 새로 추가하는 것을 도와줍니"
 "다."
 
-msgid ""
-"Opens a central location for Help topics, tutorials, troubleshooting, and "
-"other support services."
-msgstr ""
-"도움말 항목, 자습서, 문제 해결 및 기타 지원 서비스에 대한 정보를 한 눈에 볼 "
-"수 있는 창을 엽니다."
+msgid "Turn Off Computer"
+msgstr "시스템 종료"
 
-msgid "Help and Support"
-msgstr "도움말 및 지원"
-
-msgid ""
-"Opens a window where you can pick search options and work with search "
-"results."
-msgstr "검색 옵션을 선택하고 검색 결과로 작업할 창을 엽니다."
-
-msgid "Search"
-msgstr "검색(S)"
-
-msgid "Opens a program, folder, document, or Web site."
-msgstr "프로그램, 폴더, 문서 또는 웹 사이트를 엽니다."
-
-msgid "Run..."
-msgstr "실행(R)..."
+msgid "start"
+msgstr "시작"

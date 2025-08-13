@@ -20,6 +20,98 @@ msgstr ""
 msgid "All Programs"
 msgstr "Alle programma's"
 
+msgid ""
+"Chooses default programs for certain activities, such as Web browsing or "
+"sending e-mail, and specifies which programs are accessible from the Start "
+"menu, desktop, and other locations."
+msgstr ""
+"Hiermee kunt u standaardprogramma's voor bepaalde activiteiten kiezen, zoals "
+"surfen en het verzenden van e-mail, en bepalen welke programma's via het "
+"menu Start, het bureaublad en andere locaties toegankelijk zijn"
+
+msgid "Click here to begin"
+msgstr "Klik hier om te beginnen"
+
+msgid "Close"
+msgstr "Sluiten"
+
+msgid "Connect To"
+msgstr "Verbinding maken"
+
+msgid "Connects to other computers, networks, and the Internet."
+msgstr ""
+"Hiermee kunt u verbindingen met andere computers, netwerken en het Internet "
+"maken"
+
+msgid "Displays recently opened documents and folders."
+msgstr ""
+"Hiermee wordt een lijst met onlangs geopende bestanden en mappen weergegeven"
+
+msgid "E-mail"
+msgstr "E-mail"
+
+msgid ""
+"Gives access to, and information about, the disk drives, cameras, scanners, "
+"and other hardware connected to your computer."
+msgstr ""
+"Hiermee wordt de map Deze computer geopend, waarmee u toegang krijgt tot en "
+"informatie kunt bekijken over de stations op deze computer en de hierop "
+"aangesloten hardware, zoals printers, camera's, scanners en andere apparaten"
+
+msgid "Help and Support"
+msgstr "Help en ondersteuning"
+
+msgid "Internet"
+msgstr "Internet"
+
+msgid "Log Off"
+msgstr "Afmelden"
+
+msgid "Maximize"
+msgstr "Maximaliseren"
+
+msgid "Minimize"
+msgstr "Minimaliseren"
+
+msgid ""
+"Opens a central location for Help topics, tutorials, troubleshooting, and "
+"other support services."
+msgstr ""
+"Hiermee krijgt u toegang tot een centrale locatie met Help-onderwerpen, "
+"tips, zelfstudielessen, oplossingen voor problemen en andere ondersteunende "
+"diensten"
+
+msgid "Opens a program, folder, document, or Web site."
+msgstr ""
+"Hiermee kunt u een programma starten, map openen of een website bezoeken"
+
+msgid ""
+"Opens a window where you can pick search options and work with search "
+"results."
+msgstr ""
+"Hiermee kunt u een pagina openen waarin u zoekopties kunt instellen en met "
+"de resultaten van een zoekopdracht kunt werken"
+
+msgid ""
+"Opens the My Documents folder, where you can store letters, reports, notes, "
+"and other kinds of documents."
+msgstr ""
+"Hiermee wordt de map Mijn documenten geopend, waarin u brieven, rapporten, "
+"spreadsheets en andere documenten kunt opslaan"
+
+msgid ""
+"Opens the My Music folder, where you can store music and other audio files."
+msgstr ""
+"Hiermee wordt de map Mijn muziek geopend, waarin u muziekbestanden en andere "
+"geluidsbestanden kunt opslaan"
+
+msgid ""
+"Opens the My Pictures folder, where you can store digital photos, images, "
+"and graphics files."
+msgstr ""
+"Hiermee wordt de map Mijn afbeeldingen geopend, waarin u digitale foto's, "
+"afbeeldingen, plaatjes en andere grafische bestanden kunt opslaan"
+
 msgid "Opens your Internet browser."
 msgstr "Hiermee wordt de browser gestart, zodat u op het Internet kunt surfen"
 
@@ -28,21 +120,6 @@ msgstr ""
 "Hiermee wordt het e-mailprogramma geopend, zodat u berichten kunt verzenden "
 "en ontvangen"
 
-msgid "Internet"
-msgstr "Internet"
-
-msgid "E-mail"
-msgstr "E-mail"
-
-msgid "start"
-msgstr "start"
-
-msgid "Click here to begin"
-msgstr "Klik hier om te beginnen"
-
-msgid "Log Off"
-msgstr "Afmelden"
-
 msgid ""
 "Provides options for closing your programs and logging off, or for leaving "
 "your programs running and switching to another user."
@@ -50,9 +127,6 @@ msgstr ""
 "Hiermee worden opties weergegeven waarmee u programma's kunt sluiten en u "
 "zich kunt afmelden, of waarmee u programma's geactiveerd kunt laten en u "
 "zich als andere gebruiker kunt aanmelden"
-
-msgid "Turn Off Computer"
-msgstr "Computer uitschakelen"
 
 msgid ""
 "Provides options for turning off or restarting your computer, or for "
@@ -63,38 +137,6 @@ msgstr ""
 "kunt laten overschakelen"
 
 msgid ""
-"Opens the My Documents folder, where you can store letters, reports, notes, "
-"and other kinds of documents."
-msgstr ""
-"Hiermee wordt de map Mijn documenten geopend, waarin u brieven, rapporten, "
-"spreadsheets en andere documenten kunt opslaan"
-
-msgid "Displays recently opened documents and folders."
-msgstr ""
-"Hiermee wordt een lijst met onlangs geopende bestanden en mappen weergegeven"
-
-msgid ""
-"Opens the My Pictures folder, where you can store digital photos, images, "
-"and graphics files."
-msgstr ""
-"Hiermee wordt de map Mijn afbeeldingen geopend, waarin u digitale foto's, "
-"afbeeldingen, plaatjes en andere grafische bestanden kunt opslaan"
-
-msgid ""
-"Opens the My Music folder, where you can store music and other audio files."
-msgstr ""
-"Hiermee wordt de map Mijn muziek geopend, waarin u muziekbestanden en andere "
-"geluidsbestanden kunt opslaan"
-
-msgid ""
-"Gives access to, and information about, the disk drives, cameras, scanners, "
-"and other hardware connected to your computer."
-msgstr ""
-"Hiermee wordt de map Deze computer geopend, waarmee u toegang krijgt tot en "
-"informatie kunt bekijken over de stations op deze computer en de hierop "
-"aangesloten hardware, zoals printers, camera's, scanners en andere apparaten"
-
-msgid ""
 "Provides options for you to customize the appearance and functionality of "
 "your computer, add or remove programs, and set up network connections and "
 "user accounts."
@@ -103,55 +145,25 @@ msgstr ""
 "van de computer wijzigt, programma's toevoegt en verwijdert, en "
 "netwerkverbindingen en gebruikersaccounts instelt"
 
-msgid ""
-"Chooses default programs for certain activities, such as Web browsing or "
-"sending e-mail, and specifies which programs are accessible from the Start "
-"menu, desktop, and other locations."
-msgstr ""
-"Hiermee kunt u standaardprogramma's voor bepaalde activiteiten kiezen, zoals "
-"surfen en het verzenden van e-mail, en bepalen welke programma's via het "
-"menu Start, het bureaublad en andere locaties toegankelijk zijn"
+msgid "Restore"
+msgstr "Terugzetten"
+
+msgid "Run..."
+msgstr "Uitvoeren..."
+
+msgid "Search"
+msgstr "Zoeken"
 
 msgid "Set Program Access and Defaults"
 msgstr "Programmatoegang en -instellingen"
-
-msgid "Connects to other computers, networks, and the Internet."
-msgstr ""
-"Hiermee kunt u verbindingen met andere computers, netwerken en het Internet "
-"maken"
-
-msgid "Connect To"
-msgstr "Verbinding maken"
 
 msgid "Shows installed printers and fax printers and helps you add new ones."
 msgstr ""
 "Hiermee kunt u geïnstalleerde printers en faxprinters weergeven en nieuwe "
 "printers en faxprinters toevoegen"
 
-msgid ""
-"Opens a central location for Help topics, tutorials, troubleshooting, and "
-"other support services."
-msgstr ""
-"Hiermee krijgt u toegang tot een centrale locatie met Help-onderwerpen, "
-"tips, zelfstudielessen, oplossingen voor problemen en andere ondersteunende "
-"diensten"
+msgid "Turn Off Computer"
+msgstr "Computer uitschakelen"
 
-msgid "Help and Support"
-msgstr "Help en ondersteuning"
-
-msgid ""
-"Opens a window where you can pick search options and work with search "
-"results."
-msgstr ""
-"Hiermee kunt u een pagina openen waarin u zoekopties kunt instellen en met "
-"de resultaten van een zoekopdracht kunt werken"
-
-msgid "Search"
-msgstr "Zoeken"
-
-msgid "Opens a program, folder, document, or Web site."
-msgstr ""
-"Hiermee kunt u een programma starten, map openen of een website bezoeken"
-
-msgid "Run..."
-msgstr "Uitvoeren..."
+msgid "start"
+msgstr "start"

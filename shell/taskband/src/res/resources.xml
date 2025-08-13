@@ -5,6 +5,8 @@
         <file>personal-menu.ui</file>
         <file>start-button.ui</file>
         <file>start-menu.css</file>
+        <file>task-buttons.css</file>
+        <file>taskbutton-ctx-menu.ui</file>
         <file>volume-popup.css</file>
     </gresource>
 </gresources>

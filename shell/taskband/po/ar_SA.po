@@ -19,82 +19,6 @@ msgstr ""
 msgid "All Programs"
 msgstr "كافة البرامج"
 
-msgid "Opens your Internet browser."
-msgstr "فتح مستعرض إنترنت."
-
-msgid "Opens your e-mail program so you can send or read a message."
-msgstr "فتح برنامج البريد الإلكتروني حتى تتمكن من إرسال رسالة أو قراءتها."
-
-msgid "Internet"
-msgstr "إنترنت"
-
-msgid "E-mail"
-msgstr "البريد الإلكتروني"
-
-msgid "start"
-msgstr " ابدأ"
-
-msgid "Click here to begin"
-msgstr "انقر هنا لتبدأ"
-
-msgid "Log Off"
-msgstr "تسجيل الخروج"
-
-msgid ""
-"Provides options for closing your programs and logging off, or for leaving "
-"your programs running and switching to another user."
-msgstr ""
-"توفير خيارات لإغلاق البرامج وتسجيل الخروج أو للاحتفاظ بالبرامج قيد التشغيل "
-"والتبديل إلى مستخدم آخر."
-
-msgid "Turn Off Computer"
-msgstr "إيقاف تشغيل الكمبيوتر"
-
-msgid ""
-"Provides options for turning off or restarting your computer, or for "
-"activating Stand By or Hibernate modes."
-msgstr ""
-"توفير خيارات لإيقاف تشغيل الكمبيوتر أو لإعادة تشغيله أو لتنشيط وضعي "
-"\"الاستعداد\" أو \"السبات\"."
-
-msgid ""
-"Opens the My Documents folder, where you can store letters, reports, notes, "
-"and other kinds of documents."
-msgstr ""
-"فتح المجلد \"المستندات\" الذي يمكنك حفظ الخطابات والتقارير والملاحظات وغير "
-"ذلك من أنواع المستندات فيه."
-
-msgid "Displays recently opened documents and folders."
-msgstr "عرض المستندات والمجلدات التي تم فتحها مؤخراً."
-
-msgid ""
-"Opens the My Pictures folder, where you can store digital photos, images, "
-"and graphics files."
-msgstr ""
-"فتح المجلد \"الصور\" الذي يمكنك حفظ الصور الفوتوغرافية الرقمية والصور وملفات "
-"الرسومات فيه."
-
-msgid ""
-"Opens the My Music folder, where you can store music and other audio files."
-msgstr ""
-"فتح المجلد \"الموسيقى\" الذي يمكنك حفظ ملفات الموسيقى وأنواع ملفات الصوت "
-"الأخرى فيه."
-
-msgid ""
-"Gives access to, and information about, the disk drives, cameras, scanners, "
-"and other hardware connected to your computer."
-msgstr ""
-"منح حق الوصول إلى محركات الأقراص والكاميرات والماسحات الضوئية والأجهزة "
-"الأخرى المتصلة بالكمبيوتر وكذلك توفير معلومات بخصوصها."
-
-msgid ""
-"Provides options for you to customize the appearance and functionality of "
-"your computer, add or remove programs, and set up network connections and "
-"user accounts."
-msgstr ""
-"توفير خيارات لتخصيص مظهر الكمبيوتر وكيفية عمله وإضافة البرامج أو إزالتها "
-"وإعداد اتصالات شبكة الاتصال وحسابات المستخدمين."
-
 msgid ""
 "Chooses default programs for certain activities, such as Web browsing or "
 "sending e-mail, and specifies which programs are accessible from the Start "
@@ -104,17 +28,45 @@ msgstr ""
 "الإلكتروني وتحديد البرامج التي يمكن الوصول إليها من قائمة ابدأ وسطح المكتب "
 "ومواقع أخرى."
 
-msgid "Set Program Access and Defaults"
-msgstr "تعيين افتراضيات البرامج والوصول إليها"
+msgid "Click here to begin"
+msgstr "انقر هنا لتبدأ"
 
-msgid "Connects to other computers, networks, and the Internet."
-msgstr "الاتصال بأجهزة الكمبيوتر وشبكات الاتصال الأخرى وإنترنت"
+msgid "Close"
+msgstr "إغلاق"
 
 msgid "Connect To"
 msgstr "الاتصال بـ"
 
-msgid "Shows installed printers and fax printers and helps you add new ones."
-msgstr "إظهار الطابعات وأجهزة الفاكس المثبتة ومساعدتك في إضافة أجهزة جديدة"
+msgid "Connects to other computers, networks, and the Internet."
+msgstr "الاتصال بأجهزة الكمبيوتر وشبكات الاتصال الأخرى وإنترنت"
+
+msgid "Displays recently opened documents and folders."
+msgstr "عرض المستندات والمجلدات التي تم فتحها مؤخراً."
+
+msgid "E-mail"
+msgstr "البريد الإلكتروني"
+
+msgid ""
+"Gives access to, and information about, the disk drives, cameras, scanners, "
+"and other hardware connected to your computer."
+msgstr ""
+"منح حق الوصول إلى محركات الأقراص والكاميرات والماسحات الضوئية والأجهزة "
+"الأخرى المتصلة بالكمبيوتر وكذلك توفير معلومات بخصوصها."
+
+msgid "Help and Support"
+msgstr "تعليمات ودعم"
+
+msgid "Internet"
+msgstr "إنترنت"
+
+msgid "Log Off"
+msgstr "تسجيل الخروج"
+
+msgid "Maximize"
+msgstr "تكبير"
+
+msgid "Minimize"
+msgstr "تصغير"
 
 msgid ""
 "Opens a central location for Help topics, tutorials, troubleshooting, and "
@@ -123,19 +75,79 @@ msgstr ""
 "فتح موقع وسط لمواضيع \"التعليمات\"، والبرامج التعليمية واستكشاف الأخطاء "
 "وإصلاحها وخدمات الدعم الأخرى."
 
-msgid "Help and Support"
-msgstr "تعليمات ودعم"
+msgid "Opens a program, folder, document, or Web site."
+msgstr "فتح برنامج أو مجلد أو مستند أو موقع على ويب."
 
 msgid ""
 "Opens a window where you can pick search options and work with search "
 "results."
 msgstr "فتح إطار يمكنك فيه انتقاء خيارات البحث والتعامل مع نتائج البحث."
 
-msgid "Search"
-msgstr "بحث"
+msgid ""
+"Opens the My Documents folder, where you can store letters, reports, notes, "
+"and other kinds of documents."
+msgstr ""
+"فتح المجلد \"المستندات\" الذي يمكنك حفظ الخطابات والتقارير والملاحظات وغير "
+"ذلك من أنواع المستندات فيه."
 
-msgid "Opens a program, folder, document, or Web site."
-msgstr "فتح برنامج أو مجلد أو مستند أو موقع على ويب."
+msgid ""
+"Opens the My Music folder, where you can store music and other audio files."
+msgstr ""
+"فتح المجلد \"الموسيقى\" الذي يمكنك حفظ ملفات الموسيقى وأنواع ملفات الصوت "
+"الأخرى فيه."
+
+msgid ""
+"Opens the My Pictures folder, where you can store digital photos, images, "
+"and graphics files."
+msgstr ""
+"فتح المجلد \"الصور\" الذي يمكنك حفظ الصور الفوتوغرافية الرقمية والصور وملفات "
+"الرسومات فيه."
+
+msgid "Opens your Internet browser."
+msgstr "فتح مستعرض إنترنت."
+
+msgid "Opens your e-mail program so you can send or read a message."
+msgstr "فتح برنامج البريد الإلكتروني حتى تتمكن من إرسال رسالة أو قراءتها."
+
+msgid ""
+"Provides options for closing your programs and logging off, or for leaving "
+"your programs running and switching to another user."
+msgstr ""
+"توفير خيارات لإغلاق البرامج وتسجيل الخروج أو للاحتفاظ بالبرامج قيد التشغيل "
+"والتبديل إلى مستخدم آخر."
+
+msgid ""
+"Provides options for turning off or restarting your computer, or for "
+"activating Stand By or Hibernate modes."
+msgstr ""
+"توفير خيارات لإيقاف تشغيل الكمبيوتر أو لإعادة تشغيله أو لتنشيط وضعي "
+"\"الاستعداد\" أو \"السبات\"."
+
+msgid ""
+"Provides options for you to customize the appearance and functionality of "
+"your computer, add or remove programs, and set up network connections and "
+"user accounts."
+msgstr ""
+"توفير خيارات لتخصيص مظهر الكمبيوتر وكيفية عمله وإضافة البرامج أو إزالتها "
+"وإعداد اتصالات شبكة الاتصال وحسابات المستخدمين."
+
+msgid "Restore"
+msgstr "استعادة"
 
 msgid "Run..."
 msgstr "تشغيل..."
+
+msgid "Search"
+msgstr "بحث"
+
+msgid "Set Program Access and Defaults"
+msgstr "تعيين افتراضيات البرامج والوصول إليها"
+
+msgid "Shows installed printers and fax printers and helps you add new ones."
+msgstr "إظهار الطابعات وأجهزة الفاكس المثبتة ومساعدتك في إضافة أجهزة جديدة"
+
+msgid "Turn Off Computer"
+msgstr "إيقاف تشغيل الكمبيوتر"
+
+msgid "start"
+msgstr " ابدأ"
