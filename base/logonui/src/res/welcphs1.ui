@@ -23,6 +23,11 @@
         <property name="can-focus">False</property>
         <property name="label">Please wait...</property>
         <property name="xalign">1.0</property>
+
+        <style>
+          <class name="logonui-text" />
+          <class name="logonui-instruction" />
+        </style>
       </object>
       <packing>
         <property name="expand">False</property>

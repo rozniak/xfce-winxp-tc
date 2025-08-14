@@ -24,6 +24,11 @@
 }
 
 
+.logonui-text {
+    color: #FFF;
+    font-family: "Tahoma";
+}
+
 
 /* Footer styles */
 .accounts-label {
@@ -53,11 +58,9 @@
 
 
 /* Login screen styles */
-.instruction-label {
+.logonui-instruction {
     font-weight: 500;
-    color: #ffffff;
     font-size: 14pt;
-    font-family: "Tahoma", inherit;
 }
 
 /* DEBUG */
@@ -153,22 +156,16 @@
 
 
 /* Utility styles */
-.plain-button {
+.undecorated,
+.undecorated:focus,
+.undecorated:hover,
+.undecorated:active {
   background-image: none;
   background-color: transparent;
   border: none;
   box-shadow: none;
   padding: 0;
   outline: none;
-}
-
-.plain-button:hover {
-  background-color: transparent;
-}
-
-.plain-button:focus {
-  background-color: transparent;
-  border: none;
 }
 
 .underline {

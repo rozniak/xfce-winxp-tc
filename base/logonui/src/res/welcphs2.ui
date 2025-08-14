@@ -33,7 +33,8 @@
             <property name="label">To begin, click your user name</property>
 
             <style>
-              <class name="instruction-label" />
+              <class name="logonui-text" />
+              <class name="logonui-instruction" />
             </style>
           </object>
           <packing>
