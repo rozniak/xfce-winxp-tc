@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <template class="WinTCWelcomeUI" parent="GtkWidget">
+  <template class="WinTCWelcomeUI" parent="GtkBox">
     <child>
       <object class="GtkBox">
         <property name="visible">True</property>

@@ -98,12 +98,12 @@ static gboolean on_cancel_pressed(
 //
 struct _WinTCWelcomeUIClass
 {
-    GtkWidgetClass __parent__;
+    GtkBoxClass __parent__;
 };
 
 struct _WinTCWelcomeUI
 {
-    GtkWidget __parent__;
+    GtkBox __parent__;
 
     // UI
     //
@@ -132,7 +132,7 @@ struct _WinTCWelcomeUI
 G_DEFINE_TYPE_WITH_CODE(
     WinTCWelcomeUI,
     wintc_welcome_ui,
-    GTK_TYPE_WIDGET,
+    GTK_TYPE_BOX,
     G_IMPLEMENT_INTERFACE(
         WINTC_TYPE_IGINA_AUTH_UI,
         wintc_welcome_ui_igina_auth_ui_interface_init
@@ -247,28 +247,33 @@ static void wintc_welcome_ui_constructed(
     // USER INTERFACE
     //
     GtkBuilder* builder = gtk_builder_new();
+    GError*     error   = NULL;
 
     GtkWidget* button_shutdown = NULL;
+
+    g_type_ensure(WINTC_TYPE_CTL_ANIMATION);
+    g_type_ensure(WINTC_TYPE_WELCOME_USER_LIST);
 
     if (
         !gtk_builder_add_from_resource(
             builder,
             "/uk/oddmatics/wintc/logonui/welcphs1.ui",
-            NULL
+            &error
         ) ||
         !gtk_builder_add_from_resource(
             builder,
             "/uk/oddmatics/wintc/logonui/welcphs2.ui",
-            NULL
+            &error
         ) ||
         !gtk_builder_add_from_resource(
             builder,
             "/uk/oddmatics/wintc/logonui/welcphs3.ui",
-            NULL
+            &error
         )
     )
     {
         g_critical("%s", "logonui: unable to load resources");
+        wintc_log_error_and_clear(&error);
         return;
     }
 

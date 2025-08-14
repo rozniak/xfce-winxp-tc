@@ -15,7 +15,7 @@ G_DECLARE_FINAL_TYPE(
     wintc_welcome_ui,
     WINTC,
     WELCOME_UI,
-    GtkWidget
+    GtkBox
 )
 
 //
