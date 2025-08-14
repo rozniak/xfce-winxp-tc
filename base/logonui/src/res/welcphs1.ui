@@ -6,7 +6,7 @@
     <property name="orientation">horizontal</property>
 
     <child>
-      <object class="WinTCCtlAnimation" id="anim-logo">
+      <object class="WinTCCtlAnimation" id="anim-logo-wait">
         <property name="visible">True</property>
         <property name="can-focus">False</property>
       </object>
