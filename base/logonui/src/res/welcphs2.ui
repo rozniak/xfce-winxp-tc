@@ -13,7 +13,7 @@
         <property name="orientation">vertical</property>
 
         <child>
-          <object class="WinTCCtlAnimation" id="anim-logo">
+          <object class="WinTCCtlAnimation" id="anim-logo-login">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
           </object>
