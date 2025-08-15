@@ -3,12 +3,15 @@
   <object class="GtkBox" id="box-wait">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
+    <property name="halign">GTK_ALIGN_END</property>
     <property name="orientation">horizontal</property>
 
     <child>
       <object class="WinTCCtlAnimation" id="anim-logo-wait">
         <property name="visible">True</property>
         <property name="can-focus">False</property>
+        <property name="halign">GTK_ALIGN_END</property>
+        <property name="valign">GTK_ALIGN_CENTER</property>
       </object>
       <packing>
         <property name="expand">False</property>
