@@ -16,6 +16,8 @@
           <object class="WinTCCtlAnimation" id="anim-logo-login">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
+            <property name="halign">GTK_ALIGN_END</property>
+            <property name="valign">GTK_ALIGN_END</property>
           </object>
           <packing>
             <property name="expand">True</property>
@@ -31,6 +33,7 @@
             <property name="halign">GTK_ALIGN_END</property>
             <property name="hexpand">True</property>
             <property name="label">To begin, click your user name</property>
+            <property name="valign">GTK_ALIGN_START</property>
 
             <style>
               <class name="logonui-text" />
@@ -38,8 +41,8 @@
             </style>
           </object>
           <packing>
-            <property name="expand">False</property>
-            <property name="fill">False</property>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
             <property name="position">1</property>
           </packing>
         </child>
@@ -57,6 +60,7 @@
         <property name="visible">True</property>
         <property name="can-focus">False</property>
         <property name="orientation">vertical</property>
+        <property name="width-request">1</property>
 
         <style>
           <class name="vertical-separator" />
@@ -86,7 +90,8 @@
       <packing>
         <property name="expand">True</property>
         <property name="fill">True</property>
-        <property name="position">2</property>
+        <property name="position">1</property>
+        <property name="pack-type">end</property>
       </packing>
     </child>
 
