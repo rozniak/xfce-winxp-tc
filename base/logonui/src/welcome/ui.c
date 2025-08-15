@@ -239,6 +239,7 @@ static void wintc_welcome_ui_constructed(
 
     GtkWidget* anim_logo_wait  = NULL;
     GtkWidget* anim_logo_login = NULL;
+    GtkWidget* user_list       = NULL;
 
     g_type_ensure(WINTC_TYPE_CTL_ANIMATION);
     g_type_ensure(WINTC_TYPE_WELCOME_USER_LIST);
@@ -273,6 +274,7 @@ static void wintc_welcome_ui_constructed(
         "box-welcome",     &(welcome_ui->box_welcome),
         "anim-logo-wait",  &anim_logo_wait,
         "anim-logo-login", &anim_logo_login,
+        "user-list",       &user_list,
         NULL
     );
 
@@ -317,6 +319,12 @@ static void wintc_welcome_ui_constructed(
         ani_id_login,
         LOGOANI_FRAME_RATE,
         WINTC_CTL_ANIMATION_INFINITE
+    );
+
+    g_object_set(
+        user_list,
+        "logon-session", welcome_ui->logon_session,
+        NULL
     );
 
     // Add boxes to main stack
