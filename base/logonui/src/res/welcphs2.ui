@@ -76,7 +76,7 @@
         <property name="orientation">vertical</property>
 
         <child>
-          <object class="WinTCWelcomeUserList">
+          <object class="WinTCWelcomeUserList" id="user-list">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
           </object>
