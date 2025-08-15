@@ -3,7 +3,7 @@
   <object class="GtkBox" id="box-wait">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
-    <property name="halign">GTK_ALIGN_END</property>
+    <property name="halign">GTK_ALIGN_CENTER</property>
     <property name="orientation">horizontal</property>
 
     <child>
