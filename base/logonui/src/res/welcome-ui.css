@@ -5,6 +5,7 @@
 
 .header-separator {
     background: linear-gradient(45deg, #5B7EDC, #C3D9FD 20%, #ADC6F6, #5A7EDC 90%);
+    min-height: 2px;
 }
 
 .content {
@@ -13,6 +14,7 @@
 
 .vertical-separator {
     background-image: linear-gradient(to bottom, #5B7EDC, #91AEEE, #5A7EDC );
+    min-width: 1px;
 }
 
 .footer {
@@ -21,6 +23,7 @@
 
 .footer-separator {
     background: linear-gradient(45deg, #5076D4, #F99736 20%, #C2814D, #00309C);
+    min-height: 2px;
 }
 
 
@@ -87,7 +90,6 @@
 }
 
 .user-label {
-    font-weight: 600;
     color: #ffffff;
     font-size: 14pt;
     font-family: Tahoma, inherit;

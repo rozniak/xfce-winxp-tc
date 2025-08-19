@@ -4,7 +4,8 @@
     <property name="visible">True</property>
     <property name="can-focus">False</property>
     <property name="halign">GTK_ALIGN_CENTER</property>
-    <property name="orientation">horizontal</property>
+    <property name="orientation">vertical</property>
+    <property name="valign">GTK_ALIGN_CENTER</property>
 
     <child>
       <object class="WinTCCtlAnimation" id="anim-logo-wait">
@@ -30,6 +31,7 @@
         <style>
           <class name="logonui-text" />
           <class name="logonui-instruction" />
+          <class name="wintc-mt-md" />
         </style>
       </object>
       <packing>
