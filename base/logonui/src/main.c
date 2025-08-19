@@ -1,5 +1,6 @@
 #include <glib.h>
 #include <gtk/gtk.h>
+#include <wintc/comctl.h>
 #include <wintc/comgtk.h>
 
 #include "settings.h"
@@ -29,6 +30,8 @@ int main(
         "Windows XP style (Blue)",
         NULL
     );
+
+    wintc_ctl_install_default_styles();
 
     // Create the window and launch
     //

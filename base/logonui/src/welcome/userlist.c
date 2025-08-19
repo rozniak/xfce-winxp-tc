@@ -779,7 +779,7 @@ static GtkWidget *build_userlist_widget(WinTCWelcomeUserList *user_list)
             g_object_unref(go_activated);
         }
 
-        gtk_style_context_add_class(gtk_widget_get_style_context(item->go_button), "plain-button");
+        gtk_style_context_add_class(gtk_widget_get_style_context(item->go_button), "undecorated");
         gtk_widget_set_can_focus(item->go_button, FALSE);
         gtk_widget_set_size_request(item->go_button, 22, 27);
         gtk_widget_set_margin_start(item->go_button, 13);

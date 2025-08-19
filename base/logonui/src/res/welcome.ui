@@ -29,7 +29,6 @@
           <object class="GtkBox">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
-            <property name="height-request">2</property>
 
             <style>
               <class name="header-separator" />
@@ -75,7 +74,6 @@
           <object class="GtkBox">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
-            <property name="height-request">2</property>
 
             <style>
               <class name="footer-separator" />
@@ -141,6 +139,7 @@
 
                 <style>
                   <class name="undecorated" />
+                  <class name="wintc-ml-lg" />
                 </style>
               </object>
               <packing>
@@ -159,6 +158,7 @@ Just go to Control Panel and click User Accounts.</property>
 
                 <style>
                   <class name="logonui-text" />
+                  <class name="wintc-mr-lg" />
                 </style>
               </object>
               <packing>
