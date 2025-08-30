@@ -1,0 +1,6 @@
+THEME_BASENAME=Media Center style
+THEME_DESCRIPTION=Media Center visual style for XFCE.
+THEME_DISPLAYNAME=Media Center style
+THEME_MAINTAINER=Rory Fewell <roryf@oddmatics.uk>
+THEME_RAWNAME=royale
+THEME_VARIANT=Royale

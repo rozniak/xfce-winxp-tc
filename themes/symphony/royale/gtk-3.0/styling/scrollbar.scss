@@ -1,0 +1,501 @@
+/**
+ * scrollbar.scss - Royale Style Scrollbar Style Constants
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+$scrollbar_thickness: 17px;
+
+//
+// ALL SCROLLBARS
+//
+$scrollbar_trough_styles: ();
+
+$scrollbar_slider_styles: ();
+$scrollbar_slider_styles:
+    wintc_define_props_bg(
+        $scrollbar_slider_styles,
+        false,
+        undefined,
+        undefined,
+        no-repeat,
+        center,
+        undefined
+    );
+
+$scrollbar_button_styles: ();
+$scrollbar_button_styles:
+    wintc_define_props_bg(
+        $scrollbar_button_styles,
+        false,
+        undefined,
+        initial,
+        no-repeat,
+        center,
+        undefined
+    );
+
+
+//
+// DIRECTIONAL BUTTONS
+//
+$scrollbar_button_down_styles:
+    wintc_define_props_bg(
+        $scrollbar_button_down_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/scrollbar_down_glyph.png'),
+        url('../Resources/scrollbar_vert_button.png')
+    );
+$scrollbar_button_down_hover_styles:
+    wintc_define_props_bg(
+        $scrollbar_button_down_hover_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/scrollbar_down_glyph.png'),
+        url('../Resources/scrollbar_vert_button_hover.png')
+    );
+$scrollbar_button_down_press_styles:
+    wintc_define_props_bg(
+        $scrollbar_button_down_press_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/scrollbar_down_glyph.png'),
+        url('../Resources/scrollbar_vert_button_press.png')
+    );
+$scrollbar_button_down_inactive_styles:
+    wintc_define_props_bg(
+        $scrollbar_button_down_inactive_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/scrollbar_down_glyph_inactive.png'),
+        url('../Resources/scrollbar_vert_button_inactive.png')
+    );
+
+$scrollbar_button_left_styles:
+    wintc_define_props_bg(
+        $scrollbar_button_left_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/scrollbar_left_glyph.png'),
+        url('../Resources/scrollbar_horz_button.png')
+    );
+$scrollbar_button_left_hover_styles:
+    wintc_define_props_bg(
+        $scrollbar_button_left_hover_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/scrollbar_left_glyph.png'),
+        url('../Resources/scrollbar_horz_button_hover.png')
+    );
+$scrollbar_button_left_press_styles:
+    wintc_define_props_bg(
+        $scrollbar_button_left_press_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/scrollbar_left_glyph.png'),
+        url('../Resources/scrollbar_horz_button_press.png')
+    );
+$scrollbar_button_left_inactive_styles:
+    wintc_define_props_bg(
+        $scrollbar_button_left_inactive_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/scrollbar_left_glyph_inactive.png'),
+        url('../Resources/scrollbar_horz_button_inactive.png')
+    );
+
+$scrollbar_button_right_styles:
+    wintc_define_props_bg(
+        $scrollbar_button_right_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/scrollbar_right_glyph.png'),
+        url('../Resources/scrollbar_horz_button.png')
+    );
+$scrollbar_button_right_hover_styles:
+    wintc_define_props_bg(
+        $scrollbar_button_right_hover_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/scrollbar_right_glyph.png'),
+        url('../Resources/scrollbar_horz_button_hover.png')
+    );
+$scrollbar_button_right_press_styles:
+    wintc_define_props_bg(
+        $scrollbar_button_right_press_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/scrollbar_right_glyph.png'),
+        url('../Resources/scrollbar_horz_button_press.png')
+    );
+$scrollbar_button_right_inactive_styles:
+    wintc_define_props_bg(
+        $scrollbar_button_right_inactive_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/scrollbar_right_glyph_inactive.png'),
+        url('../Resources/scrollbar_horz_button_inactive.png')
+    );
+
+$scrollbar_button_up_styles:
+    wintc_define_props_bg(
+        $scrollbar_button_up_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/scrollbar_up_glyph.png'),
+        url('../Resources/scrollbar_vert_button.png')
+    );
+$scrollbar_button_up_hover_styles:
+    wintc_define_props_bg(
+        $scrollbar_button_up_hover_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/scrollbar_up_glyph.png'),
+        url('../Resources/scrollbar_vert_button_hover.png')
+    );
+$scrollbar_button_up_press_styles:
+    wintc_define_props_bg(
+        $scrollbar_button_up_press_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/scrollbar_up_glyph.png'),
+        url('../Resources/scrollbar_vert_button_press.png')
+    );
+$scrollbar_button_up_inactive_styles:
+    wintc_define_props_bg(
+        $scrollbar_button_up_inactive_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/scrollbar_up_glyph_inactive.png'),
+        url('../Resources/scrollbar_vert_button_inactive.png')
+    );
+
+
+//
+// HORIZONTAL SCROLLBARS
+//
+$scrollbar_horz_trough_styles:
+    wintc_define_props_bg(
+        $scrollbar_horz_trough_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/scrollbar_horz_trough.png')
+    );
+
+$scrollbar_horz_slider_styles:
+    wintc_define_props_bg(
+        $scrollbar_horz_slider_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/scrollbar_horz_gripper.png'),
+        linear-gradient(180deg,rgba(226, 239, 255, 1) 0%, rgba(190, 210, 234, 1) 100%)
+    );
+$scrollbar_horz_slider_styles:
+    wintc_define_props_borders(
+        $scrollbar_horz_slider_styles,
+        false,
+        solid,
+        3,
+        3,
+        3,
+        3,
+        undefined,
+        url('../Resources/scrollbar_horz_slider_border.png')
+    );
+
+$scrollbar_horz_slider_hover_styles:
+    wintc_define_props_bg(
+        $scrollbar_horz_slider_hover_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/scrollbar_horz_gripper_hover.png'),
+        linear-gradient(180deg,rgba(238, 245, 255, 1) 0%, rgba(189, 209, 233, 1) 100%)
+    );
+$scrollbar_horz_slider_hover_styles:
+    wintc_define_props_borders(
+        $scrollbar_horz_slider_hover_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/scrollbar_horz_slider_hover_border.png')
+    );
+
+$scrollbar_horz_slider_press_styles:
+    wintc_define_props_bg(
+        $scrollbar_horz_slider_press_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/scrollbar_horz_gripper_press.png'),
+        linear-gradient(180deg,rgba(183, 203, 227, 1) 0%, rgba(252, 253, 255, 1) 100%)
+    );
+$scrollbar_horz_slider_press_styles:
+    wintc_define_props_borders(
+        $scrollbar_horz_slider_press_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/scrollbar_horz_slider_press_border.png')
+    );
+
+$scrollbar_horz_button_styles:
+    wintc_define_props_borders(
+        $scrollbar_horz_button_styles,
+        false,
+        solid,
+        3,
+        3,
+        3,
+        2,
+        undefined,
+        url('../Resources/scrollbar_horz_button_border.png')
+    );
+
+$scrollbar_horz_button_hover_styles:
+    wintc_define_props_borders(
+        $scrollbar_horz_button_hover_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/scrollbar_horz_button_hover_border.png')
+    );
+
+$scrollbar_horz_button_press_styles:
+    wintc_define_props_borders(
+        $scrollbar_horz_button_press_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/scrollbar_horz_button_press_border.png')
+    );
+
+$scrollbar_horz_button_inactive_styles:
+    wintc_define_props_borders(
+        $scrollbar_horz_button_inactive_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/scrollbar_horz_button_inactive_border.png')
+    );
+
+
+//
+// VERTICAL SCROLLBARS
+//
+$scrollbar_vert_trough_styles:
+    wintc_define_props_bg(
+        $scrollbar_vert_trough_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/scrollbar_vert_trough.png')
+    );
+
+$scrollbar_vert_slider_styles:
+    wintc_define_props_bg(
+        $scrollbar_vert_slider_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/scrollbar_vert_gripper.png'),
+        linear-gradient(90deg,rgba(242, 247, 255, 1) 0%, rgba(190, 210, 234, 1) 100%)
+    );
+$scrollbar_vert_slider_styles:
+    wintc_define_props_borders(
+        $scrollbar_vert_slider_styles,
+        false,
+        solid,
+        3,
+        3,
+        3,
+        3,
+        undefined,
+        url('../Resources/scrollbar_vert_slider_border.png')
+    );
+
+$scrollbar_vert_slider_hover_styles:
+    wintc_define_props_bg(
+        $scrollbar_vert_slider_hover_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/scrollbar_vert_gripper_hover.png'),
+        linear-gradient(90deg,rgba(254, 254, 255, 1) 0%, rgba(189, 209, 233, 1) 100%)
+    );
+$scrollbar_vert_slider_hover_styles:
+    wintc_define_props_borders(
+        $scrollbar_vert_slider_hover_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/scrollbar_vert_slider_hover_border.png')
+    );
+
+$scrollbar_vert_slider_press_styles:
+    wintc_define_props_bg(
+        $scrollbar_vert_slider_press_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/scrollbar_vert_gripper_press.png'),
+        linear-gradient(90deg,rgba(183, 203, 227, 1) 0%, rgba(255, 255, 255, 1) 100%)
+    );
+$scrollbar_vert_slider_press_styles:
+    wintc_define_props_borders(
+        $scrollbar_vert_slider_press_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/scrollbar_vert_slider_press_border.png')
+    );
+
+$scrollbar_vert_button_styles:
+    wintc_define_props_borders(
+        $scrollbar_vert_button_styles,
+        false,
+        solid,
+        2,
+        3,
+        3,
+        3,
+        undefined,
+        url('../Resources/scrollbar_vert_button_border.png')
+    );
+
+$scrollbar_vert_button_hover_styles:
+    wintc_define_props_borders(
+        $scrollbar_vert_button_hover_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/scrollbar_vert_button_hover_border.png')
+    );
+
+$scrollbar_vert_button_press_styles:
+    wintc_define_props_borders(
+        $scrollbar_vert_button_press_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/scrollbar_vert_button_press_border.png')
+    );
+
+$scrollbar_vert_button_inactive_styles:
+    wintc_define_props_borders(
+        $scrollbar_vert_button_inactive_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/scrollbar_vert_button_inactive_border.png')
+    );
