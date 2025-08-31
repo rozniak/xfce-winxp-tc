@@ -1,0 +1,168 @@
+/**
+ * button.scss - Embedded Style Button Style Constants
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+//
+// STANDARD BUTTONS
+//
+$button_styles:
+    wintc_define_props_bg(
+        $button_styles,
+        false,
+        undefined,
+        100% 100%,
+        undefined,
+        undefined,
+        url('../Resources/button_body.png'),
+        linear-gradient(170deg, rgba(252,252,252,1) 0%, rgba(233,232,225,1) 100%)
+    );
+$button_styles:
+    wintc_define_props_borders(
+        $button_styles,
+        false,
+        solid,
+        3,
+        3,
+        3,
+        3,
+        undefined,
+        url('../Resources/button_border.png'),
+    );
+
+$button_focused_styles:
+    wintc_define_props_bg(
+        $button_focused_styles,
+        false
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/button_body.png'),
+        linear-gradient(170deg, rgba(252,252,252,1) 0%, rgba(233,232,225,1) 100%)
+    );
+$button_focused_styles:
+    wintc_define_props_borders(
+        $button_focused_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/button_active_border.png')
+    );
+
+$button_hover_styles:
+    wintc_define_props_bg(
+        $button_hover_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/button_body.png'),
+        linear-gradient(170deg, rgba(252,252,252,1) 0%, rgba(233,232,225,1) 100%)
+    );
+$button_hover_styles:
+    wintc_define_props_borders(
+        $button_hover_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/button_hover_border.png')
+    );
+
+$button_press_styles:
+    wintc_define_props_bg(
+        $button_press_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/button_press_body.png'),
+        linear-gradient(170deg, rgba(228,227,220,1) 0%, rgba(226,225,217,1) 5%, rgba(226,225,217,1) 95%, rgba(228,227,220,1) 100%),
+    );
+$button_press_styles:
+    wintc_define_props_borders(
+        $button_press_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/button_press_border.png')
+    );
+
+$button_inactive_styles:
+    wintc_define_props_bg(
+        $button_inactive_styles,
+        false,
+        #FFFFFF,
+        undefined,
+        undefined,
+        undefined,
+        none
+    );
+$button_inactive_styles:
+    wintc_define_props_borders(
+        $button_inactive_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/button_inactive_border.png')
+    );
+
+
+//
+// TOGGLE BUTTON
+//
+$toggle_button_styles: map-clone($button_styles);
+
+$toggle_button_press_styles: map-clone($button_press_styles);
+
+$toggle_button_hover_styles:          $button_hover_styles;
+$toggle_button_selected_styles:       $button_press_styles;
+$toggle_button_selected_hover_styles: $button_hover_styles;
+
+
+//
+// FLAT/TOOLBAR BUTTONS
+//
+$toolbar_button_hover_styles:
+    wintc_define_props_bg(
+        $toolbar_button_hover_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        linear-gradient(180deg, rgba(251,251,248,1) 0%, rgba(240,239,232,1) 10%, rgba(240,239,232,1) 100%)
+    );
+
+$toolbar_button_press_styles:
+    wintc_define_props_bg(
+        $toolbar_button_press_styles,
+        false,
+        #E6E5DF,
+        undefined,
+        undefined,
+        undefined,
+        none
+    );

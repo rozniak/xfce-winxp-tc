@@ -1,0 +1,40 @@
+/**
+ * frame.scss - Embedded Style Frame Style Constants
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+$separator_thickness: 1px;
+
+
+//
+// FRAME
+//
+$frame_label_styles:
+    wintc_define_props_fg(
+        $frame_label_styles,
+        false,
+        #0046D5,
+        undefined
+    );
+
+
+//
+// SEPARATOR
+//
+$separator_styles:
+    wintc_define_props_bg(
+        $separator_styles,
+        false,
+        #CAC6AF,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
+
+$separator_horz_styles: ();
+$separator_vert_styles: ();

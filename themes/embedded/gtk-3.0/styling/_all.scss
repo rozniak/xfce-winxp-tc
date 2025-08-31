@@ -1,0 +1,28 @@
+/**
+ * _all.scss - Embedded Style Constant SCSS Aggregation Document
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+@import "button";
+@import "checkradio";
+@import "entry";
+@import "combobox";
+@import "scale";
+@import "progressbar";
+@import "frame";
+@import "menu";
+@import "toolbar";
+@import "scrollbar";
+@import "notebook";
+@import "csd";
+@import "treeview";
+@import "switch";
+@import "spinbutton";
+
+@import "start-menu";
+@import "systray";
+@import "taskband";

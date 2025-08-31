@@ -4,4 +4,4 @@ static char *dummy[]={
 ". c #01223d",
 "a c #01345d",
 "# c #4d94cc",
-".#aa"};
+".#a."};

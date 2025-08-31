@@ -1,0 +1,55 @@
+/**
+ * progressbar.scss - Embedded Style Progress Bar Style Constants
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+$progressbar_trough_styles:
+    wintc_define_props_bg(
+        $progressbar_trough_styles,
+        false,
+        #FFF,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
+$progressbar_trough_styles:
+    wintc_define_props_box(
+        $progressbar_trough_styles,
+        false,
+        padding,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
+
+$progressbar_horz_trough_styles:
+    wintc_define_props_borders(
+        $progressbar_horz_trough_styles,
+        false,
+        solid,
+        3,
+        4,
+        3,
+        4,
+        undefined,
+        url('../Resources/progress_horz_trough.png')
+    );
+
+$progressbar_vert_trough_styles:
+    wintc_define_props_borders(
+        $progressbar_vert_trough_styles,
+        false,
+        solid,
+        4,
+        3,
+        4,
+        3,
+        undefined,
+        url('../Resources/progress_vert_trough.png')
+    );

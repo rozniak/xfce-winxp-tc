@@ -1,0 +1,107 @@
+/**
+ * treeview.scss - Embedded Style Tree-view Style Constants
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+$treeview_header_styles:
+    wintc_define_props_bg(
+        $treeview_header_styles,
+        false,
+        #E2E2E2,
+        undefined,
+        undefined,
+        undefined,
+        none
+    );
+$treeview_header_styles:
+    wintc_define_props_borders(
+        $treeview_header_styles,
+        false,
+        solid,
+        0,
+        2,
+        3,
+        0,
+        undefined,
+        default
+    );
+$treeview_header_styles:
+    wintc_define_props_box(
+        $treeview_header_styles,
+        false,
+        padding,
+        3,
+        7,
+        0,
+        7
+    );
+
+$treeview_header_hover_styles:
+    wintc_define_props_bg(
+        $treeview_header_hover_styles,
+        false,
+        #FFFFFF,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
+$treeview_header_hover_styles:
+    wintc_define_props_borders(
+        $treeview_header_hover_styles,
+        false,
+        solid,
+        0,
+        7,
+        3,
+        7,
+        undefined,
+        url('../Resources/treeview_header_button_hover_border.png')
+    );
+$treeview_header_hover_styles:
+    wintc_define_props_box(
+        $treeview_header_hover_styles,
+        false,
+        padding,
+        default,
+        2,
+        default,
+        0
+    );
+
+$treeview_header_press_styles:
+    wintc_define_props_bg(
+        $treeview_header_press_styles,
+        false,
+        #DEDFDA,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
+$treeview_header_press_styles:
+    wintc_define_props_borders(
+        $treeview_header_press_styles,
+        false,
+        solid,
+        2,
+        1,
+        1,
+        3,
+        undefined,
+        default
+    );
+$treeview_header_press_styles:
+    wintc_define_props_box(
+        $treeview_header_press_styles,
+        false,
+        padding,
+        1,
+        8,
+        2,
+        4
+    );

@@ -1,0 +1,66 @@
+/**
+ * combobox.scss - Embedded Style Combobox Style Constants
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+$combobox_button_height: 18px;
+$combobox_button_width:  15px;
+
+
+//
+// COMBOBOX ITSELF
+//
+$combobox_styles:
+    wintc_define_props_borders(
+        $combobox_styles,
+        false,
+        solid,
+        1,
+        1,
+        1,
+        1,
+        $borders_color,
+        undefined
+    );
+
+$combobox_inactive_styles:
+    wintc_define_props_borders(
+        $combobox_inactive_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        $insensitive_borders_color,
+        undefined
+    );
+
+//
+// BUTTON STYLES
+//
+$combobox_button_styles:
+    wintc_define_props_box(
+        $combobox_button_styles,
+        false,
+        margin,
+        1,
+        1,
+        1,
+        1
+    );
+
+$combobox_button_hover_styles:
+    wintc_define_props_bg(
+        $combobox_button_hover_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/combobox_button_hover.png')
+    );

@@ -1,0 +1,6 @@
+THEME_BASENAME=Embedded style
+THEME_DESCRIPTION=Embedded visual style for XFCE.
+THEME_DISPLAYNAME=Embedded style
+THEME_MAINTAINER=Rory Fewell <roryf@oddmatics.uk>
+THEME_RAWNAME=Embedded
+THEME_VARIANT=Default

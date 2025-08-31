@@ -1,0 +1,299 @@
+/**
+ * notebook.scss - Embedded Style Notebook Style Constants
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+//
+// NOTEBOOK HEADER
+//
+$notebook_header_bottom_styles:
+    wintc_define_props_borders(
+        $notebook_header_bottom_styles,
+        false,
+        solid,
+        1,
+        3,
+        0,
+        1,
+        undefined,
+        default
+    );
+
+$notebook_header_left_styles:
+    wintc_define_props_borders(
+        $notebook_header_left_styles,
+        false,
+        solid,
+        1,
+        1,
+        3,
+        0,
+        undefined,
+        default
+    );
+
+$notebook_header_right_styles:
+    wintc_define_props_borders(
+        $notebook_header_right_styles,
+        false,
+        solid,
+        1,
+        0,
+        3,
+        1,
+        undefined,
+        default
+    );
+
+$notebook_header_top_styles:
+    wintc_define_props_borders(
+        $notebook_header_top_styles,
+        false,
+        solid,
+        0,
+        3,
+        1,
+        1,
+        undefined,
+        default
+    );
+
+
+//
+// NOTEBOOK TAB
+//
+$notebook_tab_styles:
+    wintc_define_props_borders(
+        $notebook_tab_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
+
+$notebook_tab_selected_styles:
+    wintc_define_props_bg(
+        $notebook_tab_selected_styles,
+        false,
+        #FFFFFF,
+        undefined,
+        undefined,
+        undefined,
+        none
+    );
+
+$notebook_tab_bottom_styles:
+    wintc_define_props_bg(
+        $notebook_tab_bottom_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        linear-gradient(0deg, rgba(255,255,255,1) 0%, rgba(240,240,240,1) 50%, rgba(198,198,198,1) 100%)
+    );
+$notebook_tab_bottom_styles:
+    wintc_define_props_borders(
+        $notebook_tab_bottom_styles,
+        false,
+        solid,
+        1,
+        3,
+        3,
+        3,
+        undefined,
+        default
+    );
+$notebook_tab_bottom_styles:
+    wintc_define_props_box(
+        $notebook_tab_bottom_styles,
+        false,
+        margin,
+        -1,
+        undefined,
+        default,
+        undefined
+    );
+$notebook_tab_bottom_hover_styles:
+    wintc_define_props_borders(
+        $notebook_tab_bottom_hover_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/notebook_tab_bottom_hover_border.png')
+    );
+
+$notebook_tab_left_styles:
+    wintc_define_props_bg(
+        $notebook_tab_left_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(240,240,240,1) 50%, rgba(198,198,198,1) 100%)
+    );
+$notebook_tab_left_styles:
+    wintc_define_props_borders(
+        $notebook_tab_left_styles,
+        false,
+        solid,
+        3,
+        1,
+        3,
+        3,
+        undefined,
+        default
+    );
+$notebook_tab_left_styles:
+    wintc_define_props_box(
+        $notebook_tab_left_styles,
+        false,
+        margin,
+        undefined,
+        -1,
+        undefined,
+        default
+    );
+$notebook_tab_left_hover_styles:
+    wintc_define_props_borders(
+        $notebook_tab_left_hover_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/notebook_tab_left_hover_border.png')
+    );
+
+$notebook_tab_right_styles:
+    wintc_define_props_bg(
+        $notebook_tab_right_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        linear-gradient(270deg, rgba(255,255,255,1) 0%, rgba(240,240,240,1) 50%, rgba(198,198,198,1) 100%)
+    );
+$notebook_tab_right_styles:
+    wintc_define_props_borders(
+        $notebook_tab_right_styles,
+        false,
+        solid,
+        3,
+        3,
+        3,
+        1,
+        undefined,
+        default
+    );
+$notebook_tab_right_styles:
+    wintc_define_props_box(
+        $notebook_tab_right_styles,
+        false,
+        margin,
+        undefined,
+        default,
+        undefined,
+        -1
+    );
+$notebook_tab_right_hover_styles:
+    wintc_define_props_borders(
+        $notebook_tab_right_hover_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/notebook_tab_right_hover_border.png')
+    );
+
+$notebook_tab_top_styles:
+    wintc_define_props_bg(
+        $notebook_tab_top_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(240,240,240,1) 50%, rgba(198,198,198,1) 100%)
+    );
+$notebook_tab_top_styles:
+    wintc_define_props_borders(
+        $notebook_tab_top_styles,
+        false,
+        solid,
+        3,
+        3,
+        1,
+        3,
+        undefined,
+        default
+    );
+$notebook_tab_top_styles:
+    wintc_define_props_box(
+        $notebook_tab_top_styles,
+        false,
+        margin,
+        default,
+        undefined,
+        -1,
+        undefined
+    );
+$notebook_tab_top_hover_styles:
+    wintc_define_props_borders(
+        $notebook_tab_top_hover_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/notebook_tab_top_hover_border.png')
+    );
+
+
+//
+// NOTEBOOK ITSELF
+//
+$notebook_styles:
+    wintc_define_props_borders(
+        $notebook_styles,
+        false,
+        solid,
+        2,
+        4,
+        4,
+        2,
+        undefined,
+        default
+    );
+
+$notebook_page_styles:
+    wintc_define_props_bg(
+        $notebook_page_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        linear-gradient(180deg, rgba(252,252,254,1) 0%, rgba(244,243,238,1) 100%)
+    );
