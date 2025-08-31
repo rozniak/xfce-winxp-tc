@@ -57,7 +57,7 @@ $start_button_styles:
         undefined,
         undefined,
         url('../Resources/start_button_body.png'),
-        linear-gradient(180deg, rgba(255,217,193,1) 0%, rgba(255,166,111,1) 9%, rgba(225,116,49,1) 49%, rgba(181,72,5,1) 50%, rgba(214,105,38,1) 100%)
+        linear-gradient(180deg,rgba(30, 75, 118, 1) 0%, rgba(5, 42, 80, 1) 50%, rgba(0, 27, 58, 1) 51%, rgba(0, 24, 54, 1) 84%, rgba(5, 40, 78, 1) 100%)
     );
 $start_button_styles:
     wintc_define_props_borders(
@@ -117,7 +117,7 @@ $start_button_hover_styles:
         undefined,
         undefined,
         url('../Resources/start_button_hover_body.png'),
-        linear-gradient(180deg, rgba(255,244,237,1) 0%, rgba(255,200,166,1) 9%, rgba(242,133,66,1) 49%, rgba(203,94,27,1) 50%, rgba(249,140,73,1) 100%)
+        linear-gradient(180deg,rgba(71, 124, 171, 1) 0%, rgba(45, 93, 138, 1) 24%, rgba(40, 87, 131, 1) 50%, rgba(17, 58, 99, 1) 51%, rgba(24, 67, 109, 1) 100%)
     );
 $start_button_hover_styles:
     wintc_define_props_borders(
@@ -141,7 +141,7 @@ $start_button_press_styles:
         undefined,
         undefined,
         url('../Resources/start_button_press_body.png'),
-        linear-gradient(180deg, rgba(209,100,33,1) 0%, rgba(207,98,31,1) 9%, rgba(177,68,1,1) 49%, rgba(111,43,1,1) 50%, rgba(176,67,0,1) 100%)
+        linear-gradient(180deg,rgba(30, 75, 118, 1) 0%, rgba(10, 49, 87, 1) 24%, rgba(5, 42, 80, 1) 50%, rgba(0, 27, 58, 1) 51%, rgba(5, 40, 78, 1) 100%)
     );
 $start_button_press_styles:
     wintc_define_props_borders(

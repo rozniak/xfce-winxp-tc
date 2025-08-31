@@ -220,14 +220,14 @@ $start_menu_horz_userpane_styles:
         no-repeat,
         bottom left,
         url('../Resources/start_userpane_body.png'),
-        linear-gradient(180deg,rgba(225, 237, 247, 1) 0%, rgba(211, 228, 244, 1) 23%, rgba(180, 205, 236, 1) 47%, rgba(152, 184, 228, 1) 52%, rgba(90, 126, 201, 1) 100%)
+        url('../Resources/start_userpane_body2.png')
     );
 $start_menu_horz_userpane_styles:
     wintc_define_props_borders(
         $start_menu_horz_userpane_styles,
         false,
         solid,
-        5,
+        2,
         35,
         1,
         6,
@@ -240,6 +240,16 @@ $start_menu_horz_userpane_styles:
         false,
         margin,
         undefined,
+        undefined,
+        undefined,
+        undefined
+    );
+$start_menu_horz_userpane_styles:
+    wintc_define_props_box(
+        $start_menu_horz_userpane_styles,
+        false,
+        padding,
+        3,
         undefined,
         undefined,
         undefined
