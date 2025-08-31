@@ -1,0 +1,151 @@
+/**
+ * switch.scss - Royale Noir Style Switch Style Constants
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+//
+// SWITCH ITSELF
+//
+$switch_styles:
+    wintc_define_props_bg(
+        $switch_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        linear-gradient(140deg, rgba(180,180,171,1) 0%, rgba(238,236,221,1) 100%)
+    );
+$switch_styles:
+    wintc_define_props_border_radius(
+        $switch_styles,
+        false,
+        15
+    );
+$switch_styles:
+    wintc_define_props_borders(
+        $switch_styles,
+        false,
+        solid,
+        1,
+        1,
+        1,
+        1,
+        #1C5180,
+        undefined
+    );
+
+$switch_selected_styles:
+    wintc_define_props_bg(
+        $switch_selected_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        linear-gradient(140deg, rgba(93,234,89,1) 0%, rgba(21,147,18,1) 100%)
+    );
+
+$switch_inactive_styles:
+    wintc_define_props_bg(
+        $switch_inactive_styles,
+        false,
+        transparent,
+        undefined,
+        undefined,
+        undefined,
+        none
+    );
+$switch_inactive_styles:
+    wintc_define_props_borders(
+        $switch_inactive_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        #C0BFB5,
+        undefined
+    );
+
+
+//
+// SWITCH SLIDER
+//
+$switch_slider_styles:
+    wintc_define_props_bg(
+        $switch_slider_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        linear-gradient(140deg, rgba(229,229,226,1) 0%, rgba(251,251,251,1) 100%)
+    );
+$switch_slider_styles:
+    wintc_define_props_border_radius(
+        $switch_slider_styles,
+        false,
+        15
+    );
+$switch_slider_styles:
+    wintc_define_props_borders(
+        $switch_slider_styles,
+        false,
+        solid,
+        1,
+        1,
+        1,
+        1,
+        #1C5180,
+        undefined
+    );
+$switch_slider_styles:
+    wintc_define_props_box(
+        $switch_slider_styles,
+        false,
+        margin,
+        -1,
+        -1,
+        -1,
+        -1
+    );
+
+$switch_slider_hover_styles:
+    wintc_define_props_bg(
+        $switch_slider_hover_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        linear-gradient(139deg, rgba(255,240,207,1) 0%, rgba(250,197,90,1) 100%)
+    );
+
+$switch_slider_inactive_styles:
+    wintc_define_props_bg(
+        $switch_slider_inactive_styles,
+        false,
+        transparent,
+        undefined,
+        undefined,
+        undefined,
+        none
+    );
+$switch_slider_inactive_styles:
+    wintc_define_props_borders(
+        $switch_slider_inactive_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        #C0BFB5,
+        undefined
+    );

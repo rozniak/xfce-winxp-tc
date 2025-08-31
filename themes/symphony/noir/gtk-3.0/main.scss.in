@@ -1,0 +1,14 @@
+/**
+ * main.scss.in - Royale Noir Style GTK 3 Theme Root Document
+ *
+ * This source-code is part of the Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+@import "scheme";
+@import "@THEMES_BUILD_COMMON_GTK3_DIR@/required";
+@import "@PROJECT_ROOT@/gtk-3.0/colors/all";
+@import "@PROJECT_ROOT@/gtk-3.0/styling/all";
+@import "@THEMES_BUILD_COMMON_GTK3_DIR@/main";

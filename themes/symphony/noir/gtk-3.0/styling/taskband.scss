@@ -1,0 +1,159 @@
+/**
+ * taskband.scss - Royale Noir Style Taskband Style Constants
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+// Taskband itself
+//
+$taskband_horz_margins: 7px;
+
+$taskband_styles:
+    wintc_define_props_bg(
+        $taskband_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        linear-gradient(180deg,rgba(31, 38, 57, 1) 0%, rgba(31, 38, 57, 1) 4%, rgba(115, 124, 132, 1) 4%, rgba(115, 124, 132, 1) 8%, rgba(102, 115, 124, 1) 8%, rgba(76, 88, 104, 1) 53%, rgba(51, 65, 81, 1) 54%, rgba(35, 42, 61, 1) 100%)
+    );
+$taskband_styles:
+    wintc_define_props_fg(
+        $taskband_styles,
+        false,
+        #FFFFFF,
+        undefined
+    );
+
+// Taskband buttons
+//
+$taskband_button_styles:
+    wintc_define_props_bg(
+        $taskband_button_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        linear-gradient(180deg,rgba(105, 119, 128, 1) 0%, rgba(82, 94, 109, 1) 42%, rgba(64, 78, 94, 1) 43%, rgba(44, 53, 71, 1) 100%)
+    );
+$taskband_button_styles:
+    wintc_define_props_borders(
+        $taskband_button_styles,
+        false,
+        solid,
+        2,
+        2,
+        2,
+        2,
+        undefined,
+        url("../Resources/taskband_button_border.png")
+    );
+$taskband_button_styles:
+    wintc_define_props_box(
+        $taskband_button_styles,
+        false,
+        margin,
+        3,
+        0,
+        2,
+        0
+    );
+$taskband_button_styles:
+    wintc_define_props_box(
+        $taskband_button_styles,
+        false,
+        padding,
+        2,
+        8,
+        2,
+        8
+    );
+
+$taskband_button_hover_styles:
+    wintc_define_props_bg(
+        $taskband_button_hover_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url("../Resources/taskband_button_hover_body.png"),
+        linear-gradient(180deg,rgba(78, 93, 107, 1) 0%, rgba(53, 65, 84, 1) 42%, rgba(38, 50, 70, 1) 43%, rgba(16, 22, 42, 1) 100%)
+    );
+$taskband_button_hover_styles:
+    wintc_define_props_borders(
+        $taskband_button_hover_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url("../Resources/taskband_button_hover_border.png")
+    );
+
+$taskband_button_press_styles:
+    wintc_define_props_bg(
+        $taskband_button_press_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url("../Resources/taskband_button_press_body.png"),
+        linear-gradient(180deg,rgba(61, 69, 79, 1) 0%, rgba(26, 35, 50, 1) 42%, rgba(11, 19, 34, 1) 43%, rgba(10, 18, 34, 1) 100%)
+    );
+$taskband_button_press_styles:
+    wintc_define_props_borders(
+        $taskband_button_press_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url("../Resources/taskband_button_press_border.png")
+    );
+$taskband_button_press_styles:
+    wintc_define_props_box(
+        $taskband_button_press_styles,
+        false,
+        padding,
+        3,
+        7,
+        1,
+        9
+    );
+
+$taskband_button_selected_styles: $taskband_button_press_styles;
+
+$taskband_button_selected_hover_styles:
+    wintc_define_props_bg(
+        $taskband_button_selected_hover_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url("../Resources/taskband_button_press_hover_body.png"),
+        linear-gradient(180deg,rgba(61, 70, 82, 1) 0%, rgba(37, 49, 64, 1) 42%, rgba(23, 34, 51, 1) 43%, rgba(18, 27, 45, 1) 100%)
+    );
+$taskband_button_selected_hover_styles:
+    wintc_define_props_borders(
+        $taskband_button_selected_hover_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url("../Resources/taskband_button_press_hover_border.png")
+    );

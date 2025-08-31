@@ -1,0 +1,34 @@
+/**
+ * entry.scss - Royale Noir Style Entry Style Constants
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+$entry_styles:
+    wintc_define_props_borders(
+        $entry_styles,
+        false,
+        solid,
+        1,
+        1,
+        1,
+        1,
+        $borders_color,
+        undefined
+    );
+
+$entry_inactive_styles:
+    wintc_define_props_borders(
+        $entry_inactive_styles,
+        false,
+        solid,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        $borders_color,
+        undefined
+    );
