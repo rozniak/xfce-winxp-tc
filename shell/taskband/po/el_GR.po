@@ -20,86 +20,6 @@ msgstr ""
 msgid "All Programs"
 msgstr "Όλα τα προγράμματα"
 
-msgid "Opens your Internet browser."
-msgstr "Ανοίγει το πρόγραμμα περιήγησής σας στο Internet."
-
-msgid "Opens your e-mail program so you can send or read a message."
-msgstr ""
-"Ανοίγει το πρόγραμμα ηλεκτρονικού ταχυδρομείου σας ώστε να μπορείτε να "
-"στείλετε ή να διαβάσετε ένα μήνυμα."
-
-msgid "Internet"
-msgstr "Ιnternet"
-
-msgid "E-mail"
-msgstr "Ηλ. ταχυδρομείο"
-
-msgid "start"
-msgstr "έναρξη"
-
-msgid "Click here to begin"
-msgstr "Κάντε κλικ εδώ, για να ξεκινήσετε"
-
-msgid "Log Off"
-msgstr "Αποσύνδεση"
-
-msgid ""
-"Provides options for closing your programs and logging off, or for leaving "
-"your programs running and switching to another user."
-msgstr ""
-"Παρέχει επιλογές για κλείσιμο των προγραμμάτων και αποσύνδεση ή για συνέχεια "
-"εκτέλεσης των προγραμμάτων και εναλλαγή σε άλλον χρήστη."
-
-msgid "Turn Off Computer"
-msgstr "Σβήσιμο του υπολογιστή"
-
-msgid ""
-"Provides options for turning off or restarting your computer, or for "
-"activating Stand By or Hibernate modes."
-msgstr ""
-"Παρέχει επιλογές για το σβήσιμο ή την επανεκκίνηση του υπολογιστή σας ή για "
-"την ενεργοποίηση των καταστάσεων λειτουργίας \"Αναμονή\" ή \"Αδρανοποίηση\"."
-
-msgid ""
-"Opens the My Documents folder, where you can store letters, reports, notes, "
-"and other kinds of documents."
-msgstr ""
-"Ανοίγει το φάκελο \"Τα έγγραφά μου\", όπου μπορείτε να αποθηκεύετε "
-"επιστολές, εκθέσεις, σημειώσεις και άλλα είδη εγγράφων."
-
-msgid "Displays recently opened documents and folders."
-msgstr "Εμφανίζει έγγραφα και φακέλους που ανοίχτηκαν πρόσφατα."
-
-msgid ""
-"Opens the My Pictures folder, where you can store digital photos, images, "
-"and graphics files."
-msgstr ""
-"Ανοίγει το φάκελο \"Οι εικόνες μου\", όπου μπορείτε να αποθηκεύσετε ψηφιακές "
-"φωτογραφίες, εικόνες και αρχεία γραφικών."
-
-msgid ""
-"Opens the My Music folder, where you can store music and other audio files."
-msgstr ""
-"Ανοίγει το φάκελο \"Η μουσική μου\", όπου μπορείτε να αποθηκεύσετε αρχεία "
-"μουσικής και άλλα αρχεία ήχου."
-
-msgid ""
-"Gives access to, and information about, the disk drives, cameras, scanners, "
-"and other hardware connected to your computer."
-msgstr ""
-"Παρέχει πρόσβαση, και σχετικές πληροφορίες, σε μονάδες δίσκων, φωτογραφικές "
-"μηχανές, σαρωτές και το υπόλοιπο υλικό που είναι συνδεδεμένο στον υπολογιστή "
-"σας."
-
-msgid ""
-"Provides options for you to customize the appearance and functionality of "
-"your computer, add or remove programs, and set up network connections and "
-"user accounts."
-msgstr ""
-"Σας παρέχει επιλογές προσαρμογής της εμφάνισης και της λειτουργικότητας του "
-"υπολογιστή σας, προσθαφαίρεσης προγραμμάτων και εγκατάστασης συνδέσεων "
-"δικτύου και λογαριασμών χρηστών."
-
 msgid ""
 "Chooses default programs for certain activities, such as Web browsing or "
 "sending e-mail, and specifies which programs are accessible from the Start "
@@ -110,19 +30,46 @@ msgstr ""
 "προγράμματα είναι δυνατή η πρόσβαση από το μενού \"Έναρξη\", την επιφάνεια "
 "εργασίας και άλλες θέσεις."
 
-msgid "Set Program Access and Defaults"
-msgstr "Ορισμός πρόσβασης και προεπιλογών προγραμμάτων"
+msgid "Click here to begin"
+msgstr "Κάντε κλικ εδώ, για να ξεκινήσετε"
 
-msgid "Connects to other computers, networks, and the Internet."
-msgstr "Συνδέει σε άλλους υπολογιστές, δίκτυα και στο Internet."
+msgid "Close"
+msgstr "Kλείσιμο"
 
 msgid "Connect To"
 msgstr "Σύνδεση με"
 
-msgid "Shows installed printers and fax printers and helps you add new ones."
+msgid "Connects to other computers, networks, and the Internet."
+msgstr "Συνδέει σε άλλους υπολογιστές, δίκτυα και στο Internet."
+
+msgid "Displays recently opened documents and folders."
+msgstr "Εμφανίζει έγγραφα και φακέλους που ανοίχτηκαν πρόσφατα."
+
+msgid "E-mail"
+msgstr "Ηλ. ταχυδρομείο"
+
+msgid ""
+"Gives access to, and information about, the disk drives, cameras, scanners, "
+"and other hardware connected to your computer."
 msgstr ""
-"Δείχνει εγκατεστημένους εκτυπωτές και εκτυπωτές φαξ και σας βοηθά να "
-"προσθέσετε νέους."
+"Παρέχει πρόσβαση, και σχετικές πληροφορίες, σε μονάδες δίσκων, φωτογραφικές "
+"μηχανές, σαρωτές και το υπόλοιπο υλικό που είναι συνδεδεμένο στον υπολογιστή "
+"σας."
+
+msgid "Help and Support"
+msgstr "Βοήθεια και υποστήριξη"
+
+msgid "Internet"
+msgstr "Ιnternet"
+
+msgid "Log Off"
+msgstr "Αποσύνδεση"
+
+msgid "Maximize"
+msgstr "Μεγιστοποίηση"
+
+msgid "Minimize"
+msgstr "Ελαχιστοποίηση"
 
 msgid ""
 "Opens a central location for Help topics, tutorials, troubleshooting, and "
@@ -131,8 +78,8 @@ msgstr ""
 "Ανοίγει μια κεντρική θέση για θέματα Βοήθειας, εγχειρίδια εκμάθησης, "
 "αντιμετώπιση προβλημάτων και άλλες υπηρεσίες υποστήριξης."
 
-msgid "Help and Support"
-msgstr "Βοήθεια και υποστήριξη"
+msgid "Opens a program, folder, document, or Web site."
+msgstr "Ανοίγει ένα πρόγραμμα, φάκελο, έγγραφο ή τοποθεσία Web."
 
 msgid ""
 "Opens a window where you can pick search options and work with search "
@@ -141,11 +88,76 @@ msgstr ""
 "Ανοίγει ένα παράθυρο όπου μπορείτε να επιλέξετε επιλογές αναζήτησης και να "
 "εργαστείτε με αποτελέσματα αναζήτησης."
 
-msgid "Search"
-msgstr "Αναζήτηση"
+msgid ""
+"Opens the My Documents folder, where you can store letters, reports, notes, "
+"and other kinds of documents."
+msgstr ""
+"Ανοίγει το φάκελο \"Τα έγγραφά μου\", όπου μπορείτε να αποθηκεύετε "
+"επιστολές, εκθέσεις, σημειώσεις και άλλα είδη εγγράφων."
 
-msgid "Opens a program, folder, document, or Web site."
-msgstr "Ανοίγει ένα πρόγραμμα, φάκελο, έγγραφο ή τοποθεσία Web."
+msgid ""
+"Opens the My Music folder, where you can store music and other audio files."
+msgstr ""
+"Ανοίγει το φάκελο \"Η μουσική μου\", όπου μπορείτε να αποθηκεύσετε αρχεία "
+"μουσικής και άλλα αρχεία ήχου."
+
+msgid ""
+"Opens the My Pictures folder, where you can store digital photos, images, "
+"and graphics files."
+msgstr ""
+"Ανοίγει το φάκελο \"Οι εικόνες μου\", όπου μπορείτε να αποθηκεύσετε ψηφιακές "
+"φωτογραφίες, εικόνες και αρχεία γραφικών."
+
+msgid "Opens your Internet browser."
+msgstr "Ανοίγει το πρόγραμμα περιήγησής σας στο Internet."
+
+msgid "Opens your e-mail program so you can send or read a message."
+msgstr ""
+"Ανοίγει το πρόγραμμα ηλεκτρονικού ταχυδρομείου σας ώστε να μπορείτε να "
+"στείλετε ή να διαβάσετε ένα μήνυμα."
+
+msgid ""
+"Provides options for closing your programs and logging off, or for leaving "
+"your programs running and switching to another user."
+msgstr ""
+"Παρέχει επιλογές για κλείσιμο των προγραμμάτων και αποσύνδεση ή για συνέχεια "
+"εκτέλεσης των προγραμμάτων και εναλλαγή σε άλλον χρήστη."
+
+msgid ""
+"Provides options for turning off or restarting your computer, or for "
+"activating Stand By or Hibernate modes."
+msgstr ""
+"Παρέχει επιλογές για το σβήσιμο ή την επανεκκίνηση του υπολογιστή σας ή για "
+"την ενεργοποίηση των καταστάσεων λειτουργίας \"Αναμονή\" ή \"Αδρανοποίηση\"."
+
+msgid ""
+"Provides options for you to customize the appearance and functionality of "
+"your computer, add or remove programs, and set up network connections and "
+"user accounts."
+msgstr ""
+"Σας παρέχει επιλογές προσαρμογής της εμφάνισης και της λειτουργικότητας του "
+"υπολογιστή σας, προσθαφαίρεσης προγραμμάτων και εγκατάστασης συνδέσεων "
+"δικτύου και λογαριασμών χρηστών."
+
+msgid "Restore"
+msgstr "Επαναφορά"
 
 msgid "Run..."
 msgstr "Εκτέλεση..."
+
+msgid "Search"
+msgstr "Αναζήτηση"
+
+msgid "Set Program Access and Defaults"
+msgstr "Ορισμός πρόσβασης και προεπιλογών προγραμμάτων"
+
+msgid "Shows installed printers and fax printers and helps you add new ones."
+msgstr ""
+"Δείχνει εγκατεστημένους εκτυπωτές και εκτυπωτές φαξ και σας βοηθά να "
+"προσθέσετε νέους."
+
+msgid "Turn Off Computer"
+msgstr "Σβήσιμο του υπολογιστή"
+
+msgid "start"
+msgstr "έναρξη"
