@@ -1,22 +1,25 @@
 #include <glib.h>
 #include <gtk/gtk.h>
 #include <wintc/comgtk.h>
+#include <wintc/shellext.h>
 
-#include "../toolbar.h"
+#include "../intapi.h"
 #include "taskbuttonbar.h"
 #include "toolbar.h"
 
 //
+// FORWARD DECLARATIONS
+//
+static void wintc_toolbar_task_buttons_constructed(
+    GObject* object
+);
+
+//
 // GTK OOP CLASS/INSTANCE DEFINITIONS
 //
-struct _WinTCToolbarTaskButtonsClass
-{
-    WinTCTaskbandToolbarClass __parent__;
-};
-
 struct _WinTCToolbarTaskButtons
 {
-    WinTCTaskbandToolbar __parent__;
+    WinTCShextUIController __parent__;
 };
 
 //
@@ -25,21 +28,38 @@ struct _WinTCToolbarTaskButtons
 G_DEFINE_TYPE(
     WinTCToolbarTaskButtons,
     wintc_toolbar_task_buttons,
-    WINTC_TYPE_TASKBAND_TOOLBAR
+    WINTC_TYPE_SHEXT_UI_CONTROLLER
 )
 
 static void wintc_toolbar_task_buttons_class_init(
-    WINTC_UNUSED(WinTCToolbarTaskButtonsClass* klass)
-) {}
-
-static void wintc_toolbar_task_buttons_init(
-    WinTCToolbarTaskButtons* self
+    WinTCToolbarTaskButtonsClass* klass
 )
 {
-    WinTCTaskbandToolbar* toolbar = WINTC_TASKBAND_TOOLBAR(self);
+    GObjectClass* object_class = G_OBJECT_CLASS(klass);
 
-    // Create root widget
-    //
-    toolbar->widget_root = taskbutton_bar_new();
+    object_class->constructed = wintc_toolbar_task_buttons_constructed;
 }
 
+static void wintc_toolbar_task_buttons_init(
+    WINTC_UNUSED(WinTCToolbarTaskButtons* self)
+) {}
+
+//
+// CLASS VIRTUAL METHODS
+//
+static void wintc_toolbar_task_buttons_constructed(
+    GObject* object
+)
+{
+    (G_OBJECT_CLASS(wintc_toolbar_task_buttons_parent_class))
+        ->constructed(object);
+
+    wintc_ishext_ui_host_get_ext_widget(
+        wintc_shext_ui_controller_get_ui_host(
+            WINTC_SHEXT_UI_CONTROLLER(object)
+        ),
+        WINTC_TASKBAND_HOSTEXT_TOOLBAR,
+        GTK_TYPE_WIDGET,
+        taskbutton_bar_new()
+    );
+}

@@ -2,9 +2,10 @@
 #include <gtk/gtk.h>
 #include <wintc/comgtk.h>
 #include <wintc/shelldpa.h>
+#include <wintc/shellext.h>
 #include <wintc/shlang.h>
 
-#include "../toolbar.h"
+#include "../intapi.h"
 #include "personal.h"
 #include "progmenu.h"
 #include "shared.h"
@@ -13,6 +14,9 @@
 //
 // FORWARD DECLARATIONS
 //
+static void wintc_toolbar_start_constructed(
+    GObject* object
+);
 static void wintc_toolbar_start_dispose(
     GObject* object
 );
@@ -28,7 +32,7 @@ static void on_start_button_toggled(
 G_DEFINE_TYPE(
     WinTCToolbarStart,
     wintc_toolbar_start,
-    WINTC_TYPE_TASKBAND_TOOLBAR
+    WINTC_TYPE_SHEXT_UI_CONTROLLER
 )
 
 static void wintc_toolbar_start_class_init(
@@ -37,16 +41,14 @@ static void wintc_toolbar_start_class_init(
 {
     GObjectClass* object_class = G_OBJECT_CLASS(klass);
 
-    object_class->dispose  = wintc_toolbar_start_dispose;
+    object_class->constructed = wintc_toolbar_start_constructed;
+    object_class->dispose     = wintc_toolbar_start_dispose;
 }
 
 static void wintc_toolbar_start_init(
     WinTCToolbarStart* self
 )
 {
-    GtkBuilder*           builder;
-    WinTCTaskbandToolbar* toolbar = WINTC_TASKBAND_TOOLBAR(self);
-
     // Default states
     //
     self->sync_button                = FALSE;
@@ -70,22 +72,42 @@ static void wintc_toolbar_start_init(
     // Initialize progmenu
     //
     self->progmenu = wintc_toolbar_start_progmenu_new();
+}
 
-    // Create root widget (Start button)
+//
+// CLASS VIRTUAL METHODS
+//
+static void wintc_toolbar_start_constructed(
+    GObject* object
+)
+{
+    (G_OBJECT_CLASS(wintc_toolbar_start_parent_class))->constructed(object);
+
+    WinTCToolbarStart* toolbar_start = WINTC_TOOLBAR_START(object);
+
+    // Create Start button as the toolbar
     //
-    builder =
+    GtkBuilder* builder =
         gtk_builder_new_from_resource(
             "/uk/oddmatics/wintc/taskband/start-button.ui"
         );
 
     wintc_lc_builder_preprocess_widget_text(builder);
 
-    toolbar->widget_root =
-        GTK_WIDGET(
-            g_object_ref_sink(
-                gtk_builder_get_object(builder, "start-button")
-            )
-        );
+    wintc_builder_get_objects(
+        builder,
+        "start-button", &(toolbar_start->start_button),
+        NULL
+    );
+
+    wintc_ishext_ui_host_get_ext_widget(
+        wintc_shext_ui_controller_get_ui_host(
+            WINTC_SHEXT_UI_CONTROLLER(object)
+        ),
+        WINTC_TASKBAND_HOSTEXT_TOOLBAR,
+        GTK_TYPE_WIDGET,
+        toolbar_start->start_button
+    );
 
     g_object_unref(G_OBJECT(builder));
 
@@ -93,32 +115,23 @@ static void wintc_toolbar_start_init(
     // FIXME: Hard coded to the personal menu for now, 'til DBus and stuff is
     //        understood and we can support a 'Use classic menu' property
     //
-    create_personal_menu(self);
+    create_personal_menu(toolbar_start);
 
     // Attach signals for popup
     //
     g_signal_connect(
-        toolbar->widget_root,
+        toolbar_start->start_button,
         "toggled",
         G_CALLBACK(on_start_button_toggled),
-        self
+        toolbar_start
     );
 }
 
-//
-// CLASS VIRTUAL METHODS
-//
 static void wintc_toolbar_start_dispose(
     GObject* object
 )
 {
-    WinTCTaskbandToolbar* toolbar       = WINTC_TASKBAND_TOOLBAR(object);
-    WinTCToolbarStart*    toolbar_start = WINTC_TOOLBAR_START(object);
-
-    // Because we took a reference to the Start button from the builder, we
-    // must unref it now
-    //
-    g_object_unref(toolbar->widget_root);
+    WinTCToolbarStart* toolbar_start = WINTC_TOOLBAR_START(object);
 
     // FIXME: Only worrying about destroying the personal menu for now until
     //        the classic menu is available
@@ -139,9 +152,8 @@ void wintc_toolbar_start_toggle_menu(
     WinTCToolbarStart* toolbar_start
 )
 {
-    WinTCTaskbandToolbar* toolbar = WINTC_TASKBAND_TOOLBAR(toolbar_start);
-
-    GtkToggleButton* start_button = GTK_TOGGLE_BUTTON(toolbar->widget_root);
+    GtkToggleButton* start_button =
+        GTK_TOGGLE_BUTTON(toolbar_start->start_button);
 
     // Rate-limit toggling, prevents glitchy behaviour especially when launched
     // via cmdline/keyboard shortcut (so the menu loses focus then immediately
