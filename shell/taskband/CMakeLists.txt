@@ -36,6 +36,7 @@ wintc_resolve_library(wintc-comgtk     WINTC_COMGTK)
 wintc_resolve_library(wintc-exec       WINTC_EXEC)
 wintc_resolve_library(wintc-shcommon   WINTC_SHCOMMON)
 wintc_resolve_library(wintc-shelldpa   WINTC_SHELLDPA)
+wintc_resolve_library(wintc-shellext   WINTC_SHELLEXT)
 wintc_resolve_library(wintc-shlang     WINTC_SHLANG)
 wintc_resolve_library(wintc-sndapi     WINTC_SNDAPI)
 
@@ -47,11 +48,10 @@ set(
     TASKBAND_SOURCES
     src/application.c
     src/application.h
+    src/intapi.h
     src/main.c
     src/meta.h
     src/resources.c
-    src/toolbar.c
-    src/toolbar.h
     src/window.c
     src/window.h
     src/start/menumod.c
@@ -65,10 +65,10 @@ set(
     src/start/toolbar.h
     src/start/util.c
     src/start/util.h
-    src/systray/behaviour.c
-    src/systray/behaviour.h
     src/systray/clock.c
     src/systray/clock.h
+    src/systray/icon.c
+    src/systray/icon.h
     src/systray/notifarea.c
     src/systray/notifarea.h
     src/systray/power.c
@@ -123,6 +123,7 @@ target_include_directories(
     PRIVATE ${WINTC_EXEC_INCLUDE_DIRS}
     PRIVATE ${WINTC_SHCOMMON_INCLUDE_DIRS}
     PRIVATE ${WINTC_SHELLDPA_INCLUDE_DIRS}
+    PRIVATE ${WINTC_SHELLEXT_INCLUDE_DIRS}
     PRIVATE ${WINTC_SHLANG_INCLUDE_DIRS}
     PRIVATE ${WINTC_SNDAPI_INCLUDE_DIRS}
 )
@@ -142,6 +143,7 @@ target_link_directories(
     PRIVATE ${WINTC_EXEC_LIBRARY_DIRS}
     PRIVATE ${WINTC_SHCOMMON_LIBRARY_DIRS}
     PRIVATE ${WINTC_SHELLDPA_LIBRARY_DIRS}
+    PRIVATE ${WINTC_SHELLEXT_LIBRARY_DIRS}
     PRIVATE ${WINTC_SHLANG_LIBRARY_DIRS}
     PRIVATE ${WINTC_SNDAPI_LIBRARY_DIRS}
 )
@@ -161,6 +163,7 @@ target_link_libraries(
     PRIVATE ${WINTC_EXEC_LIBRARIES}
     PRIVATE ${WINTC_SHCOMMON_LIBRARIES}
     PRIVATE ${WINTC_SHELLDPA_LIBRARIES}
+    PRIVATE ${WINTC_SHELLEXT_LIBRARIES}
     PRIVATE ${WINTC_SHLANG_LIBRARIES}
     PRIVATE ${WINTC_SNDAPI_LIBRARIES}
 )

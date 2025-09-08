@@ -2,26 +2,27 @@
 #include <gtk/gtk.h>
 #include <NetworkManager.h>
 #include <wintc/comgtk.h>
+#include <wintc/shellext.h>
 
-#include "behaviour.h"
+#include "../intapi.h"
+#include "icon.h"
 #include "network.h"
 
 //
 // STATIC DATA
 //
-GtkWidget* s_menu_network = NULL;
+GtkWidget* S_MENU_NETWORK = NULL;
 
 //
 // GTK OOP CLASS/INSTANCE DEFINITIONS
 //
-struct _WinTCNotificationNetworkClass
-{
-    WinTCNotificationBehaviourClass __parent__;
-};
-
 struct _WinTCNotificationNetwork
 {
-    WinTCNotificationBehaviour __parent__;
+    WinTCShextUIController __parent__;
+
+    // UI
+    //
+    GtkWidget* notif_icon;
 
     // Network stuff
     //
@@ -51,7 +52,7 @@ static void on_nm_client_notify_primary_connection(
     GParamSpec* pspec,
     gpointer    user_data
 );
-static void on_widget_notif_button_press_event(
+static void on_notif_icon_button_press_event(
     GtkWidget*      self,
     GdkEventButton* event,
     gpointer        user_data
@@ -63,7 +64,7 @@ static void on_widget_notif_button_press_event(
 G_DEFINE_TYPE(
     WinTCNotificationNetwork,
     wintc_notification_network,
-    WINTC_TYPE_NOTIFICATION_BEHAVIOUR
+    WINTC_TYPE_SHEXT_UI_CONTROLLER
 )
 
 static void wintc_notification_network_class_init(
@@ -79,14 +80,14 @@ static void wintc_notification_network_init(
     WINTC_UNUSED(WinTCNotificationNetwork* self)
 )
 {
-    if (!s_menu_network)
+    if (!S_MENU_NETWORK)
     {
         GtkBuilder* builder =
             gtk_builder_new_from_resource(
                 "/uk/oddmatics/wintc/taskband/menu-tray-nm.ui"
             );
 
-        s_menu_network =
+        S_MENU_NETWORK =
             GTK_WIDGET(
                 g_object_ref(gtk_builder_get_object(builder, "menu"))
             );
@@ -102,15 +103,25 @@ static void wintc_notification_network_constructed(
     GObject* object
 )
 {
-    WinTCNotificationBehaviour* behaviour =
-        WINTC_NOTIFICATION_BEHAVIOUR(object);
-    WinTCNotificationNetwork*   network =
+    (G_OBJECT_CLASS(wintc_notification_network_parent_class))
+        ->constructed(object);
+
+    WinTCNotificationNetwork* network =
         WINTC_NOTIFICATION_NETWORK(object);
 
-    g_object_set(
-        network,
-        "icon-name", "network-offline",
-        NULL
+    network->notif_icon =
+        wintc_ishext_ui_host_get_ext_widget(
+            wintc_shext_ui_controller_get_ui_host(
+                WINTC_SHEXT_UI_CONTROLLER(object)
+            ),
+            WINTC_NOTIFAREA_HOSTEXT_ICON,
+            WINTC_TYPE_NOTIF_AREA_ICON,
+            object
+        );
+
+    wintc_notif_area_icon_set_icon_name(
+        WINTC_NOTIF_AREA_ICON(network->notif_icon),
+        "network-offline"
     );
 
     // Connect to NetworkManager
@@ -126,26 +137,10 @@ static void wintc_notification_network_constructed(
     // Hook up signals for widget
     //
     g_signal_connect(
-        behaviour->widget_notif,
+        network->notif_icon,
         "button-press-event",
-        G_CALLBACK(on_widget_notif_button_press_event),
+        G_CALLBACK(on_notif_icon_button_press_event),
         network
-    );
-}
-
-//
-// PUBLIC FUNCTIONS
-//
-WinTCNotificationNetwork* wintc_notification_network_new(
-    GtkWidget* widget_notif
-)
-{
-    return WINTC_NOTIFICATION_NETWORK(
-        g_object_new(
-            WINTC_TYPE_NOTIFICATION_NETWORK,
-            "widget-notif", widget_notif,
-            NULL
-        )
     );
 }
 
@@ -165,10 +160,9 @@ static void nm_update_primary_connection(
 
     if (!network->nm_primary_connection)
     {
-        g_object_set(
-            network,
-            "icon-name", "network-offline",
-            NULL
+        wintc_notif_area_icon_set_icon_name(
+            WINTC_NOTIF_AREA_ICON(network->notif_icon),
+            "network-offline"
         );
 
         return;
@@ -176,10 +170,9 @@ static void nm_update_primary_connection(
 
     // FIXME: Decide network type and stuff
     //
-    g_object_set(
-        network,
-        "icon-name", "network-idle",
-        NULL
+    wintc_notif_area_icon_set_icon_name(
+        WINTC_NOTIF_AREA_ICON(network->notif_icon),
+        "network-idle"
     );
 }
 
@@ -231,7 +224,7 @@ static void on_nm_client_ready(
     );
 }
 
-static void on_widget_notif_button_press_event(
+static void on_notif_icon_button_press_event(
     WINTC_UNUSED(GtkWidget* self),
     GdkEventButton* event,
     WINTC_UNUSED(gpointer user_data)
@@ -240,7 +233,7 @@ static void on_widget_notif_button_press_event(
     if (event->button == 3)
     {
         gtk_menu_popup_at_pointer(
-            GTK_MENU(s_menu_network),
+            GTK_MENU(S_MENU_NETWORK),
             (GdkEvent*) event
         );
     }

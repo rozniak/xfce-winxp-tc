@@ -2,8 +2,10 @@
 #include <gtk/gtk.h>
 #include <libupower-glib/upower.h>
 #include <wintc/comgtk.h>
+#include <wintc/shellext.h>
 
-#include "behaviour.h"
+#include "../intapi.h"
+#include "icon.h"
 #include "power.h"
 
 //
@@ -51,14 +53,13 @@ static void on_up_device_battery_notify(
 //
 // GTK OOP CLASS/INSTANCE DEFINITIONS
 //
-struct _WinTCNotificationPowerClass
-{
-    WinTCNotificationBehaviourClass __parent__;
-};
-
 struct _WinTCNotificationPower
 {
-    WinTCNotificationBehaviour __parent__;
+    WinTCShextUIController __parent__;
+
+    // UI
+    //
+    GtkWidget* notif_icon;
 
     // Power stuff
     //
@@ -72,7 +73,7 @@ struct _WinTCNotificationPower
 G_DEFINE_TYPE(
     WinTCNotificationPower,
     wintc_notification_power,
-    WINTC_TYPE_NOTIFICATION_BEHAVIOUR
+    WINTC_TYPE_SHEXT_UI_CONTROLLER
 )
 
 static void wintc_notification_power_class_init(
@@ -100,6 +101,16 @@ static void wintc_notification_power_constructed(
         ->constructed(object);
 
     WinTCNotificationPower* power = WINTC_NOTIFICATION_POWER(object);
+
+    power->notif_icon =
+        wintc_ishext_ui_host_get_ext_widget(
+            wintc_shext_ui_controller_get_ui_host(
+                WINTC_SHEXT_UI_CONTROLLER(object)
+            ),
+            WINTC_NOTIFAREA_HOSTEXT_ICON,
+            WINTC_TYPE_NOTIF_AREA_ICON,
+            object
+        );
 
     // Connect to upower, enumerate existing devices and attach signals for
     // picking up new ones
@@ -147,22 +158,6 @@ static void wintc_notification_power_dispose(
 
     (G_OBJECT_CLASS(wintc_notification_power_parent_class))
         ->dispose(object);
-}
-
-//
-// PUBLIC FUNCTIONS
-//
-WinTCNotificationPower* wintc_notification_power_new(
-    GtkWidget* widget_notif
-)
-{
-    return WINTC_NOTIFICATION_POWER(
-        g_object_new(
-            WINTC_TYPE_NOTIFICATION_POWER,
-            "widget-notif", widget_notif,
-            NULL
-        )
-    );
 }
 
 //
@@ -264,18 +259,16 @@ static void wintc_notification_power_update_icon(
     {
         if (up_client_get_on_battery(power->up_client))
         {
-            g_object_set(
-                power,
-                "icon-name", "battery-missing",
-                NULL
+            wintc_notif_area_icon_set_icon_name(
+                WINTC_NOTIF_AREA_ICON(power->notif_icon),
+                "battery-missing"
             );
         }
         else
         {
-            g_object_set(
-                power,
-                "icon-name", "ac-adapter",
-                NULL
+            wintc_notif_area_icon_set_icon_name(
+                WINTC_NOTIF_AREA_ICON(power->notif_icon),
+                "ac-adapter"
             );
         }
 
@@ -337,10 +330,9 @@ static void wintc_notification_power_update_icon(
             break;
     }
 
-    g_object_set(
-        power,
-        "icon-name", icon_name,
-        NULL
+    wintc_notif_area_icon_set_icon_name(
+        WINTC_NOTIF_AREA_ICON(power->notif_icon),
+        icon_name
     );
 }
 

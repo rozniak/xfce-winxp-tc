@@ -3,9 +3,10 @@
 #include <gtk/gtk.h>
 #include <wintc/comgtk.h>
 #include <wintc/shelldpa.h>
+#include <wintc/shellext.h>
 
 #include "application.h"
-#include "toolbar.h"
+#include "intapi.h"
 #include "window.h"
 #include "start/toolbar.h"
 #include "systray/toolbar.h"
@@ -29,14 +30,19 @@ typedef enum
 //
 // FORWARD DECLARATIONS
 //
+static void wintc_taskband_window_ishext_ui_host_interface_init(
+    WinTCIShextUIHostInterface* iface
+);
+
 static void wintc_taskband_window_dispose(
     GObject* object
 );
 
-static WinTCTaskbandToolbar* wintc_taskband_window_create_toolbar(
-    WinTCTaskbandWindow* taskband,
-    GType                toolbar_type,
-    gboolean             expand
+static GtkWidget* wintc_taskband_window_get_ext_widget(
+    WinTCIShextUIHost* host,
+    guint              ext_id,
+    GType              expected_type,
+    gpointer           ctx
 );
 
 static gboolean on_window_map_event(
@@ -48,7 +54,7 @@ static gboolean on_window_map_event(
 //
 // STATIC DATA
 //
-static const WinTCTaskbandToolbarId s_layout[] = {
+static const WinTCTaskbandToolbarId S_LAYOUT[] = {
     WINTC_TASKBAND_TOOLBAR_START,
     WINTC_TASKBAND_TOOLBAR_QUICK_ACCESS,
     WINTC_TASKBAND_TOOLBAR_PRE_BUTTONS,
@@ -75,18 +81,22 @@ struct _WinTCTaskbandWindow
 
     GSList* toolbars;
 
-    WinTCTaskbandToolbar* toolbar_notifarea;
-    WinTCTaskbandToolbar* toolbar_start;
-    WinTCTaskbandToolbar* toolbar_taskbuttons;
+    WinTCShextUIController* uictl_notifarea;
+    WinTCShextUIController* uictl_start;
+    WinTCShextUIController* uictl_taskbuttons;
 };
 
 //
 // GTK TYPE DEFINITION & CTORS
 //
-G_DEFINE_TYPE(
+G_DEFINE_TYPE_WITH_CODE(
     WinTCTaskbandWindow,
     wintc_taskband_window,
-    GTK_TYPE_APPLICATION_WINDOW
+    GTK_TYPE_APPLICATION_WINDOW,
+    G_IMPLEMENT_INTERFACE(
+        WINTC_TYPE_ISHEXT_UI_HOST,
+        wintc_taskband_window_ishext_ui_host_interface_init
+    )
 )
 
 static void wintc_taskband_window_class_init(
@@ -134,18 +144,80 @@ static void wintc_taskband_window_init(
     );
 }
 
+static void wintc_taskband_window_ishext_ui_host_interface_init(
+    WinTCIShextUIHostInterface* iface
+)
+{
+    iface->get_ext_widget = wintc_taskband_window_get_ext_widget;
+}
+
 //
-// FORWARD DECLARATIONS
+// CLASS VIRTUAL METHODS
 //
 static void wintc_taskband_window_dispose(
     GObject* object
 )
 {
-    WinTCTaskbandWindow* wnd = WINTC_TASKBAND_WINDOW(object);
+    WinTCTaskbandWindow* taskband = WINTC_TASKBAND_WINDOW(object);
 
-    g_clear_slist(&(wnd->toolbars), g_object_unref);
+    g_clear_slist(&(taskband->toolbars), g_object_unref);
 
     (G_OBJECT_CLASS(wintc_taskband_window_parent_class))->dispose(object);
+}
+
+//
+// INTERFACE METHODS (WinTCIShextUIHost)
+//
+static GtkWidget* wintc_taskband_window_get_ext_widget(
+    WinTCIShextUIHost* host,
+    guint              ext_id,
+    GType              expected_type,
+    gpointer           ctx
+)
+{
+    WinTCTaskbandWindow* taskband = WINTC_TASKBAND_WINDOW(host);
+
+    // Only toolbars are supported
+    //
+    if (ext_id != WINTC_TASKBAND_HOSTEXT_TOOLBAR)
+    {
+        g_critical("taskband: unsupported ext widget type: %d", ext_id);
+        return NULL;
+    }
+
+    // No special type expected, we host any kind of widget as a 'toolbar'
+    //
+    if (expected_type != GTK_TYPE_WIDGET || !GTK_IS_WIDGET(ctx))
+    {
+        g_critical("%s", "taskband: invalid ext widget type");
+        return NULL;
+    }
+
+    // Go ahead and import the widget
+    //
+    // FIXME: We expand based on hexpand... this isn't SUPER intuitive when
+    //        vertical taskbar support is implemented, but it'll do
+    //
+    GtkWidget* toolbar = GTK_WIDGET(ctx);
+    gboolean   expand  = gtk_widget_get_hexpand(toolbar);
+
+    taskband->toolbars =
+        g_slist_append(
+            taskband->toolbars,
+            toolbar
+        );
+
+    gtk_box_pack_start(
+        GTK_BOX(taskband->main_box),
+        toolbar,
+        expand,
+        expand,
+        0
+    );
+
+    gtk_widget_show_all(toolbar);
+
+    return ctx;
 }
 
 //
@@ -173,41 +245,8 @@ void wintc_taskband_window_toggle_start_menu(
 )
 {
     wintc_toolbar_start_toggle_menu(
-        WINTC_TOOLBAR_START(taskband->toolbar_start)
+        WINTC_TOOLBAR_START(taskband->uictl_start)
     );
-}
-
-//
-// PRIVATE FUNCTIONS
-//
-static WinTCTaskbandToolbar* wintc_taskband_window_create_toolbar(
-    WinTCTaskbandWindow* taskband,
-    GType                toolbar_type,
-    gboolean             expand
-)
-{
-    WinTCTaskbandToolbar* toolbar = g_object_new(toolbar_type, NULL);
-    GtkWidget*            root    = wintc_taskband_toolbar_get_root_widget(
-                                        toolbar
-                                    );
-
-    taskband->toolbars =
-        g_slist_append(
-            taskband->toolbars,
-            toolbar
-        );
-
-    gtk_box_pack_start(
-        GTK_BOX(taskband->main_box),
-        root,
-        expand,
-        expand,
-        0
-    );
-
-    gtk_widget_show_all(root);
-
-    return toolbar;
 }
 
 //
@@ -223,41 +262,41 @@ static gboolean on_window_map_event(
 
     // Spawn toolbars
     //
-    for (guint i = 0; i < G_N_ELEMENTS(s_layout); i++)
+    for (guint i = 0; i < G_N_ELEMENTS(S_LAYOUT); i++)
     {
-        switch (s_layout[i])
+        switch (S_LAYOUT[i])
         {
             case WINTC_TASKBAND_TOOLBAR_START:
-                taskband->toolbar_start =
-                    wintc_taskband_window_create_toolbar(
-                        taskband,
+                taskband->uictl_start =
+                    wintc_shext_ui_controller_new_from_type(
                         WINTC_TYPE_TOOLBAR_START,
-                        FALSE
+                        WINTC_ISHEXT_UI_HOST(taskband)
                     );
+
                 break;
 
             case WINTC_TASKBAND_TOOLBAR_BUTTONS:
-                taskband->toolbar_taskbuttons =
-                    wintc_taskband_window_create_toolbar(
-                        taskband,
+                taskband->uictl_taskbuttons =
+                    wintc_shext_ui_controller_new_from_type(
                         WINTC_TYPE_TOOLBAR_TASK_BUTTONS,
-                        TRUE
+                        WINTC_ISHEXT_UI_HOST(taskband)
                     );
+
                 break;
 
             case WINTC_TASKBAND_TOOLBAR_NOTIFICATION_AREA:
-                taskband->toolbar_notifarea =
-                    wintc_taskband_window_create_toolbar(
-                        taskband,
+                taskband->uictl_notifarea =
+                    wintc_shext_ui_controller_new_from_type(
                         WINTC_TYPE_TOOLBAR_NOTIF_AREA,
-                        FALSE
+                        WINTC_ISHEXT_UI_HOST(taskband)
                     );
+
                 break;
 
             case WINTC_TASKBAND_TOOLBAR_QUICK_ACCESS:
             case WINTC_TASKBAND_TOOLBAR_PRE_BUTTONS:
             case WINTC_TASKBAND_TOOLBAR_POST_BUTTONS:
-                WINTC_LOG_DEBUG("Not implemented toolbar: %d", s_layout[i]);
+                WINTC_LOG_DEBUG("Not implemented toolbar: %d", S_LAYOUT[i]);
                 break;
         }
     }

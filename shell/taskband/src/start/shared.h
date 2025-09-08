@@ -4,6 +4,7 @@
 #include <glib.h>
 #include <gtk/gtk.h>
 #include <wintc/comctl.h>
+#include <wintc/shellext.h>
 
 #include "progmenu.h"
 
@@ -40,14 +41,13 @@ typedef struct _PersonalStartMenuData
     GArray* tuples_programs;
 } PersonalStartMenuData;
 
-typedef struct _WinTCToolbarStartClass
-{
-    WinTCTaskbandToolbarClass __parent__;
-} WinTCToolbarStartClass;
-
 typedef struct _WinTCToolbarStart
 {
-    WinTCTaskbandToolbar __parent__;
+    WinTCShextUIController __parent__;
+
+    // UI
+    //
+    GtkWidget* start_button;
 
     // Personal data struct
     //

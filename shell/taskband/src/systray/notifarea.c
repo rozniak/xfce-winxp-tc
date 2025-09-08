@@ -1,9 +1,11 @@
 #include <glib.h>
 #include <gtk/gtk.h>
 #include <wintc/comgtk.h>
+#include <wintc/shellext.h>
 
-#include "behaviour.h"
+#include "../intapi.h"
 #include "clock.h"
+#include "icon.h"
 #include "notifarea.h"
 #include "power.h"
 #include "volume.h"
@@ -11,6 +13,24 @@
 #ifndef WINTC_PKGMGR_BSDPKG
 #include "network.h"
 #endif
+
+//
+// FORWARD DECLARATIONS
+//
+static void wintc_notification_area_ishext_ui_host_interface_init(
+    WinTCIShextUIHostInterface* iface
+);
+
+static void wintc_notification_area_dispose(
+    GObject* object
+);
+
+static GtkWidget* wintc_notification_area_get_ext_widget(
+    WinTCIShextUIHost* host,
+    guint              ext_id,
+    GType              expected_type,
+    gpointer           ctx
+);
 
 //
 // GTK OOP CLASS/INSTANCE DEFINITIONS
@@ -29,46 +49,20 @@ struct _WinTCNotificationArea
 
     WinTCClockRunner* clock_runner;
 
-    GHashTable* map_widget_to_behaviour;
+    GSList* list_uictl_behaviours;
 };
-
-//
-// FORWARD DECLARATIONS
-//
-static void wintc_notification_area_dispose(
-    GObject* object
-);
-
-static void wintc_notification_area_append_component(
-    WinTCNotificationArea* notif_area,
-    GType                  component_type
-);
-static GtkWidget* wintc_notification_area_append_icon(
-    WinTCNotificationArea* notif_area
-);
-static void wintc_notification_area_map_widget(
-    WinTCNotificationArea*      notif_area,
-    GtkWidget*                  widget_notif,
-    WinTCNotificationBehaviour* behaviour
-);
-
-static void update_notification_icon(
-    GtkWidget*                  widget_notif,
-    WinTCNotificationBehaviour* behaviour
-);
-
-static void on_behaviour_icon_changed(
-    WinTCNotificationBehaviour* behaviour,
-    gpointer                    user_data
-);
 
 //
 // GTK TYPE DEFINITION & CTORS
 //
-G_DEFINE_TYPE(
+G_DEFINE_TYPE_WITH_CODE(
     WinTCNotificationArea,
     wintc_notification_area,
-    GTK_TYPE_BIN
+    GTK_TYPE_BIN,
+    G_IMPLEMENT_INTERFACE(
+        WINTC_TYPE_ISHEXT_UI_HOST,
+        wintc_notification_area_ishext_ui_host_interface_init
+    )
 )
 
 static void wintc_notification_area_class_init(
@@ -84,16 +78,6 @@ static void wintc_notification_area_init(
     WinTCNotificationArea* self
 )
 {
-    // Create map for notification widgets --> behaviours
-    //
-    self->map_widget_to_behaviour =
-        g_hash_table_new_full(
-            g_direct_hash,
-            g_direct_equal,
-            NULL,
-            g_object_unref
-        );
-
     // Set up UI
     //
     self->box_container = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
@@ -123,19 +107,26 @@ static void wintc_notification_area_init(
     // Create notification area icons
     //
 #ifndef WINTC_PKGMGR_BSDPKG
-    wintc_notification_area_append_component(
-        self,
-        WINTC_TYPE_NOTIFICATION_NETWORK
+    wintc_shext_ui_controller_new_from_type(
+        WINTC_TYPE_NOTIFICATION_NETWORK,
+        WINTC_ISHEXT_UI_HOST(self)
     );
 #endif
-    wintc_notification_area_append_component(
-        self,
-        WINTC_TYPE_NOTIFICATION_POWER
+    wintc_shext_ui_controller_new_from_type(
+        WINTC_TYPE_NOTIFICATION_POWER,
+        WINTC_ISHEXT_UI_HOST(self)
     );
-    wintc_notification_area_append_component(
-        self,
-        WINTC_TYPE_NOTIFICATION_VOLUME
+    wintc_shext_ui_controller_new_from_type(
+        WINTC_TYPE_NOTIFICATION_VOLUME,
+        WINTC_ISHEXT_UI_HOST(self)
     );
+}
+
+static void wintc_notification_area_ishext_ui_host_interface_init(
+    WinTCIShextUIHostInterface* iface
+)
+{
+    iface->get_ext_widget = wintc_notification_area_get_ext_widget;
 }
 
 //
@@ -148,15 +139,63 @@ static void wintc_notification_area_dispose(
     WinTCNotificationArea* notif_area = WINTC_NOTIFICATION_AREA(object);
 
     g_clear_object(&(notif_area->clock_runner));
-
-    if (notif_area->map_widget_to_behaviour)
-    {
-        g_hash_table_unref(
-            g_steal_pointer(&(notif_area->map_widget_to_behaviour))
-        );
-    }
+    g_clear_slist(
+        &(notif_area->list_uictl_behaviours),
+        (GDestroyNotify) g_object_unref
+    );
 
     (G_OBJECT_CLASS(wintc_notification_area_parent_class))->dispose(object);
+}
+
+//
+// INTERFACE METHODS (WinTCIShextUIHost)
+//
+static GtkWidget* wintc_notification_area_get_ext_widget(
+    WinTCIShextUIHost* host,
+    guint              ext_id,
+    GType              expected_type,
+    gpointer           ctx
+)
+{
+    WinTCNotificationArea* notif_area = WINTC_NOTIFICATION_AREA(host);
+
+    if (ext_id != WINTC_NOTIFAREA_HOSTEXT_ICON)
+    {
+        g_critical("notifarea: unsupported ext widget type: %d", ext_id);
+        return NULL;
+    }
+
+    if (expected_type != WINTC_TYPE_NOTIF_AREA_ICON)
+    {
+        g_critical("%s", "notifarea: invalid ext widget type");
+        return NULL;
+    }
+
+    if (!G_IS_OBJECT(ctx))
+    {
+        g_critical("%s", "notifarea: expected a GObject for icon context");
+        return NULL;
+    }
+
+    // All good, create the icon
+    //
+    GtkWidget* notif_icon = wintc_notif_area_icon_new();
+
+    gtk_box_pack_start(
+        GTK_BOX(notif_area->box_container),
+        notif_icon,
+        FALSE,
+        FALSE,
+        0
+    );
+
+    notif_area->list_uictl_behaviours =
+        g_slist_append(
+            notif_area->list_uictl_behaviours,
+            ctx
+        );
+
+    return notif_icon;
 }
 
 //
@@ -169,110 +208,5 @@ GtkWidget* notification_area_new(void)
             WINTC_TYPE_NOTIFICATION_AREA,
             NULL
         )
-    );
-}
-
-//
-// PRIVATE FUNCTIONS
-//
-static void wintc_notification_area_append_component(
-    WinTCNotificationArea* notif_area,
-    GType                  component_type
-)
-{
-    GtkWidget* widget = wintc_notification_area_append_icon(notif_area);
-
-    WinTCNotificationBehaviour* notif =
-        WINTC_NOTIFICATION_BEHAVIOUR(
-            g_object_new(
-                component_type,
-                "widget-notif", widget,
-                NULL
-            )
-        );
-
-    wintc_notification_area_map_widget(
-        notif_area,
-        widget,
-        notif
-    );
-}
-
-static GtkWidget* wintc_notification_area_append_icon(
-    WinTCNotificationArea* notif_area
-)
-{
-    GtkWidget* event_box  = gtk_event_box_new();
-    GtkWidget* image_icon = gtk_image_new();
-
-    gtk_widget_set_events(event_box, GDK_BUTTON_PRESS_MASK);
-
-    gtk_container_add(
-        GTK_CONTAINER(event_box),
-        image_icon
-    );
-    gtk_box_pack_start(
-        GTK_BOX(notif_area->box_container),
-        event_box,
-        FALSE,
-        FALSE,
-        0
-    );
-
-    return event_box;
-}
-
-static void wintc_notification_area_map_widget(
-    WinTCNotificationArea*      notif_area,
-    GtkWidget*                  widget_notif,
-    WinTCNotificationBehaviour* behaviour
-)
-{
-    g_hash_table_insert(
-        notif_area->map_widget_to_behaviour,
-        widget_notif,
-        behaviour
-    );
-
-    // Connect up widget to behaviour
-    //
-    update_notification_icon(
-        widget_notif,
-        behaviour
-    );
-
-    g_signal_connect(
-        behaviour,
-        "icon-changed",
-        G_CALLBACK(on_behaviour_icon_changed),
-        widget_notif
-    );
-}
-
-static void update_notification_icon(
-    GtkWidget*                  widget_notif,
-    WinTCNotificationBehaviour* behaviour
-)
-{
-    gtk_image_set_from_icon_name(
-        GTK_IMAGE(gtk_bin_get_child(GTK_BIN(widget_notif))),
-        wintc_notification_behaviour_get_icon_name(behaviour),
-        GTK_ICON_SIZE_SMALL_TOOLBAR
-    );
-}
-
-//
-// CALLBACKS
-//
-static void on_behaviour_icon_changed(
-    WinTCNotificationBehaviour* behaviour,
-    gpointer                    user_data
-)
-{
-    GtkWidget* widget_notif = GTK_WIDGET(user_data);
-
-    update_notification_icon(
-        widget_notif,
-        behaviour
     );
 }

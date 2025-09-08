@@ -179,6 +179,26 @@ void wintc_dpa_show_popup(
             &y
         );
 
+        // Adjust pos if the window doesn't have its own GDK window
+        //
+        if (!gtk_widget_get_has_window(owner))
+        {
+            gint off_x = 0;
+            gint off_y = 0;
+
+            gtk_widget_translate_coordinates(
+                owner,
+                GTK_WIDGET(wintc_widget_get_toplevel_window(owner)),
+                0,
+                0,
+                &off_x,
+                &off_y
+            );
+
+            x += off_x;
+            y += off_y;
+        }
+
         gtk_window_move(
             GTK_WINDOW(popup),
             x,

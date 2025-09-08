@@ -11,7 +11,6 @@
 #include <wintc/shelldpa.h>
 #include <wintc/shlang.h>
 
-#include "../toolbar.h"
 #include "menumod.h"
 #include "personal.h"
 #include "progmenu.h"
@@ -125,7 +124,6 @@ void create_personal_menu(
 )
 {
     GtkBuilder* builder;
-    WinTCTaskbandToolbar* toolbar = WINTC_TASKBAND_TOOLBAR(toolbar_start);
 
     // Set default states
     //
@@ -266,7 +264,10 @@ void create_personal_menu(
     // Transfer to popup
     //
     toolbar_start->personal.popup_menu =
-        wintc_dpa_create_popup(toolbar->widget_root, TRUE);
+        wintc_dpa_create_popup(
+            toolbar_start->start_button,
+            TRUE
+        );
 
     wintc_widget_add_style_class(
         toolbar_start->personal.popup_menu,
@@ -417,8 +418,6 @@ void open_personal_menu(
     WinTCToolbarStart* toolbar_start
 )
 {
-    WinTCTaskbandToolbar* toolbar = WINTC_TASKBAND_TOOLBAR(toolbar_start);
-
     // Reset should close flag, so that selection-done knows no item has
     // actually been 'activated' yet
     //
@@ -431,7 +430,7 @@ void open_personal_menu(
 
     wintc_dpa_show_popup(
         toolbar_start->personal.popup_menu,
-        toolbar->widget_root
+        toolbar_start->start_button
     );
 }
 
@@ -1134,7 +1133,6 @@ static void on_personal_menu_hide(
     gpointer   user_data
 )
 {
-    WinTCTaskbandToolbar* toolbar       = WINTC_TASKBAND_TOOLBAR(user_data);
     WinTCToolbarStart*    toolbar_start = WINTC_TOOLBAR_START(user_data);
 
     // Track the last closed time, important for toggling the menu properly
@@ -1146,7 +1144,7 @@ static void on_personal_menu_hide(
     //
     toolbar_start->sync_button = TRUE;
     gtk_toggle_button_set_active(
-        GTK_TOGGLE_BUTTON(toolbar->widget_root),
+        GTK_TOGGLE_BUTTON(toolbar_start->start_button),
         FALSE
     );
     toolbar_start->sync_button = FALSE;
