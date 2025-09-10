@@ -12,6 +12,7 @@
 #include <wintc/shlang.h>
 
 #include "menumod.h"
+#include "mfu.h"
 #include "personal.h"
 #include "progmenu.h"
 #include "shared.h"
@@ -55,14 +56,13 @@ static GtkWidget* create_personal_menu_item_from_desktop_entry(
     const gchar*      comment,
     const gchar*      generic_name
 );
-static GtkWidget* create_personal_menu_item_from_garcon_item(
-    GarconMenuItem*   garcon_item,
-    StartSignalTuple* signal_tuple
-);
 static void refresh_personal_menu(
     WinTCToolbarStart* toolbar_start
 );
 static void refresh_userpic(
+    WinTCToolbarStart* toolbar_start
+);
+static void update_personal_menu_mfu_items(
     WinTCToolbarStart* toolbar_start
 );
 
@@ -104,10 +104,19 @@ static void on_menu_shell_submenu_selection_done(
     GtkMenuShell* self,
     gpointer      user_data
 );
+static void on_mfu_tracker_updated(
+    WinTCStartMfuTracker* self,
+    gpointer              user_data
+);
 static void on_personal_menu_hide(
     GtkWidget* self,
     gpointer   user_data
 );
+
+//
+// STATIC DATA
+//
+static GQuark S_QUARK_PERSONAL_ITEM_TUPLE = 0;
 
 //
 // INTERNAL FUNCTIONS
@@ -124,6 +133,12 @@ void create_personal_menu(
 )
 {
     GtkBuilder* builder;
+
+    if (!S_QUARK_PERSONAL_ITEM_TUPLE)
+    {
+        S_QUARK_PERSONAL_ITEM_TUPLE =
+            g_quark_from_static_string("personal-tuple");
+    }
 
     // Set default states
     //
@@ -515,34 +530,37 @@ static GtkWidget* create_personal_menu_item(
 
     // Attempt to load the icon...
     //
-    GdkPixbuf* pixbuf_icon =
-        gtk_icon_theme_load_icon(
-            gtk_icon_theme_get_default(),
-            icon_name ? icon_name : "application-x-generic",
-            PROGRAM_ICON_SIZE,
-            GTK_ICON_LOOKUP_FORCE_SIZE,
-            NULL
-        );
-
-    if (!pixbuf_icon)
+    if (icon_name)
     {
-        gtk_icon_theme_load_icon(
-            gtk_icon_theme_get_default(),
-            "application-x-generic",
-            PROGRAM_ICON_SIZE,
-            GTK_ICON_LOOKUP_FORCE_SIZE,
-            NULL
-        );
-    }
+        GdkPixbuf* pixbuf_icon =
+            gtk_icon_theme_load_icon(
+                gtk_icon_theme_get_default(),
+                icon_name,
+                PROGRAM_ICON_SIZE,
+                GTK_ICON_LOOKUP_FORCE_SIZE,
+                NULL
+            );
 
-    if (pixbuf_icon)
-    {
-        gtk_image_set_from_pixbuf(
-            GTK_IMAGE(image_icon),
-            pixbuf_icon
-        );
+        if (!pixbuf_icon)
+        {
+            gtk_icon_theme_load_icon(
+                gtk_icon_theme_get_default(),
+                "application-x-generic",
+                PROGRAM_ICON_SIZE,
+                GTK_ICON_LOOKUP_FORCE_SIZE,
+                NULL
+            );
+        }
 
-        g_object_unref(pixbuf_icon);
+        if (pixbuf_icon)
+        {
+            gtk_image_set_from_pixbuf(
+                GTK_IMAGE(image_icon),
+                pixbuf_icon
+            );
+
+            g_object_unref(pixbuf_icon);
+        }
     }
 
     // Set up label properties
@@ -563,6 +581,10 @@ static GtkWidget* create_personal_menu_item(
     // Ensure image widget always requests the right size, in case no icon was
     // loaded
     //
+    gtk_image_set_pixel_size(
+        GTK_IMAGE(image_icon),
+        PROGRAM_ICON_SIZE
+    );
     gtk_widget_set_size_request(
         image_icon,
         PROGRAM_ICON_SIZE,
@@ -737,36 +759,6 @@ static GtkWidget* create_personal_menu_item_from_desktop_entry(
     return menu_item;
 }
 
-static GtkWidget* create_personal_menu_item_from_garcon_item(
-    GarconMenuItem*   garcon_item,
-    StartSignalTuple* signal_tuple
-)
-{
-    GtkWidget* menu_item =
-        create_personal_menu_item(
-            GTK_MENU_SHELL(
-                signal_tuple->toolbar_start->personal.menubar_programs
-            ),
-            garcon_menu_item_get_icon_name(garcon_item),
-            garcon_menu_item_get_name(garcon_item),
-            garcon_menu_item_get_comment(garcon_item),
-            NULL
-        );
-
-    signal_tuple->is_action = FALSE;
-    signal_tuple->user_data =
-        garcon_menu_item_get_command_expanded(garcon_item);
-
-    g_signal_connect(
-        menu_item,
-        "activate",
-        G_CALLBACK(on_menu_item_launcher_activate),
-        signal_tuple
-    );
-
-    return menu_item;
-}
-
 static void refresh_personal_menu(
     WinTCToolbarStart* toolbar_start
 )
@@ -860,54 +852,58 @@ static void refresh_personal_menu(
         gtk_separator_menu_item_new()
     );
 
-    // Add MFU items
-    // FIXME: In future we will need some >>>algorithm<<< to come up with a
-    //        'top' programs list to display here, and also reserve the last
-    //        slot for the latest newly added program, if any
+    // Loop over to add the MFU items
     //
-    //        For now we simply grab the first items that are pulled in via the
-    //        all.menu file
-    //
-    GarconMenu* all_entries = garcon_menu_new_for_path(
-                                  WINTC_ASSETS_DIR "/shell-res/all.menu"
-                              );
-    GError*     error       = NULL;
-
-    if (!garcon_menu_load(all_entries, NULL, &error))
+    for (gint i = 0; i < MAX_MFU_ITEM_COUNT; i++)
     {
-        wintc_display_error_and_clear(&error, NULL);
-        return;
-    }
+        GtkWidget* personal_item =
+            create_personal_menu_item(
+                GTK_MENU_SHELL(
+                    toolbar_start->personal.menubar_programs
+                ),
+                NULL,
+                NULL,
+                NULL,
+                NULL
+            );
 
-    // Loop over to add the items
-    //
-    GList*      elements = garcon_menu_get_elements(all_entries);
-    GList* li = elements;
-    gint   i  = 0;
-
-    while (i < MAX_MFU_ITEM_COUNT && li != NULL)
-    {
         tuple =
             &g_array_index(
                 toolbar_start->personal.tuples_programs,
                 StartSignalTuple,
                 DEFAULT_ITEM_COUNT + i
             );
+
+        tuple->is_action     = FALSE;
         tuple->toolbar_start = toolbar_start;
+
+        g_object_set_qdata(
+            G_OBJECT(personal_item),
+            S_QUARK_PERSONAL_ITEM_TUPLE,
+            tuple
+        );
+
+        g_signal_connect(
+            personal_item,
+            "activate",
+            G_CALLBACK(on_menu_item_launcher_activate),
+            tuple
+        );
 
         gtk_menu_shell_append(
             GTK_MENU_SHELL(toolbar_start->personal.menubar_programs),
-            create_personal_menu_item_from_garcon_item(
-                GARCON_MENU_ITEM(li->data),
-                tuple
-            )
+            personal_item
         );
-
-        i++;
-        li = li->next;
     }
 
-    g_list_free(g_steal_pointer(&elements));
+    update_personal_menu_mfu_items(toolbar_start);
+
+    g_signal_connect(
+        wintc_start_mfu_tracker_get_default(),
+        "mfu-updated",
+        G_CALLBACK(on_mfu_tracker_updated),
+        toolbar_start
+    );
 
     // Re-append All Programs items
     //
@@ -945,6 +941,135 @@ static void refresh_userpic(
         -1,
         NULL
     );
+}
+
+static void update_personal_menu_mfu_items(
+    WinTCToolbarStart* toolbar_start
+)
+{
+    // Find the first MFU item
+    //
+    GList* li_mfu        = NULL;
+    GList* list_children =
+        gtk_container_get_children(
+            GTK_CONTAINER(toolbar_start->personal.menubar_programs)
+        );
+
+    for (GList* iter = list_children; iter; iter = iter->next)
+    {
+        if (
+            g_object_get_qdata(
+                G_OBJECT(iter->data),
+                S_QUARK_PERSONAL_ITEM_TUPLE
+            )
+        )
+        {
+            li_mfu = iter;
+            break;
+        }
+    }
+
+    if (!li_mfu)
+    {
+        g_critical("%s", "taskband: somehow found no mfu items");
+        g_list_free(list_children);
+        return;
+    }
+
+    // Start updating the items
+    //
+    GList* list_mfu =
+        wintc_start_mfu_tracker_get_mfu_list(
+            wintc_start_mfu_tracker_get_default()
+        );
+
+    for (
+        GList* iter = list_mfu;
+        iter;
+        iter = iter->next, li_mfu = li_mfu->next
+    )
+    {
+        StartSignalTuple* tuple =
+            g_object_get_qdata(
+                G_OBJECT(li_mfu->data),
+                S_QUARK_PERSONAL_ITEM_TUPLE
+            );
+
+        // Protect against the case where there could be more MFU items tracked
+        // than personal menu items
+        //
+        if (!tuple)
+        {
+            break;
+        }
+
+        // Update the menu item and tuple
+        //
+        GarconMenuItem* garcon_item = GARCON_MENU_ITEM(iter->data);
+        const gchar*    icon_name   = garcon_menu_item_get_icon_name(
+                                          garcon_item
+                                      );
+        GList*          list_menu_children;
+        GtkWidget*      menu_item   = GTK_WIDGET(li_mfu->data);
+        GdkPixbuf*      pixbuf_icon = NULL;
+
+        list_menu_children =
+            gtk_container_get_children(
+                GTK_CONTAINER(
+                    gtk_bin_get_child(GTK_BIN(menu_item))
+                )
+            );
+
+        if (icon_name)
+        {
+            pixbuf_icon =
+                gtk_icon_theme_load_icon(
+                    gtk_icon_theme_get_default(),
+                    icon_name,
+                    PROGRAM_ICON_SIZE,
+                    GTK_ICON_LOOKUP_FORCE_SIZE,
+                    NULL
+                );
+        }
+
+        if (!pixbuf_icon)
+        {
+            gtk_icon_theme_load_icon(
+                gtk_icon_theme_get_default(),
+                "application-x-generic",
+                PROGRAM_ICON_SIZE,
+                GTK_ICON_LOOKUP_FORCE_SIZE,
+                NULL
+            );
+        }
+
+        gtk_image_set_from_pixbuf(
+            GTK_IMAGE(list_menu_children->data),
+            pixbuf_icon
+        );
+        gtk_label_set_text(
+            GTK_LABEL(list_menu_children->next->data),
+            garcon_menu_item_get_name(garcon_item)
+        );
+        gtk_widget_set_tooltip_text(
+            menu_item,
+            garcon_menu_item_get_comment(garcon_item)
+        );
+
+        g_free(tuple->user_data);
+        tuple->user_data =
+            garcon_menu_item_get_command_expanded(garcon_item);
+
+        if (pixbuf_icon)
+        {
+            g_object_unref(pixbuf_icon);
+        }
+
+        g_list_free(list_menu_children);
+    }
+
+    g_list_free(list_mfu);
+    g_list_free(list_children);
 }
 
 //
@@ -1055,7 +1180,13 @@ static void on_menu_item_launcher_activate(
     }
     else
     {
-        wintc_launch_command(tuple->user_data, &error);
+        if (wintc_launch_command(tuple->user_data, &error))
+        {
+            wintc_start_mfu_tracker_bump_cmdline(
+                wintc_start_mfu_tracker_get_default(),
+                tuple->user_data
+            );
+        }
     }
 
     if (error)
@@ -1128,12 +1259,22 @@ static void on_menu_shell_submenu_selection_done(
     toolbar_start->sync_menu_should_close = TRUE;
 }
 
+static void on_mfu_tracker_updated(
+    WINTC_UNUSED(WinTCStartMfuTracker* self),
+    gpointer user_data
+)
+{
+    WinTCToolbarStart* toolbar_start = WINTC_TOOLBAR_START(user_data);
+
+    update_personal_menu_mfu_items(toolbar_start);
+}
+
 static void on_personal_menu_hide(
     WINTC_UNUSED(GtkWidget* self),
     gpointer   user_data
 )
 {
-    WinTCToolbarStart*    toolbar_start = WINTC_TOOLBAR_START(user_data);
+    WinTCToolbarStart* toolbar_start = WINTC_TOOLBAR_START(user_data);
 
     // Track the last closed time, important for toggling the menu properly
     //   (see toolbar.c)

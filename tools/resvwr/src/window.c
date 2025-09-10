@@ -364,7 +364,7 @@ static void wintc_resvwr_window_refresh(
     }
     else
     {
-        wintc_display_error_and_clear(&error);
+        wintc_display_error_and_clear(&error, GTK_WINDOW(wnd));
     }
 
     g_object_unref(builder);

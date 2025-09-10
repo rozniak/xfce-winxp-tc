@@ -13,6 +13,7 @@
 #include <wintc/shcommon.h>
 
 #include "progmenu.h"
+#include "mfu.h"
 
 #define WINTC_COMPONENT_START_MENU "start-menu"
 
@@ -27,8 +28,9 @@
 #define K_DIR_GAMES          "/Games"
 #define K_DIR_STARTUP        "/Startup"
 
-#define K_DIR_GNOME "/GNOME"
-#define K_DIR_KDE   "/KDE"
+#define K_DIR_GNOME     "/GNOME"
+#define K_DIR_KDE       "/KDE"
+#define K_DIR_WINTC_DEV "/WinTC Developer"
 
 #define K_DIR_DOOM         "/DOOM"
 #define K_DIR_LIBREOFFICE  "/LibreOffice"
@@ -190,8 +192,9 @@ static const gchar* S_EXCLUDED_CATEGORIES[] = {
 };
 
 static const gchar* S_VENDOR_MAPPINGS[] = {
-    "GNOME", K_DIR_GNOME,
-    "KDE",   K_DIR_KDE
+    "GNOME",       K_DIR_GNOME,
+    "KDE",         K_DIR_KDE,
+    "X-WinTC-Dev", K_DIR_WINTC_DEV
 };
 
 static DesktopAppInfoFilterFunc S_ENTRY_FILTERS[] = {
@@ -1865,17 +1868,19 @@ static void action_launch(
     WINTC_UNUSED(gpointer user_data)
 )
 {
-    GError* error = NULL;
+    const gchar* cmdline = g_variant_get_string(parameter, NULL);
+    GError*      error = NULL;
 
-    if (
-        !wintc_launch_command(
-            g_variant_get_string(parameter, NULL),
-            &error
-        )
-    )
+    if (!wintc_launch_command(cmdline, &error))
     {
         wintc_display_error_and_clear(&error, NULL);
+        return;
     }
+
+    wintc_start_mfu_tracker_bump_cmdline(
+        wintc_start_mfu_tracker_get_default(),
+        cmdline
+    );
 }
 
 static const gchar* filter_doom(

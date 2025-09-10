@@ -404,7 +404,7 @@ static void wintc_notif_area_icon_unmap(
     }
 
     (GTK_WIDGET_CLASS(wintc_notif_area_icon_parent_class))
-        ->map(widget);
+        ->unmap(widget);
 }
 
 static void wintc_notif_area_icon_unrealize(

@@ -160,7 +160,11 @@ static void wintc_taskband_window_dispose(
 {
     WinTCTaskbandWindow* taskband = WINTC_TASKBAND_WINDOW(object);
 
-    g_clear_slist(&(taskband->toolbars), g_object_unref);
+    g_clear_slist(&(taskband->toolbars), NULL);
+
+    g_clear_object(&(taskband->uictl_notifarea));
+    g_clear_object(&(taskband->uictl_start));
+    g_clear_object(&(taskband->uictl_taskbuttons));
 
     (G_OBJECT_CLASS(wintc_taskband_window_parent_class))->dispose(object);
 }

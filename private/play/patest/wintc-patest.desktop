@@ -6,4 +6,4 @@ Icon=wintc-patest
 Terminal=false
 StartupNotify=false
 Type=Application
-Categories=Utility;GTK;
+Categories=Utility;GTK;X-WinTC-Dev;

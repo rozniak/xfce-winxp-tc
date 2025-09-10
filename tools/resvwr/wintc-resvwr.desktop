@@ -6,4 +6,4 @@ Icon=wintc-resvwr
 Terminal=false
 StartupNotify=false
 Type=Application
-Categories=Development;GTK;
+Categories=Development;GTK;X-WinTC-Dev;
