@@ -18,6 +18,7 @@ set(WINTC_NO_PEDANTIC_COMPILE true) # Necessary due to NetworkManager headers
 include(GNUInstallDirs)
 
 include(../../packaging/cmake-inc/common/CMakeLists.txt)
+include(../../packaging/cmake-inc/codegen/CMakeLists.txt)
 include(../../packaging/cmake-inc/linking/CMakeLists.txt)
 include(../../packaging/cmake-inc/locale/CMakeLists.txt)
 include(../../packaging/cmake-inc/packaging/CMakeLists.txt)
@@ -43,6 +44,14 @@ wintc_resolve_library(wintc-sndapi     WINTC_SNDAPI)
 wintc_compile_resources()
 wintc_create_meta_h()
 
+wintc_gdbus_codegen(
+    snw-dbus.xml
+    snw-dbus
+    org.kde.
+    ZWinKde
+    false
+)
+
 # FIXME: For now, exclude the network icon stuff from build on FreeBSD
 set(
     TASKBAND_SOURCES
@@ -52,6 +61,8 @@ set(
     src/main.c
     src/meta.h
     src/resources.c
+    src/snw-dbus.c
+    src/snw-dbus.h
     src/window.c
     src/window.h
     src/start/menumod.c
