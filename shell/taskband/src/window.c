@@ -264,6 +264,13 @@ static gboolean on_window_map_event(
 {
     WinTCTaskbandWindow* taskband = WINTC_TASKBAND_WINDOW(self);
 
+    // If we already spawned the toolbars, don't do it again
+    //
+    if (taskband->toolbars)
+    {
+        return TRUE;
+    }
+
     // Spawn toolbars
     //
     for (guint i = 0; i < G_N_ELEMENTS(S_LAYOUT); i++)
