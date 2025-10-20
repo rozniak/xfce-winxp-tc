@@ -1,4 +1,5 @@
-<interface name="org.kde.StatusNotifierWatcher">
+<node>
+  <interface name="org.kde.StatusNotifierWatcher">
 
     <!-- methods -->
     <method name="RegisterStatusNotifierItem">
@@ -35,4 +36,5 @@
 
     <signal name="StatusNotifierHostUnregistered">
     </signal>
-</interface>
+  </interface>
+</node>

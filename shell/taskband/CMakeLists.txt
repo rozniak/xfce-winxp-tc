@@ -86,6 +86,8 @@ set(
     src/systray/notifarea.h
     src/systray/power.c
     src/systray/power.h
+    src/systray/sni.c
+    src/systray/sni.h
     src/systray/toolbar.c
     src/systray/toolbar.h
     src/systray/volume.c

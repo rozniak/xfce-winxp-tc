@@ -1,0 +1,3 @@
+# Ignore generated output
+snw-dbus.c
+snw-dbus.h

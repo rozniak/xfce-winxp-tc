@@ -8,6 +8,7 @@
 #include "icon.h"
 #include "notifarea.h"
 #include "power.h"
+#include "sni.h"
 #include "volume.h"
 
 #ifndef WINTC_PKGMGR_BSDPKG
@@ -106,6 +107,10 @@ static void wintc_notification_area_init(
 
     // Create notification area icons
     //
+    wintc_shext_ui_controller_new_from_type(
+        WINTC_TYPE_NOTIFICATION_SNI,
+        WINTC_ISHEXT_UI_HOST(self)
+    );
 #ifndef WINTC_PKGMGR_BSDPKG
     wintc_shext_ui_controller_new_from_type(
         WINTC_TYPE_NOTIFICATION_NETWORK,
