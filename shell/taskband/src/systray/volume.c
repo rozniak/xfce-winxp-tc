@@ -273,7 +273,7 @@ static void wintc_notification_volume_set_have_device(
     {
         wintc_notif_area_icon_set_icon_name(
             WINTC_NOTIF_AREA_ICON(volume->notif_icon),
-            "audio-volume_muted"
+            "audio-volume-muted"
         );
     }
 }
