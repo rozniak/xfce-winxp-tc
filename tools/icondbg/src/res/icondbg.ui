@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <object class="GtkListStore" id="model-sizes">
+    <columns>
+      <column type="gchararray" />
+    </columns>
+    <data>
+      <row>
+        <col id="0">16x16</col>
+      </row>
+      <row>
+        <col id="0">24x24</col>
+      </row>
+      <row>
+        <col id="0">32x32</col>
+      </row>
+      <row>
+        <col id="0">48x48</col>
+      </row>
+    </data>
+  </object>
+
+  <object class="GtkPaned" id="paned-root">
+    <property name="can-focus">False</property>
+
+    <child>
+      <object class="GtkBox">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="orientation">vertical</property>
+
+        <child>
+          <object class="GtkEntry" id="entry-icon-name">
+          </object>
+        </child>
+
+        <child>
+          <object class="GtkComboBox" id="combo-size">
+            <property name="active">0</property>
+            <property name="model">model-sizes</property>
+
+            <child>
+              <object class="GtkCellRendererText" />
+              <attributes>
+                <attribute name="text">0</attribute>
+              </attributes>
+            </child>
+          </object>
+        </child>
+
+        <child>
+          <object class="GtkButton" id="button-load">
+            <property name="label" translatable="no">Load</property>
+          </object>
+        </child>
+      </object>
+    </child>
+
+    <child>
+      <object class="GtkScrolledWindow">
+        <child>
+          <object class="GtkImage" id="img-icon">
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

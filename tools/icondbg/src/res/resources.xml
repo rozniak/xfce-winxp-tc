@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/uk/oddmatics/wintc/icondbg">
+    <file>icondbg.ui</file>
+  </gresource>
+</gresources>

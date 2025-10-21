@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Icon Viewer (WinTC)
+Comment=Development tool for debugging icon lookup problems.
+Exec=wintc-icondbg
+Icon=wintc-icondbg
+Terminal=false
+StartupNotify=false
+Type=Application
+Categories=Utility;GTK;X-WinTC-Dev;
