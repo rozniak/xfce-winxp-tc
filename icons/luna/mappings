@@ -145,6 +145,8 @@ mimetypes/application-pdf-->file_pdf
 mimetypes/application-postscript-->file_generic_script
 mimetypes/application-rtf-->file_rtf
 mimetypes/application-vnd.adobe.flash.movie-->file_swf
+mimetypes/application-vnd.efi.img-->file_img
+mimetypes/application-vnd.efi.iso-->file_iso
 mimetypes/application-vnd.ms-access-->file_mdb
 mimetypes/application-vnd.ms-excel-->file_xls
 mimetypes/application-vnd.ms-powerpoint-->file_ppt
@@ -177,7 +179,7 @@ mimetypes/application-x-awk-->file_generic_script
 mimetypes/application-x-bittorrent-->file_empty
 mimetypes/application-x-bzip-compressed-tar-->folder_compressed
 mimetypes/application-x-bzip-->folder_compressed
-mimetypes/application-x-cd-image-->disc
+mimetypes/application-x-cd-image-->file_iso
 mimetypes/application-x-compressed-tar-->folder_compressed
 mimetypes/application-x-compress-->folder_compressed
 mimetypes/application-x-config-->file_generic_config
@@ -201,6 +203,7 @@ mimetypes/application-x-object-->file_obj
 mimetypes/application-x-pak-->folder_compressed
 mimetypes/application-x-perl-->file_generic_script
 mimetypes/application-x-php-->file_generic_markup
+mimetypes/application-x-raw-disk-image-->file_img
 mimetypes/application-x-resources-->file_resx
 mimetypes/application-x-resourcesx-->file_resx
 mimetypes/application-x-ruby-->file_generic_script
@@ -216,6 +219,7 @@ mimetypes/application-x-tarz-->folder_compressed
 mimetypes/application-x-theme-->file_msstyles
 mimetypes/application-x-vbproj-->file_vbproj
 mimetypes/application-x-vbscript-->file_vbs
+mimetypes/application-x-vhd-disk-->file_vhd
 mimetypes/application-x-web-config-->file_web_config
 mimetypes/application-x-xz-compressed-tar-->folder_compressed
 mimetypes/application-x-yaml-->file_generic_markup
