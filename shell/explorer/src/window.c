@@ -23,10 +23,13 @@
 //
 enum
 {
-    PROP_SHEXT_HOST = 1,
+    PROP_NULL,
+    PROP_SHEXT_HOST,
+    PROP_FOLDER_OPTIONS,
     PROP_EXPLORER_LOADER,
     PROP_INITIAL_PATH,
-    PROP_ACTIVE_SIDEBAR
+    PROP_ACTIVE_SIDEBAR,
+    N_PROPERTIES
 };
 
 enum
@@ -150,7 +153,8 @@ static GActionEntry s_window_actions[] = {
     }
 };
 
-static gint wintc_explorer_window_signals[N_SIGNALS] = { 0 };
+static GParamSpec* wintc_explorer_window_properties[N_PROPERTIES] = { 0 };
+static gint        wintc_explorer_window_signals[N_SIGNALS]       = { 0 };
 
 //
 // GTK OOP CLASS/INSTANCE DEFINITIONS
@@ -166,8 +170,9 @@ struct _WinTCExplorerWindow
 
     // Shell stuff
     //
-    WinTCShBrowser* browser;
-    WinTCShextHost* shext_host;
+    WinTCShBrowser*       browser;
+    WinTCShFolderOptions* fldr_opts;
+    WinTCShextHost*       shext_host;
 
     // State
     //
@@ -223,50 +228,51 @@ static void wintc_explorer_window_class_init(
     object_class->get_property = wintc_explorer_window_get_property;
     object_class->set_property = wintc_explorer_window_set_property;
 
-    g_object_class_install_property(
-        object_class,
-        PROP_SHEXT_HOST,
+    wintc_explorer_window_properties[PROP_SHEXT_HOST] =
         g_param_spec_object(
             "shext-host",
             "ShextHost",
             "The shell extension host object to use.",
             WINTC_TYPE_SHEXT_HOST,
             G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY
-        )
-    );
-    g_object_class_install_property(
-        object_class,
-        PROP_EXPLORER_LOADER,
+        );
+    wintc_explorer_window_properties[PROP_FOLDER_OPTIONS] =
+        g_param_spec_object(
+            "folder-options",
+            "FolderOptions",
+            "The folder options object to use",
+            WINTC_TYPE_SH_FOLDER_OPTIONS,
+            G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY
+        );
+    wintc_explorer_window_properties[PROP_EXPLORER_LOADER] =
         g_param_spec_object(
             "explorer-loader",
             "ExplorerLoader",
             "The explorer sidebar and toolbar loader host object to use.",
             WINTC_TYPE_EXPLORER_LOADER,
             G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY
-        )
-    );
-    g_object_class_install_property(
-        object_class,
-        PROP_INITIAL_PATH,
+        );
+    wintc_explorer_window_properties[PROP_INITIAL_PATH] =
         g_param_spec_string(
             "initial-path",
             "InitialPath",
             "The initial path for the window to open.",
             NULL,
             G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY
-        )
-    );
-
-    g_object_class_install_property(
-        object_class,
-        PROP_ACTIVE_SIDEBAR,
+        );
+    wintc_explorer_window_properties[PROP_ACTIVE_SIDEBAR] =
         g_param_spec_string(
             "active-sidebar",
             "ActiveSidebar",
             "The currently active sidebar.",
             NULL,
             G_PARAM_READWRITE
-        )
+        );
+
+    g_object_class_install_properties(
+        object_class,
+        N_PROPERTIES,
+        wintc_explorer_window_properties
     );
 
     wintc_explorer_window_signals[SIGNAL_LOCATION_CHANGED] =
@@ -414,6 +420,11 @@ static void wintc_explorer_window_constructed(
         return;
     }
 
+    if (!wnd->fldr_opts)
+    {
+        wnd->fldr_opts = wintc_sh_folder_options_new();
+    }
+
     // Handle initial path
     //
     if (!wnd->initial_path)
@@ -449,6 +460,7 @@ static void wintc_explorer_window_dispose(
 
     g_clear_object(&(wnd->behaviour_icons));
     g_clear_object(&(wnd->browser));
+    g_clear_object(&(wnd->fldr_opts));
     g_clear_object(&(wnd->shext_host));
 
     g_clear_object(&(wnd->iconview_browser));
@@ -512,13 +524,31 @@ static void wintc_explorer_window_set_property(
             wnd->shext_host = g_value_dup_object(value);
             break;
 
+        case PROP_FOLDER_OPTIONS:
+            wnd->fldr_opts = g_value_dup_object(value);
+            break;
+
         case PROP_EXPLORER_LOADER:
             wnd->loader = g_value_dup_object(value);
             break;
 
         case PROP_INITIAL_PATH:
-            wnd->initial_path = g_value_dup_string(value);
+        {
+            // FIXME: We don't handle extended paths yet!
+            //
+            WinTCShextPathInfo path_info;
+
+            wintc_shext_path_info_demangle_uri(
+                &path_info,
+                g_value_get_string(value)
+            );
+
+            wnd->initial_path = path_info.base_path;
+            path_info.base_path = NULL;
+
+            wintc_shext_path_info_free_data(&path_info);
             break;
+        }
 
         case PROP_ACTIVE_SIDEBAR:
             // Check if this is a nothing burger
@@ -599,6 +629,7 @@ static void wintc_explorer_window_set_property(
 GtkWidget* wintc_explorer_window_new(
     WinTCExplorerApplication* app,
     WinTCShextHost*           shext_host,
+    WinTCShFolderOptions*     fldr_opts,
     WinTCExplorerLoader*      loader,
     const gchar*              initial_path
 )
@@ -608,6 +639,7 @@ GtkWidget* wintc_explorer_window_new(
             WINTC_TYPE_EXPLORER_WINDOW,
             "application",     GTK_APPLICATION(app),
             "shext-host",      shext_host,
+            "folder-options",  fldr_opts,
             "explorer-loader", loader,
             "initial-path",    initial_path,
             NULL
@@ -947,7 +979,11 @@ static void switch_mode_to(
 
                 // Set up shell browser
                 //
-                wnd->browser = wintc_sh_browser_new(wnd->shext_host);
+                wnd->browser =
+                    wintc_sh_browser_new(
+                        wnd->shext_host,
+                        wnd->fldr_opts
+                    );
 
                 g_signal_connect(
                     wnd->browser,

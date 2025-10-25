@@ -7,6 +7,8 @@
 #include <gtk/gtk.h>
 #include <wintc/shellext.h>
 
+#include "fldropts.h"
+
 //
 // PUBLIC ENUMS
 //
@@ -15,6 +17,11 @@ typedef enum
     WINTC_SH_BROWSER_LOAD_STARTED = 0,
     WINTC_SH_BROWSER_LOAD_FINISHED
 } WinTCShBrowserLoadEvent;
+
+typedef enum
+{
+    WINTC_SH_BROWSER_BEHAVIOUR_DONT_USE_SELF_EXE = 0x1
+} WinTCShBrowserBehaviourFlag;
 
 //
 // GTK OOP BOILERPLATE
@@ -39,7 +46,8 @@ GType wintc_sh_browser_get_type(void) G_GNUC_CONST;
 // PUBLIC FUNCTIONS
 //
 WinTCShBrowser* wintc_sh_browser_new(
-    WinTCShextHost* shext_host
+    WinTCShextHost*       shext_host,
+    WinTCShFolderOptions* fldr_opts
 );
 
 gboolean wintc_sh_browser_activate_item(
@@ -53,6 +61,10 @@ gboolean wintc_sh_browser_can_navigate_to_parent(
 );
 
 WinTCIShextView* wintc_sh_browser_get_current_view(
+    WinTCShBrowser* browser
+);
+
+WinTCShBrowserBehaviourFlag wintc_sh_browser_get_behaviour_flags(
     WinTCShBrowser* browser
 );
 
@@ -75,6 +87,11 @@ void wintc_sh_browser_navigate_to_parent(
 
 void wintc_sh_browser_refresh(
     WinTCShBrowser* browser
+);
+
+void wintc_sh_browser_set_behaviour_flags(
+    WinTCShBrowser*             browser,
+    WinTCShBrowserBehaviourFlag flags
 );
 
 gboolean wintc_sh_browser_set_location(

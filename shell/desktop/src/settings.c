@@ -18,11 +18,6 @@ enum
 //
 // GTK OOP CLASS/INSTANCE DEFINITIONS
 //
-struct _WinTCDesktopSettingsClass
-{
-    GObjectClass __parent__;
-};
-
 struct _WinTCDesktopSettings
 {
     GObject __parent__;

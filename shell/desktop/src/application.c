@@ -1,7 +1,9 @@
 #include <glib.h>
 #include <gtk/gtk.h>
 #include <wintc/comgtk.h>
+#include <wintc/shell.h>
 #include <wintc/shelldpa.h>
+#include <wintc/shellext.h>
 
 #include "application.h"
 #include "settings.h"
@@ -10,21 +12,21 @@
 //
 // GTK OOP CLASS/INSANCE DEFINITIONS
 //
-struct _WinTCDesktopApplicationClass
-{
-    GtkApplicationClass __parent__;
-};
-
 struct _WinTCDesktopApplication
 {
     GtkApplication __parent__;
 
     WinTCDesktopSettings* settings;
+    WinTCShextHost*       shext_host;
 };
 
 //
 // FORWARD DECLARATIONS
 //
+static void wintc_desktop_application_dispose(
+    GObject* object
+);
+
 static void wintc_desktop_application_activate(
     GApplication* application
 );
@@ -70,6 +72,9 @@ static void wintc_desktop_application_class_init(
 )
 {
     GApplicationClass* application_class = G_APPLICATION_CLASS(klass);
+    GObjectClass*      object_class      = G_OBJECT_CLASS(klass);
+
+    object_class->dispose = wintc_desktop_application_dispose;
 
     application_class->activate =
         wintc_desktop_application_activate;
@@ -92,28 +97,21 @@ static void wintc_desktop_application_init(
 }
 
 //
-// PUBLIC FUNCTIONS
+// CLASS VIRTUAL METHODS
 //
-WinTCDesktopApplication* wintc_desktop_application_new(void)
+static void wintc_desktop_application_dispose(
+    GObject* object
+)
 {
-    WinTCDesktopApplication* app;
+    WinTCDesktopApplication* desktop_app =
+        WINTC_DESKTOP_APPLICATION(object);
 
-    g_set_application_name("Desktop");
+    g_clear_object(&(desktop_app->shext_host));
 
-    app =
-        g_object_new(
-            wintc_desktop_application_get_type(),
-            "application-id", "uk.co.oddmatics.wintc.desktop",
-            "flags",          G_APPLICATION_HANDLES_COMMAND_LINE,
-            NULL
-        );
-
-    return app;
+    (G_OBJECT_CLASS(wintc_desktop_application_parent_class))
+        ->dispose(object);
 }
 
-//
-// CALLBACKS
-//
 static void wintc_desktop_application_activate(
     GApplication* application
 )
@@ -144,7 +142,9 @@ static void wintc_desktop_application_activate(
         GtkWidget*  wnd     = wintc_desktop_window_new(
                                   desktop_app,
                                   monitor,
-                                  desktop_app->settings
+                                  desktop_app->settings,
+                                  gdk_monitor_is_primary(monitor) ?
+                                      desktop_app->shext_host : NULL
                               );
 
         gtk_widget_show_all(wnd);
@@ -185,6 +185,9 @@ static void wintc_desktop_application_startup(
     GApplication* application
 )
 {
+    WinTCDesktopApplication* desktop_app =
+        WINTC_DESKTOP_APPLICATION(application);
+
     // Chain up for gtk init
     // 
     G_APPLICATION_CLASS(wintc_desktop_application_parent_class)
@@ -197,4 +200,50 @@ static void wintc_desktop_application_startup(
         g_critical("%s", "Failed to resolve display protocol APIs.");
         g_application_quit(application);
     }
+
+    // Install styles
+    //
+    GtkCssProvider* css_provider = gtk_css_provider_new();
+
+    gtk_css_provider_load_from_resource(
+        css_provider,
+        "/uk/oddmatics/wintc/desktop/appstyles_p.css"
+    );
+
+    gtk_style_context_add_provider_for_screen(
+        gdk_screen_get_default(),
+        GTK_STYLE_PROVIDER(css_provider),
+        GTK_STYLE_PROVIDER_PRIORITY_APPLICATION
+    );
+
+    // Init shext host
+    //
+    desktop_app->shext_host = wintc_shext_host_new();
+
+    wintc_sh_init_builtin_extensions(desktop_app->shext_host);
+    wintc_shext_host_load_extensions(
+        desktop_app->shext_host,
+        WINTC_SHEXT_LOAD_DEFAULT,
+        NULL
+    );
+}
+
+//
+// PUBLIC MEHTODS
+//
+WinTCDesktopApplication* wintc_desktop_application_new(void)
+{
+    WinTCDesktopApplication* app;
+
+    g_set_application_name("Desktop");
+
+    app =
+        g_object_new(
+            wintc_desktop_application_get_type(),
+            "application-id", "uk.co.oddmatics.wintc.desktop",
+            "flags",          G_APPLICATION_HANDLES_COMMAND_LINE,
+            NULL
+        );
+
+    return app;
 }

@@ -15,6 +15,14 @@ enum
 };
 
 //
+// PRIVATE STRUCTURES
+//
+typedef struct _WinTCDpaDesktopWindowPrivate
+{
+    GdkMonitor* monitor;
+} WinTCDpaDesktopWindowPrivate;
+
+//
 // FORWARD DECLARATIONS
 //
 static void wintc_dpa_desktop_window_constructed(
@@ -43,10 +51,11 @@ static void window_setup_x11(
 //
 // GTK TYPE DEFINITION & CTORS
 //
-G_DEFINE_TYPE(
+G_DEFINE_TYPE_WITH_CODE(
     WinTCDpaDesktopWindow,
     wintc_dpa_desktop_window,
-    GTK_TYPE_APPLICATION_WINDOW
+    GTK_TYPE_APPLICATION_WINDOW,
+    G_ADD_PRIVATE(WinTCDpaDesktopWindow)
 )
 
 static void wintc_dpa_desktop_window_class_init(
@@ -102,12 +111,15 @@ static void wintc_dpa_desktop_window_get_property(
     GParamSpec* pspec
 )
 {
-    WinTCDpaDesktopWindow* wnd = WINTC_DPA_DESKTOP_WINDOW(object);
+    WinTCDpaDesktopWindowPrivate* priv =
+        wintc_dpa_desktop_window_get_instance_private(
+            WINTC_DPA_DESKTOP_WINDOW(object)
+        );
 
     switch (prop_id)
     {
         case PROP_MONITOR:
-            g_value_set_object(value, wnd->monitor);
+            g_value_set_object(value, priv->monitor);
             break;
 
         default:
@@ -123,12 +135,15 @@ static void wintc_dpa_desktop_window_set_property(
     GParamSpec*   pspec
 )
 {
-    WinTCDpaDesktopWindow* wnd = WINTC_DPA_DESKTOP_WINDOW(object);
+    WinTCDpaDesktopWindowPrivate* priv =
+        wintc_dpa_desktop_window_get_instance_private(
+            WINTC_DPA_DESKTOP_WINDOW(object)
+        );
 
     switch (prop_id)
     {
         case PROP_MONITOR:
-            wnd->monitor = g_value_get_object(value);
+            priv->monitor = g_value_get_object(value);
             break;
 
         default:
@@ -144,11 +159,14 @@ static void window_setup_wayland(
     WinTCDpaDesktopWindow* wnd
 )
 {
+    WinTCDpaDesktopWindowPrivate* priv =
+        wintc_dpa_desktop_window_get_instance_private(wnd);
+
     GtkWindow* window = GTK_WINDOW(wnd);
 
     p_gtk_layer_init_for_window(window);
     p_gtk_layer_set_layer(window, GTK_LAYER_SHELL_LAYER_BACKGROUND);
-    p_gtk_layer_set_monitor(window, wnd->monitor);
+    p_gtk_layer_set_monitor(window, priv->monitor);
 
     for (int edge = 0; edge <= GTK_LAYER_SHELL_EDGE_BOTTOM; edge++)
     {
@@ -163,9 +181,12 @@ static void window_setup_x11(
     WinTCDpaDesktopWindow* wnd
 )
 {
+    WinTCDpaDesktopWindowPrivate* priv =
+        wintc_dpa_desktop_window_get_instance_private(wnd);
+
     GdkRectangle geometry;
 
-    gdk_monitor_get_geometry(wnd->monitor, &geometry);
+    gdk_monitor_get_geometry(priv->monitor, &geometry);
 
     gtk_window_move(GTK_WINDOW(wnd), geometry.x, geometry.y);
     gtk_window_set_type_hint(GTK_WINDOW(wnd), GDK_WINDOW_TYPE_HINT_DESKTOP);

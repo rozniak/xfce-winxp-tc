@@ -40,6 +40,7 @@ GType wintc_explorer_window_get_type(void) G_GNUC_CONST;
 GtkWidget* wintc_explorer_window_new(
     WinTCExplorerApplication* app,
     WinTCShextHost*           shext_host,
+    WinTCShFolderOptions*     fldr_opts,
     WinTCExplorerLoader*      loader,
     const gchar*              initial_path
 );

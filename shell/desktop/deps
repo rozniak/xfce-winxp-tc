@@ -2,5 +2,8 @@ bt,rt:glib2
 bt,rt:gtk3
 bt,rt:wintc-comgtk
 bt,rt:wintc-registry
+bt,rt:wintc-shcommon
+bt,rt:wintc-shell
 bt,rt:wintc-shelldpa
+bt,rt:wintc-shellext
 bt,rt:wintc-syscfg

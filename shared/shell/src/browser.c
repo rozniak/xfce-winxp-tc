@@ -2,16 +2,21 @@
 #include <glib.h>
 #include <gtk/gtk.h>
 #include <wintc/comgtk.h>
+#include <wintc/exec.h>
 #include <wintc/shellext.h>
 
 #include "../public/browser.h"
+#include "../public/fldropts.h"
 
 //
 // PRIVATE ENUMS
 //
 enum
 {
-    PROP_SHEXT_HOST = 1
+    PROP_NULL,
+    PROP_SHEXT_HOST,
+    PROP_FOLDER_OPTIONS,
+    N_PROPERTIES
 };
 
 enum
@@ -23,11 +28,15 @@ enum
 //
 // STATIC DATA
 //
-static gint wintc_sh_browser_signals[N_SIGNALS] = { 0 };
+static GParamSpec* wintc_sh_browser_properties[N_PROPERTIES] = { 0 };
+static gint        wintc_sh_browser_signals[N_SIGNALS]       = { 0 };
 
 //
 // FORWARD DECLARATIONS
 //
+static void wintc_sh_browser_constructed(
+    GObject* object
+);
 static void wintc_sh_browser_dispose(
     GObject* object
 );
@@ -62,7 +71,12 @@ struct _WinTCShBrowser
 {
     GObject __parent__;
 
-    WinTCShextHost* shext_host;
+    WinTCShBrowserBehaviourFlag flags;
+
+    // Shell state
+    //
+    WinTCShFolderOptions* fldr_opts;
+    WinTCShextHost*       shext_host;
 
     // Browser state
     //
@@ -86,20 +100,32 @@ static void wintc_sh_browser_class_init(
 {
     GObjectClass* object_class = G_OBJECT_CLASS(klass);
 
+    object_class->constructed  = wintc_sh_browser_constructed;
     object_class->dispose      = wintc_sh_browser_dispose;
     object_class->get_property = wintc_sh_browser_get_property;
     object_class->set_property = wintc_sh_browser_set_property;
 
-    g_object_class_install_property(
-        object_class,
-        PROP_SHEXT_HOST,
+    wintc_sh_browser_properties[PROP_SHEXT_HOST] =
         g_param_spec_object(
             "shext-host",
             "ShextHost",
             "The shell extension host object to use.",
             WINTC_TYPE_SHEXT_HOST,
             G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY
-        )
+        );
+    wintc_sh_browser_properties[PROP_FOLDER_OPTIONS] =
+        g_param_spec_object(
+            "folder-options",
+            "FolderOptions",
+            "The folder options object to use.",
+            WINTC_TYPE_SH_FOLDER_OPTIONS,
+            G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY
+        );
+
+    g_object_class_install_properties(
+        object_class,
+        N_PROPERTIES,
+        wintc_sh_browser_properties
     );
 
     wintc_sh_browser_signals[SIGNAL_LOAD_CHANGED] =
@@ -124,12 +150,28 @@ static void wintc_sh_browser_init(
 //
 // CLASS VIRTUAL METHODS
 //
+static void wintc_sh_browser_constructed(
+    GObject* object
+)
+{
+    (G_OBJECT_CLASS(wintc_sh_browser_parent_class))
+        ->constructed(object);
+
+    WinTCShBrowser* browser = WINTC_SH_BROWSER(object);
+
+    if (!(browser->fldr_opts))
+    {
+        browser->fldr_opts = wintc_sh_folder_options_new();
+    }
+}
+
 static void wintc_sh_browser_dispose(
     GObject* object
 )
 {
     WinTCShBrowser* browser = WINTC_SH_BROWSER(object);
 
+    g_clear_object(&(browser->fldr_opts));
     g_clear_object(&(browser->shext_host));
     g_clear_object(&(browser->current_view));
 
@@ -163,6 +205,10 @@ static void wintc_sh_browser_set_property(
 
     switch (prop_id)
     {
+        case PROP_FOLDER_OPTIONS:
+            browser->fldr_opts = g_value_dup_object(value);
+            break;
+
         case PROP_SHEXT_HOST:
             browser->shext_host = g_value_dup_object(value);
             break;
@@ -177,13 +223,15 @@ static void wintc_sh_browser_set_property(
 // PUBLIC FUNCTIONS
 //
 WinTCShBrowser* wintc_sh_browser_new(
-    WinTCShextHost* shext_host
+    WinTCShextHost*       shext_host,
+    WinTCShFolderOptions* fldr_opts
 )
 {
     return WINTC_SH_BROWSER(
         g_object_new(
             WINTC_TYPE_SH_BROWSER,
-            "shext-host", shext_host,
+            "shext-host",     shext_host,
+            "folder-options", fldr_opts,
             NULL
         )
     );
@@ -231,12 +279,51 @@ gboolean wintc_sh_browser_activate_item(
 
     // Navigate to the path
     //
-    gboolean success =
-        wintc_sh_browser_set_location(
-            browser,
-            &path_info,
-            &local_error
-        );
+    gboolean success;
+
+    if (wintc_sh_folder_options_get_browse_in_same_window(browser->fldr_opts))
+    {
+        success =
+            wintc_sh_browser_set_location(
+                browser,
+                &path_info,
+                &local_error
+            );
+    }
+    else
+    {
+        gchar* path = wintc_shext_path_info_get_as_single_path(&path_info);
+
+        // Determine what to open with, us or explorer
+        //
+        GApplication* app = g_application_get_default();
+
+        if (
+            browser->flags & WINTC_SH_BROWSER_BEHAVIOUR_DONT_USE_SELF_EXE ||
+            !app
+        )
+        {
+            gchar* cmdline = g_strdup_printf("explorer \"%s\"", path);
+
+            success =
+                wintc_launch_command(
+                    cmdline,
+                    &local_error
+                );
+
+            g_free(cmdline);
+        }
+        else
+        {
+            GFile* file = g_file_new_for_path(path);
+
+            g_application_open(app, &file, 1, NULL);
+
+            success = TRUE;
+        }
+
+        g_free(path);
+    }
 
     if (!success)
     {
@@ -259,6 +346,13 @@ gboolean wintc_sh_browser_can_navigate_to_parent(
     }
 
     return wintc_ishext_view_has_parent(browser->current_view);
+}
+
+WinTCShBrowserBehaviourFlag wintc_sh_browser_get_behaviour_flags(
+    WinTCShBrowser* browser
+)
+{
+    return browser->flags;
 }
 
 WinTCIShextView* wintc_sh_browser_get_current_view(
@@ -331,6 +425,14 @@ void wintc_sh_browser_refresh(
     }
 
     wintc_ishext_view_refresh_items(browser->current_view);
+}
+
+void wintc_sh_browser_set_behaviour_flags(
+    WinTCShBrowser*             browser,
+    WinTCShBrowserBehaviourFlag flags
+)
+{
+    browser->flags = flags;
 }
 
 gboolean wintc_sh_browser_set_location(

@@ -145,6 +145,16 @@ void _wintc_ishext_view_refreshing(
     WinTCIShextView* view
 );
 
+// WinTCShextPathInfo methods
+//
+void wintc_shext_path_info_demangle_uri(
+    WinTCShextPathInfo* path_info,
+    const gchar*        uri
+);
+gchar* wintc_shext_path_info_get_as_single_path(
+    WinTCShextPathInfo* path_info
+);
+
 void wintc_shext_path_info_copy(
     WinTCShextPathInfo* dst,
     WinTCShextPathInfo* src

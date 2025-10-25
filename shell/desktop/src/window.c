@@ -3,7 +3,10 @@
 #include <glib.h>
 #include <gtk/gtk.h>
 #include <wintc/comgtk.h>
+#include <wintc/shcommon.h>
+#include <wintc/shell.h>
 #include <wintc/shelldpa.h>
+#include <wintc/shellext.h>
 #include <wintc/syscfg.h>
 
 #include "application.h"
@@ -15,29 +18,10 @@
 //
 enum
 {
-    PROP_SETTINGS = 1
-};
-
-//
-// GTK OOP CLASS/INSTANCE DEFINITIONS
-//
-struct _WinTCDesktopWindowClass
-{
-    WinTCDpaDesktopWindowClass __parent__;
-};
-
-struct _WinTCDesktopWindow
-{
-    WinTCDpaDesktopWindow __parent__;
-
-    // Drawing-related
-    //
-    GdkPixbuf*       pixbuf_wallpaper;
-    cairo_surface_t* surface_wallpaper;
-
-    // State
-    //
-    WinTCDesktopSettings* settings;
+    PROP_NULL,
+    PROP_SETTINGS,
+    PROP_SHEXT_HOST,
+    N_PROPERTIES
 };
 
 //
@@ -83,6 +67,39 @@ static void on_settings_notify_wallpaper_style(
 );
 
 //
+// STATIC DATA
+//
+static GParamSpec* wintc_desktop_window_properties[N_PROPERTIES] = { 0 };
+
+//
+// GTK OOP CLASS/INSTANCE DEFINITIONS
+//
+struct _WinTCDesktopWindow
+{
+    WinTCDpaDesktopWindow __parent__;
+
+    // UI
+    //
+    GtkWidget*                iconview_browser;
+    WinTCShIconViewBehaviour* behaviour_icons;
+
+    // Shell stuff
+    //
+    WinTCShBrowser*       browser;
+    WinTCShFolderOptions* fldr_opts;
+    WinTCShextHost*       shext_host;
+
+    // Drawing-related
+    //
+    GdkPixbuf*       pixbuf_wallpaper;
+    cairo_surface_t* surface_wallpaper;
+
+    // State
+    //
+    WinTCDesktopSettings* settings;
+};
+
+//
 // GTK TYPE DEFINITION & CTORS
 //
 G_DEFINE_TYPE(
@@ -104,16 +121,27 @@ static void wintc_desktop_window_class_init(
 
     widget_class->draw = wintc_desktop_window_draw;
 
-    g_object_class_install_property(
-        object_class,
-        PROP_SETTINGS,
+    wintc_desktop_window_properties[PROP_SETTINGS] =
         g_param_spec_object(
             "settings",
             "Settings",
             "The shared desktop settings",
             WINTC_TYPE_DESKTOP_SETTINGS,
             G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY
-        )
+        );
+    wintc_desktop_window_properties[PROP_SHEXT_HOST] =
+        g_param_spec_object(
+            "shext-host",
+            "ShextHost",
+            "The shell extension host object to use.",
+            WINTC_TYPE_SHEXT_HOST,
+            G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY
+        );
+
+    g_object_class_install_properties(
+        object_class,
+        N_PROPERTIES,
+        wintc_desktop_window_properties
     );
 }
 
@@ -121,6 +149,13 @@ static void wintc_desktop_window_init(
     WinTCDesktopWindow* self
 )
 {
+    self->iconview_browser = gtk_icon_view_new();
+
+    gtk_container_add(
+        GTK_CONTAINER(self),
+        self->iconview_browser
+    );
+
     g_signal_connect(
         self,
         "map-event",
@@ -137,6 +172,52 @@ static void wintc_desktop_window_constructed(
 )
 {
     WinTCDesktopWindow* wnd = WINTC_DESKTOP_WINDOW(object);
+
+    // If we have a shext host, then we can set up the browser
+    //
+    if (wnd->shext_host)
+    {
+        wnd->fldr_opts = wintc_sh_folder_options_new();
+
+        wintc_sh_folder_options_set_browse_in_same_window(
+            wnd->fldr_opts,
+            FALSE
+        );
+
+        wnd->browser =
+            wintc_sh_browser_new(
+                wnd->shext_host,
+                wnd->fldr_opts
+            );
+
+        wintc_sh_browser_set_behaviour_flags(
+            wnd->browser,
+            WINTC_SH_BROWSER_BEHAVIOUR_DONT_USE_SELF_EXE
+        );
+
+        wnd->behaviour_icons =
+            wintc_sh_icon_view_behaviour_new(
+                GTK_ICON_VIEW(wnd->iconview_browser),
+                wnd->browser
+            );
+
+        // Navigate to desktop
+        //
+        WinTCShextPathInfo path_info = { 0 };
+
+        path_info.base_path =
+            g_strdup(
+                wintc_sh_get_place_path(WINTC_SH_PLACE_DESKTOP)
+            );
+
+        wintc_sh_browser_set_location(
+            wnd->browser,
+            &path_info,
+            NULL
+        );
+
+        wintc_shext_path_info_free_data(&path_info);
+    }
 
     g_signal_connect(
         wnd->settings,
@@ -159,6 +240,11 @@ static void wintc_desktop_window_dispose(
 )
 {
     WinTCDesktopWindow* wnd = WINTC_DESKTOP_WINDOW(object);
+
+    g_clear_object(&(wnd->behaviour_icons));
+    g_clear_object(&(wnd->browser));
+    g_clear_object(&(wnd->fldr_opts));
+    g_clear_object(&(wnd->shext_host));
 
     if (wnd->surface_wallpaper)
     {
@@ -184,6 +270,10 @@ static void wintc_desktop_window_set_property(
             wnd->settings = g_value_get_object(value);
             break;
 
+        case PROP_SHEXT_HOST:
+            wnd->shext_host = g_value_dup_object(value);
+            break;
+
         default:
             G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
             break;
@@ -195,8 +285,7 @@ static gboolean wintc_desktop_window_draw(
     cairo_t*   cr
 )
 {
-    WinTCDpaDesktopWindow* dpa_wnd = WINTC_DPA_DESKTOP_WINDOW(widget);
-    WinTCDesktopWindow*    wnd     = WINTC_DESKTOP_WINDOW(widget);
+    WinTCDesktopWindow* wnd = WINTC_DESKTOP_WINDOW(widget);
 
     gint wnd_w = gtk_widget_get_allocated_width(widget);
     gint wnd_h = gtk_widget_get_allocated_height(widget);
@@ -259,7 +348,11 @@ static gboolean wintc_desktop_window_draw(
 
     // Rough watermark drawing
     //
-    if (gdk_monitor_is_primary(dpa_wnd->monitor))
+    // NOTE: We assume that we're the primary monitor if we have a shext host
+    //       passed in -- this is quite cheeky to do, until we properly deal
+    //       with primary monitor business on Waheyland
+    //
+    if (wnd->shext_host)
     {
         static gchar* s_tag = NULL;
 
@@ -324,6 +417,13 @@ static gboolean wintc_desktop_window_draw(
         cairo_show_text(cr, "Windows 'Total Conversion'");
     }
 
+    // Draw the icon view
+    //
+    gtk_widget_draw(wnd->iconview_browser, cr);
+
+//    (GTK_WIDGET_CLASS(wintc_desktop_window_parent_class))
+//        ->draw(widget, cr);
+
     return FALSE;
 }
 
@@ -333,7 +433,8 @@ static gboolean wintc_desktop_window_draw(
 GtkWidget* wintc_desktop_window_new(
     WinTCDesktopApplication* app,
     GdkMonitor*              monitor,
-    WinTCDesktopSettings*    settings
+    WinTCDesktopSettings*    settings,
+    WinTCShextHost*          shext_host
 )
 {
     return GTK_WIDGET(
@@ -345,6 +446,7 @@ GtkWidget* wintc_desktop_window_new(
             "monitor",     monitor,
             "resizable",   FALSE,
             "settings",    settings,
+            "shext-host",  shext_host,
             NULL
         )
     );

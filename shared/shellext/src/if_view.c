@@ -258,6 +258,77 @@ void _wintc_ishext_view_refreshing(
     );
 }
 
+void wintc_shext_path_info_demangle_uri(
+    WinTCShextPathInfo* path_info,
+    const gchar*        uri
+)
+{
+    //
+    // Fun stuff! There's a bunch of 'special' shell stuff we cram into URIs
+    // that aren't strictly valid... but they make sense to us -- this function
+    // 'demangles' the special sauce back into a valid WinTCShextPathInfo
+    //
+    // This is useful for handling GApplication::open when you might expect to
+    // handle a path incoming from WinTC
+    //
+
+    wintc_shext_path_info_free_data(path_info);
+
+    //
+    // STEP 1: Check if this is a GUID path
+    //
+    const gchar* p_guid_str = strstr(uri, "::%7B");
+
+    if (p_guid_str)
+    {
+        const gchar* p_end_guid = strstr(p_guid_str, "%7D");
+
+        if (p_end_guid)
+        {
+            gchar* guid_escaped = wintc_substr(p_guid_str, p_end_guid + 3);
+
+            path_info->base_path =
+                g_uri_unescape_string(guid_escaped, NULL);
+
+            g_free(guid_escaped);
+        }
+    }
+
+    //
+    // STEP 2: Check if there's an extended path
+    //
+    const gchar* p_ext_delim = strstr(uri, "??");
+
+    if (p_ext_delim)
+    {
+        if (!path_info->base_path)
+        {
+            path_info->base_path =
+                wintc_substr(uri, p_ext_delim);
+        }
+
+        path_info->extended_path =
+            wintc_substr(p_ext_delim + 2, NULL);
+    }
+}
+
+gchar* wintc_shext_path_info_get_as_single_path(
+    WinTCShextPathInfo* path_info
+)
+{
+    if (path_info->extended_path)
+    {
+        return
+            g_strdup_printf(
+                "%s??%s",
+                path_info->base_path,
+                path_info->extended_path
+            );
+    }
+
+    return g_strdup(path_info->base_path);
+}
+
 void wintc_shext_path_info_copy(
     WinTCShextPathInfo* dst,
     WinTCShextPathInfo* src
