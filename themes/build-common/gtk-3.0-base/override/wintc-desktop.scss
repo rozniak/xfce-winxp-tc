@@ -1,0 +1,23 @@
+/**
+ * wintc-desktop.scss - Theme Base WinTC Desktop Styles
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+.wintc-desktop
+{
+    background: $desktop_bg;
+}
+
+.wintc-desktop iconview
+{
+    @include __wintc_apply_props($desktop_styles);
+
+    &:selected
+    {
+        @include __wintc_apply_props($desktop_selected_styles);
+    }
+}

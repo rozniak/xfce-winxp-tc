@@ -68,8 +68,6 @@
         &:focus, &
         {
             @extend %selected_items;
-
-            border-radius: 3px;
         }
     }
 }

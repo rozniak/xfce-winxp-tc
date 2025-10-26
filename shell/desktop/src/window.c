@@ -162,6 +162,11 @@ static void wintc_desktop_window_init(
         G_CALLBACK(on_window_map_event),
         NULL
     );
+
+    wintc_widget_add_style_class(
+        GTK_WIDGET(self),
+        "wintc-desktop"
+    );
 }
 
 //
@@ -292,8 +297,21 @@ static gboolean wintc_desktop_window_draw(
 
     // FIXME: Just drawing default desktop background colour atm
     //
-    cairo_set_source_rgb(cr, 0.0f, 0.298f, 0.596f);
-    cairo_paint(cr);
+    //cairo_set_source_rgb(cr, 0.0f, 0.298f, 0.596f);
+    //cairo_paint(cr);
+
+    // FIXME: Just drawing the style background colour atm
+    //
+    GtkStyleContext* ctx = gtk_widget_get_style_context(widget);
+
+    gtk_render_background(
+        ctx,
+        cr,
+        0.0f,
+        0.0f,
+        (gdouble) wnd_w,
+        (gdouble) wnd_h
+    );
 
     // FIXME: Billy basic drawing of the wallpaper, if present
     //

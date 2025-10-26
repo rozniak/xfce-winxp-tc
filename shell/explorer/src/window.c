@@ -534,13 +534,20 @@ static void wintc_explorer_window_set_property(
 
         case PROP_INITIAL_PATH:
         {
+            const gchar* uri = g_value_get_string(value);
+
+            if (!uri)
+            {
+                break;
+            }
+
             // FIXME: We don't handle extended paths yet!
             //
             WinTCShextPathInfo path_info;
 
             wintc_shext_path_info_demangle_uri(
                 &path_info,
-                g_value_get_string(value)
+                uri
             );
 
             wnd->initial_path = path_info.base_path;

@@ -5,7 +5,7 @@
 /**
  * Default styles for the icon view
  */
-iconview
+iconview:not(:selected)
 {
     background: transparent;
 }

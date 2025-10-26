@@ -1,0 +1,16 @@
+/**
+ * desktop.scss - Theme Base Desktop Style Constants
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+$desktop_styles:
+    wintc_define_props_fg(
+        $desktop_styles,
+        true,
+        #FFFFFF,
+        undefined
+    );
