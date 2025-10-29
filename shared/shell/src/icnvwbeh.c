@@ -122,7 +122,11 @@ struct _WinTCShIconViewBehaviour
     GObject __parent__;
 
     WinTCShBrowser* browser;
-    GtkWidget*      icon_view;
+
+    // UI related
+    //
+    GtkWidget*       icon_view;
+    GtkCellRenderer* icon_view_text_cell;
 
     // View state
     //
@@ -281,6 +285,28 @@ static void wintc_sh_icon_view_behaviour_constructed(
         GTK_ICON_VIEW(behaviour->icon_view),
         GTK_SELECTION_MULTIPLE
     );
+
+    // Find the text cell in the icon view, make it editable
+    //
+    GList* renderers =
+        gtk_cell_layout_get_cells(GTK_CELL_LAYOUT(behaviour->icon_view));
+
+    for (GList* iter = renderers; iter; iter = iter->next)
+    {
+        if (GTK_IS_CELL_RENDERER_TEXT(iter->data))
+        {
+            behaviour->icon_view_text_cell =
+                GTK_CELL_RENDERER(iter->data);
+
+            g_object_set(
+                G_OBJECT(iter->data),
+                "editable", TRUE,
+                NULL
+            );
+        }
+    }
+
+    g_list_free(renderers);
 
     // Attach signals
     //
@@ -824,6 +850,45 @@ static void on_current_view_items_added(
             COLUMN_VIEW_HASH,  item->hash,
             -1
         );
+
+        // If this is a new item then focus it
+        //
+        if (item->hint == WINTC_SHEXT_VIEW_ITEM_IS_NEW)
+        {
+            WINTC_LOG_DEBUG("shell: icon view - new item for editing");
+
+            GtkTreePath* tree_path =
+                gtk_tree_model_get_path(
+                    GTK_TREE_MODEL(behaviour->list_model),
+                    &iter
+                );
+
+            gtk_widget_grab_focus(
+                behaviour->icon_view
+            );
+            gtk_icon_view_unselect_all(
+                GTK_ICON_VIEW(behaviour->icon_view)
+            );
+            gtk_icon_view_select_path(
+                GTK_ICON_VIEW(behaviour->icon_view),
+                tree_path
+            );
+
+            //
+            // FIXME: Commented out, this function is broken and doesn't
+            //        actually do anything
+            // 
+            /**
+            gtk_icon_view_set_cursor(
+                GTK_ICON_VIEW(behaviour->icon_view),
+                tree_path,
+                behaviour->icon_view_text_cell,
+                TRUE
+            );
+            */
+
+            gtk_tree_path_free(tree_path);
+        }
     }
 }
 

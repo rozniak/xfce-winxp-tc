@@ -272,8 +272,6 @@ void wintc_shext_path_info_demangle_uri(
     // handle a path incoming from WinTC
     //
 
-    wintc_shext_path_info_free_data(path_info);
-
     //
     // STEP 1: Check if this is a GUID path
     //

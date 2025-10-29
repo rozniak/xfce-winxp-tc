@@ -47,5 +47,7 @@ wintc-syscfg-->bt,rt-->libwintc-syscfg
 wintc-winbrand-->bt,rt-->libwintc-winbrand
 xcursorgen-->bt,rt-->x11-apps
 xdg-mime-->bt,rt-->xdg-utils
+xml2-->bt-->libxml2-dev
+xml2-->rt-->libxml2
 zip-->bt-->libzip-dev
 zip-->rt-->libzip4|libzip5

@@ -30,6 +30,7 @@ static WinTCShextViewItem s_desktop_items[] = {
         "computer",
         FALSE,
         0,
+        WINTC_SHEXT_VIEW_ITEM_DEFAULT,
         NULL
     },
     {
@@ -37,6 +38,7 @@ static WinTCShextViewItem s_desktop_items[] = {
         "folder-documents",
         FALSE,
         0,
+        WINTC_SHEXT_VIEW_ITEM_DEFAULT,
         NULL
     },
     {
@@ -44,14 +46,16 @@ static WinTCShextViewItem s_desktop_items[] = {
         "network-workgroup",
         FALSE,
         0,
-        NULL
+        WINTC_SHEXT_VIEW_ITEM_DEFAULT,
+        NULL,
     },
     {
         "Recycle Bin",
         "user-trash",
         FALSE,
         0,
-        NULL
+        WINTC_SHEXT_VIEW_ITEM_DEFAULT,
+        NULL,
     }
 };
 

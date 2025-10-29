@@ -1,3 +1,4 @@
 # Ignore dynamically generated source
 assets.h
+location.h
 version.c

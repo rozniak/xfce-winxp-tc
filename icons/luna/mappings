@@ -229,6 +229,7 @@ mimetypes/audio-aac-->file_generic_media
 mimetypes/audio-flac-->file_generic_media
 mimetypes/audio-midi-->file_generic_media
 mimetypes/audio-mpeg-->file_generic_media
+mimetypes/audio-vnd.wave-->file_generic_media
 mimetypes/audio-x-generic-->file_generic_media
 mimetypes/font-collection-->file_generic_font
 mimetypes/font-otf-->file_otf

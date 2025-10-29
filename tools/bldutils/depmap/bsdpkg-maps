@@ -11,13 +11,13 @@ msgfmt-->bt,rt-->gettext
 networkmanager-->bt,rt-->NULL
 plymouth-->bt,rt-->splash
 pulseaudio-->bt,rt-->pulseaudio
-python3-packaging-->bt,rt-->py39-packaging
-python3-venv-->bt,rt-->py39-virtualenv
+python3-packaging-->bt,rt-->py311-packaging
+python3-venv-->bt,rt-->py311-virtualenv
 sass-->bt,rt-->rubygem-sass
 sqlite3-->bt,rt-->sqlite3
 sysinfo-->bt,rt-->libsysinfo
 upower-glib-->bt,rt-->upower
-webkitgtk-->bt,rt-->webkit2-gtk3
+webkitgtk-->bt,rt-->webkit2-gtk_41
 wintc-comctl-->bt,rt-->wintc-comctl
 wintc-comgtk-->bt,rt-->wintc-comgtk
 wintc-exec-->bt,rt-->wintc-exec
@@ -33,4 +33,5 @@ wintc-syscfg-->bt,rt-->wintc-syscfg
 wintc-winbrand-->bt,rt-->wintc-winbrand
 xcursorgen-->bt,rt-->xcursorgen
 xdg-mime-->bt,rt-->xdg-utils
+xml2-->bt,rt-->libxml2
 zip-->bt,rt-->libzip

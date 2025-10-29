@@ -33,6 +33,7 @@ wintc_resolve_library(wintc-shcommon   WINTC_SHCOMMON)
 wintc_resolve_library(wintc-shellext   WINTC_SHELLEXT)
 wintc_resolve_library(wintc-shlang     WINTC_SHLANG)
 wintc_resolve_library(wintc-winbrand   WINTC_WINBRAND)
+wintc_resolve_library(libxml-2.0       XML2)
 
 wintc_compile_resources()
 
@@ -99,6 +100,7 @@ target_include_directories(
     PRIVATE ${WINTC_SHELLEXT_INCLUDE_DIRS}
     PRIVATE ${WINTC_SHLANG_INCLUDE_DIRS}
     PRIVATE ${WINTC_WINBRAND_INCLUDE_DIRS}
+    PRIVATE ${XML2_INCLUDE_DIRS}
 )
 
 target_link_directories(
@@ -115,6 +117,7 @@ target_link_directories(
     PRIVATE ${WINTC_SHELLEXT_LIBRARY_DIRS}
     PRIVATE ${WINTC_SHLANG_LIBRARY_DIRS}
     PRIVATE ${WINTC_WINBRAND_LIBRARY_DIRS}
+    PRIVATE ${XML2_LIBRARY_DIRS}
 )
 
 target_link_libraries(
@@ -131,6 +134,7 @@ target_link_libraries(
     PRIVATE ${WINTC_SHELLEXT_LIBRARIES}
     PRIVATE ${WINTC_SHLANG_LIBRARIES}
     PRIVATE ${WINTC_WINBRAND_LIBRARIES}
+    PRIVATE ${XML2_LIBRARIES}
 )
 
 # FreeBSD requires linking to libsysinfo port

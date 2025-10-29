@@ -7,3 +7,4 @@ bt,rt:wintc-comgtk
 bt,rt:wintc-exec
 bt,rt:wintc-shcommon
 bt,rt:wintc-shellext
+bt,rt:xml2

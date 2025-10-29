@@ -24,8 +24,22 @@ static GHashTable* s_drives_map = NULL;
 // FIXME: Temporary - only item is the drive root atm
 //
 static WinTCShextViewItem s_temp_items[] = {
-    { "/",             "drive-harddisk",    FALSE, 0, "file:///" },
-    { "Control Panel", "preferences-other", FALSE, 0, NULL       }
+    {
+        "/",
+        "drive-harddisk",
+        FALSE,
+        0,
+        WINTC_SHEXT_VIEW_ITEM_DEFAULT,
+        "file:///"
+    },
+    {
+        "Control Panel",
+        "preferences-other",
+        FALSE,
+        0,
+        WINTC_SHEXT_VIEW_ITEM_DEFAULT,
+        NULL
+    }
 };
 
 //

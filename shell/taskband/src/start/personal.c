@@ -842,8 +842,8 @@ static void refresh_personal_menu(
         )
     );
 
-    g_object_unref(entry_internet);
-    g_object_unref(entry_email);
+    g_clear_object(&entry_internet);
+    g_clear_object(&entry_email);
 
     // Add separator between defaults & MFU
     //

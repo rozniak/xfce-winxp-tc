@@ -543,7 +543,7 @@ static void wintc_explorer_window_set_property(
 
             // FIXME: We don't handle extended paths yet!
             //
-            WinTCShextPathInfo path_info;
+            WinTCShextPathInfo path_info = { 0 };
 
             wintc_shext_path_info_demangle_uri(
                 &path_info,

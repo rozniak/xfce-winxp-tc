@@ -25,7 +25,14 @@ static GHashTable* s_printers_map = NULL;
 // FIXME: Temporary, until we display printers
 //
 static WinTCShextViewItem s_temp_items[] = {
-    { "FPO", "printer", TRUE, 0, NULL }
+    {
+        "FPO",
+        "printer",
+        TRUE,
+        0,
+        WINTC_SHEXT_VIEW_ITEM_DEFAULT,
+        NULL
+    }
 };
 
 //

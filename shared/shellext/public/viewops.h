@@ -40,8 +40,13 @@ typedef enum
     WINTC_SHEXT_KNOWN_OP_COPY_TO,
     WINTC_SHEXT_KNOWN_OP_PROPERTIES,
 
+    WINTC_SHEXT_OP_NEW = 80, // 80-99 for 'New...' menu items, max 20 items
+
     WINTC_SHEXT_OP_CUSTOM = 100
 } WinTCShextOperationId;
+
+#define WINTC_SHEXT_OP_IS_NEW_OP(op) \
+    (op >= WINTC_SHEXT_OP_NEW && op < WINTC_SHEXT_OP_CUSTOM)
 
 //
 // PUBLIC STRUCTURES

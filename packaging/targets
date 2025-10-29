@@ -21,6 +21,7 @@ shell/cpl/desk
 shell/cpl/printers
 shell/cpl/sysdm
 shell/desktop
+shell/doctmpls
 shell/exitwin
 shell/explorer
 shell/run
