@@ -368,9 +368,10 @@ static void taskbutton_bar_size_allocate(
             &button_margins
         );
 
-        accum_width += TASKBUTTON_MIN_WIDTH +
-                       button_margins.left  +
-                       button_margins.right;
+        accum_margins += button_margins.left + button_margins.right;
+        accum_width   += TASKBUTTON_MIN_WIDTH +
+                         button_margins.left  +
+                         button_margins.right;
 
         if (accum_width > allocation->width)
         {
