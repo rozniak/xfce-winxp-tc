@@ -1,21 +1,227 @@
-.box-instruction label,
-.box-wait        label,
-.box-welcome     label
-{
-    color: #EFF7FF;
-    font-family: 'Arial';
+/* Main UI component styles */
+.header {
+    background-color: #00309C;
 }
 
-.box-instruction label,
-.box-wait        label
-{
+.header-separator {
+    background: linear-gradient(45deg, #5B7EDC, #C3D9FD 20%, #ADC6F6, #5A7EDC 90%);
+}
+
+.content {
+    background-color: #5A7EDC;
+}
+
+.vertical-separator {
+    background-image: linear-gradient(to bottom, #5B7EDC, #91AEEE, #5A7EDC );
+}
+
+.footer {
+    background: linear-gradient(to right, #3733AC 15%, #00309C);
+}
+
+.footer-separator {
+    background: linear-gradient(45deg, #5076D4, #F99736 20%, #C2814D, #00309C);
+}
+
+
+
+/* Footer styles */
+.accounts-label {
+    font-weight: 400;
+    color: #ffffff;
+    font-size: 10pt;
+    font-family: "Tahoma", inherit;
+}
+
+
+
+/* Wait screen styles */
+.wait-label {
+    font-weight: 500;
+    color: #ffffff;
+    font-size: 16pt;
+    font-family: "Arial", inherit;
+}
+
+.shutdown-label {
+    font-weight: 300;
+    color: #ffffff;
     font-size: 14pt;
+    font-family: "Tahoma", inherit;
 }
 
-.box-welcome label
+
+
+/* Login screen styles */
+.instruction-label {
+    font-weight: 500;
+    color: #ffffff;
+    font-size: 14pt;
+    font-family: "Tahoma", inherit;
+}
+
+/* DEBUG */
+.red-bg {
+    background-color: red;
+}
+
+.password-box {
+    /* border: 1px solid #00309C; */
+    font-family: "Tahoma", inherit;
+    border-radius: 5px;
+    font-size: 16pt;
+
+     border-top: 1px solid #7f7f7f;
+    border-left: 1px solid #7f7f7f;
+    border-right: 1px solid #dfdfdf;
+    border-bottom: 1px solid #dfdfdf;
+    
+    box-shadow: 
+        1px 0 0 0 #2d5aa0,     
+        0 1px 0 0 #2d5aa0,    
+        2px 0 0 0 #1a4480,    
+        0 2px 0 0 #1a4480;    
+}
+
+.user-label {
+    font-weight: 600;
+    color: #ffffff;
+    font-size: 14pt;
+    font-family: Tahoma, inherit;
+}
+
+.password-label {
+    color: #ffffff;
+    font-size: 9pt;
+    font-family: "Tahoma", inherit;
+}
+
+
+
+/* Welcome screen styles */
+.welcome-label
 {
-    font-size: 36pt;
+    color: white;
+    font-family: "Arial";
+    font-size: 50px;
     font-style: italic;
     font-weight: bold;
-    text-shadow: 2px 3px 0px #3151B5;
+    text-shadow: 2px 3px 0 #3151B5;
+}
+
+
+
+/* Temporary shutdown popup */
+.shutdown-popup {
+    border: 1px solid black
+}
+
+.shutdown-title {
+    font-weight: 600;
+    color: white;
+    font-size: 14pt;
+    margin-left:6px;
+    font-family: "Tahoma", inherit;
+}
+
+
+
+/* Balloon */
+.balloon-tooltip {
+    background-color: rgba(255, 255, 225, 1);
+    border: 1px solid #000000; 
+    border-radius: 8px;
+    padding: 8px;
+}
+
+.error-popup-title{
+    font-weight: 600;
+    color: black;
+    font-size: 10pt;
+    margin-left:6px;
+    font-family: "Tahoma", inherit;
+}
+
+.error-popup-content {
+    color: black;
+    font-size: 8pt;
+    padding: 0;
+    margin-left: 0;
+    font-family: "Tahoma", inherit;
+}
+
+
+
+/* Utility styles */
+.plain-button {
+  background-image: none;
+  background-color: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+  outline: none;
+}
+
+.plain-button:hover {
+  background-color: transparent;
+}
+
+.plain-button:focus {
+  background-color: transparent;
+  border: none;
+}
+
+.underline {
+    text-decoration: underline;
+}
+
+.fade-in {
+    opacity: 0;
+    transition: opacity 300ms ease-in-out;
+}
+
+.fade-in-light {
+    opacity: 0;
+    transition: opacity 300ms ease-in-out;
+}
+
+.fade-in.visible {
+    opacity: 1;
+}
+
+.visible {
+    opacity: 1;
+}
+
+
+.disabled-text {
+    color: #92ace9;
+}
+
+
+.blur {
+    opacity: 0.4;
+    transition: opacity 300ms ease-in;
+}
+
+.blurred {
+    opacity: 0.4;
+}
+
+.unblur {
+    opacity: 1;
+    transition: opacity 300ms ease-in-out;
+}
+
+.unblur-fast {
+    opacity: 1;
+    transition: opacity 150ms ease-out;
+}
+
+.opaque {
+    opacity: 1;
+}
+
+.transparent {
+    opacity: 0;
 }
