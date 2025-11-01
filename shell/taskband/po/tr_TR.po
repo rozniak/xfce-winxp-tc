@@ -20,43 +20,71 @@ msgstr ""
 msgid "All Programs"
 msgstr "Tüm Programlar"
 
-msgid "Opens your Internet browser."
-msgstr "Internet tarayıcınızı açar."
-
-msgid "Opens your e-mail program so you can send or read a message."
-msgstr "İleti okuyabilmeniz ve gönderebilmeniz için e-posta programınızı açar."
-
-msgid "Internet"
-msgstr "Internet"
-
-msgid "E-mail"
-msgstr "E-posta"
-
-msgid "start"
-msgstr "Başlat"
+msgid ""
+"Chooses default programs for certain activities, such as Web browsing or "
+"sending e-mail, and specifies which programs are accessible from the Start "
+"menu, desktop, and other locations."
+msgstr ""
+"Web taraması, e-posta gönderme gibi belli etkinlikler için varsayılan "
+"programları seçer ve Başlat menüsü, masaüstü ve diğer yerlerden erişilebilen "
+"programları belirtir."
 
 msgid "Click here to begin"
 msgstr "Başlamak için burayı tıklatın"
 
+msgid "Close"
+msgstr "Kapat"
+
+msgid "Connect To"
+msgstr "Bağlan"
+
+msgid "Connects to other computers, networks, and the Internet."
+msgstr "Diğer bilgisayarlara, ağa ve Internete bağlar."
+
+msgid "Displays recently opened documents and folders."
+msgstr "Son açoan belge ve klasörleri gösterir."
+
+msgid "E-mail"
+msgstr "E-posta"
+
+msgid ""
+"Gives access to, and information about, the disk drives, cameras, scanners, "
+"and other hardware connected to your computer."
+msgstr ""
+"Bilgisayarınıza bağlı disk sürücüleri, kameralar, tarayıcılar ve diğer "
+"donanımla ilgili bilgi ve erişim sağlar."
+
+msgid "Help and Support"
+msgstr "Yardım ve Destek"
+
+msgid "Internet"
+msgstr "Internet"
+
 msgid "Log Off"
 msgstr "Oturumu Kapat"
 
-msgid ""
-"Provides options for closing your programs and logging off, or for leaving "
-"your programs running and switching to another user."
-msgstr ""
-"Programlarınızı kapatıp oturumu kapatmak veya programları açık bırakıp başka "
-"bir kullanıcıya geçiş yapmak için seçenekler sağlar."
+msgid "Maximize"
+msgstr "Kapla"
 
-msgid "Turn Off Computer"
-msgstr "Bilgisayarı Kapat"
+msgid "Minimize"
+msgstr "Simge Durumuna Küçült"
 
 msgid ""
-"Provides options for turning off or restarting your computer, or for "
-"activating Stand By or Hibernate modes."
+"Opens a central location for Help topics, tutorials, troubleshooting, and "
+"other support services."
 msgstr ""
-"Bilgisayarınızı kapatma, yeniden başlatma ya da Bekleme ve Hazırda Bekleme "
-"modlarını etkinleştirme seçenekleri sunar."
+"Yardım konuları, öğreticiler, sorun giderme ve destek hizmetleri için "
+"merkezi bir konum açar."
+
+msgid "Opens a program, folder, document, or Web site."
+msgstr "Bir program, klasör, belge veya Web sitesi açar."
+
+msgid ""
+"Opens a window where you can pick search options and work with search "
+"results."
+msgstr ""
+"Arama seçeneklerini seçebileceğiniz ve arama sonuçları ile çalışabileceğiniz "
+"bir pencere açar."
 
 msgid ""
 "Opens the My Documents folder, where you can store letters, reports, notes, "
@@ -65,8 +93,10 @@ msgstr ""
 "Mektupları, raporları, notları, ve diğer belgeleri saklayabileceğiniz "
 "Belgelerim klasörünü açar."
 
-msgid "Displays recently opened documents and folders."
-msgstr "Son açoan belge ve klasörleri gösterir."
+msgid ""
+"Opens the My Music folder, where you can store music and other audio files."
+msgstr ""
+"Müzik ve diğer ses dosyalarınızı saklayabileceğiniz Müziğim klasörünü açar."
 
 msgid ""
 "Opens the My Pictures folder, where you can store digital photos, images, "
@@ -75,17 +105,25 @@ msgstr ""
 "Dijital fotoğrafları, resimleri ve grafik dosyalarını saklayabileceğiniz "
 "Resimlerim klasörünü açar."
 
-msgid ""
-"Opens the My Music folder, where you can store music and other audio files."
-msgstr ""
-"Müzik ve diğer ses dosyalarınızı saklayabileceğiniz Müziğim klasörünü açar."
+msgid "Opens your Internet browser."
+msgstr "Internet tarayıcınızı açar."
+
+msgid "Opens your e-mail program so you can send or read a message."
+msgstr "İleti okuyabilmeniz ve gönderebilmeniz için e-posta programınızı açar."
 
 msgid ""
-"Gives access to, and information about, the disk drives, cameras, scanners, "
-"and other hardware connected to your computer."
+"Provides options for closing your programs and logging off, or for leaving "
+"your programs running and switching to another user."
 msgstr ""
-"Bilgisayarınıza bağlı disk sürücüleri, kameralar, tarayıcılar ve diğer "
-"donanımla ilgili bilgi ve erişim sağlar."
+"Programlarınızı kapatıp oturumu kapatmak veya programları açık bırakıp başka "
+"bir kullanıcıya geçiş yapmak için seçenekler sağlar."
+
+msgid ""
+"Provides options for turning off or restarting your computer, or for "
+"activating Stand By or Hibernate modes."
+msgstr ""
+"Bilgisayarınızı kapatma, yeniden başlatma ya da Bekleme ve Hazırda Bekleme "
+"modlarını etkinleştirme seçenekleri sunar."
 
 msgid ""
 "Provides options for you to customize the appearance and functionality of "
@@ -96,49 +134,23 @@ msgstr ""
 "kurmanız, görünüm ve çalışma özelliklerini özelleştirmeniz için seçenekler "
 "sağlar."
 
-msgid ""
-"Chooses default programs for certain activities, such as Web browsing or "
-"sending e-mail, and specifies which programs are accessible from the Start "
-"menu, desktop, and other locations."
-msgstr ""
-"Web taraması, e-posta gönderme gibi belli etkinlikler için varsayılan "
-"programları seçer ve Başlat menüsü, masaüstü ve diğer yerlerden erişilebilen "
-"programları belirtir."
+msgid "Restore"
+msgstr "Geri Yükle"
 
-msgid "Set Program Access and Defaults"
-msgstr "Program Erişim ve Varsayılanlarını Ayarla"
-
-msgid "Connects to other computers, networks, and the Internet."
-msgstr "Diğer bilgisayarlara, ağa ve Internete bağlar."
-
-msgid "Connect To"
-msgstr "Bağlan"
-
-msgid "Shows installed printers and fax printers and helps you add new ones."
-msgstr "Yüklü faks ve yazıcıları gösterip yenilerini eklemenize yardımcı olur."
-
-msgid ""
-"Opens a central location for Help topics, tutorials, troubleshooting, and "
-"other support services."
-msgstr ""
-"Yardım konuları, öğreticiler, sorun giderme ve destek hizmetleri için "
-"merkezi bir konum açar."
-
-msgid "Help and Support"
-msgstr "Yardım ve Destek"
-
-msgid ""
-"Opens a window where you can pick search options and work with search "
-"results."
-msgstr ""
-"Arama seçeneklerini seçebileceğiniz ve arama sonuçları ile çalışabileceğiniz "
-"bir pencere açar."
+msgid "Run..."
+msgstr "Çalıştır..."
 
 msgid "Search"
 msgstr "Ara"
 
-msgid "Opens a program, folder, document, or Web site."
-msgstr "Bir program, klasör, belge veya Web sitesi açar."
+msgid "Set Program Access and Defaults"
+msgstr "Program Erişim ve Varsayılanlarını Ayarla"
 
-msgid "Run..."
-msgstr "Çalıştır..."
+msgid "Shows installed printers and fax printers and helps you add new ones."
+msgstr "Yüklü faks ve yazıcıları gösterip yenilerini eklemenize yardımcı olur."
+
+msgid "Turn Off Computer"
+msgstr "Bilgisayarı Kapat"
+
+msgid "start"
+msgstr "Başlat"

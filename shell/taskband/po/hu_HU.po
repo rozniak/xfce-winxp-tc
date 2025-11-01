@@ -20,81 +20,6 @@ msgstr ""
 msgid "All Programs"
 msgstr "Minden program"
 
-msgid "Opens your Internet browser."
-msgstr "Az internetböngésző megnyitása."
-
-msgid "Opens your e-mail program so you can send or read a message."
-msgstr "A levelezőprogram megnyitása üzenetek küldéséhez és olvasásához."
-
-msgid "Internet"
-msgstr "Internet"
-
-msgid "E-mail"
-msgstr "E-mail"
-
-msgid "start"
-msgstr "Start"
-
-msgid "Click here to begin"
-msgstr "Az indításhoz kattintson ide."
-
-msgid "Log Off"
-msgstr "Kijelentkezés"
-
-msgid ""
-"Provides options for closing your programs and logging off, or for leaving "
-"your programs running and switching to another user."
-msgstr "Programok bezárása és kijelentkezés, vagy felhasználóváltás."
-
-msgid "Turn Off Computer"
-msgstr "A számítógép kikapcsolása"
-
-msgid ""
-"Provides options for turning off or restarting your computer, or for "
-"activating Stand By or Hibernate modes."
-msgstr ""
-"Beállítások a számítógép kikapcsolásához, újraindításához vagy készenléti, "
-"illetve hibernálási üzemmódjához."
-
-msgid ""
-"Opens the My Documents folder, where you can store letters, reports, notes, "
-"and other kinds of documents."
-msgstr ""
-"A Dokumentumok mappa megnyitása, ahol leveleket, jegyzeteket, jelentéseket "
-"és egyéb dokumentumokat tárolhat."
-
-msgid "Displays recently opened documents and folders."
-msgstr "A legutóbb megnyitott dokumentumok és mappák megjelenítése."
-
-msgid ""
-"Opens the My Pictures folder, where you can store digital photos, images, "
-"and graphics files."
-msgstr ""
-"A Képek mappa megnyitása, amelyben digitális fényképeket, képeket és "
-"grafikus fájlokat tárolhat."
-
-msgid ""
-"Opens the My Music folder, where you can store music and other audio files."
-msgstr ""
-"A Zene mappa megnyitása, amelyben zenét és egyéb hangfájlokat tárolhat."
-
-msgid ""
-"Gives access to, and information about, the disk drives, cameras, scanners, "
-"and other hardware connected to your computer."
-msgstr ""
-"Hozzáférést biztosít valamint információt szolgáltat a lemezmeghajtókról, "
-"fényképezőgépekről, képolvasókról és egyéb, a számítógéphez csatlakoztatott "
-"hardverről."
-
-msgid ""
-"Provides options for you to customize the appearance and functionality of "
-"your computer, add or remove programs, and set up network connections and "
-"user accounts."
-msgstr ""
-"Olyan beállítási lehetőségek, amelyekkel a számítógép megjelenését és "
-"működését testreszabhatja, programokat telepíthet vagy törölhet, valamint "
-"beállíthatja a hálózati kapcsolatokat és a felhasználói fiókokat."
-
 msgid ""
 "Chooses default programs for certain activities, such as Web browsing or "
 "sending e-mail, and specifies which programs are accessible from the Start "
@@ -105,19 +30,46 @@ msgstr ""
 "mely programok legyenek elérhetők a Start menüben, az Asztalon és más "
 "helyeken."
 
-msgid "Set Program Access and Defaults"
-msgstr "Programok hozzáférhetősége és alapértelmezései"
+msgid "Click here to begin"
+msgstr "Az indításhoz kattintson ide."
 
-msgid "Connects to other computers, networks, and the Internet."
-msgstr "Kapcsolódás más számítógépekhez, hálózatokhoz és az internethez."
+msgid "Close"
+msgstr "Bezárás"
 
 msgid "Connect To"
 msgstr "Csatlakozás"
 
-msgid "Shows installed printers and fax printers and helps you add new ones."
+msgid "Connects to other computers, networks, and the Internet."
+msgstr "Kapcsolódás más számítógépekhez, hálózatokhoz és az internethez."
+
+msgid "Displays recently opened documents and folders."
+msgstr "A legutóbb megnyitott dokumentumok és mappák megjelenítése."
+
+msgid "E-mail"
+msgstr "E-mail"
+
+msgid ""
+"Gives access to, and information about, the disk drives, cameras, scanners, "
+"and other hardware connected to your computer."
 msgstr ""
-"A telepített nyomtatókat és faxnyomtatókat jeleníti meg, illetve segít újak "
-"hozzáadásában."
+"Hozzáférést biztosít valamint információt szolgáltat a lemezmeghajtókról, "
+"fényképezőgépekről, képolvasókról és egyéb, a számítógéphez csatlakoztatott "
+"hardverről."
+
+msgid "Help and Support"
+msgstr "Súgó és támogatás"
+
+msgid "Internet"
+msgstr "Internet"
+
+msgid "Log Off"
+msgstr "Kijelentkezés"
+
+msgid "Maximize"
+msgstr "Teljes méret"
+
+msgid "Minimize"
+msgstr "Kis méret"
 
 msgid ""
 "Opens a central location for Help topics, tutorials, troubleshooting, and "
@@ -127,8 +79,8 @@ msgstr ""
 "az oktatóprogramokat, valamint a hibakereső és egyéb támogatási "
 "szolgáltatásokat."
 
-msgid "Help and Support"
-msgstr "Súgó és támogatás"
+msgid "Opens a program, folder, document, or Web site."
+msgstr "Program, mappa, dokumentum vagy webhely megnyitása."
 
 msgid ""
 "Opens a window where you can pick search options and work with search "
@@ -137,11 +89,71 @@ msgstr ""
 "Olyan ablak megnyitása, amelyben a keresés beállításait adhatja meg, illetve "
 "a keresés eredményével dolgozhat."
 
-msgid "Search"
-msgstr "Keresés"
+msgid ""
+"Opens the My Documents folder, where you can store letters, reports, notes, "
+"and other kinds of documents."
+msgstr ""
+"A Dokumentumok mappa megnyitása, ahol leveleket, jegyzeteket, jelentéseket "
+"és egyéb dokumentumokat tárolhat."
 
-msgid "Opens a program, folder, document, or Web site."
-msgstr "Program, mappa, dokumentum vagy webhely megnyitása."
+msgid ""
+"Opens the My Music folder, where you can store music and other audio files."
+msgstr ""
+"A Zene mappa megnyitása, amelyben zenét és egyéb hangfájlokat tárolhat."
+
+msgid ""
+"Opens the My Pictures folder, where you can store digital photos, images, "
+"and graphics files."
+msgstr ""
+"A Képek mappa megnyitása, amelyben digitális fényképeket, képeket és "
+"grafikus fájlokat tárolhat."
+
+msgid "Opens your Internet browser."
+msgstr "Az internetböngésző megnyitása."
+
+msgid "Opens your e-mail program so you can send or read a message."
+msgstr "A levelezőprogram megnyitása üzenetek küldéséhez és olvasásához."
+
+msgid ""
+"Provides options for closing your programs and logging off, or for leaving "
+"your programs running and switching to another user."
+msgstr "Programok bezárása és kijelentkezés, vagy felhasználóváltás."
+
+msgid ""
+"Provides options for turning off or restarting your computer, or for "
+"activating Stand By or Hibernate modes."
+msgstr ""
+"Beállítások a számítógép kikapcsolásához, újraindításához vagy készenléti, "
+"illetve hibernálási üzemmódjához."
+
+msgid ""
+"Provides options for you to customize the appearance and functionality of "
+"your computer, add or remove programs, and set up network connections and "
+"user accounts."
+msgstr ""
+"Olyan beállítási lehetőségek, amelyekkel a számítógép megjelenését és "
+"működését testreszabhatja, programokat telepíthet vagy törölhet, valamint "
+"beállíthatja a hálózati kapcsolatokat és a felhasználói fiókokat."
+
+msgid "Restore"
+msgstr "Visszaállítás"
 
 msgid "Run..."
 msgstr "Futtatás..."
+
+msgid "Search"
+msgstr "Keresés"
+
+msgid "Set Program Access and Defaults"
+msgstr "Programok hozzáférhetősége és alapértelmezései"
+
+msgid "Shows installed printers and fax printers and helps you add new ones."
+msgstr ""
+"A telepített nyomtatókat és faxnyomtatókat jeleníti meg, illetve segít újak "
+"hozzáadásában."
+
+msgid "Turn Off Computer"
+msgstr "A számítógép kikapcsolása"
+
+msgid "start"
+msgstr "Start"

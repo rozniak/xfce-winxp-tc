@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   version="1.1"
+   id="svg1"
+   width="16"
+   height="16"
+   viewBox="0 0 16 16"
+   sodipodi:docname="close_symbolic.svg"
+   inkscape:version="1.4 (e7c3feb100, 2024-10-09)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1" />
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     showgrid="true"
+     inkscape:zoom="22.627417"
+     inkscape:cx="6.2092814"
+     inkscape:cy="8.7725435"
+     inkscape:window-width="1920"
+     inkscape:window-height="1023"
+     inkscape:window-x="1366"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g1">
+    <inkscape:grid
+       id="grid1"
+       units="px"
+       originx="0"
+       originy="0"
+       spacingx="1"
+       spacingy="1"
+       empcolor="#3f3fff"
+       empopacity="0.25098039"
+       color="#3f3fff"
+       opacity="0.1254902"
+       empspacing="5"
+       enabled="true"
+       visible="true" />
+  </sodipodi:namedview>
+  <g
+     inkscape:groupmode="layer"
+     inkscape:label="Image"
+     id="g1">
+    <g
+       id="g2"
+       transform="translate(0.24999998,0.25000005)">
+      <rect
+         style="fill:#000000;stroke-width:1.84379;stroke-linecap:round;stroke-linejoin:round;paint-order:stroke fill markers"
+         id="rect1-3"
+         width="13.832776"
+         height="5.6126599"
+         x="-4.7287765"
+         y="7.7781744"
+         transform="matrix(-0.53455173,0.56176215,0.27480412,0.26149326,5.4790844,3.3725074)" />
+      <rect
+         style="opacity:1;fill:#000000;stroke-width:1.84379;stroke-linecap:round;stroke-linejoin:round;paint-order:stroke fill markers"
+         id="rect1"
+         width="13.832776"
+         height="5.6126599"
+         x="-4.7287765"
+         y="7.7781744"
+         transform="matrix(0.53455173,0.56176215,-0.27480412,0.26149326,8.9576321,3.3725074)" />
+    </g>
+  </g>
+</svg>

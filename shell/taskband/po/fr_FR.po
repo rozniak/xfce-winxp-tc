@@ -20,6 +20,93 @@ msgstr ""
 msgid "All Programs"
 msgstr "Tous les programmes"
 
+msgid ""
+"Chooses default programs for certain activities, such as Web browsing or "
+"sending e-mail, and specifies which programs are accessible from the Start "
+"menu, desktop, and other locations."
+msgstr ""
+"Choisit les programmes par défaut pour des activités telles que la "
+"navigation sur le Web ou l'envoi et la réception de courrier électronique, "
+"et indique quels programmes sont accessibles depuis le menu Démarrer, le "
+"Bureau et d'autres emplacements."
+
+msgid "Click here to begin"
+msgstr "Cliquez ici pour commencer"
+
+msgid "Close"
+msgstr "Fermer"
+
+msgid "Connect To"
+msgstr "Connexions"
+
+msgid "Connects to other computers, networks, and the Internet."
+msgstr "Vous connecte à d'autres ordinateurs et réseaux, ou à Internet."
+
+msgid "Displays recently opened documents and folders."
+msgstr "Affiche les documents et dossiers ouverts récemment."
+
+msgid "E-mail"
+msgstr "Courrier électronique"
+
+msgid ""
+"Gives access to, and information about, the disk drives, cameras, scanners, "
+"and other hardware connected to your computer."
+msgstr ""
+"Donne accès à des informations sur les lecteurs de disque, les appareil-"
+"photos, les scanneurs et autre matériel."
+
+msgid "Help and Support"
+msgstr "Aide et support"
+
+msgid "Internet"
+msgstr "Internet"
+
+msgid "Log Off"
+msgstr "Fermer la session"
+
+msgid "Maximize"
+msgstr "Taille maximale"
+
+msgid "Minimize"
+msgstr "Réduire"
+
+msgid ""
+"Opens a central location for Help topics, tutorials, troubleshooting, and "
+"other support services."
+msgstr ""
+"Ouvre un emplacement central pour les rubriques d'aide, les didacticiels, "
+"les utilitaires de résolution de problèmes et autres services de support."
+
+msgid "Opens a program, folder, document, or Web site."
+msgstr "Ouvre un programme, un dossier, un document ou un site Web."
+
+msgid ""
+"Opens a window where you can pick search options and work with search "
+"results."
+msgstr ""
+"Ouvre une fenêtre dans laquelle vous pouvez sélectionner les options de "
+"recherche et exploiter les résultats."
+
+msgid ""
+"Opens the My Documents folder, where you can store letters, reports, notes, "
+"and other kinds of documents."
+msgstr ""
+"Ouvre le dossier Mes documents, dans lequel vous pouvez stocker vos lettres, "
+"rapports, notes, ou tout autre document."
+
+msgid ""
+"Opens the My Music folder, where you can store music and other audio files."
+msgstr ""
+"Ouvre le dossier Ma musique, dans lequel vous pouvez stocker votre musique "
+"et autres fichiers audio."
+
+msgid ""
+"Opens the My Pictures folder, where you can store digital photos, images, "
+"and graphics files."
+msgstr ""
+"Ouvre le dossier Mes images, dans lequel vous pouvez stocker vos photos "
+"numériques, vos images et vos fichiers graphiques."
+
 msgid "Opens your Internet browser."
 msgstr "Ouvre votre navigateur Internet."
 
@@ -27,21 +114,6 @@ msgid "Opens your e-mail program so you can send or read a message."
 msgstr ""
 "Ouvre votre programme de messagerie électronique afin que vous puissiez "
 "envoyer ou lire un message."
-
-msgid "Internet"
-msgstr "Internet"
-
-msgid "E-mail"
-msgstr "Courrier électronique"
-
-msgid "start"
-msgstr "démarrer"
-
-msgid "Click here to begin"
-msgstr "Cliquez ici pour commencer"
-
-msgid "Log Off"
-msgstr "Fermer la session"
 
 msgid ""
 "Provides options for closing your programs and logging off, or for leaving "
@@ -51,45 +123,12 @@ msgstr ""
 "conserver vos programmes en cours d'exécution et basculer vers un autre "
 "utilisateur."
 
-msgid "Turn Off Computer"
-msgstr "Arrêter l'ordinateur"
-
 msgid ""
 "Provides options for turning off or restarting your computer, or for "
 "activating Stand By or Hibernate modes."
 msgstr ""
 "Fournit des options pour mettre votre ordinateur hors tension ou le "
 "redémarrer, ou pour activer les modes de veille ou de veille prolongée."
-
-msgid ""
-"Opens the My Documents folder, where you can store letters, reports, notes, "
-"and other kinds of documents."
-msgstr ""
-"Ouvre le dossier Mes documents, dans lequel vous pouvez stocker vos lettres, "
-"rapports, notes, ou tout autre document."
-
-msgid "Displays recently opened documents and folders."
-msgstr "Affiche les documents et dossiers ouverts récemment."
-
-msgid ""
-"Opens the My Pictures folder, where you can store digital photos, images, "
-"and graphics files."
-msgstr ""
-"Ouvre le dossier Mes images, dans lequel vous pouvez stocker vos photos "
-"numériques, vos images et vos fichiers graphiques."
-
-msgid ""
-"Opens the My Music folder, where you can store music and other audio files."
-msgstr ""
-"Ouvre le dossier Ma musique, dans lequel vous pouvez stocker votre musique "
-"et autres fichiers audio."
-
-msgid ""
-"Gives access to, and information about, the disk drives, cameras, scanners, "
-"and other hardware connected to your computer."
-msgstr ""
-"Donne accès à des informations sur les lecteurs de disque, les appareil-"
-"photos, les scanneurs et autre matériel."
 
 msgid ""
 "Provides options for you to customize the appearance and functionality of "
@@ -101,52 +140,25 @@ msgstr ""
 "programmes et de configurer les connexions réseau et les comptes "
 "d'utilisateur."
 
-msgid ""
-"Chooses default programs for certain activities, such as Web browsing or "
-"sending e-mail, and specifies which programs are accessible from the Start "
-"menu, desktop, and other locations."
-msgstr ""
-"Choisit les programmes par défaut pour des activités telles que la "
-"navigation sur le Web ou l'envoi et la réception de courrier électronique, "
-"et indique quels programmes sont accessibles depuis le menu Démarrer, le "
-"Bureau et d'autres emplacements."
+msgid "Restore"
+msgstr "Restaurer"
+
+msgid "Run..."
+msgstr "Exécuter..."
+
+msgid "Search"
+msgstr "Rechercher"
 
 msgid "Set Program Access and Defaults"
 msgstr "Configurer les programmes par défaut"
-
-msgid "Connects to other computers, networks, and the Internet."
-msgstr "Vous connecte à d'autres ordinateurs et réseaux, ou à Internet."
-
-msgid "Connect To"
-msgstr "Connexions"
 
 msgid "Shows installed printers and fax printers and helps you add new ones."
 msgstr ""
 "Affiche les imprimantes et les imprimantes télécopieurs et vous aide à en "
 "ajouter de nouvelles."
 
-msgid ""
-"Opens a central location for Help topics, tutorials, troubleshooting, and "
-"other support services."
-msgstr ""
-"Ouvre un emplacement central pour les rubriques d'aide, les didacticiels, "
-"les utilitaires de résolution de problèmes et autres services de support."
+msgid "Turn Off Computer"
+msgstr "Arrêter l'ordinateur"
 
-msgid "Help and Support"
-msgstr "Aide et support"
-
-msgid ""
-"Opens a window where you can pick search options and work with search "
-"results."
-msgstr ""
-"Ouvre une fenêtre dans laquelle vous pouvez sélectionner les options de "
-"recherche et exploiter les résultats."
-
-msgid "Search"
-msgstr "Rechercher"
-
-msgid "Opens a program, folder, document, or Web site."
-msgstr "Ouvre un programme, un dossier, un document ou un site Web."
-
-msgid "Run..."
-msgstr "Exécuter..."
+msgid "start"
+msgstr "démarrer"

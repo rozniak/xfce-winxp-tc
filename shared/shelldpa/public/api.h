@@ -126,6 +126,17 @@ extern WinTCWndMgmtScreen* (*wintc_wndmgmt_screen_get_default) (void);
 extern void (*wintc_wndmgmt_shutdown) (void);
 
 /**
+ * Closes the specified window.
+ *
+ * @param window    The window.
+ * @param timestamp The timestamp, for focus stealing prevention.
+ */
+extern void (*wintc_wndmgmt_window_close) (
+    WinTCWndMgmtWindow* window,
+    guint64             timestamp
+);
+
+/**
  * Retrieves the icon for the specified window.
  *
  * @param window The window.
@@ -146,6 +157,26 @@ extern gchar* (*wintc_wndmgmt_window_get_name) (
 );
 
 /**
+ * Checks if the specified window is maximized.
+ *
+ * @param window The window.
+ * @return True if the window is maximized.
+ */
+extern gboolean (*wintc_wndmgmt_window_is_maximized) (
+    WinTCWndMgmtWindow* window
+);
+
+/**
+ * Checks if the specified window is minimized.
+ *
+ * @param window The window.
+ * @return True if the window is minimized.
+ */
+extern gboolean (*wintc_wndmgmt_window_is_minimized) (
+    WinTCWndMgmtWindow* window
+);
+
+/**
  * Determines whether the specified window should receive a button in the
  * window switcher.
  *
@@ -157,11 +188,29 @@ extern gboolean (*wintc_wndmgmt_window_is_skip_tasklist) (
 );
 
 /**
+ * Maximizes the specified window.
+ *
+ * @param window The window.
+ */
+extern void (*wintc_wndmgmt_window_maximize) (
+    WinTCWndMgmtWindow* window
+);
+
+/**
  * Minimizes the specified window.
  *
  * @param window The window.
  */
 extern void (*wintc_wndmgmt_window_minimize) (
+    WinTCWndMgmtWindow* window
+);
+
+/**
+ * Unmaximizes the specified window.
+ *
+ * @param window The window.
+ */
+extern void (*wintc_wndmgmt_window_unmaximize) (
     WinTCWndMgmtWindow* window
 );
 

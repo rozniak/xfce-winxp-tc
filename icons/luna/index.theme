@@ -2,7 +2,7 @@
 Name=Luna
 Comment=Windows XP Luna Icon Theme
 
-Directories=16x16/actions,16x16/apps,16x16/categories,16x16/devices,16x16/emblems,16x16/mimetypes,16x16/places,16x16/status,24x24/actions,24x24/apps,24x24/categories,24x24/devices,24x24/emblems,24x24/mimetypes,24x24/places,24x24/status,32x32/actions,32x32/apps,32x32/categories,32x32/devices,32x32/emblems,32x32/mimetypes,32x32/places,32x32/status,48x48/actions,48x48/apps,48x48/categories,48x48/devices,48x48/emblems,48x48/mimetypes,48x48/places,48x48/status
+Directories=16x16/actions,16x16/apps,16x16/categories,16x16/devices,16x16/emblems,16x16/mimetypes,16x16/places,16x16/status,24x24/actions,24x24/apps,24x24/categories,24x24/devices,24x24/emblems,24x24/mimetypes,24x24/places,24x24/status,32x32/actions,32x32/apps,32x32/categories,32x32/devices,32x32/emblems,32x32/mimetypes,32x32/places,32x32/status,48x48/actions,48x48/apps,48x48/categories,48x48/devices,48x48/emblems,48x48/mimetypes,48x48/places,48x48/status,symbolic/ui
 
 [16x16/actions]
 Size=16
@@ -163,3 +163,10 @@ Type=Fixed
 Size=48
 Context=Status
 Type=Fixed
+
+[symbolic/ui]
+Context=UI
+Size=16
+MinSize=8
+MaxSize=512
+Type=Scalable

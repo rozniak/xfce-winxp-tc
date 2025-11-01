@@ -20,80 +20,6 @@ msgstr ""
 msgid "All Programs"
 msgstr "כל התוכניות"
 
-msgid "Opens your Internet browser."
-msgstr "פתיחת דפדפן האינטרנט שלך."
-
-msgid "Opens your e-mail program so you can send or read a message."
-msgstr "פתיחת תוכנית הדואר האלקטרוני שלך כדי שתוכל לשלוח או לקרוא הודעה."
-
-msgid "Internet"
-msgstr "אינטרנט"
-
-msgid "E-mail"
-msgstr "דואר אלקטרוני"
-
-msgid "start"
-msgstr " התחל"
-
-msgid "Click here to begin"
-msgstr "לחץ כאן כדי להתחיל"
-
-msgid "Log Off"
-msgstr "צא"
-
-msgid ""
-"Provides options for closing your programs and logging off, or for leaving "
-"your programs running and switching to another user."
-msgstr ""
-"מתן אפשרויות לסגירת התוכניות וניתוק, או להשארת התוכניות פתוחות ומעבר למשתמש "
-"אחר."
-
-msgid "Turn Off Computer"
-msgstr "כבה את המחשב"
-
-msgid ""
-"Provides options for turning off or restarting your computer, or for "
-"activating Stand By or Hibernate modes."
-msgstr ""
-"מתן אפשרויות לכיבוי או להפעלה מחדש של המחשב, או להפעלת מצבי המתנה או שנת "
-"חורף."
-
-msgid ""
-"Opens the My Documents folder, where you can store letters, reports, notes, "
-"and other kinds of documents."
-msgstr ""
-"פתיחת התיקיה 'המסמכים שלי', בה ניתן לאחסן מכתבים, דו\"חות, רשימות וסוגי "
-"מסמכים אחרים."
-
-msgid "Displays recently opened documents and folders."
-msgstr "הצגת המסמכים והתיקיות שפתחת לאחרונה."
-
-msgid ""
-"Opens the My Pictures folder, where you can store digital photos, images, "
-"and graphics files."
-msgstr ""
-"פתיחת התיקיה התמונות שלי, בה ניתן לאחסן צילומים דיגיטליים, תמונות וקבצי "
-"גרפיקה."
-
-msgid ""
-"Opens the My Music folder, where you can store music and other audio files."
-msgstr "פתיחת התיקיה המוסיקה שלי, בה ניתן לאחסן קבצי מוסיקה וקבצי שמע אחרים."
-
-msgid ""
-"Gives access to, and information about, the disk drives, cameras, scanners, "
-"and other hardware connected to your computer."
-msgstr ""
-"מתן גישה אל כונני הדיסקים, המצלמות, הסורקים והתקני חומרה אחרים המחוברים "
-"למחשב שלך, והצגת מידע אודותיהם."
-
-msgid ""
-"Provides options for you to customize the appearance and functionality of "
-"your computer, add or remove programs, and set up network connections and "
-"user accounts."
-msgstr ""
-"מתן אפשרויות להתאמה אישית של המראה והפונקציונליות של המחשב, להוספה או הסרה "
-"של תוכניות ולהגדרת חיבורי רשת וחשבונות משתמשים."
-
 msgid ""
 "Chooses default programs for certain activities, such as Web browsing or "
 "sending e-mail, and specifies which programs are accessible from the Start "
@@ -103,18 +29,45 @@ msgstr ""
 "דואר אלקטרוני, וקובע איזה תוכניות נגישות מתפריט התחל, שולחן העבודה ומיקומים "
 "אחרים."
 
-msgid "Set Program Access and Defaults"
-msgstr "הגדר גישה לתכניות וברירות מחדל"
+msgid "Click here to begin"
+msgstr "לחץ כאן כדי להתחיל"
 
-msgid "Connects to other computers, networks, and the Internet."
-msgstr "חיבור למחשבים אחרים, לרשתות ולאינטרנט"
+msgid "Close"
+msgstr "סגור"
 
 msgid "Connect To"
 msgstr "התחבר אל"
 
-msgid "Shows installed printers and fax printers and helps you add new ones."
+msgid "Connects to other computers, networks, and the Internet."
+msgstr "חיבור למחשבים אחרים, לרשתות ולאינטרנט"
+
+msgid "Displays recently opened documents and folders."
+msgstr "הצגת המסמכים והתיקיות שפתחת לאחרונה."
+
+msgid "E-mail"
+msgstr "דואר אלקטרוני"
+
+msgid ""
+"Gives access to, and information about, the disk drives, cameras, scanners, "
+"and other hardware connected to your computer."
 msgstr ""
-"הצגת המדפסות הרגילות ומדפסות הפקס המותקנות ומתן עזרה להוספת מדפסות חדשות"
+"מתן גישה אל כונני הדיסקים, המצלמות, הסורקים והתקני חומרה אחרים המחוברים "
+"למחשב שלך, והצגת מידע אודותיהם."
+
+msgid "Help and Support"
+msgstr "עזרה ותמיכה"
+
+msgid "Internet"
+msgstr "אינטרנט"
+
+msgid "Log Off"
+msgstr "צא"
+
+msgid "Maximize"
+msgstr "הגדל"
+
+msgid "Minimize"
+msgstr "‏‏מזער"
 
 msgid ""
 "Opens a central location for Help topics, tutorials, troubleshooting, and "
@@ -123,19 +76,78 @@ msgstr ""
 "פתיחת מיקום מרכזי הכולל נושאי עזרה, ערכות לימוד, כלי פתרון בעיות ושירותי "
 "תמיכה נוספים."
 
-msgid "Help and Support"
-msgstr "עזרה ותמיכה"
+msgid "Opens a program, folder, document, or Web site."
+msgstr "פתיחת תוכנית, תיקיה, מסמך או אתר אינטרנט."
 
 msgid ""
 "Opens a window where you can pick search options and work with search "
 "results."
 msgstr "פתיחת חלון בו באפשרותך לבחור אפשרויות חיפוש ולעבוד עם תוצאות חיפוש."
 
-msgid "Search"
-msgstr "חיפוש"
+msgid ""
+"Opens the My Documents folder, where you can store letters, reports, notes, "
+"and other kinds of documents."
+msgstr ""
+"פתיחת התיקיה 'המסמכים שלי', בה ניתן לאחסן מכתבים, דו\"חות, רשימות וסוגי "
+"מסמכים אחרים."
 
-msgid "Opens a program, folder, document, or Web site."
-msgstr "פתיחת תוכנית, תיקיה, מסמך או אתר אינטרנט."
+msgid ""
+"Opens the My Music folder, where you can store music and other audio files."
+msgstr "פתיחת התיקיה המוסיקה שלי, בה ניתן לאחסן קבצי מוסיקה וקבצי שמע אחרים."
+
+msgid ""
+"Opens the My Pictures folder, where you can store digital photos, images, "
+"and graphics files."
+msgstr ""
+"פתיחת התיקיה התמונות שלי, בה ניתן לאחסן צילומים דיגיטליים, תמונות וקבצי "
+"גרפיקה."
+
+msgid "Opens your Internet browser."
+msgstr "פתיחת דפדפן האינטרנט שלך."
+
+msgid "Opens your e-mail program so you can send or read a message."
+msgstr "פתיחת תוכנית הדואר האלקטרוני שלך כדי שתוכל לשלוח או לקרוא הודעה."
+
+msgid ""
+"Provides options for closing your programs and logging off, or for leaving "
+"your programs running and switching to another user."
+msgstr ""
+"מתן אפשרויות לסגירת התוכניות וניתוק, או להשארת התוכניות פתוחות ומעבר למשתמש "
+"אחר."
+
+msgid ""
+"Provides options for turning off or restarting your computer, or for "
+"activating Stand By or Hibernate modes."
+msgstr ""
+"מתן אפשרויות לכיבוי או להפעלה מחדש של המחשב, או להפעלת מצבי המתנה או שנת "
+"חורף."
+
+msgid ""
+"Provides options for you to customize the appearance and functionality of "
+"your computer, add or remove programs, and set up network connections and "
+"user accounts."
+msgstr ""
+"מתן אפשרויות להתאמה אישית של המראה והפונקציונליות של המחשב, להוספה או הסרה "
+"של תוכניות ולהגדרת חיבורי רשת וחשבונות משתמשים."
+
+msgid "Restore"
+msgstr "שחזר"
 
 msgid "Run..."
 msgstr "הפעלה..."
+
+msgid "Search"
+msgstr "חיפוש"
+
+msgid "Set Program Access and Defaults"
+msgstr "הגדר גישה לתכניות וברירות מחדל"
+
+msgid "Shows installed printers and fax printers and helps you add new ones."
+msgstr ""
+"הצגת המדפסות הרגילות ומדפסות הפקס המותקנות ומתן עזרה להוספת מדפסות חדשות"
+
+msgid "Turn Off Computer"
+msgstr "כבה את המחשב"
+
+msgid "start"
+msgstr " התחל"

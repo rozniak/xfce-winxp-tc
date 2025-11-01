@@ -21,43 +21,72 @@ msgstr ""
 msgid "All Programs"
 msgstr "Visas programmas"
 
-msgid "Opens your Internet browser."
-msgstr "Atver interneta pārlūkprogrammu."
-
-msgid "Opens your e-mail program so you can send or read a message."
-msgstr "Atver e-pasta programmu, lai varētu nosūtīt vai lasīt ziņojumu."
-
-msgid "Internet"
-msgstr "Internets"
-
-msgid "E-mail"
-msgstr "E-pasts"
-
-msgid "start"
-msgstr "Sākt"
+msgid ""
+"Chooses default programs for certain activities, such as Web browsing or "
+"sending e-mail, and specifies which programs are accessible from the Start "
+"menu, desktop, and other locations."
+msgstr ""
+"Izvēlas noklusējuma programmas noteiktām darbībām, piemēram, Web "
+"pārlūkošanai vai e-pasta sūtīšanai, kā arī norāda, kurām programmām var "
+"piekļūt no izvēlnes Sākt (Start), darbvirsmas un citām vietām."
 
 msgid "Click here to begin"
 msgstr "Noklikšķiniet šeit, lai sāktu"
 
+msgid "Close"
+msgstr "Aizvērt"
+
+msgid "Connect To"
+msgstr "Izveidot savienojumu ar"
+
+msgid "Connects to other computers, networks, and the Internet."
+msgstr "Izveido savienojumu ar citiem datoriem, tīkliem un internetu."
+
+msgid "Displays recently opened documents and folders."
+msgstr "Parāda nesen atvērtos dokumentus un mapes."
+
+msgid "E-mail"
+msgstr "E-pasts"
+
+msgid ""
+"Gives access to, and information about, the disk drives, cameras, scanners, "
+"and other hardware connected to your computer."
+msgstr ""
+"Ļauj piekļūt un sniedz informāciju par diskdziņiem, fotokamerām, skeneriem "
+"un citu datoram pievienoto aparatūru."
+
+msgid "Help and Support"
+msgstr "Palīdzība un atbalsts"
+
+msgid "Internet"
+msgstr "Internets"
+
 msgid "Log Off"
 msgstr "Atteikties"
 
-msgid ""
-"Provides options for closing your programs and logging off, or for leaving "
-"your programs running and switching to another user."
+#: src/taskbuttons/windowmonitor.c:600
+msgid "Maximize"
 msgstr ""
-"Nodrošina opcijas, kas ļauj aizvērt programmas un atteikties vai atstāt "
-"programmas darbojamies un pārslēgties uz citu lietotāju."
 
-msgid "Turn Off Computer"
-msgstr "Datora izslēgšana"
+msgid "Minimize"
+msgstr "Minimizēt"
 
 msgid ""
-"Provides options for turning off or restarting your computer, or for "
-"activating Stand By or Hibernate modes."
+"Opens a central location for Help topics, tutorials, troubleshooting, and "
+"other support services."
 msgstr ""
-"Nodrošina opcijas, kas ļauj izslēgt vai restartēt datoru vai aktivizēt "
-"gaidstāves vai hibernācijas režīmus."
+"Atver palīdzības tēmu, apmācību, problēmu novēršanas un citu atbalsta "
+"pakalpojumu centrālo atrašanās vietu."
+
+msgid "Opens a program, folder, document, or Web site."
+msgstr "Atver programmu, mapi, dokumentu vai Web vietu."
+
+msgid ""
+"Opens a window where you can pick search options and work with search "
+"results."
+msgstr ""
+"Atver logu, kurā var izvēlēties meklēšanas opcijas un strādāt ar meklēšanas "
+"rezultātiem."
 
 msgid ""
 "Opens the My Documents folder, where you can store letters, reports, notes, "
@@ -66,8 +95,9 @@ msgstr ""
 "Atver mapi Mani dokumenti, kurā var glabāt vēstules, atskaites, piezīmes un "
 "cita veida dokumentus."
 
-msgid "Displays recently opened documents and folders."
-msgstr "Parāda nesen atvērtos dokumentus un mapes."
+msgid ""
+"Opens the My Music folder, where you can store music and other audio files."
+msgstr "Atver mapi Mana mūzika, kurā var glabāt mūziku un citus audio failus."
 
 msgid ""
 "Opens the My Pictures folder, where you can store digital photos, images, "
@@ -76,16 +106,25 @@ msgstr ""
 "Atver mapi Mani attēli, kurā var glabāt ciparu fotogrāfijas, attēlus un "
 "grafikas failus."
 
-msgid ""
-"Opens the My Music folder, where you can store music and other audio files."
-msgstr "Atver mapi Mana mūzika, kurā var glabāt mūziku un citus audio failus."
+msgid "Opens your Internet browser."
+msgstr "Atver interneta pārlūkprogrammu."
+
+msgid "Opens your e-mail program so you can send or read a message."
+msgstr "Atver e-pasta programmu, lai varētu nosūtīt vai lasīt ziņojumu."
 
 msgid ""
-"Gives access to, and information about, the disk drives, cameras, scanners, "
-"and other hardware connected to your computer."
+"Provides options for closing your programs and logging off, or for leaving "
+"your programs running and switching to another user."
 msgstr ""
-"Ļauj piekļūt un sniedz informāciju par diskdziņiem, fotokamerām, skeneriem "
-"un citu datoram pievienoto aparatūru."
+"Nodrošina opcijas, kas ļauj aizvērt programmas un atteikties vai atstāt "
+"programmas darbojamies un pārslēgties uz citu lietotāju."
+
+msgid ""
+"Provides options for turning off or restarting your computer, or for "
+"activating Stand By or Hibernate modes."
+msgstr ""
+"Nodrošina opcijas, kas ļauj izslēgt vai restartēt datoru vai aktivizēt "
+"gaidstāves vai hibernācijas režīmus."
 
 msgid ""
 "Provides options for you to customize the appearance and functionality of "
@@ -96,50 +135,24 @@ msgstr ""
 "pievienot vai noņemt programmas un iestatīt tīkla savienojumus un lietotāju "
 "kontus."
 
-msgid ""
-"Chooses default programs for certain activities, such as Web browsing or "
-"sending e-mail, and specifies which programs are accessible from the Start "
-"menu, desktop, and other locations."
-msgstr ""
-"Izvēlas noklusējuma programmas noteiktām darbībām, piemēram, Web "
-"pārlūkošanai vai e-pasta sūtīšanai, kā arī norāda, kurām programmām var "
-"piekļūt no izvēlnes Sākt (Start), darbvirsmas un citām vietām."
+msgid "Restore"
+msgstr "Atjaunot"
+
+msgid "Run..."
+msgstr "Izpildīt..."
+
+msgid "Search"
+msgstr "Meklēt"
 
 msgid "Set Program Access and Defaults"
 msgstr "Programmas piekļuves un noklusējuma rekvizītu iestatīšana"
-
-msgid "Connects to other computers, networks, and the Internet."
-msgstr "Izveido savienojumu ar citiem datoriem, tīkliem un internetu."
-
-msgid "Connect To"
-msgstr "Izveidot savienojumu ar"
 
 msgid "Shows installed printers and fax printers and helps you add new ones."
 msgstr ""
 "Parāda instalētos printerus un faksa printerus un palīdz pievienot jaunus."
 
-msgid ""
-"Opens a central location for Help topics, tutorials, troubleshooting, and "
-"other support services."
-msgstr ""
-"Atver palīdzības tēmu, apmācību, problēmu novēršanas un citu atbalsta "
-"pakalpojumu centrālo atrašanās vietu."
+msgid "Turn Off Computer"
+msgstr "Datora izslēgšana"
 
-msgid "Help and Support"
-msgstr "Palīdzība un atbalsts"
-
-msgid ""
-"Opens a window where you can pick search options and work with search "
-"results."
-msgstr ""
-"Atver logu, kurā var izvēlēties meklēšanas opcijas un strādāt ar meklēšanas "
-"rezultātiem."
-
-msgid "Search"
-msgstr "Meklēt"
-
-msgid "Opens a program, folder, document, or Web site."
-msgstr "Atver programmu, mapi, dokumentu vai Web vietu."
-
-msgid "Run..."
-msgstr "Izpildīt..."
+msgid "start"
+msgstr "Sākt"

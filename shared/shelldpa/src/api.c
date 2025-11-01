@@ -32,16 +32,32 @@ WinTCWndMgmtScreen* (*wintc_wndmgmt_screen_get_default) (void) = NULL;
 
 void (*wintc_wndmgmt_shutdown) (void) = NULL;
 
+void (*wintc_wndmgmt_window_close) (
+    WinTCWndMgmtWindow* window,
+    guint64             timestamp
+) = NULL;
 GdkPixbuf* (*wintc_wndmgmt_window_get_mini_icon) (
     WinTCWndMgmtWindow* window
 ) = NULL;
 gchar* (*wintc_wndmgmt_window_get_name) (
     WinTCWndMgmtWindow* window
 ) = NULL;
+gboolean (*wintc_wndmgmt_window_is_maximized) (
+    WinTCWndMgmtWindow* window
+) = NULL;
+gboolean (*wintc_wndmgmt_window_is_minimized) (
+    WinTCWndMgmtWindow* window
+) = NULL;
 gboolean (*wintc_wndmgmt_window_is_skip_tasklist) (
     WinTCWndMgmtWindow* window
 ) = NULL;
+void (*wintc_wndmgmt_window_maximize) (
+    WinTCWndMgmtWindow* window
+) = NULL;
 void (*wintc_wndmgmt_window_minimize) (
+    WinTCWndMgmtWindow* window
+) = NULL;
+void (*wintc_wndmgmt_window_unmaximize) (
     WinTCWndMgmtWindow* window
 ) = NULL;
 void (*wintc_wndmgmt_window_unminimize) (

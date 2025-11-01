@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <object class="GtkMenu" id="context-menu">
+    <property name="visible">True</property>
+    <property name="reserve-toggle-size">False</property>
+  </object>
+  
+  <menu id="menu-model">
+    <section>
+      <item>
+        <attribute name="label">Restore</attribute>
+        <attribute name="icon">window-restore-symbolic</attribute>
+        <attribute name="action">window-manager.restore</attribute>
+      </item>
+      
+      <item>
+        <attribute name="label">Minimize</attribute>
+        <attribute name="icon">window-minimize-symbolic</attribute>
+        <attribute name="action">window-manager.minimize</attribute>
+      </item>
+      <item>
+        <attribute name="label">Maximize</attribute>
+        <attribute name="icon">window-maximize-symbolic</attribute>
+        <attribute name="action">window-manager.maximize</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label">Exit        Alt+F4</attribute>
+        <attribute name="icon">window-close-symbolic</attribute>
+        <attribute name="action">window-manager.exit</attribute>
+      </item>
+    </section>
+  </menu>

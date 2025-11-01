@@ -15,89 +15,11 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n"
-"%100==4 ? 2 : 3);\n"
+"Plural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || "
+"n%100==4 ? 2 : 3);\n"
 
 msgid "All Programs"
 msgstr "Vsi programi"
-
-msgid "Opens your Internet browser."
-msgstr "Odpre vaš internetni brskalnik."
-
-msgid "Opens your e-mail program so you can send or read a message."
-msgstr ""
-"Odpre vaš e-poštni program, tako da lahko pošljete ali preberete sporočilo."
-
-msgid "Internet"
-msgstr "Internet"
-
-msgid "E-mail"
-msgstr "E-pošta"
-
-msgid "start"
-msgstr "start"
-
-msgid "Click here to begin"
-msgstr "Če želite začeti, kliknite tu"
-
-msgid "Log Off"
-msgstr "Odjavi"
-
-msgid ""
-"Provides options for closing your programs and logging off, or for leaving "
-"your programs running and switching to another user."
-msgstr ""
-"Na voljo vam da možnosti, da zaprete programe in se odjavite ali da programe "
-"izvajate dalje in preklapljate med uporabniki."
-
-msgid "Turn Off Computer"
-msgstr "Izklapljanje računalnika"
-
-msgid ""
-"Provides options for turning off or restarting your computer, or for "
-"activating Stand By or Hibernate modes."
-msgstr ""
-"Na voljo vam da možnosti, da računalnik izklopite ali ponovno zaženete oz. "
-"da aktivirate stanje pripravljenosti oziroma stanje mirovanja."
-
-msgid ""
-"Opens the My Documents folder, where you can store letters, reports, notes, "
-"and other kinds of documents."
-msgstr ""
-"Odpre mapo »Moji dokumenti«, kamor lahko shranjujete pisma, poročila, opombe "
-"in druge dokumente."
-
-msgid "Displays recently opened documents and folders."
-msgstr "Prikaže nedavno odprte dokumente in mape."
-
-msgid ""
-"Opens the My Pictures folder, where you can store digital photos, images, "
-"and graphics files."
-msgstr ""
-"Odpre mapo »Moje slike«, kamor lahko shranjujete digitalne fotografije, "
-"slike in grafične datoteke."
-
-msgid ""
-"Opens the My Music folder, where you can store music and other audio files."
-msgstr ""
-"Odpre mapo »Moja glasba«, kamor lahko shranjujete glasbene in druge avdio "
-"datoteke."
-
-msgid ""
-"Gives access to, and information about, the disk drives, cameras, scanners, "
-"and other hardware connected to your computer."
-msgstr ""
-"Vašemu računalniku dodeli dostop do diskovnih pogonov, digitalnih "
-"fotoaparatov, skenerjev in druge strojne opreme ter poda informacije o njih."
-
-msgid ""
-"Provides options for you to customize the appearance and functionality of "
-"your computer, add or remove programs, and set up network connections and "
-"user accounts."
-msgstr ""
-"Omogoča vam, da prilagodite videz in funkcionalnost vašega računalnika, "
-"dodajate ali odstranjujete programe in pripravite omrežne povezave ter "
-"uporabniške račune."
 
 msgid ""
 "Chooses default programs for certain activities, such as Web browsing or "
@@ -108,19 +30,45 @@ msgstr ""
 "ali pošiljanje e-pošte, in določi, kateri programi so dosegljivi v meniju "
 "Start, na namizju in drugih mestih."
 
-msgid "Set Program Access and Defaults"
-msgstr "Nastavi dostop do programov in privzete nastavitve"
+msgid "Click here to begin"
+msgstr "Če želite začeti, kliknite tu"
 
-msgid "Connects to other computers, networks, and the Internet."
-msgstr "Vzpostavi povezavo z drugimi računalniki, omrežji in z internetom."
+msgid "Close"
+msgstr "Zapri"
 
 msgid "Connect To"
 msgstr "Vzpostavi povezavo z"
 
-msgid "Shows installed printers and fax printers and helps you add new ones."
+msgid "Connects to other computers, networks, and the Internet."
+msgstr "Vzpostavi povezavo z drugimi računalniki, omrežji in z internetom."
+
+msgid "Displays recently opened documents and folders."
+msgstr "Prikaže nedavno odprte dokumente in mape."
+
+msgid "E-mail"
+msgstr "E-pošta"
+
+msgid ""
+"Gives access to, and information about, the disk drives, cameras, scanners, "
+"and other hardware connected to your computer."
 msgstr ""
-"Prikaže nameščene tiskalnike in kombinirane naprave ter vam pomaga dodajati "
-"nove."
+"Vašemu računalniku dodeli dostop do diskovnih pogonov, digitalnih "
+"fotoaparatov, skenerjev in druge strojne opreme ter poda informacije o njih."
+
+msgid "Help and Support"
+msgstr "Pomoč in podpora"
+
+msgid "Internet"
+msgstr "Internet"
+
+msgid "Log Off"
+msgstr "Odjavi"
+
+msgid "Maximize"
+msgstr "Maksimiranje"
+
+msgid "Minimize"
+msgstr "Minimiraj"
 
 msgid ""
 "Opens a central location for Help topics, tutorials, troubleshooting, and "
@@ -129,8 +77,8 @@ msgstr ""
 "Odpre osrednje mesto za teme pomoči, vadnice, odpravljanje težav in druge "
 "storitve za podporo."
 
-msgid "Help and Support"
-msgstr "Pomoč in podpora"
+msgid "Opens a program, folder, document, or Web site."
+msgstr "Odpre program, mapo, dokument ali spletno mesto."
 
 msgid ""
 "Opens a window where you can pick search options and work with search "
@@ -138,11 +86,75 @@ msgid ""
 msgstr ""
 "Odpre okno, kjer lahko izberete možnosti iskanja in delate z rezultati."
 
-msgid "Search"
-msgstr "Iskanje"
+msgid ""
+"Opens the My Documents folder, where you can store letters, reports, notes, "
+"and other kinds of documents."
+msgstr ""
+"Odpre mapo »Moji dokumenti«, kamor lahko shranjujete pisma, poročila, opombe "
+"in druge dokumente."
 
-msgid "Opens a program, folder, document, or Web site."
-msgstr "Odpre program, mapo, dokument ali spletno mesto."
+msgid ""
+"Opens the My Music folder, where you can store music and other audio files."
+msgstr ""
+"Odpre mapo »Moja glasba«, kamor lahko shranjujete glasbene in druge avdio "
+"datoteke."
+
+msgid ""
+"Opens the My Pictures folder, where you can store digital photos, images, "
+"and graphics files."
+msgstr ""
+"Odpre mapo »Moje slike«, kamor lahko shranjujete digitalne fotografije, "
+"slike in grafične datoteke."
+
+msgid "Opens your Internet browser."
+msgstr "Odpre vaš internetni brskalnik."
+
+msgid "Opens your e-mail program so you can send or read a message."
+msgstr ""
+"Odpre vaš e-poštni program, tako da lahko pošljete ali preberete sporočilo."
+
+msgid ""
+"Provides options for closing your programs and logging off, or for leaving "
+"your programs running and switching to another user."
+msgstr ""
+"Na voljo vam da možnosti, da zaprete programe in se odjavite ali da programe "
+"izvajate dalje in preklapljate med uporabniki."
+
+msgid ""
+"Provides options for turning off or restarting your computer, or for "
+"activating Stand By or Hibernate modes."
+msgstr ""
+"Na voljo vam da možnosti, da računalnik izklopite ali ponovno zaženete oz. "
+"da aktivirate stanje pripravljenosti oziroma stanje mirovanja."
+
+msgid ""
+"Provides options for you to customize the appearance and functionality of "
+"your computer, add or remove programs, and set up network connections and "
+"user accounts."
+msgstr ""
+"Omogoča vam, da prilagodite videz in funkcionalnost vašega računalnika, "
+"dodajate ali odstranjujete programe in pripravite omrežne povezave ter "
+"uporabniške račune."
+
+msgid "Restore"
+msgstr "Obnovi"
 
 msgid "Run..."
 msgstr "Zaženi ..."
+
+msgid "Search"
+msgstr "Iskanje"
+
+msgid "Set Program Access and Defaults"
+msgstr "Nastavi dostop do programov in privzete nastavitve"
+
+msgid "Shows installed printers and fax printers and helps you add new ones."
+msgstr ""
+"Prikaže nameščene tiskalnike in kombinirane naprave ter vam pomaga dodajati "
+"nove."
+
+msgid "Turn Off Computer"
+msgstr "Izklapljanje računalnika"
+
+msgid "start"
+msgstr "start"

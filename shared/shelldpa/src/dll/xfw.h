@@ -31,9 +31,25 @@ extern gchar* (*p_xfw_window_get_name) (
 extern gboolean (*p_xfw_window_is_skip_tasklist) (
     WinTCWndMgmtWindow* window
 );
+extern gboolean (*p_xfw_window_is_minimized) (
+    WinTCWndMgmtWindow* window
+);
+extern gboolean (*p_xfw_window_is_maximized) (
+    WinTCWndMgmtWindow* window
+);
 extern void (*p_xfw_window_set_minimized) (
     WinTCWndMgmtWindow* window,
     gboolean            is_minimized,
+    GError**            error
+);
+extern void (*p_xfw_window_set_maximized) (
+    WinTCWndMgmtWindow* window,
+    gboolean            is_maximized,
+    GError**            error
+);
+extern void (*p_xfw_window_close) (
+    WinTCWndMgmtWindow* window,
+    guint64             event_timestamp,
     GError**            error
 );
 

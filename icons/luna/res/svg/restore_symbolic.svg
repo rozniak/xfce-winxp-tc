@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   version="1.1"
+   id="svg1"
+   width="16"
+   height="16"
+   viewBox="0 0 16 16"
+   sodipodi:docname="restore_symbolic.svg"
+   inkscape:version="1.4 (e7c3feb100, 2024-10-09)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1" />
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     showgrid="true"
+     inkscape:zoom="31.665126"
+     inkscape:cx="7.8161699"
+     inkscape:cy="8.1635552"
+     inkscape:window-width="1920"
+     inkscape:window-height="1023"
+     inkscape:window-x="1366"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g1">
+    <inkscape:grid
+       id="grid1"
+       units="px"
+       originx="0"
+       originy="0"
+       spacingx="1"
+       spacingy="1"
+       empcolor="#3f3fff"
+       empopacity="0.25098039"
+       color="#3f3fff"
+       opacity="0.1254902"
+       empspacing="5"
+       enabled="true"
+       visible="true" />
+  </sodipodi:namedview>
+  <g
+     inkscape:groupmode="layer"
+     inkscape:label="Image"
+     id="g1">
+    <g
+       id="g5">
+      <rect
+         style="opacity:1;fill:#000000;stroke-linecap:round;stroke-linejoin:round;paint-order:stroke fill markers"
+         id="rect1"
+         width="6"
+         height="2"
+         x="4.9581361"
+         y="2.936985"
+         transform="translate(0.04186392,0.06301498)" />
+      <rect
+         style="fill:#000000;stroke-linecap:round;stroke-linejoin:round;paint-order:stroke fill markers"
+         id="rect1-6"
+         width="6"
+         height="2"
+         x="4.9581361"
+         y="2.936985"
+         transform="translate(-1.9481361,3.063015)" />
+      <rect
+         style="opacity:1;fill:#000000;stroke-width:1.02104;stroke-linecap:round;stroke-linejoin:round;paint-order:stroke fill markers"
+         id="rect2"
+         width="1.0105755"
+         height="3.0948875"
+         x="10.042594"
+         y="4.9897165"
+         transform="matrix(0.98953514,0,0,0.96934057,0.06250039,0.16326535)" />
+      <rect
+         style="fill:#000000;stroke-width:1.02104;stroke-linecap:round;stroke-linejoin:round;paint-order:stroke fill markers"
+         id="rect2-2"
+         width="1.0105755"
+         height="3.0948875"
+         x="10.042594"
+         y="4.9897165"
+         transform="matrix(0.98953514,0,0,0.96934057,-1.9379376,3.1634114)" />
+      <rect
+         style="fill:#000000;stroke-width:1.02104;stroke-linecap:round;stroke-linejoin:round;paint-order:stroke fill markers"
+         id="rect2-5"
+         width="1.0105755"
+         height="3.0948875"
+         x="10.042594"
+         y="4.9897165"
+         transform="matrix(0.98953514,0,0,0.96934057,-6.9374996,3.1632653)" />
+      <rect
+         style="opacity:1;fill:#000000;stroke-width:0.959963;stroke-linecap:round;stroke-linejoin:round;paint-order:stroke fill markers"
+         id="rect3"
+         width="1.042156"
+         height="0.88425356"
+         x="5.021297"
+         y="5.0528774"
+         transform="matrix(0.95954926,0,0,1.1308973,0.1818182,-0.71428564)" />
+      <rect
+         style="opacity:1;fill:#000000;stroke-width:0.99466;stroke-linecap:round;stroke-linejoin:round;paint-order:stroke fill markers"
+         id="rect4"
+         width="1.9579901"
+         height="1.0105755"
+         x="9.0635986"
+         y="8.0214434"
+         transform="matrix(1.0214557,0,0,0.98953514,-0.25806403,0.06249992)" />
+      <rect
+         style="opacity:1;fill:#000000;stroke-width:1.00265;stroke-linecap:round;stroke-linejoin:round;paint-order:stroke fill markers"
+         id="rect5"
+         width="5.9687114"
+         height="1.0105755"
+         x="3.0001459"
+         y="10.990008"
+         transform="matrix(1.0052421,0,0,0.98953514,-0.01572709,0.12500056)" />
+    </g>
+  </g>
+</svg>

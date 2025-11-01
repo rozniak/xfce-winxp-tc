@@ -40,10 +40,26 @@ gchar* (*p_wnck_window_get_name) (
 gboolean (*p_wnck_window_is_skip_tasklist) (
     WinTCWndMgmtWindow* window
 ) = NULL;
+gboolean (*p_wnck_window_is_minimized) (
+    WinTCWndMgmtWindow* window
+) = NULL;
+gboolean (*p_wnck_window_is_maximized) (
+    WinTCWndMgmtWindow* window
+) = NULL;
 void (*p_wnck_window_minimize) (
     WinTCWndMgmtWindow* window
 ) = NULL;
+void (*p_wnck_window_maximize) (
+    WinTCWndMgmtWindow* window
+) = NULL;
+void (*p_wnck_window_unmaximize) (
+    WinTCWndMgmtWindow* window
+) = NULL;
 void (*p_wnck_window_unminimize) (
+    WinTCWndMgmtWindow* window,
+    guint32             timestamp
+) = NULL;
+void (*p_wnck_window_close) (
     WinTCWndMgmtWindow* window,
     guint32             timestamp
 ) = NULL;
@@ -96,6 +112,9 @@ gboolean init_dll_wnck()
     p_wnck_shutdown =
         dlsym(dl_wnck, "wnck_shutdown");
 
+    p_wnck_window_close =
+        dlsym(dl_wnck, "wnck_window_close");   
+
     p_wnck_window_get_class_instance_name =
         dlsym(dl_wnck, "wnck_window_get_class_instance_name");
 
@@ -108,15 +127,27 @@ gboolean init_dll_wnck()
     p_wnck_window_get_name =
         dlsym(dl_wnck, "wnck_window_get_name");
 
+    p_wnck_window_is_minimized =
+        dlsym(dl_wnck, "wnck_window_is_minimized");
+    
+    p_wnck_window_is_maximized =
+        dlsym(dl_wnck, "wnck_window_is_maximized");
+
     p_wnck_window_is_skip_tasklist =
         dlsym(dl_wnck, "wnck_window_is_skip_tasklist");
+
+    p_wnck_window_maximize =
+        dlsym(dl_wnck, "wnck_window_maximize");
 
     p_wnck_window_minimize =
         dlsym(dl_wnck, "wnck_window_minimize");
 
+    p_wnck_window_unmaximize =
+        dlsym(dl_wnck, "wnck_window_unmaximize");
+
     p_wnck_window_unminimize =
         dlsym(dl_wnck, "wnck_window_unminimize");
-
+ 
     // Check all symbols loaded
     //
     if (
@@ -124,12 +155,16 @@ gboolean init_dll_wnck()
         p_wnck_screen_get_active_window       == NULL ||
         p_wnck_screen_get_default             == NULL ||
         p_wnck_shutdown                       == NULL ||
+        p_wnck_window_close                   == NULL ||
         p_wnck_window_get_class_instance_name == NULL ||
         p_wnck_window_get_icon_is_fallback    == NULL ||
         p_wnck_window_get_mini_icon           == NULL ||
         p_wnck_window_get_name                == NULL ||
+        p_wnck_window_is_maximized            == NULL ||
+        p_wnck_window_is_minimized            == NULL ||
         p_wnck_window_is_skip_tasklist        == NULL ||
-        p_wnck_window_minimize                == NULL ||
+        p_wnck_window_maximize                == NULL ||
+        p_wnck_window_unmaximize              == NULL ||
         p_wnck_window_unminimize              == NULL
     )
     {

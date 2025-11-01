@@ -20,85 +20,6 @@ msgstr ""
 msgid "All Programs"
 msgstr "Todos os programas"
 
-msgid "Opens your Internet browser."
-msgstr "Abre o browser da Internet."
-
-msgid "Opens your e-mail program so you can send or read a message."
-msgstr ""
-"Abre o programa de correio electrónico para que possa enviar ou ler uma "
-"mensagem."
-
-msgid "Internet"
-msgstr "Internet"
-
-msgid "E-mail"
-msgstr "Correio electrónico"
-
-msgid "start"
-msgstr "Iniciar"
-
-msgid "Click here to begin"
-msgstr "Clique aqui para iniciar"
-
-msgid "Log Off"
-msgstr "Terminar sessão"
-
-msgid ""
-"Provides options for closing your programs and logging off, or for leaving "
-"your programs running and switching to another user."
-msgstr ""
-"Fornece opções para fechar os programas e terminar sessão ou para deixar os "
-"programas em execução e mudar de utilizador."
-
-msgid "Turn Off Computer"
-msgstr "Desligar computador"
-
-msgid ""
-"Provides options for turning off or restarting your computer, or for "
-"activating Stand By or Hibernate modes."
-msgstr ""
-"Fornece opções para desligar ou reiniciar o computador ou para activar os "
-"modos 'Suspender' ou 'Hibernar'."
-
-msgid ""
-"Opens the My Documents folder, where you can store letters, reports, notes, "
-"and other kinds of documents."
-msgstr ""
-"Abre a pasta 'Os meus documentos', onde pode armazenar cartas, relatórios, "
-"notas e outros tipos de documentos."
-
-msgid "Displays recently opened documents and folders."
-msgstr "Mostra os documentos e pastas abertos recentemente."
-
-msgid ""
-"Opens the My Pictures folder, where you can store digital photos, images, "
-"and graphics files."
-msgstr ""
-"Abre a pasta 'As minhas imagens', onde pode armazenar fotos digitais, "
-"imagens e outros gráficos."
-
-msgid ""
-"Opens the My Music folder, where you can store music and other audio files."
-msgstr ""
-"Abre a pasta 'A minha música', onde pode armazenar música e outros ficheiros "
-"de áudio."
-
-msgid ""
-"Gives access to, and information about, the disk drives, cameras, scanners, "
-"and other hardware connected to your computer."
-msgstr ""
-"Dá acesso a, e informação acerca de, discos rígidos, câmaras, scanners e "
-"outro hardware ligado ao computador."
-
-msgid ""
-"Provides options for you to customize the appearance and functionality of "
-"your computer, add or remove programs, and set up network connections and "
-"user accounts."
-msgstr ""
-"Fornece opções para que possa personalizar o aspecto e funcionalidade do "
-"computador, adicionar ou remover programas e configurar ligações de rede e "
-"contas de utilizadores."
-
 msgid ""
 "Chooses default programs for certain activities, such as Web browsing or "
 "sending e-mail, and specifies which programs are accessible from the Start "
@@ -109,19 +30,45 @@ msgstr ""
 "acessíveis a partir do menu 'Iniciar', 'Ambiente de trabalho' e outros "
 "locais."
 
-msgid "Set Program Access and Defaults"
-msgstr "Configurar acesso a programas e predefinições"
+msgid "Click here to begin"
+msgstr "Clique aqui para iniciar"
 
-msgid "Connects to other computers, networks, and the Internet."
-msgstr "Liga a outros computadores, redes e à Internet."
+msgid "Close"
+msgstr "Fechar"
 
 msgid "Connect To"
 msgstr "Ligar a"
 
-msgid "Shows installed printers and fax printers and helps you add new ones."
+msgid "Connects to other computers, networks, and the Internet."
+msgstr "Liga a outros computadores, redes e à Internet."
+
+msgid "Displays recently opened documents and folders."
+msgstr "Mostra os documentos e pastas abertos recentemente."
+
+msgid "E-mail"
+msgstr "Correio electrónico"
+
+msgid ""
+"Gives access to, and information about, the disk drives, cameras, scanners, "
+"and other hardware connected to your computer."
 msgstr ""
-"Mostra as impressoras e as impressoras de fax instaladas e ajuda-o a "
-"adicionar novas impressoras."
+"Dá acesso a, e informação acerca de, discos rígidos, câmaras, scanners e "
+"outro hardware ligado ao computador."
+
+msgid "Help and Support"
+msgstr "Ajuda e suporte"
+
+msgid "Internet"
+msgstr "Internet"
+
+msgid "Log Off"
+msgstr "Terminar sessão"
+
+msgid "Maximize"
+msgstr "Maximizar"
+
+msgid "Minimize"
+msgstr "Minimizar"
 
 msgid ""
 "Opens a central location for Help topics, tutorials, troubleshooting, and "
@@ -130,8 +77,8 @@ msgstr ""
 "Abre uma localização central para tópicos de ajuda, tutoriais, resolução de "
 "problemas e outros serviços de suporte."
 
-msgid "Help and Support"
-msgstr "Ajuda e suporte"
+msgid "Opens a program, folder, document, or Web site."
+msgstr "Abre um programa, pasta, documento ou Web site."
 
 msgid ""
 "Opens a window where you can pick search options and work with search "
@@ -140,11 +87,76 @@ msgstr ""
 "Abre uma janela onde pode escolher opções de procura e trabalhar com os "
 "resultados da procura."
 
-msgid "Search"
-msgstr "Procurar"
+msgid ""
+"Opens the My Documents folder, where you can store letters, reports, notes, "
+"and other kinds of documents."
+msgstr ""
+"Abre a pasta 'Os meus documentos', onde pode armazenar cartas, relatórios, "
+"notas e outros tipos de documentos."
 
-msgid "Opens a program, folder, document, or Web site."
-msgstr "Abre um programa, pasta, documento ou Web site."
+msgid ""
+"Opens the My Music folder, where you can store music and other audio files."
+msgstr ""
+"Abre a pasta 'A minha música', onde pode armazenar música e outros ficheiros "
+"de áudio."
+
+msgid ""
+"Opens the My Pictures folder, where you can store digital photos, images, "
+"and graphics files."
+msgstr ""
+"Abre a pasta 'As minhas imagens', onde pode armazenar fotos digitais, "
+"imagens e outros gráficos."
+
+msgid "Opens your Internet browser."
+msgstr "Abre o browser da Internet."
+
+msgid "Opens your e-mail program so you can send or read a message."
+msgstr ""
+"Abre o programa de correio electrónico para que possa enviar ou ler uma "
+"mensagem."
+
+msgid ""
+"Provides options for closing your programs and logging off, or for leaving "
+"your programs running and switching to another user."
+msgstr ""
+"Fornece opções para fechar os programas e terminar sessão ou para deixar os "
+"programas em execução e mudar de utilizador."
+
+msgid ""
+"Provides options for turning off or restarting your computer, or for "
+"activating Stand By or Hibernate modes."
+msgstr ""
+"Fornece opções para desligar ou reiniciar o computador ou para activar os "
+"modos 'Suspender' ou 'Hibernar'."
+
+msgid ""
+"Provides options for you to customize the appearance and functionality of "
+"your computer, add or remove programs, and set up network connections and "
+"user accounts."
+msgstr ""
+"Fornece opções para que possa personalizar o aspecto e funcionalidade do "
+"computador, adicionar ou remover programas e configurar ligações de rede e "
+"contas de utilizadores."
+
+msgid "Restore"
+msgstr "Restaurar"
 
 msgid "Run..."
 msgstr "Executar..."
+
+msgid "Search"
+msgstr "Procurar"
+
+msgid "Set Program Access and Defaults"
+msgstr "Configurar acesso a programas e predefinições"
+
+msgid "Shows installed printers and fax printers and helps you add new ones."
+msgstr ""
+"Mostra as impressoras e as impressoras de fax instaladas e ajuda-o a "
+"adicionar novas impressoras."
+
+msgid "Turn Off Computer"
+msgstr "Desligar computador"
+
+msgid "start"
+msgstr "Iniciar"

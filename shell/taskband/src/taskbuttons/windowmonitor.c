@@ -1,5 +1,6 @@
 #include <glib.h>
 #include <gtk/gtk.h>
+#include <glib/gi18n.h>
 #include <pango/pango.h>
 #include <wintc/comgtk.h>
 #include <wintc/shelldpa.h>
@@ -25,9 +26,54 @@ struct _WindowMonitor
     GHashTable*         window_manager_map;
 };
 
+typedef struct _ContextMenuCallbackData
+{
+    WindowManagerSingle* window_manager;
+    guint64              timestamp;
+} ContextMenuCallbackData;
+
 //
 // FORWARD DECLARATIONS
 //
+static void window_monitor_show_context_menu(
+    WindowManagerSingle* window_manager,
+    GdkEventButton* event
+);
+static void window_manager_update_icon(
+    WindowManagerSingle* window_manager
+);
+static void window_manager_update_state(
+    WindowManagerSingle* window_manager
+);
+static void window_manager_update_text(
+    WindowManagerSingle* window_manager
+);
+
+static void action_restore(
+    GSimpleAction *action, 
+    GVariant *parameter, 
+    gpointer user_data
+);
+static void action_minimize(
+    GSimpleAction *action, 
+    GVariant *parameter, 
+    gpointer user_data
+);
+static void action_maximize(
+    GSimpleAction *action, 
+    GVariant *parameter, 
+    gpointer user_data
+);
+static void action_exit(
+    GSimpleAction *action, 
+    GVariant *parameter, 
+    gpointer user_data
+);
+
+static gboolean cb_maximize_window(
+    gpointer user_data
+);
+
 static void on_active_window_changed(
     WinTCWndMgmtScreen* screen,
     WinTCWndMgmtWindow* previously_active_window,
@@ -59,21 +105,48 @@ static void on_window_state_changed(
     gpointer            user_data
 );
 
-static gboolean on_window_button_button_released(
+static gboolean on_window_button_button_release_event(
     GtkWidget*      self,
     GdkEventButton* event,
     gpointer        user_data
 );
 
-static void window_manager_update_icon(
-    WindowManagerSingle* window_manager
-);
-static void window_manager_update_state(
-    WindowManagerSingle* window_manager
-);
-static void window_manager_update_text(
-    WindowManagerSingle* window_manager
-);
+//
+// STATIC DATA
+//
+static GActionEntry S_ACTIONS[] = {
+    {
+        .name           = "exit",
+        .activate       = action_exit,
+        .parameter_type = NULL,
+        .state          = NULL,
+        .change_state   = NULL
+    },
+    {
+        .name           = "maximize",
+        .activate       = action_maximize,
+        .parameter_type = NULL,
+        .state          = NULL,
+        .change_state   = NULL
+    },
+    {
+        .name           = "minimize",
+        .activate       = action_minimize,
+        .parameter_type = NULL,
+        .state          = NULL,
+        .change_state   = NULL
+    },
+    {
+        .name           = "restore",
+        .activate       = action_restore,
+        .parameter_type = NULL,
+        .state          = NULL,
+        .change_state   = NULL
+    }
+};
+
+static GtkMenu*             S_WM_MENU       = NULL;
+static WindowManagerSingle* S_WM_MENU_CURWM = NULL;
 
 //
 // PUBLIC FUNCTIONS
@@ -128,6 +201,129 @@ WindowMonitor* window_monitor_init_management(
 //
 // PRIVATE FUNCTIONS
 //
+static void window_monitor_show_context_menu(
+    WindowManagerSingle* window_manager,
+    GdkEventButton*      event
+)
+{
+    if (!S_WM_MENU)
+    {
+        GtkBuilder* builder;
+        GMenuModel* menu_model;
+
+        builder =
+            gtk_builder_new_from_resource(
+                "/uk/oddmatics/wintc/taskband/taskbutton-ctx-menu.ui"
+            );
+
+        wintc_builder_get_objects(
+            builder,
+            "context-menu", &S_WM_MENU,
+            "menu-model",   &menu_model,
+            NULL
+        );
+
+        g_object_ref(S_WM_MENU);
+
+        gtk_menu_shell_bind_model(
+            GTK_MENU_SHELL(S_WM_MENU),
+            menu_model,
+            NULL,
+            TRUE
+        );
+
+        g_object_unref(builder);
+
+        // Set up actions
+        //
+        GSimpleActionGroup* action_group = g_simple_action_group_new();
+
+        g_action_map_add_action_entries(
+            G_ACTION_MAP(action_group),
+            S_ACTIONS,
+            G_N_ELEMENTS(S_ACTIONS),
+            &S_WM_MENU_CURWM
+        );
+
+        gtk_widget_insert_action_group(
+            GTK_WIDGET(S_WM_MENU),
+            "window-manager",
+            G_ACTION_GROUP(action_group)
+        );
+    }
+
+    // Update action states for this window
+    //
+    GActionGroup* wm_action_group =
+        gtk_widget_get_action_group(
+            GTK_WIDGET(S_WM_MENU),
+            "window-manager"
+        );
+
+    GSimpleAction* maximize_action = G_SIMPLE_ACTION(
+                                         g_action_map_lookup_action(
+                                             G_ACTION_MAP(wm_action_group),
+                                            "maximize"
+                                         )
+                                     );
+    GSimpleAction* minimize_action = G_SIMPLE_ACTION(
+                                         g_action_map_lookup_action(
+                                             G_ACTION_MAP(wm_action_group),
+                                             "minimize"
+                                         )
+                                     );
+    GSimpleAction* restore_action  = G_SIMPLE_ACTION(
+                                         g_action_map_lookup_action(
+                                             G_ACTION_MAP(wm_action_group),
+                                             "restore"
+                                         )
+                                     );
+
+    gboolean is_max =
+        wintc_wndmgmt_window_is_maximized(window_manager->managed_window);
+    gboolean is_min =
+        wintc_wndmgmt_window_is_minimized(window_manager->managed_window);
+
+    g_simple_action_set_enabled(
+        maximize_action,
+        !is_max
+    );
+    g_simple_action_set_enabled(
+        minimize_action,
+        !is_min
+    );
+    g_simple_action_set_enabled(
+        restore_action,
+        is_min || is_max
+    );
+
+    // Update style classes
+    //
+    if (is_min)
+    {
+        gtk_style_context_add_class(
+            gtk_widget_get_style_context(GTK_WIDGET(S_WM_MENU)),
+            "ctx-menu-focus-restore"
+        );
+    }
+    else
+    {
+        gtk_style_context_add_class(
+            gtk_widget_get_style_context(GTK_WIDGET(S_WM_MENU)),
+            "ctx-menu-focus-exit"
+        );
+    }
+
+    // Popup!
+    //
+    S_WM_MENU_CURWM = window_manager;
+
+    gtk_menu_popup_at_pointer(
+        S_WM_MENU,
+        (GdkEvent*) event
+    );
+}
+
 static void window_manager_update_icon(
     WindowManagerSingle* window_manager
 )
@@ -196,7 +392,7 @@ static void window_manager_update_state(
         g_signal_connect(
             window_manager->button,
             "button-release-event",
-            G_CALLBACK(on_window_button_button_released),
+            G_CALLBACK(on_window_button_button_release_event),
             window_manager
         );
 
@@ -249,6 +445,112 @@ static void window_manager_update_text(
 //
 // CALLBACKS
 //
+static void action_exit(
+    WINTC_UNUSED(GSimpleAction *action),
+    WINTC_UNUSED(GVariant *parameter),
+    gpointer user_data
+)
+{
+    WindowManagerSingle* window_manager =
+        *((WindowManagerSingle**) user_data);
+
+    wintc_wndmgmt_window_close(
+        window_manager->managed_window,
+        gtk_get_current_event_time()
+    );
+}
+
+static void action_maximize(
+    WINTC_UNUSED(GSimpleAction *action),
+    WINTC_UNUSED(GVariant *parameter),
+    gpointer user_data
+)
+{
+    WindowManagerSingle* window_manager =
+        *((WindowManagerSingle**) user_data);
+
+    gboolean is_active = 
+        wintc_wndmgmt_screen_get_active_window(
+            window_manager->parent_monitor->screen
+        ) == window_manager->managed_window;
+
+    if (is_active)
+    {
+        wintc_wndmgmt_window_maximize(
+            window_manager->managed_window
+        );
+    }
+    else
+    {
+        wintc_wndmgmt_window_unminimize(
+            window_manager->managed_window,
+            gtk_get_current_event_time()
+        );
+
+        // HACK: Calling maximize immediately after unminimize can cause it
+        //       to not actually maximize
+        //
+        g_timeout_add(
+            100,  
+            cb_maximize_window,
+            window_manager->managed_window
+        );
+    }
+}
+
+static void action_minimize(
+    WINTC_UNUSED(GSimpleAction *action),
+    WINTC_UNUSED(GVariant *parameter),
+    gpointer user_data
+)
+{
+    WindowManagerSingle* window_manager =
+        *((WindowManagerSingle**) user_data);
+
+    wintc_wndmgmt_window_minimize(
+        window_manager->managed_window
+    );
+}
+
+static void action_restore(
+    WINTC_UNUSED(GSimpleAction *action),
+    WINTC_UNUSED(GVariant *parameter),
+    gpointer user_data
+)
+{
+    WindowManagerSingle* window_manager =
+        *((WindowManagerSingle**) user_data);
+
+    if (
+        wintc_wndmgmt_window_is_minimized(
+            window_manager->managed_window
+        )
+    )
+    {
+        wintc_wndmgmt_window_unminimize(
+            window_manager->managed_window,
+            gtk_get_current_event_time()
+        );
+    }
+    else
+    {
+        wintc_wndmgmt_window_unmaximize(
+            window_manager->managed_window
+        );
+    }
+}
+
+static gboolean cb_maximize_window(
+    gpointer user_data
+)
+{
+    WinTCWndMgmtWindow* window = (WinTCWndMgmtWindow*) user_data;
+    
+    wintc_wndmgmt_window_maximize(window);
+    
+    return G_SOURCE_REMOVE;
+}
+
 static void on_active_window_changed(
     WINTC_UNUSED(WinTCWndMgmtScreen* screen),
     WinTCWndMgmtWindow* previously_active_window,
@@ -409,7 +711,7 @@ static void on_window_state_changed(
     window_manager_update_state(window_manager);
 }
 
-static gboolean on_window_button_button_released(
+static gboolean on_window_button_button_release_event(
     GtkWidget*      self,
     GdkEventButton* event,
     gpointer        user_data
@@ -418,20 +720,49 @@ static gboolean on_window_button_button_released(
     GtkToggleButton*     toggle_button  = GTK_TOGGLE_BUTTON(self);
     WindowManagerSingle* window_manager = (WindowManagerSingle*) user_data;
 
-    if (gtk_toggle_button_get_active(toggle_button))
-    {
-        wintc_wndmgmt_window_minimize(
-            window_manager->managed_window
-        );
-    }
-    else
-    {
-        wintc_wndmgmt_window_unminimize(
-            window_manager->managed_window,
-            (guint64) event->time
-        );
+    switch (event->button) {
+        case GDK_BUTTON_PRIMARY:
+            if (gtk_toggle_button_get_active(toggle_button))
+            {
+                wintc_wndmgmt_window_minimize(
+                    window_manager->managed_window
+                );
+            }
+            else
+            {
+                wintc_wndmgmt_window_unminimize(
+                    window_manager->managed_window,
+                    (guint64) event->time
+                );
+            }
+
+            break;
+
+        case GDK_BUTTON_SECONDARY:
+            // Match XP behavior: if the window isn't minimized, display it on
+            // top
+            //
+            if (
+                !wintc_wndmgmt_window_is_minimized(
+                    window_manager->managed_window
+                )
+            )
+            {
+                wintc_wndmgmt_window_unminimize(
+                    window_manager->managed_window,
+                    (guint64) event->time
+                );
+            }
+
+            window_monitor_show_context_menu(
+                window_manager,
+                event
+            );
+
+            break;
+
+        default: break;
     }
 
     return FALSE;
 }
-

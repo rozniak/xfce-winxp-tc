@@ -29,6 +29,10 @@ extern WinTCWndMgmtScreen* (*p_wnck_screen_get_default) (void);
 
 extern void (*p_wnck_shutdown) (void);
 
+extern void (*p_wnck_window_close) (
+    WinTCWndMgmtWindow* window,
+    guint32             timestamp
+);
 extern const gchar* (*p_wnck_window_get_class_instance_name) (
     WinTCWndMgmtWindow* Window
 );
@@ -41,10 +45,22 @@ extern GdkPixbuf* (*p_wnck_window_get_mini_icon) (
 extern gchar* (*p_wnck_window_get_name) (
     WinTCWndMgmtWindow* window
 );
+extern gboolean (*p_wnck_window_is_maximized) (
+    WinTCWndMgmtWindow* window
+);
+extern gboolean (*p_wnck_window_is_minimized) (
+    WinTCWndMgmtWindow* window
+);
 extern gboolean (*p_wnck_window_is_skip_tasklist) (
     WinTCWndMgmtWindow* window
 );
+extern void (*p_wnck_window_maximize) (
+    WinTCWndMgmtWindow* window
+);
 extern void (*p_wnck_window_minimize) (
+    WinTCWndMgmtWindow* window
+);
+extern void (*p_wnck_window_unmaximize) (
     WinTCWndMgmtWindow* window
 );
 extern void (*p_wnck_window_unminimize) (

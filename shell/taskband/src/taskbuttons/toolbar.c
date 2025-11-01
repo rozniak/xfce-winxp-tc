@@ -42,7 +42,23 @@ static void wintc_toolbar_task_buttons_class_init(
 
 static void wintc_toolbar_task_buttons_init(
     WINTC_UNUSED(WinTCToolbarTaskButtons* self)
-) {}
+)
+{
+    // Apply stylesheet for this toolbar
+    //
+    GtkCssProvider* css = gtk_css_provider_new();
+
+    gtk_css_provider_load_from_resource(
+        css,
+        "/uk/oddmatics/wintc/taskband/task-buttons.css"
+    );
+
+    gtk_style_context_add_provider_for_screen(
+        gdk_screen_get_default(),
+        GTK_STYLE_PROVIDER(css),
+        GTK_STYLE_PROVIDER_PRIORITY_FALLBACK
+    );
+}
 
 //
 // CLASS VIRTUAL METHODS

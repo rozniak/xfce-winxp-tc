@@ -66,6 +66,17 @@ def main():
 
             sizes.append(size_name)
 
+        # Do we have symbolic icons?
+        #
+        sym_res_path = res_path / "svg"
+        sym_out_path = output_dir / "symbolic"
+
+        if sym_res_path.is_dir():
+            if not sym_out_path.is_dir():
+                sym_out_path.mkdir(parents=True)
+        else:
+            sym_res_path = None
+
         # Attempt to read through the mappings
         #
         res_path_rel_to_mapping = Path("../..") / rel_res_path
@@ -79,6 +90,26 @@ def main():
 
                 rel_res_name = rel_res_name.strip()
 
+                # Is this a symbolic icon?
+                #
+                if rel_icon_path.endswith("-symbolic"):
+                    if sym_res_path is None:
+                        raise NotADirectoryError(f"No SVGs for {rel_res_name}")
+
+                    target_res_path = res_path_rel_to_mapping / "svg" / f"{rel_res_name}.svg"
+                    theme_icon_path = output_dir / "symbolic" / f"{rel_icon_path}.svg"
+
+                    theme_icon_path_dir = theme_icon_path.parent
+
+                    if not theme_icon_path_dir.is_dir():
+                        theme_icon_path_dir.mkdir(parents=True)
+
+                    theme_icon_path.symlink_to(target_res_path)
+
+                    continue
+
+                # Deal with non-symbolic icons as usual
+                #
                 for size in sizes:
                     target_res_path = res_path_rel_to_mapping / size / f"{rel_res_name}.png"
                     theme_icon_path = output_dir / size / f"{rel_icon_path}.png"

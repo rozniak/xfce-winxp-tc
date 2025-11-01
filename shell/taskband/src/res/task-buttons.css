@@ -1,0 +1,7 @@
+.ctx-menu-focus-restore menuitem:nth-child(4) {
+font-weight: bold;
+}
+
+.ctx-menu-focus-exit menuitem:nth-child(1) {
+font-weight: bold;
+}
