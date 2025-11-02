@@ -833,7 +833,8 @@ static void on_current_view_items_added(
                                        icon_theme,
                                        item->icon_name,
                                        32,
-                                       GTK_ICON_LOOKUP_FORCE_SIZE,
+                                       GTK_ICON_LOOKUP_FORCE_SIZE |
+                                       GTK_ICON_LOOKUP_FORCE_REGULAR,
                                        NULL // FIXME: Error handling
                                    );
 

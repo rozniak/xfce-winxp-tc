@@ -112,6 +112,9 @@ static void clear_view_item(
     WinTCShextViewItem* item
 );
 
+static gchar* get_file_mime_icon(
+    GFile* file
+);
 static gboolean real_activate_item(
     WinTCShViewFS*      view_fs,
     WinTCShextViewItem* item,
@@ -688,6 +691,7 @@ static void wintc_sh_view_fs_refresh_items(
 
     for (GList* iter = entries; iter; iter = iter->next)
     {
+        GFile*              file;
         gboolean            is_dir;
         WinTCShextViewItem* item = g_new(WinTCShextViewItem, 1);
 
@@ -699,14 +703,18 @@ static void wintc_sh_view_fs_refresh_items(
                 NULL
             );
 
+        file   = g_file_new_for_path(entry_path);
         is_dir = g_file_test(entry_path, G_FILE_TEST_IS_DIR);
 
         item->display_name = (gchar*) g_steal_pointer(&(iter->data));
-        item->icon_name    = is_dir ? "inode-directory" : "empty";
+        item->icon_name    = is_dir ?
+                                 g_strdup("inode-directory") :
+                                 get_file_mime_icon(file);
         item->is_leaf      = !is_dir;
         item->hash         = g_str_hash(entry_path);
 
         g_free(entry_path);
+        g_object_unref(file);
 
         g_hash_table_insert(
             view_fs->fs_map_entries,
@@ -810,7 +818,71 @@ static void clear_view_item(
 )
 {
     g_free(item->display_name);
+    g_free(item->icon_name);
     g_free(item);
+}
+
+static gchar* get_file_mime_icon(
+    GFile* file
+)
+{
+    GFileInfo* file_info =
+        g_file_query_info(
+            file,
+            G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE,
+            G_FILE_QUERY_INFO_NONE,
+            NULL,
+            NULL
+        );
+
+    if (!file_info)
+    {
+        return g_strdup("empty");
+    }
+
+    // Use Gio to look up the icon...
+    //
+    const gchar* content_type = g_file_info_get_content_type(file_info);
+    gchar*       found_icon   = NULL;
+
+    if (content_type)
+    {
+        GIcon*        icon       = g_content_type_get_icon(content_type);
+        GtkIconTheme* icon_theme = gtk_icon_theme_get_default();
+
+        // We good with this icon?
+        //
+        if (icon && G_IS_THEMED_ICON(icon))
+        {
+            const gchar* const* icon_names =
+                g_themed_icon_get_names(G_THEMED_ICON(icon));
+
+            for (gint i = 0; icon_names[i] != NULL; i++)
+            {
+                if (
+                    gtk_icon_theme_has_icon(
+                        icon_theme,
+                        icon_names[i]
+                    )
+                )
+                {
+                    found_icon = g_strdup(icon_names[i]);
+                    break;
+                }
+            }
+        }
+
+        g_clear_object(&icon);
+    }
+
+    if (!found_icon)
+    {
+        found_icon = g_strdup("empty");
+    }
+
+    g_object_unref(file_info);
+
+    return found_icon;
 }
 
 static gboolean real_activate_item(
@@ -1260,7 +1332,9 @@ static void on_file_monitor_changed(
             item = g_new(WinTCShextViewItem, 1);
 
             item->display_name = g_file_get_basename(file);
-            item->icon_name    = is_dir ? "inode-directory" : "empty";
+            item->icon_name    = is_dir ?
+                                     g_strdup("inode-directory") :
+                                     get_file_mime_icon(file);
             item->is_leaf      = !is_dir;
             item->hash         = g_str_hash(file_path);
 
