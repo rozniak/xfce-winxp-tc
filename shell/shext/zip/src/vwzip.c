@@ -45,6 +45,11 @@ static gboolean wintc_view_zip_activate_item(
     WinTCShextPathInfo* path_info,
     GError**            error
 );
+static gint wintc_view_zip_compare_items(
+    WinTCIShextView* view,
+    guint            item_hash1,
+    guint            item_hash2
+);
 static GMenuModel* wintc_view_zip_get_operations_for_item(
     WinTCIShextView* view,
     guint            item_hash
@@ -74,6 +79,11 @@ static gboolean wintc_view_zip_has_parent(
 );
 static void wintc_view_zip_refresh_items(
     WinTCIShextView* view
+);
+
+static WinTCShextViewItem* wintc_view_zip_get_view_item(
+    WinTCViewZip* view_zip,
+    guint         item_hash
 );
 
 static guint zip_entry_hash(
@@ -173,6 +183,7 @@ static void wintc_view_zip_ishext_view_interface_init(
 )
 {
     iface->activate_item           = wintc_view_zip_activate_item;
+    iface->compare_items           = wintc_view_zip_compare_items;
     iface->get_operations_for_item = wintc_view_zip_get_operations_for_item;
     iface->get_operations_for_view = wintc_view_zip_get_operations_for_view;
     iface->get_display_name        = wintc_view_zip_get_display_name;
@@ -272,11 +283,7 @@ static gboolean wintc_view_zip_activate_item(
     WINTC_SAFE_REF_CLEAR(error);
 
     WinTCShextViewItem* item =
-        (WinTCShextViewItem*)
-            g_hash_table_lookup(
-                view_zip->map_items,
-                GUINT_TO_POINTER(item_hash)
-            );
+        wintc_view_zip_get_view_item(view_zip, item_hash);
 
     if (!item)
     {
@@ -310,6 +317,20 @@ static gboolean wintc_view_zip_activate_item(
     );
 
     return FALSE;
+}
+
+static gint wintc_view_zip_compare_items(
+    WinTCIShextView* view,
+    guint            item_hash1,
+    guint            item_hash2
+)
+{
+    WinTCViewZip* view_zip = WINTC_VIEW_ZIP(view);
+
+    return wintc_shext_view_item_compare_by_fs_order(
+        wintc_view_zip_get_view_item(view_zip, item_hash1),
+        wintc_view_zip_get_view_item(view_zip, item_hash2)
+    );
 }
 
 static GMenuModel* wintc_view_zip_get_operations_for_item(
@@ -585,6 +606,19 @@ WinTCIShextView* wintc_view_zip_new(
 //
 // PRIVATE FUNCTIONS
 //
+static WinTCShextViewItem* wintc_view_zip_get_view_item(
+    WinTCViewZip* view_zip,
+    guint         item_hash
+)
+{
+    return
+        (WinTCShextViewItem*)
+        g_hash_table_lookup(
+            view_zip->map_items,
+            GUINT_TO_POINTER(item_hash)
+        );
+}
+
 static guint zip_entry_hash(
     const gchar* zip_file_path,
     const gchar* rel_entry_path

@@ -68,8 +68,10 @@ static gboolean wintc_sh_view_fs_activate_item(
     WinTCShextPathInfo* path_info,
     GError**            error
 );
-static guint wintc_sh_view_fs_get_unique_hash(
-    WinTCIShextView* view
+static gint wintc_sh_view_fs_compare_items(
+    WinTCIShextView* view,
+    guint            item_hash1,
+    guint            item_hash2
 );
 static const gchar* wintc_sh_view_fs_get_display_name(
     WinTCIShextView* view
@@ -91,6 +93,9 @@ static void wintc_sh_view_fs_get_parent_path(
 static void wintc_sh_view_fs_get_path(
     WinTCIShextView*    view,
     WinTCShextPathInfo* path_info
+);
+static guint wintc_sh_view_fs_get_unique_hash(
+    WinTCIShextView* view
 );
 static gboolean wintc_sh_view_fs_has_parent(
     WinTCIShextView* view
@@ -122,6 +127,10 @@ static gboolean real_activate_item(
     GError**            error
 );
 
+static WinTCShextViewItem* wintc_sh_view_fs_get_view_item(
+    WinTCShViewFS* view_fs,
+    guint          item_hash
+);
 static void wintc_sh_view_fs_update_new_templates(
     WinTCShViewFS* view_fs
 );
@@ -246,6 +255,7 @@ static void wintc_sh_view_fs_ishext_view_interface_init(
 )
 {
     iface->activate_item           = wintc_sh_view_fs_activate_item;
+    iface->compare_items           = wintc_sh_view_fs_compare_items;
     iface->get_display_name        = wintc_sh_view_fs_get_display_name;
     iface->get_icon_name           = wintc_sh_view_fs_get_icon_name;
     iface->get_operations_for_item = wintc_sh_view_fs_get_operations_for_item;
@@ -396,11 +406,7 @@ static gboolean wintc_sh_view_fs_activate_item(
     // Retrieve the item itself
     //
     WinTCShextViewItem* item =
-        (WinTCShextViewItem*)
-            g_hash_table_lookup(
-                view_fs->fs_map_entries,
-                GUINT_TO_POINTER(item_hash)
-            );
+        wintc_sh_view_fs_get_view_item(view_fs, item_hash);
 
     if (!item)
     {
@@ -416,6 +422,20 @@ static gboolean wintc_sh_view_fs_activate_item(
         item,
         path_info,
         error
+    );
+}
+
+static gint wintc_sh_view_fs_compare_items(
+    WinTCIShextView* view,
+    guint            item_hash1,
+    guint            item_hash2
+)
+{
+    WinTCShViewFS* view_fs = WINTC_SH_VIEW_FS(view);
+
+    return wintc_shext_view_item_compare_by_fs_order(
+        wintc_sh_view_fs_get_view_item(view_fs, item_hash1),
+        wintc_sh_view_fs_get_view_item(view_fs, item_hash2)
     );
 }
 
@@ -453,11 +473,7 @@ static GMenuModel* wintc_sh_view_fs_get_operations_for_item(
     WinTCShViewFS* view_fs = WINTC_SH_VIEW_FS(view);
 
     WinTCShextViewItem* view_item =
-        (WinTCShextViewItem*)
-            g_hash_table_lookup(
-                view_fs->fs_map_entries,
-                GUINT_TO_POINTER(item_hash)
-            );
+        wintc_sh_view_fs_get_view_item(view_fs, item_hash);
 
     if (!view_item)
     {
@@ -951,6 +967,19 @@ static gboolean real_activate_item(
     g_free(next_path);
 
     return success;
+}
+
+static WinTCShextViewItem* wintc_sh_view_fs_get_view_item(
+    WinTCShViewFS* view_fs,
+    guint          item_hash
+)
+{
+    return
+        (WinTCShextViewItem*)
+        g_hash_table_lookup(
+            view_fs->fs_map_entries,
+            GUINT_TO_POINTER(item_hash)
+        );
 }
 
 static void wintc_sh_view_fs_update_new_templates(

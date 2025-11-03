@@ -107,6 +107,18 @@ gboolean wintc_ishext_view_activate_item(
     );
 }
 
+gint wintc_ishext_view_compare_items(
+    WinTCIShextView* view,
+    guint            item_hash1,
+    guint            item_hash2
+)
+{
+    WinTCIShextViewInterface* iface =
+        WINTC_ISHEXT_VIEW_GET_IFACE(view);
+
+    return iface->compare_items(view, item_hash1, item_hash2);
+}
+
 const gchar* wintc_ishext_view_get_display_name(
     WinTCIShextView* view
 )
@@ -257,6 +269,40 @@ void _wintc_ishext_view_refreshing(
         0
     );
 }
+
+// HACKY SORT FUNC
+static WinTCIShextView* S_CUR_VIEW_FOR_SORTING = NULL;
+
+gint _wintc_ishext_view_sort_func(
+    gconstpointer item_hash1,
+    gconstpointer item_hash2
+)
+{
+    if (!S_CUR_VIEW_FOR_SORTING)
+    {
+        g_critical("%s", "shellext: attempting to sort with no view!");
+        return 0;
+    }
+
+    return wintc_ishext_view_compare_items(
+        S_CUR_VIEW_FOR_SORTING,
+        GPOINTER_TO_UINT(item_hash1),
+        GPOINTER_TO_UINT(item_hash2)
+    );
+}
+
+GCompareFunc wintc_ishext_view_get_sort_func(
+    WinTCIShextView* view
+)
+{
+    //
+    // FIXME: This is NOT thread-safe!!
+    //
+    S_CUR_VIEW_FOR_SORTING = view;
+
+    return ((GCompareFunc) _wintc_ishext_view_sort_func);
+}
+// END HACKY SORT FUNC
 
 void wintc_shext_path_info_demangle_uri(
     WinTCShextPathInfo* path_info,

@@ -42,6 +42,11 @@ struct _WinTCIShextViewInterface
         GError**            error
     );
 
+    gint (*compare_items) (
+        WinTCIShextView* view,
+        guint            item_hash1,
+        guint            item_hash2
+    );
     const gchar* (*get_display_name) (
         WinTCIShextView* view
     );
@@ -92,6 +97,11 @@ gboolean wintc_ishext_view_activate_item(
     GError**            error
 );
 
+gint wintc_ishext_view_compare_items(
+    WinTCIShextView* view,
+    guint            item_hash1,
+    guint            item_hash2
+);
 void wintc_ishext_view_refresh_items(
     WinTCIShextView* view
 );
@@ -142,6 +152,10 @@ void _wintc_ishext_view_items_removed(
     WinTCShextViewItemsUpdate* update
 );
 void _wintc_ishext_view_refreshing(
+    WinTCIShextView* view
+);
+
+GCompareFunc wintc_ishext_view_get_sort_func(
     WinTCIShextView* view
 );
 

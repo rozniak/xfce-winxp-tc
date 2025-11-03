@@ -78,6 +78,8 @@ add_library(
     public/strings.h
     src/styles.c
     public/styles.h
+    src/treemodel.c
+    public/treemodel.h
     src/version.c
     public/version.h
     src/window.c

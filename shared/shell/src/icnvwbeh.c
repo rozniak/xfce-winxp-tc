@@ -814,7 +814,7 @@ static void on_browser_load_changed(
 }
 
 static void on_current_view_items_added(
-    WINTC_UNUSED(WinTCIShextView* view),
+    WinTCIShextView*           view,
     WinTCShextViewItemsUpdate* update,
     gpointer                   user_data
 )
@@ -838,11 +838,29 @@ static void on_current_view_items_added(
                                        NULL // FIXME: Error handling
                                    );
 
+        // Sort into model
+        //
+        GCompareFunc sort_func = wintc_ishext_view_get_sort_func(view);
+
+        gint item_pos =
+            wintc_tree_model_get_insertion_sort_pos(
+                GTK_TREE_MODEL(behaviour->list_model),
+                NULL,
+                COLUMN_VIEW_HASH,
+                G_TYPE_UINT,
+                sort_func,
+                GUINT_TO_POINTER(item->hash)
+            );
+
         // Push to model
         //
         GtkTreeIter iter;
 
-        gtk_list_store_append(behaviour->list_model, &iter);
+        gtk_list_store_insert(
+            behaviour->list_model,
+            &iter,
+            item_pos
+        );
         gtk_list_store_set(
             behaviour->list_model,
             &iter,

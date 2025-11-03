@@ -33,4 +33,16 @@ typedef struct _WinTCShextViewItemsUpdate
     gboolean done;
 } WinTCShextViewItemsUpdate;
 
+//
+// PUBLIC FUNCTIONS
+//
+gint wintc_shext_view_item_compare_by_name(
+    const WinTCShextViewItem* item1,
+    const WinTCShextViewItem* item2
+);
+gint wintc_shext_view_item_compare_by_fs_order(
+    const WinTCShextViewItem* item1,
+    const WinTCShextViewItem* item2
+);
+
 #endif

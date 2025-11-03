@@ -55,6 +55,11 @@ static gboolean wintc_cpl_view_printers_activate_item(
     WinTCShextPathInfo* path_info,
     GError**            error
 );
+static gint wintc_cpl_view_printers_compare_items(
+    WinTCIShextView* view,
+    guint            item_hash1,
+    guint            item_hash2
+);
 static const gchar* wintc_cpl_view_printers_get_display_name(
     WinTCIShextView* view
 );
@@ -153,6 +158,7 @@ static void wintc_cpl_view_printers_ishext_view_interface_init(
 )
 {
     iface->activate_item           = wintc_cpl_view_printers_activate_item;
+    iface->compare_items           = wintc_cpl_view_printers_compare_items;
     iface->get_display_name        = wintc_cpl_view_printers_get_display_name;
     iface->get_icon_name           = wintc_cpl_view_printers_get_icon_name;
     iface->get_operations_for_item =
@@ -206,6 +212,16 @@ static gboolean wintc_cpl_view_printers_activate_item(
     WINTC_SAFE_REF_CLEAR(error);
     g_critical("%s Not Implemented", __func__);
     return FALSE;
+}
+
+static gint wintc_cpl_view_printers_compare_items(
+    WINTC_UNUSED(WinTCIShextView* view),
+    WINTC_UNUSED(guint            item_hash1),
+    WINTC_UNUSED(guint            item_hash2)
+)
+{
+    // FIXME: Proper implementation
+    return -1;
 }
 
 static GMenuModel* wintc_cpl_view_printers_get_operations_for_item(

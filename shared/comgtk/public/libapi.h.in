@@ -25,6 +25,7 @@
 #include "@LIB_HEADER_DIR@/signals.h"
 #include "@LIB_HEADER_DIR@/strings.h"
 #include "@LIB_HEADER_DIR@/styles.h"
+#include "@LIB_HEADER_DIR@/treemodel.h"
 #include "@LIB_HEADER_DIR@/version.h"
 #include "@LIB_HEADER_DIR@/window.h"
 

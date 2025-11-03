@@ -44,6 +44,7 @@ add_library(
     public/if_view.h
     src/uictl.c
     public/uictl.h
+    src/viewitem.c
     public/viewitem.h
     public/viewops.h
 )
