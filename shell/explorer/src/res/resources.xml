@@ -5,6 +5,10 @@
     <file>flag26.png</file>
     <file>flag38.png</file>
 
+    <!-- ICONS -->
+    <file>wintc-go-button.png</file>
+    <file>wintc-go-button-hot.png</file>
+
     <!-- SIDEBARS -->
     <file>favside.ui</file>
     <file>fldrside.ui</file>
@@ -13,5 +17,9 @@
     <!-- TOOLBARS -->
     <file>adrbar.ui</file>
     <file>explorer.ui</file>
+
+    <!-- STYLES -->
+    <file>appstyles.css</file>
+    <file>appstyles_p.css</file>
   </gresource>
 </gresources>

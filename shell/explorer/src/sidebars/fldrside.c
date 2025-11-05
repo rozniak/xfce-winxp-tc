@@ -22,6 +22,10 @@ static void wintc_exp_folders_sidebar_dispose(
     GObject* object
 );
 
+static void on_button_close_clicked(
+    GtkWidget* self,
+    gpointer   user_data
+);
 static void on_explorer_window_mode_changed(
     WinTCExplorerWindow*    self,
     gpointer                user_data
@@ -78,16 +82,24 @@ static void wintc_exp_folders_sidebar_init(
             "/uk/oddmatics/wintc/explorer/fldrside.ui"
         );
 
-    sidebar->root_widget =
-        GTK_WIDGET(
-            gtk_builder_get_object(builder, "main-box")
-        );
-    self->tree_view =
-        GTK_WIDGET(
-            gtk_builder_get_object(builder, "tree-view")
-        );
+    GtkWidget* button_close = NULL;
+
+    wintc_builder_get_objects(
+        builder,
+        "button-close", &button_close,
+        "main-box",     &(sidebar->root_widget),
+        "tree-view",    &(self->tree_view),
+        NULL
+    );
 
     g_object_ref(sidebar->root_widget);
+
+    g_signal_connect(
+        button_close,
+        "clicked",
+        G_CALLBACK(on_button_close_clicked),
+        self
+    );
 
     g_object_unref(builder);
 }
@@ -168,6 +180,20 @@ WinTCExplorerSidebar* wintc_exp_folders_sidebar_new(
 //
 // CALLBACKS
 //
+static void on_button_close_clicked(
+    WINTC_UNUSED(GtkWidget* self),
+    gpointer user_data
+)
+{
+    WinTCExplorerSidebar* sidebar =
+        WINTC_EXPLORER_SIDEBAR(user_data);
+
+    wintc_explorer_window_toggle_sidebar(
+        WINTC_EXPLORER_WINDOW(sidebar->owner_explorer_wnd),
+        WINTC_EXPLORER_SIDEBAR_ID_FOLDERS
+    );
+}
+
 static void on_explorer_window_mode_changed(
     WinTCExplorerWindow*    self,
     gpointer                user_data

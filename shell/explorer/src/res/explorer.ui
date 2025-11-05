@@ -516,9 +516,29 @@
           </packing>
         </child>
         <child>
-          <object class="WinTCCtlAnimation" id="throbber">
+          <object class="GtkMenuBar">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
+
+            <!-- FILE MENU -->
+            <child>
+              <object class="GtkMenuItem">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="sensitive">False</property>
+
+                <child>
+                  <object class="WinTCCtlAnimation" id="throbber">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                  </object>
+                </child>
+
+                <style>
+                  <class name="wintc-explorer-throbber" />
+                </style>
+              </object>
+            </child>
           </object>
           <packing>
             <property name="expand">False</property>

@@ -1024,6 +1024,10 @@ static void switch_mode_to(
                 wnd->iconview_browser
             );
 
+            gtk_widget_grab_focus(
+                wnd->iconview_browser
+            );
+
             break;
 
         case WINTC_EXPLORER_WINDOW_MODE_INTERNET:
@@ -1062,6 +1066,10 @@ static void switch_mode_to(
 
             gtk_container_add(
                 GTK_CONTAINER(wnd->scrollwnd_main),
+                wnd->webkit_browser
+            );
+
+            gtk_widget_grab_focus(
                 wnd->webkit_browser
             );
 

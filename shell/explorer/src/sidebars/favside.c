@@ -18,6 +18,11 @@ static void wintc_exp_favorites_sidebar_constructed(
     GObject* object
 );
 
+static void on_button_close_clicked(
+    GtkWidget* self,
+    gpointer   user_data
+);
+
 //
 // GTK OOP CLASS/INSTANCE DEFINITIONS
 //
@@ -60,12 +65,23 @@ static void wintc_exp_favorites_sidebar_init(
             "/uk/oddmatics/wintc/explorer/favside.ui"
         );
 
-    sidebar->root_widget =
-        GTK_WIDGET(
-            g_object_ref(
-                gtk_builder_get_object(builder, "main-box")
-            )
-        );
+    GtkWidget* button_close = NULL;
+
+    wintc_builder_get_objects(
+        builder,
+        "button-close", &button_close,
+        "main-box",     &(sidebar->root_widget),
+        NULL
+    );
+
+    g_object_ref(sidebar->root_widget);
+
+    g_signal_connect(
+        button_close,
+        "clicked",
+        G_CALLBACK(on_button_close_clicked),
+        self
+    );
 
     g_object_unref(builder);
 }
@@ -90,5 +106,22 @@ WinTCExplorerSidebar* wintc_exp_favorites_sidebar_new(
             "owner-explorer", wnd,
             NULL
         )
+    );
+}
+
+//
+// CALLBACKS
+//
+static void on_button_close_clicked(
+    WINTC_UNUSED(GtkWidget* self),
+    gpointer user_data
+)
+{
+    WinTCExplorerSidebar* sidebar =
+        WINTC_EXPLORER_SIDEBAR(user_data);
+
+    wintc_explorer_window_toggle_sidebar(
+        WINTC_EXPLORER_WINDOW(sidebar->owner_explorer_wnd),
+        WINTC_EXPLORER_SIDEBAR_ID_FAVORITES
     );
 }

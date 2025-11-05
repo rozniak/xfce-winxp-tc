@@ -26,6 +26,11 @@ menubar,
 
     -GtkWidget-window-dragging: true;
 
+    &:first-child
+    {
+        border-left-width: 0px;
+    }
+
     box.vertical > &:last-child
     {
         border-bottom-style: none;

@@ -261,6 +261,38 @@ static void wintc_explorer_application_startup(
     (G_APPLICATION_CLASS(wintc_explorer_application_parent_class))
         ->startup(application);
 
+    // Install styles
+    //
+    GtkCssProvider* css_provider   = gtk_css_provider_new();
+    GtkCssProvider* css_provider_p = gtk_css_provider_new();
+
+    gtk_css_provider_load_from_resource(
+        css_provider,
+        "/uk/oddmatics/wintc/explorer/appstyles.css"
+    );
+    gtk_css_provider_load_from_resource(
+        css_provider_p,
+        "/uk/oddmatics/wintc/explorer/appstyles_p.css"
+    );
+
+    gtk_style_context_add_provider_for_screen(
+        gdk_screen_get_default(),
+        GTK_STYLE_PROVIDER(css_provider),
+        GTK_STYLE_PROVIDER_PRIORITY_FALLBACK
+    );
+    gtk_style_context_add_provider_for_screen(
+        gdk_screen_get_default(),
+        GTK_STYLE_PROVIDER(css_provider_p),
+        GTK_STYLE_PROVIDER_PRIORITY_APPLICATION
+    );
+
+    // Install icon resource path
+    //
+    gtk_icon_theme_add_resource_path(
+        gtk_icon_theme_get_default(),
+        "/uk/oddmatics/wintc/explorer"
+    );
+
     // Init comctl
     //
     wintc_ctl_install_default_styles();

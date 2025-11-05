@@ -1,0 +1,11 @@
+.wintc-explorer-go
+{
+    border-bottom-width: 1px;
+    border-top-width:    2px;
+}
+
+.wintc-explorer-throbber
+{
+    background: #FFFFFF;
+    padding:    0px 4px;
+}
