@@ -20,6 +20,7 @@
 #define USER_TILE_OFFSET_Y 6
 
 #define USER_PIC_OFFSET    5
+#define USER_PIC_SIZE      48
 
 #define USER_NAME_OFFSET_X 75
 #define USER_NAME_OFFSET_Y 25
@@ -36,6 +37,15 @@ enum
     PROP_VSCROLL_POLICY,
     N_PROPERTIES
 };
+
+//
+// PRIVATE STRUCTURES
+//
+typedef struct _WinTCWelcomeUserpic
+{
+    GdkPixbuf*       pixbuf;
+    cairo_surface_t* surface;
+} WinTCWelcomeUserpic;
 
 //
 // FORWARD DECLARATIONS
@@ -126,10 +136,18 @@ static void wintc_welcome_user_list_set_vadjustment_values(
 );
 
 static void draw_user(
-    cairo_t*                    cr,
-    LightDMUser*                user,
-    const gboolean              selected,
-    const WinTCWelcomeUserList* user_list
+    cairo_t*              cr,
+    LightDMUser*          user,
+    gboolean              selected,
+    WinTCWelcomeUserList* user_list
+);
+static WinTCWelcomeUserpic* wintc_welcome_user_list_get_userpic(
+    WinTCWelcomeUserList* user_list,
+    const gchar*          path
+);
+
+static void free_userpic(
+    WinTCWelcomeUserpic* userpic
 );
 
 static void on_self_adjustment_changed(
@@ -181,12 +199,13 @@ struct _WinTCWelcomeUserList
     //
     GdkPixbuf*       pixbuf_tile;
     GdkPixbuf*       pixbuf_tilehot;
-    GdkPixbuf*       pixbuf_userpic;
     GdkPixbuf*       pixbuf_usersel;
     cairo_surface_t* surface_tile;
     cairo_surface_t* surface_tilehot;
-    cairo_surface_t* surface_userpic;
     cairo_surface_t* surface_usersel;
+
+    GHashTable*          map_path_to_userpic;
+    WinTCWelcomeUserpic* default_userpic;
 
     // Geometry
     //
@@ -299,11 +318,6 @@ static void wintc_welcome_user_list_init(
             "/uk/oddmatics/wintc/logonui/tilehot.png",
             NULL // FIXME: Error reporting
         );
-    self->pixbuf_userpic =
-        gdk_pixbuf_new_from_resource(
-            "/uk/oddmatics/wintc/logonui/userpic.png",
-            NULL // FIXME: Error reporting
-        );
     self->pixbuf_usersel =
         gdk_pixbuf_new_from_resource(
             "/uk/oddmatics/wintc/logonui/usersel.png",
@@ -322,15 +336,33 @@ static void wintc_welcome_user_list_init(
             1,
             NULL
         );
-    self->surface_userpic =
-        gdk_cairo_surface_create_from_pixbuf(
-            self->pixbuf_userpic,
-            1,
-            NULL
-        );
     self->surface_usersel =
         gdk_cairo_surface_create_from_pixbuf(
             self->pixbuf_usersel,
+            1,
+            NULL
+        );
+
+    // Set up userpic map and default userpic
+    //
+    self->map_path_to_userpic =
+        g_hash_table_new_full(
+            g_str_hash,
+            g_str_equal,
+            (GDestroyNotify) g_free,
+            (GDestroyNotify) free_userpic
+        );
+
+    self->default_userpic = g_new(WinTCWelcomeUserpic, 1);
+
+    self->default_userpic->pixbuf =
+        gdk_pixbuf_new_from_resource(
+            "/uk/oddmatics/wintc/logonui/userpic.png",
+            NULL // FIXME: Error reporting
+        );
+    self->default_userpic->surface  =
+        gdk_cairo_surface_create_from_pixbuf(
+            self->default_userpic->pixbuf,
             1,
             NULL
         );
@@ -422,11 +454,9 @@ static void wintc_welcome_user_list_finalize(
 
     cairo_surface_destroy(user_list->surface_tile);
     cairo_surface_destroy(user_list->surface_tilehot);
-    cairo_surface_destroy(user_list->surface_userpic);
     cairo_surface_destroy(user_list->surface_usersel);
     g_clear_object(&user_list->pixbuf_tile);
     g_clear_object(&user_list->pixbuf_tilehot);
-    g_clear_object(&user_list->pixbuf_userpic);
     g_clear_object(&user_list->pixbuf_usersel);
 
     (G_OBJECT_CLASS(wintc_welcome_user_list_parent_class))->finalize(gobject);
@@ -954,10 +984,10 @@ static void wintc_welcome_user_list_set_vadjustment_values(
 
 
 static void draw_user(
-    cairo_t*                    cr,
-    LightDMUser*                user,
-    const gboolean              selected,
-    const WinTCWelcomeUserList* user_list
+    cairo_t*              cr,
+    LightDMUser*          user,
+    gboolean              selected,
+    WinTCWelcomeUserList* user_list
 )
 {
     //const gchar* text = lightdm_user_get_name(user);
@@ -984,6 +1014,12 @@ static void draw_user(
 
     // Render userpic
     //
+    WinTCWelcomeUserpic* userpic =
+        wintc_welcome_user_list_get_userpic(
+            user_list,
+            lightdm_user_get_image(user)
+        );
+
     cairo_set_source_surface(
         cr,
         selected ?
@@ -996,7 +1032,7 @@ static void draw_user(
 
     cairo_set_source_surface(
         cr,
-        user_list->surface_userpic,
+        userpic->surface,
         USER_TILE_OFFSET_X + USER_PIC_OFFSET,
         USER_TILE_OFFSET_Y + USER_PIC_OFFSET + origin_y
     );
@@ -1020,9 +1056,73 @@ static void draw_user(
     cairo_show_text(cr, lightdm_user_get_name(user));
 }
 
+static WinTCWelcomeUserpic* wintc_welcome_user_list_get_userpic(
+    WinTCWelcomeUserList* user_list,
+    const gchar*          path
+)
+{
+    WinTCWelcomeUserpic* userpic;
+
+    if (!path)
+    {
+        return user_list->default_userpic;
+    }
+
+    userpic =
+        g_hash_table_lookup(
+            user_list->map_path_to_userpic,
+            path
+        );
+
+    if (userpic)
+    {
+        return userpic;
+    }
+
+    // Load the userpic
+    //
+    GdkPixbuf* pixbuf =
+        gdk_pixbuf_new_from_file_at_scale(
+            path,
+            USER_PIC_SIZE,
+            USER_PIC_SIZE,
+            FALSE,
+            NULL
+        );
+
+    if (!pixbuf)
+    {
+        return user_list->default_userpic;
+    }
+
+    // All good, create the userpic mapping
+    //
+    userpic = g_new(WinTCWelcomeUserpic, 1);
+
+    userpic->pixbuf  = pixbuf;
+    userpic->surface = gdk_cairo_surface_create_from_pixbuf(pixbuf, 1, NULL);
+
+    g_hash_table_insert(
+        user_list->map_path_to_userpic,
+        g_strdup(path),
+        userpic
+    );
+
+    return userpic;
+}
+
 //
 // CALLBACKS
 //
+static void free_userpic(
+    WinTCWelcomeUserpic* userpic
+)
+{
+    cairo_surface_destroy(userpic->surface);
+    g_object_unref(userpic->pixbuf);
+    g_free(userpic);
+}
+
 static void on_self_adjustment_changed(
     WINTC_UNUSED(GtkAdjustment* adjustment),
     WinTCWelcomeUserList* user_list

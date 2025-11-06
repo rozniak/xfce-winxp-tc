@@ -925,22 +925,48 @@ static void refresh_userpic(
     WinTCToolbarStart* toolbar_start
 )
 {
-    // TODO: Read from AccountsService or whatever on DBus? Default to the
-    //       flower pic -- for now we're just displaying the FPO image
-    //
-    static const gchar* css =
-        "* { background-image: url('"
-        WINTC_ASSETS_DIR "/shell-res/fpo-userpic.png"
-        "'); }";
+    static const gchar* s_path_face = NULL;
 
-    // Give GTK a bump that we want to update the pic
+    if (!s_path_face)
+    {
+        s_path_face =
+            g_build_path(
+                G_DIR_SEPARATOR_S,
+                g_get_home_dir(),
+                ".face",
+                NULL
+            );
+    }
+
+    // Update the pic CSS if we have a face, otherwise default to the built-in
+    // pic
     //
+    const gchar* actual_path;
+    gchar*       css;
+
+    if (g_file_test(s_path_face, G_FILE_TEST_IS_REGULAR))
+    {
+        actual_path = s_path_face;
+    }
+    else
+    {
+        actual_path = "resource:///uk/oddmatics/wintc/taskband/userpic.bmp";
+    }
+
+    css =
+        g_strdup_printf(
+            "* { background-image: url('%s'); }",
+            actual_path
+        );
+
     gtk_css_provider_load_from_data(
         GTK_CSS_PROVIDER(toolbar_start->personal.style_userpic),
         css,
         -1,
         NULL
     );
+
+    g_free(css);
 }
 
 static void update_personal_menu_mfu_items(
