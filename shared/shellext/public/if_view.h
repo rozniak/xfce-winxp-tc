@@ -170,8 +170,11 @@ gchar* wintc_shext_path_info_get_as_single_path(
 );
 
 void wintc_shext_path_info_copy(
-    WinTCShextPathInfo* dst,
-    WinTCShextPathInfo* src
+    WinTCShextPathInfo*       dst,
+    const WinTCShextPathInfo* src
+);
+void wintc_shext_path_info_free(
+    WinTCShextPathInfo* path_info
 );
 void wintc_shext_path_info_free_data(
     WinTCShextPathInfo* path_info

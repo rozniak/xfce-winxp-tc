@@ -18,6 +18,8 @@
 #include "toolbars/stdbar.h"
 #include "window.h"
 
+#define EXPLORER_HISTORY_LIMIT 10 // FIXME: Check Windows
+
 //
 // PRIVATE ENUMS
 //
@@ -38,6 +40,14 @@ enum
     SIGNAL_MODE_CHANGED,
     N_SIGNALS
 };
+
+typedef enum _WinTCExplorerNavMode
+{
+    WINTC_EXPLORER_NAV_NONE,
+    WINTC_EXPLORER_NAV_DEFAULT,
+    WINTC_EXPLORER_NAV_GOING_BACK,
+    WINTC_EXPLORER_NAV_GOING_FORWARD
+} WinTCExplorerNavMode;
 
 //
 // FORWARD DECLARATIONS
@@ -64,29 +74,47 @@ static void wintc_explorer_window_set_property(
     GParamSpec*   pspec
 );
 
-static void do_navigation(
+static void wintc_explorer_window_do_navigation_via_path(
     WinTCExplorerWindow* wnd,
     const gchar*         specified_path
 );
-static void do_navigation_internet(
+static void wintc_explorer_window_do_navigation_via_path_info(
+    WinTCExplorerWindow*       wnd,
+    const WinTCShextPathInfo*  path_info
+);
+static void wintc_explorer_window_do_navigation_internet(
     WinTCExplorerWindow* wnd,
     const gchar*         specified_path
 );
-static void do_navigation_local(
+static void wintc_explorer_window_do_navigation_local(
+    WinTCExplorerWindow*      wnd,
+    const WinTCShextPathInfo* path_info
+);
+static gboolean wintc_explorer_window_prepare_path_info_from_path(
     WinTCExplorerWindow* wnd,
-    const gchar*         specified_path
+    const gchar*         specified_path,
+    WinTCShextPathInfo*  path_info,
+    GError**             error
 );
-static gboolean prepare_new_location(
-    const gchar*        specified_path,
-    WinTCShextPathInfo* local_path_info,
-    GError**            error
-);
-static void switch_mode_to(
+static void wintc_explorer_window_switch_mode_to(
     WinTCExplorerWindow*    wnd,
     WinTCExplorerWindowMode mode
 );
+static void wintc_explorer_window_update_history(
+    WinTCExplorerWindow* wnd
+);
 
 static void action_about(
+    GSimpleAction* action,
+    GVariant*      parameter,
+    gpointer       user_data
+);
+static void action_nav_back(
+    GSimpleAction* action,
+    GVariant*      parameter,
+    gpointer       user_data
+);
+static void action_nav_forward(
     GSimpleAction* action,
     GVariant*      parameter,
     gpointer       user_data
@@ -133,6 +161,20 @@ static GActionEntry s_window_actions[] = {
     {
         .name           = "about",
         .activate       = action_about,
+        .parameter_type = NULL,
+        .state          = NULL,
+        .change_state   = NULL
+    },
+    {
+        .name           = "nav-back",
+        .activate       = action_nav_back,
+        .parameter_type = NULL,
+        .state          = NULL,
+        .change_state   = NULL
+    },
+    {
+        .name           = "nav-forward",
+        .activate       = action_nav_forward,
         .parameter_type = NULL,
         .state          = NULL,
         .change_state   = NULL
@@ -190,6 +232,11 @@ struct _WinTCExplorerWindow
 
     WinTCExplorerToolbar* toolbar_adr;
     WinTCExplorerToolbar* toolbar_std;
+
+    GList*               history_backward;
+    GList*               history_forward;
+    gboolean             nav_interactive;
+    WinTCExplorerNavMode nav_mode;
 
     // UI
     //
@@ -364,7 +411,7 @@ static void wintc_explorer_window_init(
 
     // FIXME: Temporary pane setup
     //
-    self->scrollwnd_main  = gtk_scrolled_window_new(NULL, NULL);
+    self->scrollwnd_main = gtk_scrolled_window_new(NULL, NULL);
 
     gtk_paned_pack2(
         GTK_PANED(self->pane_view),
@@ -427,6 +474,8 @@ static void wintc_explorer_window_constructed(
 
     // Handle initial path
     //
+    wnd->nav_interactive = TRUE;
+
     if (!wnd->initial_path)
     {
         wintc_explorer_window_toggle_sidebar(
@@ -436,14 +485,14 @@ static void wintc_explorer_window_constructed(
 
         // Nav to desktop if there's no path
         //
-        do_navigation(
+        wintc_explorer_window_do_navigation_via_path(
             wnd,
             wintc_sh_get_place_path(WINTC_SH_PLACE_DESKTOP)
         );
     }
     else
     {
-        do_navigation(
+        wintc_explorer_window_do_navigation_via_path(
             wnd,
             wnd->initial_path
         );
@@ -470,6 +519,15 @@ static void wintc_explorer_window_dispose(
     g_clear_object(&(wnd->active_sidebar));
     g_clear_object(&(wnd->toolbar_adr));
     g_clear_object(&(wnd->toolbar_std));
+
+    g_clear_list(
+        &(wnd->history_backward),
+        (GDestroyNotify) wintc_shext_path_info_free
+    );
+    g_clear_list(
+        &(wnd->history_forward),
+        (GDestroyNotify) wintc_shext_path_info_free
+    );
 
     (G_OBJECT_CLASS(wintc_explorer_window_parent_class))->dispose(object);
 }
@@ -720,90 +778,7 @@ void wintc_explorer_window_toggle_sidebar(
 //
 // PRIVATE FUNCTIONS
 //
-static void do_navigation(
-    WinTCExplorerWindow* wnd,
-    const gchar*         specified_path
-)
-{
-    static GRegex* regex_looks_webish = NULL;
-
-    GError* error = NULL;
-
-    if (!regex_looks_webish)
-    {
-        regex_looks_webish =
-            g_regex_new(
-                "^[a-z0-9-]+(\\.[a-z0-9-]+)+(\\/.*)?$",
-                G_REGEX_CASELESS,
-                0,
-                &error
-            );
-
-        if (!regex_looks_webish)
-        {
-            wintc_display_error_and_clear(&error, GTK_WINDOW(wnd));
-            return;
-        }
-    }
-
-    wintc_ctl_animation_play(
-        WINTC_CTL_ANIMATION(wnd->throbber),
-        wnd->throbber_anim_id,
-        0,
-        WINTC_CTL_ANIMATION_INFINITE
-    );
-
-    // Check out how we should navigate - local or IE?
-    //
-    // Very simply, check if it looks like a web URL - either it looks like a
-    // web address (like bbc.co.uk/news), or it starts with http/https scheme
-    //
-    // By no means perfect, but will do for now (ask me in 10 years)
-    //
-    gchar*       check;
-    const gchar* use_path = specified_path;
-
-    if (g_regex_match(regex_looks_webish, specified_path, 0, NULL))
-    {
-        check    = g_strdup_printf("http://%s", specified_path);
-        use_path = check;
-    }
-    else
-    {
-        check = g_utf8_strdown(specified_path, -1);
-    }
-
-    if (
-        g_str_has_prefix(check, "http://") ||
-        g_str_has_prefix(check, "https://")
-    )
-    {
-        switch_mode_to(wnd, WINTC_EXPLORER_WINDOW_MODE_INTERNET);
-        do_navigation_internet(wnd, use_path);
-    }
-    else
-    {
-        switch_mode_to(wnd, WINTC_EXPLORER_WINDOW_MODE_LOCAL);
-        do_navigation_local(wnd, use_path);
-    }
-
-    g_free(check);
-}
-
-static void do_navigation_internet(
-    WinTCExplorerWindow* wnd,
-    const gchar*         specified_path
-)
-{
-    // Probably need to do some other stuff here, for now we just load the URI
-    //
-    webkit_web_view_load_uri(
-        WEBKIT_WEB_VIEW(wnd->webkit_browser),
-        specified_path
-    );
-}
-
-static void do_navigation_local(
+static void wintc_explorer_window_do_navigation_via_path(
     WinTCExplorerWindow* wnd,
     const gchar*         specified_path
 )
@@ -811,78 +786,147 @@ static void do_navigation_local(
     GError*            error     = NULL;
     WinTCShextPathInfo path_info = { 0 };
 
-    // Don't bother navigating if there's nowhere to go!
-    //
-    if (g_strcmp0(specified_path, "") == 0)
-    {
-        return;
-    }
-
-    // Retrieve new location
-    //
-    wintc_shext_path_info_copy(
-        &path_info,
-        &(wnd->local_path)
-    );
-
     if (
-        !prepare_new_location(
+        !wintc_explorer_window_prepare_path_info_from_path(
+            wnd,
             specified_path,
             &path_info,
             &error
         )
     )
     {
-        wintc_nice_error_and_clear(&error, GTK_WINDOW(wnd));
-        wintc_shext_path_info_free_data(&path_info);
-
+        wintc_display_error_and_clear(&error, GTK_WINDOW(wnd));
         return;
     }
 
-    // Attempt the navigation
     //
-    if (
-        wintc_sh_browser_set_location(
-            wnd->browser,
-            &path_info,
-            &error
-        )
-    )
-    {
-        wintc_shext_path_info_move(
-            &(wnd->local_path),
-            &path_info
-        );
-    }
-    else
-    {
-        wintc_nice_error_and_clear(&error, GTK_WINDOW(wnd));
-    }
+    // Hand over to the path_info func to do the remaining routing
+    //
+    wintc_explorer_window_do_navigation_via_path_info(
+        wnd,
+        &path_info
+    );
 
     wintc_shext_path_info_free_data(&path_info);
 }
 
-static gboolean prepare_new_location(
-    const gchar*        specified_path,
-    WinTCShextPathInfo* local_path_info,
-    GError**            error
+static void wintc_explorer_window_do_navigation_via_path_info(
+    WinTCExplorerWindow*       wnd,
+    const WinTCShextPathInfo*  path_info
 )
 {
-    const GRegex* regex_uri_scheme = wintc_regex_uri_scheme(error);
+    wintc_ctl_animation_play(
+        WINTC_CTL_ANIMATION(wnd->throbber),
+        wnd->throbber_anim_id,
+        0,
+        WINTC_CTL_ANIMATION_INFINITE
+    );
 
-    if (!regex_uri_scheme)
+    if (!path_info->base_path)
     {
-        return FALSE;
+        g_critical(
+            "%s",
+            "explorer: nav via path info, no base path"
+        );
+
+        return;
     }
 
+    // Don't bother navigating if there's nowhere to go!
+    //
+    if (g_strcmp0(path_info->base_path, "") == 0)
+    {
+        return;
+    }
+
+    // Update the browser history
+    //
+    wintc_explorer_window_update_history(wnd);
+
+    // Check out how we should navigate - local or IE?
+    //
+    const gchar* uri_scheme = g_uri_peek_scheme(path_info->base_path);
+
+    if (
+        g_strcmp0(uri_scheme, "http")  == 0 ||
+        g_strcmp0(uri_scheme, "https") == 0
+    )
+    {
+        wintc_explorer_window_do_navigation_internet(
+            wnd,
+            path_info->base_path
+        );
+    }
+    else
+    {
+        wintc_explorer_window_do_navigation_local(
+            wnd,
+            path_info
+        );
+    }
+}
+
+static void wintc_explorer_window_do_navigation_internet(
+    WinTCExplorerWindow* wnd,
+    const gchar*         uri
+)
+{
+    wintc_explorer_window_switch_mode_to(
+        wnd,
+        WINTC_EXPLORER_WINDOW_MODE_INTERNET
+    );
+
+    webkit_web_view_load_uri(
+        WEBKIT_WEB_VIEW(wnd->webkit_browser),
+        uri
+    );
+}
+
+static void wintc_explorer_window_do_navigation_local(
+    WinTCExplorerWindow*      wnd,
+    const WinTCShextPathInfo* path_info
+)
+{
+    GError* error = NULL;
+
+    wintc_explorer_window_switch_mode_to(
+        wnd,
+        WINTC_EXPLORER_WINDOW_MODE_LOCAL
+    );
+
+    // Attempt the navigation
+    //
+    if (
+        !wintc_sh_browser_set_location(
+            wnd->browser,
+            path_info,
+            &error
+        )
+    )
+    {
+        wintc_nice_error_and_clear(&error, GTK_WINDOW(wnd));
+        return;
+    }
+
+    wintc_shext_path_info_copy(
+        &(wnd->local_path),
+        path_info
+    );
+}
+
+static gboolean wintc_explorer_window_prepare_path_info_from_path(
+    WinTCExplorerWindow* wnd,
+    const gchar*         specified_path,
+    WinTCShextPathInfo*  path_info,
+    GError**             error
+)
+{
     // If the path starts with '::' then assume it's a GUID and shouldn't be
     // touched
     //
     if (g_str_has_prefix(specified_path, "::"))
     {
-        wintc_shext_path_info_free_data(local_path_info);
-
-        local_path_info->base_path = g_strdup(specified_path);
+        path_info->base_path = g_strdup(specified_path);
 
         return TRUE;
     }
@@ -892,45 +936,82 @@ static gboolean prepare_new_location(
     //
     if (g_str_has_prefix(specified_path, "/"))
     {
-        wintc_shext_path_info_free_data(local_path_info);
-
-        local_path_info->base_path =
+        path_info->base_path =
             g_strdup_printf("file://%s", specified_path);
 
         return TRUE;
     }
 
-    // If the path is a URL, handle it here
-    // FIXME: For now we just pass it on, in future we'll need to handle the
-    //        scheme for cases like HTTP(S)
+    // If the path looks like a website URL with no scheme, prepend the scheme
+    // (eg. bbc.co.uk/news)
     //
-    if (
-        g_regex_match(
-            regex_uri_scheme,
-            specified_path,
-            0,
-            NULL
-        )
-    )
-    {
-        wintc_shext_path_info_free_data(local_path_info);
+    static GRegex* regex_looks_webish = NULL;
 
-        local_path_info->base_path = g_strdup(specified_path);
+    if (!regex_looks_webish)
+    {
+        regex_looks_webish =
+            g_regex_new(
+                "^[a-z0-9-]+(\\.[a-z0-9-]+)+(\\/.*)?$",
+                G_REGEX_CASELESS,
+                0,
+                error
+            );
+
+        if (!regex_looks_webish)
+        {
+            return FALSE;
+        }
+    }
+
+    if (g_regex_match(regex_looks_webish, specified_path, 0, NULL))
+    {
+        path_info->base_path =
+            g_strdup_printf("http://%s", specified_path);
 
         return TRUE;
     }
 
-    // Here we assume it's a relative path
-    // FIXME: When HTTP(S) is supported, we will need to check the current path
+    // If the path is a URL, handle it here
     //
-    g_free(local_path_info->extended_path);
+    if (g_uri_peek_scheme(specified_path))
+    {
+        path_info->base_path = g_strdup(specified_path);
 
-    local_path_info->extended_path = g_strdup(specified_path);
+        return TRUE;
+    }
 
-    return TRUE;
+    // Resolution now depends on mode...
+    //
+    switch (wnd->mode)
+    {
+        // For the local system, assume it's a relative path
+        //
+        case WINTC_EXPLORER_WINDOW_MODE_LOCAL:
+            path_info->base_path     = g_strdup(wnd->local_path.base_path);
+            path_info->extended_path = g_strdup(specified_path);
+
+            break;
+
+        // For the Internet, treat it as a search query
+        //
+        // FIXME: Handle configurable search engine here
+        //
+        case WINTC_EXPLORER_WINDOW_MODE_INTERNET:
+            path_info->base_path =
+                g_strdup_printf(
+                    "https://www.google.com/search?q=\"%s\"",
+                    specified_path
+                );
+
+            break;
+
+        default: break;
+    }
+
+    return FALSE;
 }
 
-static void switch_mode_to(
+static void wintc_explorer_window_switch_mode_to(
     WinTCExplorerWindow*    wnd,
     WinTCExplorerWindowMode mode
 )
@@ -1096,6 +1177,160 @@ static void switch_mode_to(
     );
 }
 
+static void wintc_explorer_window_update_history(
+    WinTCExplorerWindow* wnd
+)
+{
+    WinTCShextPathInfo path_info = { 0 };
+
+    if (wnd->mode != WINTC_EXPLORER_WINDOW_MODE_INVALID)
+    {
+        wintc_explorer_window_get_location(
+            wnd,
+            &path_info
+        );
+    }
+
+    switch (wnd->nav_mode)
+    {
+        // No specific state - do not record history
+        //
+        case WINTC_EXPLORER_NAV_NONE: break;
+
+        // Default - push to back history, erase forward history
+        //
+        case WINTC_EXPLORER_NAV_DEFAULT:
+        {
+            // Push
+            //
+            WinTCShextPathInfo* n_path_info = g_new0(WinTCShextPathInfo, 1);
+
+            wintc_shext_path_info_move(
+                n_path_info,
+                &path_info
+            );
+
+            wnd->history_backward =
+                g_list_prepend(
+                    wnd->history_backward,
+                    n_path_info
+                );
+
+            // Erase
+            //
+            g_list_free_full(
+                g_steal_pointer(&(wnd->history_forward)),
+                (GDestroyNotify) wintc_shext_path_info_free
+            );
+
+            break;
+        }
+
+        // Going back - push to forward history, pop back history
+        //
+        case WINTC_EXPLORER_NAV_GOING_BACK:
+        {
+            // Push
+            //
+            WinTCShextPathInfo* n_path_info = g_new0(WinTCShextPathInfo, 1);
+
+            wintc_shext_path_info_move(
+                n_path_info,
+                &path_info
+            );
+
+            wnd->history_forward =
+                g_list_prepend(
+                    wnd->history_forward,
+                    n_path_info
+                );
+
+            // Pop
+            //
+            GList* popped = wnd->history_backward;
+
+            wnd->history_backward =
+                g_list_remove_link(
+                    wnd->history_backward,
+                    popped
+                );
+
+            g_list_free_full(
+                popped,
+                (GDestroyNotify) wintc_shext_path_info_free
+            );
+
+            break;
+        }
+
+        // Going forward - push to back history, pop forward history
+        //
+        case WINTC_EXPLORER_NAV_GOING_FORWARD:
+        {
+            // Push
+            //
+            WinTCShextPathInfo* n_path_info = g_new0(WinTCShextPathInfo, 1);
+
+            wintc_shext_path_info_move(
+                n_path_info,
+                &path_info
+            );
+
+            wnd->history_backward =
+                g_list_prepend(
+                    wnd->history_backward,
+                    n_path_info
+                );
+
+            // Pop
+            //
+            GList* popped = wnd->history_forward;
+
+            wnd->history_forward =
+                g_list_remove_link(
+                    wnd->history_forward,
+                    popped
+                );
+
+            g_list_free_full(
+                popped,
+                (GDestroyNotify) wintc_shext_path_info_free
+            );
+
+            break;
+        }
+    }
+
+    //
+    // FIXME: Update actions
+    //
+    GAction* action_nav_back =
+        g_action_map_lookup_action(
+            G_ACTION_MAP(wnd),
+            "nav-back"
+        );
+    GAction* action_nav_forward =
+        g_action_map_lookup_action(
+            G_ACTION_MAP(wnd),
+            "nav-forward"
+        );
+
+    g_simple_action_set_enabled(
+        G_SIMPLE_ACTION(action_nav_back),
+        !!wnd->history_backward
+    );
+    g_simple_action_set_enabled(
+        G_SIMPLE_ACTION(action_nav_forward),
+        !!wnd->history_forward
+    );
+
+    // Finish up
+    //
+    wnd->nav_mode = WINTC_EXPLORER_NAV_NONE;
+
+    wintc_shext_path_info_free_data(&path_info);
+}
+
 //
 // CALLBACKS
 //
@@ -1110,6 +1345,58 @@ static void action_about(
     wintc_sh_about(GTK_WINDOW(wnd), "Windows", NULL, NULL);
 }
 
+static void action_nav_back(
+    WINTC_UNUSED(GSimpleAction* action),
+    WINTC_UNUSED(GVariant*      parameter),
+    gpointer user_data
+)
+{
+    WinTCExplorerWindow* wnd = WINTC_EXPLORER_WINDOW(user_data);
+
+    WinTCShextPathInfo path_info = { 0 };
+
+    wintc_shext_path_info_copy(
+        &path_info,
+        (WinTCShextPathInfo*) wnd->history_backward->data
+    );
+
+    wnd->nav_mode        = WINTC_EXPLORER_NAV_GOING_BACK;
+    wnd->nav_interactive = TRUE;
+
+    wintc_explorer_window_do_navigation_via_path_info(
+        wnd,
+        &path_info
+    );
+
+    wintc_shext_path_info_free_data(&path_info);
+}
+
+static void action_nav_forward(
+    WINTC_UNUSED(GSimpleAction* action),
+    WINTC_UNUSED(GVariant*      parameter),
+    gpointer user_data
+)
+{
+    WinTCExplorerWindow* wnd = WINTC_EXPLORER_WINDOW(user_data);
+
+    WinTCShextPathInfo path_info = { 0 };
+
+    wintc_shext_path_info_copy(
+        &path_info,
+        (WinTCShextPathInfo*) wnd->history_forward->data
+    );
+
+    wnd->nav_interactive = TRUE;
+    wnd->nav_mode        = WINTC_EXPLORER_NAV_GOING_FORWARD;
+
+    wintc_explorer_window_do_navigation_via_path_info(
+        wnd,
+        &path_info
+    );
+
+    wintc_shext_path_info_free_data(&path_info);
+}
+
 static void action_nav_go(
     WINTC_UNUSED(GSimpleAction* action),
     GVariant* parameter,
@@ -1118,7 +1405,10 @@ static void action_nav_go(
 {
     WinTCExplorerWindow* wnd = WINTC_EXPLORER_WINDOW(user_data);
 
-    do_navigation(
+    wnd->nav_interactive = TRUE;
+    wnd->nav_mode        = WINTC_EXPLORER_NAV_DEFAULT;
+
+    wintc_explorer_window_do_navigation_via_path(
         wnd,
         g_variant_get_string(parameter, NULL)
     );
@@ -1168,6 +1458,18 @@ static void on_browser_load_changed(
                 CA_PROP_EVENT_ID, "browser-navigate",
                 NULL
             );
+
+            // Update history
+            //
+            if (wnd->nav_interactive)
+            {
+                wnd->nav_interactive = FALSE;
+            }
+            else
+            {
+                wnd->nav_mode = WINTC_EXPLORER_NAV_DEFAULT;
+                wintc_explorer_window_update_history(wnd);
+            }
 
             // Update our local state and emit on the window
             //
@@ -1327,6 +1629,20 @@ static void on_webkit_browser_load_changed(
             // Fall-through...
 
         case WEBKIT_LOAD_COMMITTED:
+            // Update history
+            //
+            if (wnd->nav_interactive)
+            {
+                wnd->nav_interactive = FALSE;
+            }
+            else
+            {
+                wnd->nav_mode = WINTC_EXPLORER_NAV_DEFAULT;
+                wintc_explorer_window_update_history(wnd);
+            }
+
+            // Update our local state and emit signal
+            //
             wintc_strdup_replace(
                 &(wnd->internet_path),
                 webkit_web_view_get_uri(

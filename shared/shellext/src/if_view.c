@@ -374,8 +374,8 @@ gchar* wintc_shext_path_info_get_as_single_path(
 }
 
 void wintc_shext_path_info_copy(
-    WinTCShextPathInfo* dst,
-    WinTCShextPathInfo* src
+    WinTCShextPathInfo*       dst,
+    const WinTCShextPathInfo* src
 )
 {
     wintc_shext_path_info_free_data(dst);
@@ -391,6 +391,14 @@ void wintc_shext_path_info_copy(
     {
         dst->extended_path = g_strdup(src->extended_path);
     }
+}
+
+void wintc_shext_path_info_free(
+    WinTCShextPathInfo* path_info
+)
+{
+    wintc_shext_path_info_free_data(path_info);
+    g_free(path_info);
 }
 
 void wintc_shext_path_info_free_data(

@@ -211,6 +211,11 @@ static GtkToolItem* create_toolbar_item_from_char(
                 )
             );
 
+            gtk_actionable_set_action_name(
+                GTK_ACTIONABLE(ret),
+                "win.nav-back"
+            );
+
             break;
 
         // TODO: Implement this
@@ -316,6 +321,11 @@ static GtkToolItem* create_toolbar_item_from_char(
                     "history-forward",
                     NULL
                 )
+            );
+
+            gtk_actionable_set_action_name(
+                GTK_ACTIONABLE(ret),
+                "win.nav-forward"
             );
 
             break;
