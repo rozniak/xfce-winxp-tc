@@ -608,10 +608,11 @@ static void wintc_explorer_window_set_property(
                 uri
             );
 
-            wnd->initial_path = path_info.base_path;
-            path_info.base_path = NULL;
+            wnd->initial_path =
+                g_steal_pointer(&(path_info.base_path));
 
             wintc_shext_path_info_free_data(&path_info);
+
             break;
         }
 

@@ -354,6 +354,15 @@ void wintc_shext_path_info_demangle_uri(
         path_info->extended_path =
             wintc_substr(p_ext_delim + 2, NULL);
     }
+
+    //
+    // STEP 3: If we still have no path up to this point, just put the whole
+    //         thing in base_path and pass it through as-is
+    //
+    if (!path_info->base_path)
+    {
+        path_info->base_path = g_strdup(uri);
+    }
 }
 
 gchar* wintc_shext_path_info_get_as_single_path(
