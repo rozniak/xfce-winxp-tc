@@ -6,6 +6,8 @@
 
 #include "procmon.h"
 
+#define PROC_STAT_CPU_COUNTERS 7
+
 //
 // FORWARD DECLARATIONS
 //
@@ -236,22 +238,26 @@ static void process_get_totals(
         )
     )
     {
-        gchar* last_stime_s = wintc_strdup_delimited(
-                                  cpu_stats + 5, // skip 'cpu  '
-                                  " ",
-                                  0
-                              );
-        gchar* last_utime_s = wintc_strdup_delimited(
-                                  cpu_stats + 5,
-                                  " ",
-                                  2
-                              );
+        // Total up all the CPU time in various modes
+        //
+        gint running_total = 0;
 
-        *cpu_time =
-            strtoul(last_stime_s, NULL, 0) + strtoul(last_utime_s, NULL, 0);
+        for (gint i = 0; i < PROC_STAT_CPU_COUNTERS; i++)
+        {
+            gchar* time_stat_s =
+                wintc_strdup_delimited(
+                    cpu_stats + 5, // skip 'cpu '
+                    " ",
+                    i
+                );
 
-        g_free(last_stime_s);
-        g_free(last_utime_s);
+            running_total += strtoul(time_stat_s, NULL, 0);
+
+            g_free(time_stat_s);
+        }
+
+        *cpu_time = running_total;
+
         g_free(cpu_stats);
     }
 }
