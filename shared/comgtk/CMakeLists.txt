@@ -37,6 +37,7 @@ add_library(
     public/accelerator.h
     src/application.c
     public/application.h
+    public/backcompat.h
     src/builder.c
     public/builder.h
     public/debug.h
