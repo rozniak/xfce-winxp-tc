@@ -44,8 +44,9 @@
         <attribute name="label">Create Shortcut</attribute>
       </item>
       <item>
-        <attribute name="action">control.no-op</attribute>
+        <attribute name="action">control.view-op</attribute>
         <attribute name="label">Delete</attribute>
+        <attribute name="target" type="i">9</attribute>
       </item>
       <item>
         <attribute name="action">control.no-op</attribute>

@@ -205,9 +205,22 @@ static void wintc_sh_fs_operation_constructed(
 {
     WinTCShFSOperation* fs_operation = WINTC_SH_FS_OPERATION(object);
 
-    // Check things are set
+    // There must always be files to work on
     //
-    if (!(fs_operation->list_files) || !(fs_operation->dest))
+    if (!(fs_operation->list_files))
+    {
+        fs_operation->operation_kind = WINTC_SH_FS_OPERATION_INVALID;
+    }
+
+    // Copying/moving requires a destination
+    //
+    if (
+        !(fs_operation->dest) &&
+        (
+            fs_operation->operation_kind == WINTC_SH_FS_OPERATION_COPY ||
+            fs_operation->operation_kind == WINTC_SH_FS_OPERATION_MOVE
+        )
+    )
     {
         fs_operation->operation_kind = WINTC_SH_FS_OPERATION_INVALID;
     }
@@ -234,7 +247,15 @@ static void wintc_sh_fs_operation_constructed(
     )
     {
         fs_operation->operation_kind = WINTC_SH_FS_OPERATION_TRASH;
+
+        g_clear_pointer(
+            &(fs_operation->dest),
+            (GDestroyNotify) g_free
+        );
     }
+
+    (G_OBJECT_CLASS(wintc_sh_fs_operation_parent_class))
+        ->constructed(object);
 }
 
 static void wintc_sh_fs_operation_dispose(
@@ -319,9 +340,15 @@ static void wintc_sh_fs_operation_set_property(
 
         case PROP_DESTINATION:
             fs_operation->dest      = g_value_dup_string(value);
-            fs_operation->dest_file = get_g_file_for_target(
-                                          fs_operation->dest
-                                      );
+
+            if (fs_operation->dest)
+            {
+                fs_operation->dest_file =
+                    get_g_file_for_target(
+                        fs_operation->dest
+                    );
+            }
+
             break;
 
         case PROP_OPERATION:
@@ -418,8 +445,12 @@ static void wintc_sh_fs_operation_step(
     const gchar* src_path  = (gchar*) fs_operation->iter_op->data;
     GFile*       src_file  = get_g_file_for_target(src_path);
 
-    g_object_ref(dest_file);
+    gboolean dest_file_is_temp = FALSE;
 
+    // If the target of a copy or move is a directory, then we must create a
+    // temporary GFile object to hold the destination file path within that
+    // directory
+    //
     if (
         (
             fs_operation->operation_kind == WINTC_SH_FS_OPERATION_COPY ||
@@ -431,7 +462,7 @@ static void wintc_sh_fs_operation_step(
         )
     )
     {
-        g_object_unref(dest_file);
+        dest_file_is_temp = TRUE;
 
         dest_file =
             get_g_file_for_copymove(
@@ -493,7 +524,7 @@ static void wintc_sh_fs_operation_step(
             g_file_trash_async(
                 src_file,
                 G_PRIORITY_DEFAULT,
-                NULL, // FIXME: Cancellable, should use this!
+                fs_operation->cancellable,
                 (GAsyncReadyCallback) cb_async_file_op,
                 fs_operation
             );
@@ -505,7 +536,10 @@ static void wintc_sh_fs_operation_step(
             break;
     }
 
-    g_object_unref(dest_file);
+    if (dest_file_is_temp)
+    {
+        g_object_unref(dest_file);
+    }
 }
 
 static void wintc_sh_fs_operation_update_progress_text(

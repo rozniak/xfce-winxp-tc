@@ -9,6 +9,7 @@
 #include <wintc/shlang.h>
 
 #include "../public/fsclipbd.h"
+#include "../public/fsop.h"
 #include "../public/vwfs.h"
 
 //
@@ -127,6 +128,14 @@ static gboolean real_activate_item(
     GError**            error
 );
 
+static gchar* wintc_sh_view_fs_build_path_for_view_item(
+    WinTCShViewFS*      view_fs,
+    WinTCShextViewItem* item
+);
+static GList* wintc_sh_view_fs_convert_list_hashes(
+    WinTCShViewFS* view_fs,
+    GList*         list_items
+);
 static WinTCShextViewItem* wintc_sh_view_fs_get_view_item(
     WinTCShViewFS* view_fs,
     guint          item_hash
@@ -135,6 +144,12 @@ static void wintc_sh_view_fs_update_new_templates(
     WinTCShViewFS* view_fs
 );
 
+static gboolean shopr_delete(
+    WinTCIShextView*     view,
+    WinTCShextOperation* operation,
+    GtkWindow*           wnd,
+    GError**             error
+);
 static gboolean shopr_new(
     WinTCIShextView*     view,
     WinTCShextOperation* operation,
@@ -160,6 +175,10 @@ static void on_file_monitor_changed(
     GFile*            other_file,
     GFileMonitorEvent event_type,
     gpointer          user_data
+);
+static void on_fs_operation_done(
+    WinTCShFSOperation* self,
+    WINTC_UNUSED(gpointer user_data)
 );
 
 //
@@ -756,12 +775,14 @@ static void wintc_sh_view_fs_refresh_items(
 }
 
 static WinTCShextOperation* wintc_sh_view_fs_spawn_operation(
-    WINTC_UNUSED(WinTCIShextView* view),
-    gint   operation_id,
-    GList* targets,
+    WinTCIShextView* view,
+    gint             operation_id,
+    GList*           targets,
     WINTC_UNUSED(GError**         error)
 )
 {
+    WinTCShViewFS* view_fs = WINTC_SH_VIEW_FS(view);
+
     // Spawn op
     //
     WinTCShextOperation* ret = g_new(WinTCShextOperation, 1);
@@ -775,6 +796,14 @@ static WinTCShextOperation* wintc_sh_view_fs_spawn_operation(
 
         case WINTC_SHEXT_KNOWN_OP_PASTE:
             ret->func = shopr_paste;
+            break;
+
+        case WINTC_SHEXT_KNOWN_OP_DELETE:
+            ret->func = shopr_delete;
+            ret->priv = wintc_sh_view_fs_convert_list_hashes(
+                            view_fs,
+                            g_steal_pointer(&targets)
+                        );
             break;
 
         default:
@@ -911,13 +940,14 @@ static gboolean real_activate_item(
     // If the target is a dir or has a shell extension then set that as
     // the target path
     //
-    gchar* next_path   = g_build_path(
-                             G_DIR_SEPARATOR_S,
-                             view_fs->path,
-                             item->display_name,
-                             NULL
-                         );
+    gchar* next_path;
     gchar* target_path = NULL;
+
+    next_path =
+        wintc_sh_view_fs_build_path_for_view_item(
+            view_fs,
+            item
+        );
 
     if (!(item->is_leaf))
     {
@@ -967,6 +997,42 @@ static gboolean real_activate_item(
     g_free(next_path);
 
     return success;
+}
+
+static gchar* wintc_sh_view_fs_build_path_for_view_item(
+    WinTCShViewFS*      view_fs,
+    WinTCShextViewItem* item
+)
+{
+    return g_build_path(
+        G_DIR_SEPARATOR_S,
+        view_fs->path,
+        item->display_name,
+        NULL
+    );
+}
+
+static GList* wintc_sh_view_fs_convert_list_hashes(
+    WinTCShViewFS* view_fs,
+    GList*         list_items
+)
+{
+    for (GList* iter = list_items; iter; iter = iter->next)
+    {
+        WinTCShextViewItem* item =
+            wintc_sh_view_fs_get_view_item(
+                view_fs,
+                GPOINTER_TO_UINT(iter->data)
+            );
+
+        iter->data =
+            wintc_sh_view_fs_build_path_for_view_item(
+                view_fs,
+                item
+            );
+    }
+
+    return list_items;
 }
 
 static WinTCShextViewItem* wintc_sh_view_fs_get_view_item(
@@ -1123,6 +1189,32 @@ static void wintc_sh_view_fs_update_new_templates(
 //
 // CALLBACKS
 //
+static gboolean shopr_delete(
+    WINTC_UNUSED(WinTCIShextView* view),
+    WinTCShextOperation* operation,
+    GtkWindow*           wnd,
+    WINTC_UNUSED(GError** error)
+)
+{
+    WinTCShFSOperation* op =
+        wintc_sh_fs_operation_new(
+            (GList*) operation->priv,
+            NULL,
+            WINTC_SH_FS_OPERATION_TRASH
+        );
+
+    g_signal_connect(
+        op,
+        "done",
+        G_CALLBACK(on_fs_operation_done),
+        operation->priv
+    );
+
+    wintc_sh_fs_operation_do(op, wnd);
+
+    return TRUE;
+}
+
 static gboolean shopr_new(
     WinTCIShextView*     view,
     WinTCShextOperation* operation,
@@ -1422,4 +1514,13 @@ static void on_file_monitor_changed(
 
     g_list_free(data);
     g_free(file_path);
+}
+
+static void on_fs_operation_done(
+    WinTCShFSOperation* self,
+    gpointer            user_data
+)
+{
+    g_list_free_full((GList*) user_data, g_free);
+    g_object_unref(self);
 }
