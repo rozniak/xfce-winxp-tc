@@ -53,6 +53,9 @@ struct _WinTCIShextViewInterface
     const gchar* (*get_icon_name) (
         WinTCIShextView* view
     );
+    GList* (*get_items) (
+        WinTCIShextView* view
+    );
     GMenuModel* (*get_operations_for_item) (
         WinTCIShextView* view,
         guint            item_hash
@@ -110,6 +113,9 @@ const gchar* wintc_ishext_view_get_display_name(
     WinTCIShextView* view
 );
 const gchar* wintc_ishext_view_get_icon_name(
+    WinTCIShextView* view
+);
+GList* wintc_ishext_view_get_items(
     WinTCIShextView* view
 );
 GMenuModel* wintc_ishext_view_get_operations_for_item(

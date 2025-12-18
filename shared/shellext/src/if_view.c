@@ -139,6 +139,16 @@ const gchar* wintc_ishext_view_get_icon_name(
     return iface->get_icon_name(view);
 }
 
+GList* wintc_ishext_view_get_items(
+    WinTCIShextView* view
+)
+{
+    WinTCIShextViewInterface* iface =
+        WINTC_ISHEXT_VIEW_GET_IFACE(view);
+
+    return iface->get_items(view);
+}
+
 GMenuModel* wintc_ishext_view_get_operations_for_item(
     WinTCIShextView* view,
     guint            item_hash

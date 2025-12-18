@@ -49,6 +49,9 @@ static const gchar* wintc_sh_view_cpl_get_display_name(
 static const gchar* wintc_sh_view_cpl_get_icon_name(
     WinTCIShextView* view
 );
+static GList* wintc_sh_view_cpl_get_items(
+    WinTCIShextView* view
+);
 static GMenuModel* wintc_sh_view_cpl_get_operations_for_item(
     WinTCIShextView* view,
     guint            item_hash
@@ -144,6 +147,7 @@ static void wintc_sh_view_cpl_ishext_view_interface_init(
     iface->compare_items           = wintc_sh_view_cpl_compare_items;
     iface->get_display_name        = wintc_sh_view_cpl_get_display_name;
     iface->get_icon_name           = wintc_sh_view_cpl_get_icon_name;
+    iface->get_items               = wintc_sh_view_cpl_get_items;
     iface->get_operations_for_item = wintc_sh_view_cpl_get_operations_for_item;
     iface->get_operations_for_view = wintc_sh_view_cpl_get_operations_for_view;
     iface->get_parent_path         = wintc_sh_view_cpl_get_parent_path;
@@ -260,6 +264,15 @@ static const gchar* wintc_sh_view_cpl_get_icon_name(
 )
 {
     return "preferences-other";
+}
+
+static GList* wintc_sh_view_cpl_get_items(
+    WinTCIShextView* view
+)
+{
+    WinTCShViewCpl* view_cpl = WINTC_SH_VIEW_CPL(view);
+
+    return g_hash_table_get_values(view_cpl->map_items);
 }
 
 static GMenuModel* wintc_sh_view_cpl_get_operations_for_item(

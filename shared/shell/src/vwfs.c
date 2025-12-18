@@ -80,6 +80,9 @@ static const gchar* wintc_sh_view_fs_get_display_name(
 static const gchar* wintc_sh_view_fs_get_icon_name(
     WinTCIShextView* view
 );
+static GList* wintc_sh_view_fs_get_items(
+    WinTCIShextView* view
+);
 static GMenuModel* wintc_sh_view_fs_get_operations_for_item(
     WinTCIShextView* view,
     guint            item_hash
@@ -195,8 +198,9 @@ struct _WinTCShViewFS
 
     // FS state
     //
-    gchar*  parent_path;
-    gchar*  path;
+    gboolean is_new; // Track if this view has ever been refreshed before
+    gchar*   parent_path;
+    gchar*   path;
 
     GFileMonitor* fs_monitor;
     GHashTable*   fs_map_entries;
@@ -266,6 +270,7 @@ static void wintc_sh_view_fs_init(
     WinTCShViewFS* self
 )
 {
+    self->is_new       = TRUE;
     self->fs_clipboard = wintc_sh_fs_clipboard_new();
 }
 
@@ -277,6 +282,7 @@ static void wintc_sh_view_fs_ishext_view_interface_init(
     iface->compare_items           = wintc_sh_view_fs_compare_items;
     iface->get_display_name        = wintc_sh_view_fs_get_display_name;
     iface->get_icon_name           = wintc_sh_view_fs_get_icon_name;
+    iface->get_items               = wintc_sh_view_fs_get_items;
     iface->get_operations_for_item = wintc_sh_view_fs_get_operations_for_item;
     iface->get_operations_for_view = wintc_sh_view_fs_get_operations_for_view;
     iface->get_parent_path         = wintc_sh_view_fs_get_parent_path;
@@ -476,10 +482,32 @@ static const gchar* wintc_sh_view_fs_get_display_name(
 }
 
 static const gchar* wintc_sh_view_fs_get_icon_name(
-    WINTC_UNUSED(WinTCIShextView* view)
+    WinTCIShextView* view
 )
 {
+    WinTCShViewFS* view_fs = WINTC_SH_VIEW_FS(view);
+
+    if (g_strcmp0(view_fs->path, "/") == 0)
+    {
+        return "drive-harddisk";
+    }
+
     return "inode-directory";
+}
+
+static GList* wintc_sh_view_fs_get_items(
+    WinTCIShextView* view
+)
+{
+    WinTCShViewFS* view_fs = WINTC_SH_VIEW_FS(view);
+
+    if (view_fs->is_new)
+    {
+        wintc_sh_view_fs_refresh_items(view);
+        return NULL;
+    }
+
+    return g_hash_table_get_values(view_fs->fs_map_entries);
 }
 
 static GMenuModel* wintc_sh_view_fs_get_operations_for_item(
@@ -664,6 +692,8 @@ static void wintc_sh_view_fs_refresh_items(
     WinTCShViewFS* view_fs = WINTC_SH_VIEW_FS(view);
 
     WINTC_LOG_DEBUG("%s", "shell: refresh fs view");
+
+    view_fs->is_new = FALSE;
 
     _wintc_ishext_view_refreshing(view);
 
