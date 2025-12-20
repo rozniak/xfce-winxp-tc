@@ -91,6 +91,10 @@ static WinTCShextOperation* wintc_sh_view_desktop_spawn_operation(
     GError**         error
 );
 
+static void wintc_sh_view_desktop_real_refresh_items(
+    WinTCShViewDesktop* view_desk
+);
+
 static void on_view_user_desktop_items_added(
     WinTCIShextView*           view,
     WinTCShextViewItemsUpdate* update,
@@ -101,7 +105,7 @@ static void on_view_user_desktop_items_removed(
     WinTCShextViewItemsUpdate* update,
     gpointer                   user_data
 );
-static void on_view_user_desktop_items_added(
+static void on_view_user_desktop_refreshing(
     WinTCIShextView* view,
     gpointer         user_data
 );
@@ -288,7 +292,8 @@ static void wintc_sh_view_desktop_constructed(
     WinTCShextPathInfo path_info = { 0 };
 
     path_info.base_path =
-        g_strdup(
+        g_strdup_printf(
+            "file://%s",
             g_get_user_special_dir(G_USER_DIRECTORY_DESKTOP)
         );
 
@@ -310,19 +315,19 @@ static void wintc_sh_view_desktop_constructed(
     // Link up with desktop view
     //
     g_signal_connect(
-        view_user_desktop,
+        view_desk->view_user_desktop,
         "items-added",
         G_CALLBACK(on_view_user_desktop_items_added),
         view_desk
     );
     g_signal_connect(
-        view_user_desktop,
+        view_desk->view_user_desktop,
         "items-removed",
         G_CALLBACK(on_view_user_desktop_items_removed),
         view_desk
     );
     g_signal_connect(
-        view_user_desktop,
+        view_desk->view_user_desktop,
         "refreshing",
         G_CALLBACK(on_view_user_desktop_refreshing),
         view_desk
@@ -443,10 +448,17 @@ static const gchar* wintc_sh_view_desktop_get_icon_name(
 }
 
 static GList* wintc_sh_view_desktop_get_items(
-    WINTC_UNUSED(WinTCIShextView* view)
+    WinTCIShextView* view
 )
 {
-    return g_hash_table_get_values(S_DESKTOP_MAP);
+    WinTCShViewDesktop* view_desk = WINTC_SH_VIEW_DESKTOP(view);
+
+    // Aggregate the lists
+    //
+    return wintc_list_append_list(
+        g_hash_table_get_values(S_DESKTOP_MAP),
+        wintc_ishext_view_get_items(view_desk->view_user_desktop)
+    );
 }
 
 static GMenuModel* wintc_sh_view_desktop_get_operations_for_item(
@@ -500,23 +512,16 @@ static void wintc_sh_view_desktop_refresh_items(
     WinTCIShextView* view
 )
 {
+    WinTCShViewDesktop* view_desk = WINTC_SH_VIEW_DESKTOP(view);
+
     WINTC_LOG_DEBUG("%s", "shell: refresh desktop view");
 
-    _wintc_ishext_view_refreshing(view);
-
-    // Just emit the default items for now
-    // TODO: Should aggregate with user desktop files
+    // Refresh the user desktop view, this will in turn cause the desktop to
+    // refresh as well
     //
-    WinTCShextViewItemsUpdate update = { 0 };
-
-    GList* items = g_hash_table_get_values(S_DESKTOP_MAP);
-
-    update.data = items;
-    update.done = TRUE;
-
-    _wintc_ishext_view_items_added(view, &update);
-
-    g_list_free(items);
+    wintc_ishext_view_refresh_items(
+        view_desk->view_user_desktop
+    );
 }
 
 static WinTCShextOperation* wintc_sh_view_desktop_spawn_operation(
@@ -547,30 +552,69 @@ WinTCIShextView* wintc_sh_view_desktop_new(
 }
 
 //
+// PRIVATE FUNCTIONS
+//
+static void wintc_sh_view_desktop_real_refresh_items(
+    WinTCShViewDesktop* view_desk
+)
+{
+    WinTCIShextView* view = WINTC_ISHEXT_VIEW(view_desk);
+
+    _wintc_ishext_view_refreshing(view);
+
+    // Just emit the default items for now
+    //
+    WinTCShextViewItemsUpdate update = { 0 };
+
+    GList* items = g_hash_table_get_values(S_DESKTOP_MAP);
+
+    update.data = items;
+    update.done = TRUE;
+
+    _wintc_ishext_view_items_added(view, &update);
+
+    g_list_free(items);
+}
+
+//
 // CALLBACKS
 //
 static void on_view_user_desktop_items_added(
-    WinTCIShextView*           view,
+    WINTC_UNUSED(WinTCIShextView* view),
     WinTCShextViewItemsUpdate* update,
     gpointer                   user_data
 )
 {
-    // FIXME: Implement this
+    // Just forward
+    //
+    _wintc_ishext_view_items_added(
+        WINTC_ISHEXT_VIEW(user_data),
+        update
+    );
 }
 
 static void on_view_user_desktop_items_removed(
-    WinTCIShextView*           view,
+    WINTC_UNUSED(WinTCIShextView* view),
     WinTCShextViewItemsUpdate* update,
     gpointer                   user_data
 )
 {
-    // FIXME: Implement this
+    // Just forward
+    //
+    _wintc_ishext_view_items_removed(
+        WINTC_ISHEXT_VIEW(user_data),
+        update
+    );
 }
 
-static void on_view_user_desktop_items_added(
-    WinTCIShextView* view,
-    gpointer         user_data
+static void on_view_user_desktop_refreshing(
+    WINTC_UNUSED(WinTCIShextView* view),
+    gpointer user_data
 )
 {
-    // FIXME: Implement this
+    // Only worry about refreshing us
+    //
+    wintc_sh_view_desktop_real_refresh_items(
+        WINTC_SH_VIEW_DESKTOP(user_data)
+    );
 }

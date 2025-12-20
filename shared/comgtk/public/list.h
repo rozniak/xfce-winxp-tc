@@ -10,6 +10,18 @@
 //
 
 /**
+ * Appends one list to the end of another.
+ *
+ * @param list       The list.
+ * @param other_list The list to append.
+ * @return The list.
+ */
+GList* wintc_list_append_list(
+    GList* list,
+    GList* other_list
+);
+
+/**
  * Appends an item to the end of a list, if an item of equal value already
  * exists in the list it will be removed and freed.
  *
