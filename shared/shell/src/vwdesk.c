@@ -91,18 +91,30 @@ static WinTCShextOperation* wintc_sh_view_desktop_spawn_operation(
     GError**         error
 );
 
+static void on_view_user_desktop_items_added(
+    WinTCIShextView*           view,
+    WinTCShextViewItemsUpdate* update,
+    gpointer                   user_data
+);
+static void on_view_user_desktop_items_removed(
+    WinTCIShextView*           view,
+    WinTCShextViewItemsUpdate* update,
+    gpointer                   user_data
+);
+static void on_view_user_desktop_items_added(
+    WinTCIShextView* view,
+    gpointer         user_data
+);
+
 //
 // STATIC DATA
 //
-
-// FIXME: Temp
-//
-static GHashTable* s_desktop_map = NULL;
+static GHashTable* S_DESKTOP_MAP = NULL;
 
 // FIXME: LAZY AGAIN! Use shlang!!!!!! Temporary as well cos the user can
 //        toggle which items are present
 //
-static WinTCShextViewItem s_desktop_items[] = {
+static WinTCShextViewItem S_DESKTOP_ITEMS[] = {
     {
         "My Computer",
         "computer",
@@ -172,36 +184,36 @@ static void wintc_sh_view_desktop_class_init(
     WinTCShViewDesktopClass* klass
 )
 {
-    s_desktop_map = g_hash_table_new(g_direct_hash, g_direct_equal);
+    S_DESKTOP_MAP = g_hash_table_new(g_direct_hash, g_direct_equal);
 
     // Assign GUID paths to built-in desktop items - kind of rubbish but
     // whatever
     //
-    s_desktop_items[0].priv = wintc_sh_path_for_guid(WINTC_SH_GUID_DRIVES);
+    S_DESKTOP_ITEMS[0].priv = wintc_sh_path_for_guid(WINTC_SH_GUID_DRIVES);
 
     // Assign hashes
     //
-    for (gulong i = 0; i < G_N_ELEMENTS(s_desktop_items); i++)
+    for (gulong i = 0; i < G_N_ELEMENTS(S_DESKTOP_ITEMS); i++)
     {
         // FIXME: Temporary hack until the implementations are finished
         //
-        if (s_desktop_items[i].priv)
+        if (S_DESKTOP_ITEMS[i].priv)
         {
-            s_desktop_items[i].hash = g_str_hash(s_desktop_items[i].priv);
+            S_DESKTOP_ITEMS[i].hash = g_str_hash(S_DESKTOP_ITEMS[i].priv);
         }
         else
         {
             gchar* temp = g_strdup_printf("desktop%d", g_random_int());
 
-            s_desktop_items[i].hash = g_str_hash(temp);
+            S_DESKTOP_ITEMS[i].hash = g_str_hash(temp);
 
             g_free(temp);
         }
 
         g_hash_table_insert(
-            s_desktop_map,
-            GUINT_TO_POINTER(s_desktop_items[i].hash),
-            &(s_desktop_items[i])
+            S_DESKTOP_MAP,
+            GUINT_TO_POINTER(S_DESKTOP_ITEMS[i].hash),
+            &(S_DESKTOP_ITEMS[i])
         );
     }
 
@@ -297,8 +309,24 @@ static void wintc_sh_view_desktop_constructed(
 
     // Link up with desktop view
     //
-    // FIXME: Implement this
-    //
+    g_signal_connect(
+        view_user_desktop,
+        "items-added",
+        G_CALLBACK(on_view_user_desktop_items_added),
+        view_desk
+    );
+    g_signal_connect(
+        view_user_desktop,
+        "items-removed",
+        G_CALLBACK(on_view_user_desktop_items_removed),
+        view_desk
+    );
+    g_signal_connect(
+        view_user_desktop,
+        "refreshing",
+        G_CALLBACK(on_view_user_desktop_refreshing),
+        view_desk
+    );
 }
 
 static void wintc_sh_view_desktop_dispose(
@@ -374,7 +402,7 @@ static gboolean wintc_sh_view_desktop_activate_item(
     WinTCShextViewItem* item =
         (WinTCShextViewItem*)
             g_hash_table_lookup(
-                s_desktop_map,
+                S_DESKTOP_MAP,
                 GUINT_TO_POINTER(item_hash)
             );
 
@@ -418,7 +446,7 @@ static GList* wintc_sh_view_desktop_get_items(
     WINTC_UNUSED(WinTCIShextView* view)
 )
 {
-    return g_hash_table_get_values(s_desktop_map);
+    return g_hash_table_get_values(S_DESKTOP_MAP);
 }
 
 static GMenuModel* wintc_sh_view_desktop_get_operations_for_item(
@@ -481,7 +509,7 @@ static void wintc_sh_view_desktop_refresh_items(
     //
     WinTCShextViewItemsUpdate update = { 0 };
 
-    GList* items = g_hash_table_get_values(s_desktop_map);
+    GList* items = g_hash_table_get_values(S_DESKTOP_MAP);
 
     update.data = items;
     update.done = TRUE;
@@ -516,4 +544,33 @@ WinTCIShextView* wintc_sh_view_desktop_new(
             NULL
         )
     );
+}
+
+//
+// CALLBACKS
+//
+static void on_view_user_desktop_items_added(
+    WinTCIShextView*           view,
+    WinTCShextViewItemsUpdate* update,
+    gpointer                   user_data
+)
+{
+    // FIXME: Implement this
+}
+
+static void on_view_user_desktop_items_removed(
+    WinTCIShextView*           view,
+    WinTCShextViewItemsUpdate* update,
+    gpointer                   user_data
+)
+{
+    // FIXME: Implement this
+}
+
+static void on_view_user_desktop_items_added(
+    WinTCIShextView* view,
+    gpointer         user_data
+)
+{
+    // FIXME: Implement this
 }
