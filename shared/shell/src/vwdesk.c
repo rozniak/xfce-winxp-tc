@@ -200,7 +200,7 @@ static void wintc_sh_view_desktop_class_init(
     // Assign GUID paths to built-in desktop items - kind of rubbish but
     // whatever
     //
-    S_DESKTOP_ITEMS[0].priv = wintc_sh_path_for_guid(WINTC_SH_GUID_DRIVES);
+    S_DESKTOP_ITEMS[1].priv = wintc_sh_path_for_guid(WINTC_SH_GUID_DRIVES);
 
     // Assign hashes
     //
@@ -412,12 +412,14 @@ static void wintc_sh_view_desktop_set_property(
 // INTERFACE METHODS (WinTCIShextView)
 //
 static gboolean wintc_sh_view_desktop_activate_item(
-    WINTC_UNUSED(WinTCIShextView* view),
+    WinTCIShextView*    view,
     guint               item_hash,
     WinTCShextPathInfo* path_info,
     GError**            error
 )
 {
+    WinTCShViewDesktop* view_desk = WINTC_SH_VIEW_DESKTOP(view);
+
     WINTC_SAFE_REF_CLEAR(error);
 
     WinTCShextViewItem* item =
@@ -427,6 +429,20 @@ static gboolean wintc_sh_view_desktop_activate_item(
                 GUINT_TO_POINTER(item_hash)
             );
 
+    // If this isn't one of the desktop items, forward to the FS view
+    //
+    if (!item)
+    {
+        return wintc_ishext_view_activate_item(
+            view_desk->view_user_desktop,
+            item_hash,
+            path_info,
+            error
+        );
+    }
+
+    // This is ours, deal with it
+    //
     if (!(item->priv))
     {
         g_critical("%s", "shell: desk view can't activate item, no target");
