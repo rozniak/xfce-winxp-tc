@@ -5,6 +5,8 @@
 
 #include "../public/vwdesk.h"
 
+#define K_ORDER_FS_ITEM 1717
+
 //
 // PRIVATE ENUMS
 //
@@ -91,6 +93,9 @@ static WinTCShextOperation* wintc_sh_view_desktop_spawn_operation(
     GError**         error
 );
 
+static gint wintc_sh_view_desktop_get_item_order(
+    guint item_hash
+);
 static void wintc_sh_view_desktop_real_refresh_items(
     WinTCShViewDesktop* view_desk
 );
@@ -113,23 +118,24 @@ static void on_view_user_desktop_refreshing(
 //
 // STATIC DATA
 //
-static GHashTable* S_DESKTOP_MAP = NULL;
+static GHashTable* S_DESKTOP_MAP   = NULL;
+static GHashTable* S_DESKTOP_ORDER = NULL;
 
 // FIXME: LAZY AGAIN! Use shlang!!!!!! Temporary as well cos the user can
 //        toggle which items are present
 //
 static WinTCShextViewItem S_DESKTOP_ITEMS[] = {
     {
-        "My Computer",
-        "computer",
+        "My Documents",
+        "folder-documents",
         FALSE,
         0,
         WINTC_SHEXT_VIEW_ITEM_DEFAULT,
         NULL
     },
     {
-        "My Documents",
-        "folder-documents",
+        "My Computer",
+        "computer",
         FALSE,
         0,
         WINTC_SHEXT_VIEW_ITEM_DEFAULT,
@@ -188,7 +194,8 @@ static void wintc_sh_view_desktop_class_init(
     WinTCShViewDesktopClass* klass
 )
 {
-    S_DESKTOP_MAP = g_hash_table_new(g_direct_hash, g_direct_equal);
+    S_DESKTOP_MAP   = g_hash_table_new(g_direct_hash, g_direct_equal);
+    S_DESKTOP_ORDER = g_hash_table_new(g_direct_hash, g_direct_equal);
 
     // Assign GUID paths to built-in desktop items - kind of rubbish but
     // whatever
@@ -218,6 +225,15 @@ static void wintc_sh_view_desktop_class_init(
             S_DESKTOP_MAP,
             GUINT_TO_POINTER(S_DESKTOP_ITEMS[i].hash),
             &(S_DESKTOP_ITEMS[i])
+        );
+
+        // Map the item order (for compare_items)
+        //
+        g_hash_table_insert(
+            S_DESKTOP_ORDER,
+            GUINT_TO_POINTER(S_DESKTOP_ITEMS[i].hash),
+            GINT_TO_POINTER(i + 1) // Add 1 to simplify later, so NULL/0 means
+                                   // it's an FS item
         );
     }
 
@@ -423,13 +439,30 @@ static gboolean wintc_sh_view_desktop_activate_item(
 }
 
 static gint wintc_sh_view_desktop_compare_items(
-    WINTC_UNUSED(WinTCIShextView* view),
-    WINTC_UNUSED(guint            item_hash1),
-    WINTC_UNUSED(guint            item_hash2)
+    WinTCIShextView* view,
+    guint            item_hash1,
+    guint            item_hash2
 )
 {
-    // FIXME: Proper implementation
-    return -1;
+    WinTCShViewDesktop* view_desk = WINTC_SH_VIEW_DESKTOP(view);
+
+    gint order_item1 = wintc_sh_view_desktop_get_item_order(item_hash1);
+    gint order_item2 = wintc_sh_view_desktop_get_item_order(item_hash2);
+
+    // If they're both FS items, then forward onto the fs view
+    //
+    if (order_item1 == order_item2 && order_item1 == K_ORDER_FS_ITEM)
+    {
+        return wintc_ishext_view_compare_items(
+            view_desk->view_user_desktop,
+            item_hash1,
+            item_hash2
+        );
+    }
+
+    return
+        order_item1 < order_item2 ? -1 :
+            (order_item1 > order_item2 ? 1 : 0);
 }
 
 static const gchar* wintc_sh_view_desktop_get_display_name(
@@ -554,6 +587,26 @@ WinTCIShextView* wintc_sh_view_desktop_new(
 //
 // PRIVATE FUNCTIONS
 //
+static gint wintc_sh_view_desktop_get_item_order(
+    guint item_hash
+)
+{
+    gint order =
+        GPOINTER_TO_INT(
+            g_hash_table_lookup(
+                S_DESKTOP_ORDER,
+                GUINT_TO_POINTER(item_hash)
+            )
+        );
+
+    if (!order)
+    {
+        return K_ORDER_FS_ITEM;
+    }
+
+    return order;
+}
+
 static void wintc_sh_view_desktop_real_refresh_items(
     WinTCShViewDesktop* view_desk
 )
@@ -569,7 +622,7 @@ static void wintc_sh_view_desktop_real_refresh_items(
     GList* items = g_hash_table_get_values(S_DESKTOP_MAP);
 
     update.data = items;
-    update.done = TRUE;
+    update.done = FALSE; // The FS view will always follow behind
 
     _wintc_ishext_view_items_added(view, &update);
 

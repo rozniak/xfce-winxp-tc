@@ -19,7 +19,6 @@ enum
     COLUMN_ICON_NAME = 0,
     COLUMN_ENTRY_NAME,
     COLUMN_VIEW_HASH,
-    COLUMN_MAPPED_VIEW,
     N_COLUMNS
 };
 
@@ -87,6 +86,7 @@ struct _WinTCShTreeViewBehaviour
 
     GtkTreeStore* tree_model;
     GHashTable*   map_hash_to_row;
+    GHashTable*   map_hash_to_view;
 
     GtkWidget* tree_view;
 };
@@ -153,6 +153,24 @@ static void wintc_sh_tree_view_behaviour_init(
             g_direct_equal,
             NULL,
             (GDestroyNotify) clear_tree_row_reference
+        );
+
+    // Set up map for hash->view
+    //
+    // We store the mapping from hash to view in a separate table because
+    // previously they were stored in a column on the tree nodes - problem is
+    // when it comes time to delete a node, we would have to go bottom-up to
+    // ensure they're all collected and unref their views (if a parent node is
+    // deleted first, the child nodes get binned before we can clean up)
+    //
+    // Much easier to just use a second hash table instead of doing this work
+    //
+    self->map_hash_to_view =
+        g_hash_table_new_full(
+            g_direct_hash,
+            g_direct_equal,
+            NULL,
+            (GDestroyNotify) g_object_unref
         );
 }
 
@@ -268,6 +286,7 @@ static void wintc_sh_tree_view_behaviour_dispose(
     g_clear_object(&(behaviour->tree_view));
 
     g_hash_table_unref(g_steal_pointer(&(behaviour->map_hash_to_row)));
+    g_hash_table_unref(g_steal_pointer(&(behaviour->map_hash_to_view)));
 
     (G_OBJECT_CLASS(wintc_sh_tree_view_behaviour_parent_class))
         ->dispose(object);
@@ -329,14 +348,23 @@ static void wintc_sh_tree_view_behaviour_node_add_items(
     GtkTreeIter         child;
     WinTCShextViewItem* view_item;
 
+    //  Get the node's view
+    //
+    guint            node_hash;
     WinTCIShextView* view = NULL;
 
     gtk_tree_model_get(
         GTK_TREE_MODEL(behaviour->tree_model),
         node,
-        COLUMN_MAPPED_VIEW, &view,
+        COLUMN_VIEW_HASH, &node_hash,
         -1
     );
+
+    view =
+        g_hash_table_lookup(
+            behaviour->map_hash_to_view,
+            GUINT_TO_POINTER(node_hash)
+        );
 
     for (GList* iter = items; iter; iter = iter->next)
     {
@@ -525,6 +553,7 @@ static void wintc_sh_tree_view_behaviour_update_view(
         {
             if (row_ref)
             {
+                guint            node_hash;
                 WinTCIShextView* node_view = NULL;
                 GtkTreePath*     tree_path;
 
@@ -540,9 +569,15 @@ static void wintc_sh_tree_view_behaviour_update_view(
                 gtk_tree_model_get(
                     GTK_TREE_MODEL(behaviour->tree_model),
                     &next,
-                    COLUMN_MAPPED_VIEW, &node_view,
+                    COLUMN_VIEW_HASH, &node_hash,
                     -1
                 );
+
+                node_view =
+                    g_hash_table_lookup(
+                        behaviour->map_hash_to_view,
+                        GUINT_TO_POINTER(node_hash)
+                    );
 
                 gtk_tree_path_free(tree_path);
 
@@ -577,11 +612,10 @@ static void wintc_sh_tree_view_behaviour_update_view(
                         g_object_ref(view);
                     }
 
-                    gtk_tree_store_set(
-                        behaviour->tree_model,
-                        &next,
-                        COLUMN_MAPPED_VIEW, view,
-                        -1
+                    g_hash_table_insert(
+                        behaviour->map_hash_to_view,
+                        GUINT_TO_POINTER(node_hash),
+                        view
                     );
                 }
             }
@@ -604,11 +638,10 @@ static void wintc_sh_tree_view_behaviour_update_view(
                     COLUMN_ICON_NAME,   wintc_ishext_view_get_icon_name(view),
                     COLUMN_ENTRY_NAME,  wintc_ishext_view_get_display_name(view),
                     COLUMN_VIEW_HASH,   hash,
-                    COLUMN_MAPPED_VIEW, view,
                     -1
                 );
 
-                // Map the hash->row
+                // Map the hash->row and hash->view
                 //
                 GtkTreePath* tree_path =
                     gtk_tree_model_get_path(
@@ -628,6 +661,11 @@ static void wintc_sh_tree_view_behaviour_update_view(
                         GTK_TREE_MODEL(behaviour->tree_model),
                         tree_path
                     )
+                );
+                g_hash_table_insert(
+                    behaviour->map_hash_to_view,
+                    GUINT_TO_POINTER(hash),
+                    view
                 );
 
                 gtk_tree_path_free(tree_path);
@@ -661,11 +699,10 @@ static void wintc_sh_tree_view_behaviour_update_view(
                 COLUMN_ICON_NAME,   wintc_ishext_view_get_icon_name(next_view),
                 COLUMN_ENTRY_NAME,  wintc_ishext_view_get_display_name(next_view),
                 COLUMN_VIEW_HASH,   hash,
-                COLUMN_MAPPED_VIEW, next_view,
                 -1
             );
 
-            // Map the hash->row
+            // Map the hash->row and hash->view
             //
             GtkTreePath* tree_path =
                 gtk_tree_model_get_path(
@@ -680,6 +717,11 @@ static void wintc_sh_tree_view_behaviour_update_view(
                     GTK_TREE_MODEL(behaviour->tree_model),
                     tree_path
                 )
+            );
+            g_hash_table_insert(
+                behaviour->map_hash_to_view,
+                GUINT_TO_POINTER(hash),
+                next_view
             );
 
             gtk_tree_path_free(tree_path);
@@ -740,27 +782,25 @@ static void clear_tree_row_reference(
     GtkTreeRowReference* row_ref
 )
 {
-    WinTCIShextView* view = NULL;
-
     GtkTreeModel* tree_model = gtk_tree_row_reference_get_model(row_ref);
     GtkTreePath*  tree_path  = gtk_tree_row_reference_get_path(row_ref);
 
-    GtkTreeIter row;
+    if (tree_path)
+    {
+        GtkTreeIter row;
 
-    gtk_tree_model_get_iter(
-        tree_model,
-        &row,
-        tree_path
-    );
+        gtk_tree_model_get_iter(
+            tree_model,
+            &row,
+            tree_path
+        );
 
-    gtk_tree_model_get(
-        tree_model,
-        &row,
-        COLUMN_MAPPED_VIEW, &view,
-        -1
-    );
+        gtk_tree_store_remove(
+            GTK_TREE_STORE(tree_model),
+            &row
+        );
+    }
 
-    g_clear_object(&view);
     gtk_tree_path_free(tree_path);
     gtk_tree_row_reference_free(row_ref);
 }
@@ -844,49 +884,29 @@ static void on_view_items_removed(
 
     // Track down and bin via the maps
     //
-    GtkTreeIter iter;
-
     for (GList* upd_iter = update->data; upd_iter; upd_iter = upd_iter->next)
     {
         guint item_hash = GPOINTER_TO_UINT(upd_iter->data);
 
-        // Nav to iter
-        //
-        GtkTreeRowReference* row_ref;
-        GtkTreePath*         tree_path;
-
-        row_ref =
-            g_hash_table_lookup(
+        if (
+            !g_hash_table_contains(
                 behaviour->map_hash_to_row,
                 GUINT_TO_POINTER(item_hash)
-            );
-
-        if (!row_ref)
+            )
+        )
         {
             continue;
         }
 
-        tree_path =
-            gtk_tree_row_reference_get_path(row_ref);
-
-        gtk_tree_model_get_iter(
-            GTK_TREE_MODEL(behaviour->tree_model),
-            &iter,
-            tree_path
-        );
-
-        gtk_tree_path_free(tree_path);
-
-        // Delete node and mapping (row ref and view collected up via
+        // Delete mappings (row ref and node collected up via
         // clear_tree_row_reference())
         //
-        gtk_tree_store_remove(
-            behaviour->tree_model,
-            &iter
-        );
-
         g_hash_table_remove(
             behaviour->map_hash_to_row,
+            GUINT_TO_POINTER(item_hash)
+        );
+        g_hash_table_remove(
+            behaviour->map_hash_to_view,
             GUINT_TO_POINTER(item_hash)
         );
     }
