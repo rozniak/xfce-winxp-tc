@@ -22,6 +22,8 @@ GType wintc_sh_view_desktop_get_type(void) G_GNUC_CONST;
 //
 // PUBLIC FUNCTIONS
 //
-WinTCIShextView* wintc_sh_view_desktop_new(void);
+WinTCIShextView* wintc_sh_view_desktop_new(
+    WinTCShextHost* shext_host
+);
 
 #endif

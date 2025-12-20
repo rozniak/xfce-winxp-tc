@@ -10,53 +10,8 @@
 //
 enum
 {
-    PROP_ICON_NAME = 1
-};
-
-//
-// STATIC DATA
-//
-
-// FIXME: Temp
-//
-static GHashTable* s_desktop_map = NULL;
-
-// FIXME: LAZY AGAIN! Use shlang!!!!!! Temporary as well cos the user can
-//        toggle which items are present
-//
-static WinTCShextViewItem s_desktop_items[] = {
-    {
-        "My Computer",
-        "computer",
-        FALSE,
-        0,
-        WINTC_SHEXT_VIEW_ITEM_DEFAULT,
-        NULL
-    },
-    {
-        "My Documents",
-        "folder-documents",
-        FALSE,
-        0,
-        WINTC_SHEXT_VIEW_ITEM_DEFAULT,
-        NULL
-    },
-    {
-        "My Network Places",
-        "network-workgroup",
-        FALSE,
-        0,
-        WINTC_SHEXT_VIEW_ITEM_DEFAULT,
-        NULL,
-    },
-    {
-        "Recycle Bin",
-        "user-trash",
-        FALSE,
-        0,
-        WINTC_SHEXT_VIEW_ITEM_DEFAULT,
-        NULL,
-    }
+    PROP_ICON_NAME = 1,
+    PROP_SHEXT_HOST
 };
 
 //
@@ -66,11 +21,23 @@ static void wintc_sh_view_desktop_ishext_view_interface_init(
     WinTCIShextViewInterface* iface
 );
 
+static void wintc_sh_view_desktop_constructed(
+    GObject* object
+);
+static void wintc_sh_view_desktop_dispose(
+    GObject* object
+);
 static void wintc_sh_view_desktop_get_property(
     GObject*    object,
     guint       prop_id,
     GValue*     value,
     GParamSpec* pspec
+);
+static void wintc_sh_view_desktop_set_property(
+    GObject*      object,
+    guint         prop_id,
+    const GValue* value,
+    GParamSpec*   pspec
 );
 
 static gboolean wintc_sh_view_desktop_activate_item(
@@ -125,6 +92,52 @@ static WinTCShextOperation* wintc_sh_view_desktop_spawn_operation(
 );
 
 //
+// STATIC DATA
+//
+
+// FIXME: Temp
+//
+static GHashTable* s_desktop_map = NULL;
+
+// FIXME: LAZY AGAIN! Use shlang!!!!!! Temporary as well cos the user can
+//        toggle which items are present
+//
+static WinTCShextViewItem s_desktop_items[] = {
+    {
+        "My Computer",
+        "computer",
+        FALSE,
+        0,
+        WINTC_SHEXT_VIEW_ITEM_DEFAULT,
+        NULL
+    },
+    {
+        "My Documents",
+        "folder-documents",
+        FALSE,
+        0,
+        WINTC_SHEXT_VIEW_ITEM_DEFAULT,
+        NULL
+    },
+    {
+        "My Network Places",
+        "network-workgroup",
+        FALSE,
+        0,
+        WINTC_SHEXT_VIEW_ITEM_DEFAULT,
+        NULL,
+    },
+    {
+        "Recycle Bin",
+        "user-trash",
+        FALSE,
+        0,
+        WINTC_SHEXT_VIEW_ITEM_DEFAULT,
+        NULL,
+    }
+};
+
+//
 // GLIB OOP CLASS/INSTANCE DEFINITIONS
 //
 struct _WinTCShViewDesktopClass
@@ -135,6 +148,11 @@ struct _WinTCShViewDesktopClass
 struct _WinTCShViewDesktop
 {
     GObject __parent__;
+
+    // State
+    //
+    WinTCShextHost*  shext_host;
+    WinTCIShextView* view_user_desktop;
 };
 
 //
@@ -191,12 +209,27 @@ static void wintc_sh_view_desktop_class_init(
     //
     GObjectClass* object_class = G_OBJECT_CLASS(klass);
 
+    object_class->constructed  = wintc_sh_view_desktop_constructed;
+    object_class->dispose      = wintc_sh_view_desktop_dispose;
     object_class->get_property = wintc_sh_view_desktop_get_property;
+    object_class->set_property = wintc_sh_view_desktop_set_property;
 
     g_object_class_override_property(
         object_class,
         PROP_ICON_NAME,
         "icon-name"
+    );
+    
+    g_object_class_install_property(
+        object_class,
+        PROP_SHEXT_HOST,
+        g_param_spec_object(
+            "shext-host",
+            "ShextHost",
+            "The shell extension host instance.",
+            WINTC_TYPE_SHEXT_HOST,
+            G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY
+        )
     );
 }
 
@@ -228,6 +261,59 @@ static void wintc_sh_view_desktop_ishext_view_interface_init(
 //
 // CLASS VIRTUAL METHODS
 //
+static void wintc_sh_view_desktop_constructed(
+    GObject* object
+)
+{
+    WinTCShViewDesktop* view_desk = WINTC_SH_VIEW_DESKTOP(object);
+
+    (G_OBJECT_CLASS(wintc_sh_view_desktop_parent_class))
+        ->constructed(object);
+
+    // Create the backing desktop view
+    //
+    GError*            error     = NULL;
+    WinTCShextPathInfo path_info = { 0 };
+
+    path_info.base_path =
+        g_strdup(
+            g_get_user_special_dir(G_USER_DIRECTORY_DESKTOP)
+        );
+
+    view_desk->view_user_desktop =
+        wintc_shext_host_get_view_for_path(
+            view_desk->shext_host,
+            &path_info,
+            &error
+        );
+
+    wintc_shext_path_info_free_data(&path_info);
+
+    if (!(view_desk->view_user_desktop))
+    {
+        wintc_log_error_and_clear(&error);
+        return;
+    }
+
+    // Link up with desktop view
+    //
+    // FIXME: Implement this
+    //
+}
+
+static void wintc_sh_view_desktop_dispose(
+    GObject* object
+)
+{
+    WinTCShViewDesktop* view_desk = WINTC_SH_VIEW_DESKTOP(object);
+
+    g_clear_object(&(view_desk->shext_host));
+    g_clear_object(&(view_desk->view_user_desktop));
+
+    (G_OBJECT_CLASS(wintc_sh_view_desktop_parent_class))
+        ->dispose(object);
+}
+
 static void wintc_sh_view_desktop_get_property(
     GObject*    object,
     guint       prop_id,
@@ -244,6 +330,27 @@ static void wintc_sh_view_desktop_get_property(
                 value,
                 wintc_ishext_view_get_icon_name(view)
             );
+            break;
+
+        default:
+            G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
+            break;
+    }
+}
+
+static void wintc_sh_view_desktop_set_property(
+    GObject*      object,
+    guint         prop_id,
+    const GValue* value,
+    GParamSpec*   pspec
+)
+{
+    WinTCShViewDesktop* view_desk = WINTC_SH_VIEW_DESKTOP(object);
+
+    switch (prop_id)
+    {
+        case PROP_SHEXT_HOST:
+            view_desk->shext_host = g_value_dup_object(value);
             break;
 
         default:
@@ -398,11 +505,14 @@ static WinTCShextOperation* wintc_sh_view_desktop_spawn_operation(
 //
 // PUBLIC FUNCTIONS
 //
-WinTCIShextView* wintc_sh_view_desktop_new(void)
+WinTCIShextView* wintc_sh_view_desktop_new(
+    WinTCShextHost* shext_host
+)
 {
     return WINTC_ISHEXT_VIEW(
         g_object_new(
             WINTC_TYPE_SH_VIEW_DESKTOP,
+            "shext-host", shext_host,
             NULL
         )
     );
