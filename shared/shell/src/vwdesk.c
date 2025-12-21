@@ -2,6 +2,7 @@
 #include <wintc/comgtk.h>
 #include <wintc/shcommon.h>
 #include <wintc/shellext.h>
+#include <wintc/shlang.h>
 
 #include "../public/vwdesk.h"
 
@@ -544,8 +545,28 @@ static GMenuModel* wintc_sh_view_desktop_get_operations_for_view(
     WINTC_UNUSED(WinTCIShextView* view)
 )
 {
-    g_warning("%s Not Implemented", __func__);
-    return NULL;
+    GtkBuilder* builder;
+    GMenuModel* menu;
+
+    builder =
+        gtk_builder_new_from_resource(
+            "/uk/oddmatics/wintc/shell/menudesk.ui"
+        );
+
+    wintc_lc_builder_preprocess_widget_text(builder);
+
+    menu =
+        G_MENU_MODEL(
+            g_object_ref(
+                gtk_builder_get_object(builder, "menu")
+            )
+        );
+
+    // FIXME: Support New menu
+
+    g_object_unref(builder);
+
+    return menu;
 }
 
 static void wintc_sh_view_desktop_get_parent_path(

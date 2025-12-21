@@ -7,6 +7,7 @@
 
     <!-- MENUS -->
     <file>menuctx.ui</file>
+    <file>menudesk.ui</file>
     <file>menufs.ui</file>
     <file>menufslf.ui</file>
     <file>menufsvw.ui</file>
