@@ -96,6 +96,10 @@ static WinTCShextOperation* wintc_sh_view_desktop_spawn_operation(
 static gint wintc_sh_view_desktop_get_item_order(
     guint item_hash
 );
+static WinTCShextViewItem* wintc_sh_view_desktop_get_view_item(
+    WinTCShViewDesktop* view_desk,
+    guint               item_hash
+);
 static void wintc_sh_view_desktop_real_refresh_items(
     WinTCShViewDesktop* view_desk
 );
@@ -511,12 +515,29 @@ static GList* wintc_sh_view_desktop_get_items(
 }
 
 static GMenuModel* wintc_sh_view_desktop_get_operations_for_item(
-    WINTC_UNUSED(WinTCIShextView* view),
-    WINTC_UNUSED(guint            item_hash)
+    WinTCIShextView* view,
+    guint            item_hash
 )
 {
-    g_warning("%s Not Implemented", __func__);
-    return NULL;
+    WinTCShViewDesktop* view_desk = WINTC_SH_VIEW_DESKTOP(view);
+
+    // Check if this is one of ours
+    //
+    WinTCShextViewItem* item =
+        wintc_sh_view_desktop_get_view_item(view_desk, item_hash);
+
+    if (item)
+    {
+        g_warning("%s Not Implemented", __func__);
+        return NULL;
+    }
+
+    // Assume it's for the FS view
+    //
+    return wintc_ishext_view_get_operations_for_item(
+        view_desk->view_user_desktop,
+        item_hash
+    );
 }
 
 static GMenuModel* wintc_sh_view_desktop_get_operations_for_view(
@@ -621,6 +642,19 @@ static gint wintc_sh_view_desktop_get_item_order(
     }
 
     return order;
+}
+
+static WinTCShextViewItem* wintc_sh_view_desktop_get_view_item(
+    WINTC_UNUSED(WinTCShViewDesktop* view_desk),
+    guint item_hash
+)
+{
+    return
+        (WinTCShextViewItem*)
+        g_hash_table_lookup(
+            S_DESKTOP_MAP,
+            GUINT_TO_POINTER(item_hash)
+        );
 }
 
 static void wintc_sh_view_desktop_real_refresh_items(
