@@ -371,7 +371,7 @@ void wintc_shext_path_info_demangle_uri(
     //
     if (!path_info->base_path)
     {
-        path_info->base_path = g_strdup(uri);
+        path_info->base_path = g_uri_unescape_string(uri, NULL);
     }
 }
 
