@@ -846,7 +846,7 @@ static WinTCShextOperation* wintc_sh_view_fs_spawn_operation(
             }
             else
             {
-                g_free(g_steal_pointer(&ret));
+                g_clear_pointer(&ret, g_free);
                 g_critical("%s", "shell: fs - invalid op");
             }
 

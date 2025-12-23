@@ -1,5 +1,6 @@
 #include <glib.h>
 #include <wintc/comgtk.h>
+#include <wintc/exec.h>
 #include <wintc/shcommon.h>
 #include <wintc/shellext.h>
 #include <wintc/shlang.h>
@@ -103,6 +104,13 @@ static WinTCShextViewItem* wintc_sh_view_desktop_get_view_item(
 );
 static void wintc_sh_view_desktop_real_refresh_items(
     WinTCShViewDesktop* view_desk
+);
+
+static gboolean shopr_properties(
+    WinTCIShextView*     view,
+    WinTCShextOperation* operation,
+    GtkWindow*           wnd,
+    GError**             error
 );
 
 static void on_view_user_desktop_items_added(
@@ -428,11 +436,7 @@ static gboolean wintc_sh_view_desktop_activate_item(
     WINTC_SAFE_REF_CLEAR(error);
 
     WinTCShextViewItem* item =
-        (WinTCShextViewItem*)
-            g_hash_table_lookup(
-                S_DESKTOP_MAP,
-                GUINT_TO_POINTER(item_hash)
-            );
+        wintc_sh_view_desktop_get_view_item(view_desk, item_hash);
 
     // If this isn't one of the desktop items, forward to the FS view
     //
@@ -622,8 +626,27 @@ static WinTCShextOperation* wintc_sh_view_desktop_spawn_operation(
     WINTC_UNUSED(GError**         error)
 )
 {
-    g_critical("Not implemented %s", __func__);
-    return NULL;
+    // Spawn op
+    //
+    WinTCShextOperation* ret = g_new(WinTCShextOperation, 1);
+
+    switch (operation_id)
+    {
+        case WINTC_SHEXT_KNOWN_OP_PROPERTIES:
+            // FIXME: Handle for view items
+            //
+            ret->func = shopr_properties;
+            break;
+
+        default:
+            g_clear_pointer(&ret, g_free);
+            g_critical("%s", "shell: desktop - invalid op");
+            break;
+    }
+
+    g_clear_list(&targets, NULL);
+
+    return ret;
 }
 
 //
@@ -703,6 +726,17 @@ static void wintc_sh_view_desktop_real_refresh_items(
 //
 // CALLBACKS
 //
+static gboolean shopr_properties(
+    WINTC_UNUSED(WinTCIShextView* view),
+    WINTC_UNUSED(WinTCShextOperation* operation),
+    WINTC_UNUSED(GtkWindow* wnd),
+    GError** error
+)
+{
+    // FIXME: Clash with WINE
+    return wintc_launch_command("desk.cpl", error);
+}
+
 static void on_view_user_desktop_items_added(
     WINTC_UNUSED(WinTCIShextView* view),
     WinTCShextViewItemsUpdate* update,
