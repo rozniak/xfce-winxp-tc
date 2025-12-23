@@ -64,10 +64,18 @@ static void wintc_cpl_desk_application_activate(
     GApplication* application
 )
 {
-    GtkWidget* new_window =
-        wintc_cpl_desk_window_new(WINTC_CPL_DESK_APPLICATION(application));
+    static GtkWidget* wnd = NULL;
 
-    gtk_widget_show_all(new_window);
+    if (!wnd)
+    {
+        wnd =
+            wintc_cpl_desk_window_new(
+                WINTC_CPL_DESK_APPLICATION(application)
+            );
+    }
+
+    gtk_widget_show_all(wnd);
+    gtk_window_present(GTK_WINDOW(wnd));
 }
 
 static void wintc_cpl_desk_application_startup(
