@@ -81,9 +81,9 @@ void wintc_sh_init_namespace_tree(
 // CALLBACKS
 //
 static WinTCIShextView* factory_view_by_guid_cb(
-    WINTC_UNUSED(WinTCShextHost*           shext_host),
-    WINTC_UNUSED(WinTCShextViewAssoc       assoc),
-    const gchar* assoc_str,
+    WinTCShextHost* shext_host,
+    WINTC_UNUSED(WinTCShextViewAssoc assoc),
+    const gchar*    assoc_str,
     WINTC_UNUSED(const WinTCShextPathInfo* url)
 )
 {
@@ -97,7 +97,7 @@ static WinTCIShextView* factory_view_by_guid_cb(
     }
     else if (g_ascii_strcasecmp(assoc_str, WINTC_SH_GUID_DESKTOP) == 0)
     {
-        return wintc_sh_view_desktop_new();
+        return wintc_sh_view_desktop_new(shext_host);
     }
     else if (g_ascii_strcasecmp(assoc_str, WINTC_SH_GUID_DRIVES) == 0)
     {

@@ -55,13 +55,15 @@ add_library(
     public/fsop.h
     src/icnvwbeh.c
     public/icnvwbeh.h
+    src/newmenu.c
+    public/newmenu.h
+    src/nmspace.c
+    public/nmspace.h
     src/resources.c
     public/sound.h
     src/sound.c
     src/trevwbeh.c
     public/trevwbeh.h
-    src/nmspace.c
-    public/nmspace.h
     src/vwcpl.c
     public/vwcpl.h
     src/vwdesk.c

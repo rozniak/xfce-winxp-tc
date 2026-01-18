@@ -61,6 +61,7 @@ typedef gboolean (*WinTCShextOperationFunc) (
 struct _WinTCShextOperation
 {
     WinTCShextOperationFunc func;
+    WinTCIShextView*        view;
     gpointer                priv;
 };
 

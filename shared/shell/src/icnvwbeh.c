@@ -586,7 +586,7 @@ static void action_view_operation(
 
     // Execute!
     //
-    if (!(operation->func) (view, operation, wnd, &error))
+    if (!(operation->func) (operation->view, operation, wnd, &error))
     {
         wintc_display_error_and_clear(&error, wnd);
     }

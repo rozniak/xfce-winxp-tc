@@ -5,6 +5,43 @@
 //
 // PUBLIC FUNCTIONS
 //
+GList* wintc_list_append_list(
+    GList* list,
+    GList* other_list
+)
+{
+    // If either list is NULL, return the other one
+    // (this also returns NULL if both are NULL)
+    //
+    if (!list)
+    {
+        return other_list;
+    }
+    else if (!other_list)
+    {
+        return list;
+    }
+
+    // Invalid op if other list is not the head
+    //
+    if (other_list->prev)
+    {
+        g_critical(
+            "%s",
+            "comgtk: cannot append list to list, other list is not the head"
+        );
+
+        return list;
+    }
+
+    GList* tail = g_list_last(list);
+
+    tail->next       = other_list;
+    other_list->prev = tail;
+
+    return list;
+}
+
 GList* wintc_list_distinct_append(
     GList*         list,
     gpointer       data,
