@@ -18,10 +18,10 @@ G_DECLARE_DERIVABLE_TYPE(
     GtkApplicationWindow
 )
 
-typedef struct _WinTCDpaDesktopWindowClass
+struct _WinTCDpaDesktopWindowClass
 {
     GtkApplicationWindowClass __parent__;
-} WinTCDpaDesktopWindowClass;
+};
 
 //
 // PUBLIC FUNCTIONS

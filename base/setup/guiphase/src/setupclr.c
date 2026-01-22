@@ -45,6 +45,8 @@ struct _WinTCSetupControllerClass
 struct _WinTCSetupController
 {
     GObject __parent__;
+
+    WinTCSetupWindow* setup_wnd;
 };
 
 //
@@ -53,7 +55,7 @@ struct _WinTCSetupController
 G_DEFINE_TYPE(
     WinTCSetupController,
     wintc_setup_controller,
-    WINTC_TYPE_SETUP_CONTROLLER
+    G_TYPE_OBJECT
 )
 
 static void wintc_setup_controller_class_init(
@@ -91,11 +93,11 @@ static void wintc_setup_controller_init(
 static void wintc_setup_controller_get_property(
     GObject*    object,
     guint       prop_id,
-    GValue*     value,
+    WINTC_UNUSED(GValue* value),
     GParamSpec* pspec
 )
 {
-    WinTCSetupController* setup_ctl = WINTC_SETUP_CONTROLLER(object);
+    //WinTCSetupController* setup_ctl = WINTC_SETUP_CONTROLLER(object);
 
     switch (prop_id)
     {

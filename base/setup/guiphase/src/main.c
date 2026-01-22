@@ -170,7 +170,10 @@ int main(
 
     // Create setup controller
     //
-    WinTCSetupController* controller = wintc_setup_controller_new(wnd_setup);
+    WinTCSetupController* controller =
+        wintc_setup_controller_new(
+            WINTC_SETUP_WINDOW(wnd_setup)
+        );
 
     wintc_setup_controller_begin(controller);
 

@@ -180,7 +180,8 @@ void wintc_setup_window_disable_throbbers(
 )
 {
     wintc_container_clear(
-        GTK_CONTAINER(wnd->box_bottom)
+        GTK_CONTAINER(wnd->box_bottom),
+        TRUE
     );
 }
 
