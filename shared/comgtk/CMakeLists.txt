@@ -70,6 +70,8 @@ add_library(
     public/msgbox.h
     src/profile.c
     public/profile.h
+    src/radio.c
+    public/radio.h
     src/regex.c
     public/regex.h
     public/shorthand.h

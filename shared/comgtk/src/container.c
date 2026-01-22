@@ -7,17 +7,29 @@
 // PUBLIC FUNCTIONS
 //
 void wintc_container_clear(
-    GtkContainer* container
+    GtkContainer* container,
+    gboolean      destroy
 )
 {
     GList* children = gtk_container_get_children(container);
     GList* iter     = children;
 
-    while (iter)
+    if (destroy)
     {
-        gtk_widget_destroy(GTK_WIDGET(iter->data));
-
-        iter = iter->next;
+        for (; iter; iter = iter->next)
+        {
+            gtk_widget_destroy(GTK_WIDGET(iter->data));
+        }
+    }
+    else
+    {
+        for (; iter; iter = iter->next)
+        {
+            gtk_container_remove(
+                container,
+                GTK_WIDGET(iter->data)
+            );
+        }
     }
 
     g_list_free(children);

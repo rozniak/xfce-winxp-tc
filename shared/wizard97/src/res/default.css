@@ -1,0 +1,40 @@
+/**
+ * Default wizard97-specific styles
+ */
+.wintc-w97-title
+{
+    font-weight: bold;
+}
+
+.wintc-w97-header
+{
+    background-color: @theme_base_color;
+    font-family: 'Microsoft Sans Serif', sans-serif;
+}
+
+.wintc-w97-page-area
+{
+    font-family: 'Microsoft Sans Serif', sans-serif;
+}
+
+.wintc-w97-header .wintc-w97-title
+{
+    margin-left: 18px;
+    margin-top:   8px;
+}
+
+.wintc-w97-header .wintc-w97-subtitle
+{
+    margin-left: 25px
+}
+
+.wintc-w97-exterior .wintc-w97-page-area
+{
+    background-color: @theme_base_color;
+}
+
+.wintc-w97-page-area .wintc-w97-title
+{
+    font-size: 13pt;
+    margin: 8px 0px;
+}

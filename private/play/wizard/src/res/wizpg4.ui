@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <object class="WinTCWizard97Page" id="page">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="title">Finished</property>
+    <property name="subtitle">Completing the test wizard.</property>
+    <property name="is-exterior-page">True</property>
+    <property name="orientation">vertical</property>
+
+    <child>
+      <object class="GtkLabel">
+        <property name="label">Completing the Sample Test Wizard</property>
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="xalign">0.0</property>
+
+        <style>
+          <class name="wintc-w97-title" />
+        </style>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">False</property>
+        <property name="position">0</property>
+      </packing>
+    </child>
+
+    <child>
+      <object class="GtkLabel">
+        <property name="label">The Sample Test Wizard is now complete!
+
+You have managed to:</property>
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="max-width-chars">25</property>
+        <property name="wrap">True</property>
+        <property name="xalign">0.0</property>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">False</property>
+        <property name="position">1</property>
+      </packing>
+    </child>
+
+    <child>
+      <object class="GtkLabel" id="label-done-prefer">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="max-width-chars">25</property>
+        <property name="wrap">True</property>
+        <property name="xalign">0.0</property>
+
+        <style>
+          <class name="wintc-ml-lg" />
+        </style>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">False</property>
+        <property name="position">2</property>
+      </packing>
+    </child>
+  </object>
+</interface>

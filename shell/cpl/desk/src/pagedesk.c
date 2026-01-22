@@ -276,7 +276,11 @@ static void refresh_wallpaper_list(
 )
 {
     g_list_free_full(wnd->list_wallpapers, g_free);
-    wintc_container_clear(GTK_CONTAINER(wnd->listbox_wallpapers));
+
+    wintc_container_clear(
+        GTK_CONTAINER(wnd->listbox_wallpapers),
+        TRUE
+    );
 
     // Load up wallpapers
     //

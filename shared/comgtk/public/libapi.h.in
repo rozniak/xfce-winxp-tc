@@ -21,6 +21,7 @@
 #include "@LIB_HEADER_DIR@/menu.h"
 #include "@LIB_HEADER_DIR@/msgbox.h"
 #include "@LIB_HEADER_DIR@/profile.h"
+#include "@LIB_HEADER_DIR@/radio.h"
 #include "@LIB_HEADER_DIR@/regex.h"
 #include "@LIB_HEADER_DIR@/shorthand.h"
 #include "@LIB_HEADER_DIR@/signals.h"

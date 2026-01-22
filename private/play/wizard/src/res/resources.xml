@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/uk/oddmatics/wintc/play/wizard">
+    <file>header.png</file>
+    <file>watermk.png</file>
+    <file>wizpg1.ui</file>
+    <file>wizpg2.ui</file>
+    <file>wizpg3.ui</file>
+    <file>wizpg4.ui</file>
+  </gresource>
+</gresources>

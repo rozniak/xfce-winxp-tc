@@ -167,7 +167,8 @@ static void wintc_ctl_menu_binding_constructed(
     WinTCCtlMenuBinding* menu_binding = WINTC_CTL_MENU_BINDING(object);
 
     wintc_container_clear(
-        GTK_CONTAINER(menu_binding->menu_shell)
+        GTK_CONTAINER(menu_binding->menu_shell),
+        TRUE
     );
 
     wintc_ctl_menu_binding_track_menu(

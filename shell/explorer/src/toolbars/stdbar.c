@@ -576,7 +576,10 @@ static void populate_toolbar(
 {
     GtkWidget* toolbar = (WINTC_EXPLORER_TOOLBAR(toolbar_std))->toolbar;
 
-    wintc_container_clear(GTK_CONTAINER(toolbar));
+    wintc_container_clear(
+        GTK_CONTAINER(toolbar),
+        TRUE
+    );
 
     WINTC_LOG_DEBUG("explorer: populating std toolbar with %s", config_str);
 

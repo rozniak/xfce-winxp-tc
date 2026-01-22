@@ -778,7 +778,8 @@ static void refresh_personal_menu(
     // Clear existing items
     //
     wintc_container_clear(
-        GTK_CONTAINER(toolbar_start->personal.menubar_programs)
+        GTK_CONTAINER(toolbar_start->personal.menubar_programs),
+        TRUE
     );
 
     // Set up signal tuple array

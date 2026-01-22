@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <object class="WinTCWizard97Page" id="page">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="title">Welcome</property>
+    <property name="subtitle">Welcome to the test wizard.</property>
+    <property name="is-exterior-page">True</property>
+    <property name="orientation">vertical</property>
+
+    <child>
+      <object class="GtkLabel">
+        <property name="label">This is a second exterior page, a bit like the Hardware Update Wizard uses.</property>
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="max-width-chars">25</property>
+        <property name="wrap">True</property>
+        <property name="xalign">0.0</property>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">False</property>
+        <property name="position">0</property>
+      </packing>
+    </child>
+  </object>
+</interface>

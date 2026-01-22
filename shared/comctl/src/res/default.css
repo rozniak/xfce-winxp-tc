@@ -55,3 +55,26 @@ box.vertical.wintc-button-box button:last-child
 {
     margin-bottom: 0px;
 }
+
+/**
+ * Edges
+ */
+.wintc-edge-bottom
+{
+    border-bottom: 1px solid @borders;
+}
+
+.wintc-edge-left
+{
+    border-left: 1px solid @borders;
+}
+
+.wintc-edge-right
+{
+    border-right: 1px solid @borders;
+}
+
+.wintc-edge-top
+{
+    border-top: 1px solid @borders;
+}

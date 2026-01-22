@@ -13,9 +13,11 @@
  * Destroys all child widgets of a container.
  *
  * @param container The container.
+ * @param destroy   True to destroy, rather than just remove, the children.
  */
 void wintc_container_clear(
-    GtkContainer* container
+    GtkContainer* container,
+    gboolean      destroy
 );
 
 /**

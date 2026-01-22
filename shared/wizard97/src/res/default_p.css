@@ -1,0 +1,19 @@
+/**
+ * Default wizard97 priority styles
+ */
+
+/** Unfortunately padding is app priority, because of #249 */
+.wintc-w97-header
+{
+    padding: 5px;
+}
+
+.wintc-w97-exterior .wintc-w97-page-area
+{
+    padding: 8px;
+}
+
+.wintc-w97-interior .wintc-w97-page-area
+{
+    padding: 12px 12px 12px 42px;
+}

@@ -44,6 +44,7 @@ wintc-shlang-->bt,rt-->wintc-shlang
 wintc-sndapi-->bt,rt-->wintc-sndapi
 wintc-syscfg-->bt,rt-->wintc-syscfg
 wintc-winbrand-->bt,rt-->wintc-winbrand
+wintc-wizard97-->bt,rt-->wintc-wizard97
 xcursorgen-->bt,rt-->xcursorgen
 xdg-mime-->bt,rt-->xdg-utils
 xml2-->bt-->libxml2-devel

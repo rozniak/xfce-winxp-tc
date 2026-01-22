@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <object class="GtkBox" id="main-box">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="orientation">vertical</property>
+
+    <child>
+      <object class="GtkBox" id="box-header">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="orientation">horizontal</property>
+
+        <child>
+          <object class="GtkBox">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="orientation">vertical</property>
+
+            <child>
+              <object class="GtkLabel" id="label-title">
+                <property name="label">This is a title</property>
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="xalign">0.0</property>
+
+                <style>
+                  <class name="wintc-w97-title" />
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="label-subtitle">
+                <property name="label">And this is a subtitle</property>
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="xalign">0.0</property>
+
+                <style>
+                  <class name="wintc-w97-subtitle" />
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkImage" id="img-header">
+            <property name="visible">False</property>
+            <property name="can-focus">False</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+
+        <style>
+          <class name="wintc-edge-bottom" />
+          <class name="wintc-w97-header" />
+        </style>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">False</property>
+        <property name="position">0</property>
+      </packing>
+    </child>
+
+    <child>
+      <object class="GtkBox" id="box-page">
+        <property name="visible">False</property>
+        <property name="can-focus">False</property>
+        <property name="orientation">vertical</property>
+
+        <style>
+          <class name="wintc-w97-page-area" />
+        </style>
+      </object>
+      <packing>
+        <property name="expand">True</property>
+        <property name="fill">True</property>
+        <property name="position">1</property>
+      </packing>
+    </child>
+
+    <style>
+      <class name="wintc-w97-interior" />
+    </style>
+  </object>
+</interface>

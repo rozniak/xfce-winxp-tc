@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/uk/oddmatics/wintc/wizard97">
+    <file>default.css</file>
+    <file>default_p.css</file>
+    <file>wizext.ui</file>
+    <file>wizint.ui</file>
+    <file>wizwnd.ui</file>
+  </gresource>
+</gresources>
