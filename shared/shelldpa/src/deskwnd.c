@@ -16,14 +16,6 @@ enum
 };
 
 //
-// PRIVATE STRUCTURES
-//
-typedef struct _WinTCDpaDesktopWindowPrivate
-{
-    GdkMonitor* monitor;
-} WinTCDpaDesktopWindowPrivate;
-
-//
 // FORWARD DECLARATIONS
 //
 static void wintc_dpa_desktop_window_constructed(
@@ -63,8 +55,7 @@ typedef struct _WinTCDpaDesktopWindowPrivate
 G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE(
     WinTCDpaDesktopWindow,
     wintc_dpa_desktop_window,
-    GTK_TYPE_APPLICATION_WINDOW,
-    G_ADD_PRIVATE(WinTCDpaDesktopWindow)
+    GTK_TYPE_APPLICATION_WINDOW
 )
 
 static void wintc_dpa_desktop_window_class_init(
