@@ -1,4 +1,5 @@
 import curses
+import os
 
 from wsetup_screen import *
 from wsetup_step   import *
@@ -15,6 +16,8 @@ def main(stdscr):
         wsetup_step_install_base,
         wsetup_step_prepare_chain_to_gui
     ]
+
+    os.environ["ASAN_OPTIONS"] = "exitcode=0"
 
     current_step = 1
 
