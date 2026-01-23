@@ -28,6 +28,7 @@ wintc_resolve_library(wintc-exec     WINTC_EXEC)
 wintc_resolve_library(wintc-shcommon WINTC_SHCOMMON)
 wintc_resolve_library(wintc-shelldpa WINTC_SHELLDPA)
 wintc_resolve_library(wintc-shlang   WINTC_SHLANG)
+wintc_resolve_library(wintc-wizard97 WINTC_WIZARD97)
 
 wintc_compile_resources()
 
@@ -37,6 +38,8 @@ add_executable(
     src/arm.h
     src/main.c
     src/resources.c
+    src/perwiz.c
+    src/perwiz.h
     src/setupclr.c
     src/setupclr.h
     src/setupwnd.c
@@ -66,6 +69,7 @@ target_include_directories(
     PRIVATE ${WINTC_SHCOMMON_INCLUDE_DIRS}
     PRIVATE ${WINTC_SHELLDPA_INCLUDE_DIRS}
     PRIVATE ${WINTC_SHLANG_INCLUDE_DIRS}
+    PRIVATE ${WINTC_WIZARD97_INCLUDE_DIRS}
 )
 
 target_link_directories(
@@ -78,6 +82,7 @@ target_link_directories(
     PRIVATE ${WINTC_SHCOMMON_LIBRARY_DIRS}
     PRIVATE ${WINTC_SHELLDPA_LIBRARY_DIRS}
     PRIVATE ${WINTC_SHLANG_LIBRARY_DIRS}
+    PRIVATE ${WINTC_WIZARD97_LIBRARY_DIRS}
 )
 
 target_link_libraries(
@@ -90,6 +95,7 @@ target_link_libraries(
     PRIVATE ${WINTC_SHCOMMON_LIBRARIES}
     PRIVATE ${WINTC_SHELLDPA_LIBRARIES}
     PRIVATE ${WINTC_SHLANG_LIBRARIES}
+    PRIVATE ${WINTC_WIZARD97_LIBRARIES}
 )
 
 # Installation
