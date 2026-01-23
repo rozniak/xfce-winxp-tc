@@ -33,7 +33,12 @@ XFCONF_DIR=$XDG_CONFIG_HOME/xfce4/xfconf/xfce-perchannel-xml
 mkdir -p $XFCONF_DIR
 
 cp -f @CMAKE_INSTALL_PREFIX@/@WINTC_ASSETS_INSTALL_DIR@/wsetupx/xfwm4.xml $XFCONF_DIR
-cp -r @CMAKE_INSTALL_PREFIX@/@WINTC_ASSETS_INSTALL_DIR@/wsetupx/xsettings.xml $XFCONF_DIR
+
+# Copy over default GTK settings
+#
+GTKCONF_DIR=$XDG_CONFIG_HOME/gtk-3.0
+
+cp -f @CMAKE_INSTALL_PREFIX@/@WINTC_ASSETS_INSTALL_DIR@/wsetupx/gtk-settings.ini $GTKCONF_DIR/settings.ini
 
 # FIXME: This might only work on systemd due to XDG_VTNR, figure out what to
 #        do on other init systems
