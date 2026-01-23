@@ -117,8 +117,12 @@ install(
     FILES
         ${CMAKE_BINARY_DIR}/xinitrc
         res/xfwm4.xml
-        res/xsettings.xml
         res/wsetupx.service
+    DESTINATION ${WINTC_ASSETS_INSTALL_DIR}/wsetupx
+)
+install(
+    FILES
+        res/gtk-settings.ini
     DESTINATION ${WINTC_ASSETS_INSTALL_DIR}/wsetupx
 )
 install(
