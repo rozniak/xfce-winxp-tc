@@ -38,6 +38,8 @@ cp -f @CMAKE_INSTALL_PREFIX@/@WINTC_ASSETS_INSTALL_DIR@/wsetupx/xfwm4.xml $XFCON
 #
 GTKCONF_DIR=$XDG_CONFIG_HOME/gtk-3.0
 
+mkdir -p $GTKCONF_DIR
+
 cp -f @CMAKE_INSTALL_PREFIX@/@WINTC_ASSETS_INSTALL_DIR@/wsetupx/gtk-settings.ini $GTKCONF_DIR/settings.ini
 
 # FIXME: This might only work on systemd due to XDG_VTNR, figure out what to
