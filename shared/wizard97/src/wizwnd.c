@@ -8,10 +8,18 @@
 #include "../public/wizpage.h"
 #include "../public/wizwnd.h"
 
+#define WIZARD97_EXTERIOR_PAGE_WIDTH  317
+#define WIZARD97_EXTERIOR_PAGE_HEIGHT 193
+#define WIZARD97_INTERIOR_PAGE_WIDTH  317
+#define WIZARD97_INTERIOR_PAGE_HEIGHT 143
 #define WIZARD97_WATERMARK_WIDTH  164
 #define WIZARD97_WATERMARK_HEIGHT 314
-
 #define WIZARD97_HEADERPIC_SIZE 49
+
+#define WIZARD97_PAGE_AREA_MIN_WIDTH \
+    (WIZARD97_EXTERIOR_PAGE_WIDTH + WIZARD97_WATERMARK_WIDTH)
+#define WIZARD97_PAGE_AREA_MIN_HEIGHT \
+    (WIZARD97_WATERMARK_HEIGHT)
 
 #define WIZARD97_PAGE_NUM_FINAL 171717
 
@@ -604,16 +612,16 @@ void wintc_wizard97_window_init_wizard(
         {
             gtk_widget_set_size_request(
                 page,
-                317,
-                193
+                WIZARD97_EXTERIOR_PAGE_WIDTH,
+                WIZARD97_EXTERIOR_PAGE_HEIGHT
             );
         }
         else
         {
             gtk_widget_set_size_request(
                 page,
-                317,
-                143
+                WIZARD97_INTERIOR_PAGE_WIDTH,
+                WIZARD97_INTERIOR_PAGE_HEIGHT
             );
         }
 
@@ -735,6 +743,9 @@ void wintc_wizard97_window_init_wizard(
     //
     GtkRequisition req;
     GtkRequisition req_largest;
+
+    req_largest.width  = WIZARD97_PAGE_AREA_MIN_WIDTH;
+    req_largest.height = WIZARD97_PAGE_AREA_MIN_HEIGHT;
 
     iter = priv->list_pages;
 

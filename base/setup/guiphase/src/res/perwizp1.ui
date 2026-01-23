@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <object class="WinTCWizard97Page" id="page">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="title">Regional and Language Options</property>
+    <property name="subtitle">You can customize Windows XP for different regions and languages.</property>
+    <property name="orientation">horizontal</property>
+
+    <child>
+      <object class="GtkImage">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="resource">/uk/oddmatics/wintc/wsetupx/region.png</property>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">False</property>
+        <property name="position">0</property>
+      </packing>
+    </child>
+
+    <child>
+      <object class="GtkLabel">
+        <property name="label">This is when you'd select regional and language options.</property>
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="max-width-chars">25</property>
+        <property name="wrap">True</property>
+        <property name="xalign">0.0</property>
+
+        <style>
+          <class name="wintc-mb-sm" />
+        </style>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">False</property>
+        <property name="position">1</property>
+      </packing>
+    </child>
+  </object>
+</interface>

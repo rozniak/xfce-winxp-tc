@@ -1,11 +1,13 @@
 #include <glib.h>
 #include <gtk/gtk.h>
 #include <stdlib.h>
+#include <wintc/comctl.h>
 #include <wintc/comgtk.h>
 #include <wintc/exec.h>
 #include <wintc/shelldpa.h>
 
 #include "arm.h"
+#include "perwiz.h"
 #include "setupclr.h"
 #include "setupwnd.h"
 
@@ -120,6 +122,8 @@ int main(
         return EXIT_FAILURE;
     }
 
+    wintc_ctl_install_default_styles();
+
     // Set GtkSettings, because xsettings never seems to work -_-
     //
     GtkSettings* settings = gtk_settings_get_default();
@@ -180,9 +184,8 @@ int main(
     // Create a billy basic test window (will be replaced by a wizard
     // eventually
     //
-    GtkWidget* window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    GtkWidget* window = wintc_setup_personalize_wizard_new();
 
-    gtk_window_set_title(GTK_WINDOW(window), "Hello World!");
     gtk_window_set_transient_for(GTK_WINDOW(window), GTK_WINDOW(wnd_setup));
 
     g_signal_connect(
