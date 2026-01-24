@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <object class="WinTCWizard97Page" id="page">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="title">Date and Time Settings</property>
+    <property name="subtitle">Set the correct date and time for your Windows computer.</property>
+    <property name="orientation">vertical</property>
+
+    <child>
+      <object class="GtkFrame">
+        <property name="label">Date &amp; Time</property>
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+
+        <child>
+          <object class="GtkBox">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="orientation">horizontal</property>
+
+            <child>
+              <object class="GtkImage">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="resource">/uk/oddmatics/wintc/wsetupx/timedate.png</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+
+            <child>
+              <object class="GtkComboBox">
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="valign">GTK_ALIGN_CENTER</property>
+
+                <style>
+                  <class name="wintc-ml-lg" />
+                  <class name="wintc-mr-lg" />
+                </style>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+
+            <child>
+              <object class="GtkSpinButton">
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="valign">GTK_ALIGN_CENTER</property>
+
+                <style>
+                  <class name="wintc-ml-lg" />
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
+
+            <style>
+              <class name="wintc-mb-md" />
+              <class name="wintc-ml-lg" />
+              <class name="wintc-mr-lg" />
+              <class name="wintc-mt-md" />
+            </style>
+          </object>
+        </child>
+
+        <style>
+          <class name="wintc-mb-lg" />
+        </style>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">False</property>
+        <property name="position">0</property>
+      </packing>
+    </child>
+
+    <child>
+      <object class="GtkFrame">
+        <property name="label">Time Zone</property>
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+
+        <child>
+          <object class="GtkBox">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="orientation">horizontal</property>
+
+            <child>
+              <object class="GtkImage">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="resource">/uk/oddmatics/wintc/wsetupx/tz.png</property>
+                <property name="valign">GTK_ALIGN_START</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+
+            <child>
+              <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="orientation">vertical</property>
+
+                <child>
+                  <object class="GtkComboBox">
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+
+                    <style>
+                      <class name="wintc-mb-md" />
+                    </style>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+
+                <child>
+                  <object class="GtkCheckButton">
+                    <property name="label">Automatically adjust the clock for daylight saving changes</property>
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+
+                    <style>
+                      <class name="wintc-mt-md" />
+                    </style>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+
+                <style>
+                  <class name="wintc-mt-sm" />
+                  <class name="wintc-ml-lg" />
+                </style>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+
+            <style>
+              <class name="wintc-mb-md" />
+              <class name="wintc-ml-lg" />
+              <class name="wintc-mr-lg" />
+              <class name="wintc-mt-md" />
+            </style>
+          </object>
+        </child>
+
+        <style>
+          <class name="wintc-mt-lg" />
+        </style>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">False</property>
+        <property name="position">1</property>
+      </packing>
+    </child>
+  </object>
+</interface>

@@ -20,6 +20,8 @@
     <file>region.png</file>
     <file>person.png</file>
     <file>pidkey.png</file>
+    <file>timedate.png</file>
+    <file>tz.png</file>
     <file>watermk.png</file>
 
     <!--             -->
@@ -36,5 +38,6 @@
     <file>perwizp2.ui</file>
     <file>perwizp3.ui</file>
     <file>perwizp4.ui</file>
+    <file>perwizp5.ui</file>
   </gresource>
 </gresources>
