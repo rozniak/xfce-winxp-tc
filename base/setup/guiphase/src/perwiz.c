@@ -39,6 +39,7 @@ static void wintc_setup_personalize_wizard_class_init(
         "/uk/oddmatics/wintc/wsetupx/watermk.png",
         "/uk/oddmatics/wintc/wsetupx/header.png",
         "/uk/oddmatics/wintc/wsetupx/perwizp1.ui",
+        "/uk/oddmatics/wintc/wsetupx/perwizp2.ui",
         NULL
     );
 }

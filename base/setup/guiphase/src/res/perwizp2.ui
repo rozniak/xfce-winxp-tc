@@ -3,8 +3,8 @@
   <object class="WinTCWizard97Page" id="page">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
-    <property name="title">Regional and Language Options</property>
-    <property name="subtitle">You can customize Windows XP for different regions and languages.</property>
+    <property name="title">Personalize Your Software</property>
+    <property name="subtitle">Setup uses the information you provide about yourself to personalize your Windows XP software.</property>
     <property name="orientation">horizontal</property>
 
     <child>
@@ -13,7 +13,7 @@
         <property name="can-focus">False</property>
         <property name="halign">GTK_ALIGN_START</property>
         <property name="valign">GTK_ALIGN_START</property>
-        <property name="resource">/uk/oddmatics/wintc/wsetupx/region.png</property>
+        <property name="resource">/uk/oddmatics/wintc/wsetupx/person.png</property>
       </object>
       <packing>
         <property name="expand">False</property>
@@ -30,7 +30,7 @@
 
         <child>
           <object class="GtkLabel">
-            <property name="label">Region and Language Options allow you to change the way numbers, dates, currencies and the time are displayed. You can also add support for additional languages, and change your location setting.</property>
+            <property name="label">Type your full name and the name of your company or organization.</property>
             <property name="visible">True</property>
             <property name="can-focus">False</property>
             <property name="max-width-chars">25</property>
@@ -50,17 +50,39 @@
         </child>
 
         <child>
-          <object class="GtkLabel">
-            <property name="label">The Standards and formats setting is set to %s, and the location is set to %s.</property>
+          <object class="GtkBox">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
-            <property name="max-width-chars">25</property>
-            <property name="valign">GTK_ALIGN_START</property>
-            <property name="wrap">True</property>
-            <property name="xalign">0.0</property>
+            <property name="orientation">horizontal</property>
+
+            <child>
+              <object class="GtkLabel">
+                <property name="label">Name:</property>
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="xalign">0.0</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkEntry">
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
 
             <style>
-              <class name="wintc-mb-lg" />
+              <class name="wintc-mb-md" />
+              <class name="wintc-mt-lg" />
             </style>
           </object>
           <packing>
@@ -78,7 +100,7 @@
 
             <child>
               <object class="GtkLabel">
-                <property name="label">To change these settings, click Customize.</property>
+                <property name="label">Organization:</property>
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <property name="xalign">0.0</property>
@@ -90,8 +112,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton">
-                <property name="label">Customize...</property>
+              <object class="GtkEntry">
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
               </object>
@@ -101,116 +122,11 @@
                 <property name="position">1</property>
               </packing>
             </child>
-
-            <style>
-              <class name="wintc-mb-lg" />
-            </style>
           </object>
           <packing>
             <property name="expand">False</property>
             <property name="fill">False</property>
             <property name="position">2</property>
-          </packing>
-        </child>
-
-        <child>
-          <object class="GtkSeparator">
-            <property name="visible">True</property>
-            <property name="can-focus">False</property>
-
-            <style>
-              <class name="wintc-mb-lg" />
-            </style>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">False</property>
-            <property name="position">3</property>
-          </packing>
-        </child>
-
-        <child>
-          <object class="GtkLabel">
-            <property name="label">Text Input Languages allow you to enter text in many different languages, using a variety of input methods and devices.</property>
-            <property name="visible">True</property>
-            <property name="can-focus">False</property>
-            <property name="max-width-chars">25</property>
-            <property name="valign">GTK_ALIGN_START</property>
-            <property name="wrap">True</property>
-            <property name="xalign">0.0</property>
-
-            <style>
-              <class name="wintc-mb-lg" />
-            </style>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">False</property>
-            <property name="position">4</property>
-          </packing>
-        </child>
-
-        <child>
-          <object class="GtkLabel">
-            <property name="label">Your default text input language and method is: %s</property>
-            <property name="visible">True</property>
-            <property name="can-focus">False</property>
-            <property name="max-width-chars">25</property>
-            <property name="valign">GTK_ALIGN_START</property>
-            <property name="wrap">True</property>
-            <property name="xalign">0.0</property>
-
-            <style>
-              <class name="wintc-mb-lg" />
-            </style>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">False</property>
-            <property name="position">5</property>
-          </packing>
-        </child>
-
-        <child>
-          <object class="GtkBox">
-            <property name="visible">True</property>
-            <property name="can-focus">False</property>
-            <property name="orientation">horizontal</property>
-
-            <child>
-              <object class="GtkLabel">
-                <property name="label">To view or change your current configuration, click Details.</property>
-                <property name="visible">True</property>
-                <property name="can-focus">False</property>
-                <property name="xalign">0.0</property>
-              </object>
-              <packing>
-                <property name="expand">True</property>
-                <property name="fill">True</property>
-                <property name="position">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkButton">
-                <property name="label">Details...</property>
-                <property name="visible">True</property>
-                <property name="can-focus">True</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
-                <property name="position">1</property>
-              </packing>
-            </child>
-
-            <style>
-              <class name="wintc-mb-lg" />
-            </style>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">False</property>
-            <property name="position">6</property>
           </packing>
         </child>
 

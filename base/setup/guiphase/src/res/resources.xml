@@ -16,6 +16,7 @@
 
     <file>header.png</file>
     <file>region.png</file>
+    <file>person.png</file>
     <file>watermk.png</file>
 
     <!--             -->
@@ -29,5 +30,6 @@
     <file>setupwnd.ui</file>
 
     <file>perwizp1.ui</file>
+    <file>perwizp2.ui</file>
   </gresource>
 </gresources>
