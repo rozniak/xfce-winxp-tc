@@ -78,3 +78,11 @@ box.vertical.wintc-button-box button:last-child
 {
     border-top: 1px solid @borders;
 }
+
+/**
+ * Text styles
+ */
+.wintc-txt-emphasis
+{
+    font-weight: bold;
+}

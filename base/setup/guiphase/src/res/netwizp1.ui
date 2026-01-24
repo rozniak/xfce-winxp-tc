@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <object class="WinTCWizard97Page" id="page">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="title">Networking Settings</property>
+    <property name="subtitle">Installing network software allows you to connect to other computers, networks, and the Internet.</property>
+    <property name="orientation">horizontal</property>
+
+    <child>
+      <object class="GtkImage">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="halign">GTK_ALIGN_START</property>
+        <property name="valign">GTK_ALIGN_START</property>
+        <property name="resource">/uk/oddmatics/wintc/wsetupx/network.png</property>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">False</property>
+        <property name="position">0</property>
+      </packing>
+    </child>
+
+    <child>
+      <object class="GtkBox">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="orientation">vertical</property>
+
+        <child>
+          <object class="GtkLabel">
+            <property name="label">Choose whether to use typical or custom settings.</property>
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="max-width-chars">25</property>
+            <property name="valign">GTK_ALIGN_START</property>
+            <property name="wrap">True</property>
+            <property name="xalign">0.0</property>
+
+            <style>
+              <class name="wintc-mb-lg" />
+            </style>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+
+        <child>
+          <object class="GtkGrid">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="orientation">horizontal</property>
+
+            <child>
+              <object class="GtkRadioButton" id="radio-net-typical">
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+
+                <style>
+                  <class name="wintc-mb-sm" />
+                  <class name="wintc-mr-sm" />
+                </style>
+              </object>
+              <packing>
+                <property name="left-attach">0</property>
+                <property name="top-attach">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="label">Typical settings</property>
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="xalign">0.0</property>
+
+                <style>
+                  <class name="wintc-txt-emphasis" />
+                </style>
+              </object>
+              <packing>
+                <property name="left-attach">1</property>
+                <property name="top-attach">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="label">Creates network connections using the Client for Microsoft Networks, File and Print Sharing for Microsoft Networks, QoS Packet Scheduler, and the TCP/IP transport protocol with automatic addressing.</property>
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="max-width-chars">58</property>
+                <property name="wrap">True</property>
+                <property name="xalign">0.0</property>
+
+                <style>
+                  <class name="wintc-mb-lg" />
+                </style>
+              </object>
+              <packing>
+                <property name="left-attach">1</property>
+                <property name="top-attach">1</property>
+              </packing>
+            </child>
+
+            <child>
+              <object class="GtkRadioButton" id="radio-net-custom">
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="group">radio-net-typical</property>
+
+                <style>
+                  <class name="wintc-mr-sm" />
+                </style>
+              </object>
+              <packing>
+                <property name="left-attach">0</property>
+                <property name="top-attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="label">Custom settings</property>
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="xalign">0.0</property>
+
+                <style>
+                  <class name="wintc-mb-sm" />
+                  <class name="wintc-txt-emphasis" />
+                </style>
+              </object>
+              <packing>
+                <property name="left-attach">1</property>
+                <property name="top-attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="label">Allows you to manually configure networking components.</property>
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="max-width-chars">58</property>
+                <property name="wrap">True</property>
+                <property name="xalign">0.0</property>
+              </object>
+              <packing>
+                <property name="left-attach">1</property>
+                <property name="top-attach">3</property>
+              </packing>
+            </child>
+
+            <style>
+              <class name="wintc-mt-lg" />
+            </style>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+
+        <style>
+          <class name="wintc-ml-lg" />
+        </style>
+      </object>
+      <packing>
+        <property name="expand">True</property>
+        <property name="fill">True</property>
+        <property name="position">1</property>
+      </packing>
+    </child>
+  </object>
+</interface>
