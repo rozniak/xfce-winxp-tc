@@ -14,6 +14,8 @@
     <file>logo.png</file>
     <file>throbber.png</file>
 
+    <file>admin.png</file>
+    <file>comp.png</file>
     <file>header.png</file>
     <file>region.png</file>
     <file>person.png</file>
@@ -33,5 +35,6 @@
     <file>perwizp1.ui</file>
     <file>perwizp2.ui</file>
     <file>perwizp3.ui</file>
+    <file>perwizp4.ui</file>
   </gresource>
 </gresources>
