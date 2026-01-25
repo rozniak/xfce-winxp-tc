@@ -3,17 +3,17 @@
 #include <wintc/comgtk.h>
 #include <wintc/wizard97.h>
 
-#include "perwiz.h"
+#include "netwiz.h"
 
 //
 // GTK OOP CLASS/INSTANCE DEFINITIONS
 //
-struct _WinTCSetupPersonalizeWizardClass
+struct _WinTCSetupNetworkWizardClass
 {
     WinTCWizard97WindowClass __parent__;
 };
 
-struct _WinTCSetupPersonalizeWizard
+struct _WinTCSetupNetworkWizard
 {
     WinTCWizard97Window __parent__;
 };
@@ -22,13 +22,13 @@ struct _WinTCSetupPersonalizeWizard
 // GTK TYPE DEFINITION & CTORS
 //
 G_DEFINE_TYPE(
-    WinTCSetupPersonalizeWizard,
-    wintc_setup_personalize_wizard,
+    WinTCSetupNetworkWizard,
+    wintc_setup_network_wizard,
     WINTC_TYPE_WIZARD97_WINDOW
 )
 
-static void wintc_setup_personalize_wizard_class_init(
-    WinTCSetupPersonalizeWizardClass* klass
+static void wintc_setup_network_wizard_class_init(
+    WinTCSetupNetworkWizardClass* klass
 )
 {
     WinTCWizard97WindowClass* wizard_class =
@@ -38,17 +38,15 @@ static void wintc_setup_personalize_wizard_class_init(
         wizard_class,
         "/uk/oddmatics/wintc/wsetupx/watermk.png",
         "/uk/oddmatics/wintc/wsetupx/header.png",
-        "/uk/oddmatics/wintc/wsetupx/perwizp1.ui",
-        "/uk/oddmatics/wintc/wsetupx/perwizp2.ui",
-        "/uk/oddmatics/wintc/wsetupx/perwizp3.ui",
-        "/uk/oddmatics/wintc/wsetupx/perwizp4.ui",
-        "/uk/oddmatics/wintc/wsetupx/perwizp5.ui",
+        "/uk/oddmatics/wintc/wsetupx/netwizp1.ui",
+        "/uk/oddmatics/wintc/wsetupx/netwizp2.ui",
+        "/uk/oddmatics/wintc/wsetupx/netwizp3.ui",
         NULL
     );
 }
 
-static void wintc_setup_personalize_wizard_init(
-    WinTCSetupPersonalizeWizard* self
+static void wintc_setup_network_wizard_init(
+    WinTCSetupNetworkWizard* self
 )
 {
     wintc_wizard97_window_init_wizard(
@@ -59,11 +57,11 @@ static void wintc_setup_personalize_wizard_init(
 //
 // PUBLIC FUNCTIONS
 //
-GtkWidget* wintc_setup_personalize_wizard_new(void)
+GtkWidget* wintc_setup_network_wizard_new(void)
 {
     return GTK_WIDGET(
         g_object_new(
-            WINTC_TYPE_SETUP_PERSONALIZE_WIZARD,
+            WINTC_TYPE_SETUP_NETWORK_WIZARD,
             "title", "Windows XP Professional Setup",
             NULL
         )

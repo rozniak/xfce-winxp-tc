@@ -37,9 +37,11 @@ add_executable(
     src/arm.c
     src/arm.h
     src/main.c
-    src/resources.c
+    src/netwiz.c
+    src/netwiz.h
     src/perwiz.c
     src/perwiz.h
+    src/resources.c
     src/setupclr.c
     src/setupclr.h
     src/setupwnd.c
