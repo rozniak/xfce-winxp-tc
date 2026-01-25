@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <object class="WinTCWizard97Page" id="page">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="title">Networking Components</property>
+    <property name="subtitle">Click on the checkbox to enable a networking component for this device. To add a component, click Install.</property>
+    <property name="orientation">vertical</property>
+
+    <child>
+      <object class="GtkBox">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="orientation">horizontal</property>
+
+        <child>
+          <object class="GtkLabel">
+            <property name="label">For device:</property>
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel">
+            <property name="label">Intel(R) PRO/1000 T Server Adapter</property>
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+
+            <style>
+              <class name="wintc-ml-md" />
+              <class name="wintc-txt-emphasis" />
+            </style>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+
+        <style>
+          <class name="wintc-mb-md" />
+        </style>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">False</property>
+        <property name="position">0</property>
+      </packing>
+    </child>
+
+    <child>
+      <object class="GtkLabel">
+        <property name="label">Components checked are used by this connection:</property>
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="xalign">0.0</property>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">False</property>
+        <property name="position">1</property>
+      </packing>
+    </child>
+
+    <child>
+      <object class="GtkTreeView">
+        <property name="visible">True</property>
+        <property name="can-focus">True</property>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">False</property>
+        <property name="position">2</property>
+      </packing>
+    </child>
+
+    <child>
+      <object class="GtkBox">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="orientation">horizontal</property>
+
+        <child>
+          <object class="GtkButton">
+            <property name="label">Properties</property>
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">0</property>
+            <property name="pack-type">end</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton">
+            <property name="label">Uninstall</property>
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">1</property>
+            <property name="pack-type">end</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton">
+            <property name="label">Install...</property>
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">2</property>
+            <property name="pack-type">end</property>
+          </packing>
+        </child>
+
+        <style>
+          <class name="wintc-button-box" />
+        </style>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">False</property>
+        <property name="position">3</property>
+      </packing>
+    </child>
+
+    <child>
+      <object class="GtkFrame">
+        <property name="label">Description</property>
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+
+        <child>
+          <object class="GtkLabel">
+            <property name="label">Allows your computer to access resources on a Microsoft network.</property>
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="max-width-chars">30</property>
+            <property name="wrap">True</property>
+            <property name="xalign">0.0</property>
+            <property name="yalign">0.0</property>
+
+            <style>
+              <class name="wintc-mb-md" />
+              <class name="wintc-ml-md" />
+              <class name="wintc-mr-md" />
+              <class name="wintc-mt-md" />
+            </style>
+          </object>
+        </child>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">False</property>
+        <property name="position">4</property>
+      </packing>
+    </child>
+  </object>
+</interface>
