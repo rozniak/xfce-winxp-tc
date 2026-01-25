@@ -56,6 +56,17 @@ label.setup-step-progress
     margin-top: 30px;
 }
 
+.setup-steps progressbar trough
+{
+    background: white;
+    border: 1px solid black;
+}
+
+.setup-steps progressbar progress
+{
+    background: #079E05;
+}
+
 .setup-main
 {
     background: url('resource:///uk/oddmatics/wintc/wsetupx/bgmain.png');
