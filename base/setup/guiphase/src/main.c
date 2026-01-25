@@ -7,16 +7,19 @@
 #include <wintc/shelldpa.h>
 
 #include "arm.h"
-#include "perwiz.h"
 #include "setupclr.h"
 #include "setupwnd.h"
 
 //
 // FORWARD DECLARATIONS
 //
-static void on_window_destroyed(
-    GtkWidget* widget,
-    gpointer   user_data
+static gboolean idle_setup_begin_cb(
+    gpointer user_data
+);
+
+static void on_setup_controller_done(
+    WinTCSetupController* setup,
+    gpointer              user_data
 );
 
 //
@@ -166,39 +169,17 @@ int main(
         WINTC_SETUP_WINDOW(wnd_setup),
         WINTC_SETUP_STEP_INSTALLING_WINDOWS
     );
-    wintc_setup_window_set_current_step_progress(
-        WINTC_SETUP_WINDOW(wnd_setup),
-        "Installing devices",
-        0.4f
-    );
 
-    // Create setup controller
+    // Set up the chain to start the setup controller
     //
-    WinTCSetupController* controller =
-        wintc_setup_controller_new(
-            WINTC_SETUP_WINDOW(wnd_setup)
-        );
-
-    wintc_setup_controller_begin(controller);
-
-    // Create a billy basic test window (will be replaced by a wizard
-    // eventually
-    //
-    GtkWidget* window = wintc_setup_personalize_wizard_new();
-
-    gtk_window_set_transient_for(GTK_WINDOW(window), GTK_WINDOW(wnd_setup));
-
-    g_signal_connect(
-        window,
-        "destroy",
-        G_CALLBACK(on_window_destroyed),
-        NULL
+    g_idle_add(
+        (GSourceFunc) idle_setup_begin_cb,
+        wnd_setup
     );
 
     // Launch!
     //
     gtk_widget_show_all(wnd_setup);
-    gtk_widget_show_all(window);
     gtk_main();
 
     return EXIT_SUCCESS;
@@ -207,9 +188,30 @@ int main(
 //
 // CALLBACKS
 //
-static void on_window_destroyed(
-    WINTC_UNUSED(GtkWidget* widget),
-    WINTC_UNUSED(gpointer   user_data)
+static gboolean idle_setup_begin_cb(
+    gpointer user_data
+)
+{
+    WinTCSetupController* controller =
+        wintc_setup_controller_new(
+            WINTC_SETUP_WINDOW(user_data)
+        );
+
+    wintc_setup_controller_begin(controller);
+
+    g_signal_connect(
+        controller,
+        "setup-done",
+        G_CALLBACK(on_setup_controller_done),
+        NULL
+    );
+
+    return G_SOURCE_REMOVE;
+}
+
+static void on_setup_controller_done(
+    WINTC_UNUSED(WinTCSetupController* setup),
+    WINTC_UNUSED(gpointer              user_data)
 )
 {
     gtk_main_quit();
