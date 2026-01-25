@@ -43,5 +43,6 @@
 
     <file>netwizp1.ui</file>
     <file>netwizp2.ui</file>
+    <file>netwizp3.ui</file>
   </gresource>
 </gresources>
