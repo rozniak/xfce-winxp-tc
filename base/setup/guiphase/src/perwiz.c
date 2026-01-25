@@ -44,6 +44,7 @@ static void wintc_setup_personalize_wizard_class_init(
         "/uk/oddmatics/wintc/wsetupx/perwizp4.ui",
         "/uk/oddmatics/wintc/wsetupx/perwizp5.ui",
         "/uk/oddmatics/wintc/wsetupx/netwizp1.ui",
+        "/uk/oddmatics/wintc/wsetupx/netwizp2.ui",
         NULL
     );
 }
