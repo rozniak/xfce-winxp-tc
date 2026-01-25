@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <object class="WinTCWizard97Page" id="page">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="title">Workgroup or Computer Domain</property>
+    <property name="subtitle">A workgroup is a collection of computer that have the same workgroup name. A domain is a collection of computers defined by a network administrator.</property>
+    <property name="orientation">vertical</property>
+
+    <child>
+      <object class="GtkLabel">
+        <property name="label">Do you want this computer to be a member of a domain?
+(You may need to obtain this information from your networking administrator.)</property>
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="max-width-chars">25</property>
+        <property name="valign">GTK_ALIGN_START</property>
+        <property name="wrap">True</property>
+        <property name="xalign">0.0</property>
+
+        <style>
+          <class name="wintc-mb-lg" />
+        </style>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">False</property>
+        <property name="position">0</property>
+      </packing>
+    </child>
+
+    <child>
+      <object class="GtkGrid">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="orientation">horizontal</property>
+
+        <child>
+          <object class="GtkRadioButton" id="radio-net-workgroup">
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <property name="valign">GTK_ALIGN_START</property>
+
+            <style>
+              <class name="wintc-mr-sm" />
+            </style>
+          </object>
+          <packing>
+            <property name="left-attach">0</property>
+            <property name="top-attach">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel">
+            <property name="label">No, this computer is not on a network, or is on a network without a domain.
+Make this computer a member of the following workgroup:</property>
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="xalign">0.0</property>
+
+            <style>
+              <class name="wintc-mb-lg" />
+            </style>
+          </object>
+          <packing>
+            <property name="left-attach">1</property>
+            <property name="top-attach">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkEntry">
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+
+            <style>
+              <class name="wintc-mb-lg" />
+            </style>
+          </object>
+          <packing>
+            <property name="left-attach">1</property>
+            <property name="top-attach">1</property>
+          </packing>
+        </child>
+
+        <child>
+          <object class="GtkRadioButton" id="radio-net-domain">
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <property name="group">radio-net-workgroup</property>
+
+            <style>
+              <class name="wintc-mr-sm" />
+            </style>
+          </object>
+          <packing>
+            <property name="left-attach">0</property>
+            <property name="top-attach">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel">
+            <property name="label">Yes, make this computer a member of the following domain:</property>
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="xalign">0.0</property>
+
+            <style>
+              <class name="wintc-mb-lg" />
+              <class name="wintc-mt-lg" />
+            </style>
+          </object>
+          <packing>
+            <property name="left-attach">1</property>
+            <property name="top-attach">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkEntry">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+          </object>
+          <packing>
+            <property name="left-attach">1</property>
+            <property name="top-attach">3</property>
+          </packing>
+        </child>
+
+        <style>
+          <class name="wintc-mt-lg" />
+        </style>
+      </object>
+      <packing>
+        <property name="expand">True</property>
+        <property name="fill">True</property>
+        <property name="position">1</property>
+      </packing>
+    </child>
+  </object>
+</interface>
