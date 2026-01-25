@@ -1,4 +1,5 @@
 #include <glib.h>
+#include <gio/gunixinputstream.h>
 #include <wintc/comgtk.h>
 
 #include "netwiz.h"
@@ -51,6 +52,9 @@ static void wintc_setup_controller_set_property(
 static void wintc_setup_controller_go_to_phase(
     WinTCSetupController* setup,
     guint                 phase
+);
+static void wintc_setup_controller_test_install_gedit(
+    WinTCSetupController* setup
 );
 
 static void on_netwiz_destroyed(
@@ -348,6 +352,8 @@ static void wintc_setup_controller_go_to_phase(
 
         case PHASE_COPY_FILES:
         {
+            wintc_setup_controller_test_install_gedit(setup);
+
             //
             // FIXME: Implement this later...
             //
@@ -367,6 +373,62 @@ static void wintc_setup_controller_go_to_phase(
             );
             break;
         };
+    }
+}
+
+static void wintc_setup_controller_test_install_gedit(
+    WINTC_UNUSED(WinTCSetupController* setup)
+)
+{
+    gchar* argv[] = {
+        "/usr/bin/apt-get",
+        "install",
+        "-y",
+        "-o",
+        "APT::Status-Fd=1",
+        "gedit"
+    };
+
+    GError* error  = NULL;
+    gint    fd_out = -1;
+
+    if (
+        !g_spawn_async_with_pipes(
+            NULL,
+            argv,
+            NULL,
+            0,
+            NULL,
+            NULL,
+            NULL,
+            NULL,
+            &fd_out,
+            NULL,
+            &error
+        )
+    )
+    {
+        wintc_log_error_and_clear(&error);
+        return;
+    }
+
+    // TESTING READING STDOUT
+    //
+    GInputStream*     fd_stream = g_unix_input_stream_new(fd_out, FALSE);
+    GDataInputStream* stream    = g_data_input_stream_new(fd_stream);
+
+    gchar* line;
+
+    while ((line = g_data_input_stream_read_line(stream, NULL, NULL, &error)))
+    {
+        g_message("FROM APT: %s", line);
+        g_free(line);
+    }
+
+    if (error)
+    {
+        wintc_log_error_and_clear(&error);
+        return;
     }
 }
 
