@@ -4,6 +4,7 @@
 
 #include "netwiz.h"
 #include "perwiz.h"
+#include "setupapi.h"
 #include "setupclr.h"
 
 //
@@ -53,8 +54,23 @@ static void wintc_setup_controller_go_to_phase(
     WinTCSetupController* setup,
     guint                 phase
 );
-static void wintc_setup_controller_test_install_gedit(
+static void wintc_setup_controller_install_files(
     WinTCSetupController* setup
+);
+
+static GList* collect_packages(
+    GKeyFile*    ini_complist,
+    const gchar* group,
+    GList*       list_packages
+);
+
+static void cb_setup_act_error(
+    GError** error,
+    gpointer user_data
+);
+static void cb_setup_act_progress(
+    gdouble  progress,
+    gpointer user_data
 );
 
 static void on_netwiz_destroyed(
@@ -199,10 +215,13 @@ void wintc_setup_controller_begin(
     WINTC_UNUSED(WinTCSetupController* setup)
 )
 {
+    wintc_setup_act_init();
+
     //
     // FIXME: This needs to load the previous state of setup, if possible, in
     //        case power was lost or something
     //
+
     wintc_setup_controller_go_to_phase(
         setup,
         PHASE_INSTALL_DEVICES
@@ -352,17 +371,40 @@ static void wintc_setup_controller_go_to_phase(
 
         case PHASE_COPY_FILES:
         {
-            wintc_setup_controller_test_install_gedit(setup);
+            wintc_setup_window_enable_billboards(setup->wnd_setup);
+            wintc_setup_window_enable_throbbers(setup->wnd_setup);
 
+            wintc_setup_window_set_completion_minutes_approx(
+                setup->wnd_setup,
+                20
+            );
+
+            wintc_setup_window_set_current_step(
+                setup->wnd_setup,
+                WINTC_SETUP_STEP_INSTALLING_WINDOWS
+            );
+            wintc_setup_window_set_current_step_progress(
+                setup->wnd_setup,
+                "Copying Files...",
+                0.0f
+            );
+
+            // Kick off package install
             //
-            // FIXME: Implement this later...
+            wintc_setup_controller_install_files(setup);
+
+            break;
+        }
+
+        case PHASE_SAVE_SETTINGS:
+            //
+            // FIXME: Should do things like LightDM config and such here
             //
             wintc_setup_controller_go_to_phase(
                 setup,
                 PHASE_DONE
             );
             break;
-        }
 
         case PHASE_DONE:
         {
@@ -376,65 +418,253 @@ static void wintc_setup_controller_go_to_phase(
     }
 }
 
-static void wintc_setup_controller_test_install_gedit(
-    WINTC_UNUSED(WinTCSetupController* setup)
+static void wintc_setup_controller_install_files(
+    WinTCSetupController* setup
 )
 {
-    gchar* argv[] = {
-        "/usr/bin/apt-get",
-        "install",
-        "-y",
-        "-o",
-        "APT::Status-Fd=1",
-        "gedit"
-    };
+    GError* error         = NULL;
+    GList*  list_packages = NULL;
 
-    GError* error  = NULL;
-    gint    fd_out = -1;
+    //
+    // FIXME: We're just iterating over all packages listed in the
+    //        component list and installing everything
+    //
+    GKeyFile* ini_complist = g_key_file_new();
 
     if (
-        !g_spawn_async_with_pipes(
-            NULL,
-            argv,
-            NULL,
-            0,
-            NULL,
-            NULL,
-            NULL,
-            NULL,
-            &fd_out,
-            NULL,
+        !g_key_file_load_from_file(
+            ini_complist,
+            WINTC_SETUP_ACT_ROOT_DIR "/complist.ini",
+            G_KEY_FILE_NONE,
             &error
         )
     )
     {
-        wintc_log_error_and_clear(&error);
+        // FIXME: We probably want a more specific error for this
+        //
+        wintc_display_error_and_clear(
+            &error,
+            GTK_WINDOW(setup->wnd_setup)
+        );
+
+        g_signal_emit(
+            setup,
+            wintc_setup_controller_signals[SIGNAL_SETUP_DONE],
+            0
+        );
         return;
     }
 
-    // TESTING READING STDOUT
+    // Add from top level
     //
-    GInputStream*     fd_stream = g_unix_input_stream_new(fd_out, FALSE);
-    GDataInputStream* stream    = g_data_input_stream_new(fd_stream);
+    list_packages =
+        collect_packages(
+            ini_complist,
+            "TopLevel",
+            list_packages
+        );
 
-    gchar* line;
-
-    while ((line = g_data_input_stream_read_line(stream, NULL, NULL, &error)))
+    // Install everything
+    //
+    if (
+        !wintc_setup_act_install_packages(
+            list_packages,
+            cb_setup_act_error,
+            cb_setup_act_progress,
+            setup,
+            &error
+        )
+    )
     {
-        g_message("FROM APT: %s", line);
-        g_free(line);
+        wintc_display_error_and_clear(
+            &error,
+            GTK_WINDOW(setup->wnd_setup)
+        );
     }
 
-    if (error)
+    g_list_free_full(
+        list_packages,
+        (GDestroyNotify) g_free
+    );
+}
+
+static GList* collect_packages(
+    GKeyFile*    ini_complist,
+    const gchar* group,
+    GList*       list_packages
+)
+{
+    GError* error = NULL;
+
+    gchar* group_name = g_strdup_printf("Group.%s", group);
+
+    if (!g_key_file_has_group(ini_complist, group_name))
+    {
+        WINTC_LOG_DEBUG(
+            "setupapi: no such group in complist: %s",
+            group_name
+        );
+
+        g_free(group_name);
+
+        return list_packages;
+    }
+
+    // Find components referenced by the group and add their packages
+    //
+    gchar* csv_components =
+        g_key_file_get_string(
+            ini_complist,
+            group_name,
+            "Components",
+            &error
+        );
+
+    if (csv_components && strlen(csv_components))
+    {
+        gchar** components = g_strsplit(csv_components, ",", -1);
+
+        for (gint i = 0; components[i]; i++)
+        {
+            if (strlen(components[i]) == 0)
+            {
+                continue;
+            }
+
+            gchar* component_name =
+                g_strdup_printf("Component.%s", components[i]);
+
+            gchar* csv_packages =
+                g_key_file_get_string(
+                    ini_complist,
+                    component_name,
+                    "Packages",
+                    &error
+                );
+
+            if (csv_packages && strlen(csv_packages))
+            {
+                gchar** packages = g_strsplit(csv_packages, ",", -1);
+
+                for (gint j = 0; packages[j]; j++)
+                {
+                    if (strlen(packages[j]) == 0)
+                    {
+                        continue;
+                    }
+
+                    list_packages =
+                        g_list_prepend(
+                            list_packages,
+                            g_build_path(
+                                G_DIR_SEPARATOR_S,
+                                WINTC_SETUP_ACT_PKG_PATH,
+                                packages[j],
+                                NULL
+                            )
+                        );
+                }
+
+                g_strfreev(packages);
+            }
+            else
+            {
+                wintc_log_error_and_clear(&error);
+            }
+
+            g_free(csv_packages);
+            g_free(component_name);
+        }
+
+        g_strfreev(components);
+    }
+    else
     {
         wintc_log_error_and_clear(&error);
-        return;
     }
+
+    g_free(csv_components);
+
+    // Iterate over subgroups
+    //
+    gchar* csv_subgroups =
+        g_key_file_get_string(
+            ini_complist,
+            group_name,
+            "SubGroups",
+            &error
+        );
+
+    if (csv_subgroups && strlen(csv_subgroups))
+    {
+        gchar** subgroups = g_strsplit(csv_subgroups, ",", -1);
+
+        for (gint i = 0; subgroups[i]; i++)
+        {
+            if (strlen(subgroups[i]) == 0)
+            {
+                continue;
+            }
+
+            list_packages =
+                collect_packages(
+                    ini_complist,
+                    subgroups[i],
+                    list_packages
+                );
+        }
+
+        g_strfreev(subgroups);
+    }
+    else
+    {
+        wintc_log_error_and_clear(&error);
+    }
+
+    g_free(csv_subgroups);
+
+    return list_packages;
 }
 
 //
 // CALLBACKS
 //
+static void cb_setup_act_error(
+    GError** error,
+    gpointer user_data
+)
+{
+    WinTCSetupController* setup = WINTC_SETUP_CONTROLLER(user_data);
+
+    wintc_display_error_and_clear(
+        error,
+        GTK_WINDOW(setup->wnd_setup)
+    );
+}
+
+static void cb_setup_act_progress(
+    gdouble  progress,
+    gpointer user_data
+)
+{
+    WinTCSetupController* setup = WINTC_SETUP_CONTROLLER(user_data);
+
+    if (progress == 100.0f)
+    {
+        wintc_setup_controller_go_to_phase(
+            setup,
+            PHASE_SAVE_SETTINGS
+        );
+        return;
+    }
+
+    wintc_setup_window_set_current_step_progress(
+        setup->wnd_setup,
+        "Copying Files...",
+        progress
+    );
+}
+
 static void on_netwiz_destroyed(
     WINTC_UNUSED(GtkWidget* widget),
     gpointer user_data
