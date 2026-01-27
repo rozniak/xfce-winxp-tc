@@ -4,13 +4,14 @@ OurPackages=wintc-setup-gui,wintc-theme-native,wintc-icon-theme-luna,wintc-curso
 DistPackagesDeb=xfwm4,xfconf,plymouth,xserver-xorg,xinit
 # FIXME: Other distro packages here
 
-[ComponentRoot]
-TopLevelGroups=Accessories,DevOnly,Shell,VisualStyles
-AlwaysInstall=wintc-build-tag,wintc-regsvc,wintc-winver
-
 #
 # Group metadata
 #
+[Group.TopLevel]
+Name=
+Components=BuildTag,Registry,Winver
+SubGroups=Accessories,DevOnly,Shell,VisualStyles
+
 [Group.Accessories]
 Name=Accessories
 Components=Notepad,Taskmgr
@@ -49,6 +50,21 @@ SubGroups=
 #
 # Component metdata
 #
+[Component.BuildTag]
+Name=Build Tag
+Packages=wintc-build-tag
+Description=Information that identifies the version of the project.
+
+[Component.Registry]
+Name=Registry
+Packages=wintc-regsvc
+Description=The registry service daemon.
+
+[Component.Winver]
+Name=Winver
+Packages=wintc-winver
+Description=The Windows version applet.
+
 [Component.Notepad]
 Name=Notepad
 Packages=wintc-notepad

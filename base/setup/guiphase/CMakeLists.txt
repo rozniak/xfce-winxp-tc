@@ -43,6 +43,8 @@ add_executable(
     src/perwiz.c
     src/perwiz.h
     src/resources.c
+    src/setupapi.c
+    src/setupapi.h
     src/setupclr.c
     src/setupclr.h
     src/setupwnd.c
