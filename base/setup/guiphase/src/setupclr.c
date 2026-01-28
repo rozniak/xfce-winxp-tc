@@ -63,6 +63,12 @@ static GList* collect_packages(
     const gchar* group,
     GList*       list_packages
 );
+static gchar** key_file_get_csv(
+    GKeyFile*    key_file,
+    const gchar* group,
+    const gchar* key,
+    GError**     error
+);
 
 static void cb_setup_act_done(
     gpointer user_data
@@ -516,18 +522,16 @@ static GList* collect_packages(
 
     // Find components referenced by the group and add their packages
     //
-    gchar* csv_components =
-        g_key_file_get_string(
+    gchar** components =
+        key_file_get_csv(
             ini_complist,
             group_name,
             "Components",
             &error
         );
 
-    if (csv_components && strlen(csv_components))
+    if (components)
     {
-        gchar** components = g_strsplit(csv_components, ",", -1);
-
         for (gint i = 0; components[i]; i++)
         {
             if (strlen(components[i]) == 0)
@@ -538,18 +542,16 @@ static GList* collect_packages(
             gchar* component_name =
                 g_strdup_printf("Component.%s", components[i]);
 
-            gchar* csv_packages =
-                g_key_file_get_string(
+            gchar** packages =
+                key_file_get_csv(
                     ini_complist,
                     component_name,
                     "Packages",
                     &error
                 );
 
-            if (csv_packages && strlen(csv_packages))
+            if (packages)
             {
-                gchar** packages = g_strsplit(csv_packages, ",", -1);
-
                 for (gint j = 0; packages[j]; j++)
                 {
                     if (strlen(packages[j]) == 0)
@@ -564,7 +566,7 @@ static GList* collect_packages(
                                 "%s%s%s.deb",
                                 WINTC_SETUP_ACT_PKG_PATH,
                                 G_DIR_SEPARATOR_S,
-                                packages[j],
+                                packages[j]
                             )
                         );
                 }
@@ -576,7 +578,6 @@ static GList* collect_packages(
                 wintc_log_error_and_clear(&error);
             }
 
-            g_free(csv_packages);
             g_free(component_name);
         }
 
@@ -587,22 +588,18 @@ static GList* collect_packages(
         wintc_log_error_and_clear(&error);
     }
 
-    g_free(csv_components);
-
     // Iterate over subgroups
     //
-    gchar* csv_subgroups =
-        g_key_file_get_string(
+    gchar** subgroups =
+        key_file_get_csv(
             ini_complist,
             group_name,
             "SubGroups",
             &error
         );
 
-    if (csv_subgroups && strlen(csv_subgroups))
+    if (subgroups)
     {
-        gchar** subgroups = g_strsplit(csv_subgroups, ",", -1);
-
         for (gint i = 0; subgroups[i]; i++)
         {
             if (strlen(subgroups[i]) == 0)
@@ -625,9 +622,34 @@ static GList* collect_packages(
         wintc_log_error_and_clear(&error);
     }
 
-    g_free(csv_subgroups);
-
     return list_packages;
+}
+
+static gchar** key_file_get_csv(
+    GKeyFile*    key_file,
+    const gchar* group,
+    const gchar* key,
+    GError**     error
+)
+{
+    gchar* key_value =
+        g_key_file_get_string(
+            key_file,
+            group,
+            key,
+            error
+        );
+
+    if (!key_value)
+    {
+        return NULL;
+    }
+
+    gchar** split = g_strsplit(key_value, ",", -1);
+
+    g_free(key_value);
+
+    return split;
 }
 
 //
@@ -637,6 +659,8 @@ static void cb_setup_act_done(
     gpointer user_data
 )
 {
+    WinTCSetupController* setup = WINTC_SETUP_CONTROLLER(user_data);
+
     wintc_setup_controller_go_to_phase(
         setup,
         PHASE_SAVE_SETTINGS
