@@ -27,6 +27,13 @@ def wsetup_step_init(stdscr):
         stdscr.getch()
         return 0
 
+    # Drop the pkgpath file into the setup state
+    #
+    dir_setup_state = os.environ.get("WSETUP_STATE_ROOT")
+
+    with open(os.environ.get(f"{dir_setup_state}/pkgpath")) as f:
+        f.write(wsetup_pkg_get_pkgpath())
+
     return 2 # All good
 
 def wsetup_step_beta_notice(stdscr):

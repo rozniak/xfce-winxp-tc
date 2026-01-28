@@ -11,6 +11,9 @@
 //
 // PUBLIC TYPEDEFS
 //
+typedef void (*WinTCSetupActDoneCallback) (
+    gpointer user_data
+);
 typedef void (*WinTCSetupActErrorCallback) (
     GError** error,
     gpointer user_data
@@ -31,6 +34,7 @@ extern gchar* WINTC_SETUP_ACT_PKG_PATH;
 gboolean wintc_setup_act_init(void);
 gboolean wintc_setup_act_install_packages(
     GList*                        list_packages,
+    WinTCSetupActDoneCallback     done_callback,
     WinTCSetupActErrorCallback    error_callback,
     WinTCSetupActProgressCallback progress_callback,
     gpointer                      user_data,

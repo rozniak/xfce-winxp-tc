@@ -64,6 +64,9 @@ static GList* collect_packages(
     GList*       list_packages
 );
 
+static void cb_setup_act_done(
+    gpointer user_data
+);
 static void cb_setup_act_error(
     GError** error,
     gpointer user_data
@@ -469,6 +472,7 @@ static void wintc_setup_controller_install_files(
     if (
         !wintc_setup_act_install_packages(
             list_packages,
+            cb_setup_act_done,
             cb_setup_act_error,
             cb_setup_act_progress,
             setup,
@@ -556,11 +560,11 @@ static GList* collect_packages(
                     list_packages =
                         g_list_prepend(
                             list_packages,
-                            g_build_path(
-                                G_DIR_SEPARATOR_S,
+                            g_strdup_printf(
+                                "%s%s%s.deb",
                                 WINTC_SETUP_ACT_PKG_PATH,
+                                G_DIR_SEPARATOR_S,
                                 packages[j],
-                                NULL
                             )
                         );
                 }
@@ -629,6 +633,16 @@ static GList* collect_packages(
 //
 // CALLBACKS
 //
+static void cb_setup_act_done(
+    gpointer user_data
+)
+{
+    wintc_setup_controller_go_to_phase(
+        setup,
+        PHASE_SAVE_SETTINGS
+    );
+}
+
 static void cb_setup_act_error(
     GError** error,
     gpointer user_data
@@ -649,19 +663,10 @@ static void cb_setup_act_progress(
 {
     WinTCSetupController* setup = WINTC_SETUP_CONTROLLER(user_data);
 
-    if (progress == 100.0f)
-    {
-        wintc_setup_controller_go_to_phase(
-            setup,
-            PHASE_SAVE_SETTINGS
-        );
-        return;
-    }
-
     wintc_setup_window_set_current_step_progress(
         setup->wnd_setup,
         "Copying Files...",
-        progress
+        progress / 100.0f
     );
 }
 
