@@ -31,7 +31,7 @@ def wsetup_step_init(stdscr):
     #
     dir_setup_state = os.environ.get("WSETUP_STATE_ROOT")
 
-    with open(os.environ.get(f"{dir_setup_state}/pkgpath")) as f:
+    with open(f"{dir_setup_state}/pkgpath") as f:
         f.write(wsetup_pkg_get_pkgpath())
 
     return 2 # All good
