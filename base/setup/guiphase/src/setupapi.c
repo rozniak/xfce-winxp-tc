@@ -9,6 +9,7 @@
 //
 typedef struct _WinTCSetupActCallbacks
 {
+    WinTCSetupActDoneCallback     done_cb;
     WinTCSetupActErrorCallback    error_cb;
     WinTCSetupActProgressCallback progress_cb;
     gpointer                      user_data;
@@ -73,11 +74,17 @@ gboolean wintc_setup_act_init(void)
 
     g_free(packages_path_descr);
 
+    if (WINTC_SETUP_ACT_PKG_PATH)
+    {
+        g_strstrip(WINTC_SETUP_ACT_PKG_PATH);
+    }
+
     return !!(WINTC_SETUP_ACT_PKG_PATH);
 }
 
 gboolean wintc_setup_act_install_packages(
     GList*                        list_packages,
+    WinTCSetupActDoneCallback     done_callback,
     WinTCSetupActErrorCallback    error_callback,
     WinTCSetupActProgressCallback progress_callback,
     gpointer                      user_data,
@@ -100,7 +107,7 @@ gboolean wintc_setup_act_install_packages(
 
     gint i = len_cmd;
 
-    memcpy(argv, S_PKG_CMD_APT, len_packages);
+    memcpy(argv, S_PKG_CMD_APT, sizeof(gchar*) * len_cmd);
 
     for (GList* iter = list_packages; iter; iter = iter->next, i++)
     {
@@ -134,6 +141,7 @@ gboolean wintc_setup_act_install_packages(
     WinTCSetupActCallbacks* callbacks =
         g_new0(WinTCSetupActCallbacks, 1);
 
+    callbacks->done_cb     = done_callback;
     callbacks->error_cb    = error_callback;
     callbacks->progress_cb = progress_callback;
     callbacks->user_data   = user_data;
@@ -210,8 +218,7 @@ static void cb_read_line_pkgmgr(
 
         // We're done!
         //
-        callbacks->progress_cb(
-            100.0f,
+        callbacks->done_cb(
             callbacks->user_data
         );
 
@@ -222,7 +229,7 @@ static void cb_read_line_pkgmgr(
     //
     gchar** apt_status = g_strsplit(line, ":", -1);
 
-    if (g_str_has_suffix(apt_status[0], "status")) // dlstatus / pmstatus
+    if (g_strcmp0(apt_status[0], "pmstatus") == 0) // pmstatus
     {
         // Update progress
         //
@@ -231,12 +238,9 @@ static void cb_read_line_pkgmgr(
             callbacks->user_data
         );
 
-        // For pmstatus, track the packages we're installing
+        // Track the packages we're installing
         //
-        if (
-            g_strcmp0(apt_status[0], "pmstatus") == 0 &&
-            g_str_has_prefix(apt_status[3], "Installed")
-        )
+        if (g_str_has_prefix(apt_status[3], "Installed"))
         {
             S_INSTALLED_PACKAGES =
                 g_list_prepend(S_INSTALLED_PACKAGES, apt_status[1]);

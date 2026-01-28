@@ -20,10 +20,10 @@ def wsetup_pkg_get_pkgfmt_extension():
 
     raise Exception(f"Unknown package format {pkgfmt}")
 
-def wsetup_pkg_get_pkgnames_basesystem():
+def wsetup_pkg_get_pkgpath():
     setup_root = os.environ.get("SETUPROOT")
 
-    # Set up package format vars
+    # Construct the package source path
     #
     pkgfmt_arch = subprocess.Popen(
             "uname -m",
@@ -31,11 +31,16 @@ def wsetup_pkg_get_pkgnames_basesystem():
             stdout=subprocess.PIPE
         ).stdout.read().decode('utf-8').strip()
 
-    pkgfmt         = os.environ.get("WSETUP_DIST_PKGFMT")
-    pkgfmt_ext     = os.environ.get("WSETUP_DIST_PKGFMT_EXT", "std")
-    pkgfmt_fileext = wsetup_pkg_get_pkgfmt_extension()
+    pkgfmt     = os.environ.get("WSETUP_DIST_PKGFMT")
+    pkgfmt_ext = os.environ.get("WSETUP_DIST_PKGFMT_EXT", "std")
 
-    pkg_src_dir = f"{setup_root}/{pkgfmt}/{pkgfmt_ext}/{pkgfmt_arch}"
+    return f"{setup_root}/{pkgfmt}/{pkgfmt_ext}/{pkgfmt_arch}"
+
+def wsetup_pkg_get_pkgnames_basesystem():
+    setup_root = os.environ.get("SETUPROOT")
+
+    pkgfmt_fileext = wsetup_pkg_get_pkgfmt_extension()
+    pkg_src_dir    = wsetup_pkg_get_pkgpath()
 
     # Read complist.ini to set up the stuff we need to install for phase 2
     #
