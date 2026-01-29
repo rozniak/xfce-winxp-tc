@@ -214,5 +214,34 @@ static void on_setup_controller_done(
     WINTC_UNUSED(gpointer              user_data)
 )
 {
+    GError* error = NULL;
+
+    // Reboot
+    //
+    // FIXME: likely debian specific!!
+    //
+    gchar* argv[] = {
+        "/usr/sbin/reboot",
+        NULL
+    };
+
+    if (
+        !g_spawn_sync(
+            NULL,
+            argv,
+            NULL,
+            0,
+            NULL,
+            NULL,
+            NULL,
+            NULL,
+            NULL,
+            &error
+        )
+    )
+    {
+        wintc_log_error_and_clear(&error);
+    }
+
     gtk_main_quit();
 }

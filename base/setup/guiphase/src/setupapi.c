@@ -275,7 +275,8 @@ static void wintc_setup_act_iter_setting_phase(
             gchar* argv[] = {
                 "/usr/bin/systemctl",
                 "disable",
-                "wsetupx.service"
+                "wsetupx.service",
+                NULL
             };
 
             if (
