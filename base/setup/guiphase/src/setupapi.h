@@ -40,5 +40,11 @@ gboolean wintc_setup_act_install_packages(
     gpointer                      user_data,
     GError**                      error
 );
+void wintc_setup_act_prepare_system(
+    WinTCSetupActDoneCallback     done_callback,
+    WinTCSetupActErrorCallback    error_callback,
+    WinTCSetupActProgressCallback progress_callback,
+    gpointer                      user_data
+);
 
 #endif
