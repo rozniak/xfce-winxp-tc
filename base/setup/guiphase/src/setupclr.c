@@ -110,6 +110,7 @@ struct _WinTCSetupController
     GObject __parent__;
 
     WinTCSetupWindow* wnd_setup;
+    guint             current_phase;
 };
 
 //
@@ -245,6 +246,8 @@ static void wintc_setup_controller_go_to_phase(
     guint                 phase
 )
 {
+    setup->current_phase = phase;
+
     switch (phase)
     {
         case PHASE_INSTALL_DEVICES:
@@ -394,7 +397,7 @@ static void wintc_setup_controller_go_to_phase(
             );
             wintc_setup_window_set_current_step_progress(
                 setup->wnd_setup,
-                "Copying Files...",
+                NULL,
                 0.0f
             );
 
@@ -406,12 +409,31 @@ static void wintc_setup_controller_go_to_phase(
         }
 
         case PHASE_SAVE_SETTINGS:
+            wintc_setup_window_enable_billboards(setup->wnd_setup);
+            wintc_setup_window_enable_throbbers(setup->wnd_setup);
+
+            wintc_setup_window_set_completion_minutes_approx(
+                setup->wnd_setup,
+                10
+            );
+
+            wintc_setup_window_set_current_step(
+                setup->wnd_setup,
+                WINTC_SETUP_STEP_INSTALLING_WINDOWS
+            );
+            wintc_setup_window_set_current_step_progress(
+                setup->wnd_setup,
+                NULL,
+                0.0f
+            );
+
+            // Kick off system config
             //
-            // FIXME: Should do things like LightDM config and such here
-            //
-            wintc_setup_controller_go_to_phase(
-                setup,
-                PHASE_DONE
+            wintc_setup_act_prepare_system(
+                cb_setup_act_done,
+                cb_setup_act_error,
+                cb_setup_act_progress,
+                setup
             );
             break;
 
@@ -661,9 +683,18 @@ static void cb_setup_act_done(
 {
     WinTCSetupController* setup = WINTC_SETUP_CONTROLLER(user_data);
 
+    guint next_phase = PHASE_DONE;
+
+    switch (setup->current_phase)
+    {
+        case PHASE_COPY_FILES:    next_phase = PHASE_SAVE_SETTINGS; break;
+        case PHASE_SAVE_SETTINGS: next_phase = PHASE_DONE;          break;
+        default: break;
+    }
+
     wintc_setup_controller_go_to_phase(
         setup,
-        PHASE_SAVE_SETTINGS
+        next_phase
     );
 }
 
@@ -674,9 +705,18 @@ static void cb_setup_act_error(
 {
     WinTCSetupController* setup = WINTC_SETUP_CONTROLLER(user_data);
 
+    //
+    // FIXME: Need to be far more robust here
+    //
+
     wintc_display_error_and_clear(
         error,
         GTK_WINDOW(setup->wnd_setup)
+    );
+
+    wintc_setup_controller_go_to_phase(
+        setup,
+        PHASE_DONE
     );
 }
 
@@ -687,9 +727,24 @@ static void cb_setup_act_progress(
 {
     WinTCSetupController* setup = WINTC_SETUP_CONTROLLER(user_data);
 
+    const gchar* progress_label = NULL;
+
+    switch (setup->current_phase)
+    {
+        case PHASE_COPY_FILES:
+            progress_label = "Copying Files...";
+            break;
+
+        case PHASE_SAVE_SETTINGS:
+            progress_label = "Saving Settings...";
+            break;
+
+        default: break;
+    }
+
     wintc_setup_window_set_current_step_progress(
         setup->wnd_setup,
-        "Copying Files...",
+        progress_label,
         progress / 100.0f
     );
 }
