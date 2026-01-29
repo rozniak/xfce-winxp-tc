@@ -39,6 +39,7 @@ def wsetup_pkg_get_pkgpath():
 def wsetup_pkg_get_pkgnames_basesystem():
     setup_root = os.environ.get("SETUPROOT")
 
+    pkgfmt         = os.environ.get("WSETUP_DIST_PKGFMT")
     pkgfmt_fileext = wsetup_pkg_get_pkgfmt_extension()
     pkg_src_dir    = wsetup_pkg_get_pkgpath()
 
