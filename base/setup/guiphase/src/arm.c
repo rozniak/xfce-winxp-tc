@@ -60,6 +60,22 @@ gboolean wintc_setup_arm_system(void)
         return FALSE;
     }
 
+    // FIXME: Disabling LightDM here because no matter what I do I CANNOT GET
+    //        WSETUPX TO START FIRST!!!
+    //
+    if (
+        !wintc_launch_command_sync(
+            "systemctl disable lightdm",
+            NULL,
+            NULL,
+            &error
+        )
+    )
+    {
+        wintc_log_error_and_clear(&error);
+        return FALSE;
+    }
+
     // Read in Grub config, we crudely prepend a group onto the text so that
     // it can be read as a keyfile
     //
