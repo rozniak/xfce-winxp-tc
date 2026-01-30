@@ -1,6 +1,6 @@
 [BaseSystem]
 Libs=@WSETUP_LIBLIST@
-OurPackages=wintc-setup-gui,wintc-theme-native,wintc-icon-theme-luna,wintc-cursor-theme-standard-with-shadow,wintc-bootvid,wintc-fonts-xp
+OurPackages=wintc-setup-gui,wintc-theme-native,wintc-icon-theme-luna,wintc-cursor-theme-standard-with-shadow,wintc-cursor-theme-standard-no-shadow,wintc-bootvid,wintc-fonts-xp
 DistPackagesDeb=xfwm4,xfconf,plymouth,xserver-xorg,xinit,lightdm
 # FIXME: Other distro packages here
 
@@ -9,7 +9,7 @@ DistPackagesDeb=xfwm4,xfconf,plymouth,xserver-xorg,xinit,lightdm
 #
 [Group.TopLevel]
 Name=
-Components=BuildTag,Registry,Winver
+Components=BuildTag,LogonUI,Registry,Winver
 SubGroups=Accessories,DevOnly,Shell,VisualStyles
 
 [Group.Accessories]
@@ -24,7 +24,7 @@ SubGroups=
 
 [Group.Shell]
 Name=System Shell
-Components=Desktop,ExitWin,Explorer,ShellRun,Taskband
+Components=DocTemplates,Desktop,ExitWin,Explorer,ShellRun,Taskband
 SubGroups=ShellCpl,ShellExt
 
 [Group.ShellCpl]
@@ -39,12 +39,12 @@ SubGroups=
 
 [Group.Personalisation]
 Name=Personalisation
-Components=IconsLuna,SoundsXP
+Components=IconsLuna,SoundsXP,UserPics,Wallpapers
 SubGroups=VisualStyles
 
 [Group.VisualStyles]
 Name=Visual Styles
-Components=ThemeNative,ThemePro,ThemeLunaBlue,ThemeLunaMetallic,ThemeLunaHomstead,ThemeZune
+Components=ThemeNative,ThemePro,ThemeLunaBlue,ThemeLunaMetallic,ThemeLunaHomestead,ThemeEmbedded,ThemeRoyale,ThemeRoyaleNoir,ThemeZune
 SubGroups=
 
 #
@@ -54,6 +54,11 @@ SubGroups=
 Name=Build Tag
 Packages=wintc-build-tag
 Description=Information that identifies the version of the project.
+
+[Component.LogonUI]
+Name=LogonUI
+Packages=wintc-logonui
+Description=The Welcome screen and Classic logon greeters for LightDM.
 
 [Component.Registry]
 Name=Registry
@@ -79,6 +84,11 @@ Description=Monitor and manage system processes and resources.
 Name=WinTC Session Manager
 Packages=wintc-smss
 Description=Provides a custom WinTC session that can be used instead of xfce4-session.
+
+[Component.DocTemplates]
+Name=Document Templates
+Packages=wintc-document-templates
+Description=Document templates that populate the 'New' shell submenu.
 
 [Component.Desktop]
 Name=Desktop
@@ -135,6 +145,11 @@ Name=Sounds (Windows XP)
 Packages=wintc-sound-theme-xp
 Description=The default Windows XP sound scheme.
 
+[Component.UserPics]
+Name=User Pictures
+Packages=wintc-user-pictures
+Description=The collecction of included user pictures.
+
 [Component.Wallpapers]
 Name=Desktop Wallpapers
 Packages=wintc-wallpapers
@@ -164,6 +179,21 @@ Description=The Windows XP style (Silver) visual style.
 Name=Windows XP style (Olive Green)
 Packages=wintc-theme-luna-homestead
 Description=The Windows XP style (Olive Green) visual style.
+
+[Component.ThemeEmbedded]
+Name=Embedded style
+Packages=wintc-theme-embedded
+Description=The Embedded visual style.
+
+[Component.ThemeRoyale]
+Name=Media Center style (Royale)
+Packages=wintc-theme-royale
+Description=The Media Center style (Royale) visual style.
+
+[Component.ThemeRoyaleNoir]
+Name=Media Center style (Royale Noir)
+Packages=wintc-theme-royale-noir
+Description=The Media Center style (Royale Noir) visual style.
 
 [Component.ThemeZune]
 Name=Zune style
