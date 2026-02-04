@@ -3,6 +3,7 @@ base/bldtag
 base/logonui
 base/regsvc
 base/setup/guiphase
+base/setup/oobe
 base/smss
 cursors/no-shadow/standard
 cursors/with-shadow/standard

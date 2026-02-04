@@ -1,4 +1,6 @@
 bt,rt:glib2
+bt,rt:gstreamer
+rt:gstreamer-gtk3
 bt,rt:gtk3
 bt,rt:wintc-comctl
 bt,rt:wintc-comgtk

@@ -1,4 +1,4 @@
 .wintc-oobe
 {
-    background: url('/usr/share/wintc/oobe/newmark1.jpg');
+    background: url('file:///usr/share/wintc/oobe/newmark1.jpg');
 }
