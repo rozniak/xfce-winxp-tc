@@ -1,6 +1,6 @@
 #include <glib.h>
+#include <gst/gst.h>
 #include <gtk/gtk.h>
-#include <stdlib.h>
 #include <wintc/comctl.h>
 #include <wintc/comgtk.h>
 #include <wintc/shelldpa.h>
@@ -34,6 +34,10 @@ int main(
     }
 
     wintc_ctl_install_default_styles();
+
+    // Spawn GStreamer
+    //
+    gst_init(&argc, &argv);
 
     // Set GtkSettings, because xsettings never seems to work -_-
     //
