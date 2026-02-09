@@ -10,7 +10,10 @@
 // FORWARD DECLARATIONS
 //
 static gboolean wintc_oobe_window_init_intro(
-    WinTCOobeWindow* window
+    WinTCOobeWindow* wnd_oobe
+);
+static gboolean wintc_oobe_window_init_title(
+    WinTCOobeWindow* wnd_oobe
 );
 
 static void cb_st_eos(
@@ -19,6 +22,11 @@ static void cb_st_eos(
     gpointer    user_data
 );
 static void on_gst_intro_decode_pad_added(
+    GstElement* src,
+    GstPad*     new_pad,
+    gpointer    user_data
+);
+static void on_gst_title_decode_pad_added(
     GstElement* src,
     GstPad*     new_pad,
     gpointer    user_data
@@ -44,8 +52,16 @@ struct _WinTCOobeWindow
     GstElement* gst_intro_convert;
     GstElement* gst_intro_sink;
 
-    GstElement* gst_playbin;
     GtkWidget*  gtksink_intro;
+
+    // GStreamer (title.wma)
+    //
+    GstElement* gst_title_pipeline;
+
+    GstElement* gst_title_decode;
+    GstElement* gst_title_convert;
+    GstElement* gst_title_resample;
+    GstElement* gst_title_sink;
 };
 
 //
@@ -116,7 +132,20 @@ static void wintc_oobe_window_init(
         // FIXME: Handle this by skipping straight to the wizard
         //
         g_critical("%s", "oobe: couldn't play intro.wmv");
-        return;
+    }
+
+    // Set up title.wma to play
+    //
+    if (wintc_oobe_window_init_title(self))
+    {
+        gst_element_set_state(
+            self->gst_title_pipeline,
+            GST_STATE_PLAYING
+        );
+    }
+    else
+    {
+        g_critical("%s", "oobe: couldn't play title.wma");
     }
 }
 
@@ -151,15 +180,15 @@ static gboolean wintc_oobe_window_init_intro(
 {
     wnd_oobe->gst_intro_decode  = gst_element_factory_make(
                                     "uridecodebin",
-                                    "src"
+                                    "intro_src"
                                 );
     wnd_oobe->gst_intro_convert = gst_element_factory_make(
                                     "videoconvert",
-                                    "cvt"
+                                    "intro_cvt"
                                 );
     wnd_oobe->gst_intro_sink    = gst_element_factory_make(
                                     "gtksink",
-                                    "sink"
+                                    "intro_sink"
                                 );
 
     wnd_oobe->gst_intro_pipeline =
@@ -230,6 +259,84 @@ static gboolean wintc_oobe_window_init_intro(
     return TRUE;
 }
 
+static gboolean wintc_oobe_window_init_title(
+    WinTCOobeWindow* wnd_oobe
+)
+{
+    wnd_oobe->gst_title_decode   = gst_element_factory_make(
+                                       "uridecodebin",
+                                       "title_src"
+                                   );
+    wnd_oobe->gst_title_convert  = gst_element_factory_make(
+                                       "audioconvert",
+                                       "title_cvt"
+                                   );
+    wnd_oobe->gst_title_resample = gst_element_factory_make(
+                                       "audioresample",
+                                       "title_res"
+                                   );
+    wnd_oobe->gst_title_sink     = gst_element_factory_make(
+                                       "autoaudiosink",
+                                       "title_sink"
+                                   );
+
+    wnd_oobe->gst_title_pipeline =
+        gst_pipeline_new("title_wma");
+
+    if (
+        !(wnd_oobe->gst_title_decode)   ||
+        !(wnd_oobe->gst_title_convert)  ||
+        !(wnd_oobe->gst_title_resample) ||
+        !(wnd_oobe->gst_title_sink)     ||
+        !(wnd_oobe->gst_title_pipeline)
+    )
+    {
+        WINTC_LOG_DEBUG("oobe: failed to create title.wma pipeline");
+        return FALSE;
+    }
+
+    // Construct pipeline
+    //
+    gst_bin_add_many(
+        GST_BIN(wnd_oobe->gst_title_pipeline),
+        wnd_oobe->gst_title_decode,
+        wnd_oobe->gst_title_convert,
+        wnd_oobe->gst_title_resample,
+        wnd_oobe->gst_title_sink,
+        NULL
+    );
+
+    if (
+        !gst_element_link_many(
+            wnd_oobe->gst_title_convert,
+            wnd_oobe->gst_title_resample,
+            wnd_oobe->gst_title_sink,
+            NULL
+        )
+    )
+    {
+        WINTC_LOG_DEBUG("oobe: failed to link up title.wma elements");
+        return FALSE;
+    }
+
+    // Get set up with intro.wmv
+    //
+    g_object_set(
+        wnd_oobe->gst_title_decode,
+        "uri", "file://" WINTC_ASSETS_DIR "/oobe/title.wma",
+        NULL
+    );
+
+    g_signal_connect(
+        wnd_oobe->gst_title_decode,
+        "pad-added",
+        G_CALLBACK(on_gst_title_decode_pad_added),
+        wnd_oobe
+    );
+
+    return TRUE;
+}
+
 //
 // CALLBACKS
 //
@@ -291,6 +398,65 @@ static void on_gst_intro_decode_pad_added(
     else
     {
         WINTC_LOG_DEBUG("oobe: link successful for intro.wmv");
+    }
+
+cleanup:
+    if (new_pad_caps)
+    {
+        gst_caps_unref(new_pad_caps);
+    }
+
+    gst_object_unref(sink_pad);
+}
+
+static void on_gst_title_decode_pad_added(
+    WINTC_UNUSED(GstElement* src),
+    GstPad*  new_pad,
+    gpointer user_data
+)
+{
+    WinTCOobeWindow* wnd_oobe = WINTC_OOBE_WINDOW(user_data);
+
+    GstCaps*      new_pad_caps   = NULL;
+    GstStructure* new_pad_struct = NULL;
+    const gchar*  new_pad_mime   = NULL;
+
+    // Use audioconvert as the sink
+    //
+    GstPad* sink_pad =
+        gst_element_get_static_pad(wnd_oobe->gst_title_convert, "sink");
+
+    if (gst_pad_is_linked(sink_pad))
+    {
+        WINTC_LOG_DEBUG("oobe: title.wma new pad, but already linked");
+        goto cleanup;
+    }
+
+    // Inspect the pad
+    //
+    new_pad_caps   = gst_pad_get_current_caps(new_pad);
+    new_pad_struct = gst_caps_get_structure(new_pad_caps, 0);
+    new_pad_mime   = gst_structure_get_name(new_pad_struct);
+
+    if (g_strcmp0(new_pad_mime, "audio/x-raw") != 0)
+    {
+        WINTC_LOG_DEBUG(
+            "oobe: title.wma skipping pad of type %s",
+            new_pad_mime
+        );
+        goto cleanup;
+    }
+
+    GstPadLinkReturn ret =
+        gst_pad_link(new_pad, sink_pad);
+
+    if (GST_PAD_LINK_FAILED(ret))
+    {
+        WINTC_LOG_DEBUG("oobe: failed to link new pad for title.wma");
+    }
+    else
+    {
+        WINTC_LOG_DEBUG("oobe: link successful for title.wma");
     }
 
 cleanup:
