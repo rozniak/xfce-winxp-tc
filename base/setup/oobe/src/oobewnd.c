@@ -186,6 +186,12 @@ static gboolean wintc_oobe_window_init_intro(
         NULL
     );
 
+    g_object_set(
+        wnd_oobe->gst_intro_sink,
+        "force-aspect-ratio", FALSE,
+        NULL
+    );
+
     if (
         !gst_element_link_many(
             wnd_oobe->gst_intro_convert,
