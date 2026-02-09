@@ -15,6 +15,9 @@ static gboolean wintc_oobe_window_init_intro(
 static gboolean wintc_oobe_window_init_title(
     WinTCOobeWindow* wnd_oobe
 );
+static void wintc_oobe_window_start_wizard(
+    WinTCOobeWindow* wnd_oobe
+);
 
 static void cb_st_eos(
     GstBus*     bus,
@@ -62,6 +65,11 @@ struct _WinTCOobeWindow
     GstElement* gst_title_convert;
     GstElement* gst_title_resample;
     GstElement* gst_title_sink;
+
+    // Wizard UI
+    //
+    GtkWidget* box_wizard;
+    GtkWidget* stack_pages;
 };
 
 //
@@ -100,6 +108,22 @@ static void wintc_oobe_window_init(
         "wintc-oobe"
     );
 
+    // Create the wizard UI
+    //
+    GtkBuilder* builder =
+        gtk_builder_new_from_resource("/uk/oddmatics/wintc/oobe/oobewnd.ui");
+
+    wintc_builder_get_objects(
+        builder,
+        "main-box",    &(self->box_wizard),
+        "stack-pages", &(self->stack_pages),
+        NULL
+    );
+
+    g_object_ref(self->box_wizard);
+
+    g_clear_object(&builder);
+
     // Set up intro.wmv to play
     //
     if (wintc_oobe_window_init_intro(self))
@@ -129,9 +153,9 @@ static void wintc_oobe_window_init(
     }
     else
     {
-        // FIXME: Handle this by skipping straight to the wizard
-        //
         g_critical("%s", "oobe: couldn't play intro.wmv");
+
+        wintc_oobe_window_start_wizard(self);
     }
 
     // Set up title.wma to play
@@ -337,6 +361,27 @@ static gboolean wintc_oobe_window_init_title(
     return TRUE;
 }
 
+static void wintc_oobe_window_start_wizard(
+    WinTCOobeWindow* wnd_oobe
+)
+{
+    wintc_container_clear(
+        GTK_CONTAINER(wnd_oobe),
+        FALSE
+    );
+
+    if (wnd_oobe->gtksink_intro)
+    {
+        gtk_widget_destroy(wnd_oobe->gtksink_intro);
+        wnd_oobe->gtksink_intro = NULL;
+    }
+
+    gtk_container_add(
+        GTK_CONTAINER(wnd_oobe),
+        wnd_oobe->box_wizard
+    );
+}
+
 //
 // CALLBACKS
 //
@@ -346,8 +391,9 @@ static void cb_st_eos(
     gpointer user_data
 )
 {
-    // FIXME: Chain to wizard
-    wintc_container_clear(GTK_CONTAINER(user_data), TRUE);
+    wintc_oobe_window_start_wizard(
+        WINTC_OOBE_WINDOW(user_data)
+    );
 }
 
 static void on_gst_intro_decode_pad_added(

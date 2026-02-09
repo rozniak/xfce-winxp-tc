@@ -1,4 +1,93 @@
-.wintc-oobe
+/**
+ * Main interface elements
+ */
+.oobe-mslogo
 {
-    background: url('file:///usr/share/wintc/oobe/newmark1.jpg');
+    background: url('resource:///uk/oddmatics/wintc/oobe/newtop1.jpg');
+    background-size: 100% 100%;
+    min-height: 55px;
+    padding-left: 20px;
+}
+
+.oobe-stack
+{
+    background: url('resource:///uk/oddmatics/wintc/oobe/newmark1.jpg');
+    background-size: 100% 100%;
+}
+
+.oobe-buttons
+{
+    background: url('resource:///uk/oddmatics/wintc/oobe/newbtm1.jpg');
+    background-size: 100% 100%;
+    min-height: 58px;
+}
+
+/**
+ * Buttons
+ */
+.oobe-buttons button
+{
+    border: none;
+    min-width: 24px;
+    margin: 17px 10px;
+}
+
+.oobe-back
+{
+    background: url('resource:///uk/oddmatics/wintc/oobe/backup.jpg');
+}
+
+.oobe-back:hover
+{
+    background: url('resource:///uk/oddmatics/wintc/oobe/backover.jpg');
+}
+
+.oobe-back:active
+{
+    background: url('resource:///uk/oddmatics/wintc/oobe/backdown.jpg');
+}
+
+.oobe-back:disabled
+{
+    background: url('resource:///uk/oddmatics/wintc/oobe/backoff.jpg');
+}
+
+.oobe-skip
+{
+    background: url('resource:///uk/oddmatics/wintc/oobe/skipup.jpg');
+}
+
+.oobe-skip:hover
+{
+    background: url('resource:///uk/oddmatics/wintc/oobe/skipover.jpg');
+}
+
+.oobe-skip:active
+{
+    background: url('resource:///uk/oddmatics/wintc/oobe/skipdown.jpg');
+}
+
+.oobe-skip:disabled
+{
+    background: url('resource:///uk/oddmatics/wintc/oobe/skipoff.jpg');
+}
+
+.oobe-next
+{
+    background: url('resource:///uk/oddmatics/wintc/oobe/nextup.jpg');
+}
+
+.oobe-next:hover
+{
+    background: url('resource:///uk/oddmatics/wintc/oobe/nextover.jpg');
+}
+
+.oobe-next:active
+{
+    background: url('resource:///uk/oddmatics/wintc/oobe/nextdown.jpg');
+}
+
+.oobe-next:disabled
+{
+    background: url('resource:///uk/oddmatics/wintc/oobe/nextoff.jpg');
 }

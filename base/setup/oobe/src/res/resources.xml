@@ -1,9 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
   <gresource prefix="/uk/oddmatics/wintc/oobe">
+    <!--                     -->
+    <!-- GRAPHICAL RESOURCES -->
+    <!--                     -->
+    <file>backdown.jpg</file>
+    <file>backoff.jpg</file>
+    <file>backover.jpg</file>
+    <file>backup.jpg</file>
+    <file>mslogo.jpg</file>
+    <file>newbtm1.jpg</file>
+    <file>newmark1.jpg</file>
+    <file>newtop1.jpg</file>
+    <file>nextdown.jpg</file>
+    <file>nextoff.jpg</file>
+    <file>nextover.jpg</file>
+    <file>nextup.jpg</file>
+    <file>skipdown.jpg</file>
+    <file>skipoff.jpg</file>
+    <file>skipover.jpg</file>
+    <file>skipup.jpg</file>
+
     <!--             -->
     <!-- STYLESHEETS -->
     <!--             -->
     <file>oobewnd.css</file>
+
+    <!--           -->
+    <!-- STRUCTURE -->
+    <!--           -->
+    <file>oobewnd.ui</file>
   </gresource>
 </gresources>
