@@ -7,8 +7,21 @@
 #include "oobewnd.h"
 
 //
+// PRIVATE ENUMS
+//
+enum
+{
+    PAGE_WELCOME,
+    N_PAGES
+};
+
+//
 // FORWARD DECLARATIONS
 //
+static void wintc_oobe_window_go_to_page(
+    WinTCOobeWindow* wnd_oobe,
+    guint            page
+);
 static gboolean wintc_oobe_window_init_intro(
     WinTCOobeWindow* wnd_oobe
 );
@@ -70,6 +83,7 @@ struct _WinTCOobeWindow
     //
     GtkWidget* box_wizard;
     GtkWidget* stack_pages;
+    GSList*    list_pages;
 };
 
 //
@@ -123,6 +137,34 @@ static void wintc_oobe_window_init(
     g_object_ref(self->box_wizard);
 
     g_clear_object(&builder);
+
+    // Add the wizard pages
+    //
+    for (guint i = 0; i < N_PAGES; i++)
+    {
+        gchar* resource_name =
+            g_strdup_printf("/uk/oddmatics/wintc/oobe/oobepg%u.ui", i);
+
+        builder =
+            gtk_builder_new_from_resource(resource_name);
+
+        self->list_pages =
+            g_slist_prepend(
+                self->list_pages,
+                gtk_builder_get_object(builder, "page")
+            );
+
+        gtk_stack_add_named(
+            GTK_STACK(self->stack_pages),
+            GTK_WIDGET(self->list_pages->data),
+            resource_name
+        );
+
+        g_free(resource_name);
+        g_clear_object(&builder);
+    }
+
+    self->list_pages = g_slist_reverse(self->list_pages);
 
     // Set up intro.wmv to play
     //
@@ -198,6 +240,19 @@ GtkWidget* wintc_oobe_window_new(void)
 //
 // PRIVATE FUNCTIONS
 //
+static void wintc_oobe_window_go_to_page(
+    WinTCOobeWindow* wnd_oobe,
+    guint            page
+)
+{
+    gtk_stack_set_visible_child(
+        GTK_STACK(wnd_oobe->stack_pages),
+        GTK_WIDGET(
+            g_slist_nth_data(wnd_oobe->list_pages, page)
+        )
+    );
+}
+
 static gboolean wintc_oobe_window_init_intro(
     WinTCOobeWindow* wnd_oobe
 )
@@ -379,6 +434,11 @@ static void wintc_oobe_window_start_wizard(
     gtk_container_add(
         GTK_CONTAINER(wnd_oobe),
         wnd_oobe->box_wizard
+    );
+
+    wintc_oobe_window_go_to_page(
+        wnd_oobe,
+        PAGE_WELCOME
     );
 }
 

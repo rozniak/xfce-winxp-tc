@@ -63,7 +63,7 @@
             <property name="can-focus">True</property>
 
             <style>
-            i  <class name="oobe-back" />
+              <class name="oobe-back" />
             </style>
           </object>
           <packing>
@@ -72,6 +72,19 @@
             <property name="position">0</property>
           </packing>
         </child>
+        <child>
+          <object class="GtkLabel">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="label">Back</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+
         <child>
           <object class="GtkButton" id="button-next">
             <property name="visible">True</property>
@@ -84,10 +97,24 @@
           <packing>
             <property name="expand">False</property>
             <property name="fill">False</property>
-            <property name="position">1</property>
+            <property name="position">2</property>
             <property name="pack-type">end</property>
           </packing>
         </child>
+        <child>
+          <object class="GtkLabel">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="label">Next</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">3</property>
+            <property name="pack-type">end</property>
+          </packing>
+        </child>
+
         <child>
           <object class="GtkButton" id="button-skip">
             <property name="visible">True</property>
@@ -100,7 +127,20 @@
           <packing>
             <property name="expand">False</property>
             <property name="fill">False</property>
-            <property name="position">2</property>
+            <property name="position">4</property>
+            <property name="pack-type">end</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="label">Skip</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">5</property>
             <property name="pack-type">end</property>
           </packing>
         </child>

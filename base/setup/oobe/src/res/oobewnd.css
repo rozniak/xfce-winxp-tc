@@ -1,3 +1,9 @@
+.wintc-oobe
+{
+    color: #FFFFFF;
+    font-size: 9pt;
+}
+
 /**
  * Main interface elements
  */
@@ -90,4 +96,27 @@
 .oobe-next:disabled
 {
     background: url('resource:///uk/oddmatics/wintc/oobe/nextoff.jpg');
+}
+
+/**
+ * Wizard
+ */
+.oobe-title
+{
+    font-weight: bold;
+    font-size: 22pt;
+    margin-bottom: 32px;
+    margin-top: 10px;
+    text-shadow: 3px 3px 2px #2b58b6;
+}
+
+.oobe-ml-default
+{
+    margin-left: 62px;
+}
+
+.oobe-text-continue
+{
+    margin-bottom: 60px;
+    margin-left: 19px;
 }
