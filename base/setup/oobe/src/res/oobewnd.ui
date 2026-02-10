@@ -61,6 +61,7 @@
           <object class="GtkButton" id="button-back">
             <property name="visible">True</property>
             <property name="can-focus">True</property>
+            <property name="action-name">win.back</property>
 
             <style>
               <class name="oobe-back" />
@@ -89,6 +90,7 @@
           <object class="GtkButton" id="button-next">
             <property name="visible">True</property>
             <property name="can-focus">True</property>
+            <property name="action-name">win.next</property>
 
             <style>
               <class name="oobe-next" />
@@ -119,6 +121,7 @@
           <object class="GtkButton" id="button-skip">
             <property name="visible">True</property>
             <property name="can-focus">True</property>
+            <property name="action-name">win.skip</property>
 
             <style>
               <class name="oobe-skip" />

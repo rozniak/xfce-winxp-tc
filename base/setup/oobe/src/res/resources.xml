@@ -32,5 +32,7 @@
     <file>oobewnd.ui</file>
 
     <file>oobepg0.ui</file>
+    <file>oobepg1.ui</file>
+    <file>oobepg2.ui</file>
   </gresource>
 </gresources>

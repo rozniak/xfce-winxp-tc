@@ -12,6 +12,8 @@
 enum
 {
     PAGE_WELCOME,
+    PAGE_APPLY_CUSTOMISATIONS,
+    PAGE_FINISH,
     N_PAGES
 };
 
@@ -20,7 +22,8 @@ enum
 //
 static void wintc_oobe_window_go_to_page(
     WinTCOobeWindow* wnd_oobe,
-    guint            page
+    guint            page,
+    gboolean         push_history
 );
 static gboolean wintc_oobe_window_init_intro(
     WinTCOobeWindow* wnd_oobe
@@ -30,6 +33,22 @@ static gboolean wintc_oobe_window_init_title(
 );
 static void wintc_oobe_window_start_wizard(
     WinTCOobeWindow* wnd_oobe
+);
+
+static void action_back(
+    GSimpleAction* action,
+    GVariant*      parameter,
+    gpointer       user_data
+);
+static void action_next(
+    GSimpleAction* action,
+    GVariant*      parameter,
+    gpointer       user_data
+);
+static void action_skip(
+    GSimpleAction* action,
+    GVariant*      parameter,
+    gpointer       user_data
 );
 
 static void cb_st_eos(
@@ -47,6 +66,33 @@ static void on_gst_title_decode_pad_added(
     GstPad*     new_pad,
     gpointer    user_data
 );
+
+//
+// STATIC DATA
+//
+static const GActionEntry S_ACTIONS[] = {
+    {
+        .name           = "back",
+        .activate       = action_back,
+        .parameter_type = NULL,
+        .state          = NULL,
+        .change_state   = NULL
+    },
+    {
+        .name           = "next",
+        .activate       = action_next,
+        .parameter_type = NULL,
+        .state          = NULL,
+        .change_state   = NULL
+    },
+    {
+        .name           = "skip",
+        .activate       = action_skip,
+        .parameter_type = NULL,
+        .state          = NULL,
+        .change_state   = NULL
+    }
+};
 
 //
 // GTK OOP CLASS/INSTANCE DEFINITIONS
@@ -83,7 +129,11 @@ struct _WinTCOobeWindow
     //
     GtkWidget* box_wizard;
     GtkWidget* stack_pages;
+
     GSList*    list_pages;
+
+    GSList* list_history;
+    guint   idx_current_page;
 };
 
 //
@@ -121,6 +171,25 @@ static void wintc_oobe_window_init(
         GTK_WIDGET(self),
         "wintc-oobe"
     );
+
+    // Insert actions
+    //
+    GSimpleActionGroup* action_group = g_simple_action_group_new();
+
+    g_action_map_add_action_entries(
+        G_ACTION_MAP(action_group),
+        S_ACTIONS,
+        G_N_ELEMENTS(S_ACTIONS),
+        self
+    );
+
+    gtk_widget_insert_action_group(
+        GTK_WIDGET(self),
+        "win",
+        G_ACTION_GROUP(action_group)
+    );
+
+    g_object_unref(action_group);
 
     // Create the wizard UI
     //
@@ -242,15 +311,27 @@ GtkWidget* wintc_oobe_window_new(void)
 //
 static void wintc_oobe_window_go_to_page(
     WinTCOobeWindow* wnd_oobe,
-    guint            page
+    guint            page,
+    gboolean         push_history
 )
 {
+    wnd_oobe->idx_current_page = page;
+
     gtk_stack_set_visible_child(
         GTK_STACK(wnd_oobe->stack_pages),
         GTK_WIDGET(
             g_slist_nth_data(wnd_oobe->list_pages, page)
         )
     );
+
+    if (push_history)
+    {
+        wnd_oobe->list_history =
+            g_slist_prepend(
+                wnd_oobe->list_history,
+                GUINT_TO_POINTER(page)
+            );
+    }
 }
 
 static gboolean wintc_oobe_window_init_intro(
@@ -438,13 +519,64 @@ static void wintc_oobe_window_start_wizard(
 
     wintc_oobe_window_go_to_page(
         wnd_oobe,
-        PAGE_WELCOME
+        PAGE_WELCOME,
+        TRUE
     );
 }
 
 //
 // CALLBACKS
 //
+static void action_back(
+    WINTC_UNUSED(GSimpleAction* action),
+    WINTC_UNUSED(GVariant*      parameter),
+    gpointer user_data
+)
+{
+    WinTCOobeWindow* wnd_oobe = WINTC_OOBE_WINDOW(user_data);
+
+    if (!(wnd_oobe->list_history))
+    {
+        return;
+    }
+
+    wintc_oobe_window_go_to_page(
+        wnd_oobe,
+        GPOINTER_TO_UINT(wnd_oobe->list_history->data),
+        FALSE
+    );
+
+    wnd_oobe->list_history =
+        g_slist_delete_link(
+            wnd_oobe->list_history,
+            wnd_oobe->list_history
+        );
+}
+
+static void action_next(
+    WINTC_UNUSED(GSimpleAction* action),
+    WINTC_UNUSED(GVariant*      parameter),
+    gpointer user_data
+)
+{
+    WinTCOobeWindow* wnd_oobe = WINTC_OOBE_WINDOW(user_data);
+
+    wintc_oobe_window_go_to_page(
+        wnd_oobe,
+        wnd_oobe->idx_current_page + 1,
+        TRUE
+    );
+}
+
+static void action_skip(
+    WINTC_UNUSED(GSimpleAction* action),
+    WINTC_UNUSED(GVariant*      parameter),
+    WINTC_UNUSED(gpointer user_data)
+)
+{
+    // FIXME: Implement when needed
+}
+
 static void cb_st_eos(
     WINTC_UNUSED(GstBus*     bus),
     WINTC_UNUSED(GstMessage* msg),
