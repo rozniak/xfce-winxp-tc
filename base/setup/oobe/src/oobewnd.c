@@ -4,6 +4,7 @@
 #include <wintc/comgtk.h>
 #include <wintc/shelldpa.h>
 
+#include "oobeuser.h"
 #include "oobewnd.h"
 
 //
@@ -320,7 +321,9 @@ static void wintc_oobe_window_go_to_page(
     gboolean         push_history
 )
 {
+    gboolean can_back = TRUE;
     gboolean can_skip = FALSE;
+    gboolean can_next = TRUE;
 
     // Push current page first
     //
@@ -344,12 +347,23 @@ static void wintc_oobe_window_go_to_page(
         )
     );
 
+    // Determine action availability
+    //
+    switch (wnd_oobe->idx_current_page)
+    {
+        case PAGE_FINISH:
+            can_back = FALSE;
+            break;
+
+        default: break;
+    }
+
     // Update actions
     //
     wintc_oobe_window_set_action_enabled(
         wnd_oobe,
         "back",
-        !!(wnd_oobe->list_history)
+        can_back && !!(wnd_oobe->list_history)
     );
     wintc_oobe_window_set_action_enabled(
         wnd_oobe,
@@ -359,7 +373,7 @@ static void wintc_oobe_window_go_to_page(
     wintc_oobe_window_set_action_enabled(
         wnd_oobe,
         "next",
-        TRUE
+        can_next
     );
 }
 
@@ -620,10 +634,27 @@ static void action_next(
 {
     WinTCOobeWindow* wnd_oobe = WINTC_OOBE_WINDOW(user_data);
 
-    if (wnd_oobe->idx_current_page == PAGE_FINISH)
+    GError* error = NULL;
+
+    switch (wnd_oobe->idx_current_page)
     {
-        gtk_window_close(GTK_WINDOW(wnd_oobe));
-        return;
+        case PAGE_APPLY_CUSTOMISATIONS:
+            if (!wintc_oobe_user_apply_all(&error))
+            {
+                wintc_display_error_and_clear(
+                    &error,
+                    GTK_WINDOW(wnd_oobe)
+                );
+                return;
+            }
+
+            break;
+
+        case PAGE_FINISH:
+            gtk_window_close(GTK_WINDOW(wnd_oobe));
+            return;
+
+        default: break;
     }
 
     wintc_oobe_window_go_to_page(

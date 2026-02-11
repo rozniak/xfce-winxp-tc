@@ -35,6 +35,8 @@ wintc_compile_resources()
 add_executable(
     wintc-setup-oobe
     src/main.c
+    src/oobeuser.c
+    src/oobeuser.h
     src/oobewnd.c
     src/oobewnd.h
     src/resources.c
