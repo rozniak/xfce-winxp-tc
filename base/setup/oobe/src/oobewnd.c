@@ -31,6 +31,11 @@ static gboolean wintc_oobe_window_init_intro(
 static gboolean wintc_oobe_window_init_title(
     WinTCOobeWindow* wnd_oobe
 );
+static void wintc_oobe_window_set_action_enabled(
+    WinTCOobeWindow* wnd_oobe,
+    const gchar*     action_name,
+    gboolean         enabled
+);
 static void wintc_oobe_window_start_wizard(
     WinTCOobeWindow* wnd_oobe
 );
@@ -315,6 +320,21 @@ static void wintc_oobe_window_go_to_page(
     gboolean         push_history
 )
 {
+    gboolean can_skip = FALSE;
+
+    // Push current page first
+    //
+    if (push_history)
+    {
+        wnd_oobe->list_history =
+            g_slist_prepend(
+                wnd_oobe->list_history,
+                GUINT_TO_POINTER(wnd_oobe->idx_current_page)
+            );
+    }
+
+    // Nav to next page
+    //
     wnd_oobe->idx_current_page = page;
 
     gtk_stack_set_visible_child(
@@ -324,14 +344,23 @@ static void wintc_oobe_window_go_to_page(
         )
     );
 
-    if (push_history)
-    {
-        wnd_oobe->list_history =
-            g_slist_prepend(
-                wnd_oobe->list_history,
-                GUINT_TO_POINTER(page)
-            );
-    }
+    // Update actions
+    //
+    wintc_oobe_window_set_action_enabled(
+        wnd_oobe,
+        "back",
+        !!(wnd_oobe->list_history)
+    );
+    wintc_oobe_window_set_action_enabled(
+        wnd_oobe,
+        "skip",
+        can_skip
+    );
+    wintc_oobe_window_set_action_enabled(
+        wnd_oobe,
+        "next",
+        TRUE
+    );
 }
 
 static gboolean wintc_oobe_window_init_intro(
@@ -497,6 +526,33 @@ static gboolean wintc_oobe_window_init_title(
     return TRUE;
 }
 
+static void wintc_oobe_window_set_action_enabled(
+    WinTCOobeWindow* wnd_oobe,
+    const gchar*     action_name,
+    gboolean         enabled
+)
+{
+    GAction*      action;
+    GActionGroup* action_group;
+
+    action_group =
+        gtk_widget_get_action_group(
+            GTK_WIDGET(wnd_oobe),
+            "win"
+        );
+
+    action =
+        g_action_map_lookup_action(
+            G_ACTION_MAP(action_group),
+            action_name      
+        );
+
+    g_simple_action_set_enabled(
+        G_SIMPLE_ACTION(action),
+        enabled
+    );
+}
+
 static void wintc_oobe_window_start_wizard(
     WinTCOobeWindow* wnd_oobe
 )
@@ -520,7 +576,7 @@ static void wintc_oobe_window_start_wizard(
     wintc_oobe_window_go_to_page(
         wnd_oobe,
         PAGE_WELCOME,
-        TRUE
+        FALSE
     );
 }
 
@@ -540,17 +596,20 @@ static void action_back(
         return;
     }
 
-    wintc_oobe_window_go_to_page(
-        wnd_oobe,
-        GPOINTER_TO_UINT(wnd_oobe->list_history->data),
-        FALSE
-    );
+    guint page =
+        GPOINTER_TO_UINT(wnd_oobe->list_history->data);
 
     wnd_oobe->list_history =
         g_slist_delete_link(
             wnd_oobe->list_history,
             wnd_oobe->list_history
         );
+
+    wintc_oobe_window_go_to_page(
+        wnd_oobe,
+        page,
+        FALSE
+    );
 }
 
 static void action_next(
@@ -560,6 +619,12 @@ static void action_next(
 )
 {
     WinTCOobeWindow* wnd_oobe = WINTC_OOBE_WINDOW(user_data);
+
+    if (wnd_oobe->idx_current_page == PAGE_FINISH)
+    {
+        gtk_window_close(GTK_WINDOW(wnd_oobe));
+        return;
+    }
 
     wintc_oobe_window_go_to_page(
         wnd_oobe,
