@@ -29,6 +29,7 @@ wintc_resolve_library(wintc-comgtk   WINTC_COMGTK)
 wintc_resolve_library(wintc-shcommon WINTC_SHCOMMON)
 wintc_resolve_library(wintc-shelldpa WINTC_SHELLDPA)
 wintc_resolve_library(wintc-shlang   WINTC_SHLANG)
+wintc_resolve_library(libxml-2.0     XML2)
 
 wintc_compile_resources()
 
@@ -66,6 +67,7 @@ target_include_directories(
     PRIVATE ${WINTC_SHCOMMON_INCLUDE_DIRS}
     PRIVATE ${WINTC_SHELLDPA_INCLUDE_DIRS}
     PRIVATE ${WINTC_SHLANG_INCLUDE_DIRS}
+    PRIVATE ${XML2_INCLUDE_DIRS}
 )
 
 target_link_directories(
@@ -79,6 +81,7 @@ target_link_directories(
     PRIVATE ${WINTC_SHCOMMON_LIBRARY_DIRS}
     PRIVATE ${WINTC_SHELLDPA_LIBRARY_DIRS}
     PRIVATE ${WINTC_SHLANG_LIBRARY_DIRS}
+    PRIVATE ${XML2_LIBRARY_DIRS}
 )
 
 target_link_libraries(
@@ -92,6 +95,7 @@ target_link_libraries(
     PRIVATE ${WINTC_SHCOMMON_LIBRARIES}
     PRIVATE ${WINTC_SHELLDPA_LIBRARIES}
     PRIVATE ${WINTC_SHLANG_LIBRARIES}
+    PRIVATE ${XML2_LIBRARIES}
 )
 
 # Installation

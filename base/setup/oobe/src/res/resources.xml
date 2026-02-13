@@ -34,5 +34,10 @@
     <file>oobepg0.ui</file>
     <file>oobepg1.ui</file>
     <file>oobepg2.ui</file>
+
+    <!--             -->
+    <!-- DEPLOYMENTS -->
+    <!--             -->
+    <file>xfconf-xfwm4.xml</file>
   </gresource>
 </gresources>
