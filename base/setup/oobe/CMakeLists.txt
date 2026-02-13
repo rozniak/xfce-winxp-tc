@@ -41,6 +41,8 @@ add_executable(
     src/oobewnd.c
     src/oobewnd.h
     src/resources.c
+    src/xfconf.c
+    src/xfconf.h
 )
 
 set_target_properties(
