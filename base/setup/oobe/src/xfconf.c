@@ -7,33 +7,62 @@
 #include "xfconf.h"
 
 //
+// PRIVATE ENUMS
+//
+enum
+{
+    XML_XFCONF_FOUND,
+    XML_XFCONF_NOT_FOUND,
+    XML_XFCONF_TYPE_MISMATCH
+};
+
+//
+// PRIVATE STRUCTURES
+//
+typedef struct _XfconfPropNode
+{
+    xmlChar* name;
+    xmlChar* type;
+    xmlChar* value;
+} XfconfPropNode;
+
+//
 // FORWARD DECLARATIONS
 //
-static xmlNodePtr xml_node_find_in_children(
-    xmlNodePtr   xml_node,
-    const gchar* tag,
-    const gchar* name
+static gboolean xml_node_check_attribute(
+    xmlNode*       node,
+    const xmlChar* attribute_name,
+    const xmlChar* expected_value
 );
-static xmlAttr* xml_node_find_property(
-    xmlNodePtr   xml_node,
-    const gchar* property_name
+static xmlAttr* xml_node_find_attribute(
+    xmlNode*       node,
+    const xmlChar* property_name
 );
-static xmlChar* xml_node_get_property_value(
-    xmlNodePtr   xml_node,
-    const gchar* property_name
+static xmlChar* xml_node_get_attribute_value(
+    xmlNode*       node,
+    const xmlChar* attribute_name
+);
+static void xml_node_set_attribute_value(
+    xmlNode*       node,
+    const xmlChar* attribute_name,
+    const xmlChar* new_value
 );
 static gboolean xml_version_patch(
     gchar*   xml_src,
     gboolean upgrade
 );
-static xmlNodePtr xml_xfconf_traverse_to_property_group(
-    xmlNodePtr   xml_root,
-    const gchar* group_name
+static xmlNode* xml_xfconf_create_property_node(
+    xmlNode*        node_parent,
+    XfconfPropNode* descriptor
 );
-static void xml_xfconf_set_child_property_value(
-    xmlNodePtr xml_node_group,
-    const gchar* property_name,
-    const gchar* new_value
+static xmlNode* xml_xfconf_find_property_node(
+    xmlNode*        node_parent,
+    XfconfPropNode* descriptor,
+    gint*           result
+);
+static void xml_xfconf_mirror_property_node(
+    xmlNode* node_dest_group,
+    xmlNode* node_src_prop
 );
 
 //
@@ -102,6 +131,11 @@ void wintc_oobe_xfconf_update_channel(
         )
     )
     {
+        WINTC_LOG_DEBUG(
+            "oobe: merging config to %s",
+            channel_dest_path
+        );
+
         if (!xml_version_patch(channel_dest_data, FALSE))
         {
             g_critical(
@@ -117,18 +151,154 @@ void wintc_oobe_xfconf_update_channel(
         xmlDocPtr channel_src_xml  =
             xmlParseDoc((xmlChar*) g_bytes_get_data(channel_src_bytes, NULL));
 
-        xmlNodePtr node_dest_group =
-            xml_xfconf_traverse_to_property_group(
-                xmlDocGetRootElement(channel_dest_xml),
-                "general"
+        //
+        // The configs look like so:
+        //
+        // <channel name="XX">                            - ROOT NODE
+        //   <property name="XX" type="empty">            - PROPERTY GROUP
+        //     <property name="XX" type="YY" value="ZZ"/> - PROPERTY
+        //   </property>
+        // </channel>
+        //
+
+        // First level - iterate over property groups
+        //
+        xmlNode* node_dest_root =
+            xmlDocGetRootElement(channel_dest_xml);
+        xmlNode* node_src_root =
+            xmlDocGetRootElement(channel_src_xml);
+
+        for (
+            xmlNode* node_src_group = node_src_root->children;
+            node_src_group;
+            node_src_group = node_src_group->next
+        )
+        {
+            // Check this is a property group node
+            //
+            if (
+                node_src_group->type != XML_ELEMENT_NODE ||
+                g_strcmp0((gchar*) node_src_group->name, "property") != 0
+            )
+            {
+                continue;
+            }
+
+            // Property group must be type 'empty'
+            //
+            if (
+                !xml_node_check_attribute(
+                    node_src_group,
+                    (xmlChar*) "type",
+                    (xmlChar*) "empty"
+                )
+            )
+            {
+                continue;
+            }
+
+            // Sync up with destination group node
+            //
+            XfconfPropNode descriptor;
+            xmlChar*       group_name;
+            xmlNode*       node_dest_group;
+            gint           search_result;
+
+            group_name =
+                xml_node_get_attribute_value(
+                    node_src_group,
+                    (xmlChar*) "name"
+                );
+
+            descriptor.name  = group_name;
+            descriptor.type  = (xmlChar*) "empty";
+            descriptor.value = NULL;
+
+            node_dest_group =
+                xml_xfconf_find_property_node(
+                    node_dest_root,
+                    &descriptor,
+                    &search_result
+                );
+
+            WINTC_LOG_DEBUG(
+                "oobe: updating property group %s on channel %s",
+                (gchar*) group_name,
+                channel
             );
 
-        xml_xfconf_set_child_property_value(
-            node_dest_group,
-            "theme",
-            "Windows XP style (Silver)"
-        );
+            if (!node_dest_group)
+            {
+                if (search_result == XML_XFCONF_TYPE_MISMATCH)
+                {
+                    g_warning(
+                        "oobe: skipping property group '%s', type mismatch",
+                        (gchar*) group_name
+                    );
 
+                    xmlFree(group_name);
+
+                    continue;
+                }
+
+                // Create the new node
+                //
+                node_dest_group =
+                    xml_xfconf_create_property_node(
+                        node_dest_root,
+                        &descriptor
+                    );
+            }
+
+            xmlFree(group_name);
+
+            // Second level - iterate over properties themselves
+            //
+            for (
+                xmlNode* node_src_prop = node_src_group->children;
+                node_src_prop;
+                node_src_prop = node_src_prop->next
+            )
+            {
+                // Check this is a property
+                //
+                if (
+                    node_src_prop->type != XML_ELEMENT_NODE ||
+                    g_strcmp0((gchar*) node_src_prop->name, "property") != 0
+                )
+                {
+                    continue;
+                }
+
+                // Arrays unsupported
+                //
+                if (
+                    xml_node_check_attribute(
+                        node_src_prop,
+                        (xmlChar*) "type",
+                        (xmlChar*) "array"
+                    )
+                )
+                {
+                    g_critical(
+                        "%s",
+                        "oobe: array in src properties - this is unsupported"
+                    );
+
+                    continue;
+                }
+
+                // All good, mirror the property
+                //
+                xml_xfconf_mirror_property_node(
+                    node_dest_group,
+                    node_src_prop
+                );
+            }
+        }
+
+        // Write out the modifications
+        //
         xmlChar* new_xml = NULL;
 
         xmlDocDumpMemory(channel_dest_xml, &new_xml, NULL);
@@ -220,47 +390,39 @@ cleanup:
 //
 // PRIVATE FUNCTIONS
 //
-static xmlNodePtr xml_node_find_in_children(
-    xmlNodePtr   xml_node,
-    const gchar* tag,
-    const gchar* name
+static gboolean xml_node_check_attribute(
+    xmlNode*       node,
+    const xmlChar* attribute_name,
+    const xmlChar* expected_value
 )
 {
-    xmlNodePtr iter;
+    xmlChar* attribute_value =
+        xml_node_get_attribute_value(
+            node,
+            attribute_name
+        );
 
-    for (iter = xml_node->children; iter; iter = iter->next)
-    {
-        if (g_strcmp0((gchar*) iter->name, tag) != 0)
-        {
-            continue;
-        }
+    gboolean result =
+        g_strcmp0(
+            (gchar*) attribute_value,
+            (gchar*) expected_value
+        ) == 0;
 
-        xmlChar* iter_name = xml_node_get_property_value(iter, "name");
-        gboolean found     = g_strcmp0((gchar*) iter_name, name) == 0;
+    xmlFree(attribute_value);
 
-        xmlFree(iter_name);
-
-        if (!found)
-        {
-            continue;
-        }
-
-        break;
-    }
-
-    return iter;
+    return result;
 }
 
-static xmlAttr* xml_node_find_property(
-    xmlNodePtr   xml_node,
-    const gchar* property_name
+static xmlAttr* xml_node_find_attribute(
+    xmlNode*       node,
+    const xmlChar* property_name
 )
 {
     xmlAttr* attrib;
 
-    for (attrib = xml_node->properties; attrib; attrib = attrib->next)
+    for (attrib = node->properties; attrib; attrib = attrib->next)
     {
-        if (g_strcmp0((gchar*) attrib->name, property_name) != 0)
+        if (g_strcmp0((gchar*) attrib->name, (gchar*) property_name) != 0)
         {
             continue;
         }
@@ -271,13 +433,13 @@ static xmlAttr* xml_node_find_property(
     return attrib;
 }
 
-static xmlChar* xml_node_get_property_value(
-    xmlNodePtr   xml_node,
-    const gchar* property_name
+static xmlChar* xml_node_get_attribute_value(
+    xmlNode*       node,
+    const xmlChar* attribute_name
 )
 {
     xmlAttr* attrib =
-        xml_node_find_property(xml_node, property_name);
+        xml_node_find_attribute(node, attribute_name);
 
     if (!attrib)
     {
@@ -285,6 +447,29 @@ static xmlChar* xml_node_get_property_value(
     }
 
     return xmlNodeGetContent(attrib->children);
+}
+
+static void xml_node_set_attribute_value(
+    xmlNode*       node,
+    const xmlChar* attribute_name,
+    const xmlChar* new_value
+)
+{
+    xmlAttr* attrib =
+        xml_node_find_attribute(node, attribute_name);
+
+    if (attrib)
+    {
+        xmlNewProp(
+            node,
+            attribute_name,
+            new_value
+        );
+    }
+    else
+    {
+        xmlNodeSetContent(attrib->children, new_value);
+    }
 }
 
 static gboolean xml_version_patch(
@@ -314,57 +499,169 @@ static gboolean xml_version_patch(
     return TRUE;
 }
 
-static xmlNodePtr xml_xfconf_traverse_to_property_group(
-    xmlNodePtr   xml_root,
-    const gchar* group_name
+static xmlNode* xml_xfconf_create_property_node(
+    xmlNode*        node_parent,
+    XfconfPropNode* descriptor
 )
 {
-    // Look for the property group now
-    //
-    if (!group_name)
+    xmlNode* node_property = xmlNewNode(NULL, (xmlChar*) "property");
+
+    node_property->type = XML_ELEMENT_NODE;
+
+    if (descriptor->name)
     {
-        return xml_root;
+        xml_node_set_attribute_value(
+            node_property,
+            (xmlChar*) "name",
+            descriptor->name
+        );
     }
 
-    return xml_node_find_in_children(
-        xml_root,
-        "property",
-        group_name
-    );
+    if (descriptor->type)
+    {
+        xml_node_set_attribute_value(
+            node_property,
+            (xmlChar*) "type",
+            descriptor->type
+        );
+    }
+
+    if (descriptor->value)
+    {
+        xml_node_set_attribute_value(
+            node_property,
+            (xmlChar*) "value",
+            descriptor->value
+        );
+    }
+
+    xmlAddChild(node_parent, node_property);
+
+    return node_property;
 }
 
-static void xml_xfconf_set_child_property_value(
-    xmlNodePtr   xml_node_group,
-    const gchar* property_name,
-    const gchar* new_value
+static xmlNode* xml_xfconf_find_property_node(
+    xmlNode*        node_parent,
+    XfconfPropNode* descriptor,
+    gint*           result
 )
 {
-    xmlNodePtr node_prop =
-        xml_node_find_in_children(
-            xml_node_group,
-            "property",
-            property_name
-        );
+    xmlNode* iter;
 
-    if (!node_prop)
+    for (
+        iter = node_parent->children;
+        iter;
+        iter = iter->next
+    )
     {
-        g_warning("oobe: couldn't find property '%s'", property_name);
-        return;
+        if (
+            iter->type != XML_ELEMENT_NODE ||
+            g_strcmp0((gchar*) iter->name, "property") != 0
+        )
+        {
+            continue;
+        }
+
+        // Check name and type match
+        //
+        if (
+            descriptor->name &&
+            !xml_node_check_attribute(
+                iter,
+                (xmlChar*) "name",
+                descriptor->name
+            )
+        )
+        {
+            continue;
+        }
+
+        if (
+            descriptor->type &&
+            !xml_node_check_attribute(
+                iter,
+                (xmlChar*) "type",
+                descriptor->type
+            )
+        )
+        {
+            *result = XML_XFCONF_TYPE_MISMATCH;
+            return NULL;
+        }
+
+        // Found it!
+        //
+        break;
     }
 
-    // Safe to set property
+    *result = iter ? XML_XFCONF_FOUND : XML_XFCONF_NOT_FOUND;
+    return iter;
+}
+
+static void xml_xfconf_mirror_property_node(
+    xmlNode* node_dest_group,
+    xmlNode* node_src_prop
+)
+{
+    XfconfPropNode descriptor;
+    gint           search_result;
+
+    descriptor.name   = xml_node_get_attribute_value(
+                            node_src_prop,
+                            (xmlChar*) "name"
+                        );
+    descriptor.type   = xml_node_get_attribute_value(
+                            node_src_prop,
+                            (xmlChar*) "type"
+                        );
+    descriptor.value  = xml_node_get_attribute_value(
+                            node_src_prop,
+                            (xmlChar*) "value"
+                        );
+
+    // Either create or update the node
     //
-    xmlAttr* attrib =
-        xml_node_find_property(node_prop, "value");
-
-    if (!attrib)
-    {
-        g_warning(
-            "oobe: couldn't find value attribute on property '%s'",
-            property_name
+    xmlNode* node_dest_prop =
+        xml_xfconf_find_property_node(
+            node_dest_group,
+            &descriptor,
+            &search_result
         );
-        return;
+
+    WINTC_LOG_DEBUG(
+        "oobe: setting '%s' to '%s'",
+        (gchar*) descriptor.name,
+        (gchar*) descriptor.value
+    );
+
+    if (node_dest_prop)
+    {
+        xml_node_set_attribute_value(
+            node_dest_prop,
+            (xmlChar*) "value",
+            descriptor.value
+        );
+    }
+    else
+    {
+        if (search_result == XML_XFCONF_TYPE_MISMATCH)
+        {
+            g_warning(
+                "oobe: unable to update property '%s', expected type '%s'",
+                (gchar*) descriptor.name,
+                (gchar*) descriptor.type
+            );
+        }
+        else
+        {
+            xml_xfconf_create_property_node(
+                node_dest_group,
+                &descriptor
+            );
+        }
     }
 
-    xmlNodeSetContent(attrib->children, (xmlChar*)  new_value);
+    xmlFree(descriptor.name);
+    xmlFree(descriptor.type);
+    xmlFree(descriptor.value);
 }
