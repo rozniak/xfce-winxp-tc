@@ -2,6 +2,7 @@ bt,rt:glib2
 bt,rt:gstreamer
 rt:gstreamer-gtk3
 bt,rt:gtk3
+rt:pipewire
 bt,rt:wintc-comctl
 bt,rt:wintc-comgtk
 rt:wintc-launch

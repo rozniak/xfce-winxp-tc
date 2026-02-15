@@ -23,6 +23,7 @@ lightdm-->rt-->liblightdm-gobject-1-0
 msgfmt-->bt,rt-->gettext
 networkmanager-->bt-->libnm-dev
 networkmanager-->rt-->network-manager
+pipewire-->rt-->pipewire
 plymouth-->bt,rt-->plymouth
 pulseaudio-->bt-->libpulse-dev
 pulseaudio-->rt-->libpulse0

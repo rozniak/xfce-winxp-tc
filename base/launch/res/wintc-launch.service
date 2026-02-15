@@ -7,4 +7,4 @@ Before=display-manager.service
 ExecStart=/usr/bin/startwintc -i
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=display-manager.service multi-user.target
