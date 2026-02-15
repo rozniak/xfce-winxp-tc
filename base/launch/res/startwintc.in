@@ -81,7 +81,7 @@ then
         mkdir -p $XFCONF_DIR
 
         cp -f $K_ASSET_DIR/launch/setup-xfwm4.xml \
-              $XFCONF_DIR
+              $XFCONF_DIR/xfwm4.xml
 
         # Copy over default GTK settings
         #
