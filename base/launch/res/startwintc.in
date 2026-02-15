@@ -10,7 +10,7 @@ K_PHASE_FILE="/var/tmp/.wintc-setup/phase"
 #
 OPT_LAUNCH_SETUP=0
 
-if [ $# -eq 2 && $1 = "-i" ]
+if [ $# -eq 1 ] && [ $1 = "-i" ]
 then
     if [ $(id -u) -ne 0 ]
     then
