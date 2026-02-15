@@ -8,6 +8,25 @@ from wsetup_brand  import *
 from wsetup_pkg    import *
 from wsetup_screen import *
 
+def wsetup_step_error(stdscr, errstr):
+    wsetup_screen_clear(stdscr)
+
+    wsetup_screen_write_simple(
+        stdscr,
+        0, 0,
+        f"{errstr}\n\nSetup cannot continue. Press any key to exit.",
+        curses.color_pair(COLOR_PAIR_NORMAL_TEXT)
+    )
+
+    wsetup_screen_write_instructions(
+        stdscr,
+        []
+    )
+
+    stdscr.getch()
+
+    return 0
+
 def wsetup_step_init(stdscr):
     wsetup_screen_clear(stdscr)
 
@@ -253,8 +272,12 @@ def wsetup_step_prep_install(stdscr):
             check=True
         )
     except:
-        # FIXME: Should display error screen when one exists
-        raise Exception(f"Package manager is unhappy, '{pkgcmd}' failed")
+        return wsetup_step_error(
+            stdscr,
+            "The system package manager failed to update.\n\n" +
+            "Make sure your package manager is able to download from its\n" +
+            "configured sources successfully, then try running Setup again."
+        )
 
     # Copy complist to tmpdir
     #
@@ -399,6 +422,15 @@ def wsetup_step_install_base(stdscr):
                 )
 
                 stdscr.refresh()
+
+    if process.returncode != 0:
+        return wsetup_step_error(
+            stdscr,
+            "The system package manager failed to install packages.\n\n" +
+            "This may be an indication that you are missing files from the\n" +
+            "install media, or that the package manager is unable to \n" +
+            "download from network sources."
+        )
 
     wsetup_screen_write_direct(
         stdscr,
