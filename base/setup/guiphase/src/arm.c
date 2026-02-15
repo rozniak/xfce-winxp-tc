@@ -5,8 +5,9 @@
 #include <wintc/exec.h>
 
 #include "arm.h"
+#include "phase.h"
 
-#define WINTC_SETUP_ASSETS_DIR WINTC_ASSETS_DIR "/wsetupx"
+#define WINTC_LAUNCH_ASSETS_DIR WINTC_ASSETS_DIR "/launch"
 
 //
 // PUBLIC FUNCTIONS
@@ -17,6 +18,7 @@ gboolean wintc_setup_arm_system(void)
 
     //
     // To arm the system for setup, we do the following things in order:
+    //     - Deploy the 'phase' file set to 1 (graphical mode)
     //     - Deploy the init service/script for launching setup during startup
     //     - Specify the 'splash' parameter to Linux in Grub
     //     - Set the plymouth boot screen, generate initrd
@@ -27,14 +29,18 @@ gboolean wintc_setup_arm_system(void)
     // FIXME: This is only tested on Debian and systemd right now!!!!!!!
     //
 
+    // Deploy phase file for booting into graphical mode
+    //
+    wintc_setup_phase_set(WINTC_SETUP_PHASE_GUIMODE);
+
     // Deploy the systemd service
     //
     WINTC_LOG_DEBUG("wsetupx: attempting to link setup service");
 
     int res_sdlink =
         symlink(
-            WINTC_SETUP_ASSETS_DIR "/wsetupx.service",
-            "/etc/systemd/system/wsetupx.service"
+            WINTC_LAUNCH_ASSETS_DIR "/wintc-launch.service",
+            "/etc/systemd/system/wintc-launch.service"
         );
 
     if (!(res_sdlink == 0 || errno == EEXIST))
@@ -49,7 +55,7 @@ gboolean wintc_setup_arm_system(void)
 
     if (
         !wintc_launch_command_sync(
-            "systemctl enable wsetupx",
+            "systemctl enable wintc-launch",
             NULL,
             NULL,
             &error

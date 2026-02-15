@@ -42,6 +42,8 @@ add_executable(
     src/netwiz.h
     src/perwiz.c
     src/perwiz.h
+    src/phase.c
+    src/phase.h
     src/resources.c
     src/setupapi.c
     src/setupapi.h
@@ -110,33 +112,6 @@ target_link_libraries(
 #
 wintc_configure_and_install_packaging()
 
-configure_file(
-    res/startwsetupx.in
-    startwsetupx
-    @ONLY
-)
-configure_file(
-    res/xinitrc.in
-    xinitrc
-    @ONLY
-)
-
-install(
-    FILES
-        ${CMAKE_BINARY_DIR}/xinitrc
-        res/xfwm4.xml
-        res/wsetupx.service
-    DESTINATION ${WINTC_ASSETS_INSTALL_DIR}/wsetupx
-)
-install(
-    FILES
-        res/gtk-settings.ini
-    DESTINATION ${WINTC_ASSETS_INSTALL_DIR}/wsetupx
-)
-install(
-    PROGRAMS ${CMAKE_BINARY_DIR}/startwsetupx
-    DESTINATION ${CMAKE_INSTALL_BINDIR}
-)
 install(
     TARGETS wintc-setup-gui
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}

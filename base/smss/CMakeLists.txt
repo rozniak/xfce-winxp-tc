@@ -101,28 +101,9 @@ target_link_libraries(
 #
 wintc_configure_and_install_packaging()
 
-configure_file(
-    res/startwintc.in
-    startwintc
-    @ONLY
-)
-configure_file(
-    res/xinitrc.in
-    xinitrc
-    @ONLY
-)
-
 install(
     FILES res/wintc.desktop
     DESTINATION share/xsessions
-)
-install(
-    PROGRAMS ${CMAKE_BINARY_DIR}/startwintc
-    DESTINATION ${CMAKE_INSTALL_BINDIR}
-)
-install(
-    PROGRAMS ${CMAKE_BINARY_DIR}/xinitrc
-    DESTINATION ${WINTC_ASSETS_INSTALL_DIR}/smss
 )
 install(
     TARGETS wintc-smss

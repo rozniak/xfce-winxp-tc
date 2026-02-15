@@ -39,6 +39,8 @@ webkitgtk-->rt-->libwebkit2gtk-4.1-0
 wintc-comctl-->bt,rt-->libwintc-comctl
 wintc-comgtk-->bt,rt-->libwintc-comgtk
 wintc-exec-->bt,rt-->libwintc-exec
+wintc-launch-->bt-->NULL
+wintc-launch-->rt-->wintc-launch
 wintc-msgina-->bt,rt-->libwintc-msgina
 wintc-registry-->bt,rt-->libwintc-registry
 wintc-shcommon-->bt,rt-->libwintc-shcommon

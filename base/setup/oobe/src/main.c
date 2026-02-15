@@ -1,11 +1,15 @@
+#include <errno.h>
 #include <glib.h>
 #include <gst/gst.h>
 #include <gtk/gtk.h>
+#include <sys/stat.h>
 #include <wintc/comctl.h>
 #include <wintc/comgtk.h>
 #include <wintc/shelldpa.h>
 
 #include "oobewnd.h"
+
+#define WINTC_SETUP_ROOT_DIR "/var/tmp/.wintc-setup"
 
 //
 // FORWARD DECLARATIONS
@@ -23,6 +27,34 @@ int main(
     char* argv[]
 )
 {
+    GError* error = NULL;
+
+    // Before all else, write to the phase file so if we crash, the OOBE
+    // doesn't start again
+    //
+    if (g_mkdir_with_parents(WINTC_SETUP_ROOT_DIR, S_IRWXU) < 0)
+    {
+        g_critical(
+            "oobe: failed to create %s (err: %d)",
+            WINTC_SETUP_ROOT_DIR,
+            errno
+        );
+        return EXIT_FAILURE;
+    }
+
+    if (
+        !g_file_set_contents(
+            WINTC_SETUP_ROOT_DIR "/phase",
+            "3",
+            -1,
+            &error
+        )
+    )
+    {
+        wintc_log_error_and_clear(&error);
+        return EXIT_FAILURE;
+    }
+
     // Spawn GTK
     //
     gtk_init(&argc, &argv);

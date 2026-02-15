@@ -2,4 +2,5 @@ bt,rt:glib2
 bt,rt:gtk3
 bt,rt:wintc-comgtk
 bt,rt:wintc-exec
+rt:wintc-launch
 bt,rt:wintc-shell

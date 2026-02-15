@@ -4,6 +4,7 @@ rt:gstreamer-gtk3
 bt,rt:gtk3
 bt,rt:wintc-comctl
 bt,rt:wintc-comgtk
+rt:wintc-launch
 bt,rt:wintc-shcommon
 bt,rt:wintc-shelldpa
 bt,rt:wintc-shlang

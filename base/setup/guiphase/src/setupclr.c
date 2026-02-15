@@ -4,6 +4,7 @@
 
 #include "netwiz.h"
 #include "perwiz.h"
+#include "phase.h"
 #include "setupapi.h"
 #include "setupclr.h"
 
@@ -439,6 +440,8 @@ static void wintc_setup_controller_go_to_phase(
 
         case PHASE_DONE:
         {
+            wintc_setup_phase_set(WINTC_SETUP_PHASE_OOBE);
+
             g_signal_emit(
                 setup,
                 wintc_setup_controller_signals[SIGNAL_SETUP_DONE],

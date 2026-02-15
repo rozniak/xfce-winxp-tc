@@ -1,9 +1,0 @@
-#!/usr/bin/env sh
-
-# FIXME: See smss about this
-#
-xfsettingsd --disable-wm-check --replace --daemon
-
-# Launch setup
-#
-dbus-run-session -- wsetupx

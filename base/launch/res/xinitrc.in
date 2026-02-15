@@ -1,0 +1,38 @@
+#!/usr/bin/env sh
+
+# For now, we must launch xfsettingsd first because it hosts the XSettings
+# protocol which GtkSettings reads from
+#
+# FIXME: regsvc should take over this role
+#
+xfsettingsd --disable-wm-check --replace --daemon
+
+# Determine what to launch
+#
+launch_exe="smss"
+
+if [ ! -z "$WSETUP_PHASE" ]
+then
+    case "$WSETUP_PHASE" in
+        # Graphical phase
+        #
+        1)
+            launch_exe="wsetupx"
+            ;;
+
+        # OOBE
+        #
+        2)
+            launch_exe="msoobe"
+            ;;
+
+        *)
+            printf "%s\n" "Bad setup phase, cannot launch."
+            exit 1
+            ;;
+    esac
+fi
+
+# Launch setup
+#
+dbus-run-session -- $launch_exe

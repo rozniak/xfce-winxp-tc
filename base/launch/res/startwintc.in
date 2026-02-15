@@ -1,0 +1,103 @@
+#!/usr/bin/env sh
+
+#
+# CONSTANTS
+#
+K_ASSET_DIR="@CMAKE_INSTALL_PREFIX@/@WINTC_ASSETS_INSTALL_DIR@"
+K_PHASE_FILE="/var/tmp/.wintc-setup/phase"
+
+# Check options
+#
+OPT_LAUNCH_SETUP=0
+
+if [ $# -eq 2 && $1 = "-i" ]
+then
+    if [ $(id -u) -ne 0 ]
+    then
+        printf "%s\n" "Setup must be launched as rooot."
+        exit 1
+    fi
+
+    OPT_LAUNCH_SETUP=1
+fi
+
+# Set up XDG vars
+#
+XDG_DATA_DIRS="/usr/local/share:/usr/share"
+export XDG_DATA_DIRS
+
+XDG_CONFIG_DIRS="/etc/xdg"
+export XDG_CONFIG_DIRS
+
+XDG_CONFIG_HOME=/root/.config
+export XDG_CONFIG_HOME
+
+XDG_CACHE_HOME=/root/.cache
+export XDG_CACHE_HOME
+
+DESKTOP_SESSION="WINTC"
+XDG_CURRENT_DESKTOP="WINTC"
+export DESKTOP_SESSION
+export XDG_CURRENT_DESKTOP
+
+# FIXME: This might only work on systemd due to XDG_VTNR, figure out what to
+#        do on other init systems
+#
+launch_exe="xinit"
+
+if [ ! -z "$DISPLAY" ]
+then
+    launch_exe="sh"
+fi
+
+# Adjust launch for setup, if requested
+#
+if [ $OPT_LAUNCH_SETUP -eq 1 ]
+then
+    WSETUP_PHASE=$(cat $K_PHASE_FILE 2>/dev/null)
+
+    # Check setup phase:
+    #   - If no phase, then setup hasn't been initialized
+    #   - If on phase 3, setup has finished and we should unlink it now
+    #
+    # Otherwise prepare to launch setup
+    # 
+    if [ -z "$WSETUP_PHASE" ]
+    then
+        printf "%s\n" "Setup has not been initialized, cannot launch"
+        exit 1
+    fi
+
+    if [ $WSETUP_PHASE -eq 3 ]
+    then
+        rm -f $K_PHASE_FILE
+        systemctl disable wintc-launch
+        exit 0
+    else
+        # Copy over default xfconf stuff
+        #
+        XFCONF_DIR=$XDG_CONFIG_HOME/xfce4/xfconf/xfce-perchannel-xml
+
+        mkdir -p $XFCONF_DIR
+
+        cp -f $K_ASSET_DIR/launch/setup-xfwm4.xml \
+              $XFCONF_DIR
+
+        # Copy over default GTK settings
+        #
+        GTKCONF_DIR=$XDG_CONFIG_HOME/gtk-3.0
+
+        mkdir -p $GTKCONF_DIR
+
+        cp -f $K_ASSET_DIR/launch/setup-gtk-settings.ini \
+              $GTKCONF_DIR/settings.ini
+
+        # Export out so that xinitrc knows what we want
+        #
+        export WSETUP_PHASE
+    fi
+fi
+
+# Launch!
+#
+$launch_exe @CMAKE_INSTALL_PREFIX@/@WINTC_ASSETS_INSTALL_DIR@/launch/xinitrc -- /etc/X11/xinit/xserverrc vt$XDG_VTNR
