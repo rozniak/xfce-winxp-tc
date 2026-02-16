@@ -279,6 +279,8 @@ void wintc_setup_window_enable_throbbers(
                 WINTC_CTL_ANIMATION_INFINITE
             );
         }
+
+        gtk_widget_show(anim_throbber);
     }
 
     g_object_unref(pixbuf_throbber);

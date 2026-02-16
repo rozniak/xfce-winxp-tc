@@ -1,3 +1,8 @@
+*
+{
+    -GtkProgressBar-min-horizontal-bar-width: 1;
+}
+
 .setup-wnd
 {
     background: #4E6FD6;
