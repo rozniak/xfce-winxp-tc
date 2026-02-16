@@ -8,6 +8,32 @@
 #include "xfconf.h"
 
 //
+// PRIVATE ENUMS
+//
+enum
+{
+    OOBE_CHOWN_ARG_BIN,
+    OOBE_CHOWN_ARG_RECURSIVE,
+    OOBE_CHOWN_ARG_OWNER,
+    OOBE_CHOWN_ARG_DIR
+};
+
+//
+// STATIC DATA
+//
+static const gchar* S_XFCONF_CHANNELS[] = {
+    "xfwm4",
+    "xsettings"
+};
+static const gchar* S_DEPLOYS_AUTOSTART[] = {
+    "/uk/oddmatics/wintc/oobe/startup-desktop.desktop",
+    "WinTC-Desktop.desktop",
+
+    "/uk/oddmatics/wintc/oobe/startup-taskband.desktop",
+    "WinTC-Taskband.desktop"
+};
+
+//
 // FORWARD DECLARATIONS
 //
 static gboolean wintc_oobe_user_is_eligible_user(
@@ -21,16 +47,12 @@ gboolean wintc_oobe_user_apply_all(
     WINTC_UNUSED(GError** error)
 )
 {
-    static const gchar* S_XFCONF_CHANNELS[] = {
-        "xfwm4",
-        "xsettings"
-    };
-    static const gchar* S_DEPLOYS_AUTOSTART[] = {
-        "/uk/oddmatics/wintc/oobe/startup-desktop.desktop",
-        "WinTC-Desktop.desktop",
-
-        "/uk/oddmatics/wintc/oobe/startup-taskband.desktop",
-        "WinTC-Taskband.desktop"
+    static gchar* s_cmd_chown[] = {
+        "/usr/bin/chown",
+        "-R",
+        NULL, // user:group
+        NULL, // home/.config
+        NULL
     };
 
     GError*        local_error = NULL;
@@ -61,7 +83,6 @@ gboolean wintc_oobe_user_apply_all(
         {
             wintc_oobe_xfconf_update_channel(
                 pwent->pw_dir,
-                pwent->pw_uid,
                 S_XFCONF_CHANNELS[i]
             );
         }
@@ -84,7 +105,6 @@ gboolean wintc_oobe_user_apply_all(
                     S_DEPLOYS_AUTOSTART[i],
                     user_config_autostart,
                     S_DEPLOYS_AUTOSTART[i + 1],
-                    pwent->pw_uid,
                     &local_error
                 )
             )
@@ -94,6 +114,44 @@ gboolean wintc_oobe_user_apply_all(
         }
 
         g_free(user_config_autostart);
+
+        // Fix up owner, since we'll be running as root
+        //
+        gchar* arg_own = g_strdup_printf(
+                             "%d:%d",
+                             pwent->pw_uid,
+                             pwent->pw_gid
+                         );
+        gchar* arg_dir = g_build_path(
+                             G_DIR_SEPARATOR_S,
+                             pwent->pw_dir,
+                             ".config",
+                             NULL
+                         );
+
+        s_cmd_chown[OOBE_CHOWN_ARG_OWNER] = arg_own;
+        s_cmd_chown[OOBE_CHOWN_ARG_DIR]   = arg_dir;
+
+        if (
+            !g_spawn_sync(
+                NULL,
+                s_cmd_chown,
+                NULL,
+                0,
+                NULL,
+                NULL,
+                NULL,
+                NULL,
+                NULL,
+                &local_error
+            )
+        )
+        {
+            wintc_log_error_and_clear(&local_error);
+        }
+
+        g_free(arg_own);
+        g_free(arg_dir);
     }
 
     endpwent();
