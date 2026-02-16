@@ -6,6 +6,11 @@
 K_ASSET_DIR="@CMAKE_INSTALL_PREFIX@/@WINTC_ASSETS_INSTALL_DIR@"
 K_PHASE_FILE="/var/tmp/.wintc-setup/phase"
 
+
+#
+# MAIN SCRIPT
+#
+
 # Check options
 #
 OPT_LAUNCH_SETUP=0
@@ -52,6 +57,8 @@ fi
 
 # Adjust launch for setup, if requested
 #
+should_boot_lightdm=0
+
 if [ $OPT_LAUNCH_SETUP -eq 1 ]
 then
     WSETUP_PHASE=$(cat $K_PHASE_FILE 2>/dev/null)
@@ -95,9 +102,25 @@ then
         # Export out so that xinitrc knows what we want
         #
         export WSETUP_PHASE
+
+        # Special case: give lightdm a kick after finishing up with the OOBE
+        #
+        if [ $WSETUP_PHASE -eq 2 ]
+        then
+            should_boot_lightdm=1
+        fi
     fi
 fi
 
 # Launch!
 #
 $launch_exe @CMAKE_INSTALL_PREFIX@/@WINTC_ASSETS_INSTALL_DIR@/launch/xinitrc -- /etc/X11/xinit/xserverrc vt$XDG_VTNR
+
+# Give lightdm a kick if needed
+#
+# FIXME: Specific to systemd!!!
+#
+if [ $should_boot_lightdm -eq 1 ]
+then
+    systemctl restart lightdm
+fi
