@@ -1,5 +1,6 @@
 #include <glib.h>
 #include <gst/gst.h>
+#include <gst/pbutils/pbutils.h>
 #include <gtk/gtk.h>
 #include <wintc/comgtk.h>
 #include <wintc/shelldpa.h>
@@ -26,10 +27,10 @@ static void wintc_oobe_window_go_to_page(
     guint            page,
     gboolean         push_history
 );
-static gboolean wintc_oobe_window_init_intro(
+static gboolean wintc_oobe_window_start_intro(
     WinTCOobeWindow* wnd_oobe
 );
-static gboolean wintc_oobe_window_init_title(
+static gboolean wintc_oobe_window_start_title(
     WinTCOobeWindow* wnd_oobe
 );
 static void wintc_oobe_window_set_action_enabled(
@@ -57,7 +58,7 @@ static void action_skip(
     gpointer       user_data
 );
 
-static void cb_st_eos(
+static void cb_gst_intro_message(
     GstBus*     bus,
     GstMessage* msg,
     gpointer    user_data
@@ -243,50 +244,18 @@ static void wintc_oobe_window_init(
 
     // Set up intro.wmv to play
     //
-    if (wintc_oobe_window_init_intro(self))
+    if (!wintc_oobe_window_start_intro(self))
     {
-        GstBus* bus = gst_element_get_bus(self->gst_intro_pipeline);
-
-        gst_bus_add_signal_watch(bus);
-
-        g_signal_connect(
-            bus,
-            "message::eos",
-            G_CALLBACK(cb_st_eos),
-            self
-        );
-
-        gst_object_unref(bus);
-
-        gtk_container_add(
-            GTK_CONTAINER(self),
-            self->gtksink_intro
-        );
-
-        gst_element_set_state(
-            self->gst_intro_pipeline,
-            GST_STATE_PLAYING
-        );
-    }
-    else
-    {
-        g_critical("%s", "oobe: couldn't play intro.wmv");
+        g_warning("%s", "oobe: couldn't play intro.wmv");
 
         wintc_oobe_window_start_wizard(self);
     }
 
     // Set up title.wma to play
     //
-    if (wintc_oobe_window_init_title(self))
+    if (!wintc_oobe_window_start_title(self))
     {
-        gst_element_set_state(
-            self->gst_title_pipeline,
-            GST_STATE_PLAYING
-        );
-    }
-    else
-    {
-        g_critical("%s", "oobe: couldn't play title.wma");
+        g_warning("%s", "oobe: couldn't play title.wma");
     }
 }
 
@@ -377,7 +346,7 @@ static void wintc_oobe_window_go_to_page(
     );
 }
 
-static gboolean wintc_oobe_window_init_intro(
+static gboolean wintc_oobe_window_start_intro(
     WinTCOobeWindow* wnd_oobe
 )
 {
@@ -459,10 +428,30 @@ static gboolean wintc_oobe_window_init_intro(
         NULL
     );
 
+    // Link up to receive messages on the bus and add the widget
+    //
+    GstBus* bus = gst_element_get_bus(wnd_oobe->gst_intro_pipeline);
+
+    gst_bus_add_signal_watch(bus);
+
+    g_signal_connect(
+        bus,
+        "message",
+        G_CALLBACK(cb_gst_intro_message),
+        wnd_oobe
+    );
+
+    gst_object_unref(bus);
+
+    gtk_container_add(
+        GTK_CONTAINER(wnd_oobe),
+        wnd_oobe->gtksink_intro
+    );
+
     return TRUE;
 }
 
-static gboolean wintc_oobe_window_init_title(
+static gboolean wintc_oobe_window_start_title(
     WinTCOobeWindow* wnd_oobe
 )
 {
@@ -479,7 +468,7 @@ static gboolean wintc_oobe_window_init_title(
                                        "title_res"
                                    );
     wnd_oobe->gst_title_sink     = gst_element_factory_make(
-                                       "autoaudiosink",
+                                       "alsasink",
                                        "title_sink"
                                    );
 
@@ -673,15 +662,24 @@ static void action_skip(
     // FIXME: Implement when needed
 }
 
-static void cb_st_eos(
+static void cb_gst_intro_message(
     WINTC_UNUSED(GstBus*     bus),
-    WINTC_UNUSED(GstMessage* msg),
-    gpointer user_data
+    GstMessage* msg,
+    gpointer    user_data
 )
 {
-    wintc_oobe_window_start_wizard(
-        WINTC_OOBE_WINDOW(user_data)
-    );
+    WinTCOobeWindow* wnd_oobe = WINTC_OOBE_WINDOW(user_data);
+
+    if (
+        msg->type == GST_MESSAGE_EOS ||
+        (
+            msg->type == GST_MESSAGE_ELEMENT &&
+            gst_is_missing_plugin_message(msg)
+        )
+    )
+    {
+        wintc_oobe_window_start_wizard(wnd_oobe);
+    }
 }
 
 static void on_gst_intro_decode_pad_added(
@@ -732,6 +730,13 @@ static void on_gst_intro_decode_pad_added(
     else
     {
         WINTC_LOG_DEBUG("oobe: link successful for intro.wmv");
+
+        // Begin playback!
+        //
+        gst_element_set_state(
+            wnd_oobe->gst_intro_pipeline,
+            GST_STATE_PLAYING
+        );
     }
 
 cleanup:
@@ -791,6 +796,13 @@ static void on_gst_title_decode_pad_added(
     else
     {
         WINTC_LOG_DEBUG("oobe: link successful for title.wma");
+
+        // Begin playback!
+        // 
+        gst_element_set_state(
+            wnd_oobe->gst_title_pipeline,
+            GST_STATE_PLAYING
+        );
     }
 
 cleanup:

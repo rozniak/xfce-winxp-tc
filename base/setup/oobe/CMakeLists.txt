@@ -20,16 +20,18 @@ include(../../../packaging/cmake-inc/linking/CMakeLists.txt)
 include(../../../packaging/cmake-inc/packaging/CMakeLists.txt)
 include(../../../packaging/cmake-inc/resources/CMakeLists.txt)
 
-wintc_resolve_library(gio-unix-2.0   GIO_UNIX)
-wintc_resolve_library(glib-2.0       GLIB)
-wintc_resolve_library(gstreamer-1.0  GSTREAMER)
-wintc_resolve_library(gtk+-3.0       GTK3)
-wintc_resolve_library(wintc-comctl   WINTC_COMCTL)
-wintc_resolve_library(wintc-comgtk   WINTC_COMGTK)
-wintc_resolve_library(wintc-shcommon WINTC_SHCOMMON)
-wintc_resolve_library(wintc-shelldpa WINTC_SHELLDPA)
-wintc_resolve_library(wintc-shlang   WINTC_SHLANG)
-wintc_resolve_library(libxml-2.0     XML2)
+wintc_resolve_library(gio-unix-2.0               GIO_UNIX)
+wintc_resolve_library(glib-2.0                   GLIB)
+wintc_resolve_library(gstreamer-1.0              GSTREAMER)
+wintc_resolve_library(gstreamer-plugins-base-1.0 GSTREAMER_BASE)
+wintc_resolve_library(gstreamer-pbutils-1.0      GSTREAMER_PBUTILS)
+wintc_resolve_library(gtk+-3.0                   GTK3)
+wintc_resolve_library(wintc-comctl               WINTC_COMCTL)
+wintc_resolve_library(wintc-comgtk               WINTC_COMGTK)
+wintc_resolve_library(wintc-shcommon             WINTC_SHCOMMON)
+wintc_resolve_library(wintc-shelldpa             WINTC_SHELLDPA)
+wintc_resolve_library(wintc-shlang               WINTC_SHLANG)
+wintc_resolve_library(libxml-2.0                 XML2)
 
 wintc_compile_resources()
 
@@ -63,6 +65,8 @@ target_include_directories(
     PRIVATE ${GIO_UNIX_INCLUDE_DIRS}
     PRIVATE ${GLIB_INCLUDE_DIRS}
     PRIVATE ${GSTREAMER_INCLUDE_DIRS}
+    PRIVATE ${GSTREAMER_BASE_INCLUDE_DIRS}
+    PRIVATE ${GSTREAMER_PBUTILS_INCLUDE_DIRS}
     PRIVATE ${GTK3_INCLUDE_DIRS}
     PRIVATE ${WINTC_COMCTL_INCLUDE_DIRS}
     PRIVATE ${WINTC_COMGTK_INCLUDE_DIRS}
@@ -77,6 +81,8 @@ target_link_directories(
     PRIVATE ${GIO_UNIX_LIBRARY_DIRS}
     PRIVATE ${GLIB_LIBRARY_DIRS}
     PRIVATE ${GSTREAMER_LIBRARY_DIRS}
+    PRIVATE ${GSTREAMER_BASE_LIBRARY_DIRS}
+    PRIVATE ${GSTREAMER_PBUTILS_LIBRARY_DIRS}
     PRIVATE ${GTK3_LIBRARY_DIRS}
     PRIVATE ${WINTC_COMCTL_LIBRARY_DIRS}
     PRIVATE ${WINTC_COMGTK_LIBRARY_DIRS}
@@ -91,6 +97,8 @@ target_link_libraries(
     PRIVATE ${GIO_UNIX_LIBRARIES}
     PRIVATE ${GLIB_LIBRARIES}
     PRIVATE ${GSTREAMER_LIBRARIES}
+    PRIVATE ${GSTREAMER_BASE_LIBRARIES}
+    PRIVATE ${GSTREAMER_PBUTILS_LIBRARIES}
     PRIVATE ${GTK3_LIBRARIES}
     PRIVATE ${WINTC_COMCTL_LIBRARIES}
     PRIVATE ${WINTC_COMGTK_LIBRARIES}

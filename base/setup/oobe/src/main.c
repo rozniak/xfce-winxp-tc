@@ -55,37 +55,6 @@ int main(
         return EXIT_FAILURE;
     }
 
-    // Start Pipewire
-    //
-    // FIXME: systemd specific
-    //
-    static gchar* s_pipewire_argv[] = {
-        "systemctl",
-        "--user",
-        "--now",
-        "start",
-        "pipewire",
-        NULL
-    };
-
-    if (
-        !g_spawn_sync(
-            NULL,
-            s_pipewire_argv,
-            NULL,
-            0,
-            NULL,
-            NULL,
-            NULL,
-            NULL,
-            NULL,
-            &error
-        )
-    )
-    {
-        wintc_log_error_and_clear(&error);
-    }
-
     // Spawn GTK
     //
     gtk_init(&argc, &argv);
