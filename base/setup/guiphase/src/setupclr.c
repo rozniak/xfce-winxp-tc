@@ -262,7 +262,8 @@ static void wintc_setup_controller_go_to_phase(
             //
             wintc_setup_controller_go_to_phase(
                 setup,
-                PHASE_PERWIZ
+                //PHASE_PERWIZ
+                PHASE_COPY_FILES // TODO: Skipping wizards until they're ready
             );
             break;
 
