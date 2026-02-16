@@ -483,15 +483,15 @@ static void xml_node_set_attribute_value(
 
     if (attrib)
     {
+        xmlNodeSetContent(attrib->children, new_value);
+    }
+    else
+    {
         xmlNewProp(
             node,
             attribute_name,
             new_value
         );
-    }
-    else
-    {
-        xmlNodeSetContent(attrib->children, new_value);
     }
 }
 
