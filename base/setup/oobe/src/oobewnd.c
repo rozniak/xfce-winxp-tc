@@ -244,7 +244,34 @@ static void wintc_oobe_window_init(
 
     // Set up intro.wmv to play
     //
-    if (!wintc_oobe_window_start_intro(self))
+    if (wintc_oobe_window_start_intro(self))
+    {
+        // Link up to receive messages on the bus and add the widget
+        //
+        GstBus* bus = gst_element_get_bus(self->gst_intro_pipeline);
+
+        gst_bus_add_signal_watch(bus);
+
+        g_signal_connect(
+            bus,
+            "message",
+            G_CALLBACK(cb_gst_intro_message),
+            self
+        );
+
+        gst_object_unref(bus);
+
+        gtk_container_add(
+            GTK_CONTAINER(self),
+            self->gtksink_intro
+        );
+
+        gst_element_set_state(
+            self->gst_intro_pipeline,
+            GST_STATE_PAUSED
+        );
+    }
+    else
     {
         g_warning("%s", "oobe: couldn't play intro.wmv");
 
@@ -253,7 +280,14 @@ static void wintc_oobe_window_init(
 
     // Set up title.wma to play
     //
-    if (!wintc_oobe_window_start_title(self))
+    if (wintc_oobe_window_start_title(self))
+    {
+        gst_element_set_state(
+            self->gst_title_pipeline,
+            GST_STATE_PAUSED
+        );
+    }
+    else
     {
         g_warning("%s", "oobe: couldn't play title.wma");
     }
@@ -426,26 +460,6 @@ static gboolean wintc_oobe_window_start_intro(
         wnd_oobe->gst_intro_sink,
         "widget", &(wnd_oobe->gtksink_intro),
         NULL
-    );
-
-    // Link up to receive messages on the bus and add the widget
-    //
-    GstBus* bus = gst_element_get_bus(wnd_oobe->gst_intro_pipeline);
-
-    gst_bus_add_signal_watch(bus);
-
-    g_signal_connect(
-        bus,
-        "message",
-        G_CALLBACK(cb_gst_intro_message),
-        wnd_oobe
-    );
-
-    gst_object_unref(bus);
-
-    gtk_container_add(
-        GTK_CONTAINER(wnd_oobe),
-        wnd_oobe->gtksink_intro
     );
 
     return TRUE;
