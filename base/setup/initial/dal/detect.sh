@@ -11,6 +11,15 @@ then
     . /etc/os-release
 fi
 
+#
+# FIXME: TEST RELEASE RESTRICTED TO DEBIAN 13
+#
+if [ "$ID" != "debian" ] || [ "$VERSION_ID" != "13" ]
+then
+    echo "Sorry, this release is intended for testing on Debian 13 only."
+    exit 1
+fi
+
 export WSETUP_DIST_NAME="$PRETTY_NAME"
 
 case "$ID" in
