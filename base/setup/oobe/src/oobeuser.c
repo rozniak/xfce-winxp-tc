@@ -21,6 +21,10 @@ gboolean wintc_oobe_user_apply_all(
     WINTC_UNUSED(GError** error)
 )
 {
+    static const gchar* S_XFCONF_CHANNELS[] = {
+        "xfwm4",
+        "xsettings"
+    };
     static const gchar* S_DEPLOYS_AUTOSTART[] = {
         "/uk/oddmatics/wintc/oobe/startup-desktop.desktop",
         "WinTC-Desktop.desktop",
@@ -53,10 +57,13 @@ gboolean wintc_oobe_user_apply_all(
 
         // XFCONF deployments
         //
-        wintc_oobe_xfconf_update_channel(
-            pwent->pw_dir,
-            "xfwm4"
-        );
+        for (gsize i = 0; i < G_N_ELEMENTS(S_XFCONF_CHANNELS); i++)
+        {
+            wintc_oobe_xfconf_update_channel(
+                pwent->pw_dir,
+                S_XFCONF_CHANNELS[i]
+            );
+        }
 
         // File deployments
         //

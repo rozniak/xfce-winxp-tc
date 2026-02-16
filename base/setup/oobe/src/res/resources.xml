@@ -41,5 +41,6 @@
     <file>startup-desktop.desktop</file>
     <file>startup-taskband.desktop</file>
     <file>xfconf-xfwm4.xml</file>
+    <file>xfconf-xsettings.xml</file>
   </gresource>
 </gresources>
