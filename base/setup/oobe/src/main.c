@@ -5,6 +5,7 @@
 #include <sys/stat.h>
 #include <wintc/comctl.h>
 #include <wintc/comgtk.h>
+#include <wintc/exec.h>
 #include <wintc/shelldpa.h>
 
 #include "oobewnd.h"
@@ -66,6 +67,14 @@ int main(
     }
 
     wintc_ctl_install_default_styles();
+
+    // Fire up XFWM4
+    //
+    if (!wintc_launch_command("xfwm4 --compositor=on", &error))
+    {
+        wintc_log_error_and_clear(&error);
+        return EXIT_FAILURE;
+    }
 
     // Spawn GStreamer
     //

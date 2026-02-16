@@ -28,6 +28,7 @@ wintc_resolve_library(gstreamer-pbutils-1.0      GSTREAMER_PBUTILS)
 wintc_resolve_library(gtk+-3.0                   GTK3)
 wintc_resolve_library(wintc-comctl               WINTC_COMCTL)
 wintc_resolve_library(wintc-comgtk               WINTC_COMGTK)
+wintc_resolve_library(wintc-exec                 WINTC_EXEC)
 wintc_resolve_library(wintc-shcommon             WINTC_SHCOMMON)
 wintc_resolve_library(wintc-shelldpa             WINTC_SHELLDPA)
 wintc_resolve_library(wintc-shlang               WINTC_SHLANG)
@@ -70,6 +71,7 @@ target_include_directories(
     PRIVATE ${GTK3_INCLUDE_DIRS}
     PRIVATE ${WINTC_COMCTL_INCLUDE_DIRS}
     PRIVATE ${WINTC_COMGTK_INCLUDE_DIRS}
+    PRIVATE ${WINTC_EXEC_INCLUDE_DIRS}
     PRIVATE ${WINTC_SHCOMMON_INCLUDE_DIRS}
     PRIVATE ${WINTC_SHELLDPA_INCLUDE_DIRS}
     PRIVATE ${WINTC_SHLANG_INCLUDE_DIRS}
@@ -86,6 +88,7 @@ target_link_directories(
     PRIVATE ${GTK3_LIBRARY_DIRS}
     PRIVATE ${WINTC_COMCTL_LIBRARY_DIRS}
     PRIVATE ${WINTC_COMGTK_LIBRARY_DIRS}
+    PRIVATE ${WINTC_EXEC_LIBRARY_DIRS}
     PRIVATE ${WINTC_SHCOMMON_LIBRARY_DIRS}
     PRIVATE ${WINTC_SHELLDPA_LIBRARY_DIRS}
     PRIVATE ${WINTC_SHLANG_LIBRARY_DIRS}
@@ -102,6 +105,7 @@ target_link_libraries(
     PRIVATE ${GTK3_LIBRARIES}
     PRIVATE ${WINTC_COMCTL_LIBRARIES}
     PRIVATE ${WINTC_COMGTK_LIBRARIES}
+    PRIVATE ${WINTC_EXEC_LIBRARIES}
     PRIVATE ${WINTC_SHCOMMON_LIBRARIES}
     PRIVATE ${WINTC_SHELLDPA_LIBRARIES}
     PRIVATE ${WINTC_SHLANG_LIBRARIES}

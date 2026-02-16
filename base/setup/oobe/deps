@@ -7,6 +7,7 @@ rt:gstreamer-pu
 bt,rt:gtk3
 bt,rt:wintc-comctl
 bt,rt:wintc-comgtk
+bt,rt:wintc-exec
 rt:wintc-launch
 bt,rt:wintc-shcommon
 bt,rt:wintc-shelldpa
