@@ -1,10 +1,11 @@
 [Unit]
 Description=Windows WinTC Setup
 Before=display-manager.service
+Wants=display-manager.service
 
 [Service]
 # FIXME: Check FreeBSD
 ExecStart=/usr/bin/startwintc -i
 
 [Install]
-WantedBy=display-manager.service multi-user.target
+WantedBy=graphical.target
