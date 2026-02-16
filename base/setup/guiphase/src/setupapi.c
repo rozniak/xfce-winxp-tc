@@ -11,7 +11,6 @@ enum
 {
     WINTC_SETUP_ACT_PHASE_DEPLOY_LIGHTDM_CONF,
     WINTC_SETUP_ACT_PHASE_ENABLE_LIGHTDM,
-    WINTC_SETUP_ACT_PHASE_DISABLE_WSETUPX,
     WINTC_SETUP_ACT_PHASE_DONE,
 
     N_SETTINGS_PHASES
@@ -277,39 +276,6 @@ static void wintc_setup_act_iter_setting_phase(
                 "/usr/bin/systemctl",
                 "enable",
                 "lightdm",
-                NULL
-            };
-
-            if (
-                !g_spawn_sync(
-                    NULL,
-                    argv,
-                    NULL,
-                    0,
-                    NULL,
-                    NULL,
-                    NULL,
-                    NULL,
-                    NULL,
-                    &error
-                )
-            )
-            {
-                wintc_setup_act_raise_error(callbacks, &error);
-                return;
-            }
-
-            break;
-        }
-
-        case WINTC_SETUP_ACT_PHASE_DISABLE_WSETUPX:
-        {
-            // FIXME: systemd specific
-            //
-            gchar* argv[] = {
-                "/usr/bin/systemctl",
-                "disable",
-                "wsetupx.service",
                 NULL
             };
 
