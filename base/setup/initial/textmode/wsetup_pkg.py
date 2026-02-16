@@ -59,11 +59,10 @@ def wsetup_pkg_get_pkgpath():
 
     contents = None
 
-    try:
-        with open(file_pkgpath, "r") as f:
-            contents = f.read()
-    except:
-        pass
+    with open(file_pkgpath, "r") as f:
+        contents = f.read()
+
+    return contents
 
 def wsetup_pkg_prepare_pkgpath():
     setup_root = os.environ.get("SETUPROOT")
