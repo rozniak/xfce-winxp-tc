@@ -48,10 +48,15 @@ def wsetup_step_init(stdscr):
 
     # Drop the pkgpath file into the setup state
     #
-    dir_setup_state = os.environ.get("WSETUP_STATE_ROOT")
-
-    with open(f"{dir_setup_state}/pkgpath", "w") as f:
-        f.write(wsetup_pkg_get_pkgpath())
+    try:
+        wsetup_pkg_prepare_pkgpath()
+    except:
+        return wsetup_step_error(
+            stdscr,
+            "Setup failed to prepare the source directory, please ensure\n" +
+            "your disk is not full and that it is possible to write to\n" +
+            "/var/tmp"
+        )
 
     return 2 # All good
 

@@ -1,5 +1,6 @@
 import configparser
 import os
+import shutil
 import subprocess
 
 def wsetup_pkg_get_pkgfmt_extension():
@@ -19,22 +20,6 @@ def wsetup_pkg_get_pkgfmt_extension():
         return ".xbps"
 
     raise Exception(f"Unknown package format {pkgfmt}")
-
-def wsetup_pkg_get_pkgpath():
-    setup_root = os.environ.get("SETUPROOT")
-
-    # Construct the package source path
-    #
-    pkgfmt_arch = subprocess.Popen(
-            "uname -m",
-            shell=True,
-            stdout=subprocess.PIPE
-        ).stdout.read().decode('utf-8').strip()
-
-    pkgfmt     = os.environ.get("WSETUP_DIST_PKGFMT")
-    pkgfmt_ext = os.environ.get("WSETUP_DIST_PKGFMT_EXT", "std")
-
-    return f"{setup_root}/{pkgfmt}/{pkgfmt_ext}/{pkgfmt_arch}"
 
 def wsetup_pkg_get_pkgnames_basesystem():
     setup_root = os.environ.get("SETUPROOT")
@@ -67,3 +52,42 @@ def wsetup_pkg_get_pkgnames_basesystem():
         ourpkgs_arr[i] = f"{pkg_src_dir}/{ourpkgs_arr[i]}{pkgfmt_fileext}"
 
     return (libs_arr + ourpkgs_arr + distpkgs_arr)
+
+def wsetup_pkg_get_pkgpath():
+    dir_setup_state = os.environ.get("WSETUP_STATE_ROOT")
+    file_pkgpath = f"{dir_setup_state}/pkgpath"
+
+    contents = None
+
+    try:
+        with open(file_pkgpath, "r") as f:
+            contents = f.read()
+    except:
+        pass
+
+def wsetup_pkg_prepare_pkgpath():
+    setup_root = os.environ.get("SETUPROOT")
+
+    # Construct the package source path
+    #
+    pkgfmt_arch = subprocess.Popen(
+            "uname -m",
+            shell=True,
+            stdout=subprocess.PIPE
+        ).stdout.read().decode('utf-8').strip()
+
+    pkgfmt     = os.environ.get("WSETUP_DIST_PKGFMT")
+    pkgfmt_ext = os.environ.get("WSETUP_DIST_PKGFMT_EXT", "std")
+
+    dir_src = f"{setup_root}/{pkgfmt}/{pkgfmt_ext}/{pkgfmt_arch}"
+
+    # Copy to the disk and set up pkgpath
+    #
+    dir_setup_state = os.environ.get("WSETUP_STATE_ROOT")
+    dir_dst         = f"{dir_setup_state}/pkg"
+    file_pkgpath    = f"{dir_setup_state}/pkgpath"
+
+    shutil.copytree(dir_src, dir_dst)
+
+    with open(file_pkgpath, "w") as f:
+        f.write(dir_dst)
