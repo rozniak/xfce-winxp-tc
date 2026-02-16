@@ -117,7 +117,7 @@ fi
 
 # Make image
 #
-mkisofs -o wintc.iso "${staging_dir}"
+mkisofs -J -o wintc.iso "${staging_dir}"
 
 if [[ $? -gt 0 ]]
 then
