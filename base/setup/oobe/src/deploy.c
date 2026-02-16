@@ -14,29 +14,12 @@ gboolean wintc_oobe_deploy_drop_file(
     GError**     error
 )
 {
-    // Get the resource
-    //
-    GBytes*      resource_bytes;
-    const gchar* resource_data;
-    gsize        resource_size;
-
-    resource_bytes =
-        g_resources_lookup_data(
-            resource_path,
-            G_RESOURCE_LOOKUP_FLAGS_NONE,
-            error
-        );
-
-    if (!resource_bytes)
-    {
-        return FALSE;
-    }
-
-    resource_data =
-        g_bytes_unref_to_data(
-            resource_bytes,
-            &resource_size
-        );
+    WINTC_LOG_DEBUG(
+        "oobe: deploying %s to %s/%s",
+        resource_path,
+        drop_directory,
+        drop_filename
+    );
 
     // Ensure the dir exists
     //
@@ -53,6 +36,26 @@ gboolean wintc_oobe_deploy_drop_file(
 
         return FALSE;
     }
+
+    // Get the resource
+    //
+    GBytes*      resource_bytes;
+    const gchar* resource_data;
+
+    resource_bytes =
+        g_resources_lookup_data(
+            resource_path,
+            G_RESOURCE_LOOKUP_FLAGS_NONE,
+            error
+        );
+
+    if (!resource_bytes)
+    {
+        return FALSE;
+    }
+
+    resource_data =
+        g_bytes_get_data(resource_bytes, NULL);
 
     // Drop the file
     //
@@ -72,6 +75,7 @@ gboolean wintc_oobe_deploy_drop_file(
             error
         );
 
+    g_bytes_unref(resource_bytes);
     g_free(target_path);
 
     return success;
