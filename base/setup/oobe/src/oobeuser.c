@@ -61,6 +61,7 @@ gboolean wintc_oobe_user_apply_all(
         {
             wintc_oobe_xfconf_update_channel(
                 pwent->pw_dir,
+                pwent->pw_uid,
                 S_XFCONF_CHANNELS[i]
             );
         }
@@ -83,6 +84,7 @@ gboolean wintc_oobe_user_apply_all(
                     S_DEPLOYS_AUTOSTART[i],
                     user_config_autostart,
                     S_DEPLOYS_AUTOSTART[i + 1],
+                    pwent->pw_uid,
                     &local_error
                 )
             )

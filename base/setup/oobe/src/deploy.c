@@ -1,5 +1,6 @@
 #include <glib.h>
 #include <sys/stat.h>
+#include <unistd.h>
 #include <wintc/comgtk.h>
 
 #include "deploy.h"
@@ -11,6 +12,7 @@ gboolean wintc_oobe_deploy_drop_file(
     const gchar* resource_path,
     const gchar* drop_directory,
     const gchar* drop_filename,
+    uid_t        user_id,
     GError**     error
 )
 {
@@ -40,7 +42,10 @@ gboolean wintc_oobe_deploy_drop_file(
 
     // Ensure the dir exists
     //
-    if (g_mkdir_with_parents(drop_directory, S_IRWXU) < 0)
+    if (
+        g_mkdir_with_parents(drop_directory, S_IRWXU) < 0 ||
+        chown(drop_directory, user_id, -1) < 0
+    )
     {
         g_set_error(
             error,
@@ -70,7 +75,8 @@ gboolean wintc_oobe_deploy_drop_file(
             resource_data,
             -1,
             error
-        );
+        ) &&
+        chown(target_path, user_id, -1) == 0;
 
     g_free(target_path);
 

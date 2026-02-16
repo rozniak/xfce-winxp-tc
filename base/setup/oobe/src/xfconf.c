@@ -2,6 +2,7 @@
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 #include <sys/stat.h>
+#include <unistd.h>
 #include <wintc/comgtk.h>
 
 #include "xfconf.h"
@@ -70,6 +71,7 @@ static void xml_xfconf_mirror_property_node(
 //
 void wintc_oobe_xfconf_update_channel(
     const gchar* user_home,
+    uid_t        user_id,
     const gchar* channel
 )
 {
@@ -342,7 +344,10 @@ void wintc_oobe_xfconf_update_channel(
 
         // Go ahead and just create the file based on our resource
         //
-        if (g_mkdir_with_parents(channel_dest_dir, S_IRWXU) < 0)
+        if (
+            g_mkdir_with_parents(channel_dest_dir, S_IRWXU) < 0 ||
+            chown(channel_dest_dir, user_id, -1) < 0
+        )
         {
             g_critical(
                 "oobe: failed to create %s (%d)",
@@ -367,6 +372,18 @@ void wintc_oobe_xfconf_update_channel(
             g_critical(
                 "oobe: failed to write xfconf xml to %s",
                 channel_dest_path
+            );
+
+            goto cleanup;
+        }
+
+        if (chown(channel_dest_path, user_id, -1) < 0)
+        {
+            g_critical(
+                "oobe: failed to chown %s as %d (%d)",
+                channel_dest_path,
+                user_id,
+                errno
             );
 
             goto cleanup;
