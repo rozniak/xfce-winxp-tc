@@ -3,6 +3,7 @@ bt,rt:gstreamer
 rt:gstreamer-alsa
 rt:gstreamer-gtk3
 bt,rt:gstreamer-pb
+rt:gstreamer-pu
 bt,rt:gtk3
 bt,rt:wintc-comctl
 bt,rt:wintc-comgtk

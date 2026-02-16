@@ -18,6 +18,8 @@ gstreamer-gtk3-->bt-->NULL
 gstreamer-gtk3-->rt-->gstreamer1.0-gtk3
 gstreamer-pb-->bt-->libgstreamer-plugins-base1.0-dev
 gstreamer-pb-->rt-->gstreamer1.0-plugins-base
+gstreamer-pu-->bt-->NULL
+gstreamer-pu-->rt-->gstreamer1.0-plugins-ugly
 gtk3-->bt-->libgtk-3-dev
 gtk3-->rt-->libgtk-3-0
 gtk4-->bt-->libgtk-4-dev
