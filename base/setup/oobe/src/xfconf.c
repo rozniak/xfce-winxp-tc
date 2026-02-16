@@ -151,6 +151,16 @@ void wintc_oobe_xfconf_update_channel(
         xmlDocPtr channel_src_xml  =
             xmlParseDoc((xmlChar*) g_bytes_get_data(channel_src_bytes, NULL));
 
+        if (!channel_dest_xml || !channel_src_xml)
+        {
+            g_warning("%s", "oobe: xml parsing problem");
+
+            xmlFreeDoc(channel_dest_xml);
+            xmlFreeDoc(channel_src_xml);
+
+            goto cleanup;
+        }
+
         //
         // The configs look like so:
         //
