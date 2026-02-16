@@ -272,6 +272,19 @@ void wintc_oobe_xfconf_update_channel(
                     continue;
                 }
 
+                // Skip empty props
+                //
+                if (
+                    xml_node_check_attribute(
+                        node_src_prop,
+                        (xmlChar*) "type",
+                        (xmlChar*) "empty"
+                    )
+                )
+                {
+                    continue;
+                }
+
                 // Arrays unsupported
                 //
                 if (
