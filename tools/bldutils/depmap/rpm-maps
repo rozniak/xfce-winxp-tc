@@ -9,6 +9,15 @@ gdk-pixbuf2-->bt-->gdk-pixbuf2-devel
 gdk-pixbuf2-->rt-->gdk-pixbuf2
 glib2-->bt-->glib2-devel
 glib2-->rt-->glib2
+gstreamer-->bt-->gstreamer1-devel
+gstreamer-->rt-->gstreamer1
+gstreamer-alsa-->bt,rt-->NULL
+gstreamer-gtk3-->bt-->NULL
+gstreamer-gtk3-->rt-->gstreamer1-plugins-good-gtk
+gstreamer-pb-->bt-->gstreamer1-plugins-base-devel
+gstreamer-pb-->rt-->gstreamer1-plugins-base
+gstreamer-pu-->bt-->NULL
+gstreamer-pu-->rt-->gstreamer1-plugins-ugly-free
 gtk3-->bt-->gtk3-devel
 gtk3-->rt-->gtk3
 gtk4-->bt-->gtk4-devel

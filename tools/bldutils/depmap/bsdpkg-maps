@@ -4,6 +4,14 @@ garcon-->bt,rt-->garcon
 garcon-gtk3-->bt,rt-->garcon
 gdk-pixbuf2-->bt,rt-->gdk-pixbuf2
 glib2-->bt,rt-->glib
+gstreamer-->bt,rt-->gstreamer1
+gstreamer-alsa-->bt-->NULL
+gstreamer-alsa-->rt-->gstreamer1-plugins-alsa
+gstreamer-gtk3-->bt-->NULL
+gstreamer-gtk3-->rt-->gstreamer1-plugins-gtk
+gstreamer-pb-->bt,rt-->gstreamer1-plugins
+gstreamer-pu-->bt-->NULL
+gstreamer-pu-->rt-->gstreamer1-plugins-ugly
 gtk3-->bt,rt-->gtk3
 gtk4-->bt,rt-->gtk4
 lightdm-->bt,rt-->lightdm
