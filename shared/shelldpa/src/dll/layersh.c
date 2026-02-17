@@ -53,11 +53,15 @@ gboolean init_dll_layersh()
         return TRUE;
     }
 
-    dl_layersh = dlopen("libgtk-layer-shell.so", RTLD_LAZY | RTLD_LOCAL);
+    dl_layersh = dlopen("libgtk-layer-shell.so.0", RTLD_LAZY | RTLD_LOCAL);
 
     if (dl_layersh == NULL)
     {
-        g_critical("%s", "Failed to open libgtk-layer-shell for symbols.");
+        g_critical(
+            "Failed to open libgtk-layer-shell for symbols: %s",
+            dlerror()
+        );
+
         return FALSE;
     }
 

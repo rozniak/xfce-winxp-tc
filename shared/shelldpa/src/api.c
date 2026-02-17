@@ -234,11 +234,15 @@ WinTCDisplayProtocol wintc_get_display_protocol_in_use(void)
 
 gboolean wintc_init_display_protocol_apis(void)
 {
-    void* dl_gdk = dlopen("libgdk-3.so", RTLD_LAZY | RTLD_LOCAL);
+    void* dl_gdk = dlopen("libgdk-3.so.0", RTLD_LAZY | RTLD_LOCAL);
 
     if (dl_gdk == NULL)
     {
-        g_critical("%s", "Failed to open libgdk for symbols.");
+        g_critical(
+            "Failed to open libgdk for symbols: %s",
+            dlerror()
+        );
+
         return FALSE;
     }
 

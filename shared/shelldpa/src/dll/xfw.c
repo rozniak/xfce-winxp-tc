@@ -70,11 +70,15 @@ gboolean init_dll_xfw()
         return TRUE;
     }
 
-    dl_xfw = dlopen("libxfce4windowing-0.so", RTLD_LAZY | RTLD_LOCAL);
+    dl_xfw = dlopen("libxfce4windowing-0.so.0", RTLD_LAZY | RTLD_LOCAL);
 
     if (dl_xfw == NULL)
     {
-        WINTC_LOG_USER_DEBUG("%s", "libxfce4windowing not available");
+        WINTC_LOG_USER_DEBUG(
+            "libxfce4windowing not available: %s",
+            dlerror()
+        );
+
         return FALSE;
     }
 
