@@ -26,6 +26,8 @@ The contents of this directory is as follows:
 
 `distid.sh` - helper script for identifying the distribution in use
 
+`mkrel.sh` - make release ISO from latest build
+
 `package.sh` - script for packaging a single component (that has been built with `build.sh`)
 
 `targets` - default build list for all components in the project
