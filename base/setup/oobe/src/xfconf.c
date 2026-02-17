@@ -669,11 +669,42 @@ static void xml_xfconf_mirror_property_node(
     {
         if (search_result == XML_XFCONF_TYPE_MISMATCH)
         {
-            g_warning(
-                "oobe: unable to update property '%s', expected type '%s'",
-                (gchar*) descriptor.name,
-                (gchar*) descriptor.type
-            );
+            // See if perhaps an 'empty' property exists
+            //
+            xmlChar* tmp = descriptor.type;
+
+            descriptor.type = (xmlChar*) "empty";
+
+            node_dest_prop =
+                xml_xfconf_find_property_node(
+                    node_dest_group,
+                    &descriptor,
+                    &search_result
+                );
+
+            descriptor.type = tmp;
+
+            if (node_dest_prop)
+            {
+                xml_node_set_attribute_value(
+                    node_dest_prop,
+                    (xmlChar*) "type",
+                    descriptor.type
+                );
+                xml_node_set_attribute_value(
+                    node_dest_prop,
+                    (xmlChar*) "value",
+                    descriptor.value
+                );
+            }
+            else
+            {
+                g_warning(
+                    "oobe: unable to update property '%s', expected type '%s'",
+                    (gchar*) descriptor.name,
+                    (gchar*) descriptor.type
+                );
+            }
         }
         else
         {
