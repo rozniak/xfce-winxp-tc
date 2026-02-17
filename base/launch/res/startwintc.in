@@ -122,5 +122,6 @@ $launch_exe @CMAKE_INSTALL_PREFIX@/@WINTC_ASSETS_INSTALL_DIR@/launch/xinitrc -- 
 #
 if [ $should_boot_lightdm -eq 1 ]
 then
+    systemctl enable lightdm
     systemctl restart lightdm
 fi
