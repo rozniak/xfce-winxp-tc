@@ -7,10 +7,10 @@ glib2-->bt-->glib2-devel
 glib2-->rt-->glib2
 gstreamer-->bt,rt-->gstreamer
 gstreamer-alsa-->bt,rt-->NULL
-gstreamer-gtk3-->bt,rt-->gstreamer-plugin-gtk
-gstreamer-pb-->bt-->gstreamer-plugins-base-libs
-gstreamer-pb-->rt-->gstreamer-plugins-base
-gstreamer-pu-->bt,rt-->gstreamer-plugins-ugly
+gstreamer-gtk3-->bt,rt-->gst-plugin-gtk
+gstreamer-pb-->bt-->gst-plugins-base-libs
+gstreamer-pb-->rt-->gst-plugins-base
+gstreamer-pu-->bt,rt-->gst-plugins-ugly
 gtk3-->bt,rt-->gtk3
 gtk4-->bt,rt-->gtk4
 lightdm-->bt,rt-->lightdm
