@@ -28,6 +28,7 @@ webkitgtk-->bt,rt-->webkit2gtk-4.1
 wintc-comctl-->bt,rt-->wintc-comctl
 wintc-comgtk-->bt,rt-->wintc-comgtk
 wintc-exec-->bt,rt-->wintc-exec
+wintc-launch-->bt,rt-->wintc-launch
 wintc-msgina-->bt,rt-->wintc-msgina
 wintc-registry-->bt,rt-->wintc-registry
 wintc-shcommon-->bt,rt-->wintc-shcommon
