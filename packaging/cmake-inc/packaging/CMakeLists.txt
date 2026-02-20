@@ -434,3 +434,50 @@ function(wintc_install_icons_into_package)
         )
     endforeach()
 endfunction()
+
+function(wintc_install_symlink link_target link_name)
+    install(
+        CODE
+            "
+            set(
+                inpkg_name
+                \$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${link_name}
+            )
+
+            message(
+                STATUS
+                \"Symlinking \${inpkg_name} pointing to ${link_target}\"
+            )
+
+            # Have to ensure the dir exists because CREATE_LINK isn't smart
+            # enough to do it
+            #
+            get_filename_component(
+                inpkg_dir
+                \${inpkg_name}
+                DIRECTORY
+            )
+
+            file(
+                MAKE_DIRECTORY
+                \${inpkg_dir}
+            )
+
+            # Try to create the link now, file() silently fails so there's no
+            # point catching the previous error since if it didn't work, it'll
+            # fail on this one
+            #
+            file(
+                CREATE_LINK
+                    ${link_target}
+                    \${inpkg_name}
+                SYMBOLIC
+                RESULT failed
+            )
+
+            if (failed)
+                message(FATAL_ERROR \"Failed to create symlink: \${failed}\")
+            endif()
+            "
+    )
+endfunction()
