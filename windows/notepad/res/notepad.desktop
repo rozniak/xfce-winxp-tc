@@ -1,7 +1,7 @@
 [Desktop Entry]
 Name=Notepad
 Comment=Creates and edits text files using basic text formatting.
-Exec=@NOTEPAD_OUTPUT_NAME@ %F
+Exec=wintc-notepad %F
 Icon=notepad
 Terminal=false
 StartupNotify=false
