@@ -61,6 +61,6 @@ wintc-wizard97-->bt,rt-->libwintc-wizard97
 xcursorgen-->bt,rt-->x11-apps
 xdg-mime-->bt,rt-->xdg-utils
 xml2-->bt-->libxml2-dev
-xml2-->rt-->libxml2
+xml2-->rt-->libxml2|libxml2-16
 zip-->bt-->libzip-dev
 zip-->rt-->libzip4|libzip5
