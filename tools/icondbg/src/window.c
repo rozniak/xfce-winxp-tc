@@ -109,16 +109,20 @@ static void on_button_load_clicked(
     gpointer user_data
 )
 {
+    static const gint k_icon_sizes[] = { 16, 24, 32, 48 };
+
     WinTCIconDbgWindow* wnd = WINTC_ICON_DBG_WINDOW(user_data);
 
     // Retrieve the details on what we need to load
     //
     const gchar* icon_name;
     gint         icon_size;
+    gint         selected_idx;
+
+    selected_idx = gtk_combo_box_get_active(GTK_COMBO_BOX(wnd->combo_size));
 
     icon_name = gtk_entry_get_text(GTK_ENTRY(wnd->entry_icon_name));
-    icon_size = gtk_combo_box_get_active(GTK_COMBO_BOX(wnd->combo_size));
-    icon_size = (icon_size + 1) * 16;
+    icon_size = k_icon_sizes[selected_idx];
 
     // Attempt to load the icon
     //
