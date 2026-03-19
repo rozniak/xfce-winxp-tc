@@ -19,6 +19,7 @@ networkmanager-->bt,rt-->networkmanager
 plymouth-->bt,rt-->plymouth
 pulseaudio-->bt,rt-->libpulse
 python3-packaging-->bt,rt-->python-packaging
+python3-pil-->bt,rt-->python-pillow
 python3-venv-->bt,rt-->python3
 sass-->bt,rt-->ruby-sass
 sqlite3-->bt,rt-->sqlite

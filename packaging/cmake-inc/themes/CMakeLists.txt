@@ -34,48 +34,22 @@ find_package(
     REQUIRED
 )
 
-add_custom_command(
-    OUTPUT ${THEMES_BLDTHEME_TOOL_DIR}/.venv
-    WORKING_DIRECTORY ${THEMES_BLDTHEME_TOOL_DIR}
-    COMMAND ${Python3_EXECUTABLE}
-    ARGS
-        -m
-        venv
-        .venv
-    COMMAND ${THEMES_BLDTHEME_TOOL_DIR}/.venv/bin/pip
-    ARGS
-        install
-        -r
-        requirements.txt
-        --upgrade
-    VERBATIM
-)
-
-add_custom_target(
-    venv-setup
-    DEPENDS
-        ${THEMES_BLDTHEME_TOOL_DIR}/.venv
-)
-
 # Add bltheme tool target to compile GTK2 resources
 #
 add_custom_command(
     OUTPUT ${CMAKE_BINARY_DIR}/composed
     WORKING_DIRECTORY ${THEMES_BLDTHEME_TOOL_DIR}
-    COMMAND ${THEMES_BLDTHEME_TOOL_DIR}/.venv/bin/python
+    COMMAND ${Python3_EXECUTABLE}
     ARGS
         bldtheme.py
         ${PROJECT_ROOT}/scheme
         ${THEMES_BUILD_COMMON_RESOURCES_DIR}
         ${CMAKE_BINARY_DIR}/composed
     VERBATIM
-    DEPENDS
-        ${THEMES_BLDTHEME_TOOL_DIR}/.venv
 )
 
 add_custom_target(
     resources-gtk2 ALL
     DEPENDS
-        venv-setup
         ${CMAKE_BINARY_DIR}/composed
 )

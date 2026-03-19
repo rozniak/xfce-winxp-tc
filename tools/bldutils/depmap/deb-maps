@@ -33,6 +33,7 @@ plymouth-->bt,rt-->plymouth
 pulseaudio-->bt-->libpulse-dev
 pulseaudio-->rt-->libpulse0
 python3-packaging-->bt,rt-->python3-packaging
+python3-pil-->bt,rt-->python3-pil
 python3-venv-->bt,rt-->python3-venv
 sass-->bt,rt-->ruby-sass
 sqlite3-->bt-->libsqlite3-dev
