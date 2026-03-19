@@ -20,7 +20,6 @@ TARGETS_PATH="${SCRIPTDIR}/targets"
 BLDUTILS_ROOT="${REPO_ROOT}/tools/bldutils"
 
 SH_BUILD="${SCRIPTDIR}/build.sh"
-SH_CHKDEPS="${SCRIPTDIR}/chkdeps.sh"
 SH_DISTID="${SCRIPTDIR}/distid.sh"
 SH_GENTAG="${BLDUTILS_ROOT}/gentag/gentag.sh"
 SH_PACKAGE="${SCRIPTDIR}/package.sh"
@@ -196,7 +195,6 @@ check_present()
 # MAIN SCRIPT
 #
 check_present "${SH_BUILD}"
-check_present "${SH_CHKDEPS}"
 check_present "${SH_DISTID}"
 check_present "${SH_GENTAG}"
 check_present "${SH_PACKAGE}"
@@ -275,16 +273,6 @@ then
     fi
 else
     echo "buildall: Packaging will be skipped for this session."
-fi
-
-# Check system deps
-#
-"${SH_CHKDEPS}" -c "${OPT_BUILDLIST}" -l
-
-if [[ $? -gt 0 ]]
-then
-    echo "buildall: Dependencies check unsatisfied or failed." >&2
-    exit 1
 fi
 
 # Building the whole thing
