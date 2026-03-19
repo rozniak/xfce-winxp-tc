@@ -64,6 +64,7 @@ done
 #
 # FUNCTIONS
 #
+declare -a g_checked_maps
 declare -a g_needed_pkgs
 
 check_deps()
@@ -116,6 +117,18 @@ check_deps()
         else
             continue
         fi
+
+        # Have we already checked this mapping?
+        #
+        for known_map in "${g_checked_maps[@]}"
+        do
+            if [[ "${pkg_name}" == "${known_map}" ]]
+            then
+                continue 2
+            fi
+        done
+
+        g_checked_maps+=("${pkg_name}")
 
         # Is this one of ours?
         #
