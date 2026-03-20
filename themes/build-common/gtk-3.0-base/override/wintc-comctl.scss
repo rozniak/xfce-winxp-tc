@@ -46,7 +46,7 @@ box.wintc-button-box
     {
         button
         {
-            margin: 0px calc($metric_md / 2);
+            margin: 0px ($metric_md / 2);
 
             &:first-child
             {
@@ -60,11 +60,11 @@ box.wintc-button-box
         }
     }
 
-    &:vertical
+    &.vertical
     {
         button
         {
-            margin: calc($metric_md / 2) 0px;
+            margin: ($metric_md / 2) 0px;
 
             &:first-child
             {
