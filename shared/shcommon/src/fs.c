@@ -1,3 +1,5 @@
+#include <gio/gdesktopappinfo.h>
+#include <gio/gio.h>
 #include <glib.h>
 #include <wintc/comgtk.h>
 
@@ -10,6 +12,33 @@ GIcon* wintc_sh_fs_get_file_icon(
     GFile* file
 )
 {
+    GIcon* found_icon;
+
+    // We handle .desktop explicitly
+    //
+    if (g_str_has_suffix(g_file_peek_path(file), ".desktop"))
+    {
+        GDesktopAppInfo* app_info =
+            g_desktop_app_info_new_from_filename(g_file_peek_path(file));
+
+        found_icon = g_app_info_get_icon(G_APP_INFO(app_info));
+
+        if (found_icon)
+        {
+            g_object_ref(found_icon);
+        }
+        else
+        {
+            found_icon = g_themed_icon_new("empty");
+        }
+
+        g_object_unref(app_info);
+
+        return found_icon;
+    }
+
+    //
+    //
     GFileInfo* file_info =
         g_file_query_info(
             file,
@@ -28,7 +57,7 @@ GIcon* wintc_sh_fs_get_file_icon(
     //
     const gchar* content_type = g_file_info_get_content_type(file_info);
 
-    GIcon* found_icon =
+    found_icon =
         content_type ?
             g_content_type_get_icon(content_type) :
             g_themed_icon_new("empty");
