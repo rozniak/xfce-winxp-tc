@@ -6,6 +6,50 @@
 //
 // PUBLIC FUNCTIONS
 //
+GIcon* wintc_sh_fs_get_file_icon(
+    GFile* file
+)
+{
+    GFileInfo* file_info =
+        g_file_query_info(
+            file,
+            G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE,
+            G_FILE_QUERY_INFO_NONE,
+            NULL,
+            NULL
+        );
+
+    if (!file_info)
+    {
+        return g_themed_icon_new("empty");
+    }
+
+    // Use Gio to look up the icon...
+    //
+    const gchar* content_type = g_file_info_get_content_type(file_info);
+
+    GIcon* found_icon =
+        content_type ?
+            g_content_type_get_icon(content_type) :
+            g_themed_icon_new("empty");
+
+    g_object_unref(file_info);
+
+    return found_icon;
+}
+
+GIcon* wintc_sh_fs_get_file_path_icon(
+    const gchar* file_path
+)
+{
+    GFile* file = g_file_new_for_path(file_path);
+    GIcon* ret  = wintc_sh_fs_get_file_icon(file);
+
+    g_object_unref(file);
+
+    return ret;
+}
+
 GList* wintc_sh_fs_get_names_as_list(
     const gchar* path,
     gboolean     full_names,

@@ -2,6 +2,7 @@
 #include <glib.h>
 #include <wintc/comgtk.h>
 #include <wintc/exec.h>
+#include <wintc/shcommon.h>
 #include <wintc/shellext.h>
 #include <wintc/shlang.h>
 
@@ -830,63 +831,9 @@ static gchar* get_file_mime_icon(
     GFile* file
 )
 {
-    GFileInfo* file_info =
-        g_file_query_info(
-            file,
-            G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE,
-            G_FILE_QUERY_INFO_NONE,
-            NULL,
-            NULL
-        );
-
-    if (!file_info)
-    {
-        return g_strdup("empty");
-    }
-
-    // Use Gio to look up the icon...
-    //
-    const gchar* content_type = g_file_info_get_content_type(file_info);
-    gchar*       found_icon   = NULL;
-
-    if (content_type)
-    {
-        GIcon*        icon       = g_content_type_get_icon(content_type);
-        GtkIconTheme* icon_theme = gtk_icon_theme_get_default();
-
-        // We good with this icon?
-        //
-        if (icon && G_IS_THEMED_ICON(icon))
-        {
-            const gchar* const* icon_names =
-                g_themed_icon_get_names(G_THEMED_ICON(icon));
-
-            for (gint i = 0; icon_names[i] != NULL; i++)
-            {
-                if (
-                    gtk_icon_theme_has_icon(
-                        icon_theme,
-                        icon_names[i]
-                    )
-                )
-                {
-                    found_icon = g_strdup(icon_names[i]);
-                    break;
-                }
-            }
-        }
-
-        g_clear_object(&icon);
-    }
-
-    if (!found_icon)
-    {
-        found_icon = g_strdup("empty");
-    }
-
-    g_object_unref(file_info);
-
-    return found_icon;
+    return wintc_icon_get_available_name(
+        wintc_sh_fs_get_file_icon(file)
+    );
 }
 
 static gboolean real_activate_item(

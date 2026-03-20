@@ -6,6 +6,40 @@
 //
 // PUBLIC FUNCTIONS
 //
+gchar* wintc_icon_get_available_name(
+    GIcon* icon
+)
+{
+    // This can only work with themed icons
+    //
+    if (!icon || !G_IS_THEMED_ICON(icon))
+    {
+        return g_strdup("empty");
+    }
+
+    // Let's try to find an icon name present in the current theme
+    //
+    GtkIconTheme* icon_theme = gtk_icon_theme_get_default();
+
+    const gchar* const* icon_names =
+        g_themed_icon_get_names(G_THEMED_ICON(icon));
+
+    for (gint i = 0; icon_names[i] != NULL; i++)
+    {
+        if (
+            gtk_icon_theme_has_icon(
+                icon_theme,
+                icon_names[i]
+            )
+        )
+        {
+            return g_strdup(icon_names[i]);
+        }
+    }
+
+    return g_strdup("empty");
+}
+
 const gchar* wintc_icon_name_first_available(
     gint         size,
     const gchar* xdg_fallback,
