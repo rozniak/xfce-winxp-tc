@@ -39,3 +39,16 @@ $systray_styles:
         undefined,
         7
     );
+
+/** Left margin for the clock so that there's a gap between the tray icons */
+/** and the clock                                                          */
+$systray_clock_styles:
+    wintc_define_props_box(
+        $systray_clock_styles,
+        true,
+        margin,
+        undefined,
+        undefined,
+        undefined,
+        8
+    );

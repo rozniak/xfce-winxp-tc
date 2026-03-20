@@ -18,4 +18,9 @@
     );
 
     margin-left: $taskband_horz_margins + __wintc_get_prop($systray_styles, "margin-left");
+
+    .clock
+    {
+        @include __wintc_apply_props($systray_clock_styles);
+    }
 }
