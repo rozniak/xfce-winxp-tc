@@ -1,6 +1,8 @@
 #include <glib.h>
 #include <gtk/gtk.h>
 #include <wintc/comgtk.h>
+#include <wintc/exec.h>
+#include <wintc/shcommon.h>
 #include <wintc/shellext.h>
 
 #include "../intapi.h"
@@ -14,6 +16,14 @@
 static void wintc_toolbar_quick_access_constructed(
     GObject* object
 );
+static void wintc_toolbar_quick_access_dispose(
+    GObject* object
+);
+
+static void wintc_toolbar_quick_access_create_button_for_file(
+    WinTCToolbarQuickAccess* toolbar_qaccess,
+    const gchar*             path
+);
 
 static void on_monitor_dir_changed(
     GFileMonitor*     self,
@@ -22,11 +32,16 @@ static void on_monitor_dir_changed(
     GFileMonitorEvent event_type,
     gpointer          user_data
 );
+static void on_qaccess_button_clicked(
+    GtkButton* self,
+    gpointer   user_data
+);
 
 //
 // STATIC DATA
 //
 static gchar* S_DIR_QUICK_ACCESS = NULL;
+static GQuark S_QUARK_PATH_HASH  = 0;
 
 //
 // GTK OOP CLASS/INSTANCE DEFINITIONS
@@ -39,8 +54,9 @@ struct _WinTCToolbarQuickAccess
     //
     GtkWidget* box_programs;
 
-    // Dir monitor stuff
+    // State stuff
     //
+    GHashTable*   map_hash_to_path;
     GFileMonitor* monitor_dir;
 };
 
@@ -60,6 +76,7 @@ static void wintc_toolbar_quick_access_class_init(
     GObjectClass* object_class = G_OBJECT_CLASS(klass);
 
     object_class->constructed = wintc_toolbar_quick_access_constructed;
+    object_class->dispose     = wintc_toolbar_quick_access_dispose;
 
     // Sort out profile
     //
@@ -73,14 +90,59 @@ static void wintc_toolbar_quick_access_class_init(
             S_DIR_QUICK_ACCESS
         );
     }
+
+    // Set up quark used for storing path hash on buttons for later lookup
+    //
+    S_QUARK_PATH_HASH = g_quark_from_static_string("qaccess-path");
 }
 
 static void wintc_toolbar_quick_access_init(
     WinTCToolbarQuickAccess* self
 )
 {
-    GError* error        = NULL;
-    GFile*  file_qaccess = g_file_new_for_path(S_DIR_QUICK_ACCESS);
+    GError* error = NULL;
+
+    // Store a mapping of path hashes to paths, the buttons store the hash in
+    // qdata and use it to look up the path to execute in their 'clicked'
+    // handlers
+    //
+    self->map_hash_to_path =
+        g_hash_table_new_full(
+            g_direct_hash,
+            g_direct_equal,
+            NULL,
+            (GDestroyNotify) g_free
+        );
+
+    // Initialise UI
+    //
+    self->box_programs = 
+        gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+
+    // Pull existing directory content
+    //
+    GList* entries =
+        wintc_sh_fs_get_names_as_list(
+            S_DIR_QUICK_ACCESS,
+            TRUE,
+            G_FILE_TEST_IS_REGULAR,
+            FALSE,
+            NULL
+        );
+
+    for (GList* iter = entries; iter; iter = iter->next)
+    {
+        wintc_toolbar_quick_access_create_button_for_file(
+            self,
+            (gchar*) iter->data
+        );
+    }
+
+    g_list_free_full(entries, (GDestroyNotify) g_free);
+
+    // Establish directory monitor
+    //
+    GFile* file_qaccess = g_file_new_for_path(S_DIR_QUICK_ACCESS);
 
     self->monitor_dir =
         g_file_monitor_directory(
@@ -119,9 +181,6 @@ static void wintc_toolbar_quick_access_constructed(
     WinTCToolbarQuickAccess* toolbar_qaccess =
         WINTC_TOOLBAR_QUICK_ACCESS(object);
 
-    toolbar_qaccess->box_programs = 
-        gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-
     wintc_ishext_ui_host_get_ext_widget(
         wintc_shext_ui_controller_get_ui_host(
             WINTC_SHEXT_UI_CONTROLLER(object)
@@ -130,12 +189,68 @@ static void wintc_toolbar_quick_access_constructed(
         GTK_TYPE_WIDGET,
         toolbar_qaccess->box_programs
     );
+}
 
-    // Test button
+static void wintc_toolbar_quick_access_dispose(
+    GObject* object
+)
+{
+    WinTCToolbarQuickAccess* toolbar_qaccess =
+        WINTC_TOOLBAR_QUICK_ACCESS(object);
+
+    g_hash_table_destroy(
+        g_steal_pointer(&(toolbar_qaccess->map_hash_to_path))
+    );
+    g_clear_object(&(toolbar_qaccess->monitor_dir));
+
+    (G_OBJECT_CLASS(wintc_toolbar_quick_access_parent_class))
+        ->dispose(object);
+}
+
+//
+// PRIVATE FUNCTIONS
+//
+static void wintc_toolbar_quick_access_create_button_for_file(
+    WinTCToolbarQuickAccess* toolbar_qaccess,
+    const gchar*             path
+)
+{
+    GIcon* icon = wintc_sh_fs_get_file_path_icon(path);
+    guint  hash = g_str_hash(path);
+
+    // Insert hash->path mapping
     //
-    GtkWidget* button = 
-        gtk_button_new_from_icon_name("iexplore", GTK_ICON_SIZE_MENU);
+    g_hash_table_insert(
+        toolbar_qaccess->map_hash_to_path,
+        GUINT_TO_POINTER(hash),
+        g_strdup(path)
+    );
 
+    // Set up button
+    //
+    GtkWidget* button   = gtk_button_new();
+    GtkWidget* img_icon = gtk_image_new_from_gicon(icon, GTK_ICON_SIZE_MENU);
+
+    gtk_container_add(
+        GTK_CONTAINER(button),
+        img_icon
+    );
+
+    g_object_set_qdata(
+        G_OBJECT(button),
+        S_QUARK_PATH_HASH,
+        GUINT_TO_POINTER(g_str_hash(path))
+    );
+
+    g_signal_connect(
+        button,
+        "clicked",
+        G_CALLBACK(on_qaccess_button_clicked),
+        toolbar_qaccess
+    );
+
+    // Append to the toolbar
+    //
     gtk_container_add(
         GTK_CONTAINER(toolbar_qaccess->box_programs),
         button
@@ -160,4 +275,31 @@ static void on_monitor_dir_changed(
         event_type,
         g_file_peek_path(file)
     );
+}
+
+static void on_qaccess_button_clicked(
+    GtkButton* self,
+    gpointer   user_data
+)
+{
+    WinTCToolbarQuickAccess* toolbar_qaccess =
+        WINTC_TOOLBAR_QUICK_ACCESS(user_data);
+
+    const gchar* path =
+        g_hash_table_lookup(
+            toolbar_qaccess->map_hash_to_path,
+            g_object_get_qdata(
+                G_OBJECT(self),
+                S_QUARK_PATH_HASH
+            )
+        );
+
+    // Try launching now
+    //
+    GError* error = NULL;
+
+    if (!wintc_launch_command(path, &error))
+    {
+        wintc_display_error_and_clear(&error, NULL);
+    }
 }
