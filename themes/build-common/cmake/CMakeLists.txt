@@ -24,6 +24,12 @@ install(FILES ${CMAKE_BINARY_DIR}/scheme.rc DESTINATION ${THEME_PROJECT_INSTALL_
 configure_file(${THEMES_BUILD_COMMON_GTK3_DIR}/scheme.scss.in scheme.scss @ONLY)
 configure_file(gtk-3.0/main.scss.in                           main.scss   @ONLY)
 
+if (${CMAKE_BUILD_TYPE} STREQUAL Release)
+    set(SASS_STYLE_ARG compressed)
+else()
+    set(SASS_STYLE_ARG expanded)
+endif()
+
 if (NOT (${SASS} STREQUAL SASS-NOTFOUND))
     add_custom_command(
         OUTPUT ${CMAKE_BINARY_DIR}/gtk.css
@@ -33,6 +39,8 @@ if (NOT (${SASS} STREQUAL SASS-NOTFOUND))
             ${CMAKE_BINARY_DIR}/main.scss
             ${CMAKE_BINARY_DIR}/gtk.css
             --sourcemap=none
+            --style
+            ${SASS_STYLE_ARG}
         VERBATIM
         MAIN_DEPENDENCY ${CMAKE_BINARY_DIR}/main.scss
         DEPENDS
@@ -46,6 +54,8 @@ else()
         ARGS
             ${CMAKE_BINARY_DIR}/main.scss
             ${CMAKE_BINARY_DIR}/gtk.css
+            --style
+            ${SASS_STYLE_ARG}
         VERBATIM
         MAIN_DEPENDENCY ${CMAKE_BINARY_DIR}/main.scss
         DEPENDS
