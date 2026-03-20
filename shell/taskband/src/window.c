@@ -8,6 +8,7 @@
 #include "application.h"
 #include "intapi.h"
 #include "window.h"
+#include "qaccess/toolbar.h"
 #include "start/toolbar.h"
 #include "systray/toolbar.h"
 #include "taskbuttons/toolbar.h"
@@ -81,6 +82,7 @@ struct _WinTCTaskbandWindow
 
     GSList* toolbars;
 
+    WinTCShextUIController* uictl_qaccess;
     WinTCShextUIController* uictl_notifarea;
     WinTCShextUIController* uictl_start;
     WinTCShextUIController* uictl_taskbuttons;
@@ -162,6 +164,7 @@ static void wintc_taskband_window_dispose(
 
     g_clear_slist(&(taskband->toolbars), NULL);
 
+    g_clear_object(&(taskband->uictl_qaccess));
     g_clear_object(&(taskband->uictl_notifarea));
     g_clear_object(&(taskband->uictl_start));
     g_clear_object(&(taskband->uictl_taskbuttons));
@@ -286,6 +289,15 @@ static gboolean on_window_map_event(
 
                 break;
 
+            case WINTC_TASKBAND_TOOLBAR_QUICK_ACCESS:
+                taskband->uictl_qaccess =
+                    wintc_shext_ui_controller_new_from_type(
+                        WINTC_TYPE_TOOLBAR_QUICK_ACCESS,
+                        WINTC_ISHEXT_UI_HOST(taskband)
+                    );
+
+                break;
+
             case WINTC_TASKBAND_TOOLBAR_BUTTONS:
                 taskband->uictl_taskbuttons =
                     wintc_shext_ui_controller_new_from_type(
@@ -304,7 +316,6 @@ static gboolean on_window_map_event(
 
                 break;
 
-            case WINTC_TASKBAND_TOOLBAR_QUICK_ACCESS:
             case WINTC_TASKBAND_TOOLBAR_PRE_BUTTONS:
             case WINTC_TASKBAND_TOOLBAR_POST_BUTTONS:
                 WINTC_LOG_DEBUG("Not implemented toolbar: %d", S_LAYOUT[i]);

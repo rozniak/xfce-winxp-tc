@@ -54,6 +54,8 @@ set(
     src/resources.c
     src/window.c
     src/window.h
+    src/qaccess/toolbar.c
+    src/qaccess/toolbar.h
     src/start/menumod.c
     src/start/menumod.h
     src/start/mfu.c
