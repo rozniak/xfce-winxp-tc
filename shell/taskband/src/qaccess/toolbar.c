@@ -24,6 +24,13 @@ static void wintc_toolbar_quick_access_create_button_for_file(
     WinTCToolbarQuickAccess* toolbar_qaccess,
     const gchar*             path
 );
+static void wintc_toolbar_quick_access_destroy_button_for_file(
+    WinTCToolbarQuickAccess* toolbar_qaccess,
+    const gchar*             path
+);
+static void wintc_toolbar_quick_access_scan_for_files(
+    WinTCToolbarQuickAccess* toolbar_qaccess
+);
 
 static void on_monitor_dir_changed(
     GFileMonitor*     self,
@@ -121,24 +128,7 @@ static void wintc_toolbar_quick_access_init(
 
     // Pull existing directory content
     //
-    GList* entries =
-        wintc_sh_fs_get_names_as_list(
-            S_DIR_QUICK_ACCESS,
-            TRUE,
-            G_FILE_TEST_IS_REGULAR,
-            FALSE,
-            NULL
-        );
-
-    for (GList* iter = entries; iter; iter = iter->next)
-    {
-        wintc_toolbar_quick_access_create_button_for_file(
-            self,
-            (gchar*) iter->data
-        );
-    }
-
-    g_list_free_full(entries, (GDestroyNotify) g_free);
+    wintc_toolbar_quick_access_scan_for_files(self);
 
     // Establish directory monitor
     //
@@ -215,11 +205,20 @@ static void wintc_toolbar_quick_access_create_button_for_file(
     const gchar*             path
 )
 {
-    GIcon* icon = wintc_sh_fs_get_file_path_icon(path);
-    guint  hash = g_str_hash(path);
+    guint hash = g_str_hash(path);
 
     // Insert hash->path mapping
     //
+    if (
+        g_hash_table_contains(
+            toolbar_qaccess->map_hash_to_path,
+            GUINT_TO_POINTER(hash)
+        )
+    )
+    {
+        return;
+    }
+
     g_hash_table_insert(
         toolbar_qaccess->map_hash_to_path,
         GUINT_TO_POINTER(hash),
@@ -229,6 +228,7 @@ static void wintc_toolbar_quick_access_create_button_for_file(
     // Set up button
     //
     GtkWidget* button   = gtk_button_new();
+    GIcon*     icon     = wintc_sh_fs_get_file_path_icon(path);
     GtkWidget* img_icon = gtk_image_new_from_gicon(icon, GTK_ICON_SIZE_MENU);
 
     gtk_container_add(
@@ -256,7 +256,71 @@ static void wintc_toolbar_quick_access_create_button_for_file(
         button
     );
 
-    gtk_widget_show(button);
+    gtk_widget_show_all(button);
+}
+
+static void wintc_toolbar_quick_access_destroy_button_for_file(
+    WinTCToolbarQuickAccess* toolbar_qaccess,
+    const gchar*             path
+)
+{
+    guint hash = g_str_hash(path);
+
+    // Billy basic linear search through the buttons
+    //
+    GList* children =
+        gtk_container_get_children(
+            GTK_CONTAINER(toolbar_qaccess->box_programs)
+        );
+
+    for (GList* iter = children; iter; iter = iter->next)
+    {
+        guint cmp_hash =
+            GPOINTER_TO_UINT(
+                g_object_get_qdata(
+                    G_OBJECT(iter->data),
+                    S_QUARK_PATH_HASH
+                )
+            );
+
+        if (cmp_hash == hash)
+        {
+            gtk_widget_destroy(GTK_WIDGET(iter->data));
+
+            g_hash_table_remove(
+                toolbar_qaccess->map_hash_to_path,
+                GUINT_TO_POINTER(hash)
+            );
+
+            break;
+        }
+    }
+
+    g_list_free(children);
+}
+
+static void wintc_toolbar_quick_access_scan_for_files(
+    WinTCToolbarQuickAccess* toolbar_qaccess
+)
+{
+    GList* entries =
+        wintc_sh_fs_get_names_as_list(
+            S_DIR_QUICK_ACCESS,
+            TRUE,
+            G_FILE_TEST_IS_REGULAR,
+            FALSE,
+            NULL
+        );
+
+    for (GList* iter = entries; iter; iter = iter->next)
+    {
+        wintc_toolbar_quick_access_create_button_for_file(
+            toolbar_qaccess,
+            (gchar*) iter->data
+        );
+    }
+
+    g_list_free_full(entries, (GDestroyNotify) g_free);
 }
 
 //
@@ -267,14 +331,58 @@ static void on_monitor_dir_changed(
     GFile*            file,
     WINTC_UNUSED(GFile* other_file),
     GFileMonitorEvent event_type,
-    WINTC_UNUSED(gpointer user_data)
+    gpointer          user_data
 )
 {
-    g_message(
-        "toolbar: qaccess: dir monitor update (%d): %s",
-        event_type,
-        g_file_peek_path(file)
-    );
+    WinTCToolbarQuickAccess* toolbar_qaccess =
+        WINTC_TOOLBAR_QUICK_ACCESS(user_data);
+
+    // Special case for the dir itself, since we need to handle deletion
+    //
+    if (g_strcmp0(g_file_peek_path(file), S_DIR_QUICK_ACCESS) == 0)
+    {
+        switch (event_type)
+        {
+            case G_FILE_MONITOR_EVENT_CREATED:
+                wintc_toolbar_quick_access_scan_for_files(toolbar_qaccess);
+                break;
+
+            case G_FILE_MONITOR_EVENT_DELETED:
+                wintc_container_clear(
+                    GTK_CONTAINER(toolbar_qaccess->box_programs),
+                    TRUE
+                );
+
+                g_hash_table_remove_all(toolbar_qaccess->map_hash_to_path);
+
+                break;
+
+            default: break;
+        }
+
+        return;
+    }
+
+    // Otherwise, safe to assume it's a file
+    //
+    switch (event_type)
+    {
+        case G_FILE_MONITOR_EVENT_CREATED:
+            wintc_toolbar_quick_access_create_button_for_file(
+                toolbar_qaccess,
+                g_file_peek_path(file)
+            );
+            break;
+
+        case G_FILE_MONITOR_EVENT_DELETED:
+            wintc_toolbar_quick_access_destroy_button_for_file(
+                toolbar_qaccess,
+                g_file_peek_path(file)
+            );
+            break;
+
+        default: break;
+    }
 }
 
 static void on_qaccess_button_clicked(
