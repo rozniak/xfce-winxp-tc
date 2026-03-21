@@ -831,9 +831,12 @@ static gchar* get_file_mime_icon(
     GFile* file
 )
 {
-    return wintc_icon_get_available_name(
-        wintc_sh_fs_get_file_icon(file)
-    );
+    GIcon* icon = wintc_sh_fs_get_file_icon(file);
+    gchar* ret  = wintc_icon_get_available_name(icon);
+
+    g_object_unref(icon);
+
+    return ret;
 }
 
 static gboolean real_activate_item(

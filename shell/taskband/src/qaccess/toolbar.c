@@ -232,6 +232,8 @@ static void wintc_toolbar_quick_access_create_button_for_file(
 
     gtk_image_set_pixel_size(GTK_IMAGE(img_icon), 16);
 
+    g_object_unref(icon);
+
     // Set up button
     //
     GtkWidget* button  = gtk_button_new();
