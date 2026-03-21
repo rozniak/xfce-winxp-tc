@@ -77,9 +77,9 @@ $start_button_styles:
         $start_button_styles,
         false,
         margin,
+        0,
         undefined,
-        undefined,
-        undefined,
+        0,
         undefined
     );
 $start_button_styles:
@@ -96,7 +96,7 @@ $start_button_styles:
     wintc_define_props_fg(
         $start_button_styles,
         false,
-        undefined,
+        #FFFFFF,
         1px 1px 2px #152404
     );
 $start_button_styles:

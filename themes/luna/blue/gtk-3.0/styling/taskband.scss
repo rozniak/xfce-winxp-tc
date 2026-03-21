@@ -154,3 +154,64 @@ $taskband_button_selected_hover_styles:
         undefined,
         url("../Resources/taskband_button_press_hover_border.png")
     );
+
+// Taskband flat buttons
+//
+$taskband_flat_button_hover_styles:
+    wintc_define_props_bg(
+        $taskband_flat_button_hover_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url("../Resources/taskband_button_body.png"), linear-gradient(162deg, rgba(112,170,250,1) 0%, rgba(57,123,242,1) 10%, rgba(57,123,242,1) 100%)
+    );
+$taskband_flat_button_hover_styles:
+    wintc_define_props_borders(
+        $taskband_flat_button_hover_styles,
+        false,
+        solid,
+        2,
+        2,
+        2,
+        2,
+        undefined,
+        url("../Resources/taskband_button_border.png")
+    );
+
+$taskband_flat_button_press_styles:
+    wintc_define_props_bg(
+        $taskband_flat_button_press_styles,
+        false,
+        unset,
+        undefined,
+        undefined,
+        undefined,
+        url("../Resources/taskband_button_press_body.png"), linear-gradient(126deg, rgba(22,76,168,1) 0%, rgba(42,93,182,1) 10%, rgba(42,93,182,1) 100%)
+    );
+$taskband_flat_button_press_styles:
+    wintc_define_props_borders(
+        $taskband_flat_button_press_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url("../Resources/taskband_button_press_border.png")
+    );
+
+// Taskband task buttons
+//
+$taskband_task_button_styles:
+    wintc_define_props_box(
+        $taskband_task_button_styles,
+        false,
+        margin,
+        undefined,
+        0,
+        undefined,
+        undefined
+    );
