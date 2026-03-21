@@ -323,6 +323,8 @@ static gboolean on_window_map_event(
         }
     }
 
+    WINTC_LOG_DEBUG("taskband: toolbar init complete");
+
     return TRUE;
 }
 
