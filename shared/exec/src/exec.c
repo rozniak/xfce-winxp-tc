@@ -342,6 +342,41 @@ static gboolean parse_file_in_cmdline(
     WINTC_SAFE_REF_CLEAR(out_cmdline);
     WINTC_SAFE_REF_CLEAR(out_error);
 
+    // Is the file itself a desktop entry?
+    //
+    if (g_str_has_suffix(cmdline, ".desktop"))
+    {
+        handler_entry = g_desktop_app_info_new_from_filename(cmdline);
+
+        if (handler_entry)
+        {
+            handler_cmdline = wintc_desktop_app_info_get_command(handler_entry);
+
+            WINTC_SAFE_REF_SET(
+                out_cmdline,
+                g_strdup(handler_cmdline)
+            );
+
+            g_clear_object(&handler_entry);
+            g_free(handler_cmdline);
+
+            return TRUE;
+        }
+        else
+        {
+            // Do not try and execute this, it's no good
+            //
+            g_set_error(
+                out_error,
+                wintc_exec_error_quark(),
+                WINTC_EXEC_ERROR_BAD_DESKTOP_ENTRY,
+                "The desktop entry could not be parsed."
+            );
+
+            return FALSE;
+        }
+    }
+
     // See if we can query the MIME type
     //
     file_mime =

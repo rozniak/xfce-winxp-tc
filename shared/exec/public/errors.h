@@ -16,7 +16,11 @@
  */
 typedef enum
 {
-    WINTC_EXEC_ERROR_FELLTHRU = 1 /** None of the fallbacks were available. */
+    /** None of the fallbacks were available. */
+    WINTC_EXEC_ERROR_FELLTHRU = 1,
+
+    /** The desktop entry is malformed. */
+    WINTC_EXEC_ERROR_BAD_DESKTOP_ENTRY = 2,
 } WinTCExecError;
 
 //
