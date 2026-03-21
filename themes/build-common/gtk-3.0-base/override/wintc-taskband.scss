@@ -24,20 +24,142 @@
     //       Got to love GTK sometimes...
     //
 
-    & > *
+    @include __wintc_apply_props($taskband_styles);
+
+    & > box
     {
         @include __wintc_apply_specific_props(
             $taskband_styles,
             "color"
         );
+
+        & > box
+        {
+            margin-right: $taskband_toolbar_gap;
+        }
     }
 
-    & menuitem
+    menuitem
     {
         color: $fg_color;
     }
 
-    @include __wintc_apply_props($taskband_styles);
+    button
+    {
+        @include __wintc_apply_props($taskband_button_styles);
 
-    //border: none; // This does nothing really - the panel overrides it currently
+        &:hover
+        {
+            @include __wintc_apply_props(
+                $taskband_button_hover_styles
+            );
+        }
+
+        &:checked
+        {
+            @include __wintc_apply_props(
+                $taskband_button_selected_styles
+            );
+        }
+
+        &:checked:hover
+        {
+            @include __wintc_apply_props(
+                $taskband_button_selected_hover_styles
+            );
+        }
+
+        &:active,
+        &:checked:active
+        {
+            @include __wintc_apply_props(
+                $taskband_button_press_styles
+            );
+        }
+
+        &.flat
+        {
+            @include __wintc_apply_props($taskband_flat_button_styles);
+
+            &:hover
+            {
+                @include __wintc_apply_props(
+                    $taskband_flat_button_hover_styles
+                );
+            }
+
+            &:checked
+            {
+                @include __wintc_apply_props(
+                    $taskband_flat_button_selected_styles
+                );
+            }
+
+            &:checked:hover
+            {
+                @include __wintc_apply_props(
+                    $taskband_flat_button_selected_hover_styles
+                );
+            }
+
+            &:active,
+            &:checked:active
+            {
+                @include __wintc_apply_props(
+                    $taskband_flat_button_press_styles
+                );
+            }
+        }
+    }
+
+    .wintc-taskbuttons
+    {
+        button
+        {
+            @include __wintc_apply_props($taskband_task_button_styles);
+
+            &:hover
+            {
+                @include __wintc_apply_props(
+                    $taskband_task_button_hover_styles
+                );
+            }
+
+            &:checked
+            {
+                @include __wintc_apply_props(
+                    $taskband_task_button_selected_styles
+                );
+            }
+
+            &:checked:hover
+            {
+                @include __wintc_apply_props(
+                    $taskband_task_button_selected_hover_styles
+                );
+            }
+
+            &:active,
+            &:checked:active
+            {
+                @include __wintc_apply_props(
+                    $taskband_task_button_press_styles
+                );
+            }
+
+            // Margin biased to the right
+            //
+            &:last-child
+            {
+                margin-right: 0px;
+            }
+        }
+
+        image
+        {
+            @include __wintc_apply_props(
+                $taskband_task_button_icon_styles
+            );
+        }
+    }
 }

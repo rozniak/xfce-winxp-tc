@@ -9,7 +9,7 @@
 
 // Taskband itself
 //
-$taskband_horz_margins: 4px !default;
+$taskband_toolbar_gap: 4px !default;
 
 $taskband_styles:
     wintc_define_props_bg(
@@ -32,7 +32,7 @@ $taskband_button_styles:
         4,
         0,
         4,
-        3
+        0
     );
 $taskband_button_styles:
     wintc_define_props_box(
@@ -57,9 +57,38 @@ $taskband_button_press_styles:
     );
 $taskband_button_selected_styles: $taskband_button_press_styles;
 
-$taskband_button_icon_styles:
+// Taskband flat buttons
+//
+$taskband_flat_button_styles:
     wintc_define_props_box(
-        $taskband_button_icon_styles,
+        $taskband_flat_button_styles,
+        true,
+        padding,
+        0,
+        0,
+        0,
+        0
+    );
+
+$taskband_flat_button_press_styles:   $taskband_flat_button_styles;
+$taskband_flat_button_seleced_styles: $taskband_flat_button_styles;
+
+// Taskband task buttons
+//
+$taskband_task_button_styles:
+    wintc_define_props_box(
+        $taskband_task_button_styles,
+        true,
+        margin,
+        undefined,
+        3,
+        undefined,
+        undefined
+    );
+
+$taskband_task_button_icon_styles:
+    wintc_define_props_box(
+        $taskband_task_button_icon_styles,
         true,
         margin,
         undefined,
