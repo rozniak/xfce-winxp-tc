@@ -225,25 +225,34 @@ static void wintc_toolbar_quick_access_create_button_for_file(
         g_strdup(path)
     );
 
-    // Set up button
+    // Set up icon
     //
-    GtkWidget* button   = gtk_button_new();
     GIcon*     icon     = wintc_sh_fs_get_file_path_icon(path);
     GtkWidget* img_icon = gtk_image_new_from_gicon(icon, GTK_ICON_SIZE_MENU);
 
     gtk_image_set_pixel_size(GTK_IMAGE(img_icon), 16);
 
-    gtk_container_add(
-        GTK_CONTAINER(button),
-        img_icon
-    );
+    // Set up button
+    //
+    GtkWidget* button  = gtk_button_new();
+    gchar*     tooltip = wintc_sh_fs_get_file_path_title(path);
 
     wintc_widget_add_style_class(button, "flat");
+
+    gtk_widget_set_tooltip_text(
+        button,
+        tooltip
+    );
 
     g_object_set_qdata(
         G_OBJECT(button),
         S_QUARK_PATH_HASH,
         GUINT_TO_POINTER(g_str_hash(path))
+    );
+
+    gtk_container_add(
+        GTK_CONTAINER(button),
+        img_icon
     );
 
     g_signal_connect(
@@ -252,6 +261,8 @@ static void wintc_toolbar_quick_access_create_button_for_file(
         G_CALLBACK(on_qaccess_button_clicked),
         toolbar_qaccess
     );
+
+    g_free(tooltip);
 
     // Append to the toolbar
     //

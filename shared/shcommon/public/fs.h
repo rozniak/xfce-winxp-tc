@@ -14,6 +14,13 @@ GIcon* wintc_sh_fs_get_file_path_icon(
     const gchar* file_path
 );
 
+gchar* wintc_sh_fs_get_file_title(
+    GFile* file
+);
+gchar* wintc_sh_fs_get_file_path_title(
+    const gchar* file_path
+);
+
 GList* wintc_sh_fs_get_names_as_list(
     const gchar* path,
     gboolean     full_names,

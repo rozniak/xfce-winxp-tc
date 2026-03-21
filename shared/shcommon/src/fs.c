@@ -79,6 +79,48 @@ GIcon* wintc_sh_fs_get_file_path_icon(
     return ret;
 }
 
+gchar* wintc_sh_fs_get_file_title(
+    GFile* file
+)
+{
+    gchar* ret = NULL;
+
+    // For .desktop files, retrieve the title
+    //
+    if (g_str_has_suffix(g_file_peek_path(file), ".desktop"))
+    {
+        GDesktopAppInfo* app_info =
+            g_desktop_app_info_new_from_filename(g_file_peek_path(file));
+
+        if (app_info)
+        {
+            ret = g_strdup(g_app_info_get_name(G_APP_INFO(app_info)));
+
+            g_object_unref(app_info);
+
+            return ret;
+        }
+    }
+
+    // Fall back to just using the filename
+    //
+    ret = g_path_get_basename(g_file_peek_path(file));
+
+    return ret;
+}
+
+gchar* wintc_sh_fs_get_file_path_title(
+    const gchar* file_path
+)
+{
+    GFile* file = g_file_new_for_path(file_path);
+    gchar* ret  = wintc_sh_fs_get_file_title(file);
+
+    g_object_unref(file);
+
+    return ret;
+}
+
 GList* wintc_sh_fs_get_names_as_list(
     const gchar* path,
     gboolean     full_names,
