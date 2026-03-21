@@ -238,6 +238,8 @@ static void wintc_toolbar_quick_access_create_button_for_file(
         img_icon
     );
 
+    wintc_widget_add_style_class(button, "flat");
+
     g_object_set_qdata(
         G_OBJECT(button),
         S_QUARK_PATH_HASH,
