@@ -1,0 +1,413 @@
+/**
+ * exitwnd.scss - Theme Base Exit Window Dialog Style Constants
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+$exitwnd_dlg_min_height: 200px !default;
+$exitwnd_dlg_min_width:  314px !default;
+
+// Exit dialog
+//
+$exitwnd_dlg_styles:
+    wintc_define_props_border_radius(
+        $exitwnd_dlg_styles,
+        true,
+        0
+    );
+$exitwnd_dlg_styles:
+    wintc_define_props_bg(
+        $exitwnd_dlg_styles,
+        true,
+        #003399,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
+$exitwnd_dlg_styles:
+    wintc_define_props_borders(
+        $exitwnd_dlg_styles,
+        true,
+        solid,
+        1,
+        1,
+        1,
+        1,
+        #000000,
+        undefined
+    );
+
+// Exit dialog title box
+//
+$exitwnd_title_box_styles:
+    wintc_define_props_bg(
+        $exitwnd_title_box_styles,
+        true,
+        undefined,
+        undefined,
+        no-repeat,
+        100% 0px,
+        url('../Resources/gina_flag.png')
+    );
+$exitwnd_title_box_styles:
+    wintc_define_props_borders(
+        $exitwnd_title_box_styles,
+        true,
+        solid,
+        0,
+        0,
+        2,
+        0,
+        undefined,
+        linear-gradient(90deg,rgba(60, 100, 182, 1) 0%, rgba(213, 228, 248, 1) 20%, rgba(213, 228, 248, 1) 50%, rgba(213, 228, 248, 1) 80%, rgba(60, 100, 182, 1) 100%)
+    );
+$exitwnd_title_box_styles:
+    wintc_define_props_box(
+        $exitwnd_title_box_styles,
+        true,
+        margin,
+        1,
+        1,
+        0,
+        1
+    );
+
+// Exit dialog title label
+//
+$exitwnd_title_label_styles:
+    wintc_define_props_box(
+        $exitwnd_title_label_styles,
+        true,
+        margin,
+        8,
+        undefined,
+        12,
+        10
+    );
+$exitwnd_title_label_styles:
+    wintc_define_props_fg(
+        $exitwnd_title_label_styles,
+        true,
+        #FFFFFF,
+        undefined
+    );
+$exitwnd_title_label_styles:
+    wintc_define_props_font(
+        $exitwnd_title_label_styles,
+        true,
+        undefined,
+        undefined,
+        undefined,
+        normal
+    );
+
+// Exit dialog power options box
+//
+$exitwnd_options_box_styles:
+    wintc_define_props_bg(
+        $exitwnd_options_box_styles,
+        true,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        linear-gradient(90deg,rgba(91, 126, 223, 1) 0%, rgba(149, 180, 244, 1) 50%, rgba(102, 136, 226, 1) 100%)
+    );
+$exitwnd_options_box_styles:
+    wintc_define_props_box(
+        $exitwnd_options_box_styles,
+        true,
+        margin,
+        undefined,
+        1,
+        undefined,
+        1
+    );
+$exitwnd_options_box_styles:
+    wintc_define_props_box(
+        $exitwnd_options_box_styles,
+        true,
+        padding,
+        18,
+        18,
+        18,
+        18
+    );
+
+// Exit dialog power options button
+//
+$exitwnd_options_button_styles:
+    wintc_define_props_bg(
+        $exitwnd_options_button_styles,
+        true,
+        unset,
+        initial,
+        no-repeat,
+        50% 0px,
+        undefined
+    );
+$exitwnd_options_button_styles:
+    wintc_define_props_borders(
+        $exitwnd_options_button_styles,
+        true,
+        none,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
+$exitwnd_options_button_styles:
+    wintc_define_props_box(
+        $exitwnd_options_button_styles,
+        true,
+        margin,
+        18,
+        18,
+        4,
+        18
+    );
+$exitwnd_options_button_styles:
+    wintc_define_props_box(
+        $exitwnd_options_button_styles,
+        true,
+        padding,
+        38,
+        undefined,
+        undefined,
+        undefined
+    );
+$exitwnd_options_button_styles:
+    wintc_define_props_fg(
+        $exitwnd_options_button_styles,
+        true,
+        #FFFFFF,
+        undefined
+    );
+$exitwnd_options_button_styles:
+    wintc_define_props_font(
+        $exitwnd_options_button_styles,
+        true,
+        undefined,
+        undefined,
+        undefined,
+        bold
+    );
+
+$exitwnd_options_button_inactive_styles:
+    wintc_define_props_fg(
+        $exitwnd_options_button_inactive_styles,
+        true,
+        #A0A0A0,
+        undefined
+    );
+
+// Exit dialog power options buttons
+//
+$exitwnd_options_standby_button_styles:
+    wintc_define_props_bg(
+        $exitwnd_options_standby_button_styles,
+        true,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/gina_standby_button.png')
+    );
+$exitwnd_options_standby_button_hover_styles:
+    wintc_define_props_bg(
+        $exitwnd_options_standby_button_hover_styles,
+        true,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/gina_standby_button_hover.png')
+    );
+$exitwnd_options_standby_button_press_styles:
+    wintc_define_props_bg(
+        $exitwnd_options_standby_button_press_styles,
+        true,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/gina_standby_button_press.png')
+    );
+$exitwnd_options_standby_button_inactive_styles:
+    wintc_define_props_bg(
+        $exitwnd_options_standby_button_inactive_styles,
+        true,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/gina_standby_button_inactive.png')
+    );
+
+$exitwnd_options_turn_off_button_styles:
+    wintc_define_props_bg(
+        $exitwnd_options_turn_off_button_styles,
+        true,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/gina_shutdown_button.png')
+    );
+$exitwnd_options_turn_off_button_hover_styles:
+    wintc_define_props_bg(
+        $exitwnd_options_turn_off_button_hover_styles,
+        true,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/gina_shutdown_button_hover.png')
+    );
+$exitwnd_options_turn_off_button_press_styles:
+    wintc_define_props_bg(
+        $exitwnd_options_turn_off_button_press_styles,
+        true,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/gina_shutdown_button_press.png')
+    );
+
+$exitwnd_options_restart_button_styles:
+    wintc_define_props_bg(
+        $exitwnd_options_restart_button_styles,
+        true,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/gina_restart_button.png')
+    );
+$exitwnd_options_restart_button_hover_styles:
+    wintc_define_props_bg(
+        $exitwnd_options_restart_button_hover_styles,
+        true,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/gina_restart_button_hover.png')
+    );
+$exitwnd_options_restart_button_press_styles:
+    wintc_define_props_bg(
+        $exitwnd_options_restart_button_press_styles,
+        true,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/gina_restart_button_press.png')
+    );
+
+$exitwnd_options_switch_user_button_styles:
+    wintc_define_props_bg(
+        $exitwnd_options_switch_user_button_styles,
+        true,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/gina_switch_user_button.png')
+    );
+$exitwnd_options_switch_user_button_hover_styles:
+    wintc_define_props_bg(
+        $exitwnd_options_switch_user_button_hover_styles,
+        true,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/gina_switch_user_button_hover.png')
+    );
+$exitwnd_options_switch_user_button_press_styles:
+    wintc_define_props_bg(
+        $exitwnd_options_switch_user_button_press_styles,
+        true,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/gina_switch_user_button_press.png')
+    );
+
+$exitwnd_options_log_off_button_styles:
+    wintc_define_props_bg(
+        $exitwnd_options_log_off_button_styles,
+        true,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/gina_log_off_button.png')
+    );
+$exitwnd_options_log_off_button_hover_styles:
+    wintc_define_props_bg(
+        $exitwnd_options_log_off_button_hover_styles,
+        true,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/gina_log_off_button_hover.png')
+    );
+$exitwnd_options_log_off_button_press_styles:
+    wintc_define_props_bg(
+        $exitwnd_options_log_off_button_press_styles,
+        true,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/gina_log_off_button_press.png')
+    );
+
+// Exit dialog cancel box
+//
+$exitwnd_cancel_box_styles:
+    wintc_define_props_borders(
+        $exitwnd_cancel_box_styles,
+        true,
+        solid,
+        1,
+        undefined,
+        undefined,
+        undefined,
+        #1444A6,
+        undefined
+    );
+$exitwnd_cancel_box_styles:
+    wintc_define_props_box(
+        $exitwnd_cancel_box_styles,
+        true,
+        margin,
+        undefined,
+        1,
+        1,
+        1
+    );
+
+// Exit dialog cancel button
+//
+$exitwnd_cancel_button_styles:
+    wintc_define_props_box(
+        $exitwnd_cancel_button_styles,
+        true,
+        margin,
+        10,
+        10,
+        10,
+        10
+    );

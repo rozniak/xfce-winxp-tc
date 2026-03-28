@@ -1,0 +1,240 @@
+/**
+ * wintc-exitwnd.scss - Theme Base Exit Windows Dialog Styles
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+.wintc-exitwnd
+{
+    @include __wintc_apply_props($exitwnd_dlg_styles);
+
+    border-radius: unset;
+
+    & > box
+    {
+        min-height: $exitwnd_dlg_min_height;
+        min-width: $exitwnd_dlg_min_width;
+    }
+
+    box.title
+    {
+        @include __wintc_apply_props($exitwnd_title_box_styles);
+
+        label
+        {
+            @include __wintc_apply_props($exitwnd_title_label_styles);
+        }
+    }
+
+    box.pwropts
+    {
+        @include __wintc_apply_props($exitwnd_options_box_styles);
+
+        button
+        {
+            @include __wintc_apply_props_excluding(
+                $exitwnd_options_button_styles,
+                padding-left,
+                padding-right,
+                padding-bottom,
+                padding-top
+            );
+
+            label
+            {
+                margin:
+                    __wintc_get_prop($exitwnd_options_button_styles, padding-top)
+                    __wintc_get_prop($exitwnd_options_button_styles, padding-right)
+                    __wintc_get_prop($exitwnd_options_button_styles, padding-bottom)
+                    __wintc_get_prop($exitwnd_options_button_styles, padding-left);
+            }
+
+            &:disabled
+            {
+                @include __wintc_apply_props(
+                    $exitwnd_options_button_inactive_styles
+                );
+            }
+        }
+    }
+
+    box.cancel
+    {
+        @include __wintc_apply_props($exitwnd_cancel_box_styles);
+    }
+
+    button
+    {
+        min-height: 0px;
+        min-width:  0px;
+
+        &.cancel
+        {
+            @include __wintc_apply_props($exitwnd_cancel_button_styles);
+
+            &:hover
+            {
+                @include __wintc_apply_props(
+                    $exitwnd_cancel_button_hover_styles
+                );
+            }
+
+            &:active
+            {
+                @include __wintc_apply_props(
+                    $exitwnd_cancel_button_press_styles
+                );
+            }
+
+            &:disabled
+            {
+                @include __wintc_apply_props(
+                    $exitwnd_cancel_button_inactive_styles
+                );
+            }
+        }
+
+        &.standby
+        {
+            @include __wintc_apply_props(
+                $exitwnd_options_standby_button_styles
+            );
+
+            &:hover
+            {
+                @include __wintc_apply_props(
+                    $exitwnd_options_standby_button_hover_styles
+                );
+            }
+
+            &:active
+            {
+                @include __wintc_apply_props(
+                    $exitwnd_options_standby_button_press_styles
+                );
+            }
+
+            &:disabled
+            {
+                @include __wintc_apply_props(
+                    $exitwnd_options_standby_button_inactive_styles
+                );
+            }
+        }
+
+        &.turn-off
+        {
+            @include __wintc_apply_props(
+                $exitwnd_options_turn_off_button_styles
+            );
+
+            &:hover
+            {
+                @include __wintc_apply_props(
+                    $exitwnd_options_turn_off_button_hover_styles
+                );
+            }
+
+            &:active
+            {
+                @include __wintc_apply_props(
+                    $exitwnd_options_turn_off_button_press_styles
+                );
+            }
+
+            &:disabled
+            {
+                @include __wintc_apply_props(
+                    $exitwnd_options_turn_off_button_inactive_styles
+                );
+            }
+        }
+
+        &.restart
+        {
+            @include __wintc_apply_props(
+                $exitwnd_options_restart_button_styles
+            );
+
+            &:hover
+            {
+                @include __wintc_apply_props(
+                    $exitwnd_options_restart_button_hover_styles
+                );
+            }
+
+            &:active
+            {
+                @include __wintc_apply_props(
+                    $exitwnd_options_restart_button_press_styles
+                );
+            }
+
+            &:disabled
+            {
+                @include __wintc_apply_props(
+                    $exitwnd_options_restart_button_inactive_styles
+                );
+            }
+        }
+
+        &.switch-user
+        {
+            @include __wintc_apply_props(
+                $exitwnd_options_switch_user_button_styles
+            );
+
+            &:hover
+            {
+                @include __wintc_apply_props(
+                    $exitwnd_options_switch_user_button_hover_styles
+                );
+            }
+
+            &:active
+            {
+                @include __wintc_apply_props(
+                    $exitwnd_options_switch_user_button_press_styles
+                );
+            }
+
+            &:disabled
+            {
+                @include __wintc_apply_props(
+                    $exitwnd_options_switch_user_button_inactive_styles
+                );
+            }
+        }
+
+        &.log-off
+        {
+            @include __wintc_apply_props(
+                $exitwnd_options_log_off_button_styles
+            );
+
+            &:hover
+            {
+                @include __wintc_apply_props(
+                    $exitwnd_options_log_off_button_hover_styles
+                );
+            }
+
+            &:active
+            {
+                @include __wintc_apply_props(
+                    $exitwnd_options_log_off_button_press_styles
+                );
+            }
+
+            &:disabled
+            {
+                @include __wintc_apply_props(
+                    $exitwnd_options_log_off_button_inactive_styles
+                );
+            }
+        }
+    }
+}
