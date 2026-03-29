@@ -33,7 +33,9 @@ def main():
     rt_bitmap_entry = pe.DIRECTORY_ENTRY_RESOURCE.entries[rt_bitmap_idx]
 
     for entry in rt_bitmap_entry.directory.entries:
-        print(entry.name)
+        entry_name = entry.name or entry.id
+
+        print(entry_name)
 
         # Based on resource string example in pefile:
         # https://github.com/erocarrera/pefile/blob/wiki/ReadingResourceStrings.md
@@ -44,7 +46,7 @@ def main():
         size = entry.directory.entries[0].data.struct.Size
         data = pe.get_memory_mapped_image()[data_rva:data_rva+size]
 
-        filename = "out/" + str(entry.name) + ".bmp"
+        filename = "out/" + str(entry_name) + ".bmp"
 
         with open(filename, "wb") as myFile:
               myFile.write(data)
@@ -78,9 +80,9 @@ def main():
                 im.tile = [im.tile[0]._replace(args=tuple(args))]
 
         try:
-            im.save("out/" + str(entry.name) + ".png")
+            im.save("out/" + str(entry_name) + ".png")
         except Exception as e:
-            print("Unhappy with " + str(entry.name))
+            print("Unhappy with " + str(entry_name))
             print(e)
 
 
