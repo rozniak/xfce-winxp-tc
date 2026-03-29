@@ -1,0 +1,172 @@
+/**
+ * exitwnd.scss - Professional Style Exit Window Dialog Style Constants
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+// Exit dialog
+//
+$exitwnd_dlg_styles:
+    wintc_define_props_bg(
+        $exitwnd_dlg_styles,
+        false,
+        #FFFFFF,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
+
+// Exit dialog title box
+//
+$exitwnd_title_box_styles:
+    wintc_define_props_bg(
+        $exitwnd_title_box_styles,
+        false,
+        #2A5FAA,
+        undefined,
+        default,
+        undefined,
+        default
+    );
+$exitwnd_title_box_styles:
+    wintc_define_props_borders(
+        $exitwnd_title_box_styles,
+        false,
+        none,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
+
+// Exit dialog title label
+//
+$exitwnd_title_label_styles:
+    wintc_define_props_box(
+        $exitwnd_title_label_styles,
+        false,
+        margin,
+        12,
+        default,
+        13,
+        45
+    );
+
+// Exit dialog power options box
+//
+$exitwnd_options_box_styles:
+    wintc_define_props_bg(
+        $exitwnd_options_box_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
+$exitwnd_options_box_styles:
+    wintc_define_props_box(
+        $exitwnd_options_box_styles,
+        false,
+        padding,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
+
+// Exit dialog power options button
+//
+$exitwnd_options_button_styles:
+    wintc_define_props_box(
+        $exitwnd_options_button_styles,
+        false,
+        margin,
+        10,
+        10,
+        10,
+        10
+    );
+$exitwnd_options_button_styles:
+    wintc_define_props_fg(
+        $exitwnd_options_button_styles,
+        false,
+        undefined,
+        undefined
+    );
+$exitwnd_options_button_styles:
+    wintc_define_props_font(
+        $exitwnd_options_button_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
+
+// Exit dialog cancel box
+//
+$exitwnd_cancel_box_styles:
+    wintc_define_props_borders(
+        $exitwnd_cancel_box_styles,
+        false,
+        solid,
+        1,
+        undefined,
+        undefined,
+        undefined,
+        #D4DFEE,
+        undefined
+    );
+
+// Exit dialog cancel button
+//
+$exitwnd_cancel_button_styles: $exitwnd_options_button_styles;
+
+$exitwnd_cancel_button_styles:
+    wintc_define_props_box(
+        $exitwnd_cancel_button_styles,
+        false,
+        margin,
+        default,
+        27,
+        default,
+        default
+    );
+
+$exitwnd_cancel_button_styles:
+    wintc_define_props_bg(
+        $exitwnd_cancel_button_styles,
+        false,
+        default,
+        default,
+        default,
+        default,
+        url('../Resources/gina_cancel_button.png')
+    );
+$exitwnd_cancel_button_hover_styles:
+    wintc_define_props_bg(
+        $exitwnd_cancel_button_hover_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/gina_cancel_button_hover.png')
+    );
+$exitwnd_cancel_button_press_styles:
+    wintc_define_props_bg(
+        $exitwnd_cancel_button_press_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/gina_cancel_button_press.png')
+    );
