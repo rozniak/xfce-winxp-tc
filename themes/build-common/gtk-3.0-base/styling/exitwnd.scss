@@ -280,6 +280,16 @@ $exitwnd_options_turn_off_button_press_styles:
         undefined,
         url('../Resources/gina_shutdown_button_press.png')
     );
+$exitwnd_options_turn_off_button_inactive_styles:
+    wintc_define_props_bg(
+        $exitwnd_options_turn_off_button_inactive_styles,
+        true,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/gina_shutdown_button_inactive.png')
+    );
 
 $exitwnd_options_restart_button_styles:
     wintc_define_props_bg(
@@ -310,6 +320,16 @@ $exitwnd_options_restart_button_press_styles:
         undefined,
         undefined,
         url('../Resources/gina_restart_button_press.png')
+    );
+$exitwnd_options_restart_button_inactive_styles:
+    wintc_define_props_bg(
+        $exitwnd_options_restart_button_inactive_styles,
+        true,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/gina_restart_button_inactive.png')
     );
 
 $exitwnd_options_switch_user_button_styles:
@@ -342,6 +362,16 @@ $exitwnd_options_switch_user_button_press_styles:
         undefined,
         url('../Resources/gina_switch_user_button_press.png')
     );
+$exitwnd_options_switch_user_button_inactive_styles:
+    wintc_define_props_bg(
+        $exitwnd_options_switch_user_button_inactive_styles,
+        true,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/gina_switch_user_button_inactive.png')
+    );
 
 $exitwnd_options_log_off_button_styles:
     wintc_define_props_bg(
@@ -372,6 +402,16 @@ $exitwnd_options_log_off_button_press_styles:
         undefined,
         undefined,
         url('../Resources/gina_log_off_button_press.png')
+    );
+$exitwnd_options_log_off_button_inactive_styles:
+    wintc_define_props_bg(
+        $exitwnd_options_log_off_button_inactive_styles,
+        true,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        url('../Resources/gina_log_off_button_inactive.png')
     );
 
 // Exit dialog cancel box
