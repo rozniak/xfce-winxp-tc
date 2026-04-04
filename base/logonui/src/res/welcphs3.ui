@@ -3,14 +3,17 @@
   <object class="GtkBox" id="box-welcome">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
-    <property name="orientation">horizontal</property>
+    <property name="halign">GTK_ALIGN_CENTER</property>
+    <property name="orientation">vertical</property>
+    <property name="valign">GTK_ALIGN_CENTER</property>
+    <property name="width-request">400</property>
 
     <child>
       <object class="GtkLabel">
         <property name="visible">True</property>
         <property name="can-focus">False</property>
         <property name="label">welcome</property>
-        <property name="xalign">0.8</property>
+        <property name="xalign">1.0</property>
         <property name="yalign">0.5</property>
 
         <style>

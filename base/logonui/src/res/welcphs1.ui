@@ -6,6 +6,7 @@
     <property name="halign">GTK_ALIGN_CENTER</property>
     <property name="orientation">vertical</property>
     <property name="valign">GTK_ALIGN_CENTER</property>
+    <property name="width-request">400</property>
 
     <child>
       <object class="WinTCCtlAnimation" id="anim-logo-wait">
