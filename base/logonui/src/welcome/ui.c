@@ -553,6 +553,13 @@ static void on_button_shutdown_clicked(
             wintc_gina_exit_window_new_for_power_options(
                 WINTC_IGINA_SM(sm_xdg)
             );
+
+        g_signal_connect(
+            wnd,
+            "delete-event",
+            G_CALLBACK(gtk_widget_hide_on_delete),
+            NULL
+        );
     }
 
     gtk_widget_show_all(wnd);
