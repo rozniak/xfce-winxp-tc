@@ -354,6 +354,10 @@ static void wintc_welcome_ui_constructed(
         welcome_ui->box_welcome
     );
 
+    gtk_widget_show_all(welcome_ui->box_wait);
+    gtk_widget_show_all(welcome_ui->box_login);
+    gtk_widget_show_all(welcome_ui->box_welcome);
+
     // Connect up shutdown button
     //
     g_signal_connect(

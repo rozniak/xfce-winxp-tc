@@ -248,7 +248,7 @@ static gboolean on_window_map_event(
         GTK_CONTAINER(self),
         window->login_ui
     );
-    gtk_widget_show_all(window->login_ui);
+    gtk_widget_show(window->login_ui);
 
     return TRUE;
 }
