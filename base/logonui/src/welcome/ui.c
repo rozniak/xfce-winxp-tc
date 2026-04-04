@@ -104,6 +104,7 @@ struct _WinTCWelcomeUI
     GtkWidget* box_footer;
 
     GtkWidget* button_shutdown;
+    GtkWidget* label_shutdown;
 
     GtkWidget* stack_main;
 
@@ -176,6 +177,12 @@ static void wintc_welcome_ui_class_init(
         "button-shutdown",
         FALSE,
         G_STRUCT_OFFSET(WinTCWelcomeUI, button_shutdown)
+    );
+    gtk_widget_class_bind_template_child_full(
+        widget_class,
+        "label-shutdown",
+        FALSE,
+        G_STRUCT_OFFSET(WinTCWelcomeUI, label_shutdown)
     );
     gtk_widget_class_bind_template_child_full(
         widget_class,
@@ -436,7 +443,7 @@ GtkWidget* wintc_welcome_ui_new(
 //
 static void wintc_welcome_ui_change_state(
     WinTCWelcomeUI* welcome_ui,
-    WinTCGinaState    next_state
+    WinTCGinaState  next_state
 )
 {
     // Set up new state
@@ -478,6 +485,17 @@ static void wintc_welcome_ui_change_state(
             break;
 
         default: break;
+    }
+
+    if (next_state == WINTC_GINA_STATE_PROMPT)
+    {
+        gtk_widget_show(welcome_ui->button_shutdown);
+        gtk_widget_show(welcome_ui->label_shutdown);
+    }
+    else
+    {
+        gtk_widget_hide(welcome_ui->button_shutdown);
+        gtk_widget_hide(welcome_ui->label_shutdown);
     }
 
     welcome_ui->current_state = next_state;
