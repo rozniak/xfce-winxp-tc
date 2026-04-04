@@ -67,6 +67,11 @@ static void on_logon_session_attempt_complete(
     gpointer               user_data
 );
 
+static void on_button_shutdown_clicked(
+    GtkButton* self,
+    gpointer   user_data
+);
+
 static gboolean on_timeout_delay_done(
     gpointer user_data
 );
@@ -342,6 +347,15 @@ static void wintc_welcome_ui_constructed(
         welcome_ui->box_welcome
     );
 
+    // Connect up shutdown button
+    //
+    g_signal_connect(
+        welcome_ui->button_shutdown,
+        "clicked",
+        G_CALLBACK(on_button_shutdown_clicked),
+        NULL
+    );
+
     // Connect to realize signal to kick off everything when we're
     // actually live
     //
@@ -469,6 +483,81 @@ static void wintc_welcome_ui_change_state(
     welcome_ui->current_state = next_state;
 }
 
+
+//
+// CALLBACKS
+//
+static void on_self_realized(
+    GtkWidget* self,
+    WINTC_UNUSED(gpointer user_data)
+)
+{
+    wintc_welcome_ui_change_state(
+        WINTC_WELCOME_UI(self),
+        WINTC_GINA_STATE_STARTING
+    );
+}
+
+static void on_logon_session_attempt_complete(
+    WINTC_UNUSED(WinTCGinaLogonSession* logon_session),
+    WinTCGinaResponse response,
+    gpointer          user_data
+)
+{
+    WinTCWelcomeUI* welcome_ui = WINTC_WELCOME_UI(user_data);
+
+    if (response == WINTC_GINA_RESPONSE_OKAY)
+    {
+        wintc_welcome_ui_change_state(
+            welcome_ui,
+            WINTC_GINA_STATE_LAUNCHING
+        );
+    }
+}
+
+static void on_button_shutdown_clicked(
+    GtkButton* self,
+    WINTC_UNUSED(gpointer user_data)
+)
+{
+    static WinTCGinaSmXdg* sm_xdg = NULL;
+    static GtkWidget*      wnd    = NULL;
+
+    // Spawn the session manager interface
+    //
+    if (!sm_xdg)
+    {
+        sm_xdg = wintc_gina_sm_xdg_new();
+
+        if (!wintc_igina_sm_is_valid(WINTC_IGINA_SM(sm_xdg)))
+        {
+            wintc_messagebox_show(
+                wintc_widget_get_toplevel_window(GTK_WIDGET(self)),
+                "Failed to connect to the session manager.",
+                "Error",
+                GTK_BUTTONS_OK,
+                GTK_MESSAGE_ERROR
+            );
+
+            g_clear_object(&sm_xdg);
+
+            return;
+        }
+    }
+
+    // Happy to spawn the dialog
+    //
+    if (!wnd)
+    {
+        wnd =
+            wintc_gina_exit_window_new_for_power_options(
+                WINTC_IGINA_SM(sm_xdg)
+            );
+    }
+
+    gtk_widget_show_all(wnd);
+}
+
 static gboolean on_timeout_delay_done(
     gpointer user_data
 )
@@ -514,37 +603,6 @@ static gboolean on_timeout_delay_done(
     }
 
     return G_SOURCE_REMOVE;
-}
-
-//
-// CALLBACKS
-//
-static void on_self_realized(
-    GtkWidget* self,
-    WINTC_UNUSED(gpointer user_data)
-)
-{
-    wintc_welcome_ui_change_state(
-        WINTC_WELCOME_UI(self),
-        WINTC_GINA_STATE_STARTING
-    );
-}
-
-static void on_logon_session_attempt_complete(
-    WINTC_UNUSED(WinTCGinaLogonSession* logon_session),
-    WinTCGinaResponse response,
-    gpointer          user_data
-)
-{
-    WinTCWelcomeUI* welcome_ui = WINTC_WELCOME_UI(user_data);
-
-    if (response == WINTC_GINA_RESPONSE_OKAY)
-    {
-        wintc_welcome_ui_change_state(
-            welcome_ui,
-            WINTC_GINA_STATE_LAUNCHING
-        );
-    }
 }
 
 static gboolean on_timeout_poll_ready(
