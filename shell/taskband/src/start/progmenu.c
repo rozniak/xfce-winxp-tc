@@ -43,7 +43,9 @@ typedef enum
 {
     WINTC_PROGMENU_SRC_HOME   = 0,
     WINTC_PROGMENU_SRC_LOCAL  = 5,
+    WINTC_PROGMENU_SRC_LOCAL_FLATPAK  = 6,
     WINTC_PROGMENU_SRC_SYSTEM = 10,
+    WINTC_PROGMENU_SRC_SYSTEM_FLATPAK = 11,
     WINTC_PROGMENU_SRC_WINE   = 17
 } WinTCProgMenuSource;
 
@@ -342,7 +344,9 @@ static void wintc_toolbar_start_progmenu_init(
     WinTCProgMenuSource locations[] = {
         WINTC_PROGMENU_SRC_HOME,
         WINTC_PROGMENU_SRC_LOCAL,
+        WINTC_PROGMENU_SRC_LOCAL_FLATPAK,
         WINTC_PROGMENU_SRC_SYSTEM,
+        WINTC_PROGMENU_SRC_SYSTEM_FLATPAK,
         WINTC_PROGMENU_SRC_WINE
     };
 
@@ -507,7 +511,9 @@ static void wintc_toolbar_start_progmenu_build_fs(
     const WinTCProgMenuSource sources[] = {
         WINTC_PROGMENU_SRC_HOME,
         WINTC_PROGMENU_SRC_LOCAL,
+        WINTC_PROGMENU_SRC_LOCAL_FLATPAK,
         WINTC_PROGMENU_SRC_SYSTEM,
+        WINTC_PROGMENU_SRC_SYSTEM_FLATPAK,
         WINTC_PROGMENU_SRC_WINE
     };
 
@@ -873,6 +879,29 @@ static const gchar* wintc_toolbar_start_progmenu_get_src_path(
 #endif
         }
 
+        case WINTC_PROGMENU_SRC_LOCAL_FLATPAK:
+        {
+            static const gchar* s_src_local_flatpak = NULL;
+
+            if (!s_src_local_flatpak)
+            {
+                s_src_local_flatpak =
+                    g_build_path(
+                        G_DIR_SEPARATOR_S,
+                        g_get_home_dir(),
+                        ".local",
+                        "share",
+                        "flatpak",
+                        "exports",
+                        "share",
+                        "applications",
+                        NULL
+                    );
+            }
+
+            return s_src_local_flatpak;
+        }
+
         case WINTC_PROGMENU_SRC_SYSTEM:
         {
             static const gchar* s_src_system = NULL;
@@ -894,6 +923,29 @@ static const gchar* wintc_toolbar_start_progmenu_get_src_path(
             }
 
             return s_src_system;
+        }
+
+        case WINTC_PROGMENU_SRC_SYSTEM_FLATPAK:
+        {
+            static const gchar* s_src_system_flatpak = NULL;
+
+            if (!s_src_system_flatpak)
+            {
+                s_src_system_flatpak =
+                    g_build_path(
+                        G_DIR_SEPARATOR_S,
+                        G_DIR_SEPARATOR_S,
+                        "var",
+                        "lib",
+                        "flatpak",
+                        "exports",
+                        "share",
+                        "applications",
+                        NULL
+                    );
+            }
+
+            return s_src_system_flatpak;
         }
 
         case WINTC_PROGMENU_SRC_WINE:
