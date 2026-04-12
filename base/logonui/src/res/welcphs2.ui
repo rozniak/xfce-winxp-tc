@@ -36,7 +36,7 @@
             <property name="valign">GTK_ALIGN_START</property>
 
             <style>
-              <class name="logonui-text" />
+              <class name="bg-text" />
               <class name="logonui-instruction" />
               <class name="wintc-mt-md" />
             </style>

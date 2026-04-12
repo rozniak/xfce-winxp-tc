@@ -1,110 +1,112 @@
 /* Main UI component styles */
-.header {
+.wintc-welcome .header
+{
     background-color: #00309C;
 }
 
-.header-separator {
+.wintc-welcome .header-separator
+{
     background: linear-gradient(45deg, #5B7EDC, #C3D9FD 20%, #ADC6F6, #5A7EDC 90%);
     min-height: 2px;
 }
 
-.content {
+.wintc-welcome .content
+{
     background-color: #5A7EDC;
 }
 
-.vertical-separator {
-    background-image: linear-gradient(to bottom, #5B7EDC, #91AEEE, #5A7EDC );
-    min-width: 1px;
-}
-
-.footer {
+.wintc-welcome .footer
+{
     background: linear-gradient(to right, #3733AC 15%, #00309C);
 }
 
-.footer-separator {
+.wintc-welcome .footer-separator
+{
     background: linear-gradient(45deg, #5076D4, #F99736 20%, #C2814D, #00309C);
     min-height: 2px;
 }
 
+.wintc-welcome .vertical-separator
+{
+    background-image: linear-gradient(to bottom, #5B7EDC, #91AEEE, #5A7EDC );
+    min-width: 1px;
+}
 
-.logonui-text {
+/* Standard syles */
+.wintc-welcome .bg-text
+{
     color: #FFF;
     font-family: "Tahoma";
 }
 
-
 /* Footer styles */
-.accounts-label {
+.wintc-welcome .accounts-label
+{
     font-weight: 400;
     color: #ffffff;
     font-size: 10pt;
     font-family: "Tahoma", inherit;
 }
 
-
-
 /* Wait screen styles */
-.wait-label {
+.wintc-welcome .wait-label
+{
     font-weight: 500;
     color: #ffffff;
     font-size: 16pt;
     font-family: "Arial", inherit;
 }
 
-.shutdown-label {
+.wintc-welcome .shutdown-label
+{
     font-weight: 300;
     color: #ffffff;
     font-size: 14pt;
     font-family: "Tahoma", inherit;
 }
 
-
-
 /* Login screen styles */
-.logonui-instruction {
+.wintc-welcome .logonui-instruction
+{
     font-weight: 500;
     font-size: 14pt;
 }
 
-/* DEBUG */
-.red-bg {
-    background-color: red;
-}
-
-.password-box {
+.wintc-welcome .password-box
+{
     /* border: 1px solid #00309C; */
     font-family: "Tahoma", inherit;
     border-radius: 5px;
     font-size: 16pt;
 
-     border-top: 1px solid #7f7f7f;
+    border-top: 1px solid #7f7f7f;
     border-left: 1px solid #7f7f7f;
     border-right: 1px solid #dfdfdf;
     border-bottom: 1px solid #dfdfdf;
-    
+
     box-shadow: 
-        1px 0 0 0 #2d5aa0,     
-        0 1px 0 0 #2d5aa0,    
-        2px 0 0 0 #1a4480,    
-        0 2px 0 0 #1a4480;    
+    1px 0 0 0 #2d5aa0,     
+    0 1px 0 0 #2d5aa0,    
+    2px 0 0 0 #1a4480,    
+    0 2px 0 0 #1a4480;    
 }
 
-.user-label {
+.wintc-welcome .user-label
+{
     color: #ffffff;
     font-size: 14pt;
     font-family: Tahoma, inherit;
 }
 
-.password-label {
+.wintc-welcome .password-label
+{
     color: #ffffff;
     font-size: 9pt;
     font-family: "Tahoma", inherit;
 }
 
-
-
 /* Welcome screen styles */
-.welcome-label
+.wintc-welcome .welcome-label
 {
     color: white;
     font-family: "Arial";
@@ -114,32 +116,17 @@
     text-shadow: 2px 3px 0 #3151B5;
 }
 
-
-
-/* Temporary shutdown popup */
-.shutdown-popup {
-    border: 1px solid black
-}
-
-.shutdown-title {
-    font-weight: 600;
-    color: white;
-    font-size: 14pt;
-    margin-left:6px;
-    font-family: "Tahoma", inherit;
-}
-
-
-
 /* Balloon */
-.balloon-tooltip {
+.wintc-welcome .balloon-tooltip
+{
     background-color: rgba(255, 255, 225, 1);
     border: 1px solid #000000; 
     border-radius: 8px;
     padding: 8px;
 }
 
-.error-popup-title{
+.wintc-welcome .error-popup-title
+{
     font-weight: 600;
     color: black;
     font-size: 10pt;
@@ -147,7 +134,8 @@
     font-family: "Tahoma", inherit;
 }
 
-.error-popup-content {
+.wintc-welcome .error-popup-content
+{
     color: black;
     font-size: 8pt;
     padding: 0;
@@ -155,72 +143,81 @@
     font-family: "Tahoma", inherit;
 }
 
-
-
 /* Utility styles */
 .undecorated,
 .undecorated:focus,
 .undecorated:hover,
-.undecorated:active {
-  background-image: none;
-  background-color: transparent;
-  border: none;
-  box-shadow: none;
-  padding: 0;
-  outline: none;
+.undecorated:active
+{
+    background-image: none;
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    outline: none;
 }
 
-.underline {
+.underline
+{
     text-decoration: underline;
 }
 
-.fade-in {
+.fade-in
+{
     opacity: 0;
     transition: opacity 300ms ease-in-out;
 }
 
-.fade-in-light {
+.fade-in-light
+{
     opacity: 0;
     transition: opacity 300ms ease-in-out;
 }
 
-.fade-in.visible {
+.fade-in.visible
+{
     opacity: 1;
 }
 
-.visible {
+.visible
+{
     opacity: 1;
 }
 
-
-.disabled-text {
+.disabled-text
+{
     color: #92ace9;
 }
 
-
-.blur {
+.blur
+{
     opacity: 0.4;
     transition: opacity 300ms ease-in;
 }
 
-.blurred {
+.blurred
+{
     opacity: 0.4;
 }
 
-.unblur {
+.unblur
+{
     opacity: 1;
     transition: opacity 300ms ease-in-out;
 }
 
-.unblur-fast {
+.unblur-fast
+{
     opacity: 1;
     transition: opacity 150ms ease-out;
 }
 
-.opaque {
+.opaque
+{
     opacity: 1;
 }
 
-.transparent {
+.transparent
+{
     opacity: 0;
 }

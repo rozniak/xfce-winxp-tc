@@ -30,7 +30,7 @@
         <property name="xalign">1.0</property>
 
         <style>
-          <class name="logonui-text" />
+          <class name="bg-text" />
           <class name="logonui-instruction" />
           <class name="wintc-mt-md" />
         </style>

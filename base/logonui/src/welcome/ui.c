@@ -212,6 +212,8 @@ static void wintc_welcome_ui_init(
 )
 {
     gtk_widget_init_template(GTK_WIDGET(self));
+
+    wintc_widget_add_style_class(GTK_WIDGET(self), "wintc-welcome");
 }
 
 //

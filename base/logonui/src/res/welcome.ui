@@ -125,7 +125,7 @@
                         <property name="label">Turn off computer</property>
 
                         <style>
-                          <class name="logonui-text" />
+                          <class name="bg-text" />
                         </style>
                       </object>
                       <packing>
@@ -157,7 +157,7 @@
 Just go to Control Panel and click User Accounts.</property>
 
                 <style>
-                  <class name="logonui-text" />
+                  <class name="bg-text" />
                   <class name="wintc-mr-lg" />
                 </style>
               </object>
