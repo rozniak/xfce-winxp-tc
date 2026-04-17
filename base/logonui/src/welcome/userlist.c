@@ -201,9 +201,7 @@ static void wintc_welcome_user_list_class_init(
     WinTCWelcomeUserListClass* klass
 )
 {
-    WINTC_UNUSED(GtkContainerClass* container_class) = GTK_CONTAINER_CLASS(klass);
-    WINTC_UNUSED(GtkWidgetClass*    widget_class)    = GTK_WIDGET_CLASS(klass);
-    GObjectClass*      object_class    = G_OBJECT_CLASS(klass);
+    GObjectClass* object_class = G_OBJECT_CLASS(klass);
 
     object_class->set_property = wintc_welcome_user_list_set_property;
     object_class->finalize     = wintc_welcome_user_list_finalize;
@@ -667,9 +665,9 @@ static GtkWidget *build_userlist_widget(WinTCWelcomeUserList *user_list)
     GtkWidget *list_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 
     GList *users =
-    lightdm_user_list_get_users(
-        lightdm_user_list_get_instance()
-    );
+        lightdm_user_list_get_users(
+            lightdm_user_list_get_instance()
+        );
 
     // Set up an event wrapper for empty space at the top of the list
     //
@@ -688,32 +686,32 @@ static GtkWidget *build_userlist_widget(WinTCWelcomeUserList *user_list)
     {
         UserListItem *item = g_new0(UserListItem, 1);
         user_list->list_items = g_list_append(user_list->list_items, item);
-        
-        item->event_wrapper = gtk_event_box_new();
+
+        GtkWidget* bottom_box = NULL;
+
+        GtkBuilder* builder =
+            gtk_builder_new_from_resource(
+                "/uk/oddmatics/wintc/logonui/useritem.ui"
+            );
+
+        wintc_builder_get_objects(
+            builder,
+            "eventbox-wrapper",  &(item->event_wrapper),
+            "img-background",    &(item->background_image),
+            "box-details",       &(item->details_box),
+            "img-profile",       &(item->profile_image),
+            "label-username",    &(item->username_label),
+            "label-instruction", &(item->instruction_label),
+            "entry-password",    &(item->password_entry),
+            "box-bottom",        &bottom_box,
+            NULL
+        );
+
         gtk_widget_add_events(item->event_wrapper, GDK_ENTER_NOTIFY_MASK | GDK_LEAVE_NOTIFY_MASK);
         g_signal_connect(item->event_wrapper, "enter-notify-event",
                          G_CALLBACK(on_list_item_hover_enter), item);
         g_signal_connect(item->event_wrapper, "leave-notify-event",
                          G_CALLBACK(on_list_item_hover_leave), item);
-
-        GtkWidget *list_item_overlay_wrapper = gtk_overlay_new();
-
-        item->details_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-        gtk_widget_set_size_request(item->details_box, 348, -1);
-        gtk_widget_set_hexpand(item->details_box, FALSE);
-        gtk_widget_set_vexpand(item->details_box, FALSE);
-
-        // While the background is invisibile (user not selected) nothing will show without 
-        // a visible filler (transparent)
-        GtkWidget* background_wrapper_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-        gtk_widget_set_halign(background_wrapper_box, GTK_ALIGN_START);
-        gtk_widget_set_valign(background_wrapper_box, GTK_ALIGN_START);
-        gtk_widget_set_size_request(background_wrapper_box, 348, 92);
-
-        gtk_container_add(GTK_CONTAINER(list_item_overlay_wrapper), background_wrapper_box);
-
-        GtkWidget *picture_column = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-        GtkWidget *info_column = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 
         item->user = (LightDMUser *)l->data; 
         item->name = g_strdup(lightdm_user_get_name(item->user));
@@ -729,38 +727,14 @@ static GtkWidget *build_userlist_widget(WinTCWelcomeUserList *user_list)
                                  0, 0, 1.0, 1.0, GDK_INTERP_BILINEAR, 255);
             gdk_pixbuf_composite(profile_image, item->tile_hot, 5, 5, 48, 48, 
                                  0, 0, 1.0, 1.0, GDK_INTERP_BILINEAR, 255);
+            gtk_image_set_from_pixbuf(GTK_IMAGE(item->profile_image), item->tile);
             g_object_unref(profile_image);
         }
 
-        item->profile_image = gtk_image_new_from_pixbuf(item->tile);
-        gtk_widget_set_margin_start(item->profile_image, 7);
-        gtk_widget_set_margin_top(item->profile_image, 7);
-
-        item->username_label = gtk_label_new(item->name);
-        gtk_style_context_add_class(gtk_widget_get_style_context(item->username_label), "user-label");
-        gtk_label_set_ellipsize(GTK_LABEL(item->username_label), PANGO_ELLIPSIZE_END);
-        gtk_label_set_xalign(GTK_LABEL(item->username_label), 0.0);
-        gtk_widget_set_valign(item->username_label, GTK_ALIGN_START);
-        gtk_widget_set_vexpand(item->username_label, TRUE);
-        gtk_widget_set_margin_start(item->username_label, 12);
-
-        item->instruction_label = gtk_label_new("Type your password");
-        gtk_style_context_add_class(gtk_widget_get_style_context(item->instruction_label), "password-label");
-        gtk_label_set_xalign(GTK_LABEL(item->instruction_label), 0.0);
-        gtk_widget_set_valign(item->instruction_label, GTK_ALIGN_END);
-        gtk_widget_set_margin_start(item->instruction_label, 12);
+        gtk_label_set_text(GTK_LABEL(item->username_label), item->name);
 
         g_signal_connect(item->instruction_label, "realize",
                          G_CALLBACK(gtk_widget_hide), NULL);
-
-        item->password_entry = gtk_entry_new();
-        gtk_style_context_add_class(gtk_widget_get_style_context(item->password_entry), "password-box");
-        gtk_entry_set_visibility(GTK_ENTRY(item->password_entry), FALSE);
-        g_object_set(item->password_entry, "caps-lock-warning", FALSE, NULL); 
-        gtk_widget_set_size_request(item->password_entry, 164, 27);
-        gtk_widget_set_halign(item->password_entry, GTK_ALIGN_START);
-        gtk_widget_set_margin_start(item->password_entry, 7);
-        gtk_widget_set_margin_top(item->password_entry, 3);
 
         g_signal_connect(item->password_entry, "realize",
                          G_CALLBACK(gtk_widget_hide), item);
@@ -792,12 +766,13 @@ static GtkWidget *build_userlist_widget(WinTCWelcomeUserList *user_list)
         {
             GdkPixbuf *bg_pix = gdk_pixbuf_new_from_resource("/uk/oddmatics/wintc/logonui/usersel.png", NULL);
             bg_pix = gdk_pixbuf_scale_simple(bg_pix, 348, 72, GDK_INTERP_BILINEAR);
-            item->background_image = gtk_image_new_from_pixbuf(bg_pix);
+            gtk_image_set_from_pixbuf(
+                GTK_IMAGE(item->background_image),
+                bg_pix
+            );
             g_object_unref(bg_pix);
         }
         
-        gtk_widget_set_halign(item->background_image, GTK_ALIGN_START);
-        gtk_widget_set_valign(item->background_image, GTK_ALIGN_START);
         g_signal_connect(item->background_image, "realize",
                          G_CALLBACK(gtk_widget_hide), NULL);
         
@@ -808,54 +783,15 @@ static GtkWidget *build_userlist_widget(WinTCWelcomeUserList *user_list)
         g_object_ref(item->instruction_label);
         g_object_ref(item->go_button);
         
-        // Set up background
-        //
-        gtk_box_pack_start(GTK_BOX(background_wrapper_box), item->background_image, FALSE, FALSE, 0);
-        
-        // Set up picture column
-        //
-        gtk_box_pack_start(GTK_BOX(picture_column), item->profile_image, FALSE, FALSE, 0);
-        
-        // Set up info column
-        //
-        GtkWidget *top_row = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-        gtk_widget_set_hexpand(top_row, FALSE);
-        gtk_widget_set_vexpand(top_row, FALSE);
-        gtk_widget_set_halign(top_row, GTK_ALIGN_START);
-        gtk_widget_set_valign(top_row, GTK_ALIGN_START);
-        gtk_widget_set_size_request(top_row, 290, 27);
-        gtk_widget_set_margin_top(top_row, 5);
-        
-        gtk_box_pack_start(GTK_BOX(top_row), item->username_label, FALSE, FALSE, 0);
-
-
-        GtkWidget *middle_row = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-        gtk_widget_set_halign(middle_row, GTK_ALIGN_START);
-        // gtk_style_context_add_class(gtk_widget_get_style_context(middle_row), "red-bg");
-        gtk_widget_set_size_request(middle_row, -1, 16);
-        gtk_box_pack_start(GTK_BOX(middle_row), item->instruction_label, FALSE, FALSE, 0);
-        
-        GtkWidget *bottom_row = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-
-        gtk_box_pack_start(GTK_BOX(bottom_row), item->password_entry, FALSE, FALSE, 0);
-        gtk_box_pack_start(GTK_BOX(bottom_row), item->go_button, FALSE, FALSE, 0);
-
-        gtk_box_pack_start(GTK_BOX(info_column), top_row, FALSE, FALSE, 0);
-        gtk_box_pack_start(GTK_BOX(info_column), middle_row, FALSE, FALSE, 0);
-        gtk_box_pack_start(GTK_BOX(info_column), bottom_row, FALSE, FALSE, 0);
-
-        gtk_box_pack_start(GTK_BOX(item->details_box), picture_column, FALSE, FALSE, 0);
-        gtk_box_pack_start(GTK_BOX(item->details_box), info_column, FALSE, FALSE, 0);
-
-        gtk_overlay_add_overlay(GTK_OVERLAY(list_item_overlay_wrapper), item->details_box);
-
-        gtk_container_add(GTK_CONTAINER(item->event_wrapper), list_item_overlay_wrapper);
-        
         g_signal_connect(G_OBJECT(item->event_wrapper), "button_press_event",
                          G_CALLBACK(on_list_item_clicked), item);
+
+        gtk_box_pack_start(GTK_BOX(bottom_box), item->go_button, FALSE, FALSE, 0);
         
         // Add user list item to the list box
         gtk_box_pack_start(GTK_BOX(list_box), item->event_wrapper, FALSE, FALSE, 0);
+
+        g_object_unref(builder);
     }
 
     // Set up an event wrapper for empty space at the bottom of the list

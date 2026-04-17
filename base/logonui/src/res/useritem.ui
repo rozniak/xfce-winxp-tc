@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <object class="GtkEventBox" id="eventbox-wrapper">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+
+    <child>
+      <object class="GtkOverlay">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+
+        <child>
+          <!-- Background wrapper box                                   -->
+          <!--                                                          -->
+          <!-- While the background is invisible (user not selected)    -->
+          <!-- nothing will show without a visible filler (transparent) -->
+          <!--                                                          -->
+          <object class="GtkBox">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="halign">GTK_ALIGN_START</property>
+            <property name="height-request">92</property>
+            <property name="orientation">horizontal</property>
+            <property name="valign">GTK_ALIGN_START</property>
+            <property name="width-request">348</property>
+
+            <child>
+              <object class="GtkImage" id="img-background">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+              </object>
+            </child>
+          </object>
+        </child>
+
+        <child type="overlay">
+          <object class="GtkBox" id="box-details">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="hexpand">False</property>
+            <property name="orientation">horizontal</property>
+            <property name="vexpand">False</property>
+            <property name="width-request">348</property>
+
+            <child>
+              <object class="GtkBox" id="box-picture-column">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="orientation">vertical</property>
+
+                <child>
+                  <object class="GtkImage" id="img-profile">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="margin-start">7</property>
+                    <property name="margin-top">7</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+
+            <child>
+              <object class="GtkBox" id="box-info-column">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="orientation">vertical</property>
+
+                <!-- Top row -->
+                <child>
+                  <object class="GtkBox">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="orientation">horizontal</property>
+
+                    <child>
+                      <object class="GtkLabel" id="label-username">
+                        <property name="visible">True</property>
+                        <property name="ellipsize">PANGO_ELLIPSIZE_END</property>
+                        <property name="can-focus">False</property>
+                        <property name="xalign">0.0</property>
+
+                        <style>
+                          <class name="user-label" />
+                        </style>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+
+                <!-- Middle row -->
+                <child>
+                  <object class="GtkBox">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="height-request">16</property>
+                    <property name="orientation">horizontal</property>
+
+                    <child>
+                      <object class="GtkLabel" id="label-instruction">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="label">Type your password</property>
+                        <property name="margin-start">12</property>
+                        <property name="xalign">0.0</property>
+
+                        <style>
+                          <class name="password-label" />
+                        </style>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+
+                <!-- Bottom row -->
+                <child>
+                  <object class="GtkBox" id="box-bottom">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="orientation">horizontal</property>
+
+                    <child>
+                      <object class="GtkEntry" id="entry-password">
+                        <property name="visible">True</property>
+                        <property name="can-focus">True</property>
+                        <property name="caps-lock-warning">False</property>
+                        <property name="height-request">27</property>
+                        <property name="margin-start">7</property>
+                        <property name="margin-top">3</property>
+                        <property name="visibility">False</property>
+                        <property name="width-request">164</property>
+
+                        <style>
+                          <class name="password-box" />
+                        </style>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

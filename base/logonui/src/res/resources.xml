@@ -4,6 +4,7 @@
     <!--    -->
     <!-- UI -->
     <!--    -->
+    <file>useritem.ui</file>
     <file>welcome.ui</file>
     <file>welcphs1.ui</file>
     <file>welcphs2.ui</file>
