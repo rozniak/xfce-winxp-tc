@@ -703,7 +703,7 @@ static GtkWidget *build_userlist_widget(WinTCWelcomeUserList *user_list)
             "label-username",    &(item->username_label),
             "label-instruction", &(item->instruction_label),
             "entry-password",    &(item->password_entry),
-            "box-bottom",        &bottom_box,
+            "button-go",         &(item->go_button),
             NULL
         );
 
@@ -743,15 +743,6 @@ static GtkWidget *build_userlist_widget(WinTCWelcomeUserList *user_list)
         g_signal_connect(item->password_entry, "focus-in-event",
                          G_CALLBACK(on_password_focus_gain), item);
         g_signal_connect(item->password_entry, "key-press-event", G_CALLBACK(on_password_caps_pressed), item); 
-
-        
-        {
-            GdkPixbuf *go_idle = gdk_pixbuf_new_from_resource("/uk/oddmatics/wintc/logonui/gobtn.png", NULL);
-            GdkPixbuf *go_activated = gdk_pixbuf_new_from_resource("/uk/oddmatics/wintc/logonui/gobtna.png", NULL);
-            item->go_button = wintc_welcome_button_new_with_pixbufs(go_idle, go_activated);
-            g_object_unref(go_idle);
-            g_object_unref(go_activated);
-        }
 
         gtk_style_context_add_class(gtk_widget_get_style_context(item->go_button), "undecorated");
         gtk_widget_set_can_focus(item->go_button, FALSE);
