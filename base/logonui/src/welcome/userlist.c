@@ -272,12 +272,10 @@ struct UserListItem
     gboolean selected;
     gboolean hovered;
 
-    GdkPixbuf *tile;
-    GdkPixbuf *tile_hot;
-
     GtkWidget *event_wrapper;
     GtkWidget *details_box;
     GtkWidget *background_image;
+    GtkWidget *userpic_box;
     GtkWidget *profile_image;
     GtkWidget *username_label;
     GtkWidget *password_entry;
@@ -338,13 +336,12 @@ static void wintc_welcome_user_list_finalize(
         }
         
         g_object_unref(item->background_image);
+        g_object_unref(item->userpic_box);
         g_object_unref(item->profile_image);
         g_object_unref(item->username_label);
         g_object_unref(item->password_entry);
         g_object_unref(item->instruction_label);
         g_object_unref(item->go_button);
-        g_object_unref(item->tile);
-        g_object_unref(item->tile_hot); 
         g_free(item->name);
         g_free(item);
     }
@@ -464,7 +461,7 @@ void wintc_welcome_user_list_navigate_up(GtkWidget* widget) {
                 item->selected = FALSE;
                 list_item_deselect(item);
                 if (item->hovered) {
-                    gtk_image_set_from_pixbuf(GTK_IMAGE(item->profile_image), item->tile_hot);
+                    wintc_widget_add_style_class(item->userpic_box, "hot");
                 } else {
                     list_item_css_blur(item->profile_image);
                     list_item_css_blur(item->username_label);
@@ -518,7 +515,7 @@ void wintc_welcome_user_list_navigate_down(GtkWidget* widget) {
                 item->selected = FALSE;
                 list_item_deselect(item);
                 if (item->hovered) {
-                    gtk_image_set_from_pixbuf(GTK_IMAGE(item->profile_image), item->tile_hot);
+                    wintc_widget_add_style_class(item->userpic_box, "hot");
                 } else {
                     list_item_css_blur(item->profile_image);
                     list_item_css_blur(item->username_label);
@@ -574,7 +571,7 @@ static void logon_session_attempt(UserListItem *item)
 
 static void list_item_select(UserListItem *item)
 {
-    gtk_image_set_from_pixbuf(GTK_IMAGE(item->profile_image), item->tile_hot);
+    wintc_widget_add_style_class(item->userpic_box, "hot");
 
     gtk_widget_set_visible(item->background_image, TRUE);
     gtk_widget_set_visible(item->instruction_label, TRUE);
@@ -588,7 +585,7 @@ static void list_item_select(UserListItem *item)
 
 static void list_item_deselect(UserListItem *item)
 {
-    gtk_image_set_from_pixbuf(GTK_IMAGE(item->profile_image), item->tile);
+    wintc_widget_remove_style_class(item->userpic_box, "hot");
 
     gtk_widget_set_visible(item->background_image, FALSE);
     gtk_widget_set_visible(item->instruction_label, FALSE);
@@ -699,6 +696,7 @@ static GtkWidget *build_userlist_widget(WinTCWelcomeUserList *user_list)
             "eventbox-wrapper",  &(item->event_wrapper),
             "img-background",    &(item->background_image),
             "box-details",       &(item->details_box),
+            "box-userpic",       &(item->userpic_box),
             "img-profile",       &(item->profile_image),
             "label-username",    &(item->username_label),
             "label-instruction", &(item->instruction_label),
@@ -719,15 +717,9 @@ static GtkWidget *build_userlist_widget(WinTCWelcomeUserList *user_list)
         item->selected = FALSE;
         item->faded = FALSE;
 
-        item->tile = gdk_pixbuf_new_from_resource("/uk/oddmatics/wintc/logonui/tile.png", NULL);
-        item->tile_hot = gdk_pixbuf_new_from_resource("/uk/oddmatics/wintc/logonui/tilehot.png", NULL);
         {
             GdkPixbuf *profile_image = gdk_pixbuf_new_from_resource("/uk/oddmatics/wintc/logonui/userpic.png", NULL);
-            gdk_pixbuf_composite(profile_image, item->tile, 5, 5, 48, 48, 
-                                 0, 0, 1.0, 1.0, GDK_INTERP_BILINEAR, 255);
-            gdk_pixbuf_composite(profile_image, item->tile_hot, 5, 5, 48, 48, 
-                                 0, 0, 1.0, 1.0, GDK_INTERP_BILINEAR, 255);
-            gtk_image_set_from_pixbuf(GTK_IMAGE(item->profile_image), item->tile);
+            gtk_image_set_from_pixbuf(GTK_IMAGE(item->profile_image), profile_image);
             g_object_unref(profile_image);
         }
 
@@ -903,7 +895,7 @@ static gboolean on_list_item_hover_enter(WINTC_UNUSED(GtkWidget *widget), WINTC_
         return FALSE;
     }
 
-    gtk_image_set_from_pixbuf(GTK_IMAGE(item->profile_image), item->tile_hot);
+    wintc_widget_add_style_class(item->userpic_box, "hot");
 
     list_item_css_unblur(item->username_label);
     list_item_css_unblur(item->profile_image);
@@ -928,7 +920,7 @@ static gboolean on_list_item_hover_leave(WINTC_UNUSED(GtkWidget *widget), WINTC_
 
     if (!item->selected)
     {
-        gtk_image_set_from_pixbuf(GTK_IMAGE(item->profile_image), item->tile);
+        wintc_widget_remove_style_class(item->userpic_box, "hot");
 
         list_item_css_blur(item->username_label);
         list_item_css_blur(item->profile_image);
@@ -982,7 +974,7 @@ static gboolean on_list_item_clicked(WINTC_UNUSED(GtkWidget *widget), WINTC_UNUS
         item->selected = TRUE;
         hide_balloon(user_list);
         list_item_select(item);
-        gtk_image_set_from_pixbuf(GTK_IMAGE(item->profile_image), item->tile_hot);
+        wintc_widget_add_style_class(item->userpic_box, "hot");
         list_item_css_unblur(item->profile_image);
         list_item_css_unblur(item->username_label);
     }
