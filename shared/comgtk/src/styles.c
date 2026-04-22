@@ -38,3 +38,13 @@ void wintc_widget_add_style_class(
 
     gtk_style_context_add_class(styles, class_name);
 }
+
+void wintc_widget_remove_style_class(
+    GtkWidget*   widget,
+    const gchar* class_name
+)
+{
+    GtkStyleContext* styles = gtk_widget_get_style_context(widget);
+
+    gtk_style_context_remove_class(styles, class_name);
+}

@@ -31,4 +31,15 @@ void wintc_widget_add_style_class(
     const gchar* class_name
 );
 
+/**
+ * Removes a style class to the specified widget.
+ *
+ * @param widget     The widget.
+ * @param class_name The style class.
+ */
+void wintc_widget_remove_style_class(
+    GtkWidget*   widget,
+    const gchar* class_name
+);
+
 #endif
