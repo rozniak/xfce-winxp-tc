@@ -117,6 +117,19 @@
     font-family: "Tahoma", inherit;
 }
 
+.wintc-welcome button.go
+{
+    background: url('resource:///uk/oddmatics/wintc/logonui/gobtn.png');
+    background-repeat: no-repeat;
+    min-height: 26px;
+    min-width: 26px;
+}
+
+.wintc-welcome button.go
+{
+    background: url('resource:///uk/oddmatics/wintc/logonui/gobtna.png');
+}
+
 /* Welcome screen styles */
 .wintc-welcome .welcome-label
 {

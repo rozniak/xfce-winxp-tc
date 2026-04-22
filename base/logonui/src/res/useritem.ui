@@ -149,9 +149,9 @@
                       <object class="GtkButton" id="button-go">
                         <property name="visible">True</property>
                         <property name="can-focus">True</property>
-                        <property name="label">Go</property>
 
                         <style>
+                          <class name="go" />
                           <class name="undecorated" />
                         </style>
                       </object>
