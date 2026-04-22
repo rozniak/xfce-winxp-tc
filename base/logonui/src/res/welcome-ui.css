@@ -39,6 +39,11 @@
     font-family: "Tahoma";
 }
 
+.wintc-welcome .bg-text-lg
+{
+    font-size: 14pt;
+}
+
 /* Footer styles */
 .wintc-welcome .accounts-label
 {
@@ -74,8 +79,13 @@
 
 .wintc-welcome .usersel
 {
-    min-height: 92px;
+    min-height: 96px;
     min-width: 348px;
+}
+
+.wintc-welcome .usersel-inner
+{
+    margin-top: 12px;
 }
 
 .wintc-welcome .userpic
@@ -83,6 +93,7 @@
     border-image: url('resource:///uk/oddmatics/wintc/logonui/tile.png') 5;
     border-style: solid;
     border-width: 5px;
+    margin: 7px;
 }
 
 .wintc-welcome .userpic.hot
@@ -92,23 +103,15 @@
 
 .wintc-welcome .password-box
 {
-    /* border: 1px solid #00309C; */
     font-family: "Tahoma", inherit;
+    font-size: 14pt;
+
+    border-image: url('resource:///uk/oddmatics/wintc/logonui/entry.png') 2 5 5 2;
     border-radius: 5px;
-    font-size: 16pt;
+    border-style: solid;
+    border-width: 2px 5px 5px 2px;
 
-    border-top: 1px solid #7f7f7f;
-    border-left: 1px solid #7f7f7f;
-    border-right: 1px solid #dfdfdf;
-    border-bottom: 1px solid #dfdfdf;
-
-    box-shadow: 
-    1px 0 0 0 #2d5aa0,     
-    0 1px 0 0 #2d5aa0,    
-    2px 0 0 0 #1a4480,    
-    0 2px 0 0 #1a4480;    
-
-    min-height: 27px;
+    min-height: 22px;
     min-width: 164px;
 }
 
@@ -117,6 +120,7 @@
     color: #ffffff;
     font-size: 14pt;
     font-family: Tahoma, inherit;
+    margin: 9px 5px 3px;
 }
 
 .wintc-welcome .password-label
@@ -124,19 +128,21 @@
     color: #ffffff;
     font-size: 9pt;
     font-family: "Tahoma", inherit;
+    margin: 0px 4px 3px;
 }
 
 .wintc-welcome button.go
 {
-    background: url('resource:///uk/oddmatics/wintc/logonui/gobtn.png');
+    background-image: url('resource:///uk/oddmatics/wintc/logonui/gobtn.png');
     background-repeat: no-repeat;
+    background-size: 26px;
     min-height: 26px;
     min-width: 26px;
 }
 
-.wintc-welcome button.go
+.wintc-welcome button.go:hover
 {
-    background: url('resource:///uk/oddmatics/wintc/logonui/gobtna.png');
+    background-image: url('resource:///uk/oddmatics/wintc/logonui/gobtna.png');
 }
 
 /* Welcome screen styles */

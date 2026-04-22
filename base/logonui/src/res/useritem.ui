@@ -157,6 +157,7 @@
             </child>
 
             <style>
+              <class name="usersel-inner" />
               <class name="usersel" />
             </style>
           </object>
