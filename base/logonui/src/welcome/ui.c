@@ -9,7 +9,6 @@
 #include "../window.h"
 #include "ui.h"
 #include "userlist.h"
-#include "button.h"
 
 #define DELAY_SECONDS_AT_LEAST 2
 #define DELAY_SECONDS_POLL     1
