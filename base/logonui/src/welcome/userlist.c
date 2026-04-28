@@ -9,7 +9,6 @@
 #include "userlist.h"
 #include "balloon.h"
 
-
 //
 // PRIVATE ENUMS
 //
@@ -20,148 +19,174 @@ enum
 };
 
 //
+// PRIVATE STRUCTS
+//
+typedef struct _UserListItem
+{
+    WinTCWelcomeUserList* parent; 
+
+    gchar*       name;
+    LightDMUser* user;
+
+    // State flags used for UI behavior
+    // Carefully managed by each action
+    gboolean faded;
+    gboolean selected;
+    gboolean hovered;
+
+    GtkWidget* event_wrapper;
+    GtkWidget* details_box;
+    GtkWidget* background_image;
+    GtkWidget* userpic_box;
+    GtkWidget* profile_image;
+    GtkWidget* username_label;
+    GtkWidget* password_entry;
+    GtkWidget* instruction_label;
+    GtkWidget* go_button;
+} UserListItem;
+
+//
 // FORWARD DECLARATIONS
 //
-typedef struct UserListItem UserListItem;
-
+static void wintc_welcome_user_list_finalize(
+    GObject* gobject
+);
 static void wintc_welcome_user_list_set_property(
     GObject*      gobject,
     guint         prop_id,
     const GValue* value,
     GParamSpec*   pspec
 );
+
 static void wintc_welcome_user_list_realize(
     GtkWidget* widget,
-    gpointer user_data
-);
-static void wintc_welcome_user_list_finalize(
-    GObject* gobject
+    gpointer   user_data
 );
 
-static void logon_session_attempt(
-    UserListItem *item
-);
-static void on_logon_session_attempt_complete(
-    WINTC_UNUSED(WinTCGinaLogonSession* logon_session),
-    WINTC_UNUSED(WinTCGinaResponse response),
-    gpointer          user_data
-);
-
-void wintc_welcome_user_list_navigate_up(
-    GtkWidget* widget
-);
-void wintc_welcome_user_list_navigate_down(
-    GtkWidget* widget
-);
-static gboolean on_list_hover_enter(
-    GtkWidget *widget,
-    GdkEvent *event,
-    gpointer user_data
-);
-static gboolean on_list_hover_leave(
-    GtkWidget *widget,
-    GdkEventCrossing *event,
-    gpointer user_data
-);
-static gboolean on_list_item_hover_enter(
-    GtkWidget *widget,
-    GdkEvent *event,
-    gpointer user_data
-);
-static gboolean on_list_item_hover_leave(
-    GtkWidget *widget,
-    GdkEventCrossing *event,
-    gpointer user_data
-);
-static gboolean on_list_item_clicked(
-    GtkWidget *widget,
-    GdkEvent *event,
-    gpointer user_data
-);
-static void list_item_select(
-    UserListItem *item
-);
-static void list_item_deselect(
-    UserListItem *item
-);
-static void list_item_css_blur(
-    GtkWidget *widget
-);
-static void list_item_css_unblur(
-    GtkWidget *widget
-);
-static void list_item_css_unblur_fast(
-    GtkWidget *widget
-);
-static void wintc_welcome_user_list_unselect_all(
-    GtkWidget *w,
-    GdkEventButton *e,
-    gpointer data
-);
-
-static gboolean on_password_focus_gain(
-    GtkWidget *widget,
-    GdkEvent *event,
-    gpointer user_data
-);
-static gboolean on_password_focus_out(
-    GtkWidget *widget,
-    GdkEvent *event,
-    gpointer user_data
-);
-static gboolean on_password_caps_pressed(
-    GtkWidget *widget,
-    GdkEventKey *event,
-    gpointer user_data
-);
-static gboolean on_logon_button_clicked(
-    GtkButton *button,
-    gpointer user_data
-);
-
-static gboolean on_outside_click(
-    GtkWidget *w,
-    GdkEventButton *e,
-    gpointer data
-);
-static gboolean on_key_pressed(
-    GtkWidget *widget,
-    GdkEventKey *event,
-    gpointer user_data
+static GtkWidget* build_userlist_widget(
+    WinTCWelcomeUserList* user_list
 );
 
 static void show_balloon_under_widget(
-    UserListItem *item,
-    BalloonType type
+    UserListItem* item,
+    BalloonType   type
 );
 static void hide_balloon(
-    WinTCWelcomeUserList *user_list
+    WinTCWelcomeUserList* user_list
 );
+
+static void list_item_select(
+    UserListItem* item
+);
+static void list_item_deselect(
+    UserListItem* item
+);
+static void list_item_css_blur(
+    GtkWidget* widget
+);
+static void list_item_css_unblur(
+    GtkWidget* widget
+);
+static void list_item_css_unblur_fast(
+    GtkWidget* widget
+);
+
+static void logon_session_attempt(
+    UserListItem* item
+);
+
+static void wintc_welcome_user_list_navigate_up(
+    GtkWidget* widget
+);
+static void wintc_welcome_user_list_navigate_down(
+    GtkWidget* widget
+);
+static void wintc_welcome_user_list_unselect_all(
+    GtkWidget*      widget,
+    GdkEventButton* event,
+    gpointer        data
+);
+
 static gboolean balloon_timeout_callback(
     gpointer user_data
 );
-
 static gboolean balloon_unblur_callback(
     gpointer user_data
 );
 
-static GtkWidget *build_userlist_widget(
-    WinTCWelcomeUserList *user_list
+static gboolean on_key_pressed(
+    GtkWidget*   widget,
+    GdkEventKey* event,
+    gpointer     user_data
+);
+
+static gboolean on_list_hover_enter(
+    GtkWidget* widget,
+    GdkEvent*  event,
+    gpointer   user_data
+);
+static gboolean on_list_hover_leave(
+    GtkWidget*        widget,
+    GdkEventCrossing* event,
+    gpointer          user_data
+);
+static gboolean on_list_item_hover_enter(
+    GtkWidget* widget,
+    GdkEvent*  event,
+    gpointer   user_data
+);
+static gboolean on_list_item_hover_leave(
+    GtkWidget*        widget,
+    GdkEventCrossing* event,
+    gpointer          user_data
+);
+static gboolean on_list_item_clicked(
+    GtkWidget* widget,
+    GdkEvent*  event,
+    gpointer   user_data
+);
+
+static gboolean on_logon_button_clicked(
+    GtkButton* button,
+    gpointer   user_data
+);
+
+static void on_logon_session_attempt_complete(
+    WinTCGinaLogonSession* logon_session,
+    WinTCGinaResponse      response,
+    gpointer               user_data
+);
+
+static gboolean on_outside_click(
+    GtkWidget*      widget,
+    GdkEventButton* event,
+    gpointer        user_data
+);
+
+static gboolean on_password_caps_pressed(
+    GtkWidget*   widget,
+    GdkEventKey* event,
+    gpointer     user_data
+);
+static gboolean on_password_focus_gain(
+    GtkWidget* widget,
+    GdkEvent*  event,
+    gpointer   user_data
+);
+static gboolean on_password_focus_out(
+    GtkWidget* widget,
+    GdkEvent*  event,
+    gpointer   user_data
 );
 
 static void on_realize_enable_passthrough(
-    GtkWidget *widget,  
-    WINTC_UNUSED(gpointer user_data)
+    GtkWidget* widget,  
+    gpointer   user_data
 );
 
 //
 // GTK OOP CLASS/INSTANCE DEFINITIONS
 //
-struct _WinTCWelcomeUserListClass
-{
-    GtkBoxClass __parent__;
-};
-
 struct _WinTCWelcomeUserList
 {
     GtkBox __parent__;
@@ -174,15 +199,15 @@ struct _WinTCWelcomeUserList
     //
     // BUG: Current logonui implementation doesn't have a compositor
     //      so an overlay and a box is used to show popup balloons
-    GtkWidget *overlay_wrapper;
+    GtkWidget* overlay_wrapper;
 
-    GtkWidget *balloon_wrapper_box;
-    GtkWidget *list_box; 
+    GtkWidget* balloon_wrapper_box;
+    GtkWidget* list_box; 
 
-    GList *list_items;
+    GList* list_items;
     WinTCGinaLogonSession* logon_session;
 
-    GtkWidget *balloon;
+    GtkWidget* balloon;
     guint balloon_timeout_id;
 };
 
@@ -218,7 +243,6 @@ static void wintc_welcome_user_list_class_init(
     );
 }
 
-
 static void wintc_welcome_user_list_init(
     WinTCWelcomeUserList* user_list
 )
@@ -231,7 +255,12 @@ static void wintc_welcome_user_list_init(
     user_list->balloon_wrapper_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     gtk_widget_set_hexpand(user_list->balloon_wrapper_box, TRUE);
     gtk_widget_set_vexpand(user_list->balloon_wrapper_box, TRUE);
-    g_signal_connect(user_list->balloon_wrapper_box, "realize", G_CALLBACK(on_realize_enable_passthrough), NULL);
+    g_signal_connect(
+        user_list->balloon_wrapper_box,
+        "realize",
+        G_CALLBACK(on_realize_enable_passthrough),
+        NULL
+    );
 
     user_list->list_box = GTK_WIDGET(build_userlist_widget(user_list));
     gtk_widget_set_hexpand(user_list->list_box, TRUE);
@@ -255,92 +284,48 @@ static void wintc_welcome_user_list_init(
         0
     );
 
-    g_signal_connect(GTK_WIDGET(user_list), "realize", G_CALLBACK(wintc_welcome_user_list_realize), user_list);
+    g_signal_connect(
+        GTK_WIDGET(user_list),
+        "realize",
+        G_CALLBACK(wintc_welcome_user_list_realize),
+        user_list
+    );
 }
-
-struct UserListItem
-{
-    WinTCWelcomeUserList* parent; 
-
-    gchar *name;
-    LightDMUser *user;
-
-    // State flags used for UI behavior
-    // Carefully managed by each action
-    gboolean faded;
-    gboolean selected;
-    gboolean hovered;
-
-    GtkWidget *event_wrapper;
-    GtkWidget *details_box;
-    GtkWidget *background_image;
-    GtkWidget *userpic_box;
-    GtkWidget *profile_image;
-    GtkWidget *username_label;
-    GtkWidget *password_entry;
-    GtkWidget *instruction_label;
-    GtkWidget *go_button;
-
-};
 
 //
 // CLASS VIRTUAL METHODS
 //
-static void wintc_welcome_user_list_realize(
-    GtkWidget* widget,
-    gpointer user_data
-)
-{
-    WinTCWelcomeUserList* user_list = WINTC_WELCOME_USER_LIST(widget);
-    user_data = user_data;
-    if (user_list->list_box) {
-        gtk_widget_show_all(user_list->list_box);
-        if (!gtk_widget_get_realized(user_list->list_box)) {
-            gtk_widget_realize(user_list->list_box);
-        }
-    }
-
-    GtkWidget *toplevel = gtk_widget_get_toplevel(GTK_WIDGET(user_list));
-    
-    if (GTK_IS_WINDOW(toplevel)) {
-        g_signal_connect(toplevel, "button-press-event", 
-                         G_CALLBACK(on_outside_click), user_list);
-        g_signal_connect(toplevel, "key-press-event", G_CALLBACK(on_key_pressed), user_list);
-    }
-}
-
 static void wintc_welcome_user_list_finalize(
     GObject* gobject
 )
 {
     WinTCWelcomeUserList* user_list = WINTC_WELCOME_USER_LIST(gobject);
 
-    if (user_list->logon_session) {
-        g_signal_handlers_disconnect_by_data(user_list->logon_session, user_list);
+    if (user_list->logon_session)
+    {
+        g_signal_handlers_disconnect_by_data(
+            user_list->logon_session,
+            user_list
+        );
     }
 
-    if (user_list->balloon_timeout_id != 0) {
+    if (user_list->balloon_timeout_id != 0)
+    {
         g_source_remove(user_list->balloon_timeout_id);
         user_list->balloon_timeout_id = 0;
     }
 
     hide_balloon(user_list);
 
-    for (GList *l = user_list->list_items; l != NULL; l = l->next)
+    for (GList* l = user_list->list_items; l != NULL; l = l->next)
     {
-        UserListItem *item = (UserListItem *)l->data;
+        UserListItem* item = (UserListItem*) l->data;
 
-        if (item->event_wrapper) {
+        if (item->event_wrapper)
+        {
             g_signal_handlers_disconnect_by_data(item->event_wrapper, item);
         }
         
-        g_object_unref(item->background_image);
-        g_object_unref(item->userpic_box);
-        g_object_unref(item->profile_image);
-        g_object_unref(item->username_label);
-        g_object_unref(item->password_entry);
-        g_object_unref(item->instruction_label);
-        g_object_unref(item->go_button);
         g_free(item->name);
         g_free(item);
     }
@@ -348,8 +333,11 @@ static void wintc_welcome_user_list_finalize(
     g_list_free(user_list->list_items);
     user_list->list_items = NULL;
 
-    GtkWidget *toplevel = gtk_widget_get_toplevel(GTK_WIDGET(user_list));
-    if (toplevel && GTK_IS_WINDOW(toplevel)) {
+    GtkWindow* toplevel =
+        wintc_widget_get_toplevel_window(GTK_WIDGET(user_list));
+
+    if (toplevel)
+    {
         g_signal_handlers_disconnect_by_data(toplevel, user_list);
     }
 
@@ -386,6 +374,43 @@ static void wintc_welcome_user_list_set_property(
     }
 }
 
+static void wintc_welcome_user_list_realize(
+    GtkWidget* widget,
+    WINTC_UNUSED(gpointer user_data)
+)
+{
+    WinTCWelcomeUserList* user_list = WINTC_WELCOME_USER_LIST(widget);
+
+    if (user_list->list_box)
+    {
+        gtk_widget_show_all(user_list->list_box);
+
+        if (!gtk_widget_get_realized(user_list->list_box))
+        {
+            gtk_widget_realize(user_list->list_box);
+        }
+    }
+
+    GtkWindow* toplevel =
+        wintc_widget_get_toplevel_window(GTK_WIDGET(user_list));
+    
+    if (toplevel)
+    {
+        g_signal_connect(
+            toplevel,
+            "button-press-event",
+            G_CALLBACK(on_outside_click),
+            user_list
+        );
+        g_signal_connect(
+            toplevel,
+            "key-press-event",
+            G_CALLBACK(on_key_pressed),
+            user_list
+        );
+    }
+}
+
 //
 // PUBLIC FUNCTIONS
 //
@@ -407,284 +432,102 @@ GtkWidget* wintc_welcome_user_list_new(
 //
 // PRIVATE FUNCTIONS
 //
-static void list_item_css_blur(GtkWidget *widget)
+static GtkWidget* build_userlist_widget(
+    WinTCWelcomeUserList* user_list
+)
 {
-    gtk_style_context_remove_class(gtk_widget_get_style_context(widget), "unblur");
-    gtk_style_context_remove_class(gtk_widget_get_style_context(widget), "unblur-fast");
-    gtk_style_context_add_class(gtk_widget_get_style_context(widget), "blur");
-}
-
-static void list_item_css_unblur_fast(GtkWidget *widget)
-{
-    gtk_style_context_remove_class(gtk_widget_get_style_context(widget), "unblur");
-    gtk_style_context_remove_class(gtk_widget_get_style_context(widget), "blur");
-    gtk_style_context_add_class(gtk_widget_get_style_context(widget), "unblur-fast");
-}
-
-static void list_item_css_unblur(GtkWidget *widget)
-{
-    gtk_style_context_remove_class(gtk_widget_get_style_context(widget), "blur");
-    gtk_style_context_remove_class(gtk_widget_get_style_context(widget), "unblur-fast");
-    gtk_style_context_add_class(gtk_widget_get_style_context(widget), "unblur");
-}
-
-static void wintc_welcome_user_list_unselect_all(WINTC_UNUSED(GtkWidget *w), WINTC_UNUSED(GdkEventButton *e), gpointer data)
-{
-    WinTCWelcomeUserList *user_list = WINTC_WELCOME_USER_LIST(data);
-    hide_balloon(user_list);
-
-    for (GList *l = user_list->list_items; l != NULL; l = l->next)
-    {
-        UserListItem *item = (UserListItem *)l->data;
-        if (item->selected)
-        {
-            item->selected = FALSE;
-            gtk_entry_set_text(GTK_ENTRY(item->password_entry), "");
-            list_item_deselect(item);
-
-            list_item_css_blur(item->profile_image);
-            list_item_css_blur(item->username_label);
-        }
-    }
-}
-
-void wintc_welcome_user_list_navigate_up(GtkWidget* widget) {
-    WinTCWelcomeUserList* user_list = WINTC_WELCOME_USER_LIST(widget);
-    gboolean found_selected = FALSE;
-    for (GList *l = g_list_last(user_list->list_items); l != NULL; l = g_list_previous(l)) {
-        UserListItem* item = (UserListItem*)l->data;
-
-        if (item->selected) {
-            found_selected = TRUE;
-            if (g_list_previous(l)) {
-                item->selected = FALSE;
-                list_item_deselect(item);
-                if (item->hovered) {
-                    wintc_widget_add_style_class(item->userpic_box, "hot");
-                } else {
-                    list_item_css_blur(item->profile_image);
-                    list_item_css_blur(item->username_label);
-                }
-                gtk_entry_set_text(GTK_ENTRY(item->password_entry), "");
-                item->selected = FALSE;
-                hide_balloon(user_list);
-
-                UserListItem* next = (UserListItem*) g_list_previous(l)->data;
-                next->selected = TRUE;
-                hide_balloon(user_list); 
-                list_item_select(next);
-                list_item_css_unblur_fast(next->profile_image);
-                list_item_css_unblur_fast(next->username_label);
-
-                break;
-            } 
-        } 
-    } 
-        
-    // If no item was selected, select the first one
-    if (user_list->list_items->data && !found_selected) {
-        UserListItem* item = (UserListItem*) user_list->list_items->data;
-        item->selected = TRUE;
-        list_item_select(item);
-        list_item_css_unblur_fast(item->profile_image);
-        list_item_css_unblur_fast(item->username_label);
-    }
-
-    // Blur all other items
-    for (GList *l = g_list_last(user_list->list_items); l != NULL; l = g_list_previous(l)) {
-        UserListItem* item = (UserListItem*)l->data;
-        if (!item->selected) {
-            if (!item->hovered) {
-                list_item_css_blur(item->profile_image);
-                list_item_css_blur(item->username_label);
-            }
-        }
-    } 
-}
-
-void wintc_welcome_user_list_navigate_down(GtkWidget* widget) {
-    WinTCWelcomeUserList* user_list = WINTC_WELCOME_USER_LIST(widget);
-    gboolean found_selected = FALSE;
-    for (GList *l = user_list->list_items; l != NULL; l = l->next) {
-        UserListItem* item = (UserListItem*)l->data;
-        if (item->selected) {
-            found_selected = TRUE;
-
-            if (l->next) {
-                item->selected = FALSE;
-                list_item_deselect(item);
-                if (item->hovered) {
-                    wintc_widget_add_style_class(item->userpic_box, "hot");
-                } else {
-                    list_item_css_blur(item->profile_image);
-                    list_item_css_blur(item->username_label);
-                }
-
-                gtk_entry_set_text(GTK_ENTRY(item->password_entry), "");
-                item->selected = FALSE;
-                hide_balloon(user_list);
-                
-                UserListItem* next = (UserListItem*) l->next->data;
-                next->selected = TRUE;
-                list_item_select(next);
-                list_item_css_unblur_fast(next->profile_image);
-                list_item_css_unblur_fast(next->username_label);
-
-                break;        
-            } 
-        }
-    }
-
-    // If no item was selected, select the first one
-    if (user_list->list_items->data && !found_selected) {
-        UserListItem* item = (UserListItem*) user_list->list_items->data;
-        item->selected = TRUE;
-        list_item_select(item);
-        list_item_css_unblur_fast(item->profile_image);
-        list_item_css_unblur_fast(item->username_label);
-    }
-    
-    // Blur all other items
-    for (GList *l = user_list->list_items; l != NULL; l = l->next) {
-        UserListItem* item = (UserListItem*)l->data;
-        if (!item->selected) {
-           if (!item->hovered) {
-                list_item_css_blur(item->profile_image);
-                list_item_css_blur(item->username_label);
-            }
-        } 
-    }
-}
-
-
-static void logon_session_attempt(UserListItem *item) 
-{
-    WinTCWelcomeUserList *user_list = item->parent;
-
-    wintc_gina_logon_session_try_logon(
-        user_list->logon_session,
-        item->name,
-        gtk_entry_get_text(GTK_ENTRY(item->password_entry))
-    );
-}
-
-static void list_item_select(UserListItem *item)
-{
-    wintc_widget_add_style_class(item->userpic_box, "hot");
-
-    gtk_widget_set_visible(item->background_image, TRUE);
-    gtk_widget_set_visible(item->instruction_label, TRUE);
-    gtk_widget_set_visible(item->password_entry, TRUE);
-    gtk_widget_set_visible(item->go_button, TRUE);
-
-    gtk_widget_grab_focus(item->password_entry);
-}
-
-
-
-static void list_item_deselect(UserListItem *item)
-{
-    wintc_widget_remove_style_class(item->userpic_box, "hot");
-
-    gtk_widget_set_visible(item->background_image, FALSE);
-    gtk_widget_set_visible(item->instruction_label, FALSE);
-    gtk_widget_set_visible(item->password_entry, FALSE);
-    gtk_widget_set_visible(item->go_button, FALSE);
-}
-
-
-
-static void hide_balloon(WinTCWelcomeUserList *user_list)
-{
-    if (user_list->balloon) {
-        gtk_container_remove(GTK_CONTAINER(user_list->balloon_wrapper_box), user_list->balloon);
-        gtk_widget_destroy(user_list->balloon);
-        user_list->balloon = NULL;
-        gtk_widget_show_all(user_list->balloon_wrapper_box);
-
-    }
-    if (user_list->balloon_timeout_id != 0) {
-        g_source_remove(user_list->balloon_timeout_id);
-        user_list->balloon_timeout_id = 0;
-    }
-}
-
-
-static void show_balloon_under_widget(UserListItem *item, BalloonType type) 
-{
-    WinTCWelcomeUserList *user_list = item->parent; 
-    
-    hide_balloon(user_list);
-    
-    user_list->balloon = wintc_welcome_balloon_new_with_type(type, item->password_entry);
-    gtk_widget_set_halign(user_list->balloon, GTK_ALIGN_START);
-    gtk_widget_set_valign(user_list->balloon, GTK_ALIGN_START);
-    gtk_style_context_add_class(gtk_widget_get_style_context(user_list->balloon), "transparent");
-
-    GtkAllocation allocation;
-    gtk_widget_get_allocation(item->password_entry, &allocation);
-
-    gint x, y;
-    gtk_widget_translate_coordinates(
-        item->profile_image, 
-        user_list->balloon_wrapper_box,             
-        0, 0,                               
-        &x, &y                               
-    );
-
-    gtk_widget_set_margin_start(user_list->balloon, x + 70);
-    gtk_widget_set_margin_top(user_list->balloon, y + 60);
-
-    user_list->balloon_timeout_id = g_timeout_add(6000, (GSourceFunc)balloon_timeout_callback, user_list);
-    g_idle_add((GSourceFunc)balloon_unblur_callback, user_list);
-
-    // BUG: Because the balloon is shown in an overlay, it gets clipped by the overlay's size.
-    //      This could be fixed by moving the balloon to ui.c and using event signals.
-    gtk_box_pack_start(GTK_BOX(user_list->balloon_wrapper_box), user_list->balloon, TRUE, TRUE, 0);
-    gtk_widget_show_all(user_list->balloon_wrapper_box);
-}
-
-static GtkWidget *build_userlist_widget(WinTCWelcomeUserList *user_list)
-{
-    GtkWidget *scrollable = gtk_scrolled_window_new(NULL, NULL);
+    GtkWidget* scrollable = gtk_scrolled_window_new(NULL, NULL);
     gtk_widget_set_hexpand(scrollable, FALSE);
     gtk_widget_set_vexpand(scrollable, TRUE);
-    gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollable), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+    gtk_scrolled_window_set_policy(
+        GTK_SCROLLED_WINDOW(scrollable),
+        GTK_POLICY_NEVER,
+        GTK_POLICY_AUTOMATIC
+    );
 
-    GtkWidget *list_box_event_wrapper = gtk_event_box_new();
-    g_signal_connect(list_box_event_wrapper, "enter-notify-event",
-                     G_CALLBACK(on_list_hover_enter), user_list);
-    g_signal_connect(list_box_event_wrapper, "leave-notify-event",
-                     G_CALLBACK(on_list_hover_leave), user_list);
-    gtk_widget_add_events(list_box_event_wrapper, GDK_ENTER_NOTIFY_MASK | GDK_LEAVE_NOTIFY_MASK);
+    GtkWidget* list_box_event_wrapper = gtk_event_box_new();
+    g_signal_connect(
+        list_box_event_wrapper,
+        "enter-notify-event",
+        G_CALLBACK(on_list_hover_enter),
+        user_list
+    );
+    g_signal_connect(
+        list_box_event_wrapper,
+        "leave-notify-event",
+        G_CALLBACK(on_list_hover_leave),
+        user_list
+    );
+    gtk_widget_add_events(
+        list_box_event_wrapper,
+        GDK_ENTER_NOTIFY_MASK | GDK_LEAVE_NOTIFY_MASK
+    );
     
-    GtkWidget *list_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+    GtkWidget* list_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 
-    GList *users =
+    GList* users =
         lightdm_user_list_get_users(
             lightdm_user_list_get_instance()
         );
 
     // Set up an event wrapper for empty space at the top of the list
     //
-    GtkWidget *top_box_event_wrapper = gtk_event_box_new();
+    GtkWidget* top_box_event_wrapper = gtk_event_box_new();
     gtk_widget_set_hexpand(top_box_event_wrapper, TRUE);
     gtk_widget_set_vexpand(top_box_event_wrapper, TRUE);
-    g_signal_connect(top_box_event_wrapper, "button-press-event",
-                     G_CALLBACK(wintc_welcome_user_list_unselect_all), user_list);
-    gtk_widget_add_events(top_box_event_wrapper, GDK_ENTER_NOTIFY_MASK | GDK_LEAVE_NOTIFY_MASK);
+    g_signal_connect(
+        top_box_event_wrapper,
+        "button-press-event",
+        G_CALLBACK(wintc_welcome_user_list_unselect_all),
+        user_list
+    );
+    gtk_widget_add_events(
+        top_box_event_wrapper,
+        GDK_ENTER_NOTIFY_MASK | GDK_LEAVE_NOTIFY_MASK
+    );
 
-    gtk_box_pack_start(GTK_BOX(list_box), top_box_event_wrapper, TRUE, TRUE, 0);
+    gtk_box_pack_start(
+        GTK_BOX(list_box),
+        top_box_event_wrapper,
+        TRUE,
+        TRUE,
+        0
+    );
+
+    // Set up usersel graphic
+    //
+    GdkPixbuf* pixbuf_usersel;
+    GdkPixbuf* pixbuf_usersel_scaled;
+
+    pixbuf_usersel =
+        gdk_pixbuf_new_from_resource(
+            "/uk/oddmatics/wintc/logonui/usersel.png",
+            NULL
+        );
+
+    pixbuf_usersel_scaled =
+        gdk_pixbuf_scale_simple(
+            pixbuf_usersel,
+            348,
+            72,
+            GDK_INTERP_BILINEAR
+        );
 
     // Set up a list item for each user
     //
-    for (GList *l = users; l != NULL; l = l->next)
+    for (GList* l = users; l != NULL; l = l->next)
     {
-        UserListItem *item = g_new0(UserListItem, 1);
+        UserListItem* item = g_new0(UserListItem, 1);
         user_list->list_items = g_list_append(user_list->list_items, item);
 
-        GtkWidget* bottom_box = NULL;
+        item->user     = (LightDMUser*) l->data; 
+        item->name     = g_strdup(lightdm_user_get_name(item->user));
+        item->parent   = user_list; 
+        item->selected = FALSE;
+        item->faded    = FALSE;
 
+        // Construct UI from XML
+        //
         GtkBuilder* builder =
             gtk_builder_new_from_resource(
                 "/uk/oddmatics/wintc/logonui/useritem.ui"
@@ -704,87 +547,150 @@ static GtkWidget *build_userlist_widget(WinTCWelcomeUserList *user_list)
             NULL
         );
 
-        gtk_widget_add_events(item->event_wrapper, GDK_ENTER_NOTIFY_MASK | GDK_LEAVE_NOTIFY_MASK);
-        g_signal_connect(item->event_wrapper, "enter-notify-event",
-                         G_CALLBACK(on_list_item_hover_enter), item);
-        g_signal_connect(item->event_wrapper, "leave-notify-event",
-                         G_CALLBACK(on_list_item_hover_leave), item);
+        gtk_widget_add_events(
+            item->event_wrapper,
+            GDK_ENTER_NOTIFY_MASK | GDK_LEAVE_NOTIFY_MASK
+        );
+        g_signal_connect(
+            item->event_wrapper,
+            "enter-notify-event",
+            G_CALLBACK(on_list_item_hover_enter),
+            item
+        );
+        g_signal_connect(
+            item->event_wrapper,
+            "leave-notify-event",
+            G_CALLBACK(on_list_item_hover_leave),
+            item
+        );
 
-        item->user = (LightDMUser *)l->data; 
-        item->name = g_strdup(lightdm_user_get_name(item->user));
-        item->parent = user_list; 
-        item->selected = FALSE;
-        item->faded = FALSE;
-
-        {
-            GdkPixbuf *profile_image = gdk_pixbuf_new_from_resource("/uk/oddmatics/wintc/logonui/userpic.png", NULL);
-            gtk_image_set_from_pixbuf(GTK_IMAGE(item->profile_image), profile_image);
-            g_object_unref(profile_image);
-        }
-
-        gtk_label_set_text(GTK_LABEL(item->username_label), item->name);
-
-        g_signal_connect(item->instruction_label, "realize",
-                         G_CALLBACK(gtk_widget_hide), NULL);
-
-        g_signal_connect(item->password_entry, "realize",
-                         G_CALLBACK(gtk_widget_hide), item);
-        g_signal_connect(item->password_entry, "focus-out-event",
-                         G_CALLBACK(on_password_focus_out), user_list);
-        g_signal_connect(item->password_entry, "focus-in-event",
-                         G_CALLBACK(on_password_focus_gain), item);
-        g_signal_connect(item->password_entry, "key-press-event", G_CALLBACK(on_password_caps_pressed), item); 
-
-        gtk_style_context_add_class(gtk_widget_get_style_context(item->go_button), "undecorated");
-        gtk_widget_set_can_focus(item->go_button, FALSE);
-        gtk_widget_set_size_request(item->go_button, 22, 27);
-        gtk_widget_set_margin_start(item->go_button, 13);
-        gtk_widget_set_margin_top(item->go_button, 3);
-
-        g_signal_connect(item->go_button, "realize",
-                         G_CALLBACK(gtk_widget_hide), NULL);
-        g_signal_connect(item->go_button, "clicked", G_CALLBACK(on_logon_button_clicked), item); 
-
-        {
-            GdkPixbuf *bg_pix = gdk_pixbuf_new_from_resource("/uk/oddmatics/wintc/logonui/usersel.png", NULL);
-            bg_pix = gdk_pixbuf_scale_simple(bg_pix, 348, 72, GDK_INTERP_BILINEAR);
-            gtk_image_set_from_pixbuf(
-                GTK_IMAGE(item->background_image),
-                bg_pix
+        // Set up user details
+        //
+        GdkPixbuf* profile_image =
+            gdk_pixbuf_new_from_resource(
+                "/uk/oddmatics/wintc/logonui/userpic.png",
+                NULL
             );
-            g_object_unref(bg_pix);
-        }
-        
-        g_signal_connect(item->background_image, "realize",
-                         G_CALLBACK(gtk_widget_hide), NULL);
-        
-        g_object_ref(item->background_image);
-        g_object_ref(item->profile_image);
-        g_object_ref(item->username_label);
-        g_object_ref(item->password_entry);
-        g_object_ref(item->instruction_label);
-        g_object_ref(item->go_button);
-        
-        g_signal_connect(G_OBJECT(item->event_wrapper), "button_press_event",
-                         G_CALLBACK(on_list_item_clicked), item);
 
-        gtk_box_pack_start(GTK_BOX(bottom_box), item->go_button, FALSE, FALSE, 0);
-        
+        gtk_image_set_from_pixbuf(
+            GTK_IMAGE(item->profile_image),
+            profile_image
+        );
+        gtk_label_set_text(
+            GTK_LABEL(item->username_label),
+            item->name
+        );
+
+        g_object_unref(profile_image);
+
+        // Usersel background
+        //
+        gtk_image_set_from_pixbuf(
+            GTK_IMAGE(item->background_image),
+            pixbuf_usersel_scaled
+        );
+
+        // Connect signals
+        //
+        g_signal_connect(
+            item->instruction_label,
+            "realize",
+            G_CALLBACK(gtk_widget_hide),
+            NULL
+        );
+
+        g_signal_connect(
+            item->password_entry,
+            "realize",
+            G_CALLBACK(gtk_widget_hide),
+            item
+        );
+        g_signal_connect(
+            item->password_entry,
+            "focus-out-event",
+            G_CALLBACK(on_password_focus_out),
+            user_list
+        );
+        g_signal_connect(
+            item->password_entry,
+            "focus-in-event",
+            G_CALLBACK(on_password_focus_gain),
+            item
+        );
+        g_signal_connect(
+            item->password_entry,
+            "key-press-event",
+            G_CALLBACK(on_password_caps_pressed),
+            item
+        );
+
+        g_signal_connect(
+            item->go_button,
+            "realize",
+            G_CALLBACK(gtk_widget_hide),
+            NULL
+        );
+
+        g_signal_connect(
+            item->go_button,
+            "clicked",
+            G_CALLBACK(on_logon_button_clicked),
+            item
+        );
+
+        g_signal_connect(
+            item->background_image,
+            "realize",
+            G_CALLBACK(gtk_widget_hide),
+            NULL
+        );
+
+        g_signal_connect(
+            G_OBJECT(item->event_wrapper),
+            "button_press_event",
+            G_CALLBACK(on_list_item_clicked),
+            item
+        );
+
         // Add user list item to the list box
-        gtk_box_pack_start(GTK_BOX(list_box), item->event_wrapper, FALSE, FALSE, 0);
+        //
+        gtk_box_pack_start(
+            GTK_BOX(list_box),
+            item->event_wrapper,
+            FALSE,
+            FALSE,
+            0
+        );
 
         g_object_unref(builder);
     }
 
+    g_object_unref(pixbuf_usersel);
+    g_object_unref(pixbuf_usersel_scaled);
+
     // Set up an event wrapper for empty space at the bottom of the list
     //
-    GtkWidget *bottom_box_event_wrapper = gtk_event_box_new();
+    GtkWidget* bottom_box_event_wrapper = gtk_event_box_new();
     gtk_widget_set_hexpand(bottom_box_event_wrapper, TRUE);
     gtk_widget_set_vexpand(bottom_box_event_wrapper, TRUE);
-    g_signal_connect(bottom_box_event_wrapper, "button-press-event",
-                     G_CALLBACK(wintc_welcome_user_list_unselect_all), user_list);
-    gtk_widget_add_events(bottom_box_event_wrapper, GDK_ENTER_NOTIFY_MASK | GDK_LEAVE_NOTIFY_MASK);
-    gtk_box_pack_start(GTK_BOX(list_box), bottom_box_event_wrapper, TRUE, TRUE, 0);
+    g_signal_connect(
+        bottom_box_event_wrapper,
+        "button-press-event",
+        G_CALLBACK(wintc_welcome_user_list_unselect_all),
+        user_list
+    );
+    gtk_widget_add_events(
+        bottom_box_event_wrapper,
+        GDK_ENTER_NOTIFY_MASK | GDK_LEAVE_NOTIFY_MASK
+    );
+
+    gtk_box_pack_start(
+        GTK_BOX(list_box),
+        bottom_box_event_wrapper,
+        TRUE,
+        TRUE,
+        0
+    );
     
     // Set up the list box
     //
@@ -794,98 +700,503 @@ static GtkWidget *build_userlist_widget(WinTCWelcomeUserList *user_list)
     return scrollable;
 }
 
-
-//
-// CALLBACKS
-//
-static void on_logon_session_attempt_complete(
-    WINTC_UNUSED(WinTCGinaLogonSession* logon_session),
-    WinTCGinaResponse response,
-    gpointer          user_data
+static void hide_balloon(
+    WinTCWelcomeUserList* user_list
 )
 {
-    WinTCWelcomeUserList* user_list = WINTC_WELCOME_USER_LIST(user_data);
+    if (user_list->balloon)
+    {
+        gtk_container_remove(
+            GTK_CONTAINER(user_list->balloon_wrapper_box),
+            user_list->balloon
+        );
 
+        gtk_widget_destroy(user_list->balloon);
+        user_list->balloon = NULL;
+        gtk_widget_show_all(user_list->balloon_wrapper_box);
+    }
+
+    if (user_list->balloon_timeout_id != 0)
+    {
+        g_source_remove(user_list->balloon_timeout_id);
+        user_list->balloon_timeout_id = 0;
+    }
+}
+
+static void show_balloon_under_widget(
+    UserListItem* item,
+    BalloonType   type
+) 
+{
+    WinTCWelcomeUserList* user_list = item->parent; 
+    
     hide_balloon(user_list);
-    if (response == WINTC_GINA_RESPONSE_FAIL) {
-        for (GList *l = user_list->list_items; l != NULL; l = l->next)
+    
+    user_list->balloon =
+        wintc_welcome_balloon_new_with_type(type, item->password_entry);
+
+    gtk_widget_set_halign(user_list->balloon, GTK_ALIGN_START);
+    gtk_widget_set_valign(user_list->balloon, GTK_ALIGN_START);
+    wintc_widget_add_style_class(user_list->balloon, "transparent");
+
+    GtkAllocation allocation;
+    gtk_widget_get_allocation(item->password_entry, &allocation);
+
+    gint x, y;
+    gtk_widget_translate_coordinates(
+        item->profile_image, 
+        user_list->balloon_wrapper_box,             
+        0, 0,                               
+        &x, &y                               
+    );
+
+    gtk_widget_set_margin_start(user_list->balloon, x + 70);
+    gtk_widget_set_margin_top(user_list->balloon, y + 60);
+
+    user_list->balloon_timeout_id =
+        g_timeout_add(
+            6000,
+            (GSourceFunc) balloon_timeout_callback,
+            user_list
+        );
+
+    g_idle_add(
+        (GSourceFunc) balloon_unblur_callback,
+        user_list
+    );
+
+    // BUG: Because the balloon is shown in an overlay, it gets clipped by the
+    //      overlay's size. This could be fixed by moving the balloon to ui.c
+    //      and using event signals.
+    //
+    gtk_box_pack_start(
+        GTK_BOX(user_list->balloon_wrapper_box),
+        user_list->balloon,
+        TRUE,
+        TRUE,
+        0
+    );
+
+    gtk_widget_show_all(user_list->balloon_wrapper_box);
+}
+
+static void list_item_select(
+    UserListItem* item
+)
+{
+    wintc_widget_add_style_class(item->userpic_box, "hot");
+
+    gtk_widget_set_visible(item->background_image,  TRUE);
+    gtk_widget_set_visible(item->instruction_label, TRUE);
+    gtk_widget_set_visible(item->password_entry,    TRUE);
+    gtk_widget_set_visible(item->go_button,         TRUE);
+
+    gtk_widget_grab_focus(item->password_entry);
+}
+
+static void list_item_deselect(
+    UserListItem* item
+)
+{
+    wintc_widget_remove_style_class(item->userpic_box, "hot");
+
+    gtk_widget_set_visible(item->background_image,  FALSE);
+    gtk_widget_set_visible(item->instruction_label, FALSE);
+    gtk_widget_set_visible(item->password_entry,    FALSE);
+    gtk_widget_set_visible(item->go_button,         FALSE);
+}
+
+static void list_item_css_blur(
+    GtkWidget* widget
+)
+{
+    wintc_widget_remove_style_class(widget, "unblur");
+    wintc_widget_remove_style_class(widget, "unblur-fast");
+    wintc_widget_add_style_class(widget, "blur");
+}
+
+static void list_item_css_unblur_fast(
+    GtkWidget* widget
+)
+{
+    wintc_widget_remove_style_class(widget, "unblur");
+    wintc_widget_remove_style_class(widget, "blur");
+    wintc_widget_add_style_class(widget, "unblur-fast");
+}
+
+static void list_item_css_unblur(
+    GtkWidget* widget
+)
+{
+    wintc_widget_remove_style_class(widget, "blur");
+    wintc_widget_remove_style_class(widget, "unblur-fast");
+    wintc_widget_add_style_class(widget, "unblur");
+}
+
+static void logon_session_attempt(
+    UserListItem* item
+)
+{
+    WinTCWelcomeUserList* user_list = item->parent;
+
+    wintc_gina_logon_session_try_logon(
+        user_list->logon_session,
+        item->name,
+        gtk_entry_get_text(GTK_ENTRY(item->password_entry))
+    );
+}
+
+static void wintc_welcome_user_list_navigate_up(
+    GtkWidget* widget
+)
+{
+    WinTCWelcomeUserList* user_list = WINTC_WELCOME_USER_LIST(widget);
+
+    gboolean found_selected = FALSE;
+
+    for (GList* l = g_list_last(user_list->list_items); l != NULL; l = g_list_previous(l))
+    {
+        UserListItem* item = (UserListItem*) l->data;
+
+        if (item->selected)
         {
-            UserListItem *item = (UserListItem *)l->data;
-            if (item->selected) {
-                show_balloon_under_widget(item, BALLOON_TYPE_ERROR);
+            found_selected = TRUE;
+
+            if (g_list_previous(l))
+            {
+                item->selected = FALSE;
+                list_item_deselect(item);
+
+                if (item->hovered)
+                {
+                    wintc_widget_add_style_class(item->userpic_box, "hot");
+                }
+                else
+                {
+                    list_item_css_blur(item->profile_image);
+                    list_item_css_blur(item->username_label);
+                }
+
+                gtk_entry_set_text(GTK_ENTRY(item->password_entry), "");
+                item->selected = FALSE;
+                hide_balloon(user_list);
+
+                UserListItem* next = (UserListItem*) g_list_previous(l)->data;
+
+                next->selected = TRUE;
+
+                hide_balloon(user_list); 
+                list_item_select(next);
+                list_item_css_unblur_fast(next->profile_image);
+                list_item_css_unblur_fast(next->username_label);
+
                 break;
+            } 
+        } 
+    } 
+        
+    // If no item was selected, select the first one
+    //
+    if (user_list->list_items->data && !found_selected)
+    {
+        UserListItem* item = (UserListItem*) user_list->list_items->data;
+        item->selected = TRUE;
+        list_item_select(item);
+        list_item_css_unblur_fast(item->profile_image);
+        list_item_css_unblur_fast(item->username_label);
+    }
+
+    // Blur all other items
+    // 
+    for (GList* l = g_list_last(user_list->list_items); l != NULL; l = g_list_previous(l))
+    {
+        UserListItem* item = (UserListItem*) l->data;
+
+        if (!item->selected)
+        {
+            if (!item->hovered)
+            {
+                list_item_css_blur(item->profile_image);
+                list_item_css_blur(item->username_label);
             }
         }
     } 
 }
 
-static gboolean on_password_focus_gain(GtkWidget *widget, WINTC_UNUSED(GdkEvent *event), gpointer user_data)
+static void wintc_welcome_user_list_navigate_down(
+    GtkWidget* widget
+)
 {
-    UserListItem *item = (UserListItem *) user_data; 
+    WinTCWelcomeUserList* user_list = WINTC_WELCOME_USER_LIST(widget);
 
-    GdkDisplay *display = gtk_widget_get_display(widget);
+    gboolean found_selected = FALSE;
 
-    gboolean caps_lock_on = gdk_keymap_get_caps_lock_state(gdk_keymap_get_for_display(display));
-    if (caps_lock_on) {
-        show_balloon_under_widget(item, BALLOON_TYPE_WARNING); 
-    }
-    return FALSE;
-}
-
-
-static gboolean on_outside_click(WINTC_UNUSED(GtkWidget *w), GdkEventButton *e, gpointer data)
-{
-    WinTCWelcomeUserList *user_list = WINTC_WELCOME_USER_LIST(data);
-    GtkWidget *p = gtk_get_event_widget((GdkEvent *)e);
-
-    while (p && p != GTK_WIDGET(user_list))
-        p = gtk_widget_get_parent(p);
-
-    if (!p)
+    for (GList *l = user_list->list_items; l != NULL; l = l->next)
     {
-        hide_balloon(user_list);
-        for (GList *l = user_list->list_items; l; l = l->next)
+        UserListItem* item = (UserListItem*) l->data;
+
+        if (item->selected)
         {
-            UserListItem *item = l->data;
-            if (item->selected)
+            found_selected = TRUE;
+
+            if (l->next)
             {
                 item->selected = FALSE;
-                gtk_entry_set_text(GTK_ENTRY(item->password_entry), "");
                 list_item_deselect(item);
-            }
 
-            list_item_css_unblur(item->profile_image);
-            list_item_css_unblur(item->username_label);
+                if (item->hovered)
+                {
+                    wintc_widget_add_style_class(item->userpic_box, "hot");
+                }
+                else
+                {
+                    list_item_css_blur(item->profile_image);
+                    list_item_css_blur(item->username_label);
+                }
+
+                gtk_entry_set_text(GTK_ENTRY(item->password_entry), "");
+                item->selected = FALSE;
+                hide_balloon(user_list);
+                
+                UserListItem* next = (UserListItem*) l->next->data;
+
+                next->selected = TRUE;
+
+                list_item_select(next);
+                list_item_css_unblur_fast(next->profile_image);
+                list_item_css_unblur_fast(next->username_label);
+
+                break;        
+            } 
         }
     }
-    return FALSE;
+
+    // If no item was selected, select the first one
+    //
+    if (user_list->list_items->data && !found_selected)
+    {
+        UserListItem* item = (UserListItem*) user_list->list_items->data;
+        item->selected = TRUE;
+        list_item_select(item);
+        list_item_css_unblur_fast(item->profile_image);
+        list_item_css_unblur_fast(item->username_label);
+    }
+    
+    // Blur all other items
+    //
+    for (GList* l = user_list->list_items; l != NULL; l = l->next)
+    {
+        UserListItem* item = (UserListItem*) l->data;
+
+        if (!item->selected)
+        {
+           if (!item->hovered)
+           {
+                list_item_css_blur(item->profile_image);
+                list_item_css_blur(item->username_label);
+            }
+        } 
+    }
 }
 
-static gboolean on_key_pressed(WINTC_UNUSED(GtkWidget *widget), GdkEventKey *event, gpointer user_data) {
-    WinTCWelcomeUserList *list = WINTC_WELCOME_USER_LIST(user_data);
-    switch (event->keyval) {
-        case GDK_KEY_Down: {
+static void wintc_welcome_user_list_unselect_all(
+    WINTC_UNUSED(GtkWidget*      w),
+    WINTC_UNUSED(GdkEventButton* e),
+    gpointer data
+)
+{
+    WinTCWelcomeUserList *user_list = WINTC_WELCOME_USER_LIST(data);
+
+    hide_balloon(user_list);
+
+    for (GList* l = user_list->list_items; l != NULL; l = l->next)
+    {
+        UserListItem* item = (UserListItem*) l->data;
+
+        if (item->selected)
+        {
+            item->selected = FALSE;
+            gtk_entry_set_text(GTK_ENTRY(item->password_entry), "");
+            list_item_deselect(item);
+
+            list_item_css_blur(item->profile_image);
+            list_item_css_blur(item->username_label);
+        }
+    }
+}
+
+//
+// CALLBACKS
+//
+static gboolean balloon_timeout_callback(
+    gpointer user_data
+)
+{
+    WinTCWelcomeUserList* user_list = (WinTCWelcomeUserList*) user_data;
+
+    if (user_list->balloon)
+    {
+        hide_balloon(user_list);
+    }
+
+    return FALSE; 
+}
+
+static gboolean balloon_unblur_callback(
+    gpointer user_data
+)
+{
+    WinTCWelcomeUserList* user_list = (WinTCWelcomeUserList*) user_data;
+
+    if (user_list->balloon)
+    {
+        wintc_widget_remove_style_class(user_list->balloon, "transparent");
+        wintc_widget_add_style_class(user_list->balloon, "unblur");
+    }
+
+    return G_SOURCE_REMOVE; 
+}
+
+static gboolean on_key_pressed(
+    WINTC_UNUSED(GtkWidget* widget),
+    GdkEventKey* event,
+    gpointer     user_data
+)
+{
+    WinTCWelcomeUserList* list = WINTC_WELCOME_USER_LIST(user_data);
+
+    switch (event->keyval)
+    {
+        case GDK_KEY_Down:
+        {
             wintc_welcome_user_list_navigate_down(GTK_WIDGET(list));
             break;
         }
-        case GDK_KEY_Up: {
+
+        case GDK_KEY_Up:
+        {
             wintc_welcome_user_list_navigate_up(GTK_WIDGET(list));
             break;
         }
-        default:
-            break;
+
+        default: break;
     }
 
     return FALSE;
 }
 
-static gboolean on_list_item_hover_enter(WINTC_UNUSED(GtkWidget *widget), WINTC_UNUSED(GdkEvent *event), gpointer user_data)
+static gboolean on_list_hover_enter(
+    WINTC_UNUSED(GtkWidget* widget),
+    WINTC_UNUSED(GdkEvent*  event),
+    gpointer user_data
+)
 {
-    UserListItem *item = (UserListItem *)user_data;
+    WinTCWelcomeUserList *user_list = WINTC_WELCOME_USER_LIST(user_data);
 
-    GdkWindow *window = gtk_widget_get_window(widget);
-    GdkDisplay *display = gdk_window_get_display(window);
-    GdkCursor *cursor = gdk_cursor_new_from_name(display, "pointer");
+    user_list->hovered = TRUE;
+
+    for (GList* l = user_list->list_items; l != NULL; l = l->next)
+    {
+        UserListItem* item = (UserListItem*) l->data;
+
+        if (!item->selected && !item->hovered)
+        {
+            list_item_css_blur(item->profile_image);
+            list_item_css_blur(item->username_label);
+        }
+    }
+
+    return FALSE;
+}
+
+static gboolean on_list_hover_leave(
+    WINTC_UNUSED(GtkWidget* widget),
+    GdkEventCrossing* event,
+    gpointer          user_data
+)
+{
+    WinTCWelcomeUserList *user_list = WINTC_WELCOME_USER_LIST(user_data);
+
+    user_list->hovered = FALSE;
+
+    if (event->detail == GDK_NOTIFY_INFERIOR)
+    {
+        return FALSE;
+    }
+
+    for (GList* l = user_list->list_items; l != NULL; l = l->next)
+    {
+        UserListItem* item = (UserListItem*) l->data;
+
+        if (item->selected)
+        {
+            return FALSE;
+        }
+    }
+
+    for (GList* l = user_list->list_items; l != NULL; l = l->next)
+    {
+        UserListItem* item = (UserListItem*) l->data;
+
+        item->faded = FALSE;
+
+        list_item_css_unblur(item->profile_image);
+        list_item_css_unblur(item->username_label);
+    }
+
+    return FALSE;
+}
+
+static gboolean on_list_item_clicked(
+    WINTC_UNUSED(GtkWidget* widget),
+    WINTC_UNUSED(GdkEvent*  event),
+    gpointer user_data)
+{
+    UserListItem*         item      = (UserListItem*) user_data;
+    WinTCWelcomeUserList* user_list = item->parent; 
+
+    if (!item->selected)
+    {
+        for (GList* l = user_list->list_items; l != NULL; l = l->next)
+        {
+            UserListItem* other_item = (UserListItem*) l->data;
+
+            if (other_item != item && other_item->selected)
+            {
+                other_item->selected = FALSE;
+
+                gtk_entry_set_text(GTK_ENTRY(other_item->password_entry), "");
+
+                list_item_css_blur(other_item->profile_image);
+                list_item_css_blur(other_item->username_label);
+                list_item_deselect(other_item);
+            }
+        }
+
+        item->selected = TRUE;
+
+        hide_balloon(user_list);
+        list_item_select(item);
+        wintc_widget_add_style_class(item->userpic_box, "hot");
+        list_item_css_unblur(item->profile_image);
+        list_item_css_unblur(item->username_label);
+    }
+
+    return FALSE;
+}
+
+static gboolean on_list_item_hover_enter(
+    WINTC_UNUSED(GtkWidget* widget),
+    WINTC_UNUSED(GdkEvent*  event),
+    gpointer user_data
+)
+{
+    UserListItem* item = (UserListItem*) user_data;
+
+    GdkWindow*  window  = gtk_widget_get_window(widget);
+    GdkDisplay* display = gdk_window_get_display(window);
+    GdkCursor*  cursor  = gdk_cursor_new_from_name(display, "pointer");
+
     gdk_window_set_cursor(window, cursor);
     g_object_unref(cursor);
 
@@ -901,20 +1212,22 @@ static gboolean on_list_item_hover_enter(WINTC_UNUSED(GtkWidget *widget), WINTC_
 
     item->hovered = TRUE;
 
-    
-    
     return FALSE;
 }
 
-static gboolean on_list_item_hover_leave(WINTC_UNUSED(GtkWidget *widget), WINTC_UNUSED(GdkEventCrossing *event), gpointer user_data)
+static gboolean on_list_item_hover_leave(
+    WINTC_UNUSED(GtkWidget*        widget),
+    WINTC_UNUSED(GdkEventCrossing* event),
+    gpointer user_data
+)
 {
     if (event->detail == GDK_NOTIFY_INFERIOR)
     {
         return FALSE;
     }
 
+    UserListItem* item = (UserListItem*) user_data;
 
-    UserListItem *item = (UserListItem *)user_data;
     item->hovered = FALSE;
 
     if (!item->selected)
@@ -925,93 +1238,109 @@ static gboolean on_list_item_hover_leave(WINTC_UNUSED(GtkWidget *widget), WINTC_
         list_item_css_blur(item->profile_image);
     }
 
-    GdkWindow *window = gtk_widget_get_window(widget);
-    gdk_window_set_cursor(window, NULL); 
+    GdkWindow* window = gtk_widget_get_window(widget);
+    gdk_window_set_cursor(window, NULL);
+
     return FALSE;
 }
 
-static gboolean on_password_focus_out(WINTC_UNUSED(GtkWidget *widget), WINTC_UNUSED(GdkEvent *event), gpointer user_data)
+static gboolean on_logon_button_clicked(
+    WINTC_UNUSED(GtkButton* button),
+    gpointer user_data
+)
 {
-    WinTCWelcomeUserList *user_list = WINTC_WELCOME_USER_LIST(user_data);
+    UserListItem* item = (UserListItem*) user_data;
 
-    for (GList *l = user_list->list_items; l != NULL; l = l->next)
-    {
-        UserListItem *item = (UserListItem *)l->data;
-        if (item->selected)
-        {
-            list_item_deselect(item);
+    logon_session_attempt(item);
+    gtk_entry_set_text(GTK_ENTRY(item->password_entry), "");
 
-            list_item_css_blur(item->profile_image);
-            list_item_css_blur(item->username_label);
-
-            item->selected = FALSE;
-        }
-    }
     return FALSE;
 }
 
-static gboolean on_list_item_clicked(WINTC_UNUSED(GtkWidget *widget), WINTC_UNUSED(GdkEvent *event), gpointer user_data)
+static void on_logon_session_attempt_complete(
+    WINTC_UNUSED(WinTCGinaLogonSession* logon_session),
+    WinTCGinaResponse response,
+    gpointer          user_data
+)
 {
-    UserListItem *item = (UserListItem *)user_data; 
-    WinTCWelcomeUserList *user_list = item->parent; 
+    WinTCWelcomeUserList* user_list = WINTC_WELCOME_USER_LIST(user_data);
 
-    if (!item->selected)
+    hide_balloon(user_list);
+
+    if (response == WINTC_GINA_RESPONSE_FAIL)
     {
-        for (GList *l = user_list->list_items; l != NULL; l = l->next)
+        for (GList* l = user_list->list_items; l != NULL; l = l->next)
         {
-            UserListItem *other_item = (UserListItem *)l->data;
-            if (other_item != item && other_item->selected)
+            UserListItem* item = (UserListItem*) l->data;
+
+            if (item->selected)
             {
-                other_item->selected = FALSE;
-                gtk_entry_set_text(GTK_ENTRY(other_item->password_entry), "");
-
-                list_item_css_blur(other_item->profile_image);
-                list_item_css_blur(other_item->username_label);
-                list_item_deselect(other_item);
+                show_balloon_under_widget(item, BALLOON_TYPE_ERROR);
+                break;
             }
         }
-        item->selected = TRUE;
+    } 
+}
+
+static gboolean on_outside_click(
+    WINTC_UNUSED(GtkWidget* w),
+    GdkEventButton* e,
+    gpointer        user_data
+)
+{
+    WinTCWelcomeUserList* user_list = WINTC_WELCOME_USER_LIST(user_data);
+
+    GtkWidget* p = gtk_get_event_widget((GdkEvent*) e);
+
+    while (p && p != GTK_WIDGET(user_list))
+    {
+        p = gtk_widget_get_parent(p);
+    }
+
+    if (!p)
+    {
         hide_balloon(user_list);
-        list_item_select(item);
-        wintc_widget_add_style_class(item->userpic_box, "hot");
-        list_item_css_unblur(item->profile_image);
-        list_item_css_unblur(item->username_label);
+
+        for (GList* l = user_list->list_items; l; l = l->next)
+        {
+            UserListItem* item = l->data;
+
+            if (item->selected)
+            {
+                item->selected = FALSE;
+                gtk_entry_set_text(GTK_ENTRY(item->password_entry), "");
+                list_item_deselect(item);
+            }
+
+            list_item_css_unblur(item->profile_image);
+            list_item_css_unblur(item->username_label);
+        }
     }
 
     return FALSE;
 }
 
-static gboolean balloon_timeout_callback(gpointer user_data)
+static gboolean on_password_caps_pressed(
+    WINTC_UNUSED(GtkWidget* widget),
+    GdkEventKey* event,
+    gpointer     user_data
+)
 {
-    WinTCWelcomeUserList *user_list = (WinTCWelcomeUserList *)user_data;
-    if (user_list->balloon) {
-        hide_balloon(user_list);
-    }
-    return FALSE; 
-}
+    UserListItem*         item      = (UserListItem*) user_data; 
+    WinTCWelcomeUserList* user_list = item->parent; 
 
-static gboolean balloon_unblur_callback(gpointer user_data)
-{
-    WinTCWelcomeUserList *user_list = (WinTCWelcomeUserList *)user_data;
-    if (user_list->balloon) {
-        gtk_style_context_remove_class(gtk_widget_get_style_context(user_list->balloon), "transparent");
-        gtk_style_context_add_class(gtk_widget_get_style_context(user_list->balloon), "unblur");
-    }
-    return G_SOURCE_REMOVE; 
-}
-
-static gboolean on_password_caps_pressed(WINTC_UNUSED(GtkWidget *widget), GdkEventKey *event, gpointer user_data)
-{
-    UserListItem *item = (UserListItem *) user_data; 
-    WinTCWelcomeUserList *user_list = item->parent; 
-
-    switch (event->keyval) {
+    switch (event->keyval)
+    {
         case GDK_KEY_Caps_Lock:
-            if (!(event->state & GDK_LOCK_MASK)) {
+            if (!(event->state & GDK_LOCK_MASK))
+            {
                 show_balloon_under_widget(item, BALLOON_TYPE_WARNING);
-              } else {
+            }
+            else
+            {
                 hide_balloon(user_list);
-             }
+            }
+
             break;
 
         case GDK_KEY_Return:
@@ -1026,68 +1355,66 @@ static gboolean on_password_caps_pressed(WINTC_UNUSED(GtkWidget *widget), GdkEve
             hide_balloon(user_list);
             break;
     }
+
     return FALSE;
 }
 
-static gboolean on_logon_button_clicked(WINTC_UNUSED(GtkButton *button), gpointer user_data)
+static gboolean on_password_focus_gain(
+    GtkWidget* widget,
+    WINTC_UNUSED(GdkEvent* event),
+    gpointer   user_data
+)
 {
-    UserListItem *item = (UserListItem *) user_data; 
-    logon_session_attempt(item); 
-    gtk_entry_set_text(GTK_ENTRY(item->password_entry), "");
+    UserListItem* item = (UserListItem*) user_data; 
+
+    GdkDisplay* display = gtk_widget_get_display(widget);
+
+    gboolean caps_lock_on =
+        gdk_keymap_get_caps_lock_state(gdk_keymap_get_for_display(display));
+
+    if (caps_lock_on)
+    {
+        show_balloon_under_widget(item, BALLOON_TYPE_WARNING); 
+    }
+
     return FALSE;
 }
 
-static void on_realize_enable_passthrough(GtkWidget *widget,  WINTC_UNUSED(gpointer user_data))
+static gboolean on_password_focus_out(
+    WINTC_UNUSED(GtkWidget* widget),
+    WINTC_UNUSED(GdkEvent* event),
+    gpointer user_data
+)
 {
-    GdkWindow *window = gtk_widget_get_window(widget);
-    if (window) {
-        gdk_window_set_pass_through(window, TRUE);
-    }
-}
+    WinTCWelcomeUserList* user_list = WINTC_WELCOME_USER_LIST(user_data);
 
-gboolean on_list_hover_enter(WINTC_UNUSED(GtkWidget *widget), WINTC_UNUSED(GdkEvent *event), gpointer user_data)
-{
-    WinTCWelcomeUserList *user_list = WINTC_WELCOME_USER_LIST(user_data);
-    user_list->hovered = TRUE;
-
-    for (GList *l = user_list->list_items; l != NULL; l = l->next)
+    for (GList* l = user_list->list_items; l != NULL; l = l->next)
     {
-        UserListItem *item = (UserListItem *)l->data;
-        if (!item->selected && !item->hovered)
-        {
-            list_item_css_blur(item->profile_image);
-            list_item_css_blur(item->username_label);
-        }
-    }
-    return FALSE;
-}
+        UserListItem* item = (UserListItem*) l->data;
 
-gboolean on_list_hover_leave(WINTC_UNUSED(GtkWidget *widget), GdkEventCrossing *event, gpointer user_data)
-{
-    WinTCWelcomeUserList *user_list = WINTC_WELCOME_USER_LIST(user_data);
-    user_list->hovered = FALSE;
-
-    if (event->detail == GDK_NOTIFY_INFERIOR)
-    {
-        return FALSE;
-    }
-
-    for (GList *l = user_list->list_items; l != NULL; l = l->next)
-    {
-        UserListItem *item = (UserListItem *)l->data;
         if (item->selected)
         {
-            return FALSE;
+            list_item_deselect(item);
+
+            list_item_css_blur(item->profile_image);
+            list_item_css_blur(item->username_label);
+
+            item->selected = FALSE;
         }
     }
 
-    for (GList *l = user_list->list_items; l != NULL; l = l->next)
-    {
-        UserListItem *item = (UserListItem *)l->data;
-        item->faded = FALSE;
-
-        list_item_css_unblur(item->profile_image);
-        list_item_css_unblur(item->username_label);
-    }
     return FALSE;
+}
+
+static void on_realize_enable_passthrough(
+    GtkWidget* widget,
+    WINTC_UNUSED(gpointer user_data)
+)
+{
+    GdkWindow* window = gtk_widget_get_window(widget);
+
+    if (window)
+    {
+        gdk_window_set_pass_through(window, TRUE);
+    }
 }
