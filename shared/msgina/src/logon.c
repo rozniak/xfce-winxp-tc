@@ -507,11 +507,15 @@ static void on_greeter_show_prompt(
 
     WINTC_LOG_DEBUG("GINA - lightdm prompt: %s", text);
 
-    if (g_strcmp0(text, "login:") == 0)
+    gchar* text_lower = g_ascii_strdown(text, -1);
+
+    g_strstrip(text_lower);
+
+    if (g_strcmp0(text_lower, "login:") == 0)
     {
         logon_session->auth_ready = TRUE;
     }
-    else if (g_strcmp0(text, "Password: ") == 0)
+    else if (g_strcmp0(text_lower, "password:") == 0)
     {
         // FIXME: Error handling
         //
@@ -528,4 +532,6 @@ static void on_greeter_show_prompt(
     {
         g_critical("Unknown prompt: %s", text);
     }
+
+    g_free(text_lower);
 }
