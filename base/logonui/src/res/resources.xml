@@ -4,6 +4,7 @@
     <!--    -->
     <!-- UI -->
     <!--    -->
+    <file>balloon.ui</file>
     <file>useritem.ui</file>
     <file>welcome.ui</file>
     <file>welcphs1.ui</file>

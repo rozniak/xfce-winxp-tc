@@ -162,25 +162,27 @@
     background-color: rgba(255, 255, 225, 1);
     border: 1px solid #000000; 
     border-radius: 8px;
+    margin-top: 19px;
     padding: 8px;
 }
 
 .wintc-welcome .error-popup-title
 {
-    font-weight: 600;
     color: black;
-    font-size: 10pt;
-    margin-left:6px;
     font-family: "Tahoma", inherit;
+    font-size: 10pt;
+    font-weight: 600;
+    margin-left:6px;
 }
 
 .wintc-welcome .error-popup-content
 {
     color: black;
-    font-size: 8pt;
-    padding: 0;
-    margin-left: 0;
     font-family: "Tahoma", inherit;
+    font-size: 8pt;
+    padding: 0px;
+    margin-top:  5px;
+    margin-left: 0px;
 }
 
 /* Utility styles */

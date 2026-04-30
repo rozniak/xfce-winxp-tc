@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <object class="GtkOverlay" id="overlay-main">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+
+    <child>
+      <object class="GtkBox">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="hexpand">True</property>
+        <property name="orientation">vertical</property>
+        <property name="valign">GTK_ALIGN_START</property>
+        <property name="vexpand">True</property>
+
+        <child>
+          <object class="GtkBox">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="hexpand">True</property>
+            <property name="orientation">horizontal</property>
+
+            <child>
+              <object class="GtkImage" id="img-icon">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+              </object>
+            </child>
+
+            <child>
+              <object class="GtkLabel" id="label-title">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="halign">GTK_ALIGN_START</property>
+                <property name="valign">GTK_ALIGN_START</property>
+
+                <style>
+                  <class name="error-popup-title" />
+                </style>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+              </packing>
+            </child>
+          </object>
+        </child>
+
+        <child>
+          <object class="GtkBox">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="orientation">horizontal</property>
+
+            <child>
+              <object class="GtkLabel" id="label-message">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="halign">GTK_ALIGN_FILL</property>
+                <property name="justify">GTK_JUSTIFY_LEFT</property>
+                <property name="max-width-chars">50</property>
+                <property name="valign">GTK_ALIGN_START</property>
+                <property name="wrap">True</property>
+                <property name="wrap-mode">PANGO_WRAP_WORD</property>
+                <property name="xalign">0.0</property>
+              </object>
+            </child>
+
+            <style>
+              <class name="error-popup-content" />
+            </style>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+          </packing>
+        </child>
+
+        <style>
+          <class name="balloon-tooltip" />
+        </style>
+      </object>
+    </child>
+
+    <child type="overlay">
+      <object class="GtkDrawingArea" id="draw-area-arrow">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="halign">GTK_ALIGN_START</property>
+        <property name="hexpand">True</property>
+        <property name="height-request">20</property>
+        <property name="valign">GTK_ALIGN_START</property>
+        <property name="vexpand">False</property>
+        <property name="width-request">20</property>
+      </object>
+    </child>
+  </object>
+</interface>
