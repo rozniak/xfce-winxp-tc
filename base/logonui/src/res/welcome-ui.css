@@ -136,6 +136,8 @@
     background-image: url('resource:///uk/oddmatics/wintc/logonui/gobtn.png');
     background-repeat: no-repeat;
     background-size: 26px;
+    margin-left: 4px;
+    margin-top: 2px;
     min-height: 26px;
     min-width: 26px;
 }
