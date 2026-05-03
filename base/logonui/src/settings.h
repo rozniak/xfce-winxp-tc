@@ -30,12 +30,19 @@ void wintc_logonui_settings_load_from_key_file(
 const gchar* wintc_logonui_settings_get_session(
     WinTCLogonUISettings* settings
 );
+gboolean wintc_logonui_settings_get_use_anilogo(
+    WinTCLogonUISettings* settings
+);
 gboolean wintc_logonui_settings_get_use_classic_logon(
     WinTCLogonUISettings* settings
 );
 void wintc_logonui_settings_set_session(
     WinTCLogonUISettings* settings,
     const gchar*          session
+);
+void wintc_logonui_settings_set_use_anilogo(
+    WinTCLogonUISettings* settings,
+    gboolean              use_anilogo
 );
 void wintc_logonui_settings_set_use_classic_logon(
     WinTCLogonUISettings* settings,

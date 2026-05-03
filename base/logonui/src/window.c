@@ -166,14 +166,16 @@ static void wintc_logonui_window_constructed(
     {
         window->login_ui =
             wintc_classic_ui_new(
-                logon_session
+                logon_session,
+                window->settings
             );
     }
     else
     {
         window->login_ui =
             wintc_welcome_ui_new(
-                logon_session
+                logon_session,
+                window->settings
             );
     }
 

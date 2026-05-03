@@ -21,7 +21,8 @@
 //
 enum
 {
-    PROP_LOGON_SESSION = 1
+    PROP_LOGON_SESSION = 1,
+    PROP_SETTINGS
 };
 
 //
@@ -111,6 +112,7 @@ struct _WinTCWelcomeUI
     //
     WinTCGinaState         current_state;
     WinTCGinaLogonSession* logon_session;
+    WinTCLogonUISettings*  settings;
 };
 
 //
@@ -146,6 +148,18 @@ static void wintc_welcome_ui_class_init(
         object_class,
         PROP_LOGON_SESSION,
         "logon-session"
+    );
+
+    g_object_class_install_property(
+        object_class,
+        PROP_SETTINGS,
+        g_param_spec_object(
+            "settings",
+            "Settings",
+            "The object for providing configuration settings.",
+            WINTC_TYPE_LOGONUI_SETTINGS,
+            G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY
+        )
     );
 
     gtk_widget_class_set_template_from_resource(
@@ -321,18 +335,35 @@ static void wintc_welcome_ui_constructed(
         WINTC_CTL_ANIMATION_INFINITE
     );
 
-    ani_id_login =
-        wintc_ctl_animation_add_framesheet(
+    if (wintc_logonui_settings_get_use_anilogo(welcome_ui->settings))
+    {
+        ani_id_login =
+            wintc_ctl_animation_add_framesheet(
+                WINTC_CTL_ANIMATION(anim_logo_login),
+                pixbuf_logoani,
+                LOGOANI_FRAME_COUNT
+            );
+        wintc_ctl_animation_play(
             WINTC_CTL_ANIMATION(anim_logo_login),
-            pixbuf_logoani,
-            LOGOANI_FRAME_COUNT
+            ani_id_login,
+            LOGOANI_FRAME_RATE,
+            WINTC_CTL_ANIMATION_INFINITE
         );
-    wintc_ctl_animation_play(
-        WINTC_CTL_ANIMATION(anim_logo_login),
-        ani_id_login,
-        LOGOANI_FRAME_RATE,
-        WINTC_CTL_ANIMATION_INFINITE
-    );
+    }
+    else
+    {
+        ani_id_login =
+            wintc_ctl_animation_add_static(
+                WINTC_CTL_ANIMATION(anim_logo_login),
+                pixbuf_logo
+            );
+        wintc_ctl_animation_play(
+            WINTC_CTL_ANIMATION(anim_logo_login),
+            ani_id_login,
+            0,
+            WINTC_CTL_ANIMATION_INFINITE
+        );
+    }
 
     g_object_set(
         user_list,
@@ -419,6 +450,10 @@ static void wintc_welcome_ui_set_property(
             welcome_ui->logon_session = g_value_dup_object(value);
             break;
 
+        case PROP_SETTINGS:
+            welcome_ui->settings = g_value_dup_object(value);
+            break;
+
         default:
             G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
             break;
@@ -429,7 +464,8 @@ static void wintc_welcome_ui_set_property(
 // PUBLIC FUNCTIONS
 //
 GtkWidget* wintc_welcome_ui_new(
-    WinTCGinaLogonSession* logon_session
+    WinTCGinaLogonSession* logon_session,
+    WinTCLogonUISettings*  settings
 )
 {
     return GTK_WIDGET(
@@ -438,6 +474,7 @@ GtkWidget* wintc_welcome_ui_new(
             "hexpand",       TRUE,
             "vexpand",       TRUE,
             "logon-session", logon_session,
+            "settings",      settings,
             NULL
         )
     );

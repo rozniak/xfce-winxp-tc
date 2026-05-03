@@ -12,7 +12,8 @@
 //
 enum
 {
-    PROP_LOGON_SESSION = 1
+    PROP_LOGON_SESSION = 1,
+    PROP_SETTINGS
 };
 
 //
@@ -64,6 +65,7 @@ struct _WinTCClassicUI
     GtkWidget __parent__;
 
     WinTCGinaLogonSession* logon_session;
+    WinTCLogonUISettings*  settings;
     GtkWidget*             wnd_gina;
 };
 
@@ -102,6 +104,18 @@ static void wintc_classic_ui_class_init(
         object_class,
         PROP_LOGON_SESSION,
         "logon-session"
+    );
+
+    g_object_class_install_property(
+        object_class,
+        PROP_SETTINGS,
+        g_param_spec_object(
+            "settings",
+            "Settings",
+            "The object for providing configuration settings.",
+            WINTC_TYPE_LOGONUI_SETTINGS,
+            G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY
+        )
     );
 }
 
@@ -186,6 +200,10 @@ static void wintc_classic_ui_set_property(
             classic_ui->logon_session = g_value_dup_object(value);
             break;
 
+        case PROP_SETTINGS:
+            classic_ui->settings = g_value_dup_object(value);
+            break;
+
         default:
             G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
             break;
@@ -211,7 +229,8 @@ static gboolean wintc_classic_ui_draw(
 // PUBLIC FUNCTIONS
 //
 GtkWidget* wintc_classic_ui_new(
-    WinTCGinaLogonSession* logon_session
+    WinTCGinaLogonSession* logon_session,
+    WinTCLogonUISettings*  settings
 )
 {
     return GTK_WIDGET(
@@ -220,6 +239,7 @@ GtkWidget* wintc_classic_ui_new(
             "hexpand",       TRUE,
             "vexpand",       TRUE,
             "logon-session", logon_session,
+            "settings",      settings,
             NULL
         )
     );

@@ -12,6 +12,7 @@ enum
 {
     PROP_NULL,
     PROP_SESSION,
+    PROP_USE_ANILOGO,
     PROP_USE_CLASSIC_LOGON,
     N_PROPERTIES
 };
@@ -53,6 +54,7 @@ typedef struct _WinTCLogonUISettings
     // Settings
     //
     gchar*   session;
+    gboolean use_anilogo;
     gboolean use_classic_logon;
 } WinTCLogonUISettings;
 
@@ -82,6 +84,14 @@ static void wintc_logonui_settings_class_init(
             "Startup session name",
             "The name of the session to start upon login.",
             "xfce",
+            G_PARAM_READWRITE | G_PARAM_EXPLICIT_NOTIFY
+        );
+    wintc_logonui_settings_properties[PROP_USE_ANILOGO] =
+        g_param_spec_boolean(
+            "use-anilogo",
+            "Use animated Windows flag",
+            "Specifies whether to display the animated Windows flag.",
+            FALSE,
             G_PARAM_READWRITE | G_PARAM_EXPLICIT_NOTIFY
         );
     wintc_logonui_settings_properties[PROP_USE_CLASSIC_LOGON] =
@@ -169,6 +179,10 @@ static void wintc_logonui_settings_get_property(
             g_value_set_string(value, settings->session);
             break;
 
+        case PROP_USE_ANILOGO:
+            g_value_set_boolean(value, settings->use_anilogo);
+            break;
+
         case PROP_USE_CLASSIC_LOGON:
             g_value_set_boolean(value, settings->use_classic_logon);
             break;
@@ -194,6 +208,13 @@ static void wintc_logonui_settings_set_property(
             wintc_logonui_settings_set_session(
                 settings,
                 g_value_get_string(value)
+            );
+            break;
+
+        case PROP_USE_ANILOGO:
+            wintc_logonui_settings_set_use_anilogo(
+                settings,
+                g_value_get_boolean(value)
             );
             break;
 
@@ -234,6 +255,12 @@ void wintc_logonui_settings_load_from_key_file(
                                      "session",
                                      NULL
                                  );
+    gboolean use_anilogo       = g_key_file_get_boolean(
+                                     key_file,
+                                     WINTC_INI_GROUP_LOGONUI,
+                                     "animated_logo",
+                                     NULL
+                                 );
     gboolean use_classic_logon = g_key_file_get_boolean(
                                      key_file,
                                      WINTC_INI_GROUP_LOGONUI,
@@ -245,6 +272,14 @@ void wintc_logonui_settings_load_from_key_file(
     {
         wintc_logonui_settings_set_session(settings, session);
         g_free(session);
+    }
+
+    if (use_anilogo)
+    {
+        wintc_logonui_settings_set_use_anilogo(
+            settings,
+            use_anilogo
+        );
     }
 
     if (use_classic_logon)
@@ -261,6 +296,13 @@ const gchar* wintc_logonui_settings_get_session(
 )
 {
     return settings->session;
+}
+
+gboolean wintc_logonui_settings_get_use_anilogo(
+    WinTCLogonUISettings* settings
+)
+{
+    return settings->use_anilogo;
 }
 
 gboolean wintc_logonui_settings_get_use_classic_logon(
@@ -281,6 +323,19 @@ void wintc_logonui_settings_set_session(
     g_object_notify_by_pspec(
         G_OBJECT(settings),
         wintc_logonui_settings_properties[PROP_SESSION]
+    );
+}
+
+void wintc_logonui_settings_set_use_anilogo(
+    WinTCLogonUISettings* settings,
+    gboolean              use_anilogo
+)
+{
+    settings->use_anilogo = use_anilogo;
+
+    g_object_notify_by_pspec(
+        G_OBJECT(settings),
+        wintc_logonui_settings_properties[PROP_USE_ANILOGO]
     );
 }
 

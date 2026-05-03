@@ -5,6 +5,8 @@
 #include <gtk/gtk.h>
 #include <wintc/msgina.h>
 
+#include "../settings.h"
+
 //
 // GTK OOP BOILERPLATE
 //
@@ -22,7 +24,8 @@ G_DECLARE_FINAL_TYPE(
 // PUBLIC FUNCTIONS
 //
 GtkWidget* wintc_classic_ui_new(
-    WinTCGinaLogonSession* logon_session
+    WinTCGinaLogonSession* logon_session,
+    WinTCLogonUISettings*  settings
 );
 
 #endif
