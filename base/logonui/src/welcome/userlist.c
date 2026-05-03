@@ -883,6 +883,7 @@ static void wintc_welcome_user_list_navigate_up(
             {
                 list_item_css_blur(item->profile_image);
                 list_item_css_blur(item->username_label);
+                list_item_css_blur(item->userpic_box);
             }
 
             gtk_entry_set_text(GTK_ENTRY(item->password_entry), "");
@@ -896,6 +897,7 @@ static void wintc_welcome_user_list_navigate_up(
             list_item_select(item);
             list_item_css_unblur_fast(item->profile_image);
             list_item_css_unblur_fast(item->username_label);
+            list_item_css_unblur_fast(item->userpic_box);
         } 
     }
     else if (user_list->list_items)
@@ -906,6 +908,7 @@ static void wintc_welcome_user_list_navigate_up(
         list_item_select(item);
         list_item_css_unblur_fast(item->profile_image);
         list_item_css_unblur_fast(item->username_label);
+        list_item_css_unblur_fast(item->userpic_box);
     }
 
     // Blur all other items
@@ -921,6 +924,7 @@ static void wintc_welcome_user_list_navigate_up(
 
         list_item_css_blur(item->profile_image);
         list_item_css_blur(item->username_label);
+        list_item_css_blur(item->userpic_box);
     } 
 }
 
@@ -952,6 +956,7 @@ static void wintc_welcome_user_list_navigate_down(
             {
                 list_item_css_blur(item->profile_image);
                 list_item_css_blur(item->username_label);
+                list_item_css_blur(item->userpic_box);
             }
 
             gtk_entry_set_text(GTK_ENTRY(item->password_entry), "");
@@ -966,6 +971,7 @@ static void wintc_welcome_user_list_navigate_down(
             list_item_select(item);
             list_item_css_unblur_fast(item->profile_image);
             list_item_css_unblur_fast(item->username_label);
+            list_item_css_unblur_fast(item->userpic_box);
         }
     }
     else if (user_list->list_items)
@@ -976,6 +982,7 @@ static void wintc_welcome_user_list_navigate_down(
         list_item_select(item);
         list_item_css_unblur_fast(item->profile_image);
         list_item_css_unblur_fast(item->username_label);
+        list_item_css_unblur_fast(item->userpic_box);
     }
 
     // Blur all other items
@@ -988,6 +995,10 @@ static void wintc_welcome_user_list_navigate_down(
         {
             continue;
         }
+        
+        list_item_css_blur(item->profile_image);
+        list_item_css_blur(item->username_label);
+        list_item_css_blur(item->userpic_box);
     }
 }
 
@@ -1015,6 +1026,7 @@ static void wintc_welcome_user_list_unselect_all(
     list_item_deselect(item);
     list_item_css_blur(item->profile_image);
     list_item_css_blur(item->username_label);
+    list_item_css_blur(item->userpic_box);
 }
 
 //
@@ -1108,6 +1120,7 @@ static gboolean on_list_hover_enter(
 
         list_item_css_blur(item->profile_image);
         list_item_css_blur(item->username_label);
+        list_item_css_blur(item->userpic_box);
     }
 
     return FALSE;
@@ -1140,6 +1153,7 @@ static gboolean on_list_hover_leave(
 
         list_item_css_unblur(item->profile_image);
         list_item_css_unblur(item->username_label);
+        list_item_css_unblur(item->userpic_box);
     }
 
     return FALSE;
@@ -1174,6 +1188,7 @@ static gboolean on_list_item_clicked(
 
             list_item_css_blur(other_item->profile_image);
             list_item_css_blur(other_item->username_label);
+            list_item_css_blur(other_item->userpic_box);
             list_item_deselect(other_item);
         }
     }
@@ -1187,6 +1202,7 @@ static gboolean on_list_item_clicked(
     wintc_widget_add_style_class(item->userpic_box, "hot");
     list_item_css_unblur(item->profile_image);
     list_item_css_unblur(item->username_label);
+    list_item_css_unblur(item->userpic_box);
 
     return FALSE;
 }
@@ -1219,8 +1235,9 @@ static gboolean on_list_item_hover_enter(
 
     wintc_widget_add_style_class(item->userpic_box, "hot");
 
-    list_item_css_unblur(item->username_label);
     list_item_css_unblur(item->profile_image);
+    list_item_css_unblur(item->username_label);
+    list_item_css_unblur(item->userpic_box);
 
     item->hovered = TRUE;
 
@@ -1252,8 +1269,9 @@ static gboolean on_list_item_hover_leave(
     {
         wintc_widget_remove_style_class(item->userpic_box, "hot");
 
-        list_item_css_blur(item->username_label);
         list_item_css_blur(item->profile_image);
+        list_item_css_blur(item->username_label);
+        list_item_css_blur(item->userpic_box);
     }
 
     GdkWindow* window = gtk_widget_get_window(widget);
@@ -1345,6 +1363,7 @@ static gboolean on_outside_click(
 
         list_item_css_unblur(item->profile_image);
         list_item_css_unblur(item->username_label);
+        list_item_css_unblur(item->userpic_box);
     }
 
     return FALSE;
@@ -1444,6 +1463,7 @@ static gboolean on_password_focus_out(
 
         list_item_css_blur(item->profile_image);
         list_item_css_blur(item->username_label);
+        list_item_css_blur(item->userpic_box);
 
         user_list->selected_li = NULL;
     }
