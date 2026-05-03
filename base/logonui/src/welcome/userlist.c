@@ -193,6 +193,7 @@ struct _WinTCWelcomeUserList
 
     // State flags
     //
+    gboolean attempt_active;
     gboolean hovered;
 
     // UI
@@ -839,11 +840,17 @@ static void logon_session_attempt(
 {
     WinTCWelcomeUserList* user_list = item->parent;
 
+    user_list->attempt_active = TRUE;
+
     wintc_gina_logon_session_try_logon(
         user_list->logon_session,
         item->name,
         gtk_entry_get_text(GTK_ENTRY(item->password_entry))
     );
+
+    gtk_widget_set_sensitive(item->go_button, FALSE);
+    gtk_widget_set_sensitive(item->password_entry, FALSE);
+    gtk_entry_set_text(GTK_ENTRY(item->password_entry), "");
 }
 
 static void wintc_welcome_user_list_navigate_up(
@@ -1065,6 +1072,11 @@ static gboolean on_key_pressed(
 {
     WinTCWelcomeUserList* list = WINTC_WELCOME_USER_LIST(user_data);
 
+    if (list->attempt_active)
+    {
+        return FALSE;
+    }
+
     switch (event->keyval)
     {
         case GDK_KEY_Down:
@@ -1091,7 +1103,12 @@ static gboolean on_list_hover_enter(
     gpointer user_data
 )
 {
-    WinTCWelcomeUserList *user_list = WINTC_WELCOME_USER_LIST(user_data);
+    WinTCWelcomeUserList* user_list = WINTC_WELCOME_USER_LIST(user_data);
+
+    if (user_list->attempt_active)
+    {
+        return FALSE;
+    }
 
     user_list->hovered = TRUE;
 
@@ -1115,7 +1132,12 @@ static gboolean on_list_hover_leave(
     gpointer          user_data
 )
 {
-    WinTCWelcomeUserList *user_list = WINTC_WELCOME_USER_LIST(user_data);
+    WinTCWelcomeUserList* user_list = WINTC_WELCOME_USER_LIST(user_data);
+
+    if (user_list->attempt_active)
+    {
+        return FALSE;
+    }
 
     user_list->hovered = FALSE;
 
@@ -1153,7 +1175,12 @@ static gboolean on_list_item_clicked(
     gpointer user_data)
 {
     UserListItem*         item      = (UserListItem*) user_data;
-    WinTCWelcomeUserList* user_list = item->parent; 
+    WinTCWelcomeUserList* user_list = item->parent;
+
+    if (user_list->attempt_active)
+    {
+        return FALSE;
+    }
 
     if (!item->selected)
     {
@@ -1191,7 +1218,13 @@ static gboolean on_list_item_hover_enter(
     gpointer user_data
 )
 {
-    UserListItem* item = (UserListItem*) user_data;
+    UserListItem*         item      = (UserListItem*) user_data;
+    WinTCWelcomeUserList* user_list = item->parent;
+
+    if (user_list->attempt_active)
+    {
+        return FALSE;
+    }
 
     GdkWindow*  window  = gtk_widget_get_window(widget);
     GdkDisplay* display = gdk_window_get_display(window);
@@ -1221,12 +1254,18 @@ static gboolean on_list_item_hover_leave(
     gpointer user_data
 )
 {
-    if (event->detail == GDK_NOTIFY_INFERIOR)
+    UserListItem*         item = (UserListItem*) user_data;
+    WinTCWelcomeUserList* user_list = item->parent;
+
+    if (user_list->attempt_active)
     {
         return FALSE;
     }
 
-    UserListItem* item = (UserListItem*) user_data;
+    if (event->detail == GDK_NOTIFY_INFERIOR)
+    {
+        return FALSE;
+    }
 
     item->hovered = FALSE;
 
@@ -1252,7 +1291,6 @@ static gboolean on_logon_button_clicked(
     UserListItem* item = (UserListItem*) user_data;
 
     logon_session_attempt(item);
-    gtk_entry_set_text(GTK_ENTRY(item->password_entry), "");
 
     return FALSE;
 }
@@ -1275,10 +1313,14 @@ static void on_logon_session_attempt_complete(
 
             if (item->selected)
             {
+                gtk_widget_set_sensitive(item->go_button, TRUE);
+                gtk_widget_set_sensitive(item->password_entry, TRUE);
                 show_balloon_under_widget(item, BALLOON_TYPE_ERROR);
                 break;
             }
         }
+
+        user_list->attempt_active = FALSE;
     } 
 }
 
@@ -1289,6 +1331,11 @@ static gboolean on_outside_click(
 )
 {
     WinTCWelcomeUserList* user_list = WINTC_WELCOME_USER_LIST(user_data);
+
+    if (user_list->attempt_active)
+    {
+        return FALSE;
+    }
 
     GtkWidget* p = gtk_get_event_widget((GdkEvent*) e);
 
@@ -1327,7 +1374,12 @@ static gboolean on_password_caps_pressed(
 )
 {
     UserListItem*         item      = (UserListItem*) user_data; 
-    WinTCWelcomeUserList* user_list = item->parent; 
+    WinTCWelcomeUserList* user_list = item->parent;
+
+    if (user_list->attempt_active)
+    {
+        return FALSE;
+    }
 
     switch (event->keyval)
     {
@@ -1365,7 +1417,13 @@ static gboolean on_password_focus_gain(
     gpointer   user_data
 )
 {
-    UserListItem* item = (UserListItem*) user_data; 
+    UserListItem* item = (UserListItem*) user_data;
+    WinTCWelcomeUserList* user_list = item->parent;
+
+    if (user_list->attempt_active)
+    {
+        return FALSE;
+    }
 
     GdkDisplay* display = gtk_widget_get_display(widget);
 
@@ -1387,6 +1445,11 @@ static gboolean on_password_focus_out(
 )
 {
     WinTCWelcomeUserList* user_list = WINTC_WELCOME_USER_LIST(user_data);
+
+    if (user_list->attempt_active)
+    {
+        return FALSE;
+    }
 
     for (GList* l = user_list->list_items; l != NULL; l = l->next)
     {
