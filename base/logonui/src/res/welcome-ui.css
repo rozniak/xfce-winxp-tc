@@ -115,6 +115,11 @@
     min-width: 164px;
 }
 
+.wintc-welcome .password-box:disabled
+{
+    background-color: #FFFFFF;
+}
+
 .wintc-welcome .user-label
 {
     color: #ffffff;
