@@ -440,6 +440,8 @@ static GtkWidget* build_userlist_widget(
     WinTCWelcomeUserList* user_list
 )
 {
+    GError* error = NULL;
+
     GtkWidget* scrollable = gtk_scrolled_window_new(NULL, NULL);
     gtk_widget_set_hexpand(scrollable, FALSE);
     gtk_widget_set_vexpand(scrollable, TRUE);
@@ -569,11 +571,25 @@ static GtkWidget* build_userlist_widget(
 
         // Set up user details
         //
-        GdkPixbuf* profile_image =
-            gdk_pixbuf_new_from_resource(
-                "/uk/oddmatics/wintc/logonui/userpic.png",
-                NULL
-            );
+        GdkPixbuf*   profile_image = NULL;
+        const gchar* userpic_uri   = lightdm_user_get_image(item->user);
+
+        if (userpic_uri)
+        {
+            profile_image =
+                gdk_pixbuf_new_from_file(userpic_uri, &error);
+        }
+
+        if (!profile_image)
+        {
+            wintc_log_error_and_clear(&error);
+
+            profile_image =
+                gdk_pixbuf_new_from_resource(
+                    "/uk/oddmatics/wintc/logonui/userpic.png",
+                    NULL
+                );
+        }
 
         gtk_image_set_from_pixbuf(
             GTK_IMAGE(item->profile_image),
