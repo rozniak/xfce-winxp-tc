@@ -29,4 +29,14 @@ GtkWindow* wintc_widget_get_toplevel_window(
     GtkWidget* widget
 );
 
+/**
+ * Requests a window be moved to the center of the default display, the window
+ * must be mapped.
+ *
+ * @param window The window.
+ */
+void wintc_window_move_to_center(
+    GtkWindow* window
+);
+
 #endif

@@ -77,6 +77,10 @@ static void on_window_destroyed(
     GtkWidget* widget,
     gpointer   user_data
 );
+static gboolean on_window_map_event(
+    GtkWidget* widget,
+    gpointer   user_data
+);
 
 //
 // GTK OOP CLASS/INSTANCE DEFINITIONS
@@ -164,6 +168,12 @@ static void wintc_gina_exit_window_init(
         GTK_WIDGET(self),
         "destroy",
         G_CALLBACK(on_window_destroyed),
+        NULL
+    );
+    g_signal_connect(
+        GTK_WIDGET(self),
+        "map-event",
+        G_CALLBACK(on_window_map_event),
         NULL
     );
 }
@@ -455,4 +465,14 @@ static void on_window_destroyed(
     GtkApplication* app = gtk_window_get_application(GTK_WINDOW(widget));
 
     g_application_quit(G_APPLICATION(app));
+}
+
+static gboolean on_window_map_event(
+    GtkWidget* widget,
+    WINTC_UNUSED(gpointer user_data)
+)
+{
+    wintc_window_move_to_center(GTK_WINDOW(widget));
+
+    return FALSE;
 }
