@@ -869,6 +869,8 @@ static void wintc_welcome_user_list_navigate_up(
 
         if (user_list->selected_li->prev)
         {
+            GList* prev_li = user_list->selected_li->prev;
+
             // Deselect this item
             //
             list_item_deselect(item);
@@ -888,7 +890,7 @@ static void wintc_welcome_user_list_navigate_up(
 
             // Select prev item
             //
-            user_list->selected_li = user_list->selected_li->prev;
+            user_list->selected_li = prev_li;
             item = (UserListItem*) user_list->selected_li->data;
 
             list_item_select(item);
@@ -936,6 +938,8 @@ static void wintc_welcome_user_list_navigate_down(
 
         if (user_list->selected_li->next)
         {
+            GList* next_li = user_list->selected_li->next;
+
             // Deselect this item
             //
             list_item_deselect(item);
@@ -954,7 +958,7 @@ static void wintc_welcome_user_list_navigate_down(
 
             // Select next item
             //
-            user_list->selected_li = user_list->selected_li->next;
+            user_list->selected_li = next_li;
             item = (UserListItem*) user_list->selected_li->data;
 
             hide_balloon(user_list);
