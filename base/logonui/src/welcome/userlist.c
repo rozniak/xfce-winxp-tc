@@ -1244,7 +1244,7 @@ static gboolean on_list_item_hover_leave(
 
     item->hovered = FALSE;
 
-    if (user_list->selected_li && user_list->selected_li->data == item)
+    if (!(user_list->selected_li) || user_list->selected_li->data != item)
     {
         wintc_widget_remove_style_class(item->userpic_box, "hot");
 
