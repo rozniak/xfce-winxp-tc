@@ -28,12 +28,13 @@ typedef struct _UserListItem
     gchar*       name;
     LightDMUser* user;
 
-    // State flags used for UI behavior
-    // Carefully managed by each action
+    // UI state
+    //
     gboolean faded;
-    gboolean selected;
     gboolean hovered;
 
+    // UI
+    //
     GtkWidget* event_wrapper;
     GtkWidget* details_box;
     GtkWidget* background_image;
@@ -191,6 +192,8 @@ struct _WinTCWelcomeUserList
 {
     GtkBox __parent__;
 
+    WinTCGinaLogonSession* logon_session;
+
     // State flags
     //
     gboolean attempt_active;
@@ -200,16 +203,16 @@ struct _WinTCWelcomeUserList
     //
     // BUG: Current logonui implementation doesn't have a compositor
     //      so an overlay and a box is used to show popup balloons
+    //
     GtkWidget* overlay_wrapper;
-
     GtkWidget* balloon_wrapper_box;
     GtkWidget* list_box; 
 
     GList* list_items;
-    WinTCGinaLogonSession* logon_session;
+    GList* selected_li;
 
     GtkWidget* balloon;
-    guint balloon_timeout_id;
+    guint      balloon_timeout_id;
 };
 
 
@@ -524,7 +527,6 @@ static GtkWidget* build_userlist_widget(
         item->user     = (LightDMUser*) l->data; 
         item->name     = g_strdup(lightdm_user_get_name(item->user));
         item->parent   = user_list; 
-        item->selected = FALSE;
         item->faded    = FALSE;
 
         // Construct UI from XML
@@ -859,55 +861,46 @@ static void wintc_welcome_user_list_navigate_up(
 {
     WinTCWelcomeUserList* user_list = WINTC_WELCOME_USER_LIST(widget);
 
-    gboolean found_selected = FALSE;
+    UserListItem* item;
 
-    for (GList* l = g_list_last(user_list->list_items); l != NULL; l = g_list_previous(l))
+    if (user_list->selected_li)
     {
-        UserListItem* item = (UserListItem*) l->data;
+        item = (UserListItem*) user_list->selected_li->data;
 
-        if (item->selected)
+        if (user_list->selected_li->prev)
         {
-            found_selected = TRUE;
+            // Deselect this item
+            //
+            list_item_deselect(item);
 
-            if (g_list_previous(l))
+            if (item->hovered)
             {
-                item->selected = FALSE;
-                list_item_deselect(item);
+                wintc_widget_add_style_class(item->userpic_box, "hot");
+            }
+            else
+            {
+                list_item_css_blur(item->profile_image);
+                list_item_css_blur(item->username_label);
+            }
 
-                if (item->hovered)
-                {
-                    wintc_widget_add_style_class(item->userpic_box, "hot");
-                }
-                else
-                {
-                    list_item_css_blur(item->profile_image);
-                    list_item_css_blur(item->username_label);
-                }
+            gtk_entry_set_text(GTK_ENTRY(item->password_entry), "");
+            hide_balloon(user_list);
 
-                gtk_entry_set_text(GTK_ENTRY(item->password_entry), "");
-                item->selected = FALSE;
-                hide_balloon(user_list);
+            // Select prev item
+            //
+            user_list->selected_li = user_list->selected_li->prev;
+            item = (UserListItem*) user_list->selected_li->data;
 
-                UserListItem* next = (UserListItem*) g_list_previous(l)->data;
-
-                next->selected = TRUE;
-
-                hide_balloon(user_list); 
-                list_item_select(next);
-                list_item_css_unblur_fast(next->profile_image);
-                list_item_css_unblur_fast(next->username_label);
-
-                break;
-            } 
+            list_item_select(item);
+            list_item_css_unblur_fast(item->profile_image);
+            list_item_css_unblur_fast(item->username_label);
         } 
-    } 
-        
-    // If no item was selected, select the first one
-    //
-    if (user_list->list_items->data && !found_selected)
+    }
+    else if (user_list->list_items)
     {
-        UserListItem* item = (UserListItem*) user_list->list_items->data;
-        item->selected = TRUE;
+        user_list->selected_li = user_list->list_items;
+        item = (UserListItem*) user_list->selected_li->data;
+
         list_item_select(item);
         list_item_css_unblur_fast(item->profile_image);
         list_item_css_unblur_fast(item->username_label);
@@ -915,18 +908,17 @@ static void wintc_welcome_user_list_navigate_up(
 
     // Blur all other items
     // 
-    for (GList* l = g_list_last(user_list->list_items); l != NULL; l = g_list_previous(l))
+    for (GList* iter = user_list->list_items; iter; iter = iter->next)
     {
-        UserListItem* item = (UserListItem*) l->data;
+        item = (UserListItem*) iter->data;
 
-        if (!item->selected)
+        if (iter == user_list->selected_li || item->hovered)
         {
-            if (!item->hovered)
-            {
-                list_item_css_blur(item->profile_image);
-                list_item_css_blur(item->username_label);
-            }
+            continue;
         }
+
+        list_item_css_blur(item->profile_image);
+        list_item_css_blur(item->username_label);
     } 
 }
 
@@ -936,73 +928,62 @@ static void wintc_welcome_user_list_navigate_down(
 {
     WinTCWelcomeUserList* user_list = WINTC_WELCOME_USER_LIST(widget);
 
-    gboolean found_selected = FALSE;
+    UserListItem* item;
 
-    for (GList *l = user_list->list_items; l != NULL; l = l->next)
+    if (user_list->selected_li)
     {
-        UserListItem* item = (UserListItem*) l->data;
+        item = (UserListItem*) user_list->selected_li->data;
 
-        if (item->selected)
+        if (user_list->selected_li->next)
         {
-            found_selected = TRUE;
+            // Deselect this item
+            //
+            list_item_deselect(item);
 
-            if (l->next)
+            if (item->hovered)
             {
-                item->selected = FALSE;
-                list_item_deselect(item);
+                wintc_widget_add_style_class(item->userpic_box, "hot");
+            }
+            else
+            {
+                list_item_css_blur(item->profile_image);
+                list_item_css_blur(item->username_label);
+            }
 
-                if (item->hovered)
-                {
-                    wintc_widget_add_style_class(item->userpic_box, "hot");
-                }
-                else
-                {
-                    list_item_css_blur(item->profile_image);
-                    list_item_css_blur(item->username_label);
-                }
+            gtk_entry_set_text(GTK_ENTRY(item->password_entry), "");
 
-                gtk_entry_set_text(GTK_ENTRY(item->password_entry), "");
-                item->selected = FALSE;
-                hide_balloon(user_list);
-                
-                UserListItem* next = (UserListItem*) l->next->data;
+            // Select next item
+            //
+            user_list->selected_li = user_list->selected_li->next;
+            item = (UserListItem*) user_list->selected_li->data;
 
-                next->selected = TRUE;
+            hide_balloon(user_list);
 
-                list_item_select(next);
-                list_item_css_unblur_fast(next->profile_image);
-                list_item_css_unblur_fast(next->username_label);
-
-                break;        
-            } 
+            list_item_select(item);
+            list_item_css_unblur_fast(item->profile_image);
+            list_item_css_unblur_fast(item->username_label);
         }
     }
-
-    // If no item was selected, select the first one
-    //
-    if (user_list->list_items->data && !found_selected)
+    else if (user_list->list_items)
     {
-        UserListItem* item = (UserListItem*) user_list->list_items->data;
-        item->selected = TRUE;
+        user_list->selected_li = user_list->list_items;
+        item = (UserListItem*) user_list->selected_li->data;
+
         list_item_select(item);
         list_item_css_unblur_fast(item->profile_image);
         list_item_css_unblur_fast(item->username_label);
     }
-    
+
     // Blur all other items
     //
-    for (GList* l = user_list->list_items; l != NULL; l = l->next)
+    for (GList* iter = user_list->list_items; iter; iter = iter->next)
     {
-        UserListItem* item = (UserListItem*) l->data;
+        item = (UserListItem*) iter->data;
 
-        if (!item->selected)
+        if (iter == user_list->selected_li || item->hovered)
         {
-           if (!item->hovered)
-           {
-                list_item_css_blur(item->profile_image);
-                list_item_css_blur(item->username_label);
-            }
-        } 
+            continue;
+        }
     }
 }
 
@@ -1012,24 +993,24 @@ static void wintc_welcome_user_list_unselect_all(
     gpointer data
 )
 {
-    WinTCWelcomeUserList *user_list = WINTC_WELCOME_USER_LIST(data);
+    WinTCWelcomeUserList* user_list = WINTC_WELCOME_USER_LIST(data);
 
     hide_balloon(user_list);
 
-    for (GList* l = user_list->list_items; l != NULL; l = l->next)
+    if (!user_list->selected_li)
     {
-        UserListItem* item = (UserListItem*) l->data;
-
-        if (item->selected)
-        {
-            item->selected = FALSE;
-            gtk_entry_set_text(GTK_ENTRY(item->password_entry), "");
-            list_item_deselect(item);
-
-            list_item_css_blur(item->profile_image);
-            list_item_css_blur(item->username_label);
-        }
+        return;
     }
+
+    UserListItem* item = (UserListItem*) user_list->selected_li->data;
+
+    user_list->selected_li = NULL;
+
+    gtk_entry_set_text(GTK_ENTRY(item->password_entry), "");
+
+    list_item_deselect(item);
+    list_item_css_blur(item->profile_image);
+    list_item_css_blur(item->username_label);
 }
 
 //
@@ -1070,9 +1051,9 @@ static gboolean on_key_pressed(
     gpointer     user_data
 )
 {
-    WinTCWelcomeUserList* list = WINTC_WELCOME_USER_LIST(user_data);
+    WinTCWelcomeUserList* user_list = WINTC_WELCOME_USER_LIST(user_data);
 
-    if (list->attempt_active)
+    if (user_list->attempt_active)
     {
         return FALSE;
     }
@@ -1081,13 +1062,13 @@ static gboolean on_key_pressed(
     {
         case GDK_KEY_Down:
         {
-            wintc_welcome_user_list_navigate_down(GTK_WIDGET(list));
+            wintc_welcome_user_list_navigate_down(GTK_WIDGET(user_list));
             break;
         }
 
         case GDK_KEY_Up:
         {
-            wintc_welcome_user_list_navigate_up(GTK_WIDGET(list));
+            wintc_welcome_user_list_navigate_up(GTK_WIDGET(user_list));
             break;
         }
 
@@ -1105,22 +1086,24 @@ static gboolean on_list_hover_enter(
 {
     WinTCWelcomeUserList* user_list = WINTC_WELCOME_USER_LIST(user_data);
 
+    user_list->hovered = TRUE;
+
     if (user_list->attempt_active)
     {
         return FALSE;
     }
 
-    user_list->hovered = TRUE;
-
-    for (GList* l = user_list->list_items; l != NULL; l = l->next)
+    for (GList* iter = user_list->list_items; iter; iter = iter->next)
     {
-        UserListItem* item = (UserListItem*) l->data;
+        UserListItem* item = (UserListItem*) iter->data;
 
-        if (!item->selected && !item->hovered)
+        if (iter == user_list->selected_li || item->hovered)
         {
-            list_item_css_blur(item->profile_image);
-            list_item_css_blur(item->username_label);
+            continue;
         }
+
+        list_item_css_blur(item->profile_image);
+        list_item_css_blur(item->username_label);
     }
 
     return FALSE;
@@ -1134,31 +1117,20 @@ static gboolean on_list_hover_leave(
 {
     WinTCWelcomeUserList* user_list = WINTC_WELCOME_USER_LIST(user_data);
 
-    if (user_list->attempt_active)
-    {
-        return FALSE;
-    }
-
     user_list->hovered = FALSE;
 
-    if (event->detail == GDK_NOTIFY_INFERIOR)
+    if (
+        event->detail == GDK_NOTIFY_INFERIOR ||
+        user_list->attempt_active            ||
+        user_list->selected_li
+    )
     {
         return FALSE;
     }
 
-    for (GList* l = user_list->list_items; l != NULL; l = l->next)
+    for (GList* iter = user_list->list_items; iter; iter = iter->next)
     {
-        UserListItem* item = (UserListItem*) l->data;
-
-        if (item->selected)
-        {
-            return FALSE;
-        }
-    }
-
-    for (GList* l = user_list->list_items; l != NULL; l = l->next)
-    {
-        UserListItem* item = (UserListItem*) l->data;
+        UserListItem* item = (UserListItem*) iter->data;
 
         item->faded = FALSE;
 
@@ -1172,7 +1144,8 @@ static gboolean on_list_hover_leave(
 static gboolean on_list_item_clicked(
     WINTC_UNUSED(GtkWidget* widget),
     WINTC_UNUSED(GdkEvent*  event),
-    gpointer user_data)
+    gpointer user_data
+)
 {
     UserListItem*         item      = (UserListItem*) user_data;
     WinTCWelcomeUserList* user_list = item->parent;
@@ -1182,32 +1155,34 @@ static gboolean on_list_item_clicked(
         return FALSE;
     }
 
-    if (!item->selected)
+    if (user_list->selected_li)
     {
-        for (GList* l = user_list->list_items; l != NULL; l = l->next)
+        if (user_list->selected_li->data == item)
         {
-            UserListItem* other_item = (UserListItem*) l->data;
-
-            if (other_item != item && other_item->selected)
-            {
-                other_item->selected = FALSE;
-
-                gtk_entry_set_text(GTK_ENTRY(other_item->password_entry), "");
-
-                list_item_css_blur(other_item->profile_image);
-                list_item_css_blur(other_item->username_label);
-                list_item_deselect(other_item);
-            }
+            return FALSE;
         }
+        else
+        {
+            UserListItem* other_item =
+                (UserListItem*) user_list->selected_li->data;
 
-        item->selected = TRUE;
+            gtk_entry_set_text(GTK_ENTRY(other_item->password_entry), "");
 
-        hide_balloon(user_list);
-        list_item_select(item);
-        wintc_widget_add_style_class(item->userpic_box, "hot");
-        list_item_css_unblur(item->profile_image);
-        list_item_css_unblur(item->username_label);
+            list_item_css_blur(other_item->profile_image);
+            list_item_css_blur(other_item->username_label);
+            list_item_deselect(other_item);
+        }
     }
+
+    user_list->selected_li = g_list_find(user_list->list_items, item);
+
+    hide_balloon(user_list);
+
+    list_item_select(item);
+
+    wintc_widget_add_style_class(item->userpic_box, "hot");
+    list_item_css_unblur(item->profile_image);
+    list_item_css_unblur(item->username_label);
 
     return FALSE;
 }
@@ -1233,7 +1208,7 @@ static gboolean on_list_item_hover_enter(
     gdk_window_set_cursor(window, cursor);
     g_object_unref(cursor);
 
-    if (item->selected)
+    if (user_list->selected_li && user_list->selected_li->data == item)
     {
         return FALSE;
     }
@@ -1269,7 +1244,7 @@ static gboolean on_list_item_hover_leave(
 
     item->hovered = FALSE;
 
-    if (!item->selected)
+    if (user_list->selected_li && user_list->selected_li->data == item)
     {
         wintc_widget_remove_style_class(item->userpic_box, "hot");
 
@@ -1307,18 +1282,11 @@ static void on_logon_session_attempt_complete(
 
     if (response == WINTC_GINA_RESPONSE_FAIL)
     {
-        for (GList* l = user_list->list_items; l != NULL; l = l->next)
-        {
-            UserListItem* item = (UserListItem*) l->data;
+        UserListItem* item = (UserListItem*) user_list->selected_li->data;
 
-            if (item->selected)
-            {
-                gtk_widget_set_sensitive(item->go_button, TRUE);
-                gtk_widget_set_sensitive(item->password_entry, TRUE);
-                show_balloon_under_widget(item, BALLOON_TYPE_ERROR);
-                break;
-            }
-        }
+        gtk_widget_set_sensitive(item->go_button, TRUE);
+        gtk_widget_set_sensitive(item->password_entry, TRUE);
+        show_balloon_under_widget(item, BALLOON_TYPE_ERROR);
 
         user_list->attempt_active = FALSE;
     } 
@@ -1337,31 +1305,42 @@ static gboolean on_outside_click(
         return FALSE;
     }
 
-    GtkWidget* p = gtk_get_event_widget((GdkEvent*) e);
+    // Check, was the click event within the user list?
+    //
+    GtkWidget* search = gtk_get_event_widget((GdkEvent*) e);
 
-    while (p && p != GTK_WIDGET(user_list))
+    while (search && search != GTK_WIDGET(user_list))
     {
-        p = gtk_widget_get_parent(p);
+        search = gtk_widget_get_parent(search);
     }
 
-    if (!p)
+    if (search)
     {
-        hide_balloon(user_list);
+        return FALSE;
+    }
 
-        for (GList* l = user_list->list_items; l; l = l->next)
-        {
-            UserListItem* item = l->data;
+    // Clicked outside, so deactivate everything
+    //
+    UserListItem* item;
 
-            if (item->selected)
-            {
-                item->selected = FALSE;
-                gtk_entry_set_text(GTK_ENTRY(item->password_entry), "");
-                list_item_deselect(item);
-            }
+    hide_balloon(user_list);
 
-            list_item_css_unblur(item->profile_image);
-            list_item_css_unblur(item->username_label);
-        }
+    if (user_list->selected_li)
+    {
+        item = (UserListItem*) user_list->selected_li->data;
+
+        gtk_entry_set_text(GTK_ENTRY(item->password_entry), "");
+        list_item_deselect(item);
+
+        user_list->selected_li = NULL;
+    }
+
+    for (GList* iter = user_list->list_items; iter; iter = iter->next)
+    {
+        item = (UserListItem*) iter->data;
+
+        list_item_css_unblur(item->profile_image);
+        list_item_css_unblur(item->username_label);
     }
 
     return FALSE;
@@ -1428,7 +1407,9 @@ static gboolean on_password_focus_gain(
     GdkDisplay* display = gtk_widget_get_display(widget);
 
     gboolean caps_lock_on =
-        gdk_keymap_get_caps_lock_state(gdk_keymap_get_for_display(display));
+        gdk_keymap_get_caps_lock_state(
+            gdk_keymap_get_for_display(display)
+        );
 
     if (caps_lock_on)
     {
@@ -1451,19 +1432,16 @@ static gboolean on_password_focus_out(
         return FALSE;
     }
 
-    for (GList* l = user_list->list_items; l != NULL; l = l->next)
+    if (user_list->selected_li)
     {
-        UserListItem* item = (UserListItem*) l->data;
+        UserListItem* item = (UserListItem*) user_list->selected_li->data;
 
-        if (item->selected)
-        {
-            list_item_deselect(item);
+        list_item_deselect(item);
 
-            list_item_css_blur(item->profile_image);
-            list_item_css_blur(item->username_label);
+        list_item_css_blur(item->profile_image);
+        list_item_css_blur(item->username_label);
 
-            item->selected = FALSE;
-        }
+        user_list->selected_li = NULL;
     }
 
     return FALSE;
