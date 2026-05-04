@@ -74,7 +74,10 @@
 .wintc-welcome .logonui-instruction
 {
     font-weight: 500;
-    font-size: 14pt;
+    font-size:   14pt;
+
+    margin-right: 24px;
+    margin-top:   13px;
 }
 
 .wintc-welcome .usersel
