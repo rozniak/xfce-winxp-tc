@@ -9,6 +9,8 @@
 #include "userlist.h"
 #include "balloon.h"
 
+#define USERPIC_SIZE 48
+
 //
 // PRIVATE ENUMS
 //
@@ -571,8 +573,9 @@ static GtkWidget* build_userlist_widget(
 
         // Set up user details
         //
-        GdkPixbuf*   profile_image = NULL;
-        const gchar* userpic_uri   = lightdm_user_get_image(item->user);
+        GdkPixbuf*   profile_image       = NULL;
+        GdkPixbuf*   profile_image_sized = NULL;
+        const gchar* userpic_uri         = lightdm_user_get_image(item->user);
 
         if (userpic_uri)
         {
@@ -591,9 +594,17 @@ static GtkWidget* build_userlist_widget(
                 );
         }
 
+        profile_image_sized =
+            gdk_pixbuf_scale_simple(
+                profile_image,
+                USERPIC_SIZE,
+                USERPIC_SIZE,
+                GDK_INTERP_BILINEAR
+            );
+
         gtk_image_set_from_pixbuf(
             GTK_IMAGE(item->profile_image),
-            profile_image
+            profile_image_sized
         );
         gtk_label_set_text(
             GTK_LABEL(item->username_label),
@@ -601,6 +612,7 @@ static GtkWidget* build_userlist_widget(
         );
 
         g_object_unref(profile_image);
+        g_object_unref(profile_image_sized);
 
         // Usersel background
         //
