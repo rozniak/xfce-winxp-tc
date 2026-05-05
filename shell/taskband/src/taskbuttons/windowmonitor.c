@@ -15,8 +15,12 @@ typedef struct _WindowManagerSingle
     GtkToggleButton*    button;
     GtkImage*           button_icon;
     GtkLabel*           button_text;
+
     WinTCWndMgmtWindow* managed_window;
     WindowMonitor*      parent_monitor;
+
+    guint id_timeout_drag;
+    guint event_time_drag;
 } WindowManagerSingle;
 
 struct _WindowMonitor
@@ -73,6 +77,9 @@ static void action_exit(
 static gboolean cb_maximize_window(
     gpointer user_data
 );
+static gboolean cb_timeout_drag(
+    gpointer user_data
+);
 
 static void on_active_window_changed(
     WinTCWndMgmtScreen* screen,
@@ -108,6 +115,20 @@ static void on_window_state_changed(
 static gboolean on_window_button_button_release_event(
     GtkWidget*      self,
     GdkEventButton* event,
+    gpointer        user_data
+);
+static void on_window_button_drag_leave(
+    GtkWidget*      self,
+    GdkDragContext* context,
+    guint           time,
+    gpointer        user_data
+);
+static gboolean on_window_button_drag_motion(
+    GtkWidget*      self,
+    GdkDragContext* context,
+    gint            x,
+    gint            y,
+    guint           time,
     gpointer        user_data
 );
 
@@ -389,10 +410,31 @@ static void window_manager_update_state(
             PANGO_ELLIPSIZE_END
         );
 
+        gtk_drag_dest_set(
+            GTK_WIDGET(window_manager->button),
+            0,
+            NULL,
+            0,
+            GDK_ACTION_COPY
+        );
+
         g_signal_connect(
             window_manager->button,
             "button-release-event",
             G_CALLBACK(on_window_button_button_release_event),
+            window_manager
+        );
+
+        g_signal_connect(
+            window_manager->button,
+            "drag-motion",
+            G_CALLBACK(on_window_button_drag_motion),
+            window_manager
+        );
+        g_signal_connect(
+            window_manager->button,
+            "drag-leave",
+            G_CALLBACK(on_window_button_drag_leave),
             window_manager
         );
 
@@ -551,6 +593,24 @@ static gboolean cb_maximize_window(
     return G_SOURCE_REMOVE;
 }
 
+static gboolean cb_timeout_drag(
+    gpointer user_data
+)
+{
+    WindowManagerSingle* window_manager = (WindowManagerSingle*) user_data;
+
+    WINTC_LOG_DEBUG("taskband: drag raise executed");
+
+    wintc_wndmgmt_window_unminimize(
+        window_manager->managed_window,
+        (guint64) window_manager->event_time_drag
+    );
+
+    window_manager->id_timeout_drag = 0;
+
+    return G_SOURCE_REMOVE;
+}
+
 static void on_active_window_changed(
     WINTC_UNUSED(WinTCWndMgmtScreen* screen),
     WinTCWndMgmtWindow* previously_active_window,
@@ -642,14 +702,11 @@ static void on_window_opened(
     gpointer            user_data
 )
 {
-    WindowManagerSingle* window_manager = g_new(WindowManagerSingle, 1);
+    WindowManagerSingle* window_manager = g_new0(WindowManagerSingle, 1);
     WindowMonitor*       window_monitor = (WindowMonitor*) user_data;
 
-    window_manager->button               = NULL;
-    window_manager->button_icon          = NULL;
-    window_manager->button_text          = NULL;
-    window_manager->managed_window       = window;
-    window_manager->parent_monitor       = window_monitor;
+    window_manager->managed_window = window;
+    window_manager->parent_monitor = window_monitor;
 
     g_hash_table_insert(
         window_monitor->window_manager_map,
@@ -765,4 +822,59 @@ static gboolean on_window_button_button_release_event(
     }
 
     return FALSE;
+}
+
+static void on_window_button_drag_leave(
+    WINTC_UNUSED(GtkWidget*      self),
+    WINTC_UNUSED(GdkDragContext* context),
+    WINTC_UNUSED(guint           time),
+    gpointer user_data
+)
+{
+    WindowManagerSingle* window_manager = (WindowManagerSingle*) user_data;
+
+    if (window_manager->id_timeout_drag)
+    {
+        WINTC_LOG_DEBUG("taskband: drag raise cancelled");
+
+        g_source_remove(window_manager->id_timeout_drag);
+        window_manager->id_timeout_drag = 0;
+    }
+}
+
+static gboolean on_window_button_drag_motion(
+    WINTC_UNUSED(GtkWidget* self),
+    GdkDragContext* context,
+    WINTC_UNUSED(gint x),
+    WINTC_UNUSED(gint y),
+    guint           time,
+    gpointer        user_data
+)
+{
+    WindowManagerSingle* window_manager = (WindowManagerSingle*) user_data;
+
+    gdk_drag_status(context, GDK_ACTION_COPY, time);
+
+    window_manager->event_time_drag = time;
+
+    if (
+        window_manager->id_timeout_drag ||
+        gtk_toggle_button_get_active(
+            window_manager->button
+        )
+    )
+    {
+        return TRUE;
+    }
+
+    WINTC_LOG_DEBUG("taskband: drag raise awaiting...");
+
+    window_manager->id_timeout_drag =
+        g_timeout_add_seconds(
+            1,
+            (GSourceFunc) cb_timeout_drag,
+            window_manager
+        );
+
+    return TRUE;
 }
