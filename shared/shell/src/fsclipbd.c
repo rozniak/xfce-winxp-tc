@@ -242,6 +242,11 @@ gboolean wintc_sh_fs_clipboard_copymove(
 {
     WINTC_SAFE_REF_CLEAR(error);
 
+    g_clear_list(
+        &(fs_clipboard->list_cm_uris),
+        (GDestroyNotify) g_free
+    );
+
     // Set up our own state, and then claim the clipboard
     //
     fs_clipboard->list_cm_uris = srcs;
