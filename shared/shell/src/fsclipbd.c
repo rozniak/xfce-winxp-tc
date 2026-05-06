@@ -386,6 +386,10 @@ static void cb_clipboard_contents_received(
             data += 4;
         }
     }
+    else
+    {
+        fs_clipboard->operation_kind = WINTC_SH_FS_OPERATION_COPY;
+    }
 
     while (data < data_end)
     {
