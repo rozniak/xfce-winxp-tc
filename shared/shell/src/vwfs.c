@@ -125,6 +125,18 @@ static WinTCShextViewItem* wintc_sh_view_fs_get_view_item(
     guint          item_hash
 );
 
+static gboolean shopr_copy(
+    WinTCIShextView*     view,
+    WinTCShextOperation* operation,
+    GtkWindow*           wnd,
+    GError**             error
+);
+static gboolean shopr_cut(
+    WinTCIShextView*     view,
+    WinTCShextOperation* operation,
+    GtkWindow*           wnd,
+    GError**             error
+);
 static gboolean shopr_delete(
     WinTCIShextView*     view,
     WinTCShextOperation* operation,
@@ -763,6 +775,22 @@ static WinTCShextOperation* wintc_sh_view_fs_spawn_operation(
             ret->priv = g_steal_pointer(&targets);
             break;
 
+        case WINTC_SHEXT_KNOWN_OP_CUT:
+            ret->func = shopr_cut;
+            ret->priv = wintc_sh_view_fs_convert_list_hashes(
+                            view_fs,
+                            g_steal_pointer(&targets)
+                        );
+            break;
+
+        case WINTC_SHEXT_KNOWN_OP_COPY:
+            ret->func = shopr_copy;
+            ret->priv = wintc_sh_view_fs_convert_list_hashes(
+                            view_fs,
+                            g_steal_pointer(&targets)
+                        );
+            break;
+
         case WINTC_SHEXT_KNOWN_OP_PASTE:
             ret->func = shopr_paste;
             break;
@@ -960,6 +988,40 @@ static WinTCShextViewItem* wintc_sh_view_fs_get_view_item(
 //
 // CALLBACKS
 //
+static gboolean shopr_copy(
+    WinTCIShextView*     view,
+    WinTCShextOperation* operation,
+    WINTC_UNUSED(GtkWindow* wnd),
+    GError**             error
+)
+{
+    WinTCShViewFS* view_fs = WINTC_SH_VIEW_FS(view);
+
+    return wintc_sh_fs_clipboard_copymove(
+        view_fs->fs_clipboard,
+        (GList*) operation->priv,
+        FALSE,
+        error
+    );
+}
+
+static gboolean shopr_cut(
+    WinTCIShextView*     view,
+    WinTCShextOperation* operation,
+    WINTC_UNUSED(GtkWindow* wnd),
+    GError**             error
+)
+{
+    WinTCShViewFS* view_fs = WINTC_SH_VIEW_FS(view);
+
+    return wintc_sh_fs_clipboard_copymove(
+        view_fs->fs_clipboard,
+        (GList*) operation->priv,
+        TRUE,
+        error
+    );
+}
+
 static gboolean shopr_delete(
     WINTC_UNUSED(WinTCIShextView* view),
     WinTCShextOperation* operation,
