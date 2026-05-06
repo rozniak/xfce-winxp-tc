@@ -15,6 +15,12 @@ enum
     PROP_CAN_PASTE = 1
 };
 
+enum
+{
+    TARGET_URI_LIST,
+    TARGET_GNOME_COPIED_FILES
+};
+
 //
 // FORWARD DECLARATIONS
 //
@@ -44,6 +50,17 @@ static void cb_clipboard_targets_received(
     gpointer      user_data
 );
 
+static void cb_copymove_clear(
+    GtkClipboard* clipboard,
+    GObject*      owner
+);
+static void cb_copymove_get(
+    GtkClipboard*     clipboard,
+    GtkSelectionData* selection_data,
+    guint             info,
+    GObject*          owner
+);
+
 static void on_clipboard_owner_change(
     GtkClipboard*        self,
     GdkEventOwnerChange* event,
@@ -60,6 +77,19 @@ static void on_fs_operation_done(
 static GdkAtom S_ATOM_TEXT_URI_LIST;
 static GdkAtom S_ATOM_X_SPECIAL_GNOME_COPIED_FILES;
 
+static GtkTargetEntry S_TARGETS_COPYMOVE[] = {
+    {
+        "text/uri-list",
+        0,
+        TARGET_URI_LIST
+    },
+    {
+        "x-special/gnome-copied-files",
+        0,
+        TARGET_GNOME_COPIED_FILES
+    }
+};
+
 //
 // GTK OOP CLASS/INSTANCE DEFINITIONS
 //
@@ -67,7 +97,15 @@ typedef struct _WinTCShFSClipboard
 {
     GObject __parent__;
 
-    GtkClipboard*          clipboard;
+    GtkClipboard* clipboard;
+
+    // Copymove status
+    //
+    GList*                 list_cm_uris;
+    WinTCShFSOperationKind op_cm;
+
+    // Paste status
+    //
     GList*                 list_uris;
     WinTCShFSOperationKind operation_kind;
     GdkAtom                preferred_target;
@@ -193,6 +231,32 @@ WinTCShFSClipboard* wintc_sh_fs_clipboard_new(void)
     g_object_ref(singleton_clipboard);
 
     return singleton_clipboard;
+}
+
+gboolean wintc_sh_fs_clipboard_copymove(
+    WinTCShFSClipboard* fs_clipboard,
+    GList*              srcs,
+    gboolean            is_move,
+    GError**            error
+)
+{
+    WINTC_SAFE_REF_CLEAR(error);
+
+    // Set up our own state, and then claim the clipboard
+    //
+    fs_clipboard->list_cm_uris = srcs;
+    fs_clipboard->op_cm        = is_move ?
+                                     WINTC_SH_FS_OPERATION_MOVE :
+                                     WINTC_SH_FS_OPERATION_COPY;
+
+    return gtk_clipboard_set_with_owner(
+        fs_clipboard->clipboard,
+        S_TARGETS_COPYMOVE,
+        G_N_ELEMENTS(S_TARGETS_COPYMOVE),
+        (GtkClipboardGetFunc) cb_copymove_get,
+        (GtkClipboardClearFunc) cb_copymove_clear,
+        G_OBJECT(fs_clipboard)
+    );
 }
 
 gboolean wintc_sh_fs_clipboard_paste(
@@ -416,6 +480,121 @@ doneloop:
         cb_clipboard_contents_received,
         fs_clipboard
     );
+}
+
+static void cb_copymove_clear(
+    WINTC_UNUSED(GtkClipboard* clipboard),
+    GObject* owner
+)
+{
+    WinTCShFSClipboard* fs_clipboard = WINTC_SH_FS_CLIPBOARD(owner);
+
+    fs_clipboard->op_cm = WINTC_SH_FS_OPERATION_INVALID;
+
+    g_clear_list(
+        &fs_clipboard->list_cm_uris,
+        (GDestroyNotify) g_free
+    );
+}
+
+static void cb_copymove_get(
+    WINTC_UNUSED(GtkClipboard* clipboard),
+    GtkSelectionData* selection_data,
+    guint             info,
+    GObject*          owner
+)
+{
+    WinTCShFSClipboard* fs_clipboard = WINTC_SH_FS_CLIPBOARD(owner);
+
+    // Work out the size of buffer we need for the clipboard
+    //
+    guint buf_size = 0;
+
+    if (info == TARGET_URI_LIST)
+    {
+        for (GList* iter = fs_clipboard->list_cm_uris; iter; iter = iter->next)
+        {
+            buf_size += 7; // file://
+            buf_size += g_utf8_strlen((gchar*) iter->data, -1);
+            buf_size += 2; // \r\n
+        }
+    }
+    else // TARGET_GNOME_COPIED_FILES
+    {
+        if (fs_clipboard->op_cm == WINTC_SH_FS_OPERATION_COPY)
+        {
+            buf_size += 5; // copy\n
+        }
+        else // MOVE
+        {
+            buf_size += 4; // cut\n
+        }
+
+        for (GList* iter = fs_clipboard->list_cm_uris; iter; iter = iter->next)
+        {
+            buf_size += 7; // file://
+            buf_size += g_utf8_strlen((gchar*) iter->data, -1);
+            buf_size += 1; // \n
+
+            // No newline for the last entry
+            //
+            if (!(iter->next))
+            {
+                buf_size--;
+            }
+        }
+    }
+
+    buf_size++; // Terminating null
+
+    // Populate the buffer
+    //
+    gchar* buf     = g_malloc(buf_size);
+    gchar* buf_ptr = buf;
+
+    if (info == TARGET_GNOME_COPIED_FILES)
+    {
+        buf_ptr =
+            stpcpy(
+                buf_ptr,
+                fs_clipboard->op_cm == WINTC_SH_FS_OPERATION_COPY ?
+                    "copy\n" :
+                    "cut\n"
+            );
+    }
+
+    for (GList* iter = fs_clipboard->list_cm_uris; iter; iter = iter->next)
+    {
+        buf_ptr = stpcpy(buf_ptr, "file://");
+        buf_ptr = stpcpy(buf_ptr, (gchar*) iter->data);
+
+        if (info == TARGET_URI_LIST)
+        {
+            buf_ptr = stpcpy(buf_ptr, "\r\n");
+        }
+        else // TARGET_GNOME_COPIED_FILES
+        {
+            // Only add newline if this is not the last URI
+            //
+            if (iter->next)
+            {
+                buf_ptr = stpcpy(buf_ptr, "\n");
+            }
+        }
+    }
+
+    // Update the clipboard
+    //
+    gtk_selection_data_set(
+        selection_data,
+        info == TARGET_URI_LIST ?
+            S_ATOM_TEXT_URI_LIST : S_ATOM_X_SPECIAL_GNOME_COPIED_FILES,
+        8,
+        (guchar*) buf,
+        buf_size
+    );
+
+    g_free(buf);
 }
 
 static void on_clipboard_owner_change(
