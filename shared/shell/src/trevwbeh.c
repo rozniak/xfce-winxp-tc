@@ -58,6 +58,13 @@ static void on_browser_load_changed(
     gpointer                user_data
 );
 
+static void on_tree_view_row_activated(
+    GtkTreeView*       self,
+    GtkTreePath*       path,
+    GtkTreeViewColumn* column,
+    gpointer           user_data
+);
+
 static void on_view_items_added(
     WinTCIShextView*           view,
     WinTCShextViewItemsUpdate* update,
@@ -223,6 +230,10 @@ static void wintc_sh_tree_view_behaviour_constructed(
             G_TYPE_OBJECT
         );
 
+    gtk_tree_view_set_activate_on_single_click(
+        GTK_TREE_VIEW(behaviour->tree_view),
+        TRUE
+    );
     gtk_tree_view_set_headers_visible(
         GTK_TREE_VIEW(behaviour->tree_view),
         FALSE
@@ -256,6 +267,15 @@ static void wintc_sh_tree_view_behaviour_constructed(
     gtk_tree_view_append_column(
         GTK_TREE_VIEW(behaviour->tree_view),
         new_column
+    );
+
+    // Attach signals
+    //
+    g_signal_connect(
+        behaviour->tree_view,
+        "row-activated",
+        G_CALLBACK(on_tree_view_row_activated),
+        behaviour
     );
 
     // Hook up everything for getting this all started!
@@ -820,6 +840,118 @@ static void on_browser_load_changed(
     }
 
     wintc_sh_tree_view_behaviour_update_view(behaviour, self);
+}
+
+static void on_tree_view_row_activated(
+    GtkTreeView* self,
+    GtkTreePath* path,
+    WINTC_UNUSED(GtkTreeViewColumn* column),
+    gpointer     user_data
+)
+{
+    WinTCShTreeViewBehaviour* behaviour =
+        WINTC_SH_TREE_VIEW_BEHAVIOUR(user_data);
+
+    GtkTreeIter   iter;
+    GtkTreeModel* model = gtk_tree_view_get_model(self);
+
+    if (!gtk_tree_model_get_iter(model, &iter, path))
+    {
+        return;
+    }
+
+    // Attempt to retrieve the view via tree path
+    //
+    GError*          error = NULL;
+    guint            hash;
+    WinTCIShextView* view;
+
+    gtk_tree_model_get(
+        model,
+        &iter,
+        COLUMN_VIEW_HASH, &hash,
+        -1
+    );
+
+    view =
+        g_hash_table_lookup(
+            behaviour->map_hash_to_view,
+            GUINT_TO_POINTER(hash)
+        );
+
+    // Activate the view if we have it, otherwise look to the parent and go
+    // from there
+    //
+    WinTCShextPathInfo path_info = { 0 };
+
+    if (view)
+    {
+        wintc_ishext_view_get_path(view, &path_info);
+    }
+    else
+    {
+        // We should be able to nav via the parent
+        //
+        GtkTreeIter parent;
+        guint       parent_hash;
+
+        if (!gtk_tree_model_iter_parent(model, &parent, &iter))
+        {
+            // This should be impossible, only the desktop would have no parent
+            // and we always init views up to the root so this path will never
+            // be hit
+            //
+            g_critical("%s", "shell: tree view could not traverse via parent");
+            return;
+        }
+
+        gtk_tree_model_get(
+            model,
+            &parent,
+            COLUMN_VIEW_HASH, &parent_hash,
+            -1
+        );
+
+        view =
+            g_hash_table_lookup(
+                behaviour->map_hash_to_view,
+                GUINT_TO_POINTER(parent_hash)
+            );
+
+        if (!view)
+        {
+            // Another impossibility, just like above
+            //
+            g_critical("%s", "shell: tree view no parent view to traverse");
+            return;
+        }
+
+        if (
+            !wintc_ishext_view_activate_item(
+                view,
+                hash,
+                &path_info,
+                &error
+            )
+        )
+        {
+            wintc_log_error_and_clear(&error);
+            return;
+        }
+    }
+
+    if (
+        !wintc_sh_browser_set_location(
+            behaviour->browser,
+            &path_info,
+            &error
+        )
+    )
+    {
+        wintc_log_error_and_clear(&error);
+    }
+
+    wintc_shext_path_info_free_data(&path_info);
 }
 
 static void on_view_items_added(
