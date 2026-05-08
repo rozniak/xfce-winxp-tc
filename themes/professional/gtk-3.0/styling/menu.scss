@@ -103,6 +103,16 @@ $popup_menu_styles:
         $menu_borders_color,
         undefined
     );
+$popup_menu_styles:
+    wintc_define_props_box(
+        $popup_menu_styles,
+        false,
+        padding,
+        3,
+        0,
+        3,
+        0
+    );
 
 $popup_menu_menuitem_styles:
     wintc_define_props_borders(
@@ -115,6 +125,17 @@ $popup_menu_menuitem_styles:
         1,
         transparent,
         undefined
+    );
+
+$popup_menu_menuitem_styles:
+    wintc_define_props_box(
+        $popup_menu_menuitem_styles,
+        false,
+        margin,
+        0,
+        3,
+        0,
+        3
     );
 
 $popup_menu_menuitem_hover_styles:

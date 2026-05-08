@@ -414,6 +414,16 @@ $start_menu_popup_menu_styles:
         undefined,
         url('../Resources/start_menu_item.png')
     );
+$start_menu_popup_menu_styles:
+    wintc_define_props_box(
+        $start_menu_popup_menu_styles,
+        false,
+        padding,
+        0,
+        0,
+        0,
+        0
+    );
 
 $start_menu_popup_menu_menuitem_styles:
     wintc_define_props_box(
