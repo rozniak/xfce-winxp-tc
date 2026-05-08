@@ -192,6 +192,9 @@ struct _WinTCShViewFS
     gchar*   parent_path;
     gchar*   path;
 
+    gchar*   guid_context;
+    gchar*   guid_rel_path;
+
     GFileMonitor* fs_monitor;
     GHashTable*   fs_map_entries;
 
@@ -303,6 +306,7 @@ static void wintc_sh_view_fs_finalize(
 {
     WinTCShViewFS* view_fs = WINTC_SH_VIEW_FS(object);
 
+    g_free(view_fs->guid_context);
     g_free(view_fs->parent_path);
     g_free(view_fs->path);
 
@@ -361,39 +365,101 @@ static void wintc_sh_view_fs_set_property(
     GParamSpec*   pspec
 )
 {
-    WinTCShViewFS* view = WINTC_SH_VIEW_FS(object);
+    WinTCShViewFS* view_fs = WINTC_SH_VIEW_FS(object);
 
     switch (prop_id)
     {
         case PROP_SHEXT_HOST:
-            view->shext_host = g_value_dup_object(value);
+            view_fs->shext_host = g_value_dup_object(value);
             break;
 
         case PROP_PATH_INFO:
         {
             const WinTCShextPathInfo* path_info = g_value_get_pointer(value);
 
-            gint         path_len = g_utf8_strlen(path_info->base_path, -1);
-            const gchar* raw_path;
+            gchar*       guid      = NULL;
+            const gchar* guid_path = NULL;
+            gint         path_len  = g_utf8_strlen(path_info->base_path, -1);
+            gchar*       raw_path  = NULL;
 
-            // Skip 'file://'
+            // If there's an extended path, this may be from a GUID origin like
+            // the shell desktop
             //
-            if (path_len < 7)
+            if (path_info->extended_path)
             {
-                g_critical(
-                    "shell: fs view: invalid path: %s",
-                    path_info->base_path
-                );
-            }
+                if (!g_str_has_prefix(path_info->extended_path, "/"))
+                {
+                    g_critical(
+                        "shell: fs view: invalid extended path: %s",
+                        path_info->extended_path
+                    );
+                    break;
+                }
 
-            path_len -= 7;
-            raw_path  = path_info->base_path + 7;
+                // Look up the GUID portion
+                //
+                guid = wintc_sh_guid_for_path(path_info->base_path);
+
+                if (!guid)
+                {
+                    g_critical(
+                        "shell: fs view: invalid base path: %s",
+                        path_info->base_path
+                    );
+                    break;
+                }
+
+                // Resolve the path
+                //
+                WinTCShPlace place = wintc_sh_get_place_from_guid(guid);
+
+                switch (place)
+                {
+                    case WINTC_SH_PLACE_DESKTOP:
+                        guid_path =
+                            g_get_user_special_dir(
+                                G_USER_DIRECTORY_DESKTOP
+                            );
+                        break;
+
+                    default:
+                        g_critical(
+                            "shell: fs view: unsupported place: %d",
+                            place
+                        );
+                        break;
+                }
+
+                raw_path =
+                    g_build_path(
+                        G_DIR_SEPARATOR_S,
+                        guid_path,
+                        path_info->extended_path + 1,
+                        NULL
+                    );
+
+                path_len = g_utf8_strlen(raw_path, -1);
+            }
+            else
+            {
+                if (path_len < 7)
+                {
+                    g_critical(
+                        "shell: fs view: invalid path: %s",
+                        path_info->base_path
+                    );
+                    break;
+                }
+
+                path_len -= 7;
+                raw_path  = g_strdup(path_info->base_path + 7);
+            }
 
             // Strip off trailing /, unless this is literally /
             //
             if (path_len > 1 && g_str_has_suffix(raw_path, "/"))
             {
-                view->path =
+                view_fs->path =
                     g_utf8_substring(
                         raw_path,
                         0,
@@ -402,15 +468,24 @@ static void wintc_sh_view_fs_set_property(
             }
             else
             {
-                view->path = g_strdup(raw_path);
+                view_fs->path = g_steal_pointer(&raw_path);
             }
 
             // Create parent path string
             //
-            if (g_strcmp0(view->path, "/") != 0)
+            if (g_strcmp0(view_fs->path, "/") != 0)
             {
-                view->parent_path = g_path_get_dirname(view->path);
+                view_fs->parent_path = g_path_get_dirname(view_fs->path);
             }
+
+            if (guid)
+            {
+                view_fs->guid_context = guid;
+                view_fs->guid_rel_path =
+                    view_fs->path + strlen(guid_path);
+            }
+
+            g_free(raw_path);
 
             break;
         }

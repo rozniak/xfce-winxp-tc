@@ -2,6 +2,7 @@
 #include <glib.h>
 #include <wintc/comgtk.h>
 #include <wintc/exec.h>
+#include <wintc/shcommon.h>
 
 #include "../public/category.h"
 #include "../public/error.h"
@@ -403,55 +404,25 @@ gboolean wintc_shext_host_use_view_for_real_path(
 WinTCIShextView* lookup_view_for_path_by_guid(
     WinTCShextHost*           host,
     const WinTCShextPathInfo* path_info,
-    GError**                  error
+    WINTC_UNUSED(GError** error)
 )
 {
-    static GRegex* regex_guid = NULL;
-
     WinTCShextViewCtor ctor;
     gchar*             guid;
-    gchar*             guid_u;
-    GMatchInfo*        match_info = NULL;
-    WinTCIShextView*   view       = NULL;
-
-    // Create shellext GUID regex if it hasn't already been created
-    //
-    if (!regex_guid)
-    {
-        regex_guid =
-            g_regex_new(
-                "^::{([A-Za-z0-9-]+)}$",
-                0,
-                0,
-                error
-            );
-
-        if (!regex_guid)
-        {
-            return NULL;
-        }
-    }
+    WinTCIShextView*   view = NULL;
 
     WINTC_LOG_DEBUG("%s", "shellext: view lookup - try guid...");
 
-    g_regex_match(
-        regex_guid,
-        path_info->base_path,
-        0,
-        &match_info
-    );
+    guid = wintc_sh_guid_for_path(path_info->base_path);
 
-    if (g_match_info_get_match_count(match_info) > 0)
+    if (guid)
     {
-        guid   = g_match_info_fetch(match_info, 1);
-        guid_u = g_ascii_strup(guid, -1);
-
-        WINTC_LOG_DEBUG("shellext: view lookup - match guid %s", guid_u);
+        WINTC_LOG_DEBUG("shellext: view lookup - match guid %s", guid);
 
         ctor =
             g_hash_table_lookup(
                 host->map_views_by_guid,
-                guid_u
+                guid
             );
 
         if (ctor)
@@ -460,21 +431,18 @@ WinTCIShextView* lookup_view_for_path_by_guid(
                 ctor(
                     host,
                     WINTC_SHEXT_VIEW_ASSOC_VIEW_GUID,
-                    guid_u,
+                    guid,
                     path_info
                 );
         }
         else
         {
-            WINTC_LOG_DEBUG("shellext: have no view %s", guid_u);
+            WINTC_LOG_DEBUG("shellext: have no view %s", guid);
             // FIXME: Set error
         }
 
         g_free(guid);
-        g_free(guid_u);
     }
-
-    g_match_info_free(match_info);
 
     return view;
 }

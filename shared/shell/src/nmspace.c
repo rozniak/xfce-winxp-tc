@@ -81,10 +81,10 @@ void wintc_sh_init_namespace_tree(
 // CALLBACKS
 //
 static WinTCIShextView* factory_view_by_guid_cb(
-    WinTCShextHost* shext_host,
+    WinTCShextHost*           shext_host,
     WINTC_UNUSED(WinTCShextViewAssoc assoc),
-    const gchar*    assoc_str,
-    WINTC_UNUSED(const WinTCShextPathInfo* url)
+    const gchar*              assoc_str,
+    const WinTCShextPathInfo* path_info
 )
 {
     WINTC_LOG_DEBUG("shell: create new shell view for %s", assoc_str);
@@ -97,6 +97,13 @@ static WinTCIShextView* factory_view_by_guid_cb(
     }
     else if (g_ascii_strcasecmp(assoc_str, WINTC_SH_GUID_DESKTOP) == 0)
     {
+        // If there is an extended path, then forward onto the FS view
+        //
+        if (path_info->extended_path)
+        {
+            return wintc_sh_view_fs_new(shext_host, path_info);
+        }
+
         return wintc_sh_view_desktop_new(shext_host);
     }
     else if (g_ascii_strcasecmp(assoc_str, WINTC_SH_GUID_DRIVES) == 0)

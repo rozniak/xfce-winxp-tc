@@ -93,6 +93,53 @@ const gchar* wintc_sh_get_place_path(
     return s_place_paths[place];
 }
 
+gchar* wintc_sh_guid_for_path(
+    const gchar* path
+)
+{
+    static GRegex* regex_guid = NULL;
+
+    gchar*      guid;
+    gchar*      guid_u     = NULL;
+    GMatchInfo* match_info = NULL;
+
+    if (!regex_guid)
+    {
+        regex_guid =
+            g_regex_new(
+                "^::{([A-Za-z0-9-]+)}$",
+                0,
+                0,
+                NULL
+            );
+
+        if (!regex_guid)
+        {
+            return NULL;
+        }
+    }
+
+
+    if (
+        g_regex_match(
+            regex_guid,
+            path,
+            0,
+            &match_info
+        )
+    )
+    {
+        guid   = g_match_info_fetch(match_info, 1);
+        guid_u = g_ascii_strup(guid, -1);
+
+        g_free(guid);
+    }
+
+    g_match_info_free(match_info);
+
+    return guid_u;
+}
+
 gchar* wintc_sh_path_for_guid(
     const gchar* guid
 )

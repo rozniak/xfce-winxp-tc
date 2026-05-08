@@ -12,6 +12,9 @@ const gchar* wintc_sh_get_place_path(
     WinTCShPlace place
 );
 
+gchar* wintc_sh_guid_for_path(
+    const gchar* path
+);
 gchar* wintc_sh_path_for_guid(
     const gchar* guid
 );

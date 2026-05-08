@@ -325,11 +325,12 @@ static void wintc_sh_view_desktop_constructed(
     GError*            error     = NULL;
     WinTCShextPathInfo path_info = { 0 };
 
-    path_info.base_path =
-        g_strdup_printf(
-            "file://%s",
-            g_get_user_special_dir(G_USER_DIRECTORY_DESKTOP)
-        );
+    wintc_sh_view_desktop_get_path(
+        WINTC_ISHEXT_VIEW(view_desk),
+        &path_info
+    );
+
+    path_info.extended_path = g_strdup("/");
 
     view_desk->view_user_desktop =
         wintc_shext_host_get_view_for_path(

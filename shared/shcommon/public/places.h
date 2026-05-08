@@ -22,7 +22,9 @@ typedef enum {
     WINTC_SH_PLACE_NETHOOD,
     WINTC_SH_PLACE_CONTROLPANEL,
     WINTC_SH_PLACE_CONNECTIONS,
-    WINTC_SH_PLACE_PRINTERS
+    WINTC_SH_PLACE_PRINTERS,
+
+    WINTC_SH_PLACE_UNKNOWN = 1717
 } WinTCShPlace;
 
 //
@@ -32,5 +34,12 @@ extern const gchar* WINTC_SH_GUID_CPL;
 extern const gchar* WINTC_SH_GUID_DESKTOP;
 extern const gchar* WINTC_SH_GUID_DRIVES;
 extern const gchar* WINTC_SH_GUID_PRINTERS;
+
+//
+// PUBLIC FUNCTIONS
+//
+WinTCShPlace wintc_sh_get_place_from_guid(
+    const gchar* guid
+);
 
 #endif
