@@ -120,6 +120,10 @@ static GList* wintc_sh_view_fs_convert_list_hashes(
     WinTCShViewFS* view_fs,
     GList*         list_items
 );
+static guint wintc_sh_view_fs_get_contextual_hash(
+    WinTCShViewFS* view_fs,
+    const gchar*   path
+);
 static WinTCShextViewItem* wintc_sh_view_fs_get_view_item(
     WinTCShViewFS* view_fs,
     guint          item_hash
@@ -689,6 +693,30 @@ static void wintc_sh_view_fs_get_parent_path(
 {
     WinTCShViewFS* view_fs = WINTC_SH_VIEW_FS(view);
 
+    // Special handling for if this is a FS view created underneath a shell
+    // folder
+    //
+    if (view_fs->guid_context)
+    {
+        path_info->base_path =
+            wintc_sh_path_for_guid(view_fs->guid_context);
+        path_info->extended_path =
+            g_path_get_dirname(view_fs->guid_rel_path);
+
+        if (
+            g_strcmp0(path_info->extended_path, "/") == 0 ||
+            g_strcmp0(path_info->extended_path, ".") == 0
+        )
+        {
+            g_free(g_steal_pointer(&(path_info->extended_path)));
+        }
+
+        return;
+    }
+
+    // Default handling: nav to parent, unless this is the drive root in which
+    // case nav to My Computer
+    //
     if (view_fs->parent_path)
     {
         path_info->base_path =
@@ -722,7 +750,10 @@ static guint wintc_sh_view_fs_get_unique_hash(
 {
     WinTCShViewFS* view_fs = WINTC_SH_VIEW_FS(view);
 
-    return g_str_hash(view_fs->path);
+    return wintc_sh_view_fs_get_contextual_hash(
+        view_fs,
+        view_fs->path
+    );
 }
 
 static gboolean wintc_sh_view_fs_has_parent(
@@ -823,7 +854,10 @@ static void wintc_sh_view_fs_refresh_items(
                                  g_strdup("inode-directory") :
                                  get_file_mime_icon(file);
         item->is_leaf      = !is_dir;
-        item->hash         = g_str_hash(entry_path);
+        item->hash         = wintc_sh_view_fs_get_contextual_hash(
+                                 view_fs,
+                                 entry_path
+                             );
 
         g_free(entry_path);
         g_object_unref(file);
@@ -1015,7 +1049,19 @@ static gboolean real_activate_item(
     {
         if (path_info)
         {
-            path_info->base_path = target_path;
+            if (view_fs->guid_context)
+            {
+                path_info->base_path =
+                    wintc_sh_path_for_guid(view_fs->guid_context);
+                path_info->extended_path =
+                    g_strdup(
+                        next_path + (view_fs->guid_rel_path - view_fs->path)
+                    );
+            }
+            else
+            {
+                path_info->base_path = target_path;
+            }
         }
         else
         {
@@ -1068,6 +1114,37 @@ static GList* wintc_sh_view_fs_convert_list_hashes(
     }
 
     return list_items;
+}
+
+static guint wintc_sh_view_fs_get_contextual_hash(
+    WinTCShViewFS* view_fs,
+    const gchar*   path
+)
+{
+    guint  hash;
+
+    if (view_fs->guid_context)
+    {
+        // Special case handling for FS views that are created underneath a shell
+        // folder -- essentially insert the GUID path as part of the hash
+        //
+        gchar* tmp =
+            g_strdup_printf(
+                "::{%s}%s",
+                view_fs->guid_context,
+                path + (view_fs->guid_rel_path - view_fs->path)
+            );
+
+        hash = g_str_hash(tmp);
+
+        g_free(tmp);
+    }
+    else
+    {
+        hash = g_str_hash(path);
+    }
+
+    return hash;
 }
 
 static WinTCShextViewItem* wintc_sh_view_fs_get_view_item(
@@ -1274,7 +1351,10 @@ static void on_file_monitor_changed(
                                      g_strdup("inode-directory") :
                                      get_file_mime_icon(file);
             item->is_leaf      = !is_dir;
-            item->hash         = g_str_hash(file_path);
+            item->hash         = wintc_sh_view_fs_get_contextual_hash(
+                                     view_fs,
+                                     file_path
+                                 );
 
             // Did we just make this item?
             //
