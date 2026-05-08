@@ -23,8 +23,8 @@ GType wintc_sh_view_fs_get_type(void) G_GNUC_CONST;
 // PUBLIC FUNCTIONS
 //
 WinTCIShextView* wintc_sh_view_fs_new(
-    WinTCShextHost* shext_host,
-    const gchar*    path
+    WinTCShextHost*           shext_host,
+    const WinTCShextPathInfo* path_info
 );
 
 #endif

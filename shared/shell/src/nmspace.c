@@ -116,10 +116,10 @@ static WinTCIShextView* factory_view_for_filesystem(
     const WinTCShextPathInfo* path_info
 )
 {
-    const gchar* path_in_url =
-        path_info->base_path + g_utf8_strlen("file://", -1);
+    WINTC_LOG_DEBUG(
+        "shell: create new fs view for %s",
+        path_info->base_path
+    );
 
-    WINTC_LOG_DEBUG("shell: create new fs view for %s", path_in_url);
-
-    return wintc_sh_view_fs_new(shext_host, path_in_url);
+    return wintc_sh_view_fs_new(shext_host, path_info);
 }

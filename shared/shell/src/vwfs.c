@@ -17,7 +17,7 @@
 enum
 {
     PROP_SHEXT_HOST = 1,
-    PROP_PATH,
+    PROP_PATH_INFO,
     PROP_ICON_NAME
 };
 
@@ -244,12 +244,11 @@ static void wintc_sh_view_fs_class_init(
     );
     g_object_class_install_property(
         object_class,
-        PROP_PATH,
-        g_param_spec_string(
-            "path",
-            "Path",
+        PROP_PATH_INFO,
+        g_param_spec_pointer(
+            "path-info",
+            "PathInfo",
             "The path to open in the view.",
-            NULL,
             G_PARAM_READWRITE | G_PARAM_CONSTRUCT
         )
     );
@@ -329,9 +328,18 @@ static void wintc_sh_view_fs_get_property(
 
     switch (prop_id)
     {
-        case PROP_PATH:
-            g_value_set_string(value, view_fs->path);
+        case PROP_PATH_INFO:
+        {
+            WinTCShextPathInfo* path_info =
+                g_new0(WinTCShextPathInfo, 1);
+
+            path_info->base_path =
+                g_strdup_printf("file://%s", view_fs->path);
+
+            g_value_set_pointer(value, path_info);
+
             break;
+        }
 
         case PROP_ICON_NAME:
             g_value_set_string(
@@ -361,10 +369,25 @@ static void wintc_sh_view_fs_set_property(
             view->shext_host = g_value_dup_object(value);
             break;
 
-        case PROP_PATH:
+        case PROP_PATH_INFO:
         {
-            const gchar* raw_path = g_value_get_string(value);
-            gint         path_len = g_utf8_strlen(raw_path, -1);
+            const WinTCShextPathInfo* path_info = g_value_get_pointer(value);
+
+            gint         path_len = g_utf8_strlen(path_info->base_path, -1);
+            const gchar* raw_path;
+
+            // Skip 'file://'
+            //
+            if (path_len < 7)
+            {
+                g_critical(
+                    "shell: fs view: invalid path: %s",
+                    path_info->base_path
+                );
+            }
+
+            path_len -= 7;
+            raw_path  = path_info->base_path + 7;
 
             // Strip off trailing /, unless this is literally /
             //
@@ -829,14 +852,14 @@ static WinTCShextOperation* wintc_sh_view_fs_spawn_operation(
 // PUBLIC FUNCTIONS
 //
 WinTCIShextView* wintc_sh_view_fs_new(
-    WinTCShextHost* shext_host,
-    const gchar*    path
+    WinTCShextHost*           shext_host,
+    const WinTCShextPathInfo* path_info
 )
 {
     return WINTC_ISHEXT_VIEW(
         g_object_new(
             WINTC_TYPE_SH_VIEW_FS,
-            "path",       path,
+            "path-info",  path_info,
             "shext-host", shext_host,
             NULL
         )
