@@ -1060,15 +1060,15 @@ static gboolean real_activate_item(
             }
             else
             {
-                path_info->base_path = target_path;
+                path_info->base_path = g_steal_pointer(&target_path);
             }
         }
         else
         {
             success = wintc_launch_command(target_path, error);
-
-            g_free(target_path);
         }
+
+        g_free(target_path);
     }
     else
     {
