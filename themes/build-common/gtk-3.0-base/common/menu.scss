@@ -103,16 +103,6 @@ menu,
             @include __wintc_apply_props($popup_menu_menuitem_inactive_styles);
         }
 
-        &:first-child
-        {
-            margin-top: 4px;
-        }
-
-        &:last-child
-        {
-            margin-bottom: 4px;
-        }
-
         // Submenu indicators
         //
         arrow

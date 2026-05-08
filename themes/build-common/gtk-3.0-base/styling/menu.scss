@@ -94,6 +94,16 @@ $popup_menu_styles:
         undefined,
         url('../Resources/popup_menu_border.png')
     );
+$popup_menu_styles:
+    wintc_define_props_box(
+        $popup_menu_styles,
+        true,
+        padding,
+        4,
+        0,
+        4,
+        0
+    );
 
 $popup_menu_menuitem_styles:
     wintc_define_props_box(
