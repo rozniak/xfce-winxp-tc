@@ -860,11 +860,9 @@ static void on_tree_view_row_activated(
         return;
     }
 
-    // Attempt to retrieve the view via tree path
+    // Retrieve the item hash, we'll activate it on the parent in a mo'
     //
-    GError*          error = NULL;
-    guint            hash;
-    WinTCIShextView* view;
+    guint hash;
 
     gtk_tree_model_get(
         model,
@@ -873,38 +871,21 @@ static void on_tree_view_row_activated(
         -1
     );
 
-    view =
-        g_hash_table_lookup(
-            behaviour->map_hash_to_view,
-            GUINT_TO_POINTER(hash)
-        );
-
-    // Activate the view if we have it, otherwise look to the parent and go
-    // from there
+    // Retrieve the path info for navigation -- we do this via the parent node
+    // so that we can retain context, if this tree comes from a shell folder
+    //
+    // (if we just did get_path on the node itself it would only give us the
+    // real path, which will not work for descendants of a shell folder)
     //
     WinTCShextPathInfo path_info = { 0 };
 
-    if (view)
-    {
-        wintc_ishext_view_get_path(view, &path_info);
-    }
-    else
-    {
-        // We should be able to nav via the parent
-        //
-        GtkTreeIter parent;
-        guint       parent_hash;
+    GError*          error = NULL;
+    GtkTreeIter      parent;
+    guint            parent_hash;
+    WinTCIShextView* view;
 
-        if (!gtk_tree_model_iter_parent(model, &parent, &iter))
-        {
-            // This should be impossible, only the desktop would have no parent
-            // and we always init views up to the root so this path will never
-            // be hit
-            //
-            g_critical("%s", "shell: tree view could not traverse via parent");
-            return;
-        }
-
+    if (gtk_tree_model_iter_parent(model, &parent, &iter))
+    {
         gtk_tree_model_get(
             model,
             &parent,
@@ -918,14 +899,6 @@ static void on_tree_view_row_activated(
                 GUINT_TO_POINTER(parent_hash)
             );
 
-        if (!view)
-        {
-            // Another impossibility, just like above
-            //
-            g_critical("%s", "shell: tree view no parent view to traverse");
-            return;
-        }
-
         if (
             !wintc_ishext_view_activate_item(
                 view,
@@ -938,6 +911,21 @@ static void on_tree_view_row_activated(
             wintc_log_error_and_clear(&error);
             return;
         }
+    }
+    else
+    {
+        // Handle the root node case
+        //
+        view =
+            g_hash_table_lookup(
+                behaviour->map_hash_to_view,
+                GUINT_TO_POINTER(hash)
+            );
+
+        wintc_ishext_view_get_path(
+            view,
+            &path_info
+        );
     }
 
     if (
