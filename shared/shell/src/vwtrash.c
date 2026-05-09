@@ -2,6 +2,7 @@
 #include <wintc/comgtk.h>
 #include <wintc/shcommon.h>
 #include <wintc/shellext.h>
+#include <wintc/shlang.h>
 
 #include "../public/vwtrash.h"
 
@@ -11,6 +12,12 @@
 enum
 {
     PROP_ICON_NAME = 1
+};
+
+enum
+{
+    SHEXT_CUSTOM_OP_EMPTY = 100,
+    SHEXT_CUSTOM_OP_RESTORE
 };
 
 //
@@ -284,16 +291,52 @@ static GMenuModel* wintc_sh_view_trash_get_operations_for_item(
     WINTC_UNUSED(guint            item_hash)
 )
 {
-    g_warning("%s Not Implemented", __func__);
-    return NULL;
+    GtkBuilder* builder;
+    GMenuModel* menu;
+
+    builder =
+        gtk_builder_new_from_resource(
+            "/uk/oddmatics/wintc/shell/menurblf.ui"
+        );
+
+    wintc_lc_builder_preprocess_widget_text(builder);
+
+    menu =
+        G_MENU_MODEL(
+            g_object_ref(
+                gtk_builder_get_object(builder, "menu")
+            )
+        );
+
+    g_object_unref(builder);
+
+    return menu;
 }
 
 static GMenuModel* wintc_sh_view_trash_get_operations_for_view(
     WINTC_UNUSED(WinTCIShextView* view)
 )
 {
-    g_warning("%s Not Implemented", __func__);
-    return NULL;
+    GtkBuilder* builder;
+    GMenuModel* menu;
+
+    builder =
+        gtk_builder_new_from_resource(
+            "/uk/oddmatics/wintc/shell/menurb.ui"
+        );
+
+    wintc_lc_builder_preprocess_widget_text(builder);
+
+    menu =
+        G_MENU_MODEL(
+            g_object_ref(
+                gtk_builder_get_object(builder, "menu")
+            )
+        );
+
+    g_object_unref(builder);
+
+    return menu;
 }
 
 static void wintc_sh_view_trash_get_parent_path(

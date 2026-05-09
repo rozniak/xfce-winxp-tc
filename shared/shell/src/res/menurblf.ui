@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <menu id="menu">
+    <section>
+      <item>
+        <attribute name="action">control.view-op</attribute>
+        <attribute name="label">Restore</attribute>
+        <attribute name="target" type="i">101</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="action">control.view-op</attribute>
+        <attribute name="label">Cut</attribute>
+        <attribute name="target" type="i">4</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="action">control.view-op</attribute>
+        <attribute name="label">Delete</attribute>
+        <attribute name="target" type="i">9</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="action">control.view-op</attribute>
+        <attribute name="label">Properties</attribute>
+        <attribute name="target" type="i">14</attribute>
+      </item>
+    </section>
+  </menu>
+</interface>
