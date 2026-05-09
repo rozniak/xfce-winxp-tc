@@ -4,6 +4,8 @@
 #include <wintc/shellext.h>
 #include <wintc/shlang.h>
 
+#include "../public/fsclipbd.h"
+#include "../public/fsop.h"
 #include "../public/vwtrash.h"
 
 //
@@ -95,9 +97,57 @@ static void clear_view_item(
     WinTCShextViewItem* item
 );
 
+static gchar* wintc_sh_view_trash_build_path_for_view_item(
+    WinTCShViewTrash*   view_trash,
+    WinTCShextViewItem* item
+);
+static GList* wintc_sh_view_trash_convert_list_hashes(
+    WinTCShViewTrash* view_trash,
+    GList*            list_items
+);
 static guint wintc_sh_view_trash_get_unique_item_hash(
     WinTCShViewTrash* view_trash,
     const gchar*      name
+);
+static WinTCShextViewItem* wintc_sh_view_trash_get_view_item(
+    WinTCShViewTrash* view_trash,
+    guint             item_hash
+);
+
+static gboolean shopr_cut(
+    WinTCIShextView*     view,
+    WinTCShextOperation* operation,
+    GtkWindow*           wnd,
+    GError**             error
+);
+static gboolean shopr_delete(
+    WinTCIShextView*     view,
+    WinTCShextOperation* operation,
+    GtkWindow*           wnd,
+    GError**             error
+);
+static gboolean shopr_empty(
+    WinTCIShextView*     view,
+    WinTCShextOperation* operation,
+    GtkWindow*           wnd,
+    GError**             error
+);
+static gboolean shopr_paste(
+    WinTCIShextView*     view,
+    WinTCShextOperation* operation,
+    GtkWindow*           wnd,
+    GError**             error
+);
+static gboolean shopr_restore(
+    WinTCIShextView*     view,
+    WinTCShextOperation* operation,
+    GtkWindow*           wnd,
+    GError**             error
+);
+
+static void on_fs_operation_done(
+    WinTCShFSOperation* self,
+    gpointer            user_data
 );
 
 //
@@ -111,6 +161,8 @@ struct _WinTCShViewTrash
     //
     GFile*      file_trash;
     GHashTable* map_entries;
+
+    WinTCShFSClipboard* fs_clipboard;
 };
 
 //
@@ -147,7 +199,8 @@ static void wintc_sh_view_trash_init(
     WinTCShViewTrash* self
 )
 {
-    self->file_trash = g_file_new_for_uri("trash:///");
+    self->file_trash   = g_file_new_for_uri("trash:///");
+    self->fs_clipboard = wintc_sh_fs_clipboard_new();
 }
 
 static void wintc_sh_view_trash_ishext_view_interface_init(
@@ -180,7 +233,8 @@ static void wintc_sh_view_trash_dispose(
 {
     WinTCShViewTrash* view_trash = WINTC_SH_VIEW_TRASH(object);
 
-    g_object_unref(view_trash->file_trash);
+    g_clear_object(&(view_trash->file_trash));
+    g_clear_object(&(view_trash->fs_clipboard));
 
     (G_OBJECT_CLASS(wintc_sh_view_trash_parent_class))
         ->dispose(object);
@@ -473,14 +527,76 @@ static void wintc_sh_view_trash_refresh_items(
 }
 
 static WinTCShextOperation* wintc_sh_view_trash_spawn_operation(
-    WINTC_UNUSED(WinTCIShextView* view),
-    WINTC_UNUSED(gint             operation_id),
-    WINTC_UNUSED(GList*           targets),
-    WINTC_UNUSED(GError**         error)
+    WinTCIShextView* view,
+    gint             operation_id,
+    GList*           targets,
+    GError**         error
 )
 {
-    g_warning("%s Not Implemented", __func__);
-    return NULL;
+    WinTCShViewTrash* view_trash = WINTC_SH_VIEW_TRASH(view);
+
+    // Spawn op
+    //
+    WinTCShextOperation* ret = g_new(WinTCShextOperation, 1);
+
+    ret->view = view;
+
+    switch (operation_id)
+    {
+        case WINTC_SHEXT_KNOWN_OP_CUT:
+            ret->func = shopr_cut;
+            ret->priv = wintc_sh_view_trash_convert_list_hashes(
+                            view_trash,
+                            g_steal_pointer(&targets)
+                        );
+            break;
+
+        case WINTC_SHEXT_KNOWN_OP_DELETE:
+            ret->func = shopr_delete;
+            ret->priv = wintc_sh_view_trash_convert_list_hashes(
+                            view_trash,
+                            g_steal_pointer(&targets)
+                        );
+            break;
+
+        case WINTC_SHEXT_KNOWN_OP_PASTE:
+            ret->func = shopr_paste;
+            ret->priv = wintc_sh_view_trash_convert_list_hashes(
+                            view_trash,
+                            g_steal_pointer(&targets)
+                        );
+            break;
+
+        case SHEXT_CUSTOM_OP_EMPTY:
+            ret->func = shopr_empty;
+            ret->priv = NULL;
+            break;
+
+        case SHEXT_CUSTOM_OP_RESTORE:
+            ret->func = shopr_restore;
+            ret->priv = wintc_sh_view_trash_convert_list_hashes(
+                            view_trash,
+                            g_steal_pointer(&targets)
+                        );
+            break;
+
+        default:
+            g_clear_pointer(&ret, g_free);
+
+            g_set_error(
+                error,
+                wintc_general_error_quark(),
+                WINTC_GENERAL_ERROR_NOTIMPL,
+                "Sorry! Operation not implemented: %d",
+                operation_id
+            );
+
+            break;
+    }
+
+    g_clear_list(&targets, NULL);
+
+    return ret;
 }
 
 //
@@ -507,6 +623,37 @@ static void clear_view_item(
     g_free(item);
 }
 
+static gchar* wintc_sh_view_trash_build_path_for_view_item(
+    WINTC_UNUSED(WinTCShViewTrash* view_trash),
+    WinTCShextViewItem* item
+)
+{
+    return g_strdup_printf("trash:///%s", item->display_name);
+}
+
+static GList* wintc_sh_view_trash_convert_list_hashes(
+    WinTCShViewTrash* view_trash,
+    GList*            list_items
+)
+{
+    for (GList* iter = list_items; iter; iter = iter->next)
+    {
+        WinTCShextViewItem* item =
+            wintc_sh_view_trash_get_view_item(
+                view_trash,
+                GPOINTER_TO_UINT(iter->data)
+            );
+
+        iter->data =
+            wintc_sh_view_trash_build_path_for_view_item(
+                view_trash,
+                item
+            );
+    }
+
+    return list_items;
+}
+
 static guint wintc_sh_view_trash_get_unique_item_hash(
     WINTC_UNUSED(WinTCShViewTrash* view_trash),
     const gchar* name
@@ -518,4 +665,122 @@ static guint wintc_sh_view_trash_get_unique_item_hash(
     guint hash2 = g_str_hash(name);
 
     return hash1 * 33 + hash2;
+}
+
+static WinTCShextViewItem* wintc_sh_view_trash_get_view_item(
+    WinTCShViewTrash* view_trash,
+    guint             item_hash
+)
+{
+    return
+        (WinTCShextViewItem*)
+        g_hash_table_lookup(
+            view_trash->map_entries,
+            GUINT_TO_POINTER(item_hash)
+        );
+}
+
+static gboolean shopr_cut(
+    WinTCIShextView*     view,
+    WinTCShextOperation* operation,
+    WINTC_UNUSED(GtkWindow* wnd),
+    GError**             error
+)
+{
+    WinTCShViewTrash* view_trash = WINTC_SH_VIEW_TRASH(view);
+
+    return wintc_sh_fs_clipboard_copymove(
+        view_trash->fs_clipboard,
+        (GList*) operation->priv,
+        TRUE,
+        error
+    );
+}
+
+static gboolean shopr_delete(
+    WINTC_UNUSED(WinTCIShextView* view),
+    WinTCShextOperation* operation,
+    GtkWindow*           wnd,
+    WINTC_UNUSED(GError** error)
+)
+{
+    WinTCShFSOperation* op =
+        wintc_sh_fs_operation_new(
+            (GList*) operation->priv,
+            NULL,
+            WINTC_SH_FS_OPERATION_TRASH
+        );
+
+    g_signal_connect(
+        op,
+        "done",
+        G_CALLBACK(on_fs_operation_done),
+        operation->priv
+    );
+
+    wintc_sh_fs_operation_do(op, wnd);
+
+    return TRUE;
+}
+
+static gboolean shopr_empty(
+    WINTC_UNUSED(WinTCIShextView*     view),
+    WINTC_UNUSED(WinTCShextOperation* operation),
+    WINTC_UNUSED(GtkWindow*           wnd),
+    GError** error
+)
+{
+    g_set_error(
+        error,
+        wintc_general_error_quark(),
+        WINTC_GENERAL_ERROR_NOTIMPL,
+        "%s",
+        "Sorry, not implemented!"
+    );
+
+    return FALSE;
+}
+
+static gboolean shopr_paste(
+    WinTCIShextView*     view,
+    WINTC_UNUSED(WinTCShextOperation* operation),
+    GtkWindow*           wnd,
+    GError**             error
+)
+{
+    WinTCShViewTrash* view_trash = WINTC_SH_VIEW_TRASH(view);
+
+    return wintc_sh_fs_clipboard_paste(
+        view_trash->fs_clipboard,
+        "trash:///",
+        wnd,
+        error
+    );
+}
+
+static gboolean shopr_restore(
+    WINTC_UNUSED(WinTCIShextView*     view),
+    WINTC_UNUSED(WinTCShextOperation* operation),
+    WINTC_UNUSED(GtkWindow*           wnd),
+    GError** error
+)
+{
+    g_set_error(
+        error,
+        wintc_general_error_quark(),
+        WINTC_GENERAL_ERROR_NOTIMPL,
+        "%s",
+        "Sorry, not implemented!"
+    );
+
+    return FALSE;
+}
+
+static void on_fs_operation_done(
+    WinTCShFSOperation* self,
+    gpointer            user_data
+)
+{
+    g_list_free_full((GList*) user_data, g_free);
+    g_object_unref(self);
 }
