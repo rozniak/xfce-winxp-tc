@@ -724,21 +724,42 @@ static gboolean shopr_delete(
 }
 
 static gboolean shopr_empty(
-    WINTC_UNUSED(WinTCIShextView*     view),
+    WinTCIShextView* view,
     WINTC_UNUSED(WinTCShextOperation* operation),
-    WINTC_UNUSED(GtkWindow*           wnd),
-    GError** error
+    GtkWindow*       wnd,
+    WINTC_UNUSED(GError** error)
 )
 {
-    g_set_error(
-        error,
-        wintc_general_error_quark(),
-        WINTC_GENERAL_ERROR_NOTIMPL,
-        "%s",
-        "Sorry, not implemented!"
+    WinTCShViewTrash* view_trash = WINTC_SH_VIEW_TRASH(view);
+
+    // Convert all the entries into paths for deletion
+    //
+    GList* entries = g_hash_table_get_keys(view_trash->map_entries);
+
+    wintc_sh_view_trash_convert_list_hashes(
+        view_trash,
+        entries
     );
 
-    return FALSE;
+    // Set up and execute the delete operation
+    //
+    WinTCShFSOperation* op =
+        wintc_sh_fs_operation_new(
+            entries,
+            NULL,
+            WINTC_SH_FS_OPERATION_DELETE
+        );
+
+    g_signal_connect(
+        op,
+        "done",
+        G_CALLBACK(on_fs_operation_done),
+        entries
+    );
+
+    wintc_sh_fs_operation_do(op, wnd);
+
+    return TRUE;
 }
 
 static gboolean shopr_paste(
