@@ -48,6 +48,10 @@ static void wintc_sh_fs_operation_set_property(
     GParamSpec*   pspec
 );
 
+static void wintc_sh_fs_operation_recurse_collect_entries(
+    WinTCShFSOperation* fs_operation,
+    GList*              iter_cur
+);
 static void wintc_sh_fs_operation_step(
     WinTCShFSOperation* fs_operation
 );
@@ -172,7 +176,7 @@ static void wintc_sh_fs_operation_class_init(
             "Operation",
             "The operation to perform.",
             WINTC_SH_FS_OPERATION_INVALID,
-            WINTC_SH_FS_OPERATION_TRASH,
+            WINTC_SH_FS_OPERATION_DELETE,
             WINTC_SH_FS_OPERATION_INVALID,
             G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY
         )
@@ -252,6 +256,24 @@ static void wintc_sh_fs_operation_constructed(
             &(fs_operation->dest),
             (GDestroyNotify) g_free
         );
+    }
+
+    //
+    // FIXME: Handle situation when trashing is not possible - upgrade to
+    //        deletion
+    //
+
+    // If the operation is a permanent delete, any dirs must be expanded
+    //
+    if (fs_operation->operation_kind == WINTC_SH_FS_OPERATION_DELETE)
+    {
+        for (GList* iter = fs_operation->list_files; iter; iter = iter->next)
+        {
+            wintc_sh_fs_operation_recurse_collect_entries(
+                fs_operation,
+                iter
+            );
+        }
     }
 
     (G_OBJECT_CLASS(wintc_sh_fs_operation_parent_class))
@@ -428,6 +450,79 @@ void wintc_sh_fs_operation_do(
 //
 // PRIVATE FUNCTIONS
 //
+static void wintc_sh_fs_operation_recurse_collect_entries(
+    WinTCShFSOperation* fs_operation,
+    GList*              iter_cur
+)
+{
+    const gchar* path = (gchar*) iter_cur->data;
+
+    // No need to expand if it's not a dir
+    //
+    if (!g_file_test(path, G_FILE_TEST_IS_DIR))
+    {
+        return;
+    }
+
+    // Enum over the directory, and then recursively operate on its entries
+    //
+    GError*          error = NULL;
+    GFile*           file;
+    GFileEnumerator* fs_enum;
+    GFileInfo*       info;
+
+    file = get_g_file_for_target(path);
+
+    fs_enum =
+        g_file_enumerate_children(
+            file,
+            G_FILE_ATTRIBUTE_STANDARD_NAME "," G_FILE_ATTRIBUTE_STANDARD_TYPE,
+            G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
+            NULL,
+            &error
+        );
+
+    if (!fs_enum)
+    {
+        wintc_log_error_and_clear(&error);
+
+        fs_operation->operation_kind = WINTC_SH_FS_OPERATION_INVALID;
+
+        return;
+    }
+
+    for (
+        info = g_file_enumerator_next_file(fs_enum, NULL, NULL);
+        info;
+        info = g_file_enumerator_next_file(fs_enum, NULL, NULL)
+    )
+    {
+        fs_operation->list_files =
+            g_list_insert_before(
+                fs_operation->list_files,
+                iter_cur,
+                g_strdup_printf(
+                    "%s/%s",
+                    path,
+                    g_file_info_get_name(info)
+                )
+            );
+
+        // Recurse
+        //
+        wintc_sh_fs_operation_recurse_collect_entries(
+            fs_operation,
+            iter_cur->prev // The item we just added
+        );
+
+        g_object_unref(info);
+    }
+
+    g_file_enumerator_close(fs_enum, NULL, NULL);
+    g_object_unref(fs_enum);
+    g_object_unref(file);
+}
+
 static void wintc_sh_fs_operation_step(
     WinTCShFSOperation* fs_operation
 )
@@ -522,6 +617,22 @@ static void wintc_sh_fs_operation_step(
             );
 
             g_file_trash_async(
+                src_file,
+                G_PRIORITY_DEFAULT,
+                fs_operation->cancellable,
+                (GAsyncReadyCallback) cb_async_file_op,
+                fs_operation
+            );
+
+            break;
+
+        case WINTC_SH_FS_OPERATION_DELETE:
+            WINTC_LOG_DEBUG(
+                "shell: fsop - delete %s",
+                (gchar*) fs_operation->iter_op->data
+            );
+
+            g_file_delete_async(
                 src_file,
                 G_PRIORITY_DEFAULT,
                 fs_operation->cancellable,
@@ -641,6 +752,10 @@ static void cb_async_file_op(
 
         case WINTC_SH_FS_OPERATION_TRASH:
             success = g_file_trash_finish(file, res, &error);
+            break;
+
+        case WINTC_SH_FS_OPERATION_DELETE:
+            success = g_file_delete_finish(file, res, &error);
             break;
 
         default:
@@ -823,6 +938,7 @@ static gboolean cb_timeout_show_ui(
             break;
 
         case WINTC_SH_FS_OPERATION_TRASH:
+        case WINTC_SH_FS_OPERATION_DELETE:
             gtk_window_set_title(
                 GTK_WINDOW(fs_operation->wnd_progress),
                 "Deleting..."

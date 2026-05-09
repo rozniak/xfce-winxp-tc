@@ -708,7 +708,7 @@ static gboolean shopr_delete(
         wintc_sh_fs_operation_new(
             (GList*) operation->priv,
             NULL,
-            WINTC_SH_FS_OPERATION_TRASH
+            WINTC_SH_FS_OPERATION_DELETE
         );
 
     g_signal_connect(
