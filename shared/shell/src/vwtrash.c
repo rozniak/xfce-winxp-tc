@@ -146,6 +146,13 @@ static gboolean shopr_restore(
     GError**             error
 );
 
+static void on_file_monitor_changed(
+    GFileMonitor*     self,
+    GFile*            file,
+    GFile*            other_file,
+    GFileMonitorEvent event_type,
+    gpointer          user_data
+);
 static void on_fs_operation_done(
     WinTCShFSOperation* self,
     gpointer            user_data
@@ -164,8 +171,9 @@ struct _WinTCShViewTrash
 
     // State
     //
-    GFile*      file_trash;
-    GHashTable* map_entries;
+    GFileMonitor* file_monitor;
+    GFile*        file_trash;
+    GHashTable*   map_entries;
 
     WinTCShFSClipboard* fs_clipboard;
 };
@@ -204,8 +212,28 @@ static void wintc_sh_view_trash_init(
     WinTCShViewTrash* self
 )
 {
+    GError* error = NULL;
+
     self->file_trash   = g_file_new_for_uri("trash:///");
     self->fs_clipboard = wintc_sh_fs_clipboard_new();
+
+    self->file_monitor =
+        g_file_monitor_directory(
+            self->file_trash,
+            0,
+            NULL,
+            &error
+        );
+
+    if (self->file_monitor)
+    {
+        g_signal_connect(
+            self->file_monitor,
+            "changed",
+            G_CALLBACK(on_file_monitor_changed),
+            self
+        );
+    }
 }
 
 static void wintc_sh_view_trash_ishext_view_interface_init(
@@ -841,6 +869,102 @@ static gboolean shopr_restore(
     g_clear_list(&entries, (GDestroyNotify) g_free);
 
     return success;
+}
+
+static void on_file_monitor_changed(
+    WINTC_UNUSED(GFileMonitor* self),
+    GFile*            file,
+    WINTC_UNUSED(GFile* other_file),
+    GFileMonitorEvent event_type,
+    gpointer          user_data
+)
+{
+    WinTCShViewTrash* view_trash = WINTC_SH_VIEW_TRASH(user_data);
+
+    GList*                    data   = NULL;
+    GFileInfo*                info;
+    gboolean                  is_dir;
+    WinTCShextViewItem*       item;
+    gchar*                    name   = g_file_get_basename(file);
+    WinTCShextViewItemsUpdate update = { 0 };
+
+    switch (event_type)
+    {
+        case G_FILE_MONITOR_EVENT_CREATED:
+            info =
+                g_file_query_info(
+                    file,
+                    G_FILE_ATTRIBUTE_STANDARD_TYPE,
+                    G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
+                    NULL,
+                    NULL
+                );
+
+            is_dir = g_file_info_get_file_type(info) == G_FILE_TYPE_DIRECTORY;
+
+            WINTC_LOG_DEBUG("shell: trash monitor - %s created", name);
+
+            item = g_new(WinTCShextViewItem, 1);
+
+            item->display_name = g_steal_pointer(&name);
+            item->icon_name    = is_dir ? "inode-directory" : "empty";
+            item->is_leaf      = TRUE;
+            item->hash         = wintc_sh_view_trash_get_unique_item_hash(
+                                     view_trash,
+                                     item->display_name
+                                 );
+
+            g_hash_table_insert(
+                view_trash->map_entries,
+                GUINT_TO_POINTER(item->hash),
+                item
+            );
+
+            // Issue update
+            //
+            data = g_list_prepend(data, item);
+
+            update.data = data;
+            update.done = TRUE;
+
+            _wintc_ishext_view_items_added(
+                WINTC_ISHEXT_VIEW(view_trash),
+                &update
+            );
+
+            break;
+
+        case G_FILE_MONITOR_EVENT_DELETED:
+            WINTC_LOG_DEBUG("shell: trash monitor - %s deleted", name);
+
+            // Issue update
+            //
+            data =
+                g_list_prepend(
+                    data,
+                    GUINT_TO_POINTER(
+                        wintc_sh_view_trash_get_unique_item_hash(
+                            view_trash,
+                            name
+                        )
+                    )
+                );
+
+            update.data = data;
+            update.done = TRUE;
+
+            _wintc_ishext_view_items_removed(
+                WINTC_ISHEXT_VIEW(view_trash),
+                &update
+            );
+
+            break;
+
+        default: break;
+    }
+
+    g_list_free(data);
+    g_free(name);
 }
 
 static void on_fs_operation_done(
