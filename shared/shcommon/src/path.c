@@ -82,6 +82,10 @@ const gchar* wintc_sh_get_place_path(
                 path = wintc_sh_path_for_guid(WINTC_SH_GUID_PRINTERS);
                 break;
 
+            case WINTC_SH_PLACE_RECYCLEBIN:
+                path = wintc_sh_path_for_guid(WINTC_SH_GUID_RECYCLEBIN);
+                break;
+
             default:
                 g_critical("shcommon: place not implemented %d", place);
                 break;

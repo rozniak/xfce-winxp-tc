@@ -9,6 +9,7 @@
 #include "../public/vwdesk.h"
 #include "../public/vwdrives.h"
 #include "../public/vwfs.h"
+#include "../public/vwtrash.h"
 
 //
 // FORWARD DECLARATIONS
@@ -58,6 +59,14 @@ gboolean wintc_sh_init_builtin_extensions(
         FALSE
     );
     WINTC_RETURN_VAL_IF_FAIL(
+        wintc_shext_host_register_view(
+            shext_host,
+            WINTC_SH_GUID_RECYCLEBIN,
+            factory_view_by_guid_cb
+        ),
+        FALSE
+    );
+    WINTC_RETURN_VAL_IF_FAIL(
         wintc_shext_host_use_view_for_mime(
             shext_host,
             "x-scheme-handler/file",
@@ -89,31 +98,33 @@ static WinTCIShextView* factory_view_by_guid_cb(
 {
     WINTC_LOG_DEBUG("shell: create new shell view for %s", assoc_str);
 
-    // Attempt to match one of the GUIDs we installed
-    //
-    if (g_ascii_strcasecmp(assoc_str, WINTC_SH_GUID_CPL) == 0)
-    {
-        return wintc_sh_view_cpl_new();
-    }
-    else if (g_ascii_strcasecmp(assoc_str, WINTC_SH_GUID_DESKTOP) == 0)
-    {
-        // If there is an extended path, then forward onto the FS view
-        //
-        if (path_info->extended_path)
-        {
-            return wintc_sh_view_fs_new(shext_host, path_info);
-        }
+    WinTCShPlace place = wintc_sh_get_place_from_guid(assoc_str);
 
-        return wintc_sh_view_desktop_new(shext_host);
-    }
-    else if (g_ascii_strcasecmp(assoc_str, WINTC_SH_GUID_DRIVES) == 0)
+    switch (place)
     {
-        return wintc_sh_view_drives_new();
+        case WINTC_SH_PLACE_CONTROLPANEL:
+            return wintc_sh_view_cpl_new();
+
+        case WINTC_SH_PLACE_DESKTOP:
+            // If there is an extended path, then forward onto the FS view
+            //
+            if (path_info->extended_path)
+            {
+                return wintc_sh_view_fs_new(shext_host, path_info);
+            }
+
+            return wintc_sh_view_desktop_new(shext_host);
+
+        case WINTC_SH_PLACE_DRIVES:
+            return wintc_sh_view_drives_new();
+
+        case WINTC_SH_PLACE_RECYCLEBIN:
+            return wintc_sh_view_trash_new();
+
+        default:
+            g_critical("shell: no view for GUID %s", assoc_str);
+            return NULL;
     }
-
-    g_critical("shell: no view for GUID %s", assoc_str);
-
-    return NULL;
 }
 
 static WinTCIShextView* factory_view_for_filesystem(

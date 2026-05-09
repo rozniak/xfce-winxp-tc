@@ -34,6 +34,7 @@ extern const gchar* WINTC_SH_GUID_CPL;
 extern const gchar* WINTC_SH_GUID_DESKTOP;
 extern const gchar* WINTC_SH_GUID_DRIVES;
 extern const gchar* WINTC_SH_GUID_PRINTERS;
+extern const gchar* WINTC_SH_GUID_RECYCLEBIN;
 
 //
 // PUBLIC FUNCTIONS

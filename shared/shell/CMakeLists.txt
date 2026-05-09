@@ -72,6 +72,8 @@ add_library(
     public/vwdrives.h
     src/vwfs.c
     public/vwfs.h
+    src/vwtrash.c
+    public/vwtrash.h
 )
 
 set_target_properties(

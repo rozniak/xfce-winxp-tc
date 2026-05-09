@@ -1,0 +1,478 @@
+#include <glib.h>
+#include <wintc/comgtk.h>
+#include <wintc/shcommon.h>
+#include <wintc/shellext.h>
+
+#include "../public/vwtrash.h"
+
+//
+// PRIVATE ENUMS
+//
+enum
+{
+    PROP_ICON_NAME = 1
+};
+
+//
+// FORWARD DECLARATIONS
+//
+static void wintc_sh_view_trash_ishext_view_interface_init(
+    WinTCIShextViewInterface* iface
+);
+
+static void wintc_sh_view_trash_dispose(
+    GObject* object
+);
+static void wintc_sh_view_trash_finalize(
+    GObject* object
+);
+static void wintc_sh_view_trash_get_property(
+    GObject*    object,
+    guint       prop_id,
+    GValue*     value,
+    GParamSpec* pspec
+);
+
+static gboolean wintc_sh_view_trash_activate_item(
+    WinTCIShextView*    view,
+    guint               item_data,
+    WinTCShextPathInfo* path_info,
+    GError**            error
+);
+static gint wintc_sh_view_trash_compare_items(
+    WinTCIShextView* view,
+    guint            item_hash1,
+    guint            item_hash2
+);
+static const gchar* wintc_sh_view_trash_get_display_name(
+    WinTCIShextView* view
+);
+static const gchar* wintc_sh_view_trash_get_icon_name(
+    WinTCIShextView* view
+);
+static GList* wintc_sh_view_trash_get_items(
+    WinTCIShextView* view
+);
+static GMenuModel* wintc_sh_view_trash_get_operations_for_item(
+    WinTCIShextView* view,
+    guint            item_hash
+);
+static GMenuModel* wintc_sh_view_trash_get_operations_for_view(
+    WinTCIShextView* view
+);
+static void wintc_sh_view_trash_get_parent_path(
+    WinTCIShextView*    view,
+    WinTCShextPathInfo* path_info
+);
+static void wintc_sh_view_trash_get_path(
+    WinTCIShextView*    view,
+    WinTCShextPathInfo* path_info
+);
+static guint wintc_sh_view_trash_get_unique_hash(
+    WinTCIShextView* view
+);
+static gboolean wintc_sh_view_trash_has_parent(
+    WinTCIShextView* view
+);
+static void wintc_sh_view_trash_refresh_items(
+    WinTCIShextView* view
+);
+static WinTCShextOperation* wintc_sh_view_trash_spawn_operation(
+    WinTCIShextView* view,
+    gint             operation_id,
+    GList*           targets,
+    GError**         error
+);
+
+static void clear_view_item(
+    WinTCShextViewItem* item
+);
+
+static guint wintc_sh_view_trash_get_unique_item_hash(
+    WinTCShViewTrash* view_trash,
+    const gchar*      name
+);
+
+//
+// GTK OOP CLASS/INSTANCE DEFINITIONS
+//
+struct _WinTCShViewTrash
+{
+    GObject __parent__;
+
+    // State
+    //
+    GFile*      file_trash;
+    GHashTable* map_entries;
+};
+
+//
+// GTK TYPE DEFINITIONS & CTORS
+//
+G_DEFINE_TYPE_WITH_CODE(
+    WinTCShViewTrash,
+    wintc_sh_view_trash,
+    G_TYPE_OBJECT,
+    G_IMPLEMENT_INTERFACE(
+        WINTC_TYPE_ISHEXT_VIEW,
+        wintc_sh_view_trash_ishext_view_interface_init
+    )
+)
+
+static void wintc_sh_view_trash_class_init(
+    WinTCShViewTrashClass* klass
+)
+{
+    GObjectClass* object_class = G_OBJECT_CLASS(klass);
+
+    object_class->dispose      = wintc_sh_view_trash_dispose;
+    object_class->finalize     = wintc_sh_view_trash_finalize;
+    object_class->get_property = wintc_sh_view_trash_get_property;
+
+    g_object_class_override_property(
+        object_class,
+        PROP_ICON_NAME,
+        "icon-name"
+    );
+}
+
+static void wintc_sh_view_trash_init(
+    WinTCShViewTrash* self
+)
+{
+    self->file_trash = g_file_new_for_uri("trash:///");
+}
+
+static void wintc_sh_view_trash_ishext_view_interface_init(
+    WinTCIShextViewInterface* iface
+)
+{
+    iface->activate_item           = wintc_sh_view_trash_activate_item;
+    iface->compare_items           = wintc_sh_view_trash_compare_items;
+    iface->get_display_name        = wintc_sh_view_trash_get_display_name;
+    iface->get_icon_name           = wintc_sh_view_trash_get_icon_name;
+    iface->get_items               = wintc_sh_view_trash_get_items;
+    iface->get_operations_for_item =
+        wintc_sh_view_trash_get_operations_for_item;
+    iface->get_operations_for_view =
+        wintc_sh_view_trash_get_operations_for_view;
+    iface->get_parent_path         = wintc_sh_view_trash_get_parent_path;
+    iface->get_path                = wintc_sh_view_trash_get_path;
+    iface->get_unique_hash         = wintc_sh_view_trash_get_unique_hash;
+    iface->has_parent              = wintc_sh_view_trash_has_parent;
+    iface->refresh_items           = wintc_sh_view_trash_refresh_items;
+    iface->spawn_operation         = wintc_sh_view_trash_spawn_operation;
+}
+
+//
+// CLASS VIRTUAL METHODS
+//
+static void wintc_sh_view_trash_dispose(
+    GObject* object
+)
+{
+    WinTCShViewTrash* view_trash = WINTC_SH_VIEW_TRASH(object);
+
+    g_object_unref(view_trash->file_trash);
+
+    (G_OBJECT_CLASS(wintc_sh_view_trash_parent_class))
+        ->dispose(object);
+}
+
+static void wintc_sh_view_trash_finalize(
+    GObject* object
+)
+{
+    WinTCShViewTrash* view_trash = WINTC_SH_VIEW_TRASH(object);
+
+    if (view_trash->map_entries)
+    {
+        g_hash_table_destroy(
+            g_steal_pointer(&(view_trash->map_entries))
+        );
+    }
+
+    (G_OBJECT_CLASS(wintc_sh_view_trash_parent_class))
+        ->dispose(object);
+}
+
+static void wintc_sh_view_trash_get_property(
+    GObject*    object,
+    guint       prop_id,
+    GValue*     value,
+    GParamSpec* pspec
+)
+{
+    WinTCIShextView* view = WINTC_ISHEXT_VIEW(object);
+
+    switch (prop_id)
+    {
+        case PROP_ICON_NAME:
+            g_value_set_string(
+                value,
+                wintc_ishext_view_get_icon_name(view)
+            );
+            break;
+
+        default:
+            G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
+            break;
+    }
+}
+
+//
+// INTERFACE METHODS (WinTCIShextView)
+//
+static gboolean wintc_sh_view_trash_activate_item(
+    WINTC_UNUSED(WinTCIShextView*    view),
+    WINTC_UNUSED(guint               item_data),
+    WINTC_UNUSED(WinTCShextPathInfo* path_info),
+    GError** error
+)
+{
+    // FIXME: Implement this
+    //
+    g_set_error(
+        error,
+        wintc_general_error_quark(),
+        WINTC_GENERAL_ERROR_NOTIMPL,
+        "Method not implemented: %s",
+        __func__
+    );
+
+    return FALSE;
+}
+
+static gint wintc_sh_view_trash_compare_items(
+    WINTC_UNUSED(WinTCIShextView* view),
+    WINTC_UNUSED(guint item_hash1),
+    WINTC_UNUSED(guint item_hash2)
+)
+{
+    // FIXME: Implement this
+    //
+    return -1;
+}
+
+static const gchar* wintc_sh_view_trash_get_display_name(
+    WINTC_UNUSED(WinTCIShextView* view)
+)
+{
+    // FIXME: Use shlang
+    //
+    return "Recycle Bin";
+}
+
+static const gchar* wintc_sh_view_trash_get_icon_name(
+    WINTC_UNUSED(WinTCIShextView* view)
+)
+{
+    return "user-trash";
+}
+
+static GList* wintc_sh_view_trash_get_items(
+    WINTC_UNUSED(WinTCIShextView* view)
+)
+{
+    WinTCShViewTrash* view_trash = WINTC_SH_VIEW_TRASH(view);
+
+    return g_hash_table_get_values(view_trash->map_entries);
+}
+
+static GMenuModel* wintc_sh_view_trash_get_operations_for_item(
+    WINTC_UNUSED(WinTCIShextView* view),
+    WINTC_UNUSED(guint            item_hash)
+)
+{
+    g_warning("%s Not Implemented", __func__);
+    return NULL;
+}
+
+static GMenuModel* wintc_sh_view_trash_get_operations_for_view(
+    WINTC_UNUSED(WinTCIShextView* view)
+)
+{
+    g_warning("%s Not Implemented", __func__);
+    return NULL;
+}
+
+static void wintc_sh_view_trash_get_parent_path(
+    WINTC_UNUSED(WinTCIShextView* view),
+    WinTCShextPathInfo* path_info
+)
+{
+    path_info->base_path =
+        g_strdup(
+            wintc_sh_get_place_path(WINTC_SH_PLACE_DESKTOP)
+        );
+}
+
+static void wintc_sh_view_trash_get_path(
+    WINTC_UNUSED(WinTCIShextView* view),
+    WinTCShextPathInfo* path_info
+)
+{
+    path_info->base_path =
+        g_strdup(
+            wintc_sh_get_place_path(WINTC_SH_PLACE_RECYCLEBIN)
+        );
+}
+
+static guint wintc_sh_view_trash_get_unique_hash(
+    WINTC_UNUSED(WinTCIShextView* view)
+)
+{
+    return g_str_hash(wintc_sh_get_place_path(WINTC_SH_PLACE_RECYCLEBIN));
+}
+
+static gboolean wintc_sh_view_trash_has_parent(
+    WINTC_UNUSED(WinTCIShextView* view)
+)
+{
+    return TRUE;
+}
+
+static void wintc_sh_view_trash_refresh_items(
+    WinTCIShextView* view
+)
+{
+    WinTCShViewTrash* view_trash = WINTC_SH_VIEW_TRASH(view);
+
+    WINTC_LOG_DEBUG("%s", "shell: refresh trash view");
+
+    _wintc_ishext_view_refreshing(view);
+
+    if (view_trash->map_entries)
+    {
+        g_hash_table_destroy(
+            g_steal_pointer(&(view_trash->map_entries))
+        );
+    }
+
+    view_trash->map_entries =
+        g_hash_table_new_full(
+            g_direct_hash,
+            g_direct_equal,
+            NULL,
+            (GDestroyNotify) clear_view_item
+        );
+
+    // Enumerate the first level children in the bin
+    //
+    GError*          error   = NULL;
+    GFileEnumerator* fs_enum =
+        g_file_enumerate_children(
+            view_trash->file_trash,
+            G_FILE_ATTRIBUTE_STANDARD_NAME "," G_FILE_ATTRIBUTE_STANDARD_TYPE,
+            G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
+            NULL,
+            &error
+        );
+
+
+    if (!fs_enum)
+    {
+        wintc_log_error_and_clear(&error);
+        return;
+    }
+
+    for (
+        GFileInfo* info = g_file_enumerator_next_file(fs_enum, NULL, &error);
+        info;
+        info = g_file_enumerator_next_file(fs_enum, NULL, &error)
+    )
+    {
+        const gchar* item_name = g_file_info_get_name(info);
+
+        gboolean            is_dir;
+        WinTCShextViewItem* item = g_new(WinTCShextViewItem, 1);
+
+        is_dir = g_file_info_get_file_type(info) == G_FILE_TYPE_DIRECTORY;
+
+        item->display_name = g_strdup(item_name);
+        item->icon_name    = is_dir ? "inode-directory" : "empty";
+        item->is_leaf      = TRUE;
+        item->hash         = wintc_sh_view_trash_get_unique_item_hash(
+                                 view_trash,
+                                 item_name
+                             );
+
+        g_hash_table_insert(
+            view_trash->map_entries,
+            GUINT_TO_POINTER(item->hash),
+            item
+        );
+
+        g_object_unref(info);
+    }
+
+    g_file_enumerator_close(fs_enum, NULL, NULL);
+    g_object_unref(fs_enum);
+
+    if (error)
+    {
+        wintc_log_error_and_clear(&error);
+        return;
+    }
+
+    // Provide update
+    //
+    WinTCShextViewItemsUpdate update = { 0 };
+
+    GList* items = g_hash_table_get_values(view_trash->map_entries);
+
+    update.data = items;
+    update.done = TRUE;
+
+    _wintc_ishext_view_items_added(view, &update);
+
+    g_list_free(items);
+}
+
+static WinTCShextOperation* wintc_sh_view_trash_spawn_operation(
+    WINTC_UNUSED(WinTCIShextView* view),
+    WINTC_UNUSED(gint             operation_id),
+    WINTC_UNUSED(GList*           targets),
+    WINTC_UNUSED(GError**         error)
+)
+{
+    g_warning("%s Not Implemented", __func__);
+    return NULL;
+}
+
+//
+// PUBLIC FUNCTIONS
+//
+WinTCIShextView* wintc_sh_view_trash_new(void)
+{
+    return WINTC_ISHEXT_VIEW(
+        g_object_new(
+            WINTC_TYPE_SH_VIEW_TRASH,
+            NULL
+        )
+    );
+}
+
+//
+// PRIVATE FUNCTIONS
+//
+static void clear_view_item(
+    WinTCShextViewItem* item
+)
+{
+    g_free(item->display_name);
+    g_free(item);
+}
+
+static guint wintc_sh_view_trash_get_unique_item_hash(
+    WINTC_UNUSED(WinTCShViewTrash* view_trash),
+    const gchar* name
+)
+{
+    guint hash1 = g_str_hash(
+                      wintc_sh_get_place_path(WINTC_SH_PLACE_RECYCLEBIN)
+                  );
+    guint hash2 = g_str_hash(name);
+
+    return hash1 * 33 + hash2;
+}

@@ -219,6 +219,7 @@ static void wintc_sh_view_desktop_class_init(
     // whatever
     //
     S_DESKTOP_ITEMS[1].priv = wintc_sh_path_for_guid(WINTC_SH_GUID_DRIVES);
+    S_DESKTOP_ITEMS[3].priv = wintc_sh_path_for_guid(WINTC_SH_GUID_RECYCLEBIN);
 
     // Assign hashes
     //
