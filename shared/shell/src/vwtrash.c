@@ -785,21 +785,62 @@ static gboolean shopr_paste(
 }
 
 static gboolean shopr_restore(
-    WINTC_UNUSED(WinTCIShextView*     view),
-    WINTC_UNUSED(WinTCShextOperation* operation),
-    WINTC_UNUSED(GtkWindow*           wnd),
-    GError** error
+    WINTC_UNUSED(WinTCIShextView* view),
+    WinTCShextOperation* operation,
+    WINTC_UNUSED(GtkWindow* wnd),
+    GError**             error
 )
 {
-    g_set_error(
-        error,
-        wintc_general_error_quark(),
-        WINTC_GENERAL_ERROR_NOTIMPL,
-        "%s",
-        "Sorry, not implemented!"
-    );
+    //
+    // FIXME: FSOP cannot do a restore, since each src->dest is different so
+    //        we're just doing a simple set of moves here, single threaded
+    //
+    GList*   entries = (GList*) operation->priv;
+    gboolean success = TRUE;
 
-    return FALSE;
+    for (GList* iter = entries; iter; iter = iter->next)
+    {
+        const gchar* uri = (gchar*) iter->data;
+
+        GFile*     file = g_file_new_for_uri(uri);
+        GFileInfo* info = g_file_query_info(
+                              file,
+                              G_FILE_ATTRIBUTE_TRASH_ORIG_PATH,
+                              G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
+                              NULL,
+                              NULL
+                          );
+
+        const gchar* orig_path = g_file_info_get_attribute_byte_string(
+                                     info,
+                                     G_FILE_ATTRIBUTE_TRASH_ORIG_PATH
+                                 );
+        GFile*       dest      = g_file_new_for_path(orig_path);
+
+        success =
+            g_file_move(
+                file,
+                dest,
+                G_FILE_COPY_NOFOLLOW_SYMLINKS | G_FILE_COPY_ALL_METADATA,
+                NULL,
+                NULL,
+                NULL,
+                error
+            );
+
+        g_object_unref(dest);
+        g_object_unref(info);
+        g_object_unref(file);
+
+        if (!success)
+        {
+            break;
+        }
+    }
+
+    g_clear_list(&entries, (GDestroyNotify) g_free);
+
+    return success;
 }
 
 static void on_fs_operation_done(
