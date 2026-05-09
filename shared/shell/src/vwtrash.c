@@ -6,6 +6,7 @@
 
 #include "../public/fsclipbd.h"
 #include "../public/fsop.h"
+#include "../public/sound.h"
 #include "../public/vwtrash.h"
 
 //
@@ -146,6 +147,10 @@ static gboolean shopr_restore(
 );
 
 static void on_fs_operation_done(
+    WinTCShFSOperation* self,
+    gpointer            user_data
+);
+static void on_fs_operation_done_with_sound(
     WinTCShFSOperation* self,
     gpointer            user_data
 );
@@ -753,7 +758,7 @@ static gboolean shopr_empty(
     g_signal_connect(
         op,
         "done",
-        G_CALLBACK(on_fs_operation_done),
+        G_CALLBACK(on_fs_operation_done_with_sound),
         entries
     );
 
@@ -804,4 +809,14 @@ static void on_fs_operation_done(
 {
     g_list_free_full((GList*) user_data, g_free);
     g_object_unref(self);
+}
+
+static void on_fs_operation_done_with_sound(
+    WinTCShFSOperation* self,
+    gpointer            user_data
+)
+{
+    wintc_sh_play_sound(WINTC_SHELL_SND_EMPTYBIN);
+
+    on_fs_operation_done(self, user_data);
 }
