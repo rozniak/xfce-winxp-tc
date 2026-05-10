@@ -266,6 +266,7 @@ static void wintc_sh_view_trash_dispose(
 {
     WinTCShViewTrash* view_trash = WINTC_SH_VIEW_TRASH(object);
 
+    g_clear_object(&(view_trash->file_monitor));
     g_clear_object(&(view_trash->file_trash));
     g_clear_object(&(view_trash->fs_clipboard));
 
@@ -287,7 +288,7 @@ static void wintc_sh_view_trash_finalize(
     }
 
     (G_OBJECT_CLASS(wintc_sh_view_trash_parent_class))
-        ->dispose(object);
+        ->finalize(object);
 }
 
 static void wintc_sh_view_trash_get_property(
@@ -934,6 +935,8 @@ static void on_file_monitor_changed(
                 WINTC_ISHEXT_VIEW(view_trash),
                 &update
             );
+
+            g_object_unref(info);
 
             break;
 
