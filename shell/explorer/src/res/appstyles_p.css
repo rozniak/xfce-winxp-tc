@@ -9,3 +9,8 @@
     background: #FFFFFF;
     padding:    0px 4px;
 }
+
+paned.nosplit separator
+{
+    background: @content_view_bg;
+}

@@ -3,3 +3,48 @@
     margin-left: 4px;
     margin-right: 6px;
 }
+
+/** Default sidebar styles */
+.wintc-explorer-sidebar-web
+{
+    background-color: @content_view_bg;
+}
+
+.wintc-explorer-task
+{
+    background-color: @text_view_bg;
+    border: 1px solid @theme_bg_color;
+    border-radius: 5px;
+    margin: 6px;
+}
+
+.wintc-explorer-task-header
+{
+    background-color: @theme_bg_color;
+}
+
+.wintc-explorer-task-header label
+{
+    font-weight: bold;
+    margin: 4px 8px;
+}
+
+.wintc-explorer-task button
+{
+    margin: 2px;
+}
+
+.wintc-explorer-task button:first-of-type
+{
+    margin-top: 6px;
+}
+
+.wintc-explorer-task button:last-of-type
+{
+    margin-bottom: 6px;
+}
+
+.wintc-explorer-task button label
+{
+    margin-left: 4px;
+}
