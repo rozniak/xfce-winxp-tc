@@ -50,6 +50,8 @@ add_executable(
     src/sidebars/fldrside.h
     src/sidebars/srchside.c
     src/sidebars/srchside.h
+    src/sidebars/webside.c
+    src/sidebars/webside.h
     src/toolbar.c
     src/toolbar.h
     src/toolbars/adrbar.c

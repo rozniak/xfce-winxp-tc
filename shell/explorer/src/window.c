@@ -13,6 +13,7 @@
 #include "loader.h"
 #include "sidebar.h"
 #include "sidebars/fldrside.h"
+#include "sidebars/webside.h"
 #include "toolbar.h"
 #include "toolbars/adrbar.h"
 #include "toolbars/stdbar.h"
@@ -492,6 +493,11 @@ static void wintc_explorer_window_constructed(
     }
     else
     {
+        wintc_explorer_window_toggle_sidebar(
+            wnd,
+            WINTC_EXPLORER_SIDEBAR_ID_WEB
+        );
+
         wintc_explorer_window_do_navigation_via_path(
             wnd,
             wnd->initial_path
@@ -768,6 +774,14 @@ void wintc_explorer_window_toggle_sidebar(
     const gchar* to_select =
         g_strcmp0(wnd->active_sidebar_id, sidebar_id) == 0 ?
             NULL : sidebar_id;
+
+    // If we're to 'toggle off' the sidebar and we started with an initial path
+    // then we should toggle to the web view sidebar
+    //
+    if (!to_select && wnd->initial_path)
+    {
+        to_select = "web";
+    }
 
     g_object_set(
         wnd,
