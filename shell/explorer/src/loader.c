@@ -5,6 +5,7 @@
 #include "sidebars/favside.h"
 #include "sidebars/fldrside.h"
 #include "sidebars/srchside.h"
+#include "sidebars/webside.h"
 
 //
 // GTK OOP CLASS/INSTANCE DEFINITIONS
@@ -116,6 +117,11 @@ void wintc_explorer_loader_load_extensions(
         loader,
         WINTC_EXPLORER_SIDEBAR_ID_SEARCH,
         WINTC_TYPE_EXP_SEARCH_SIDEBAR
+    );
+    map_sidebar_type(
+        loader,
+        WINTC_EXPLORER_SIDEBAR_ID_WEB,
+        WINTC_TYPE_EXP_WEB_SIDEBAR
     );
 
     //
