@@ -685,6 +685,26 @@ static void wintc_explorer_window_set_property(
                     FALSE,
                     FALSE
                 );
+
+                // Set split width based on if an actual sidebar is visible or
+                // if it's the web view sidebar
+                //
+                static const gchar* k_paned_nosplit = "nosplit";
+
+                if (sidebar_type == WINTC_TYPE_EXP_WEB_SIDEBAR)
+                {
+                    wintc_widget_add_style_class(
+                        wnd->pane_view,
+                        k_paned_nosplit
+                    );
+                }
+                else
+                {
+                    wintc_widget_remove_style_class(
+                        wnd->pane_view,
+                        k_paned_nosplit
+                    );
+                }
             }
 
             break;
