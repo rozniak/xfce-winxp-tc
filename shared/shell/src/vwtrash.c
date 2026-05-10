@@ -338,14 +338,17 @@ static gboolean wintc_sh_view_trash_activate_item(
 }
 
 static gint wintc_sh_view_trash_compare_items(
-    WINTC_UNUSED(WinTCIShextView* view),
-    WINTC_UNUSED(guint item_hash1),
-    WINTC_UNUSED(guint item_hash2)
+    WinTCIShextView* view,
+    guint            item_hash1,
+    guint            item_hash2
 )
 {
-    // FIXME: Implement this
-    //
-    return -1;
+    WinTCShViewTrash* view_trash = WINTC_SH_VIEW_TRASH(view);
+
+    return wintc_shext_view_item_compare_by_fs_order(
+        wintc_sh_view_trash_get_view_item(view_trash, item_hash1),
+        wintc_sh_view_trash_get_view_item(view_trash, item_hash2)
+    );
 }
 
 static const gchar* wintc_sh_view_trash_get_display_name(
