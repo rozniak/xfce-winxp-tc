@@ -1393,7 +1393,12 @@ static void on_file_monitor_changed(
             data =
                 g_list_prepend(
                     data,
-                    GUINT_TO_POINTER(g_str_hash(file_path))
+                    GUINT_TO_POINTER(
+                        wintc_sh_view_fs_get_contextual_hash(
+                            view_fs,
+                            file_path
+                        )
+                    )
                 );
 
             update.data = data;
