@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk+" version="3.24"/>
+  <object class="GtkWindow" id="main-wnd">
+    <property name="visible">True</property>
+    <property name="default-width">135</property>
+    <property name="default-height">55</property>
+    <property name="resizable">False</property>
+    <property name="title">Go To Line</property>
+    <child>
+      <object class="GtkBox">
+        <property name="visible">True</property>
+        <property name="spacing">6</property>
+        <property name="can-focus">False</property>
+        <property name="orientation">vertical</property>
+        <property name="margin-left">15</property>
+        <property name="margin-right">15</property>
+        <property name="margin-top">14</property>
+        <property name="margin-bottom">9</property>
+        <child>
+          <object class="GtkLabel">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="label">Line Number:</property>
+            <property name="halign">start</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkEntry" id="ln-entry">
+            <property name="visible">True</property>
+            <property name="activates-default">True</property>
+            <property name="can-focus">True</property>
+            <property name="hexpand">True</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkBox">
+            <property name="visible">True</property>
+            <property name="spacing">9</property>
+            <property name="can-focus">False</property>
+            <property name="orientation">horizontal</property>
+            <property name="halign">end</property>
+            <child>
+              <object class="GtkButton" id="accept-btn">
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="can-default">True</property>
+                <property name="has-default">True</property>
+                <property name="receives-default">True</property>
+                <property name="label">Go To</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton" id="cancel-btn">
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="label">Cancel</property>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

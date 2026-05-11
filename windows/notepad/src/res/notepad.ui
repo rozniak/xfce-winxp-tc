@@ -196,7 +196,7 @@
                   <object class="GtkMenuItem">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <property name="action-name">win.notimpl</property>
+                    <property name="action-name">win.go-to</property>
                     <property name="label" translatable="yes">%PUNC_MOREINPUT%%CTL_GOTO%</property>
                     <property name="use-underline">True</property>
                   </object>

@@ -90,6 +90,11 @@ static void action_select_all(
     GVariant*      parameter,
     gpointer       user_data
 );
+static void action_go_to(
+    GSimpleAction* action,
+    GVariant*      parameter,
+    gpointer       user_data
+);
 
 static gboolean on_window_delete_event(
     GtkWidget* widget,
@@ -100,6 +105,16 @@ static gboolean on_window_map_event(
     GtkWidget*   self,
     GdkEventAny* event,
     gpointer     user_data
+);
+
+static gboolean on_gotodlg_accepted(
+    GtkWidget* widget,
+    gpointer   user_data
+);
+
+static gboolean on_gotodlg_canceled(
+    GtkWidget* widget,
+    gpointer   user_data
 );
 
 //
@@ -162,6 +177,13 @@ static GActionEntry s_window_actions[] = {
         .parameter_type = NULL,
         .state          = NULL,
         .change_state   = NULL
+    },
+    {
+        .name           = "go-to",
+        .activate       = action_go_to,
+        .parameter_type = NULL,
+        .state          = NULL,
+        .change_state   = NULL
     }
 };
 
@@ -179,6 +201,9 @@ struct _WinTCNotepadWindow
 
     GtkTextBuffer* text_buffer;
     GtkWidget*     text_view;
+
+    GtkWindow*  goto_dlg;
+    GtkEntry*   ln_entry;
 
     gchar* file_uri;
 };
@@ -959,6 +984,51 @@ static void action_select_all(
     gtk_text_buffer_move_mark_by_name(wnd->text_buffer, "selection_bound", &end);
 }
 
+static void action_go_to(
+    WINTC_UNUSED(GSimpleAction* action),
+    WINTC_UNUSED(GVariant*      parameter),
+    gpointer       user_data
+)
+{
+    WinTCNotepadWindow* wnd = WINTC_NOTEPAD_WINDOW(user_data);
+
+    GtkBuilder* builder =
+        gtk_builder_new_from_resource(
+            "/uk/oddmatics/wintc/notepad/gotodlg.ui"
+        );
+
+    wnd->goto_dlg = GTK_WINDOW(
+                        gtk_builder_get_object(builder, "main-wnd")
+                    );
+    wnd->ln_entry = GTK_ENTRY(
+                        gtk_builder_get_object(builder, "ln-entry")
+                    );
+
+    GtkButton *accept_btn = GTK_BUTTON(
+                                gtk_builder_get_object(builder, "accept-btn")
+                            );
+
+    GtkButton *cancel_btn = GTK_BUTTON(
+                                gtk_builder_get_object(builder, "cancel-btn")
+                            );
+
+    g_object_unref(G_OBJECT(builder));
+
+    g_signal_connect(
+        accept_btn,
+        "clicked",
+        G_CALLBACK(on_gotodlg_accepted),
+        wnd
+    );
+
+    g_signal_connect(
+        cancel_btn,
+        "clicked",
+        G_CALLBACK(on_gotodlg_canceled),
+        wnd
+    );
+}
+
 static gboolean on_window_delete_event(
     GtkWidget* widget,
     WINTC_UNUSED(GdkEvent* event),
@@ -997,6 +1067,43 @@ static gboolean on_window_map_event(
         action,
         g_variant_new_string(wnd->file_uri)
     );
+
+    return TRUE;
+}
+
+static gboolean on_gotodlg_accepted(
+    WINTC_UNUSED(GtkWidget* self),
+    gpointer     user_data
+)
+{
+    WinTCNotepadWindow* wnd = WINTC_NOTEPAD_WINDOW(user_data);
+
+    const gchar *ln_char = gtk_entry_get_text(GTK_ENTRY(wnd->ln_entry));
+    gint ln = (gint)strtol(ln_char, NULL, 10);
+    if (ln < 0) {
+        ln = 0;
+    }
+
+    GtkTextIter start;
+
+    gtk_text_buffer_get_iter_at_line(wnd->text_buffer, &start, ln);
+
+    gtk_text_buffer_move_mark_by_name(wnd->text_buffer, "insert", &start);
+    gtk_text_buffer_move_mark_by_name(wnd->text_buffer, "selection_bound", &start);
+
+    gtk_widget_destroy(GTK_WIDGET(wnd->goto_dlg));
+
+    return TRUE;
+}
+
+static gboolean on_gotodlg_canceled(
+    WINTC_UNUSED(GtkWidget* self),
+    gpointer     user_data
+)
+{
+    WinTCNotepadWindow* wnd = WINTC_NOTEPAD_WINDOW(user_data);
+
+    gtk_widget_destroy(GTK_WIDGET(wnd->goto_dlg));
 
     return TRUE;
 }

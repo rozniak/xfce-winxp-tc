@@ -2,6 +2,7 @@
 <gresources>
     <gresource prefix="/uk/oddmatics/wintc/notepad">
         <file>notepad.ui</file>
+        <file>gotodlg.ui</file>
         <file>appstyles.css</file>
     </gresource>
 </gresources>
