@@ -211,7 +211,7 @@
                   <object class="GtkMenuItem">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <property name="action-name">win.notimpl</property>
+                    <property name="action-name">win.select-all</property>
                     <property name="label" translatable="yes">%CTL_SELECTALL%</property>
                     <property name="use-underline">True</property>
                   </object>

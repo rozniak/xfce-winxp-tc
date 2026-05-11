@@ -85,6 +85,11 @@ static void action_save_as(
     GVariant*      parameter,
     gpointer       user_data
 );
+static void action_select_all(
+    GSimpleAction* action,
+    GVariant*      parameter,
+    gpointer       user_data
+);
 
 static gboolean on_window_delete_event(
     GtkWidget* widget,
@@ -148,6 +153,13 @@ static GActionEntry s_window_actions[] = {
         .name           = "save-as",
         .activate       = action_save_as,
         .parameter_type = "s",
+        .state          = NULL,
+        .change_state   = NULL
+    },
+    {
+        .name           = "select-all",
+        .activate       = action_select_all,
+        .parameter_type = NULL,
         .state          = NULL,
         .change_state   = NULL
     }
@@ -927,6 +939,24 @@ static void action_save_as(
     }
 
     g_free(uri);
+}
+
+static void action_select_all(
+    WINTC_UNUSED(GSimpleAction* action),
+    WINTC_UNUSED(GVariant*      parameter),
+    gpointer       user_data
+)
+{
+    WinTCNotepadWindow* wnd = WINTC_NOTEPAD_WINDOW(user_data);
+
+    GtkTextIter start;
+    GtkTextIter end;
+
+    gtk_text_buffer_get_start_iter(wnd->text_buffer, &start);
+    gtk_text_buffer_get_end_iter(wnd->text_buffer, &end);
+
+    gtk_text_buffer_move_mark_by_name(wnd->text_buffer, "insert", &start);
+    gtk_text_buffer_move_mark_by_name(wnd->text_buffer, "selection_bound", &end);
 }
 
 static gboolean on_window_delete_event(
