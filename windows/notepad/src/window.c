@@ -1,3 +1,6 @@
+#include <ctype.h>
+#include <time.h>
+
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
@@ -594,6 +597,10 @@ static void action_exit(
 {
     WinTCNotepadWindow* wnd = WINTC_NOTEPAD_WINDOW(user_data);
 
+    if (wnd->goto_dlg) {
+        gtk_widget_destroy(GTK_WIDGET(wnd->goto_dlg));
+    }
+    
     if (wintc_notepad_window_close_document(wnd))
     {
         gtk_widget_destroy(GTK_WIDGET(wnd));
@@ -992,6 +999,13 @@ static void action_go_to(
 {
     WinTCNotepadWindow* wnd = WINTC_NOTEPAD_WINDOW(user_data);
 
+    if (wnd->goto_dlg) {
+        gtk_window_present_with_time(
+            GTK_WINDOW(wnd),
+            time(NULL)
+        );
+    }
+
     GtkBuilder* builder =
         gtk_builder_new_from_resource(
             "/uk/oddmatics/wintc/notepad/gotodlg.ui"
@@ -1007,7 +1021,6 @@ static void action_go_to(
     GtkButton *accept_btn = GTK_BUTTON(
                                 gtk_builder_get_object(builder, "accept-btn")
                             );
-
     GtkButton *cancel_btn = GTK_BUTTON(
                                 gtk_builder_get_object(builder, "cancel-btn")
                             );
@@ -1078,18 +1091,39 @@ static gboolean on_gotodlg_accepted(
 {
     WinTCNotepadWindow* wnd = WINTC_NOTEPAD_WINDOW(user_data);
 
-    const gchar *ln_char = gtk_entry_get_text(GTK_ENTRY(wnd->ln_entry));
-    gint ln = (gint)strtol(ln_char, NULL, 10);
-    if (ln < 0) {
-        ln = 0;
+    const gchar *linenum_char = gtk_entry_get_text(GTK_ENTRY(wnd->ln_entry));
+    gint linenum = (gint)strtol(linenum_char, NULL, 10);
+    gint line_count = gtk_text_buffer_get_line_count(wnd->text_buffer);
+
+    if (!isdigit(linenum_char[0]) || (linenum < 0 || linenum > line_count - 1)) {
+        GError* error = NULL;
+
+        const gchar *str = "Line number out of range.";
+
+    	g_set_error(
+        	&error,
+        	g_quark_from_string(str),
+        	0,
+            "%s",
+        	str
+        );
+        wintc_display_error_and_clear(&error, NULL);
+    
+        // raise the window cuz calling the above function
+        // sends it behind the main window
+        gtk_window_present_with_time(
+            GTK_WINDOW(wnd),
+            time(NULL)
+        );
+
+        return FALSE;
     }
 
-    GtkTextIter start;
+    GtkTextIter line_iter;
+    gtk_text_buffer_get_iter_at_line(wnd->text_buffer, &line_iter, linenum);
 
-    gtk_text_buffer_get_iter_at_line(wnd->text_buffer, &start, ln);
-
-    gtk_text_buffer_move_mark_by_name(wnd->text_buffer, "insert", &start);
-    gtk_text_buffer_move_mark_by_name(wnd->text_buffer, "selection_bound", &start);
+    gtk_text_buffer_move_mark_by_name(wnd->text_buffer, "insert", &line_iter);
+    gtk_text_buffer_move_mark_by_name(wnd->text_buffer, "selection_bound", &line_iter);
 
     gtk_widget_destroy(GTK_WIDGET(wnd->goto_dlg));
 
@@ -1102,8 +1136,6 @@ static gboolean on_gotodlg_canceled(
 )
 {
     WinTCNotepadWindow* wnd = WINTC_NOTEPAD_WINDOW(user_data);
-
     gtk_widget_destroy(GTK_WIDGET(wnd->goto_dlg));
-
     return TRUE;
 }

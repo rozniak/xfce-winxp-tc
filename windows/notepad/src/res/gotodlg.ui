@@ -3,40 +3,51 @@
   <requires lib="gtk+" version="3.24"/>
   <object class="GtkWindow" id="main-wnd">
     <property name="visible">True</property>
-    <property name="default-width">135</property>
-    <property name="default-height">55</property>
+    <property name="default-width">249</property>
+    <property name="default-height">68</property>
     <property name="resizable">False</property>
-    <property name="title">Go To Line</property>
+    <property name="title">Goto Line</property>
     <child>
       <object class="GtkBox">
         <property name="visible">True</property>
-        <property name="spacing">6</property>
+        <property name="spacing">12</property>
         <property name="can-focus">False</property>
         <property name="orientation">vertical</property>
-        <property name="margin-left">15</property>
-        <property name="margin-right">15</property>
-        <property name="margin-top">14</property>
-        <property name="margin-bottom">9</property>
+        <property name="margin-left">11</property>
+        <property name="margin-right">11</property>
+        <property name="margin-top">13</property>
+        <property name="margin-bottom">13</property>
         <child>
-          <object class="GtkLabel">
+          <object class="GtkBox">
             <property name="visible">True</property>
+            <property name="spacing">6</property>
             <property name="can-focus">False</property>
-            <property name="label">Line Number:</property>
-            <property name="halign">start</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkEntry" id="ln-entry">
-            <property name="visible">True</property>
-            <property name="activates-default">True</property>
-            <property name="can-focus">True</property>
+            <property name="orientation">horizontal</property>
             <property name="hexpand">True</property>
+            <property name="halign">fill</property>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="label">Line Number:</property>
+                <property name="halign">start</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkEntry" id="ln-entry">
+                <property name="visible">True</property>
+                <property name="activates-default">True</property>
+                <property name="can-focus">True</property>
+                <property name="hexpand">True</property>
+                <property name="halign">fill</property>
+              </object>
+            </child>
           </object>
         </child>
         <child>
           <object class="GtkBox">
             <property name="visible">True</property>
-            <property name="spacing">9</property>
+            <property name="spacing">8</property>
             <property name="can-focus">False</property>
             <property name="orientation">horizontal</property>
             <property name="halign">end</property>
@@ -47,7 +58,8 @@
                 <property name="can-default">True</property>
                 <property name="has-default">True</property>
                 <property name="receives-default">True</property>
-                <property name="label">Go To</property>
+                <property name="label">OK</property>
+                <property name="width-request">60</property>
               </object>
             </child>
             <child>
@@ -55,6 +67,7 @@
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="label">Cancel</property>
+                <property name="width-request">65</property>
               </object>
             </child>
           </object>
