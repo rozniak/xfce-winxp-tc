@@ -5,6 +5,17 @@
 //
 // PUBLIC FUNCTIONS
 //
+void wintc_clear_variant(
+    GVariant** variant_ptr
+)
+{
+    if (*variant_ptr)
+    {
+        g_variant_unref(*variant_ptr);
+        *variant_ptr = NULL;
+    }
+}
+
 void wintc_freev(
     gpointer       mem,
     GDestroyNotify destroy

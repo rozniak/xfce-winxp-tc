@@ -10,6 +10,16 @@
 //
 
 /**
+ * Clears a reference to a GVariant. If the reference is NULL then nothing
+ * happens, otherwise it is passed to g_variant_unref.
+ *
+ * @param variant_ptr A pointer to the GVariant reference.
+ */
+void wintc_clear_variant(
+    GVariant** variant_ptr
+);
+
+/**
  * Frees a null-terminated array - the provided function will be called to free
  * each of the array elements.
  *

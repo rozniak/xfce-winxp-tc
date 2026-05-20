@@ -192,6 +192,17 @@ void wintc_ishext_view_get_path(
     return iface->get_path(view, path_info);
 }
 
+GMenuModel* wintc_ishext_view_get_suggested_actions(
+    WinTCIShextView* view,
+    guint            item_hash
+)
+{
+    WinTCIShextViewInterface* iface =
+        WINTC_ISHEXT_VIEW_GET_IFACE(view);
+
+    return iface->get_suggested_actions(view, item_hash);
+}
+
 guint wintc_ishext_view_get_unique_hash(
     WinTCIShextView* view
 )

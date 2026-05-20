@@ -71,6 +71,10 @@ struct _WinTCIShextViewInterface
         WinTCIShextView*    view,
         WinTCShextPathInfo* path_info
     );
+    GMenuModel* (*get_suggested_actions) (
+        WinTCIShextView* view,
+        guint            item_hash
+    );
     guint (*get_unique_hash) (
         WinTCIShextView* view
     );
@@ -132,6 +136,10 @@ void wintc_ishext_view_get_parent_path(
 void wintc_ishext_view_get_path(
     WinTCIShextView*    view,
     WinTCShextPathInfo* path_info
+);
+GMenuModel* wintc_ishext_view_get_suggested_actions(
+    WinTCIShextView* view,
+    guint            item_hash
 );
 guint wintc_ishext_view_get_unique_hash(
     WinTCIShextView* view

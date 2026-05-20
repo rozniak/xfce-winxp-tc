@@ -14,5 +14,8 @@
     <file>menunew.ui</file>
     <file>menurb.ui</file>
     <file>menurblf.ui</file>
+
+    <!-- SUGGESTED ACTIONS -->
+    <file>amdeskvw.ui</file>
   </gresource>
 </gresources>
