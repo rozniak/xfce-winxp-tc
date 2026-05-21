@@ -1,5 +1,5 @@
 /**
- * explorer-webview.scss - Theme Base Explorer Web View Style Constants
+ * explorer-webview.scss - Luna (Blue) Style Explorer Web View Style Constants
  *
  * This source-code is part of Windows XP stuff for XFCE:
  * <<https://www.oddmatics.uk>>
@@ -12,8 +12,8 @@
 $explorer_webview_sidebar_styles:
     wintc_define_props_bg(
         $explorer_webview_sidebar_styles,
-        true,
-        $window_bg,
+        false,
+        #7394E1,
         undefined,
         undefined,
         undefined,
@@ -23,65 +23,63 @@ $explorer_webview_sidebar_styles:
 // Sidebar groups
 //
 $explorer_webview_sidebar_group_styles:
-    wintc_define_props_border_radius(
+    wintc_define_props_bg(
         $explorer_webview_sidebar_group_styles,
-        true,
-        0
+        false,
+        #D6DFF7,
+        undefined,
+        undefined,
+        undefined,
+        undefined
     );
 $explorer_webview_sidebar_group_styles:
-    wintc_define_props_box(
+    wintc_define_props_borders(
         $explorer_webview_sidebar_group_styles,
-        true,
-        padding,
-        8,
-        undefined,
-        8,
+        false,
+        solid,
+        0,
+        1,
+        1,
+        1,
+        #FFFFFF,
         undefined
     );
 
 $explorer_webview_sidebar_group_header_styles:
-    wintc_define_props_box(
+    wintc_define_props_bg(
         $explorer_webview_sidebar_group_header_styles,
-        true,
-        padding,
-        5,
-        12,
-        3,
-        12
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        linear-gradient(90deg,rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 1) 75%, rgba(199, 212, 247, 1) 100%)
+    );
+$explorer_webview_sidebar_group_header_styles:
+    wintc_define_props_fg(
+        $explorer_webview_sidebar_group_header_styles,
+        false,
+        #215DC6,
+        undefined
     );
 
 // Sidebar items
 //
 $explorer_webview_sidebar_item_styles:
-    wintc_define_props_box(
-        $explorer_webview_sidebar_item_styles,
-        true,
-        margin,
-        undefined,
-        12,
-        undefined,
-        12
-    );
-$explorer_webview_sidebar_item_styles:
     wintc_define_props_fg(
         $explorer_webview_sidebar_item_styles,
-        true,
-        $text_color,
+        false,
+        #4B76DF,
         undefined
     );
 
 $explorer_webview_sidebar_item_hover_styles:
     wintc_define_props_fg(
         $explorer_webview_sidebar_item_hover_styles,
-        true,
-        $text_color,
+        false,
+        #609DFB,
         undefined
     );
+
 $explorer_webview_sidebar_item_hover_styles:
-    wintc_define_props_text_decoration(
-        $explorer_webview_sidebar_item_hover_styles,
-        true,
-        underline,
-        undefined,
-        solid
-    );
+    $explorer_webview_sidebar_item_hover_styles;
