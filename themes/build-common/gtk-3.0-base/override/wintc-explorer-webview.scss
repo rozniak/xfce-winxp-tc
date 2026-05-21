@@ -1,0 +1,146 @@
+/**
+ * wintc-notif-area.scss - Theme Base Explorer Web View Styles
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+.wintc-explorer-sidebar-web
+{
+    @include __wintc_apply_props($explorer_webview_sidebar_styles);
+}
+
+.wintc-explorer-task
+{
+    @include __wintc_apply_props_excluding(
+        $explorer_webview_sidebar_group_styles,
+        "padding-bottom",
+        "padding-top"
+    );
+
+    &-header
+    {
+        @include __wintc_apply_props_excluding(
+            $explorer_webview_sidebar_group_header_styles,
+            "text-decoration-color",
+            "text-decoration-line",
+            "text-decoration-style",
+            "padding-bottom",
+            "padding-left",
+            "padding-right",
+            "padding-top"
+        );
+
+        label
+        {
+            @include __wintc_apply_specific_props(
+                $explorer_webview_sidebar_group_header_styles,
+                "text-decoration-color",
+                "text-decoration-line",
+                "text-decoration-style"
+            );
+
+            margin:
+                __wintc_get_prop(
+                    $explorer_webview_sidebar_group_header_styles,
+                    "padding-top"
+                )
+                __wintc_get_prop(
+                    $explorer_webview_sidebar_group_header_styles,
+                    "padding-right"
+                )
+                __wintc_get_prop(
+                    $explorer_webview_sidebar_group_header_styles,
+                    "padding-bottom"
+                )
+                __wintc_get_prop(
+                    $explorer_webview_sidebar_group_header_styles,
+                    "padding-left"
+                );
+        }
+    }
+
+    button
+    {
+        @include __wintc_apply_props_not_in_category(
+            $explorer_webview_sidebar_item_styles,
+            "font"
+        );
+
+        label
+        {
+            @include __wintc_apply_props_for_category(
+                $explorer_webview_sidebar_item_styles,
+                "font"
+            );
+        }
+
+        &:nth-child(2)
+        {
+            margin-top: 
+                __wintc_get_prop(
+                    $explorer_webview_sidebar_group_styles,
+                    "padding-top"
+                );
+        }
+
+        &:last-child
+        {
+            margin-bottom: 
+                __wintc_get_prop(
+                    $explorer_webview_sidebar_group_styles,
+                    "padding-bottom"
+                );
+        }
+
+        &:hover
+        {
+            @include __wintc_apply_props_not_in_category(
+                $explorer_webview_sidebar_item_hover_styles,
+                "font"
+            );
+
+            label
+            {
+                @include __wintc_apply_props_for_category(
+                    $explorer_webview_sidebar_item_hover_styles,
+                    "font"
+                );
+            }
+        }
+
+        &:active
+        {
+            @include __wintc_apply_props_not_in_category(
+                $explorer_webview_sidebar_item_press_styles,
+                "font"
+            );
+
+            label
+            {
+                @include __wintc_apply_props_for_category(
+                    $explorer_webview_sidebar_item_press_styles,
+                    "font"
+                );
+            }
+        }
+
+        &:disabled
+        {
+            @include __wintc_apply_props_not_in_category(
+                $explorer_webview_sidebar_item_inactive_styles,
+                "font"
+            );
+
+            label
+            {
+                @include __wintc_apply_props_for_category(
+                    $explorer_webview_sidebar_item_inactive_styles,
+                    "font"
+                );
+            }
+        }
+    }
+}

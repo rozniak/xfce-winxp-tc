@@ -1,0 +1,85 @@
+/**
+ * explorer-webview.scss - Theme Base Explorer Web View Style Constants
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+// Sidebar itself
+//
+$explorer_webview_sidebar_styles:
+    wintc_define_props_bg(
+        $explorer_webview_sidebar_styles,
+        true,
+        $window_bg,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
+
+// Sidebar groups
+//
+$explorer_webview_sidebar_group_styles:
+    wintc_define_props_border_radius(
+        $explorer_webview_sidebar_group_styles,
+        true,
+        0
+    );
+$explorer_webview_sidebar_group_styles:
+    wintc_define_props_box(
+        $explorer_webview_sidebar_group_styles,
+        true,
+        padding,
+        8,
+        undefined,
+        8,
+        undefined
+    );
+
+$explorer_webview_sidebar_group_header_styles:
+    wintc_define_props_box(
+        $explorer_webview_sidebar_group_header_styles,
+        true,
+        padding,
+        5,
+        12,
+        3,
+        12
+    );
+
+$explorer_webview_sidebar_item_styles:
+    wintc_define_props_box(
+        $explorer_webview_sidebar_item_styles,
+        true,
+        margin,
+        undefined,
+        12,
+        undefined,
+        12
+    );
+$explorer_webview_sidebar_item_styles:
+    wintc_define_props_fg(
+        $explorer_webview_sidebar_item_styles,
+        true,
+        $text_color,
+        undefined
+    );
+
+$explorer_webview_sidebar_item_hover_styles:
+    wintc_define_props_fg(
+        $explorer_webview_sidebar_item_hover_styles,
+        true,
+        $text_color,
+        undefined
+    );
+$explorer_webview_sidebar_item_hover_styles:
+    wintc_define_props_text_decoration(
+        $explorer_webview_sidebar_item_hover_styles,
+        true,
+        underline,
+        undefined,
+        solid
+    );
