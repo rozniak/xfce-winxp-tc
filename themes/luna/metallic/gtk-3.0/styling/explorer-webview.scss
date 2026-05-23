@@ -1,0 +1,122 @@
+/**
+ * explorer-webview.scss - Luna (Silver) Style Explorer Web View Style Constants
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+// Sidebar itself
+//
+$explorer_webview_sidebar_styles:
+    wintc_define_props_bg(
+        $explorer_webview_sidebar_styles,
+        false,
+        #BBBECE,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
+
+// Sidebar groups
+//
+$explorer_webview_sidebar_group_styles:
+    wintc_define_props_bg(
+        $explorer_webview_sidebar_group_styles,
+        false,
+        #F0F1F5,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
+$explorer_webview_sidebar_group_styles:
+    wintc_define_props_borders(
+        $explorer_webview_sidebar_group_styles,
+        false,
+        none,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
+
+$explorer_webview_sidebar_group_header_styles:
+    wintc_define_props_bg(
+        $explorer_webview_sidebar_group_header_styles,
+        false,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        linear-gradient(90deg,rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 1) 25%, rgba(209, 207, 229, 1) 100%)
+    );
+$explorer_webview_sidebar_group_header_styles:
+    wintc_define_props_borders(
+        $explorer_webview_sidebar_group_header_styles,
+        false,
+        solid,
+        3,
+        3,
+        0,
+        2,
+        undefined,
+        url('../Resources/explorer_webview_header_border.png')
+    );
+$explorer_webview_sidebar_group_header_styles:
+    wintc_define_props_box(
+        $explorer_webview_sidebar_group_header_styles,
+        false,
+        padding,
+        2,
+        9,
+        default,
+        10
+    );
+$explorer_webview_sidebar_group_header_styles:
+    wintc_define_props_fg(
+        $explorer_webview_sidebar_group_header_styles,
+        false,
+        #3F3D3D,
+        undefined
+    );
+
+// Sidebar items container
+//
+$explorer_webview_sidebar_items_styles:
+    wintc_define_props_borders(
+        $explorer_webview_sidebar_items_styles,
+        false,
+        solid,
+        0,
+        1,
+        1,
+        1,
+        #FFFFFF,
+        undefined
+    );
+
+// Sidebar items
+//
+$explorer_webview_sidebar_item_styles:
+    wintc_define_props_fg(
+        $explorer_webview_sidebar_item_styles,
+        false,
+        #3F3D3D,
+        undefined
+    );
+
+$explorer_webview_sidebar_item_hover_styles:
+    wintc_define_props_fg(
+        $explorer_webview_sidebar_item_hover_styles,
+        false,
+        #7E7C7C,
+        undefined
+    );
+
+$explorer_webview_sidebar_item_hover_styles:
+    $explorer_webview_sidebar_item_hover_styles;
