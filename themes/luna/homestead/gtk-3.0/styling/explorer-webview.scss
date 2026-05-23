@@ -1,5 +1,5 @@
 /**
- * explorer-webview.scss - Luna (Blue) Style Explorer Web View Style Constants
+ * explorer-webview.scss - Luna (Olive Green) Style Explorer Web View Style Constants
  *
  * This source-code is part of Windows XP stuff for XFCE:
  * <<https://www.oddmatics.uk>>
@@ -13,7 +13,7 @@ $explorer_webview_sidebar_styles:
     wintc_define_props_bg(
         $explorer_webview_sidebar_styles,
         false,
-        #7394E1,
+        #B8CA98,
         undefined,
         undefined,
         undefined,
@@ -26,7 +26,7 @@ $explorer_webview_sidebar_group_styles:
     wintc_define_props_bg(
         $explorer_webview_sidebar_group_styles,
         false,
-        #D6DFF7,
+        #F6F6EC,
         undefined,
         undefined,
         undefined,
@@ -53,7 +53,7 @@ $explorer_webview_sidebar_group_header_styles:
         undefined,
         undefined,
         undefined,
-        linear-gradient(90deg,rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 1) 60%, rgba(199, 212, 247, 1) 100%)
+        linear-gradient(90deg,rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 1) 25%, rgba(202, 220, 178, 1) 100%)
     );
 $explorer_webview_sidebar_group_header_styles:
     wintc_define_props_borders(
@@ -81,7 +81,7 @@ $explorer_webview_sidebar_group_header_styles:
     wintc_define_props_fg(
         $explorer_webview_sidebar_group_header_styles,
         false,
-        #215DC6,
+        #56662D,
         undefined
     );
 
@@ -106,7 +106,7 @@ $explorer_webview_sidebar_item_styles:
     wintc_define_props_fg(
         $explorer_webview_sidebar_item_styles,
         false,
-        #4B76DF,
+        #56662D,
         undefined
     );
 
@@ -114,7 +114,7 @@ $explorer_webview_sidebar_item_hover_styles:
     wintc_define_props_fg(
         $explorer_webview_sidebar_item_hover_styles,
         false,
-        #609DFB,
+        #72921D,
         undefined
     );
 
