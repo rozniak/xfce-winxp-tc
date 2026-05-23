@@ -160,6 +160,16 @@ button
             min-width: 24px;
         }
 
+        // NOTE: WinTC Addition
+        //
+        &.flat.link
+        {
+            &, &:hover, &:active, &:focus, &:disabled
+            {
+                background: none;
+            }
+        }
+
         // NOTE: WinTC addition
         //
         &:not(.text-button)

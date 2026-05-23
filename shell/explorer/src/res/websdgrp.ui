@@ -32,6 +32,18 @@
       </object>
     </child>
 
+    <child>
+      <object class="GtkBox" id="box-items">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="orientation">vertical</property>
+
+        <style>
+          <class name="wintc-explorer-task-items" />
+        </style>
+      </object>
+    </child>
+
     <style>
       <class name="wintc-explorer-task" />
     </style>

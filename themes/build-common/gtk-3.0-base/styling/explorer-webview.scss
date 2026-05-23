@@ -28,16 +28,6 @@ $explorer_webview_sidebar_group_styles:
         true,
         0
     );
-$explorer_webview_sidebar_group_styles:
-    wintc_define_props_box(
-        $explorer_webview_sidebar_group_styles,
-        true,
-        padding,
-        8,
-        undefined,
-        8,
-        undefined
-    );
 
 $explorer_webview_sidebar_group_header_styles:
     wintc_define_props_box(
@@ -48,6 +38,19 @@ $explorer_webview_sidebar_group_header_styles:
         12,
         3,
         12
+    );
+
+// Sidebar items container
+//
+$explorer_webview_sidebar_items_styles:
+    wintc_define_props_box(
+        $explorer_webview_sidebar_items_styles,
+        true,
+        padding,
+        8,
+        undefined,
+        8,
+        undefined
     );
 
 // Sidebar items

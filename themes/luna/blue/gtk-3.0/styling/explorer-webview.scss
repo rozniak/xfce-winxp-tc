@@ -7,6 +7,8 @@
  * Author(s): Rory Fewell <roryf@oddmatics.uk>
  */
 
+$webview_sidebar_color: #D6DFF7;
+
 // Sidebar itself
 //
 $explorer_webview_sidebar_styles:
@@ -26,7 +28,7 @@ $explorer_webview_sidebar_group_styles:
     wintc_define_props_bg(
         $explorer_webview_sidebar_group_styles,
         false,
-        #D6DFF7,
+        $webview_sidebar_color,
         undefined,
         undefined,
         undefined,
@@ -36,12 +38,12 @@ $explorer_webview_sidebar_group_styles:
     wintc_define_props_borders(
         $explorer_webview_sidebar_group_styles,
         false,
-        solid,
-        0,
-        1,
-        1,
-        1,
-        #FFFFFF,
+        none,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
         undefined
     );
 
@@ -53,13 +55,50 @@ $explorer_webview_sidebar_group_header_styles:
         undefined,
         undefined,
         undefined,
-        linear-gradient(90deg,rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 1) 75%, rgba(199, 212, 247, 1) 100%)
+        linear-gradient(90deg,rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 1) 60%, rgba(199, 212, 247, 1) 100%)
+    );
+$explorer_webview_sidebar_group_header_styles:
+    wintc_define_props_borders(
+        $explorer_webview_sidebar_group_header_styles,
+        false,
+        solid,
+        2,
+        2,
+        0,
+        2,
+        undefined,
+        url('../Resources/explorer_webview_header_border.png')
+    );
+$explorer_webview_sidebar_group_header_styles:
+    wintc_define_props_box(
+        $explorer_webview_sidebar_group_header_styles,
+        false,
+        padding,
+        3,
+        10,
+        default,
+        10
     );
 $explorer_webview_sidebar_group_header_styles:
     wintc_define_props_fg(
         $explorer_webview_sidebar_group_header_styles,
         false,
         #215DC6,
+        undefined
+    );
+
+// Sidebar items container
+//
+$explorer_webview_sidebar_items_styles:
+    wintc_define_props_borders(
+        $explorer_webview_sidebar_items_styles,
+        false,
+        solid,
+        0,
+        1,
+        1,
+        1,
+        #FFFFFF,
         undefined
     );
 

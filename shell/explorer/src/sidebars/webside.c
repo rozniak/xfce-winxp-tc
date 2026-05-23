@@ -250,6 +250,7 @@ static void wintc_exp_web_sidebar_update_actions(
             );
 
         GtkWidget* box_group     = NULL;
+        GtkWidget* box_items     = NULL;
         GtkWidget* img_icon      = NULL;
         GtkWidget* label_heading = NULL;
 
@@ -258,6 +259,7 @@ static void wintc_exp_web_sidebar_update_actions(
         wintc_builder_get_objects(
             builder,
             "box-group",     &box_group,
+            "box-items",     &box_items,
             "img-icon",      &img_icon,
             "label-heading", &label_heading,
             NULL
@@ -343,7 +345,7 @@ static void wintc_exp_web_sidebar_update_actions(
                 );
 
                 gtk_box_pack_start(
-                    GTK_BOX(box_group),
+                    GTK_BOX(box_items),
                     button_item,
                     FALSE,
                     FALSE,
