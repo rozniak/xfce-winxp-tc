@@ -1,0 +1,122 @@
+/**
+ * explorer-webview.scss - Royale Noir Style Explorer Web View Style Constants
+ *
+ * This source-code is part of Windows XP stuff for XFCE:
+ * <<https://www.oddmatics.uk>>
+ *
+ * Author(s): Rory Fewell <roryf@oddmatics.uk>
+ */
+
+// Sidebar itself
+//
+$explorer_webview_sidebar_styles:
+    wintc_define_props_bg(
+        $explorer_webview_sidebar_styles,
+        false,
+        #868F95,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
+
+// Sidebar groups
+//
+$explorer_webview_sidebar_group_styles:
+    wintc_define_props_bg(
+        $explorer_webview_sidebar_group_styles,
+        false,
+        #FFFFFF,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
+$explorer_webview_sidebar_group_styles:
+    wintc_define_props_borders(
+        $explorer_webview_sidebar_group_styles,
+        false,
+        none,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+    );
+
+$explorer_webview_sidebar_group_header_styles:
+    wintc_define_props_bg(
+        $explorer_webview_sidebar_group_header_styles,
+        false,
+        undefined,
+        undefined,
+        repeat-x,
+        undefined,
+        url('../Resources/explorer_webview_header_body.png')
+    );
+$explorer_webview_sidebar_group_header_styles:
+    wintc_define_props_borders(
+        $explorer_webview_sidebar_group_header_styles,
+        false,
+        solid,
+        2,
+        1,
+        0,
+        1,
+        undefined,
+        url('../Resources/explorer_webview_header_border.png')
+    );
+$explorer_webview_sidebar_group_header_styles:
+    wintc_define_props_box(
+        $explorer_webview_sidebar_group_header_styles,
+        false,
+        padding,
+        3,
+        10,
+        default,
+        10
+    );
+$explorer_webview_sidebar_group_header_styles:
+    wintc_define_props_fg(
+        $explorer_webview_sidebar_group_header_styles,
+        false,
+        #D2D6D9,
+        undefined
+    );
+
+// Sidebar items container
+//
+$explorer_webview_sidebar_items_styles:
+    wintc_define_props_borders(
+        $explorer_webview_sidebar_items_styles,
+        false,
+        solid,
+        0,
+        1,
+        1,
+        1,
+        #3D4457,
+        undefined
+    );
+
+// Sidebar items
+//
+$explorer_webview_sidebar_item_styles:
+    wintc_define_props_fg(
+        $explorer_webview_sidebar_item_styles,
+        false,
+        #1E2D2B,
+        undefined
+    );
+
+$explorer_webview_sidebar_item_hover_styles:
+    wintc_define_props_fg(
+        $explorer_webview_sidebar_item_hover_styles,
+        false,
+        #296DC1,
+        undefined
+    );
+
+$explorer_webview_sidebar_item_hover_styles:
+    $explorer_webview_sidebar_item_hover_styles;
