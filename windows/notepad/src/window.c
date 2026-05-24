@@ -1018,6 +1018,18 @@ static void action_go_to(
                         gtk_builder_get_object(builder, "ln-entry")
                     );
 
+    // set current line number
+    {
+        GtkTextMark* line_mark = gtk_text_buffer_get_mark(wnd->text_buffer, "insert");
+
+        GtkTextIter line_iter;
+        gtk_text_buffer_get_iter_at_mark(wnd->text_buffer, &line_iter, line_mark);
+
+        gchar *linenum_char = g_strdup_printf("%d", gtk_text_iter_get_line(&line_iter) + 1);
+        gtk_entry_set_text(wnd->ln_entry, linenum_char);
+        g_free(linenum_char);
+    }
+
     GtkButton *accept_btn = GTK_BUTTON(
                                 gtk_builder_get_object(builder, "accept-btn")
                             );
@@ -1092,7 +1104,7 @@ static gboolean on_gotodlg_accepted(
     WinTCNotepadWindow* wnd = WINTC_NOTEPAD_WINDOW(user_data);
 
     const gchar *linenum_char = gtk_entry_get_text(GTK_ENTRY(wnd->ln_entry));
-    gint linenum = (gint)strtol(linenum_char, NULL, 10);
+    gint linenum = ((gint)strtol(linenum_char, NULL, 10)) - 1;
     gint line_count = gtk_text_buffer_get_line_count(wnd->text_buffer);
 
     if (!isdigit(linenum_char[0]) || (linenum < 0 || linenum > line_count - 1)) {
