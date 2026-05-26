@@ -406,6 +406,53 @@ WinTCShIconViewBehaviour* wintc_sh_icon_view_behaviour_new(
     );
 }
 
+GList* wintc_sh_icon_view_behaviour_get_selected_items(
+    WinTCShIconViewBehaviour* behaviour
+)
+{
+    GList*        item_hashes    = NULL;
+    GtkTreeModel* model          = gtk_icon_view_get_model(
+                                       GTK_ICON_VIEW(behaviour->icon_view)
+                                   );
+    GList*        selected_items = gtk_icon_view_get_selected_items(
+                                       GTK_ICON_VIEW(behaviour->icon_view)
+                                   );
+    GtkTreeIter tree_iter;
+
+    for (GList* iter = selected_items; iter; iter = iter->next)
+    {
+        guint hash;
+
+        gtk_tree_model_get_iter(
+            model,
+            &tree_iter,
+            (GtkTreePath*) iter->data
+        );
+
+        gtk_tree_model_get(
+            model,
+            &tree_iter,
+            2, &hash,
+            -1
+        );
+
+        WINTC_LOG_DEBUG("shell: icnvw - append item to op: %u", hash);
+
+        item_hashes =
+            g_list_prepend(
+                item_hashes,
+                GUINT_TO_POINTER(hash)
+            );
+    }
+
+    g_list_free_full(
+        selected_items,
+        (GDestroyNotify) gtk_tree_path_free
+    );
+
+    return g_list_reverse(item_hashes);
+}
+
 //
 // PRIVATE FUNCTIONS
 //
@@ -513,47 +560,8 @@ static void action_view_operation(
 
     // Prepare items - need to convert the selected items to their hashes
     //
-    GList*        item_hashes    = NULL;
-    GtkTreeModel* model          = gtk_icon_view_get_model(
-                                       GTK_ICON_VIEW(behaviour->icon_view)
-                                   );
-    GList*        selected_items = gtk_icon_view_get_selected_items(
-                                       GTK_ICON_VIEW(behaviour->icon_view)
-                                   );
-    GtkTreeIter tree_iter;
-
-    for (GList* iter = selected_items; iter; iter = iter->next)
-    {
-        guint hash;
-
-        gtk_tree_model_get_iter(
-            model,
-            &tree_iter,
-            (GtkTreePath*) iter->data
-        );
-
-        gtk_tree_model_get(
-            model,
-            &tree_iter,
-            2, &hash,
-            -1
-        );
-
-        WINTC_LOG_DEBUG("shell: icnvw - append item to op: %u", hash);
-
-        item_hashes =
-            g_list_prepend(
-                item_hashes,
-                GUINT_TO_POINTER(hash)
-            );
-    }
-
-    item_hashes = g_list_reverse(item_hashes);
-
-    g_list_free_full(
-        selected_items,
-        (GDestroyNotify) gtk_tree_path_free
-    );
+    GList* item_hashes =
+        wintc_sh_icon_view_behaviour_get_selected_items(behaviour);
 
     // Ask the view to spawn the operation
     //

@@ -31,4 +31,8 @@ WinTCShIconViewBehaviour* wintc_sh_icon_view_behaviour_new(
     WinTCShBrowser* browser
 );
 
+GList* wintc_sh_icon_view_behaviour_get_selected_items(
+    WinTCShIconViewBehaviour* behaviour
+);
+
 #endif
