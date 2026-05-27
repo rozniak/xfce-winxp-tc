@@ -786,6 +786,23 @@ WinTCExplorerWindowMode wintc_explorer_window_get_mode(
     return wnd->mode;
 }
 
+GList* wintc_explorer_window_get_selected_items(
+    WinTCExplorerWindow* wnd
+)
+{
+    if (wnd->mode != WINTC_EXPLORER_WINDOW_MODE_LOCAL)
+    {
+        return NULL;
+    }
+
+    // FIXME: Depends what's focused, or focused last I guess - for now just
+    //        use the icon view
+    //
+    return wintc_sh_icon_view_behaviour_get_selected_items(
+        wnd->behaviour_icons
+    );
+}
+
 void wintc_explorer_window_toggle_sidebar(
     WinTCExplorerWindow* wnd,
     const gchar*         sidebar_id

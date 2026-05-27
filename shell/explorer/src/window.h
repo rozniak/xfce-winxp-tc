@@ -55,6 +55,9 @@ void wintc_explorer_window_get_location(
 WinTCExplorerWindowMode wintc_explorer_window_get_mode(
     WinTCExplorerWindow* wnd
 );
+GList* wintc_explorer_window_get_selected_items(
+    WinTCExplorerWindow* wnd
+);
 void wintc_explorer_window_toggle_sidebar(
     WinTCExplorerWindow* wnd,
     const gchar*         sidebar_id

@@ -34,6 +34,15 @@ static void on_explorer_window_mode_changed(
     WinTCExplorerWindow* self,
     gpointer             user_data
 );
+static gboolean on_link_button_activate_link(
+    GtkLinkButton* self,
+    gpointer       user_data
+);
+
+//
+// STATIC DATA
+//
+GQuark S_QUARK_LINK_OP_ID = 0;
 
 //
 // GTK OOP CLASS/INSTANCE DEFINITIONS
@@ -66,6 +75,8 @@ static void wintc_exp_web_sidebar_class_init(
     GObjectClass* object_class = G_OBJECT_CLASS(klass);
 
     object_class->constructed = wintc_exp_web_sidebar_constructed;
+
+    S_QUARK_LINK_OP_ID = g_quark_from_static_string("link-op-id");
 }
 
 static void wintc_exp_web_sidebar_init(
@@ -309,11 +320,24 @@ static void wintc_exp_web_sidebar_update_actions(
                         "icon",
                         G_VARIANT_TYPE_STRING
                     );
+                GVariant* v_item_op =
+                    g_menu_model_get_item_attribute_value(
+                        section,
+                        j,
+                        "operation",
+                        G_VARIANT_TYPE_INT32
+                    );
 
                 const gchar* item_label =
                     g_variant_get_string(v_item_label, NULL);
                 const gchar* item_icon =
                     g_variant_get_string(v_item_icon, NULL);
+                gint         item_op   = 0;
+
+                if (v_item_op)
+                {
+                    item_op = g_variant_get_int32(v_item_op);
+                }
 
                 GtkBuilder* builder_button =
                     gtk_builder_new_from_resource(
@@ -352,10 +376,34 @@ static void wintc_exp_web_sidebar_update_actions(
                     0
                 );
 
+                if (item_op)
+                {
+                    g_object_set_qdata(
+                        G_OBJECT(button_item),
+                        S_QUARK_LINK_OP_ID,
+                        GINT_TO_POINTER(item_op)
+                    );
+
+                    g_signal_connect(
+                        button_item,
+                        "activate-link",
+                        G_CALLBACK(on_link_button_activate_link),
+                        sidebar_web
+                    );
+                }
+                else
+                {
+                    gtk_widget_set_sensitive(
+                        button_item,
+                        FALSE
+                    );
+                }
+
                 g_object_unref(builder_button);
 
                 wintc_clear_variant(&v_item_label);
                 wintc_clear_variant(&v_item_icon);
+                wintc_clear_variant(&v_item_op);
             }
         }
 
@@ -409,4 +457,64 @@ static void on_explorer_window_mode_changed(
     }
 
     wintc_exp_web_sidebar_connect_signal(sidebar_web);
+}
+
+static gboolean on_link_button_activate_link(
+    GtkLinkButton* self,
+    gpointer       user_data
+)
+{
+    WinTCExplorerSidebar* sidebar = WINTC_EXPLORER_SIDEBAR(user_data);
+
+    // Ask explorer for whatever happens to be selected right now
+    //
+    GList* item_hashes =
+        wintc_explorer_window_get_selected_items(
+            WINTC_EXPLORER_WINDOW(sidebar->owner_explorer_wnd)
+        );
+
+    // Ask the view to spawn the operation
+    //
+    WinTCShBrowser*      browser;
+    GError*              error = NULL;
+    WinTCShextOperation* operation;
+    gint                 operation_id;
+    WinTCIShextView*     view;
+    GtkWindow*           wnd = GTK_WINDOW(sidebar->owner_explorer_wnd);
+
+    browser =
+        wintc_explorer_window_get_browser(
+            WINTC_EXPLORER_WINDOW(sidebar->owner_explorer_wnd)
+        );
+
+    view =
+        wintc_sh_browser_get_current_view(browser);
+
+    operation_id =
+        GPOINTER_TO_INT(
+            g_object_get_qdata(G_OBJECT(self), S_QUARK_LINK_OP_ID)
+        );
+
+    operation =
+        wintc_ishext_view_spawn_operation(
+            view,
+            operation_id,
+            item_hashes,
+            &error
+        );
+
+    if (!operation)
+    {
+        wintc_display_error_and_clear(&error, wnd);
+        return TRUE;
+    }
+
+    if (!(operation->func) (operation->view, operation, wnd, &error))
+    {
+        wintc_display_error_and_clear(&error, wnd);
+    }
+
+    g_free(operation);
+
+    return TRUE;
 }
