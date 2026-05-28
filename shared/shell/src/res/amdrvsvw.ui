@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <menu id="menu">
+    <section>
+      <attribute name="label">System Tasks</attribute>
+
+      <item>
+        <attribute name="label">View system information</attribute>
+        <attribute name="icon">computer</attribute> <!-- TEMP ICON -->
+      </item>
+
+      <item>
+        <attribute name="label">Add or remove programs</attribute>
+        <attribute name="icon">system-software-install</attribute>
+      </item>
+
+      <item>
+        <attribute name="label">Change a setting</attribute>
+        <attribute name="icon">preferences-other</attribute>
+      </item>
+    </section>
+
+    <section>
+      <attribute name="label">Other Places</attribute>
+
+      <item>
+        <attribute name="label">My Network Places</attribute>
+        <attribute name="icon">network-workgroup</attribute>
+      </item>
+
+      <item>
+        <attribute name="label">Shared Documents</attribute>
+        <attribute name="icon">folder</attribute>
+      </item>
+
+      <item>
+        <attribute name="label">My Documents</attribute>
+        <attribute name="icon">folder-documents</attribute>
+      </item>
+
+      <item>
+        <attribute name="label">Control Panel</attribute>
+        <attribute name="icon">preferences-other</attribute>
+      </item>
+    </section>
+
+    <section>
+      <attribute name="label">Details</attribute>
+      <attribute name="special">DETAILS</attribute>
+    </section>
+  </menu>
+</interface>

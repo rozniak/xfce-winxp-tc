@@ -17,5 +17,6 @@
 
     <!-- SUGGESTED ACTIONS -->
     <file>amdeskvw.ui</file>
+    <file>amdrvsvw.ui</file>
   </gresource>
 </gresources>

@@ -2,6 +2,7 @@
 #include <wintc/comgtk.h>
 #include <wintc/shcommon.h>
 #include <wintc/shellext.h>
+#include <wintc/shlang.h>
 
 #include "../public/vwdrives.h"
 
@@ -90,6 +91,10 @@ static void wintc_sh_view_drives_get_parent_path(
 static void wintc_sh_view_drives_get_path(
     WinTCIShextView*    view,
     WinTCShextPathInfo* path_info
+);
+static GMenuModel* wintc_sh_view_drives_get_suggested_actions(
+    WinTCIShextView* view,
+    guint            item_hash
 );
 static guint wintc_sh_view_drives_get_unique_hash(
     WinTCIShextView* view
@@ -193,6 +198,8 @@ static void wintc_sh_view_drives_ishext_view_interface_init(
         wintc_sh_view_drives_get_operations_for_view;
     iface->get_parent_path         = wintc_sh_view_drives_get_parent_path;
     iface->get_path                = wintc_sh_view_drives_get_path;
+    iface->get_suggested_actions   =
+        wintc_sh_view_drives_get_suggested_actions;
     iface->get_unique_hash         = wintc_sh_view_drives_get_unique_hash;
     iface->has_parent              = wintc_sh_view_drives_has_parent;
     iface->refresh_items           = wintc_sh_view_drives_refresh_items;
@@ -322,6 +329,43 @@ static void wintc_sh_view_drives_get_path(
         g_strdup(
             wintc_sh_get_place_path(WINTC_SH_PLACE_DRIVES)
         );
+}
+
+static GMenuModel* wintc_sh_view_drives_get_suggested_actions(
+    WINTC_UNUSED(WinTCIShextView* view),
+    guint item_hash
+)
+{
+    if (item_hash)
+    {
+        g_critical(
+            "%s",
+            "shell: vwdrives suggested actions for item not implemented"
+        );
+
+        return NULL;
+    }
+
+    // Construct the suggested actions menu UI
+    //
+    GtkBuilder* builder =
+        gtk_builder_new_from_resource("/uk/oddmatics/wintc/shell/amdrvsvw.ui");
+
+    GMenuModel* menu = NULL;
+
+    wintc_lc_builder_preprocess_widget_text(builder);
+
+    wintc_builder_get_objects(
+        builder,
+        "menu", &menu,
+        NULL
+    );
+
+    g_object_ref(menu);
+
+    g_object_unref(builder);
+
+    return menu;
 }
 
 static guint wintc_sh_view_drives_get_unique_hash(
