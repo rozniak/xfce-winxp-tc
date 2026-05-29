@@ -16,6 +16,7 @@
     <file>menurblf.ui</file>
 
     <!-- SUGGESTED ACTIONS -->
+    <file>amcplvw.ui</file>
     <file>amdeskvw.ui</file>
     <file>amdrvsvw.ui</file>
     <file>amfsvw.ui</file>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <menu id="menu">
+    <section>
+      <attribute name="label">Control Panel</attribute>
+
+      <item>
+        <attribute name="label">Switch to Category View</attribute>
+        <attribute name="icon">preferences-other</attribute>
+      </item>
+    </section>
+
+    <section>
+      <attribute name="label">Other Places</attribute>
+
+      <item>
+        <attribute name="label">Windows Update</attribute>
+        <attribute name="icon">text-html</attribute> <!-- TEMP ICON -->
+      </item>
+
+      <item>
+        <attribute name="label">Help and Support</attribute>
+        <attribute name="icon">help-browser</attribute>
+      </item>
+    </section>
+  </menu>
+</interface>
