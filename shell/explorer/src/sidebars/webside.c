@@ -415,6 +415,8 @@ static void wintc_exp_web_sidebar_update_actions(
         wintc_clear_variant(&v_label);
         wintc_clear_variant(&v_icon);
         wintc_clear_variant(&v_special);
+
+        g_object_unref(section);
     }
 
     g_object_unref(model);
