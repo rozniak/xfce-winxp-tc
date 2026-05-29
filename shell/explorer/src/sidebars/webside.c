@@ -167,13 +167,14 @@ static void wintc_exp_web_sidebar_connect_signal(
         WINTC_EXPLORER_SIDEBAR(sidebar_web);
     
     sidebar_web->sigid_load_changed =
-        g_signal_connect(
+        g_signal_connect_object(
             wintc_explorer_window_get_browser(
                 WINTC_EXPLORER_WINDOW(sidebar->owner_explorer_wnd)
             ),
             "load-changed",
             G_CALLBACK(on_browser_load_changed),
-            sidebar_web
+            sidebar_web,
+            G_CONNECT_DEFAULT
         );
 }
 
