@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <menu id="menu">
+    <section>
+      <attribute name="label">Folder Tasks</attribute>
+
+      <item>
+        <attribute name="label">Extract all files</attribute>
+        <attribute name="icon">application-x-archive</attribute>
+      </item>
+    </section>
+
+    <section>
+      <attribute name="label">Other Places</attribute>
+
+      <item>
+        <attribute name="label">My Documents</attribute>
+        <attribute name="icon">folder-documents</attribute>
+      </item>
+
+      <item>
+        <attribute name="label">Shared Documents</attribute>
+        <attribute name="icon">folder</attribute>
+      </item>
+
+      <item>
+        <attribute name="label">My Network Places</attribute>
+        <attribute name="icon">network-workgroup</attribute>
+      </item>
+    </section>
+
+    <section>
+      <attribute name="label">Details</attribute>
+      <attribute name="special">DETAILS</attribute>
+    </section>
+  </menu>
+</interface>
