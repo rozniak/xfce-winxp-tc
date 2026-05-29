@@ -17,7 +17,7 @@
 
       <item>
         <attribute name="label">Share this folder</attribute>
-        <attribute name="icon">folder</attribute> <!-- TEMP ICON -->
+        <attribute name="icon">preferences-system-sharing</attribute>
       </item>
     </section>
 

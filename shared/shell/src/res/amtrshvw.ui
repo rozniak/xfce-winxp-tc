@@ -7,6 +7,7 @@
       <item>
         <attribute name="label">Empty the Recycle Bin</attribute>
         <attribute name="icon">user-trash</attribute>
+        <attribute name="operation" type="i">100</attribute>
       </item>
 
       <item>
