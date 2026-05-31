@@ -22,6 +22,28 @@ const gchar* wintc_basename(
     return path;
 }
 
+gboolean wintc_str_is_ascii_numeric(
+    const gchar* str
+)
+{
+    gint len;
+
+    if (!str || !(len = strlen(str)))
+    {
+        return FALSE;
+    }
+
+    for (gint i = 0; i < len; i++)
+    {
+        if (!g_ascii_isdigit(str[i]))
+        {
+            return FALSE;
+        }
+    }
+
+    return TRUE;
+}
+
 gchar* wintc_str_set_prefix(
     const gchar* str,
     const gchar* prefix

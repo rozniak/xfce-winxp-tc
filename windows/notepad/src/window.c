@@ -9,6 +9,7 @@
 #include <wintc/shlang.h>
 
 #include "application.h"
+#include "dlggoto.h"
 #include "window.h"
 
 #define DOCUMENT_NAME (wnd->file_uri ? wnd->file_uri : _("Untitled"))
@@ -68,6 +69,11 @@ static void action_exit(
     GVariant*      parameter,
     gpointer       user_data
 );
+static void action_go_to(
+    GSimpleAction* action,
+    GVariant*      parameter,
+    gpointer       user_data
+);
 static void action_new(
     GSimpleAction* action,
     GVariant*      parameter,
@@ -93,10 +99,10 @@ static void action_select_all(
     GVariant*      parameter,
     gpointer       user_data
 );
-static void action_go_to(
-    GSimpleAction* action,
-    GVariant*      parameter,
-    gpointer       user_data
+
+static void on_dlg_goto_destroyed(
+    GtkWidget* widget,
+    gpointer   user_data
 );
 
 static gboolean on_window_delete_event(
@@ -108,16 +114,6 @@ static gboolean on_window_map_event(
     GtkWidget*   self,
     GdkEventAny* event,
     gpointer     user_data
-);
-
-static gboolean on_gotodlg_accepted(
-    GtkWidget* widget,
-    gpointer   user_data
-);
-
-static gboolean on_gotodlg_canceled(
-    GtkWidget* widget,
-    gpointer   user_data
 );
 
 //
@@ -142,6 +138,13 @@ static GActionEntry s_window_actions[] = {
     {
         .name           = "exit",
         .activate       = action_exit,
+        .parameter_type = NULL,
+        .state          = NULL,
+        .change_state   = NULL
+    },
+    {
+        .name           = "go-to",
+        .activate       = action_go_to,
         .parameter_type = NULL,
         .state          = NULL,
         .change_state   = NULL
@@ -180,13 +183,6 @@ static GActionEntry s_window_actions[] = {
         .parameter_type = NULL,
         .state          = NULL,
         .change_state   = NULL
-    },
-    {
-        .name           = "go-to",
-        .activate       = action_go_to,
-        .parameter_type = NULL,
-        .state          = NULL,
-        .change_state   = NULL
     }
 };
 
@@ -202,13 +198,16 @@ struct _WinTCNotepadWindow
 {
     GtkApplicationWindow __parent__;
 
+    // Notepad state
+    //
+    gchar* file_uri;
+
+    // UI references
+    //
     GtkTextBuffer* text_buffer;
     GtkWidget*     text_view;
 
-    GtkWindow*  goto_dlg;
-    GtkEntry*   ln_entry;
-
-    gchar* file_uri;
+    GtkWidget* dlg_modal;
 };
 
 //
@@ -597,14 +596,58 @@ static void action_exit(
 {
     WinTCNotepadWindow* wnd = WINTC_NOTEPAD_WINDOW(user_data);
 
-    if (wnd->goto_dlg) {
-        gtk_widget_destroy(GTK_WIDGET(wnd->goto_dlg));
+    if (wnd->dlg_modal)
+    {
+        gtk_widget_destroy(GTK_WIDGET(wnd->dlg_modal));
     }
     
     if (wintc_notepad_window_close_document(wnd))
     {
         gtk_widget_destroy(GTK_WIDGET(wnd));
     }
+}
+
+static void action_go_to(
+    WINTC_UNUSED(GSimpleAction* action),
+    WINTC_UNUSED(GVariant*      parameter),
+    gpointer user_data
+)
+{
+    WinTCNotepadWindow* wnd = WINTC_NOTEPAD_WINDOW(user_data);
+
+    wnd->dlg_modal = wintc_notepad_go_to_dialog_new();
+
+    gtk_window_set_transient_for(
+        GTK_WINDOW(wnd->dlg_modal),
+        GTK_WINDOW(wnd)
+    );
+
+    // Set up line number
+    //
+    GtkTextIter  line_iter;
+    GtkTextMark* line_mark;
+
+    line_mark = gtk_text_buffer_get_mark(wnd->text_buffer, "insert");
+
+    gtk_text_buffer_get_iter_at_mark(wnd->text_buffer, &line_iter, line_mark);
+
+    wintc_notepad_go_to_dialog_set_line_number(
+        WINTC_NOTEPAD_GO_TO_DIALOG(wnd->dlg_modal),
+        gtk_text_iter_get_line(&line_iter) + 1
+    );
+    wintc_notepad_go_to_dialog_set_max_line_number(
+        WINTC_NOTEPAD_GO_TO_DIALOG(wnd->dlg_modal),
+        gtk_text_buffer_get_line_count(wnd->text_buffer)
+    );
+
+    // Connect to dialog
+    //
+    g_signal_connect(
+        wnd->dlg_modal,
+        "destroy",
+        G_CALLBACK(on_dlg_goto_destroyed),
+        wnd
+    );
 }
 
 static void action_new(
@@ -976,7 +1019,7 @@ static void action_save_as(
 static void action_select_all(
     WINTC_UNUSED(GSimpleAction* action),
     WINTC_UNUSED(GVariant*      parameter),
-    gpointer       user_data
+    gpointer user_data
 )
 {
     WinTCNotepadWindow* wnd = WINTC_NOTEPAD_WINDOW(user_data);
@@ -985,72 +1028,70 @@ static void action_select_all(
     GtkTextIter end;
 
     gtk_text_buffer_get_start_iter(wnd->text_buffer, &start);
-    gtk_text_buffer_get_end_iter(wnd->text_buffer, &end);
+    gtk_text_buffer_get_end_iter(wnd->text_buffer,   &end);
 
-    gtk_text_buffer_move_mark_by_name(wnd->text_buffer, "insert", &start);
-    gtk_text_buffer_move_mark_by_name(wnd->text_buffer, "selection_bound", &end);
+    gtk_text_buffer_move_mark_by_name(
+        wnd->text_buffer,
+        "insert",
+        &start
+    );
+    gtk_text_buffer_move_mark_by_name(
+        wnd->text_buffer,
+        "selection_bound",
+        &end
+    );
 }
 
-static void action_go_to(
-    WINTC_UNUSED(GSimpleAction* action),
-    WINTC_UNUSED(GVariant*      parameter),
-    gpointer       user_data
+static void on_dlg_goto_destroyed(
+    GtkWidget* widget,
+    gpointer   user_data
 )
 {
-    WinTCNotepadWindow* wnd = WINTC_NOTEPAD_WINDOW(user_data);
+    WinTCNotepadWindow*     wnd      = WINTC_NOTEPAD_WINDOW(user_data);
+    WinTCNotepadGoToDialog* dlg_goto = WINTC_NOTEPAD_GO_TO_DIALOG(widget);
 
-    if (wnd->goto_dlg) {
-        gtk_window_present_with_time(
-            GTK_WINDOW(wnd),
-            time(NULL)
-        );
-    }
+    wnd->dlg_modal = NULL;
 
-    GtkBuilder* builder =
-        gtk_builder_new_from_resource(
-            "/uk/oddmatics/wintc/notepad/gotodlg.ui"
-        );
+    gint response =
+        wintc_notepad_go_to_dialog_get_response(dlg_goto);
 
-    wnd->goto_dlg = GTK_WINDOW(
-                        gtk_builder_get_object(builder, "main-wnd")
-                    );
-    wnd->ln_entry = GTK_ENTRY(
-                        gtk_builder_get_object(builder, "ln-entry")
-                    );
 
-    // set current line number
+    if (response != GTK_RESPONSE_OK)
     {
-        GtkTextMark* line_mark = gtk_text_buffer_get_mark(wnd->text_buffer, "insert");
-
-        GtkTextIter line_iter;
-        gtk_text_buffer_get_iter_at_mark(wnd->text_buffer, &line_iter, line_mark);
-
-        gchar *linenum_char = g_strdup_printf("%d", gtk_text_iter_get_line(&line_iter) + 1);
-        gtk_entry_set_text(wnd->ln_entry, linenum_char);
-        g_free(linenum_char);
+        return;
     }
 
-    GtkButton *accept_btn = GTK_BUTTON(
-                                gtk_builder_get_object(builder, "accept-btn")
-                            );
-    GtkButton *cancel_btn = GTK_BUTTON(
-                                gtk_builder_get_object(builder, "cancel-btn")
-                            );
+    // Ensure it's valid -- the dialog should do this anyway but no harm in
+    // preventing it here also
+    //
+    gint line_num =
+        wintc_notepad_go_to_dialog_get_line_number(dlg_goto);
 
-    g_object_unref(G_OBJECT(builder));
+    if (
+        line_num < 1 ||
+        line_num > gtk_text_buffer_get_line_count(wnd->text_buffer))
+    {
+        g_critical("notepad: invalid line number: %d", line_num);
+        return;
+    }
 
-    g_signal_connect(
-        accept_btn,
-        "clicked",
-        G_CALLBACK(on_gotodlg_accepted),
-        wnd
+    line_num--; // 1-indexed from dialog
+
+    // All good, update the view
+    //
+    GtkTextIter line_iter;
+
+    gtk_text_buffer_get_iter_at_line(wnd->text_buffer, &line_iter, line_num);
+
+    gtk_text_buffer_move_mark_by_name(
+        wnd->text_buffer,
+        "insert",
+        &line_iter
     );
-
-    g_signal_connect(
-        cancel_btn,
-        "clicked",
-        G_CALLBACK(on_gotodlg_canceled),
-        wnd
+    gtk_text_buffer_move_mark_by_name(
+        wnd->text_buffer,
+        "selection_bound",
+        &line_iter
     );
 }
 
@@ -1093,61 +1134,5 @@ static gboolean on_window_map_event(
         g_variant_new_string(wnd->file_uri)
     );
 
-    return TRUE;
-}
-
-static gboolean on_gotodlg_accepted(
-    WINTC_UNUSED(GtkWidget* self),
-    gpointer     user_data
-)
-{
-    WinTCNotepadWindow* wnd = WINTC_NOTEPAD_WINDOW(user_data);
-
-    const gchar *linenum_char = gtk_entry_get_text(GTK_ENTRY(wnd->ln_entry));
-    gint linenum = ((gint)strtol(linenum_char, NULL, 10)) - 1;
-    gint line_count = gtk_text_buffer_get_line_count(wnd->text_buffer);
-
-    if (!isdigit(linenum_char[0]) || (linenum < 0 || linenum > line_count - 1)) {
-        GError* error = NULL;
-
-        const gchar *str = "Line number out of range.";
-
-    	g_set_error(
-        	&error,
-        	g_quark_from_string(str),
-        	0,
-            "%s",
-        	str
-        );
-        wintc_display_error_and_clear(&error, NULL);
-    
-        // raise the window cuz calling the above function
-        // sends it behind the main window
-        gtk_window_present_with_time(
-            GTK_WINDOW(wnd),
-            time(NULL)
-        );
-
-        return FALSE;
-    }
-
-    GtkTextIter line_iter;
-    gtk_text_buffer_get_iter_at_line(wnd->text_buffer, &line_iter, linenum);
-
-    gtk_text_buffer_move_mark_by_name(wnd->text_buffer, "insert", &line_iter);
-    gtk_text_buffer_move_mark_by_name(wnd->text_buffer, "selection_bound", &line_iter);
-
-    gtk_widget_destroy(GTK_WIDGET(wnd->goto_dlg));
-
-    return TRUE;
-}
-
-static gboolean on_gotodlg_canceled(
-    WINTC_UNUSED(GtkWidget* self),
-    gpointer     user_data
-)
-{
-    WinTCNotepadWindow* wnd = WINTC_NOTEPAD_WINDOW(user_data);
-    gtk_widget_destroy(GTK_WIDGET(wnd->goto_dlg));
     return TRUE;
 }

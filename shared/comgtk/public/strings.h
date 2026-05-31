@@ -46,6 +46,16 @@ const gchar* wintc_basename(
 );
 
 /**
+ * Determines if a string only has ASCII digits.
+ *
+ * @param str The string.
+ * @return True if the string is numeric.
+ */
+gboolean wintc_str_is_ascii_numeric(
+    const gchar* str
+);
+
+/**
  * Copies a string, ensuring it has the specified prefix.
  *
  * @param str    The string.

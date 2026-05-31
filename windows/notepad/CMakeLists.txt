@@ -36,6 +36,8 @@ add_executable(
     wintc-notepad
     src/application.c
     src/application.h
+    src/dlggoto.c
+    src/dlggoto.h
     src/main.c
     src/meta.h
     src/resources.c
