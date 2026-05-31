@@ -12,6 +12,15 @@
 #include "host_priv.h"
 
 //
+// PRIVATE STRUCTURES
+//
+typedef struct _ShextHostPoolMap
+{
+    GHashTable* map_pool;
+    guint       my_hash;
+} ShextHostPoolMap;
+
+//
 // CALLBACK PROTOTYPES
 //
 typedef gboolean (*ShextInitFunc) (
@@ -42,6 +51,16 @@ WinTCIShextView* lookup_view_for_path_by_mime(
     GError**                  error
 );
 
+static WinTCIShextView* wintc_shext_host_fetch_from_pool(
+    WinTCShextHost*           host,
+    const WinTCShextPathInfo* path_info
+);
+
+static void on_view_disposed(
+    gpointer user_data,
+    GObject* where_the_object_was
+);
+
 //
 // STATIC DATA
 //
@@ -62,6 +81,10 @@ struct _WinTCShextHostClass
 struct _WinTCShextHost
 {
     GObject __parent__;
+
+    // Store generated views in a pool
+    //
+    GHashTable* map_path_info_to_view;
 
     // View CBs
     //
@@ -91,6 +114,14 @@ static void wintc_shext_host_init(
     WinTCShextHost* self
 )
 {
+    // Set up view pool
+    //
+    self->map_path_info_to_view =
+        g_hash_table_new(
+            g_direct_hash,
+            g_direct_equal
+        );
+
     // Set up view CB maps
     //
     self->map_views_by_guid = g_hash_table_new_full(
@@ -181,6 +212,17 @@ WinTCIShextView* wintc_shext_host_get_view_for_path(
         path_info->base_path
     );
 
+    // Check if we have a view in the pool
+    //
+    view = wintc_shext_host_fetch_from_pool(host, path_info);
+
+    if (view)
+    {
+        WINTC_LOG_DEBUG("shellext: view pulled from pool");
+
+        return g_object_ref(view);
+    }
+
     // Iterate through lookups 'til we get a view
     //
     for (int i = 0; s_lookup_view_funcs[i]; i++)
@@ -229,6 +271,25 @@ WinTCIShextView* wintc_shext_host_get_view_for_path(
 
         return NULL;
     }
+
+    // Map in pool
+    //
+    ShextHostPoolMap* map_info = g_new(ShextHostPoolMap, 1);
+
+    map_info->map_pool = host->map_path_info_to_view;
+    map_info->my_hash   = wintc_shext_path_info_hash(path_info);
+
+    g_hash_table_insert(
+        host->map_path_info_to_view,
+        GUINT_TO_POINTER(map_info->my_hash),
+        view
+    );
+
+    g_object_weak_ref(
+        G_OBJECT(view),
+        (GWeakNotify) on_view_disposed,
+        map_info
+    );
 
     return view;
 }
@@ -401,6 +462,19 @@ gboolean wintc_shext_host_use_view_for_real_path(
 //
 // PRIVATE FUNCTIONS
 //
+WinTCIShextView* wintc_shext_host_fetch_from_pool(
+    WinTCShextHost*           host,
+    const WinTCShextPathInfo* path_info
+)
+{
+    guint hash = wintc_shext_path_info_hash(path_info);
+
+    return g_hash_table_lookup(
+        host->map_path_info_to_view,
+        GUINT_TO_POINTER(hash)
+    );
+}
+
 WinTCIShextView* lookup_view_for_path_by_guid(
     WinTCShextHost*           host,
     const WinTCShextPathInfo* path_info,
@@ -586,4 +660,22 @@ WinTCIShextView* lookup_view_for_path_by_mime(
     g_free(mime_u);
 
     return view;
+}
+
+//
+// CALLBACKS
+//
+static void on_view_disposed(
+    gpointer user_data,
+    WINTC_UNUSED(GObject* where_the_object_was)
+)
+{
+    ShextHostPoolMap* map_info = (ShextHostPoolMap*) user_data;
+
+    g_hash_table_remove(
+        map_info->map_pool,
+        GUINT_TO_POINTER(map_info->my_hash)
+    );
+
+    g_free(map_info);
 }
