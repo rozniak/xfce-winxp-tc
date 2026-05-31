@@ -176,11 +176,6 @@ static gboolean on_password_focus_gain(
     GdkEvent*  event,
     gpointer   user_data
 );
-static gboolean on_password_focus_out(
-    GtkWidget* widget,
-    GdkEvent*  event,
-    gpointer   user_data
-);
 
 static void on_realize_enable_passthrough(
     GtkWidget* widget,  
@@ -635,12 +630,6 @@ static GtkWidget* build_userlist_widget(
             "realize",
             G_CALLBACK(gtk_widget_hide),
             item
-        );
-        g_signal_connect(
-            item->password_entry,
-            "focus-out-event",
-            G_CALLBACK(on_password_focus_out),
-            user_list
         );
         g_signal_connect(
             item->password_entry,
@@ -1465,35 +1454,6 @@ static gboolean on_password_focus_gain(
     if (caps_lock_on)
     {
         show_balloon_under_widget(item, BALLOON_TYPE_WARNING); 
-    }
-
-    return FALSE;
-}
-
-static gboolean on_password_focus_out(
-    WINTC_UNUSED(GtkWidget* widget),
-    WINTC_UNUSED(GdkEvent* event),
-    gpointer user_data
-)
-{
-    WinTCWelcomeUserList* user_list = WINTC_WELCOME_USER_LIST(user_data);
-
-    if (user_list->attempt_active)
-    {
-        return FALSE;
-    }
-
-    if (user_list->selected_li)
-    {
-        UserListItem* item = (UserListItem*) user_list->selected_li->data;
-
-        list_item_deselect(item);
-
-        list_item_css_blur(item->profile_image);
-        list_item_css_blur(item->username_label);
-        list_item_css_blur(item->userpic_box);
-
-        user_list->selected_li = NULL;
     }
 
     return FALSE;
