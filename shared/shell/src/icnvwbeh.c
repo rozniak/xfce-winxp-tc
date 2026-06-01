@@ -24,6 +24,11 @@ enum
     N_COLUMNS
 };
 
+enum
+{
+    DRAG_TARGET_URI_LIST
+};
+
 //
 // FORWARD DECLARATIONS
 //
@@ -58,6 +63,32 @@ static void action_view_operation(
 static gboolean on_icon_view_button_press_event(
     GtkIconView*    self,
     GdkEventButton* event,
+    gpointer        user_data
+);
+static void on_icon_view_drag_data_received(
+    GtkWidget*        widget,
+    GdkDragContext*   context,
+    gint              x,
+    gint              y,
+    GtkSelectionData* selection_data,
+    guint             info,
+    guint             time,
+    gpointer          user_data
+);
+static gboolean on_icon_view_drag_drop(
+    GtkWidget*      widget,
+    GdkDragContext* context,
+    gint            x,
+    gint            y,
+    guint           time,
+    gpointer        user_data
+);
+static gboolean on_icon_view_drag_motion(
+    GtkWidget*      widget,
+    GdkDragContext* context,
+    gint            x,
+    gint            y,
+    guint           time,
     gpointer        user_data
 );
 static void on_icon_view_item_activated(
@@ -109,6 +140,16 @@ static GActionEntry s_actions[] = {
     }
 };
 
+static GdkAtom s_atom_text_uri_list;
+
+static GtkTargetEntry s_drag_targets[] = {
+    {
+        "text/uri-list",
+        0,
+        DRAG_TARGET_URI_LIST
+    }
+};
+
 //
 // GTK OOP CLASS/INSTANCE DEFINITIONS
 //
@@ -127,6 +168,10 @@ struct _WinTCShIconViewBehaviour
     //
     GtkWidget*       icon_view;
     GtkCellRenderer* icon_view_text_cell;
+
+    gint     drag_x;
+    gint     drag_y;
+    gboolean drag_motion;
 
     // View state
     //
@@ -183,6 +228,9 @@ static void wintc_sh_icon_view_behaviour_class_init(
             G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY
         )
     );
+
+    s_atom_text_uri_list =
+        gdk_atom_intern_static_string("text/uri-list");
 }
 
 static void wintc_sh_icon_view_behaviour_init(
@@ -308,12 +356,40 @@ static void wintc_sh_icon_view_behaviour_constructed(
 
     g_list_free(renderers);
 
+    // Enable drag destination
+    //
+    gtk_drag_dest_set(
+        behaviour->icon_view,
+        0,
+        s_drag_targets,
+        G_N_ELEMENTS(s_drag_targets),
+        GDK_ACTION_COPY
+    );
+
     // Attach signals
     //
     g_signal_connect(
         behaviour->icon_view,
         "button-press-event",
         G_CALLBACK(on_icon_view_button_press_event),
+        behaviour
+    );
+    g_signal_connect(
+        behaviour->icon_view,
+        "drag-data-received",
+        G_CALLBACK(on_icon_view_drag_data_received),
+        behaviour
+    );
+    g_signal_connect(
+        behaviour->icon_view,
+        "drag-drop",
+        G_CALLBACK(on_icon_view_drag_drop),
+        behaviour
+    );
+    g_signal_connect(
+        behaviour->icon_view,
+        "drag-motion",
+        G_CALLBACK(on_icon_view_drag_motion),
         behaviour
     );
     g_signal_connect(
@@ -762,6 +838,168 @@ static gboolean on_icon_view_button_press_event(
     }
 
     return GDK_EVENT_PROPAGATE;
+}
+
+static void on_icon_view_drag_data_received(
+    WINTC_UNUSED(GtkWidget* widget),
+    GdkDragContext*   context,
+    WINTC_UNUSED(gint x),
+    WINTC_UNUSED(gint y),
+    GtkSelectionData* selection_data,
+    guint             info,
+    guint             time,
+    gpointer          user_data
+)
+{
+    WinTCShIconViewBehaviour* behaviour =
+        WINTC_SH_ICON_VIEW_BEHAVIOUR(user_data);
+
+    gchar*       name        = NULL;
+    GtkTreePath* target_item = NULL;
+    gchar**      uris        = NULL;
+
+    gboolean handled = FALSE;
+
+    if (info != DRAG_TARGET_URI_LIST)
+    {
+        WINTC_LOG_DEBUG("Not uri list drag");
+        goto cleanup;
+    }
+
+    // Test - only allow drops on items for now
+    //
+    target_item =
+        gtk_icon_view_get_path_at_pos(
+            GTK_ICON_VIEW(behaviour->icon_view),
+            behaviour->drag_x,
+            behaviour->drag_y
+        );
+
+    if (!target_item)
+    {
+        goto cleanup;
+    }
+
+    // Retrieve the item for the drop
+    //
+    GtkTreeIter iter;
+
+    gtk_tree_model_get_iter(
+        GTK_TREE_MODEL(behaviour->list_model),
+        &iter,
+        target_item
+    );
+
+    gtk_tree_model_get(
+        GTK_TREE_MODEL(behaviour->list_model),
+        &iter,
+        COLUMN_ENTRY_NAME, &name,
+        -1
+    );
+
+    // Pull URIs and examine
+    //
+    uris = gtk_selection_data_get_uris(selection_data);
+
+    if (!uris)
+    {
+        goto cleanup;
+    }
+
+    if (behaviour->drag_motion)
+    {
+        gdk_drag_status(
+            context,
+            gdk_drag_context_get_suggested_action(context),
+            time
+        );
+    }
+    else
+    {
+        gint i = 0;
+
+        g_message("dropped on %s", name);
+
+        while (TRUE)
+        {
+            gchar* next = uris[i++];
+
+            if (!next)
+            {
+                break;
+            }
+
+            g_message("dropped: %s", next);
+        }
+
+        gtk_drag_finish(
+            context,
+            TRUE,
+            FALSE,
+            time
+        );
+    }
+
+    handled = TRUE;
+
+cleanup:
+    g_strfreev(uris);
+    g_free(name);
+    gtk_tree_path_free(target_item);
+
+    if (!handled)
+    {
+        if (behaviour->drag_motion)
+        {
+            gdk_drag_status(context, 0, time);
+        }
+        else
+        {
+            gtk_drag_finish(context, FALSE, FALSE, time);
+        }
+    }
+}
+
+static gboolean on_icon_view_drag_drop(
+    GtkWidget*      widget,
+    GdkDragContext* context,
+    gint            x,
+    gint            y,
+    guint           time,
+    gpointer        user_data
+)
+{
+    WinTCShIconViewBehaviour* behaviour =
+        WINTC_SH_ICON_VIEW_BEHAVIOUR(user_data);
+
+    behaviour->drag_x      = x;
+    behaviour->drag_y      = y;
+    behaviour->drag_motion = FALSE;
+
+    gtk_drag_get_data(widget, context, s_atom_text_uri_list, time);
+    
+    return TRUE;
+}
+
+static gboolean on_icon_view_drag_motion(
+    GtkWidget*      widget,
+    GdkDragContext* context,
+    gint            x,
+    gint            y,
+    guint           time,
+    gpointer        user_data
+)
+{
+    WinTCShIconViewBehaviour* behaviour =
+        WINTC_SH_ICON_VIEW_BEHAVIOUR(user_data);
+
+    behaviour->drag_x      = x;
+    behaviour->drag_y      = y;
+    behaviour->drag_motion = TRUE;
+
+    gtk_drag_get_data(widget, context, s_atom_text_uri_list, time);
+    
+    return TRUE;
 }
 
 static void on_icon_view_item_activated(
