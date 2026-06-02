@@ -56,6 +56,11 @@ static gint wintc_sh_view_desktop_compare_items(
     guint            item_hash1,
     guint            item_hash2
 );
+static gboolean wintc_sh_view_desktop_drop_test(
+    WinTCIShextView*    view,
+    guint               item_hash,
+    const gchar* const* uris
+);
 static const gchar* wintc_sh_view_desktop_get_display_name(
     WinTCIShextView* view
 );
@@ -298,6 +303,7 @@ static void wintc_sh_view_desktop_ishext_view_interface_init(
 {
     iface->activate_item           = wintc_sh_view_desktop_activate_item;
     iface->compare_items           = wintc_sh_view_desktop_compare_items;
+    iface->drop_test               = wintc_sh_view_desktop_drop_test;
     iface->get_display_name        = wintc_sh_view_desktop_get_display_name;
     iface->get_icon_name           = wintc_sh_view_desktop_get_icon_name;
     iface->get_items               = wintc_sh_view_desktop_get_items;
@@ -501,6 +507,42 @@ static gint wintc_sh_view_desktop_compare_items(
     return
         order_item1 < order_item2 ? -1 :
             (order_item1 > order_item2 ? 1 : 0);
+}
+
+static gboolean wintc_sh_view_desktop_drop_test(
+    WinTCIShextView*    view,
+    guint               item_hash,
+    const gchar* const* uris
+)
+{
+    WinTCShViewDesktop* view_desk = WINTC_SH_VIEW_DESKTOP(view);
+
+    // View itself accepts drops to go to the backing FS view
+    //
+    if (!item_hash)
+    {
+        return TRUE;
+    }
+
+    // Handle item drops
+    //
+    WinTCShextViewItem* item =
+        wintc_sh_view_desktop_get_view_item(view_desk, item_hash);
+
+    if (item)
+    {
+        // FIXME: Forward to views like Recycle Bin
+        //
+        return FALSE;
+    }
+    else
+    {
+        return wintc_ishext_view_drop_test(
+            view_desk->view_user_desktop,
+            item_hash,
+            uris
+        );
+    }
 }
 
 static const gchar* wintc_sh_view_desktop_get_display_name(

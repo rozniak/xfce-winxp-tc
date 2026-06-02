@@ -119,6 +119,18 @@ gint wintc_ishext_view_compare_items(
     return iface->compare_items(view, item_hash1, item_hash2);
 }
 
+gboolean wintc_ishext_view_drop_test(
+    WinTCIShextView*    view,
+    guint               item_hash,
+    const gchar* const* uris
+)
+{
+    WinTCIShextViewInterface* iface =
+        WINTC_ISHEXT_VIEW_GET_IFACE(view);
+
+    return iface->drop_test(view, item_hash, uris);
+}
+
 const gchar* wintc_ishext_view_get_display_name(
     WinTCIShextView* view
 )

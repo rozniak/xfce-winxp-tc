@@ -47,6 +47,13 @@ struct _WinTCIShextViewInterface
         guint            item_hash1,
         guint            item_hash2
     );
+
+    gboolean (*drop_test) (
+        WinTCIShextView*    view,
+        guint               item_hash,
+        const gchar* const* uris
+    );
+
     const gchar* (*get_display_name) (
         WinTCIShextView* view
     );
@@ -109,6 +116,13 @@ gint wintc_ishext_view_compare_items(
     guint            item_hash1,
     guint            item_hash2
 );
+
+gboolean wintc_ishext_view_drop_test(
+    WinTCIShextView*    view,
+    guint               item_hash,
+    const gchar* const* uris
+);
+
 void wintc_ishext_view_refresh_items(
     WinTCIShextView* view
 );

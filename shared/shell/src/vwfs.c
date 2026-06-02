@@ -58,6 +58,11 @@ static gint wintc_sh_view_fs_compare_items(
     guint            item_hash1,
     guint            item_hash2
 );
+static gboolean wintc_sh_view_fs_drop_test(
+    WinTCIShextView*    view,
+    guint               item_hash,
+    const gchar* const* uris
+);
 static const gchar* wintc_sh_view_fs_get_display_name(
     WinTCIShextView* view
 );
@@ -279,6 +284,7 @@ static void wintc_sh_view_fs_ishext_view_interface_init(
 {
     iface->activate_item           = wintc_sh_view_fs_activate_item;
     iface->compare_items           = wintc_sh_view_fs_compare_items;
+    iface->drop_test               = wintc_sh_view_fs_drop_test;
     iface->get_display_name        = wintc_sh_view_fs_get_display_name;
     iface->get_icon_name           = wintc_sh_view_fs_get_icon_name;
     iface->get_items               = wintc_sh_view_fs_get_items;
@@ -553,6 +559,37 @@ static gint wintc_sh_view_fs_compare_items(
         wintc_sh_view_fs_get_view_item(view_fs, item_hash1),
         wintc_sh_view_fs_get_view_item(view_fs, item_hash2)
     );
+}
+
+static gboolean wintc_sh_view_fs_drop_test(
+    WinTCIShextView* view,
+    guint            item_hash,
+    WINTC_UNUSED(const gchar* const* uris)
+)
+{
+    WinTCShViewFS* view_fs = WINTC_SH_VIEW_FS(view);
+
+    // For now - treat the view itself as always writable
+    //
+    if (!item_hash)
+    {
+        return TRUE;
+    }
+
+    // Check the recipient item...
+    // 
+    WinTCShextViewItem* view_item =
+        wintc_sh_view_fs_get_view_item(view_fs, item_hash);
+
+    if (view_item->is_leaf) // Folders are treated as writable
+    {
+        return TRUE;
+    }
+
+    // FIXME: Should allow drops for executable files/scripts - we don't store
+    //        file type in the view item at the moment
+    //
+    return FALSE;
 }
 
 static const gchar* wintc_sh_view_fs_get_display_name(

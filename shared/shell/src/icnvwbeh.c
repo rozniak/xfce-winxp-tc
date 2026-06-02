@@ -846,7 +846,7 @@ static void on_icon_view_drag_data_received(
     WINTC_UNUSED(gint x),
     WINTC_UNUSED(gint y),
     GtkSelectionData* selection_data,
-    guint             info,
+    WINTC_UNUSED(guint info),
     guint             time,
     gpointer          user_data
 )
@@ -854,50 +854,13 @@ static void on_icon_view_drag_data_received(
     WinTCShIconViewBehaviour* behaviour =
         WINTC_SH_ICON_VIEW_BEHAVIOUR(user_data);
 
-    gchar*       name        = NULL;
+    guint        item_hash   = 0;
     GtkTreePath* target_item = NULL;
     gchar**      uris        = NULL;
 
     gboolean handled = FALSE;
 
-    if (info != DRAG_TARGET_URI_LIST)
-    {
-        WINTC_LOG_DEBUG("Not uri list drag");
-        goto cleanup;
-    }
-
-    // Test - only allow drops on items for now
-    //
-    target_item =
-        gtk_icon_view_get_path_at_pos(
-            GTK_ICON_VIEW(behaviour->icon_view),
-            behaviour->drag_x,
-            behaviour->drag_y
-        );
-
-    if (!target_item)
-    {
-        goto cleanup;
-    }
-
-    // Retrieve the item for the drop
-    //
-    GtkTreeIter iter;
-
-    gtk_tree_model_get_iter(
-        GTK_TREE_MODEL(behaviour->list_model),
-        &iter,
-        target_item
-    );
-
-    gtk_tree_model_get(
-        GTK_TREE_MODEL(behaviour->list_model),
-        &iter,
-        COLUMN_ENTRY_NAME, &name,
-        -1
-    );
-
-    // Pull URIs and examine
+    // Pull URIs
     //
     uris = gtk_selection_data_get_uris(selection_data);
 
@@ -906,19 +869,59 @@ static void on_icon_view_drag_data_received(
         goto cleanup;
     }
 
+    // Test - are we dragging on an item
+    //
+    target_item =
+        gtk_icon_view_get_path_at_pos(
+            GTK_ICON_VIEW(behaviour->icon_view),
+            behaviour->drag_x,
+            behaviour->drag_y
+        );
+
+    if (target_item)
+    {
+        GtkTreeIter iter;
+
+        gtk_tree_model_get_iter(
+            GTK_TREE_MODEL(behaviour->list_model),
+            &iter,
+            target_item
+        );
+
+        gtk_tree_model_get(
+            GTK_TREE_MODEL(behaviour->list_model),
+            &iter,
+            COLUMN_VIEW_HASH, &item_hash,
+            -1
+        );
+    }
+
+    // Query the view for the drag
+    //
     if (behaviour->drag_motion)
     {
-        gdk_drag_status(
-            context,
-            gdk_drag_context_get_suggested_action(context),
-            time
-        );
+        if (
+            wintc_ishext_view_drop_test(
+                behaviour->current_view,
+                item_hash,
+                (const gchar* const*) uris
+            )
+        )
+        {
+            gdk_drag_status(
+                context,
+                gdk_drag_context_get_suggested_action(context),
+                time
+            );
+        }
+        else
+        {
+            gdk_drag_status(context, 0, time);
+        }
     }
     else
     {
         gint i = 0;
-
-        g_message("dropped on %s", name);
 
         while (TRUE)
         {
@@ -944,7 +947,6 @@ static void on_icon_view_drag_data_received(
 
 cleanup:
     g_strfreev(uris);
-    g_free(name);
     gtk_tree_path_free(target_item);
 
     if (!handled)

@@ -54,6 +54,11 @@ static gint wintc_sh_view_trash_compare_items(
     guint            item_hash1,
     guint            item_hash2
 );
+static gboolean wintc_sh_view_trash_drop_test(
+    WinTCIShextView*    view,
+    guint               item_hash,
+    const gchar* const* uris
+);
 static const gchar* wintc_sh_view_trash_get_display_name(
     WinTCIShextView* view
 );
@@ -246,6 +251,7 @@ static void wintc_sh_view_trash_ishext_view_interface_init(
 {
     iface->activate_item           = wintc_sh_view_trash_activate_item;
     iface->compare_items           = wintc_sh_view_trash_compare_items;
+    iface->drop_test               = wintc_sh_view_trash_drop_test;
     iface->get_display_name        = wintc_sh_view_trash_get_display_name;
     iface->get_icon_name           = wintc_sh_view_trash_get_icon_name;
     iface->get_items               = wintc_sh_view_trash_get_items;
@@ -355,6 +361,17 @@ static gint wintc_sh_view_trash_compare_items(
         wintc_sh_view_trash_get_view_item(view_trash, item_hash1),
         wintc_sh_view_trash_get_view_item(view_trash, item_hash2)
     );
+}
+
+static gboolean wintc_sh_view_trash_drop_test(
+    WINTC_UNUSED(WinTCIShextView*    view),
+    WINTC_UNUSED(guint               item_hash),
+    WINTC_UNUSED(const gchar* const* uris)
+)
+{
+    // Accept all drops - treat them all as the view
+    //
+    return TRUE;
 }
 
 static const gchar* wintc_sh_view_trash_get_display_name(
