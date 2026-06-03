@@ -587,18 +587,22 @@ static gboolean wintc_sh_view_fs_drop_execute(
 
     // Determine where this is going
     //
-    GList* sources = wintc_list_new_from_const_strv(uris);
-    gchar* target_path;
+    GList* sources     = wintc_list_new_from_const_strv(uris);
+    gchar* target_path = NULL;
 
     if (item_hash)
     {
         WinTCShextViewItem* view_item =
             wintc_sh_view_fs_get_view_item(view_fs, item_hash);
 
-        target_path =
-            wintc_sh_view_fs_build_path_for_view_item(view_fs, view_item);
+        if (!(view_item->is_leaf))
+        {
+            target_path =
+                wintc_sh_view_fs_build_path_for_view_item(view_fs, view_item);
+        }
     }
-    else
+
+    if (!target_path)
     {
         target_path = g_strdup(view_fs->path);
     }
