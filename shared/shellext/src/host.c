@@ -147,6 +147,8 @@ static void wintc_shext_host_finalize(
 {
     WinTCShextHost* host = WINTC_SHEXT_HOST(object);
 
+    g_hash_table_unref(host->map_path_info_to_view);
+
     g_hash_table_unref(host->map_views_by_guid);
     g_hash_table_unref(host->map_views_by_mime);
 
