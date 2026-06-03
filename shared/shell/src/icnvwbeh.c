@@ -121,9 +121,9 @@ static void on_current_view_refreshing(
 //
 // STATIC DATA
 //
-static GSimpleAction* s_action_noop = NULL;
+static GSimpleAction* S_ACTION_NOOP = NULL;
 
-static GActionEntry s_actions[] = {
+static GActionEntry S_ACTIONS[] = {
     {
         .name           = "paste-op",
         .activate       = action_paste_operation,
@@ -140,9 +140,9 @@ static GActionEntry s_actions[] = {
     }
 };
 
-static GdkAtom s_atom_text_uri_list;
+static GdkAtom S_ATOM_TEXT_URI_LIST;
 
-static GtkTargetEntry s_drag_targets[] = {
+static GtkTargetEntry S_DRAG_TARGETS[] = {
     {
         "text/uri-list",
         0,
@@ -229,7 +229,7 @@ static void wintc_sh_icon_view_behaviour_class_init(
         )
     );
 
-    s_atom_text_uri_list =
+    S_ATOM_TEXT_URI_LIST =
         gdk_atom_intern_static_string("text/uri-list");
 }
 
@@ -271,26 +271,26 @@ static void wintc_sh_icon_view_behaviour_constructed(
     //
     GSimpleActionGroup* action_group = g_simple_action_group_new();
 
-    if (!s_action_noop)
+    if (!S_ACTION_NOOP)
     {
-        s_action_noop =
+        S_ACTION_NOOP =
             g_simple_action_new("no-op", NULL);
 
         g_simple_action_set_enabled(
-            s_action_noop,
+            S_ACTION_NOOP,
             FALSE
         );
     }
 
     g_action_map_add_action_entries(
         G_ACTION_MAP(action_group),
-        s_actions,
-        G_N_ELEMENTS(s_actions),
+        S_ACTIONS,
+        G_N_ELEMENTS(S_ACTIONS),
         behaviour
     );
     g_action_map_add_action(
         G_ACTION_MAP(action_group),
-        G_ACTION(s_action_noop)
+        G_ACTION(S_ACTION_NOOP)
     );
 
     gtk_widget_insert_action_group(
@@ -361,8 +361,8 @@ static void wintc_sh_icon_view_behaviour_constructed(
     gtk_drag_dest_set(
         behaviour->icon_view,
         0,
-        s_drag_targets,
-        G_N_ELEMENTS(s_drag_targets),
+        S_DRAG_TARGETS,
+        G_N_ELEMENTS(S_DRAG_TARGETS),
         GDK_ACTION_COPY
     );
 
@@ -993,7 +993,7 @@ static gboolean on_icon_view_drag_drop(
     behaviour->drag_y      = y;
     behaviour->drag_motion = FALSE;
 
-    gtk_drag_get_data(widget, context, s_atom_text_uri_list, time);
+    gtk_drag_get_data(widget, context, S_ATOM_TEXT_URI_LIST, time);
     
     return TRUE;
 }
@@ -1014,7 +1014,7 @@ static gboolean on_icon_view_drag_motion(
     behaviour->drag_y      = y;
     behaviour->drag_motion = TRUE;
 
-    gtk_drag_get_data(widget, context, s_atom_text_uri_list, time);
+    gtk_drag_get_data(widget, context, S_ATOM_TEXT_URI_LIST, time);
     
     return TRUE;
 }
