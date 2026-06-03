@@ -58,6 +58,14 @@ static gint wintc_sh_view_fs_compare_items(
     guint            item_hash1,
     guint            item_hash2
 );
+static gboolean wintc_sh_view_fs_drop_execute(
+    WinTCIShextView*    view,
+    GtkWindow*          wnd,
+    guint               item_hash,
+    const gchar* const* uris,
+    gboolean            hint_copy,
+    GError**            error
+    );
 static gboolean wintc_sh_view_fs_drop_test(
     WinTCIShextView*    view,
     guint               item_hash,
@@ -284,6 +292,7 @@ static void wintc_sh_view_fs_ishext_view_interface_init(
 {
     iface->activate_item           = wintc_sh_view_fs_activate_item;
     iface->compare_items           = wintc_sh_view_fs_compare_items;
+    iface->drop_execute            = wintc_sh_view_fs_drop_execute;
     iface->drop_test               = wintc_sh_view_fs_drop_test;
     iface->get_display_name        = wintc_sh_view_fs_get_display_name;
     iface->get_icon_name           = wintc_sh_view_fs_get_icon_name;
@@ -559,6 +568,64 @@ static gint wintc_sh_view_fs_compare_items(
         wintc_sh_view_fs_get_view_item(view_fs, item_hash1),
         wintc_sh_view_fs_get_view_item(view_fs, item_hash2)
     );
+}
+
+static gboolean wintc_sh_view_fs_drop_execute(
+    WinTCIShextView*    view,
+    GtkWindow*          wnd,
+    guint               item_hash,
+    const gchar* const* uris,
+    gboolean            hint_copy,
+    WINTC_UNUSED(GError** error)
+)
+{
+    WinTCShViewFS* view_fs = WINTC_SH_VIEW_FS(view);
+
+    //
+    // FIXME: Handle file on executable program/script later
+    //
+
+    // Determine where this is going
+    //
+    GList* sources = wintc_list_new_from_const_strv(uris);
+    gchar* target_path;
+
+    if (item_hash)
+    {
+        WinTCShextViewItem* view_item =
+            wintc_sh_view_fs_get_view_item(view_fs, item_hash);
+
+        target_path =
+            wintc_sh_view_fs_build_path_for_view_item(view_fs, view_item);
+    }
+    else
+    {
+        target_path = g_strdup(view_fs->path);
+    }
+
+    // Do the op
+    //
+    WinTCShFSOperation* op =
+        wintc_sh_fs_operation_new(
+            sources,
+            target_path,
+            hint_copy ?
+                WINTC_SH_FS_OPERATION_COPY :
+                WINTC_SH_FS_OPERATION_MOVE
+        );
+
+    g_signal_connect(
+        op,
+        "done",
+        G_CALLBACK(on_fs_operation_done),
+        sources
+    );
+
+    wintc_sh_fs_operation_do(op, wnd);
+
+    g_free(target_path);
+
+    return TRUE;
 }
 
 static gboolean wintc_sh_view_fs_drop_test(

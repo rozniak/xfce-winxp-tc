@@ -51,6 +51,14 @@ static gint wintc_view_zip_compare_items(
     guint            item_hash1,
     guint            item_hash2
 );
+static gboolean wintc_view_zip_drop_execute(
+    WinTCIShextView*    view,
+    GtkWindow*          wnd,
+    guint               item_hash,
+    const gchar* const* uris,
+    gboolean            hint_copy,
+    GError**            error
+);
 static gboolean wintc_view_zip_drop_test(
     WinTCIShextView*    view,
     guint               item_hash,
@@ -194,6 +202,7 @@ static void wintc_view_zip_ishext_view_interface_init(
 {
     iface->activate_item           = wintc_view_zip_activate_item;
     iface->compare_items           = wintc_view_zip_compare_items;
+    iface->drop_execute            = wintc_view_zip_drop_execute;
     iface->drop_test               = wintc_view_zip_drop_test;
     iface->get_operations_for_item = wintc_view_zip_get_operations_for_item;
     iface->get_operations_for_view = wintc_view_zip_get_operations_for_view;
@@ -343,6 +352,18 @@ static gint wintc_view_zip_compare_items(
         wintc_view_zip_get_view_item(view_zip, item_hash1),
         wintc_view_zip_get_view_item(view_zip, item_hash2)
     );
+}
+
+static gboolean wintc_view_zip_drop_execute(
+    WINTC_UNUSED(WinTCIShextView*    view),
+    WINTC_UNUSED(GtkWindow*          wnd),
+    WINTC_UNUSED(guint               item_hash),
+    WINTC_UNUSED(const gchar* const* uris),
+    WINTC_UNUSED(gboolean            hint_copy),
+    WINTC_UNUSED(GError**            error)
+)
+{
+    return FALSE;
 }
 
 static gboolean wintc_view_zip_drop_test(

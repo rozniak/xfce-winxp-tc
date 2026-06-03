@@ -185,6 +185,38 @@ GList* wintc_list_limit(
     return res;
 }
 
+GList* wintc_list_new_from_const_strv(
+    const gchar* const* strv
+)
+{
+    GList* ret = NULL;
+
+    for (const gchar* const* iter = strv; *iter; iter++)
+    {
+        ret = g_list_prepend(ret, g_strdup(*iter));
+    }
+
+    ret = g_list_reverse(ret);
+
+    return ret;
+}
+
+GList* wintc_list_new_from_strv(
+    gchar** strv
+)
+{
+    GList* ret = NULL;
+
+    for (gchar** iter = strv; *iter; iter++)
+    {
+        ret = g_list_prepend(ret, *iter);
+    }
+
+    ret = g_list_reverse(ret);
+
+    return ret;
+}
+
 GList* wintc_list_read_from_string(
     const gchar* str
 )

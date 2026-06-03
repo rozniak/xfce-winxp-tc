@@ -100,6 +100,26 @@ GList* wintc_list_limit(
 );
 
 /**
+ * Builds a new list from a read-only array of strings.
+ *
+ * @param strv The read-only array of strings.
+ * @return A new list containing copies of the strings from the array.
+ */
+GList* wintc_list_new_from_const_strv(
+    const gchar* const* strv
+);
+
+/**
+ * Builds a new list from an array of strings.
+ *
+ * @param strv The array of strings.
+ * @return A new list containing references to each string in the array.
+ */
+GList* wintc_list_new_from_strv(
+    gchar** strv
+);
+
+/**
  * Creates a list out of the lines in a string.
  *
  * @param str The string.

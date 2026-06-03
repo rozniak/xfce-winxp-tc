@@ -54,6 +54,14 @@ static gint wintc_sh_view_trash_compare_items(
     guint            item_hash1,
     guint            item_hash2
 );
+static gboolean wintc_sh_view_trash_drop_execute(
+    WinTCIShextView*    view,
+    GtkWindow*          wnd,
+    guint               item_hash,
+    const gchar* const* uris,
+    gboolean            hint_copy,
+    GError**            error
+);
 static gboolean wintc_sh_view_trash_drop_test(
     WinTCIShextView*    view,
     guint               item_hash,
@@ -251,6 +259,7 @@ static void wintc_sh_view_trash_ishext_view_interface_init(
 {
     iface->activate_item           = wintc_sh_view_trash_activate_item;
     iface->compare_items           = wintc_sh_view_trash_compare_items;
+    iface->drop_execute            = wintc_sh_view_trash_drop_execute;
     iface->drop_test               = wintc_sh_view_trash_drop_test;
     iface->get_display_name        = wintc_sh_view_trash_get_display_name;
     iface->get_icon_name           = wintc_sh_view_trash_get_icon_name;
@@ -361,6 +370,40 @@ static gint wintc_sh_view_trash_compare_items(
         wintc_sh_view_trash_get_view_item(view_trash, item_hash1),
         wintc_sh_view_trash_get_view_item(view_trash, item_hash2)
     );
+}
+
+static gboolean wintc_sh_view_trash_drop_execute(
+    WINTC_UNUSED(WinTCIShextView* view),
+    GtkWindow*          wnd,
+    WINTC_UNUSED(guint item_hash),
+    const gchar* const* uris,
+    WINTC_UNUSED(gboolean hint_copy),
+    WINTC_UNUSED(GError** error)
+)
+{
+    // Get the items we're to trash
+    //
+    GList* sources = wintc_list_new_from_const_strv(uris);
+
+    // Do the trash operation
+    //
+    WinTCShFSOperation* op =
+        wintc_sh_fs_operation_new(
+            sources,
+            NULL,
+            WINTC_SH_FS_OPERATION_TRASH
+        );
+
+    g_signal_connect(
+        op,
+        "done",
+        G_CALLBACK(on_fs_operation_done),
+        sources
+    );
+
+    wintc_sh_fs_operation_do(op, wnd);
+
+    return TRUE;
 }
 
 static gboolean wintc_sh_view_trash_drop_test(

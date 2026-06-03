@@ -854,6 +854,7 @@ static void on_icon_view_drag_data_received(
     WinTCShIconViewBehaviour* behaviour =
         WINTC_SH_ICON_VIEW_BEHAVIOUR(user_data);
 
+    GError*      error       = NULL;
     guint        item_hash   = 0;
     GtkTreePath* target_item = NULL;
     gchar**      uris        = NULL;
@@ -921,26 +922,40 @@ static void on_icon_view_drag_data_received(
     }
     else
     {
-        gint i = 0;
+        gboolean   hint_copy =
+            gdk_drag_context_get_suggested_action(context) == GDK_ACTION_COPY;
+        GtkWindow* wnd =
+            wintc_widget_get_toplevel_window(behaviour->icon_view);
 
-        while (TRUE)
+        if (
+            wintc_ishext_view_drop_execute(
+                behaviour->current_view,
+                wnd,
+                item_hash,
+                (const gchar* const*) uris,
+                hint_copy,
+                &error
+            )
+        )
         {
-            gchar* next = uris[i++];
-
-            if (!next)
-            {
-                break;
-            }
-
-            g_message("dropped: %s", next);
+            gtk_drag_finish(
+                context,
+                TRUE,
+                FALSE,
+                time
+            );
         }
+        else
+        {
+            gtk_drag_finish(
+                context,
+                FALSE,
+                FALSE,
+                time
+            );
 
-        gtk_drag_finish(
-            context,
-            TRUE,
-            FALSE,
-            time
-        );
+            wintc_display_error_and_clear(&error, wnd);
+        }
     }
 
     handled = TRUE;

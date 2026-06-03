@@ -48,6 +48,14 @@ struct _WinTCIShextViewInterface
         guint            item_hash2
     );
 
+    gboolean (*drop_execute) (
+        WinTCIShextView*    view,
+        GtkWindow*          wnd,
+        guint               item_hash,
+        const gchar* const* uris,
+        gboolean            hint_copy,
+        GError**            error
+    );
     gboolean (*drop_test) (
         WinTCIShextView*    view,
         guint               item_hash,
@@ -117,6 +125,14 @@ gint wintc_ishext_view_compare_items(
     guint            item_hash2
 );
 
+gboolean wintc_ishext_view_drop_execute(
+    WinTCIShextView*    view,
+    GtkWindow*          wnd,
+    guint               item_hash,
+    const gchar* const* uris,
+    gboolean            hint_copy,
+    GError**            error
+);
 gboolean wintc_ishext_view_drop_test(
     WinTCIShextView*    view,
     guint               item_hash,

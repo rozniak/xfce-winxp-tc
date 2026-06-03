@@ -44,6 +44,14 @@ static gint wintc_sh_view_cpl_compare_items(
     guint            item_hash1,
     guint            item_hash2
 );
+static gboolean wintc_sh_view_cpl_drop_execute(
+    WinTCIShextView*   view,
+    GtkWindow*         wnd,
+    guint              item_hash,
+    const char* const* uris,
+    gboolean           hint_copy,
+    GError**           error
+);
 static gboolean wintc_sh_view_cpl_drop_test(
     WinTCIShextView*    view,
     guint               item_hash,
@@ -155,6 +163,7 @@ static void wintc_sh_view_cpl_ishext_view_interface_init(
 {
     iface->activate_item           = wintc_sh_view_cpl_activate_item;
     iface->compare_items           = wintc_sh_view_cpl_compare_items;
+    iface->drop_execute            = wintc_sh_view_cpl_drop_execute;
     iface->drop_test               = wintc_sh_view_cpl_drop_test;
     iface->get_display_name        = wintc_sh_view_cpl_get_display_name;
     iface->get_icon_name           = wintc_sh_view_cpl_get_icon_name;
@@ -260,6 +269,18 @@ static gint wintc_sh_view_cpl_compare_items(
         wintc_sh_view_cpl_get_view_item(view_cpl, item_hash2);
 
     return wintc_shext_view_item_compare_by_name(item1, item2);
+}
+
+static gboolean wintc_sh_view_cpl_drop_execute(
+    WINTC_UNUSED(WinTCIShextView*   view),
+    WINTC_UNUSED(GtkWindow*         wnd),
+    WINTC_UNUSED(guint              item_hash),
+    WINTC_UNUSED(const char* const* uris),
+    WINTC_UNUSED(gboolean           hint_copy),
+    WINTC_UNUSED(GError**           error)
+)
+{
+    return FALSE;
 }
 
 static gboolean wintc_sh_view_cpl_drop_test(

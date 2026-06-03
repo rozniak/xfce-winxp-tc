@@ -56,6 +56,14 @@ static gint wintc_sh_view_desktop_compare_items(
     guint            item_hash1,
     guint            item_hash2
 );
+static gboolean wintc_sh_view_desktop_drop_execute(
+    WinTCIShextView*    view,
+    GtkWindow*          wnd,
+    guint               item_hash,
+    const gchar* const* uris,
+    gboolean            hint_copy,
+    GError**            error
+);
 static gboolean wintc_sh_view_desktop_drop_test(
     WinTCIShextView*    view,
     guint               item_hash,
@@ -303,6 +311,7 @@ static void wintc_sh_view_desktop_ishext_view_interface_init(
 {
     iface->activate_item           = wintc_sh_view_desktop_activate_item;
     iface->compare_items           = wintc_sh_view_desktop_compare_items;
+    iface->drop_execute            = wintc_sh_view_desktop_drop_execute;
     iface->drop_test               = wintc_sh_view_desktop_drop_test;
     iface->get_display_name        = wintc_sh_view_desktop_get_display_name;
     iface->get_icon_name           = wintc_sh_view_desktop_get_icon_name;
@@ -507,6 +516,55 @@ static gint wintc_sh_view_desktop_compare_items(
     return
         order_item1 < order_item2 ? -1 :
             (order_item1 > order_item2 ? 1 : 0);
+}
+
+static gboolean wintc_sh_view_desktop_drop_execute(
+    WinTCIShextView*    view,
+    GtkWindow*          wnd,
+    guint               item_hash,
+    const gchar* const* uris,
+    gboolean            hint_copy,
+    GError**            error
+)
+{
+    WinTCShViewDesktop* view_desk = WINTC_SH_VIEW_DESKTOP(view);
+
+    // Handle the special desktop items here, otherwise forward the rest to the
+    // backing FS view
+    //
+    WinTCShextViewItem* item = NULL;
+
+    if (item_hash)
+    {
+        item =
+           wintc_sh_view_desktop_get_view_item(view_desk, item_hash);
+    }
+
+    if (item)
+    {
+        // FIXME: Forward to views like Recycle Bin
+        //
+        g_set_error(
+            error,
+            WINTC_GENERAL_ERROR,
+            WINTC_GENERAL_ERROR_NOTIMPL,
+            "%s",
+            "Sorry, can't drop on shell views yet."
+        );
+
+        return FALSE;
+    }
+    else
+    {
+        return wintc_ishext_view_drop_execute(
+            view_desk->view_user_desktop,
+            wnd,
+            item_hash,
+            uris,
+            hint_copy,
+            error
+        );
+    }
 }
 
 static gboolean wintc_sh_view_desktop_drop_test(

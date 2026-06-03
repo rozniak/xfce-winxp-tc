@@ -68,6 +68,14 @@ static gint wintc_sh_view_drives_compare_items(
     guint            item_hash1,
     guint            item_hash2
 );
+static gboolean wintc_sh_view_drives_drop_execute(
+    WinTCIShextView*    view,
+    GtkWindow*          wnd,
+    guint               item_hash,
+    const gchar* const* uris,
+    gboolean            hint_copy,
+    GError**            error
+);
 static gboolean wintc_sh_view_drives_drop_test(
     WinTCIShextView*    view,
     guint               item_hash,
@@ -194,6 +202,7 @@ static void wintc_sh_view_drives_ishext_view_interface_init(
 {
     iface->activate_item           = wintc_sh_view_drives_activate_item;
     iface->compare_items           = wintc_sh_view_drives_compare_items;
+    iface->drop_execute            = wintc_sh_view_drives_drop_execute;
     iface->drop_test               = wintc_sh_view_drives_drop_test;
     iface->get_display_name        = wintc_sh_view_drives_get_display_name;
     iface->get_icon_name           = wintc_sh_view_drives_get_icon_name;
@@ -273,6 +282,18 @@ static gint wintc_sh_view_drives_compare_items(
 {
     // FIXME: Proper implementation
     return -1;
+}
+
+static gboolean wintc_sh_view_drives_drop_execute(
+    WINTC_UNUSED(WinTCIShextView*   view),
+    WINTC_UNUSED(GtkWindow*         wnd),
+    WINTC_UNUSED(guint              item_hash),
+    WINTC_UNUSED(const char* const* uris),
+    WINTC_UNUSED(gboolean           hint_copy),
+    WINTC_UNUSED(GError**           error)
+)
+{
+    return FALSE;
 }
 
 static gboolean wintc_sh_view_drives_drop_test(

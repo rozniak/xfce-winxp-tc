@@ -119,6 +119,28 @@ gint wintc_ishext_view_compare_items(
     return iface->compare_items(view, item_hash1, item_hash2);
 }
 
+gboolean wintc_ishext_view_drop_execute(
+    WinTCIShextView*    view,
+    GtkWindow*          wnd,
+    guint               item_hash,
+    const gchar* const* uris,
+    gboolean            hint_copy,
+    GError**            error
+)
+{
+    WinTCIShextViewInterface* iface =
+        WINTC_ISHEXT_VIEW_GET_IFACE(view);
+
+    return iface->drop_execute(
+        view,
+        wnd,
+        item_hash,
+        uris,
+        hint_copy,
+        error
+    );
+}
+
 gboolean wintc_ishext_view_drop_test(
     WinTCIShextView*    view,
     guint               item_hash,
