@@ -49,6 +49,8 @@ add_library(
     public/defprocs.h
     src/delegate.c
     public/delegate.h
+    src/devices.c
+    public/devices.h
     src/errors.c
     public/errors.h
     src/hashtable.c

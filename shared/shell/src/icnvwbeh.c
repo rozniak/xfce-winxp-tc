@@ -901,6 +901,13 @@ static void on_icon_view_drag_data_received(
     //
     if (behaviour->drag_motion)
     {
+        GdkModifierType mask;
+
+        wintc_widget_get_modifier_mask(
+            behaviour->icon_view,
+            &mask
+        );
+
         if (
             wintc_ishext_view_drop_test(
                 behaviour->current_view,
@@ -911,7 +918,8 @@ static void on_icon_view_drag_data_received(
         {
             gdk_drag_status(
                 context,
-                gdk_drag_context_get_suggested_action(context),
+                mask & GDK_CONTROL_MASK ?
+                    GDK_ACTION_COPY : GDK_ACTION_MOVE,
                 time
             );
         }
@@ -923,7 +931,7 @@ static void on_icon_view_drag_data_received(
     else
     {
         gboolean   hint_copy =
-            gdk_drag_context_get_suggested_action(context) == GDK_ACTION_COPY;
+            gdk_drag_context_get_selected_action(context) == GDK_ACTION_COPY;
         GtkWindow* wnd =
             wintc_widget_get_toplevel_window(behaviour->icon_view);
 

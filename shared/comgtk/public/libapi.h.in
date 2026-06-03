@@ -10,6 +10,7 @@
 #include "@LIB_HEADER_DIR@/debug.h"
 #include "@LIB_HEADER_DIR@/defprocs.h"
 #include "@LIB_HEADER_DIR@/delegate.h"
+#include "@LIB_HEADER_DIR@/devices.h"
 #include "@LIB_HEADER_DIR@/errors.h"
 #include "@LIB_HEADER_DIR@/hashtable.h"
 #include "@LIB_HEADER_DIR@/icons.h"
