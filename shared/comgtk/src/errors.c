@@ -40,8 +40,8 @@ gboolean wintc_filter_error(
 )
 {
     if (
-        error->domain == domain &&
-        error->code   == code
+        error->domain != domain ||
+        error->code   != code
     )
     {
         g_propagate_error(out_error, error);

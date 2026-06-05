@@ -37,7 +37,7 @@ void wintc_display_error_and_clear(
 );
 
 /**
- * Filters for a particular error code, and propagates it if there is a match.
+ * Propagates and error if it does not match the specified domain/code.
  *
  * @param error     The error to filter.
  * @param domain    The error domain.

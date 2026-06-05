@@ -104,48 +104,21 @@ gboolean wintc_launch_command_sync(
 }
 
 gboolean wintc_launch_command_with_fallbacks(
-    GError**     error,
-    const gchar* cmdline,
+    GError**  error,
     ...
 )
 {
-    GError* local_error = NULL;
-
-    // Attempt main cmdline
-    //
-    if (wintc_launch_command(cmdline, &local_error))
-    {
-        return TRUE;
-    }
-
-    // Failed, catch all except file not found
-    //
-    if (
-        wintc_filter_error(
-            local_error,
-            G_FILE_ERROR,
-            G_FILE_ERROR_NOENT,
-            error
-        )
-    )
-    {
-        return FALSE;
-    }
-
-    g_clear_error(&local_error);
-
-    // Failed... continue to try fallbacks one by one until one works
-    //
     va_list      ap;
+    GError*      local_error = NULL;
     const gchar* next_cmdline;
 
-    va_start(ap, cmdline);
+    va_start(ap, error);
 
     next_cmdline = va_arg(ap, gchar*);
 
     while (next_cmdline)
     {
-        if (wintc_launch_command(cmdline, &local_error))
+        if (wintc_launch_command(next_cmdline, &local_error))
         {
             va_end(ap);
             return TRUE;

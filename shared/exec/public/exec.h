@@ -41,13 +41,11 @@ gboolean wintc_launch_command_sync(
  * Attempts to launch command lines until one is successful.
  *
  * @param error   A reference to the GError storage location.
- * @param cmdline The first command (highest priority).
- * @param ...     Subsequent commands that will be tried in sequence.
+ * @param ...     The commands that will be tried in sequence.
  * @return True if a command was launched successfully.
  */
 gboolean wintc_launch_command_with_fallbacks(
     GError**     error,
-    const gchar* cmdline,
     ...
 );
 
