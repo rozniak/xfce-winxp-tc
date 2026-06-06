@@ -303,7 +303,7 @@ static void wintc_cpl_appwiz_new_link_wizard_dispose(
             NULL
         );
 
-        lnkwiz->file_stream = NULL;
+        g_clear_object(&(lnkwiz->file_stream));
     }
 
     if (!(lnkwiz->done) && lnkwiz->file)
@@ -480,6 +480,8 @@ static gboolean wintc_cpl_appwiz_new_link_wizard_finish(
                         app_info,
                         "Terminal"
                     );
+
+                g_object_unref(app_info);
             }
 
             g_free(possible_entry);
@@ -552,17 +554,15 @@ static gboolean wintc_cpl_appwiz_new_link_wizard_finish(
         );
     }
 
-    g_free(icon);
-    g_free(true_target);
-
     // Attempt to write it out
     //
     gchar*  data;
     gchar*  dest;
     GFile*  dest_file;
     gchar*  dir;
+    GError* error    = NULL;
     gsize   len;
-    GError* error = NULL;
+    GFile*  new_file = NULL;
 
     dir  = g_path_get_dirname(lnkwiz->path);
     data = g_key_file_to_data(ini_link, &len, &error);
@@ -606,14 +606,15 @@ static gboolean wintc_cpl_appwiz_new_link_wizard_finish(
 
     g_file_delete(dest_file, NULL, NULL);
 
-    if (
-        !g_file_set_display_name(
+    new_file =
+        g_file_set_display_name(
             lnkwiz->file,
             lnkwiz->dest_name,
             NULL,
             &error
-        )
-    )
+        );
+
+    if (!new_file)
     {
         wintc_display_error_and_clear(&error, GTK_WINDOW(lnkwiz));
         goto cleanup;
@@ -622,6 +623,9 @@ static gboolean wintc_cpl_appwiz_new_link_wizard_finish(
     lnkwiz->done = TRUE;
 
 cleanup:
+    g_free(icon);
+    g_free(true_target);
+    g_key_file_unref(ini_link);
     g_free(data);
     g_free(dir);
     g_free(dest);
@@ -631,6 +635,7 @@ cleanup:
         NULL,
         NULL
     );
+    g_object_unref(new_file);
 
     return TRUE;
 }
