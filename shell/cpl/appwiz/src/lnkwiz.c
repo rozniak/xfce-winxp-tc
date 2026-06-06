@@ -1,3 +1,4 @@
+#include <gio/gdesktopappinfo.h>
 #include <glib.h>
 #include <gtk/gtk.h>
 #include <wintc/comgtk.h>
@@ -5,6 +6,8 @@
 #include <wintc/wizard97.h>
 
 #include "lnkwiz.h"
+
+#define K_INI_GROUP_DESKTOP_ENTRY "Desktop Entry"
 
 //
 // PRIVATE ENUMS
@@ -54,6 +57,10 @@ static void wintc_cpl_appwiz_new_link_wizard_constructing_page(
     guint                page_num,
     GtkBuilder*          builder
 );
+static gboolean wintc_cpl_appwiz_new_link_wizard_finish(
+    WinTCWizard97Window* wiz_wnd,
+    guint                current_page
+);
 static void wintc_cpl_appwiz_new_link_wizard_presenting_page(
     WinTCWizard97Window* wiz_wnd,
     guint                page_num
@@ -63,6 +70,9 @@ static gboolean wintc_cpl_appwiz_new_link_wizard_validate(
     guint                current_page
 );
 
+static gchar* wintc_cpl_appwiz_new_link_wizard_get_available_name(
+    WinTCCplAppwizNewLinkWizard* lnkwiz
+);
 static void wintc_cpl_appwiz_new_link_wizard_update_state(
     WinTCCplAppwizNewLinkWizard* lnkwiz,
     guint                        page_num
@@ -79,6 +89,11 @@ static void on_entry_name_changed(
 static void on_entry_target_changed(
     GtkEditable* editable,
     gpointer     user_data
+);
+static gboolean on_window_map_event(
+    GtkWidget* widget,
+    GdkEvent*  event,
+    gpointer   user_data
 );
 
 //
@@ -103,8 +118,11 @@ struct _WinTCCplAppwizNewLinkWizard
     //
     gboolean can_next;
 
-    GFile* file;
-    gchar* path;
+    gchar*             dest_name;
+    GFile*             file;
+    GError*            file_error;
+    GFileOutputStream* file_stream;
+    gchar*             path;
 
     // UI stuff
     //
@@ -138,6 +156,8 @@ static void wintc_cpl_appwiz_new_link_wizard_class_init(
     object_class->set_property = wintc_cpl_appwiz_new_link_wizard_set_property;
     wizard_class->constructing_page =
         wintc_cpl_appwiz_new_link_wizard_constructing_page;
+    wizard_class->finish            =
+        wintc_cpl_appwiz_new_link_wizard_finish;
     wizard_class->presenting_page   =
         wintc_cpl_appwiz_new_link_wizard_presenting_page;
     wizard_class->validate          =
@@ -188,6 +208,13 @@ static void wintc_cpl_appwiz_new_link_wizard_init(
     wintc_wizard97_window_init_wizard(
         WINTC_WIZARD97_WINDOW(self)
     );
+
+    g_signal_connect(
+        self,
+        "map-event",
+        G_CALLBACK(on_window_map_event),
+        self
+    );
 }
 
 //
@@ -203,9 +230,59 @@ static void wintc_cpl_appwiz_new_link_wizard_constructed(
     WinTCCplAppwizNewLinkWizard* lnkwiz =
         WINTC_CPL_APPWIZ_NEW_LINK_WIZARD(object);
 
-    // Touch the file
+    // Attempt to get ourselves a file
     //
-    lnkwiz->file = g_file_new_for_path(lnkwiz->path);
+    gint    i;
+    gchar*  try_path = NULL;
+
+    for (i = 0; i <= G_MAXINT16; i++)
+    {
+        try_path =
+            i == 0 ?
+                g_strdup(lnkwiz->path) :
+                g_strdup_printf("%s (%d)", lnkwiz->path, i);
+
+        lnkwiz->file = g_file_new_for_path(try_path);
+
+        lnkwiz->file_stream =
+            g_file_create(
+                lnkwiz->file,
+                G_FILE_CREATE_NONE,
+                NULL,
+                &(lnkwiz->file_error)
+            );
+
+        g_free(try_path);
+
+        if (!(lnkwiz->file_stream))
+        {
+            g_clear_object(&(lnkwiz->file));
+
+            // We're fine to progress if it's file exists, other errors should
+            // bomb out here
+            //
+            if (
+                !g_error_matches(
+                    lnkwiz->file_error,
+                    G_FILE_ERROR,
+                    G_FILE_ERROR_EXIST
+                ) &&
+                !g_error_matches(
+                    lnkwiz->file_error,
+                    G_IO_ERROR,
+                    G_IO_ERROR_EXISTS
+                )
+            )
+            {
+                break;
+            }
+
+            g_clear_error(&(lnkwiz->file_error));
+            continue;
+        }
+
+        break;
+    }
 }
 
 static void wintc_cpl_appwiz_new_link_wizard_dispose(
@@ -214,6 +291,17 @@ static void wintc_cpl_appwiz_new_link_wizard_dispose(
 {
     WinTCCplAppwizNewLinkWizard* lnkwiz =
         WINTC_CPL_APPWIZ_NEW_LINK_WIZARD(object);
+
+    if (lnkwiz->file_stream)
+    {
+        g_output_stream_close(
+            G_OUTPUT_STREAM(lnkwiz->file_stream),
+            NULL,
+            NULL
+        );
+
+        lnkwiz->file_stream = NULL;
+    }
 
     g_clear_object(&(lnkwiz->file));
 
@@ -228,6 +316,7 @@ static void wintc_cpl_appwiz_new_link_wizard_finalize(
     WinTCCplAppwizNewLinkWizard* lnkwiz =
         WINTC_CPL_APPWIZ_NEW_LINK_WIZARD(object);
 
+    g_free(lnkwiz->dest_name);
     g_free(lnkwiz->path);
 
     (G_OBJECT_CLASS(wintc_cpl_appwiz_new_link_wizard_parent_class))
@@ -332,15 +421,192 @@ static void wintc_cpl_appwiz_new_link_wizard_constructing_page(
     }
 }
 
+static gboolean wintc_cpl_appwiz_new_link_wizard_finish(
+    WinTCWizard97Window* wiz_wnd,
+    WINTC_UNUSED(guint current_page)
+)
+{
+    WinTCCplAppwizNewLinkWizard* lnkwiz =
+        WINTC_CPL_APPWIZ_NEW_LINK_WIZARD(wiz_wnd);
+
+    const gchar* target =
+        gtk_entry_get_text(GTK_ENTRY(lnkwiz->entry_target));
+
+    // Figure out what we're linking to
+    //
+    gboolean is_url      = TRUE;
+    gboolean terminal    = FALSE;
+    gchar*   true_target = NULL;
+
+    if (strlen(target) > 0 && *target == '/')
+    {
+        if (
+            g_file_test(target, G_FILE_TEST_IS_REGULAR) &&
+            g_file_test(target, G_FILE_TEST_IS_EXECUTABLE)
+        )
+        {
+            is_url = FALSE;
+
+            // Okay it's an executable -- does it need a terminal?
+            //
+            gchar* possible_entry =
+                g_strdup_printf("%s.desktop", wintc_basename(target));
+
+            GDesktopAppInfo* app_info =
+                g_desktop_app_info_new(possible_entry);
+
+            if (app_info)
+            {
+                terminal =
+                    g_desktop_app_info_get_boolean(
+                        app_info,
+                        "Terminal"
+                    );
+            }
+
+            g_free(possible_entry);
+        }
+        else
+        {
+            true_target =
+                g_strdup_printf("file://%s", target);
+        }
+    }
+
+    if (!true_target)
+    {
+        true_target = g_strdup(target);
+    }
+
+    // Set up our desktop entry
+    //
+    GKeyFile* ini_link = g_key_file_new();
+
+    g_key_file_set_string(
+        ini_link,
+        K_INI_GROUP_DESKTOP_ENTRY,
+        "Name",
+        gtk_entry_get_text(GTK_ENTRY(lnkwiz->entry_name))
+    );
+
+    g_key_file_set_string(
+        ini_link,
+        K_INI_GROUP_DESKTOP_ENTRY,
+        "Type",
+        is_url ? "Link" : "Application"
+    );
+
+    g_key_file_set_string(
+        ini_link,
+        K_INI_GROUP_DESKTOP_ENTRY,
+        is_url ? "URL" : "Exec",
+        true_target
+    );
+
+    g_key_file_set_boolean(
+        ini_link,
+        K_INI_GROUP_DESKTOP_ENTRY,
+        "StartupNotify",
+        TRUE
+    );
+
+    g_key_file_set_string(
+        ini_link,
+        K_INI_GROUP_DESKTOP_ENTRY,
+        "Path",
+        g_get_home_dir()
+    );
+
+    g_key_file_set_boolean(
+        ini_link,
+        K_INI_GROUP_DESKTOP_ENTRY,
+        "Terminal",
+        terminal
+    );
+
+    // Attempt to write it out
+    //
+    gchar*  data;
+    gsize   len;
+    GError* error = NULL;
+
+    data = g_key_file_to_data(ini_link, &len, &error);
+
+    if (!data)
+    {
+        wintc_display_error_and_clear(&error, GTK_WINDOW(lnkwiz));
+        goto cleanup;
+    }
+
+    if (
+        !g_output_stream_write_all(
+            G_OUTPUT_STREAM(lnkwiz->file_stream),
+            (void*) data,
+            len,
+            NULL,
+            NULL,
+            &error
+        )
+    )
+    {
+        wintc_display_error_and_clear(&error, GTK_WINDOW(lnkwiz));
+        goto cleanup;
+    }
+
+    g_output_stream_close(
+        G_OUTPUT_STREAM(lnkwiz->file_stream),
+        NULL,
+        NULL
+    );
+
+    if (
+        !g_file_set_display_name(
+            lnkwiz->file,
+            lnkwiz->dest_name,
+            NULL,
+            &error
+        )
+    )
+    {
+        wintc_display_error_and_clear(&error, GTK_WINDOW(lnkwiz));
+        goto cleanup;
+    }
+
+cleanup:
+    g_free(data);
+    g_output_stream_close(
+        G_OUTPUT_STREAM(lnkwiz->file_stream),
+        NULL,
+        NULL
+    );
+
+    return TRUE;
+}
+
 static void wintc_cpl_appwiz_new_link_wizard_presenting_page(
     WinTCWizard97Window* wiz_wnd,
     guint                page_num
 )
 {
-    wintc_cpl_appwiz_new_link_wizard_update_state(
-        WINTC_CPL_APPWIZ_NEW_LINK_WIZARD(wiz_wnd),
-        page_num
-    );
+    WinTCCplAppwizNewLinkWizard* lnkwiz =
+        WINTC_CPL_APPWIZ_NEW_LINK_WIZARD(wiz_wnd);
+
+    wintc_cpl_appwiz_new_link_wizard_update_state(lnkwiz, page_num);
+
+    // Update the suggested name in the entry
+    //
+    if (page_num == WIZPAGE_FINISH)
+    {
+        gchar* suggested_name =
+            wintc_cpl_appwiz_new_link_wizard_get_available_name(lnkwiz);
+
+        gtk_entry_set_text(
+            GTK_ENTRY(lnkwiz->entry_name),
+            suggested_name
+        );
+
+        g_free(suggested_name);
+    }
 }
 
 static gboolean wintc_cpl_appwiz_new_link_wizard_validate(
@@ -358,6 +624,24 @@ static gboolean wintc_cpl_appwiz_new_link_wizard_validate(
             const gchar* target =
                 gtk_entry_get_text(GTK_ENTRY(lnkwiz->entry_target));
 
+            // Special for Linux -- accept any URI since desktop entries are
+            // fine with this
+            //
+            if (
+                g_regex_match(
+                    wintc_regex_uri_scheme(NULL),
+                    target,
+                    G_REGEX_MATCH_DEFAULT,
+                    NULL
+                )
+            )
+            {
+                return TRUE;
+            }
+
+            // Otherwise we assume that we've got a file path, only move on
+            // if we have it
+            //
             if (!g_file_test(target, G_FILE_TEST_EXISTS))
             {
                 gchar* msg =
@@ -377,6 +661,57 @@ static gboolean wintc_cpl_appwiz_new_link_wizard_validate(
             }
 
             return TRUE;
+        }
+
+        case WIZPAGE_FINISH:
+        {
+            gchar*       dest;
+            const gchar* name;
+            gboolean     success = FALSE;
+
+            name = gtk_entry_get_text(GTK_ENTRY(lnkwiz->entry_name));
+
+            dest =
+                g_strdup_printf(
+                    "%s/%s.desktop",
+                    wintc_basename(lnkwiz->path),
+                    name
+                );
+
+            if (g_file_test(dest, G_FILE_TEST_EXISTS))
+            {
+                gchar* msg =
+                    g_strdup_printf(
+                        "A shortcut named %s already exists in this folder. "
+                        "Do you want to replace it?",
+                        name
+                    );
+
+                gint response =
+                    wintc_messagebox_show(
+                        GTK_WINDOW(lnkwiz),
+                        msg,
+                        "Select a Title for the Program",
+                        GTK_BUTTONS_YES_NO,
+                        GTK_MESSAGE_ERROR
+                    );
+
+                g_free(msg);
+
+                if (response == GTK_RESPONSE_NO)
+                {
+                    goto cleanup_finish;
+                }
+            }
+
+            lnkwiz->dest_name = g_strdup_printf("%s.desktop", name);
+
+            success = TRUE;
+
+cleanup_finish:
+            g_free(dest);
+
+            return success;
         }
 
         default:
@@ -404,6 +739,58 @@ GtkWidget* wintc_cpl_appwiz_new_link_wizard_new(
 //
 // PRIVATE FUNCTIONS
 //
+static gchar* wintc_cpl_appwiz_new_link_wizard_get_available_name(
+    WinTCCplAppwizNewLinkWizard* lnkwiz
+)
+{
+    const gchar* small_name;
+    const gchar* target;
+
+    target     = gtk_entry_get_text(GTK_ENTRY(lnkwiz->entry_target));
+    small_name = wintc_basename(target);
+
+    if (!small_name)
+    {
+        // Realistically this shouldn't happen because the prior page
+        // requires a fully qualified path or URL
+        //
+        small_name = target;
+    }
+
+    // Try to find an available name on FS for this
+    //
+    gchar* dest_path = NULL;
+    gchar* test_name = NULL;
+
+    for (gint i = 0; i <= G_MAXINT16; i++)
+    {
+        test_name =
+            i == 0 ?
+                g_strdup(small_name) :
+                g_strdup_printf("%s (%d)", small_name, i);
+
+        dest_path =
+            g_strdup_printf("%s/%s", lnkwiz->path, test_name);
+
+        if (!g_file_test(dest_path, G_FILE_TEST_EXISTS))
+        {
+            break;
+        }
+
+        g_clear_pointer(&test_name, (GDestroyNotify) g_free);
+        g_free(dest_path);
+    }
+
+    g_free(dest_path);
+
+    if (!test_name)
+    {
+        test_name = g_strdup("New Shortcut");
+    }
+
+    return test_name;
+}
+
 static void wintc_cpl_appwiz_new_link_wizard_update_state(
     WinTCCplAppwizNewLinkWizard* lnkwiz,
     guint                        page_num
@@ -444,8 +831,8 @@ static void wintc_cpl_appwiz_new_link_wizard_update_state(
 // CALLBACKS
 //
 static void on_button_browse_clicked(
-    GtkWidget* button,
-    gpointer   user_data
+    WINTC_UNUSED(GtkWidget* button),
+    gpointer user_data
 )
 {
     WinTCCplAppwizNewLinkWizard* lnkwiz =
@@ -537,4 +924,41 @@ static void on_entry_target_changed(
         lnkwiz,
         WIZPAGE_INTRO
     );
+}
+
+static gboolean on_window_map_event(
+    WINTC_UNUSED(GtkWidget* widget),
+    WINTC_UNUSED(GdkEvent*  event),
+    gpointer user_data
+)
+{
+    WinTCCplAppwizNewLinkWizard* lnkwiz =
+        WINTC_CPL_APPWIZ_NEW_LINK_WIZARD(user_data);
+
+    // If we don't have a file to work on, throw the error now
+    //
+    if (!(lnkwiz->file))
+    {
+        if (lnkwiz->file_error)
+        {
+            wintc_display_error_and_clear(
+                &(lnkwiz->file_error),
+                GTK_WINDOW(lnkwiz)
+            );
+        }
+        else
+        {
+            wintc_messagebox_show(
+                GTK_WINDOW(lnkwiz),
+                "The operation could not be completed.", // FIXME: localise
+                "Create Shortcut",
+                GTK_BUTTONS_OK,
+                GTK_MESSAGE_ERROR
+            );
+        }
+
+        gtk_window_close(GTK_WINDOW(lnkwiz));
+    }
+
+    return FALSE;
 }
