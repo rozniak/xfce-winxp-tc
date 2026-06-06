@@ -9,6 +9,9 @@
 
 #define K_INI_GROUP_DESKTOP_ENTRY "Desktop Entry"
 
+#define K_TITLE_CREATE_SHORTCUT "Create Shortcut"
+#define K_TITLE_SELECT_TITLE    "Select a Title for the Program"
+
 //
 // PRIVATE ENUMS
 //
@@ -634,6 +637,19 @@ static void wintc_cpl_appwiz_new_link_wizard_presenting_page(
 
         g_free(suggested_name);
     }
+
+    switch (page_num)
+    {
+        case WIZPAGE_INTRO:
+            gtk_window_set_title(GTK_WINDOW(wiz_wnd), K_TITLE_CREATE_SHORTCUT);
+            break;
+
+        case WIZPAGE_FINISH:
+            gtk_window_set_title(GTK_WINDOW(wiz_wnd), K_TITLE_SELECT_TITLE);
+            break;
+
+        default: break;
+    }
 }
 
 static gboolean wintc_cpl_appwiz_new_link_wizard_validate(
@@ -677,7 +693,7 @@ static gboolean wintc_cpl_appwiz_new_link_wizard_validate(
                 wintc_messagebox_show(
                     GTK_WINDOW(lnkwiz),
                     msg,
-                    "Create Shortcut",
+                    K_TITLE_CREATE_SHORTCUT,
                     GTK_BUTTONS_OK,
                     GTK_MESSAGE_WARNING
                 );
@@ -720,7 +736,7 @@ static gboolean wintc_cpl_appwiz_new_link_wizard_validate(
                     wintc_messagebox_show(
                         GTK_WINDOW(lnkwiz),
                         msg,
-                        "Select a Title for the Program",
+                        K_TITLE_SELECT_TITLE,
                         GTK_BUTTONS_YES_NO,
                         GTK_MESSAGE_ERROR
                     );
@@ -759,8 +775,8 @@ GtkWidget* wintc_cpl_appwiz_new_link_wizard_new(
     return GTK_WIDGET(
         g_object_new(
             WINTC_TYPE_CPL_APPWIZ_NEW_LINK_WIZARD,
-            "path", path,
-            "title", "Create Shortcut",
+            "path",  path,
+            "title", K_TITLE_CREATE_SHORTCUT,
             NULL
         )
     );
@@ -981,7 +997,7 @@ static gboolean on_window_map_event(
             wintc_messagebox_show(
                 GTK_WINDOW(lnkwiz),
                 "The operation could not be completed.", // FIXME: localise
-                "Create Shortcut",
+                K_TITLE_CREATE_SHORTCUT,
                 GTK_BUTTONS_OK,
                 GTK_MESSAGE_ERROR
             );
