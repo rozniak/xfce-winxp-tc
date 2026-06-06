@@ -117,6 +117,7 @@ struct _WinTCCplAppwizNewLinkWizard
     // State
     //
     gboolean can_next;
+    gboolean done;
 
     gchar*             dest_name;
     GFile*             file;
@@ -203,8 +204,6 @@ static void wintc_cpl_appwiz_new_link_wizard_init(
     WinTCCplAppwizNewLinkWizard* self
 )
 {
-    self->can_next = FALSE;
-
     wintc_wizard97_window_init_wizard(
         WINTC_WIZARD97_WINDOW(self)
     );
@@ -301,6 +300,13 @@ static void wintc_cpl_appwiz_new_link_wizard_dispose(
         );
 
         lnkwiz->file_stream = NULL;
+    }
+
+    if (!(lnkwiz->done) && lnkwiz->file)
+    {
+        // Delete the temp file if the wizard was closed early
+        //
+        g_file_delete(lnkwiz->file, NULL, NULL);
     }
 
     g_clear_object(&(lnkwiz->file));
@@ -571,6 +577,8 @@ static gboolean wintc_cpl_appwiz_new_link_wizard_finish(
         wintc_display_error_and_clear(&error, GTK_WINDOW(lnkwiz));
         goto cleanup;
     }
+
+    lnkwiz->done = TRUE;
 
 cleanup:
     g_free(data);
