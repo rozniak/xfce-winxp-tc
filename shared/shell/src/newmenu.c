@@ -141,8 +141,6 @@ gboolean wintc_sh_new_menu_create_file(
 
     // Handle Folder and Shortcut as special cases
     //
-    // FIXME: Not doing shortcuts just yet because it requires a wizard
-    //
     gboolean is_folder = op_id == WINTC_SH_NEW_OP_NEW_FOLDER;
 
     GFile*              file;
@@ -154,15 +152,25 @@ gboolean wintc_sh_new_menu_create_file(
     gboolean            success;
     WinTCShNewTemplate* template;
 
-    // FIXME: Drop out of shortcut handling for now
-    //
     if (op_id == WINTC_SH_NEW_OP_NEW_SHORTCUT)
     {
-        g_critical(
-            "%s",
-            "shell: new - shortcuts not implemented"
+        static gchar* s_shortcut_argv[] = {
+            "/usr/bin/appwiz.cpl",
+            "--new-link-here",
+            "New Shortcut",
+            NULL
+        };
+
+        return g_spawn_async(
+            path,
+            s_shortcut_argv,
+            NULL,
+            G_SPAWN_DEFAULT,
+            NULL,
+            NULL,
+            NULL,
+            error
         );
-        return FALSE;
     }
 
     if (is_folder)
