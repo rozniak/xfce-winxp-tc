@@ -533,10 +533,24 @@ static gboolean wintc_cpl_appwiz_new_link_wizard_finish(
     // Attempt to write it out
     //
     gchar*  data;
+    gchar*  dest;
+    GFile*  dest_file;
+    gchar*  dir;
     gsize   len;
     GError* error = NULL;
 
+    dir  = g_path_get_dirname(lnkwiz->path);
     data = g_key_file_to_data(ini_link, &len, &error);
+
+    dest =
+        g_build_path(
+            G_DIR_SEPARATOR_S,
+            dir,
+            lnkwiz->dest_name,
+            NULL
+        );
+
+    dest_file = g_file_new_for_path(dest);
 
     if (!data)
     {
@@ -565,6 +579,8 @@ static gboolean wintc_cpl_appwiz_new_link_wizard_finish(
         NULL
     );
 
+    g_file_delete(dest_file, NULL, NULL);
+
     if (
         !g_file_set_display_name(
             lnkwiz->file,
@@ -582,6 +598,9 @@ static gboolean wintc_cpl_appwiz_new_link_wizard_finish(
 
 cleanup:
     g_free(data);
+    g_free(dir);
+    g_free(dest);
+    g_object_unref(dest_file);
     g_output_stream_close(
         G_OUTPUT_STREAM(lnkwiz->file_stream),
         NULL,
@@ -674,15 +693,17 @@ static gboolean wintc_cpl_appwiz_new_link_wizard_validate(
         case WIZPAGE_FINISH:
         {
             gchar*       dest;
+            gchar*       dir;
             const gchar* name;
             gboolean     success = FALSE;
 
+            dir  = g_path_get_dirname(lnkwiz->path);
             name = gtk_entry_get_text(GTK_ENTRY(lnkwiz->entry_name));
 
             dest =
                 g_strdup_printf(
                     "%s/%s.desktop",
-                    wintc_basename(lnkwiz->path),
+                    dir,
                     name
                 );
 
@@ -717,6 +738,7 @@ static gboolean wintc_cpl_appwiz_new_link_wizard_validate(
             success = TRUE;
 
 cleanup_finish:
+            g_free(dir);
             g_free(dest);
 
             return success;
