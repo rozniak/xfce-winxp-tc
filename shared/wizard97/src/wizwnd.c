@@ -80,6 +80,14 @@ static void wintc_wizard97_window_help(
     WinTCWizard97Window* wiz_wnd,
     guint                current_page
 );
+static void wintc_wizard97_window_presenting_page(
+    WinTCWizard97Window* wiz_wnd,
+    guint                page_num
+);
+static gboolean wintc_wizard97_window_validate(
+    WinTCWizard97Window* wiz_wnd,
+    guint                current_page
+);
 
 static GtkBuilder* wintc_wizard97_window_create_builder(
     WinTCWizard97Window* wiz_wnd
@@ -223,6 +231,8 @@ static void wintc_wizard97_window_class_init(
     klass->finish              = wintc_wizard97_window_finish;
     klass->help                = wintc_wizard97_window_help;
     klass->get_next_page       = wintc_wizard97_window_get_next_page;
+    klass->presenting_page     = wintc_wizard97_window_presenting_page;
+    klass->validate            = wintc_wizard97_window_validate;
     object_class->dispose      = wintc_wizard97_window_dispose;
     object_class->finalize     = wintc_wizard97_window_finalize;
     object_class->get_property = wintc_wizard97_window_get_property;
@@ -450,6 +460,19 @@ static void wintc_wizard97_window_help(
     WINTC_UNUSED(WinTCWizard97Window* wiz_wnd),
     WINTC_UNUSED(guint                current_page)
 ) {}
+
+static void wintc_wizard97_window_presenting_page(
+    WINTC_UNUSED(WinTCWizard97Window* wiz_wnd),
+    WINTC_UNUSED(guint                page_num)
+) {}
+
+static gboolean wintc_wizard97_window_validate(
+    WINTC_UNUSED(WinTCWizard97Window* wiz_wnd),
+    WINTC_UNUSED(guint                current_page)
+)
+{
+    return TRUE;
+}
 
 //
 // PUBLIC FUNCTIONS
@@ -879,6 +902,9 @@ static void wintc_wizard97_window_go_to_page(
             WINTC_WIZARD97_WINDOW(wiz_wnd)
         );
 
+    WinTCWizard97WindowClass* wiz_class =
+        WINTC_WIZARD97_WINDOW_GET_CLASS(wiz_wnd);
+
     // Remove any existing page from view
     //
     GtkWidget* page_current =
@@ -975,6 +1001,8 @@ static void wintc_wizard97_window_go_to_page(
 
     // Ping everything
     //
+    wiz_class->presenting_page(wiz_wnd, page_num);
+
     for (gint i = PROP_CAN_PREV; i < N_PROPERTIES; i++)
     {
         g_object_notify_by_pspec(
@@ -1107,6 +1135,11 @@ static void action_next(
         wintc_wizard97_window_get_instance_private(
             wiz_wnd
         );
+
+    if (!wiz_class->validate(wiz_wnd, priv->current_page))
+    {
+        return;
+    }
 
     if (wintc_wizard97_window_is_on_final_page(wiz_wnd))
     {

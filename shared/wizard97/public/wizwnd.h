@@ -51,6 +51,14 @@ struct _WinTCWizard97WindowClass
         WinTCWizard97Window* wiz_wnd,
         guint                current_page
     );
+    void (*presenting_page) (
+        WinTCWizard97Window* wiz_wnd,
+        guint                page_num
+    );
+    gboolean (*validate) (
+        WinTCWizard97Window* wiz_wnd,
+        guint                current_page
+    );
 };
 
 //
