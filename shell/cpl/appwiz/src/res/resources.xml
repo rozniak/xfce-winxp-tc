@@ -3,5 +3,6 @@
   <gresource prefix="/uk/oddmatics/wintc/appwiz">
     <file>watermk.png</file>
     <file>lnkwizp1.ui</file>
+    <file>lnkwizp2.ui</file>
   </gresource>
 </gresources>

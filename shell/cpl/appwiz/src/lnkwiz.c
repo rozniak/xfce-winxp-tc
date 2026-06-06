@@ -118,6 +118,7 @@ static void wintc_cpl_appwiz_new_link_wizard_class_init(
         "/uk/oddmatics/wintc/appwiz/watermk.png",
         NULL,
         "/uk/oddmatics/wintc/appwiz/lnkwizp1.ui",
+        "/uk/oddmatics/wintc/appwiz/lnkwizp2.ui",
         NULL
     );
 }
