@@ -85,9 +85,14 @@ static void wintc_cpl_appwiz_application_activate(
 {
     if (S_ARG_PATH_NEW_LINK)
     {
+        gchar* link_path =
+            g_canonicalize_filename(S_ARG_PATH_NEW_LINK, NULL);
+
         wintc_cpl_appwiz_application_new_link_here(
-            S_ARG_PATH_NEW_LINK
+            link_path
         );
+
+        g_free(link_path);
 
         goto cleanup;
     }
