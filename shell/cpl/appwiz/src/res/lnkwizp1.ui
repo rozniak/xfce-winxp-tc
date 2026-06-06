@@ -38,7 +38,7 @@
         <property name="orientation">horizontal</property>
 
         <child>
-          <object class="GtkEntry">
+          <object class="GtkEntry" id="entry-target">
             <property name="visible">True</property>
 
             <style>
@@ -51,7 +51,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkButton">
+          <object class="GtkButton" id="button-browse">
             <property name="visible">True</property>
             <property name="label">Browse...</property>
           </object>
