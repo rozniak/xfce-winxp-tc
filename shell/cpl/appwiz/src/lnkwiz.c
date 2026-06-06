@@ -444,6 +444,7 @@ static gboolean wintc_cpl_appwiz_new_link_wizard_finish(
 
     // Figure out what we're linking to
     //
+    gchar*   icon        = NULL;
     gboolean is_url      = TRUE;
     gboolean terminal    = FALSE;
     gchar*   true_target = NULL;
@@ -457,7 +458,8 @@ static gboolean wintc_cpl_appwiz_new_link_wizard_finish(
         {
             is_url = FALSE;
 
-            // Okay it's an executable -- does it need a terminal?
+            // Okay it's an executable -- if there's a corresponding desktop
+            // entry then we should copy over some of its information
             //
             gchar* possible_entry =
                 g_strdup_printf("%s.desktop", wintc_basename(target));
@@ -467,6 +469,12 @@ static gboolean wintc_cpl_appwiz_new_link_wizard_finish(
 
             if (app_info)
             {
+                icon =
+                    g_desktop_app_info_get_string(
+                        app_info,
+                        "Icon"
+                    );
+
                 terminal =
                     g_desktop_app_info_get_boolean(
                         app_info,
@@ -533,6 +541,19 @@ static gboolean wintc_cpl_appwiz_new_link_wizard_finish(
         "Terminal",
         terminal
     );
+
+    if (icon)
+    {
+        g_key_file_set_string(
+            ini_link,
+            K_INI_GROUP_DESKTOP_ENTRY,
+            "Icon",
+            icon
+        );
+    }
+
+    g_free(icon);
+    g_free(true_target);
 
     // Attempt to write it out
     //
