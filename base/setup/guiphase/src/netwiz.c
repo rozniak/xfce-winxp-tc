@@ -36,6 +36,7 @@ static void wintc_setup_network_wizard_class_init(
 
     wintc_wizard97_window_class_setup_from_resources(
         wizard_class,
+        WINTC_WIZARD97_STYLE_IE5,
         "/uk/oddmatics/wintc/wsetupx/watermk.png",
         "/uk/oddmatics/wintc/wsetupx/header.png",
         "/uk/oddmatics/wintc/wsetupx/netwizp1.ui",

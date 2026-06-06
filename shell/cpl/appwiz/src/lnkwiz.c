@@ -195,6 +195,7 @@ static void wintc_cpl_appwiz_new_link_wizard_class_init(
     //
     wintc_wizard97_window_class_setup_from_resources(
         wizard_class,
+        WINTC_WIZARD97_STYLE_OLD,
         "/uk/oddmatics/wintc/appwiz/watermk.png",
         NULL,
         "/uk/oddmatics/wintc/appwiz/lnkwizp1.ui",

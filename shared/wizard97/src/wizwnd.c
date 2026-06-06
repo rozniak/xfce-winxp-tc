@@ -21,6 +21,16 @@
 #define WIZARD97_PAGE_AREA_MIN_HEIGHT \
     (WIZARD97_WATERMARK_HEIGHT)
 
+#define WIZARD97_OLD_PAGE_WIDTH  263
+#define WIZARD97_OLD_PAGE_HEIGHT 193
+#define WIZARD97_OLD_WATERMARK_WIDTH  132
+#define WIZARD97_OLD_WATERMARK_HEIGHT 252
+
+#define WIZARD97_OLD_PAGE_AREA_MIN_WIDTH \
+    (WIZARD97_OLD_PAGE_WIDTH + WIZARD97_OLD_WATERMARK_WIDTH)
+#define WIZARD97_OLD_PAGE_AREA_MIN_HEIGHT \
+    (WIZARD97_OLD_WATERMARK_HEIGHT)
+
 #define WIZARD97_PAGE_NUM_FINAL 171717
 
 //
@@ -314,8 +324,18 @@ static void wintc_wizard97_window_class_init(
 }
 
 static void wintc_wizard97_window_init(
-    WINTC_UNUSED(WinTCWizard97Window* self)
-) {}
+    WinTCWizard97Window* self
+)
+{
+    WinTCWizard97WindowClass* wizard_class =
+        WINTC_WIZARD97_WINDOW_GET_CLASS(self);
+
+    wintc_widget_add_style_class(
+        GTK_WIDGET(self),
+        wizard_class->style == WINTC_WIZARD97_STYLE_IE5 ?
+            "wintc-w97-ie5" : "wintc-w97-old"
+    );
+}
 
 //
 // CLASS VIRTUAL METHODS
@@ -479,6 +499,7 @@ static gboolean wintc_wizard97_window_validate(
 //
 void wintc_wizard97_window_class_setup_from_resources(
     WinTCWizard97WindowClass* wizard_class,
+    WinTCWizard97Style        style,
     const gchar*              resource_watermark,
     const gchar*              resource_header,
     ...
@@ -489,6 +510,8 @@ void wintc_wizard97_window_class_setup_from_resources(
 
     wizard_class->resource_watermark = g_strdup(resource_watermark);
     wizard_class->resource_header    = g_strdup(resource_header);
+
+    wizard_class->style = style;
 
     va_start(ap, resource_header);
 
@@ -628,16 +651,28 @@ void wintc_wizard97_window_init_wizard(
         }
 
         if (
+            wizard_class->style == WINTC_WIZARD97_STYLE_OLD ||
             wintc_wizard97_page_get_is_exterior_page(
                 WINTC_WIZARD97_PAGE(page)
             )
         )
         {
-            gtk_widget_set_size_request(
-                page,
-                WIZARD97_EXTERIOR_PAGE_WIDTH,
-                WIZARD97_EXTERIOR_PAGE_HEIGHT
-            );
+            if (wizard_class->style == WINTC_WIZARD97_STYLE_IE5)
+            {
+                gtk_widget_set_size_request(
+                    page,
+                    WIZARD97_EXTERIOR_PAGE_WIDTH,
+                    WIZARD97_EXTERIOR_PAGE_HEIGHT
+                );
+            }
+            else
+            {
+                gtk_widget_set_size_request(
+                    page,
+                    WIZARD97_OLD_PAGE_WIDTH,
+                    WIZARD97_OLD_PAGE_HEIGHT
+                );
+            }
         }
         else
         {
@@ -665,13 +700,20 @@ void wintc_wizard97_window_init_wizard(
                 &error
             );
 
+        gint wm_w = wizard_class->style == WINTC_WIZARD97_STYLE_IE5 ?
+                        WIZARD97_WATERMARK_WIDTH :
+                        WIZARD97_OLD_WATERMARK_WIDTH;
+        gint wm_h = wizard_class->style == WINTC_WIZARD97_STYLE_IE5 ?
+                        WIZARD97_WATERMARK_HEIGHT :
+                        WIZARD97_OLD_WATERMARK_HEIGHT;
+
         if (pixbuf_watermark_src)
         {
             priv->pixbuf_watermark =
                 gdk_pixbuf_scale_simple(
                     pixbuf_watermark_src,
-                    WIZARD97_WATERMARK_WIDTH,
-                    WIZARD97_WATERMARK_HEIGHT,
+                    wm_w,
+                    wm_h,
                     GDK_INTERP_NEAREST
                 );
 
@@ -686,8 +728,8 @@ void wintc_wizard97_window_init_wizard(
         {
             gtk_widget_set_size_request(
                 priv->img_ext_watermark,
-                WIZARD97_WATERMARK_WIDTH,
-                WIZARD97_WATERMARK_HEIGHT
+                wm_w,
+                wm_h
             );
 
             wintc_log_error_and_clear(&error);
@@ -767,8 +809,16 @@ void wintc_wizard97_window_init_wizard(
     GtkRequisition req;
     GtkRequisition req_largest;
 
-    req_largest.width  = WIZARD97_PAGE_AREA_MIN_WIDTH;
-    req_largest.height = WIZARD97_PAGE_AREA_MIN_HEIGHT;
+    if (wizard_class->style == WINTC_WIZARD97_STYLE_IE5)
+    {
+        req_largest.width  = WIZARD97_PAGE_AREA_MIN_WIDTH;
+        req_largest.height = WIZARD97_PAGE_AREA_MIN_HEIGHT;
+    }
+    else
+    {
+        req_largest.width  = WIZARD97_OLD_PAGE_AREA_MIN_WIDTH;
+        req_largest.height = WIZARD97_OLD_PAGE_AREA_MIN_HEIGHT;
+    }
 
     iter = priv->list_pages;
 
@@ -939,6 +989,7 @@ static void wintc_wizard97_window_go_to_page(
         );
 
     if (
+        wiz_class->style == WINTC_WIZARD97_STYLE_OLD ||
         wintc_wizard97_page_get_is_exterior_page(
             WINTC_WIZARD97_PAGE(page_next)
         )

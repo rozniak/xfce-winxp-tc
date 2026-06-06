@@ -12,7 +12,7 @@
     font-family: 'Microsoft Sans Serif', sans-serif;
 }
 
-.wintc-w97-page-area
+.wintc-w97-ie5 .wintc-w97-page-area
 {
     font-family: 'Microsoft Sans Serif', sans-serif;
 }
@@ -28,7 +28,7 @@
     margin-left: 38px
 }
 
-.wintc-w97-exterior .wintc-w97-page-area
+.wintc-w97-ie5 .wintc-w97-exterior .wintc-w97-page-area
 {
     background-color: @theme_base_color;
 }

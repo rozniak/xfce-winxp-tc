@@ -102,6 +102,7 @@ static void wintc_wizard_window_class_init(
 
     wintc_wizard97_window_class_setup_from_resources(
         wizard_class,
+        WINTC_WIZARD97_STYLE_IE5,
         "/uk/oddmatics/wintc/play/wizard/watermk.png",
         "/uk/oddmatics/wintc/play/wizard/header.png",
         "/uk/oddmatics/wintc/play/wizard/wizpg1.ui",

@@ -5,6 +5,15 @@
 #include <gtk/gtk.h>
 
 //
+// PUBLIC ENUMS
+//
+typedef enum _WinTCWizard97Style
+{
+    WINTC_WIZARD97_STYLE_OLD,
+    WINTC_WIZARD97_STYLE_IE5
+} WinTCWizard97Style;
+
+//
 // GTK OOP BOILERPLATE
 //
 #define WINTC_TYPE_WIZARD97_WINDOW (wintc_wizard97_window_get_type())
@@ -25,6 +34,8 @@ struct _WinTCWizard97WindowClass
     //
     gchar* resource_watermark;
     gchar* resource_header;
+
+    WinTCWizard97Style style;
 
     GList* list_resources_pages;
 
@@ -66,6 +77,7 @@ struct _WinTCWizard97WindowClass
 //
 void wintc_wizard97_window_class_setup_from_resources(
     WinTCWizard97WindowClass* wizard_class,
+    WinTCWizard97Style        style,
     const gchar*              resource_watermark,
     const gchar*              resource_header,
     ...
