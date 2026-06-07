@@ -300,10 +300,17 @@ static gboolean parse_file_in_cmdline(
     GError**     out_error
 )
 {
-    GError*          error = NULL;
-    gchar*           file_mime;
-    gchar*           handler_cmdline;
-    GDesktopAppInfo* handler_entry;
+    static const gchar* s_executable_mimes[] =
+    {
+        "application/x-executable",
+        "application/x-shellscript"
+    };
+
+    GError*          error           = NULL;
+    gchar*           file_mime       = NULL;
+    gchar*           handler_cmdline = NULL;
+    GDesktopAppInfo* handler_entry   = NULL;
+    gboolean         ret             = FALSE;
 
     WINTC_LOG_DEBUG("exec: file check");
 
@@ -319,10 +326,7 @@ static gboolean parse_file_in_cmdline(
 
             *out_cmdline = g_strdup(handler_cmdline);
 
-            g_clear_object(&handler_entry);
-            g_free(handler_cmdline);
-
-            return TRUE;
+            ret = TRUE;
         }
         else
         {
@@ -334,9 +338,9 @@ static gboolean parse_file_in_cmdline(
                 WINTC_EXEC_ERROR_BAD_DESKTOP_ENTRY,
                 "The desktop entry could not be parsed."
             );
-
-            return FALSE;
         }
+
+        goto cleanup;
     }
 
     // See if we can query the MIME type
@@ -347,7 +351,54 @@ static gboolean parse_file_in_cmdline(
             &error
         );
 
-    if (file_mime == NULL)
+    if (file_mime)
+    {
+        // Check if this is an executable
+        //
+        for (gsize i = 0; i < G_N_ELEMENTS(s_executable_mimes); i++)
+        {
+            const gchar* check_mime = s_executable_mimes[i];
+
+            if (g_strcmp0(file_mime, check_mime) == 0)
+            {
+                // It's an executable, pass on unchanged
+                //
+                *out_cmdline = g_strdup(cmdline);
+                goto cleanup;
+            }
+        }
+
+        // Not an executable, try to find a handler
+        //
+        handler_entry =
+            wintc_query_mime_handler(
+                file_mime,
+                &error
+            );
+
+        if (handler_entry == NULL)
+        {
+            g_propagate_error(out_error, error);
+
+            ret = FALSE;
+            goto cleanup;
+        }
+
+        // We found a handler, build the cmdline now and return
+        //
+        handler_cmdline = wintc_desktop_app_info_get_command(handler_entry);
+
+        *out_cmdline =
+            g_strdup_printf(
+                "%s \"%s\"",
+                handler_cmdline,
+                cmdline
+            );
+
+        ret = TRUE;
+        goto cleanup;
+    }
+    else
     {
         // We don't consider 'file not found' an error here, since we may resolve
         // it later
@@ -363,58 +414,15 @@ static gboolean parse_file_in_cmdline(
 
         *out_cmdline = g_strdup(cmdline);
 
-        return FALSE;
+        goto cleanup;
     }
 
-    // If it's not an executable, then parse a handler
-    //
-    if (
-        file_mime != NULL &&
-        g_strcmp0(file_mime, "application/x-executable") != 0
-    )
-    {
-        WINTC_LOG_DEBUG("exec: not an executable, checking file associations");
-
-        handler_entry =
-            wintc_query_mime_handler(
-                file_mime,
-                &error
-            );
-
-        if (handler_entry == NULL)
-        {
-            g_propagate_error(out_error, error);
-
-            g_free(file_mime);
-
-            return FALSE;
-        }
-
-        // We found a handler, build the cmdline now and return
-        //
-        handler_cmdline = wintc_desktop_app_info_get_command(handler_entry);
-
-        *out_cmdline =
-            g_strdup_printf(
-                "%s \"%s\"",
-                handler_cmdline,
-                cmdline
-            );
-
-        g_clear_object(&handler_entry);
-        g_free(handler_cmdline);
-        g_free(file_mime);
-
-        return TRUE;
-    }
-
-    // It's an executable, pass on unchanged
-    //
-    *out_cmdline = g_strdup(cmdline);
-
+cleanup:
+    g_clear_object(&handler_entry);
+    g_free(handler_cmdline);
     g_free(file_mime);
 
-    return FALSE;
+    return ret;
 }
 
 static gboolean parse_unc_path_in_cmdline(
