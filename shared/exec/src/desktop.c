@@ -26,7 +26,7 @@ gchar* wintc_desktop_app_info_get_command(
                 g_app_info_get_name(app_info),
                 icon_name,
                 g_desktop_app_info_get_filename(entry),
-                FALSE
+                g_desktop_app_info_get_boolean(entry, "Terminal")
             );
 
         g_free(icon_name);
