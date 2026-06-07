@@ -45,6 +45,11 @@ static void wintc_sh_icon_view_behaviour_set_property(
     GParamSpec*   pspec
 );
 
+static gboolean wintc_sh_icon_view_behaviour_find_child_iter(
+    WinTCShIconViewBehaviour* behaviour,
+    GtkTreeIter*              iter,
+    guint                     item_hash
+);
 static void wintc_sh_icon_view_behaviour_update_view(
     WinTCShIconViewBehaviour* behaviour
 );
@@ -532,6 +537,45 @@ GList* wintc_sh_icon_view_behaviour_get_selected_items(
 //
 // PRIVATE FUNCTIONS
 //
+static gboolean wintc_sh_icon_view_behaviour_find_child_iter(
+    WinTCShIconViewBehaviour* behaviour,
+    GtkTreeIter*              iter,
+    guint                     item_hash
+)
+{
+    gboolean searching =
+        gtk_tree_model_iter_children(
+            GTK_TREE_MODEL(behaviour->list_model),
+            iter,
+            NULL
+        );
+
+    while (searching)
+    {
+        guint hash;
+
+        gtk_tree_model_get(
+            GTK_TREE_MODEL(behaviour->list_model),
+            iter,
+            COLUMN_VIEW_HASH, &hash,
+            -1
+        );
+
+        if (item_hash == hash)
+        {
+            return TRUE;
+        }
+
+        searching =
+            gtk_tree_model_iter_next(
+                GTK_TREE_MODEL(behaviour->list_model),
+                iter
+            );
+    }
+
+    return FALSE;
+}
+
 static void wintc_sh_icon_view_behaviour_update_view(
     WinTCShIconViewBehaviour* behaviour
 )
@@ -1109,29 +1153,37 @@ static void on_current_view_items_added(
                                        NULL // FIXME: Error handling
                                    );
 
-        // Sort into model
-        //
-        GCompareFunc sort_func = wintc_ishext_view_get_sort_func(view);
-
-        gint item_pos =
-            wintc_tree_model_get_insertion_sort_pos(
-                GTK_TREE_MODEL(behaviour->list_model),
-                NULL,
-                COLUMN_VIEW_HASH,
-                G_TYPE_UINT,
-                sort_func,
-                GUINT_TO_POINTER(item->hash)
-            );
-
-        // Push to model
+        // Update model based on if this is a new item or an existing one
         //
         GtkTreeIter iter;
 
-        gtk_list_store_insert(
-            behaviour->list_model,
-            &iter,
-            item_pos
-        );
+        if (
+            !wintc_sh_icon_view_behaviour_find_child_iter(
+                behaviour,
+                &iter,
+                item->hash
+            )
+        )
+        {
+            GCompareFunc sort_func = wintc_ishext_view_get_sort_func(view);
+
+            gint item_pos =
+                wintc_tree_model_get_insertion_sort_pos(
+                    GTK_TREE_MODEL(behaviour->list_model),
+                    NULL,
+                    COLUMN_VIEW_HASH,
+                    G_TYPE_UINT,
+                    sort_func,
+                    GUINT_TO_POINTER(item->hash)
+                );
+
+            gtk_list_store_insert(
+                behaviour->list_model,
+                &iter,
+                item_pos
+            );
+        }
+
         gtk_list_store_set(
             behaviour->list_model,
             &iter,
@@ -1194,45 +1246,23 @@ static void on_current_view_items_removed(
     // FIXME: Inefficient linear search - improve later
     //
     GtkTreeIter iter;
-    gboolean    searching;
 
     for (GList* upd_iter = update->data; upd_iter; upd_iter = upd_iter->next)
     {
         guint item_hash = GPOINTER_TO_UINT(upd_iter->data);
 
-        searching =
-            gtk_tree_model_iter_children(
-                GTK_TREE_MODEL(behaviour->list_model),
+        if (
+            wintc_sh_icon_view_behaviour_find_child_iter(
+                behaviour,
                 &iter,
-                NULL
-            );
-
-        while (searching)
+                item_hash
+            )
+        )
         {
-            guint hash;
-
-            gtk_tree_model_get(
-                GTK_TREE_MODEL(behaviour->list_model),
-                &iter,
-                COLUMN_VIEW_HASH, &hash,
-                -1
+            gtk_list_store_remove(
+                behaviour->list_model,
+                &iter
             );
-
-            if (item_hash == hash)
-            {
-                gtk_list_store_remove(
-                    behaviour->list_model,
-                    &iter
-                );
-
-                break;
-            }
-
-            searching =
-                gtk_tree_model_iter_next(
-                    GTK_TREE_MODEL(behaviour->list_model),
-                    &iter
-                );
         }
     }
 }
