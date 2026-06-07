@@ -303,7 +303,8 @@ static gboolean parse_file_in_cmdline(
     static const gchar* s_executable_mimes[] =
     {
         "application/x-executable",
-        "application/x-shellscript"
+        "application/x-shellscript",
+        "application/vnd.appimage"
     };
 
     GError*          error           = NULL;
