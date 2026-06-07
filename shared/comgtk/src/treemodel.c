@@ -127,8 +127,7 @@ gint wintc_tree_model_get_insertion_sort_pos(
         }
         else
         {
-            start = middle;
-            end   = middle;
+            return middle;
         }
 
         diff = end - start;
