@@ -721,8 +721,8 @@ static gboolean wintc_cpl_appwiz_new_link_wizard_validate(
                     GTK_WINDOW(lnkwiz),
                     msg,
                     K_TITLE_CREATE_SHORTCUT,
-                    GTK_BUTTONS_OK,
-                    GTK_MESSAGE_WARNING
+                    WINTC_BUTTONS_OK,
+                    WINTC_MESSAGE_WARNING
                 );
 
                 g_free(msg);
@@ -759,18 +759,18 @@ static gboolean wintc_cpl_appwiz_new_link_wizard_validate(
                         name
                     );
 
-                gint response =
+                WinTCResponseType response =
                     wintc_messagebox_show(
                         GTK_WINDOW(lnkwiz),
                         msg,
                         K_TITLE_SELECT_TITLE,
-                        GTK_BUTTONS_YES_NO,
-                        GTK_MESSAGE_ERROR
+                        WINTC_BUTTONS_YES_NO,
+                        WINTC_MESSAGE_ERROR
                     );
 
                 g_free(msg);
 
-                if (response == GTK_RESPONSE_NO)
+                if (response == WINTC_RESPONSE_NO)
                 {
                     goto cleanup_finish;
                 }
@@ -1025,8 +1025,8 @@ static gboolean on_window_map_event(
                 GTK_WINDOW(lnkwiz),
                 "The operation could not be completed.", // FIXME: localise
                 K_TITLE_CREATE_SHORTCUT,
-                GTK_BUTTONS_OK,
-                GTK_MESSAGE_ERROR
+                WINTC_BUTTONS_OK,
+                WINTC_MESSAGE_ERROR
             );
         }
 

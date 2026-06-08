@@ -1,5 +1,6 @@
 .wintc-msgbox button
 {
+    margin: 0px 2px;
     min-height: 15px;
     min-width:  51px;
 }

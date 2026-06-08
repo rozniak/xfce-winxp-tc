@@ -526,8 +526,8 @@ static void on_ok_button_clicked(
         GTK_WINDOW(dialog),
         message,
         cmdline,
-        GTK_BUTTONS_OK,
-        GTK_MESSAGE_ERROR
+        WINTC_BUTTONS_OK,
+        WINTC_MESSAGE_ERROR
     );
 
     g_clear_error(&error);

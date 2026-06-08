@@ -595,8 +595,8 @@ static void on_button_shutdown_clicked(
                 wintc_widget_get_toplevel_window(GTK_WIDGET(self)),
                 "Failed to connect to the session manager.",
                 "Error",
-                GTK_BUTTONS_OK,
-                GTK_MESSAGE_ERROR
+                WINTC_BUTTONS_OK,
+                WINTC_MESSAGE_ERROR
             );
 
             g_clear_object(&sm_xdg);

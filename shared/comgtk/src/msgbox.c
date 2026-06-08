@@ -12,8 +12,7 @@
 // FORWARD DECLARATIONS
 //
 static GtkWidget* wintc_messagebox_button_new(
-    const gchar* text,
-    gint         response
+    WinTCResponseType response
 );
 static void wintc_messagebox_init_styles(void);
 
@@ -25,14 +24,64 @@ static void on_messagebox_button_clicked(
 //
 // PUBLIC FUNCTIONS
 //
-gint wintc_messagebox_show(
-    GtkWindow*     parent,
-    const gchar*   text,
-    const gchar*   caption,
-    GtkButtonsType buttons,
-    GtkMessageType type
+WinTCResponseType wintc_messagebox_show(
+    GtkWindow*       parent,
+    const gchar*     text,
+    const gchar*     caption,
+    WinTCButtonsType buttons,
+    WinTCMessageType type
 )
 {
+    static const WinTCResponseType s_button_config[7][4] = {
+        {
+            WINTC_RESPONSE_OK,
+            WINTC_RESPONSE_NONE
+        },
+        {
+            WINTC_RESPONSE_OK,
+            WINTC_RESPONSE_CANCEL,
+            WINTC_RESPONSE_NONE
+        },
+        {
+            WINTC_RESPONSE_ABORT,
+            WINTC_RESPONSE_RETRY,
+            WINTC_RESPONSE_IGNORE,
+            WINTC_RESPONSE_NONE
+        },
+        {
+            WINTC_RESPONSE_YES,
+            WINTC_RESPONSE_NO,
+            WINTC_RESPONSE_CANCEL,
+            WINTC_RESPONSE_NONE
+        },
+        {
+            WINTC_RESPONSE_YES,
+            WINTC_RESPONSE_NO,
+            WINTC_RESPONSE_NONE
+        },
+        {
+            WINTC_RESPONSE_RETRY,
+            WINTC_RESPONSE_CANCEL,
+            WINTC_RESPONSE_NONE
+        },
+        {
+            WINTC_RESPONSE_CANCEL,
+            WINTC_RESPONSE_TRY_AGAIN,
+            WINTC_RESPONSE_CONTINUE,
+            WINTC_RESPONSE_NONE
+        },
+    };
+
+    static const gchar* s_message_config[5][2] = {
+        { NULL,                 "bell-window-system" },
+        { "dialog-error",       "dialog-error"       },
+        { "dialog-question",    NULL                 },
+        { "dialog-warning",     "dialog-question"    },
+        { "dialog-information", "dialog-warning"     }
+    };
+
+    // Set up dialog
+    //
     GtkWidget* dlg =
         gtk_dialog_new_with_buttons(
             caption,
@@ -53,34 +102,8 @@ gint wintc_messagebox_show(
 
     // Icon / sound configuration
     //
-    const gchar* icon_name  = NULL;
-    const gchar* sound_name = NULL;
-
-    switch (type)
-    {
-        case GTK_MESSAGE_INFO:
-            icon_name  = "dialog-information";
-            sound_name = "dialog-warning";
-            break;
-
-        case GTK_MESSAGE_WARNING:
-            icon_name  = "dialog-warning";
-            sound_name = "dialog-question";
-            break;
-
-        case GTK_MESSAGE_QUESTION:
-            icon_name = "dialog-question";
-            break;
-
-        case GTK_MESSAGE_ERROR:
-            icon_name  = "dialog-error";
-            sound_name = "dialog-error";
-            break;
-
-        default:
-            sound_name = "bell-window-system";
-            break;
-    }
+    const gchar* icon_name  = s_message_config[type][0];
+    const gchar* sound_name = s_message_config[type][1];
 
     // Insert the content area
     //
@@ -133,54 +156,12 @@ gint wintc_messagebox_show(
 
     gtk_widget_set_halign(box_buttons, GTK_ALIGN_CENTER);
 
-    switch (buttons)
+    for (gint i = 0; s_button_config[buttons][i] != WINTC_RESPONSE_NONE; i++)
     {
-        case GTK_BUTTONS_NONE:
-        case GTK_BUTTONS_OK:
-        case GTK_BUTTONS_CLOSE:
-        case GTK_BUTTONS_CANCEL:
-            gtk_container_add(
-                GTK_CONTAINER(box_buttons),
-                wintc_messagebox_button_new(
-                    "OK",
-                    GTK_RESPONSE_OK
-                )
-            );
-            break;
-
-        case GTK_BUTTONS_YES_NO:
-            gtk_container_add(
-                GTK_CONTAINER(box_buttons),
-                wintc_messagebox_button_new(
-                    "Yes",
-                    GTK_RESPONSE_YES
-                )
-            );
-            gtk_container_add(
-                GTK_CONTAINER(box_buttons),
-                wintc_messagebox_button_new(
-                    "No",
-                    GTK_RESPONSE_NO
-                )
-            );
-            break;
-
-        case GTK_BUTTONS_OK_CANCEL:
-            gtk_container_add(
-                GTK_CONTAINER(box_buttons),
-                wintc_messagebox_button_new(
-                    "OK",
-                    GTK_RESPONSE_OK
-                )
-            );
-            gtk_container_add(
-                GTK_CONTAINER(box_buttons),
-                wintc_messagebox_button_new(
-                    "Cancel",
-                    GTK_RESPONSE_CANCEL
-                )
-            );
-            break;
+        gtk_container_add(
+            GTK_CONTAINER(box_buttons),
+            wintc_messagebox_button_new(s_button_config[buttons][i])
+        );
     }
 
     gtk_container_add(
@@ -233,11 +214,24 @@ static void wintc_messagebox_init_styles(void)
 }
 
 static GtkWidget* wintc_messagebox_button_new(
-    const gchar* text,
-    gint         response
+    WinTCResponseType response
 )
 {
-    GtkWidget* button = gtk_button_new_with_label(text);
+    static const gchar* s_button_labels[] = {
+        NULL,
+        "OK",
+        "Cancel",
+        "Yes",
+        "No",
+        "Abort",
+        "Retry",
+        "Ignore",
+        "Try Again",
+        "Continue"
+    };
+
+    GtkWidget* button =
+        gtk_button_new_with_label(s_button_labels[response]);
 
     g_signal_connect(
         button,

@@ -375,8 +375,8 @@ static gboolean on_button_ok_clicked(
             GTK_WINDOW(dlg_goto),
             _("Line number out of range."),
             _("Notepad"),
-            GTK_BUTTONS_OK,
-            GTK_MESSAGE_OTHER
+            WINTC_BUTTONS_OK,
+            WINTC_MESSAGE_NONE
         );
 
         return FALSE;

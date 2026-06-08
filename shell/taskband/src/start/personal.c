@@ -1148,8 +1148,8 @@ static void on_button_power_clicked(
                 NULL,
                 "Unable to find any programs for exiting the session.",
                 "Windows",
-                GTK_BUTTONS_OK,
-                GTK_MESSAGE_ERROR
+                WINTC_BUTTONS_OK,
+                WINTC_MESSAGE_ERROR
             );
         }
         else

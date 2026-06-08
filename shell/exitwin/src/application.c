@@ -104,8 +104,8 @@ static void wintc_exitwin_application_activate(
             NULL,
             "Failed to connect to the session manager.",
             "Error",
-            GTK_BUTTONS_OK,
-            GTK_MESSAGE_ERROR
+            WINTC_BUTTONS_OK,
+            WINTC_MESSAGE_ERROR
         );
 
         return;

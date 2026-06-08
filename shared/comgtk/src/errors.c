@@ -25,8 +25,8 @@ void wintc_display_error_and_clear(
         wnd,
         (*error)->message,
         "",
-        GTK_BUTTONS_OK,
-        GTK_MESSAGE_ERROR
+        WINTC_BUTTONS_OK,
+        WINTC_MESSAGE_ERROR
     );
 
     g_clear_error(error);
@@ -87,8 +87,8 @@ void wintc_nice_error_and_clear(
             wnd,
             message,
             "",
-            GTK_BUTTONS_OK,
-            GTK_MESSAGE_ERROR
+            WINTC_BUTTONS_OK,
+            WINTC_MESSAGE_ERROR
         );
 
         g_clear_error(error);

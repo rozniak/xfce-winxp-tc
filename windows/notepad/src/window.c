@@ -409,60 +409,54 @@ static gboolean wintc_notepad_window_close_document(
 
     // Prompt user
     //
-    GAction*   action;
-    GtkWidget* dlg;
-    gint       response;
+    gchar*            message;
+    WinTCResponseType response;
+    gboolean          should_close;
 
-    dlg =
-        gtk_message_dialog_new(
-            GTK_WINDOW(wnd),
-            GTK_DIALOG_MODAL,
-            GTK_MESSAGE_WARNING,
-            GTK_BUTTONS_NONE,
-            _("The text in the %s file has changed.\n\nDo you want to save the changes?"),
+    message =
+        g_strdup_printf(
+            _("The text in the %s file has changed.\n\n"
+              "Do you want to save the changes?"),
             DOCUMENT_NAME
         );
 
-    gtk_dialog_add_buttons(
-        GTK_DIALOG(dlg),
-        wintc_lc_get_control_text(WINTC_CTLTXT_YES, WINTC_PUNC_NONE),
-        GTK_RESPONSE_YES,
-        wintc_lc_get_control_text(WINTC_CTLTXT_NO, WINTC_PUNC_NONE),
-        GTK_RESPONSE_NO,
-        wintc_lc_get_control_text(WINTC_CTLTXT_CANCEL, WINTC_PUNC_NONE),
-        GTK_RESPONSE_CANCEL,
-        NULL
-    );
-    gtk_window_set_title(GTK_WINDOW(dlg), _("Notepad"));
-
-    response = gtk_dialog_run(GTK_DIALOG(dlg));
-    gtk_widget_destroy(dlg);
+    response =
+        wintc_messagebox_show(
+            GTK_WINDOW(wnd),
+            message,
+            _("Notepad"),
+            WINTC_BUTTONS_YES_NO_CANCEL,
+            WINTC_MESSAGE_WARNING
+        );
 
     switch (response)
     {
-        case GTK_RESPONSE_YES:
-            action = 
+        case WINTC_RESPONSE_YES:
+        {
+            GAction* action =
                 g_action_map_lookup_action(G_ACTION_MAP(wnd), "save");
 
             g_action_activate(action, NULL);
 
             // Check if we actually saved
             //
-            if (gtk_text_buffer_get_modified(wnd->text_buffer))
-            {
-                return FALSE; // Not saved! Cancel.
-            }
+            should_close = !gtk_text_buffer_get_modified(wnd->text_buffer);
+            break;
+        }
 
-            return TRUE;
+        case WINTC_RESPONSE_NO:
+            should_close = TRUE;
+            break;
 
-        case GTK_RESPONSE_NO:
-            return TRUE;
-
-        case GTK_RESPONSE_CANCEL:
-            return FALSE;
+        case WINTC_RESPONSE_CANCEL:
+        default:
+            should_close = FALSE;
+            break;
     }
 
-    return FALSE;
+    g_free(message);
+
+    return should_close;
 }
 
 static void wintc_notepad_window_update_title(
@@ -769,8 +763,8 @@ static void action_open(
                         GTK_WINDOW(wnd),
                         "Sorry, only UTF-8 valid files are supported!",
                         "Not Implemented",
-                        GTK_BUTTONS_OK,
-                        GTK_MESSAGE_ERROR
+                        WINTC_BUTTONS_OK,
+                        WINTC_MESSAGE_ERROR
                     );
                 }
             }
@@ -781,47 +775,18 @@ static void action_open(
                 //
                 if (error->code == G_FILE_ERROR_NOENT)
                 {
-                    GtkWidget* dlg;
-                    gint       response;
-
-                    dlg =
-                        gtk_message_dialog_new(
+                    WinTCResponseType response =
+                        wintc_messagebox_show(
                             GTK_WINDOW(wnd),
-                            GTK_DIALOG_MODAL,
-                            GTK_MESSAGE_WARNING,
-                            GTK_BUTTONS_NONE,
                             _("Cannot find the %s file.\n\nDo you want to create a new file?"),
-                            uri
+                            _("Notepad"),
+                            WINTC_BUTTONS_YES_NO_CANCEL,
+                            WINTC_MESSAGE_WARNING
                         );
-
-                    gtk_dialog_add_buttons(
-                        GTK_DIALOG(dlg),
-                        wintc_lc_get_control_text(
-                            WINTC_CTLTXT_YES,
-                            WINTC_PUNC_NONE
-                        ),
-                        GTK_RESPONSE_YES,
-                        wintc_lc_get_control_text(
-                            WINTC_CTLTXT_NO,
-                            WINTC_PUNC_NONE
-                        ),
-                        GTK_RESPONSE_NO,
-                        wintc_lc_get_control_text(
-                            WINTC_CTLTXT_CANCEL,
-                            WINTC_PUNC_NONE
-                        ),
-                        GTK_RESPONSE_CANCEL,
-                        NULL
-                    );
-
-                    gtk_window_set_title(GTK_WINDOW(dlg), _("Notepad"));
-
-                    response = gtk_dialog_run(GTK_DIALOG(dlg));
-                    gtk_widget_destroy(dlg);
 
                     switch (response)
                     {
-                        case GTK_RESPONSE_YES:
+                        case WINTC_RESPONSE_YES:
                             g_clear_error(&error);
 
                             if (
@@ -840,7 +805,7 @@ static void action_open(
                             }
                             break;
 
-                        case GTK_RESPONSE_NO:
+                        case WINTC_RESPONSE_NO:
                             g_action_activate(
                                 g_action_map_lookup_action(
                                     G_ACTION_MAP(wnd),
@@ -852,7 +817,8 @@ static void action_open(
 
                         // Clean up and close immediately!
                         //
-                        case GTK_RESPONSE_CANCEL:
+                        case WINTC_RESPONSE_CANCEL:
+                        default:
                             g_free(uri);
                             g_free(file_contents);
                             g_free(file_path);
@@ -886,8 +852,8 @@ static void action_open(
             GTK_WINDOW(wnd),
             "Sorry, only local files are supported at the moment!",
             "Not Implemented",
-            GTK_BUTTONS_OK,
-            GTK_MESSAGE_ERROR
+            WINTC_BUTTONS_OK,
+            WINTC_MESSAGE_ERROR
         );
     }
 
@@ -1008,8 +974,8 @@ static void action_save_as(
             GTK_WINDOW(wnd),
             "Sorry, only local files are supported at the moment!",
             "Not Implemented",
-            GTK_BUTTONS_OK,
-            GTK_MESSAGE_ERROR
+            WINTC_BUTTONS_OK,
+            WINTC_MESSAGE_ERROR
         );
     }
 
@@ -1054,7 +1020,6 @@ static void on_dlg_goto_destroyed(
 
     gint response =
         wintc_notepad_go_to_dialog_get_response(dlg_goto);
-
 
     if (response != GTK_RESPONSE_OK)
     {
