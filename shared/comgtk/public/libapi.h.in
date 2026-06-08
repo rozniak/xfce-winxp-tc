@@ -26,6 +26,7 @@
 #include "@LIB_HEADER_DIR@/regex.h"
 #include "@LIB_HEADER_DIR@/shorthand.h"
 #include "@LIB_HEADER_DIR@/signals.h"
+#include "@LIB_HEADER_DIR@/sound.h"
 #include "@LIB_HEADER_DIR@/strings.h"
 #include "@LIB_HEADER_DIR@/styles.h"
 #include "@LIB_HEADER_DIR@/treemodel.h"

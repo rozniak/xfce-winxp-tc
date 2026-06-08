@@ -3,6 +3,7 @@
 
 #include "../public/builder.h"
 #include "../public/msgbox.h"
+#include "../public/sound.h"
 #include "../public/styles.h"
 #include "../public/widget.h"
 #include "../public/window.h"
@@ -49,17 +50,35 @@ gint wintc_messagebox_show(
     gtk_window_set_resizable(GTK_WINDOW(dlg), FALSE);
     wintc_widget_add_style_class(dlg, "wintc-msgbox");
 
-    // Decide the icon
+    // Icon / sound configuration
     //
-    const gchar* icon_name = NULL;
+    const gchar* icon_name  = NULL;
+    const gchar* sound_name = NULL;
 
     switch (type)
     {
-        case GTK_MESSAGE_INFO:     icon_name = "dialog-information"; break;
-        case GTK_MESSAGE_WARNING:  icon_name = "dialog-warning";     break;
-        case GTK_MESSAGE_QUESTION: icon_name = "dialog-question";    break;
-        case GTK_MESSAGE_ERROR:    icon_name = "dialog-error";       break;
-        default: break;
+        case GTK_MESSAGE_INFO:
+            icon_name  = "dialog-information";
+            sound_name = "dialog-warning";
+            break;
+
+        case GTK_MESSAGE_WARNING:
+            icon_name  = "dialog-warning";
+            sound_name = "dialog-question";
+            break;
+
+        case GTK_MESSAGE_QUESTION:
+            icon_name = "dialog-question";
+            break;
+
+        case GTK_MESSAGE_ERROR:
+            icon_name  = "dialog-error";
+            sound_name = "dialog-error";
+            break;
+
+        default:
+            sound_name = "bell-window-system";
+            break;
     }
 
     // Insert the content area
@@ -171,6 +190,11 @@ gint wintc_messagebox_show(
     // Show!
     //
     gtk_widget_show_all(dlg_content);
+
+    if (sound_name)
+    {
+        wintc_xdg_play_sound(sound_name);
+    }
 
     gint response = gtk_dialog_run(GTK_DIALOG(dlg));
 
