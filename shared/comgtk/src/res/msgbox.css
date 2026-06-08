@@ -15,3 +15,8 @@
     margin-bottom: 20px;
     margin-left:   18px;
 }
+
+.wintc-msgbox-none .wintc-msgbox-body
+{
+    margin-left: 0px;
+}

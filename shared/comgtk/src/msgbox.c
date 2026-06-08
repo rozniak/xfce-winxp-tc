@@ -131,6 +131,12 @@ WinTCResponseType wintc_messagebox_show(
         );
     }
 
+    if (type == WINTC_MESSAGE_NONE)
+    {
+        wintc_widget_add_style_class(dlg, "wintc-msgbox-none");
+        gtk_image_set_pixel_size(GTK_IMAGE(img_icon), 0);
+    }
+
     gtk_label_set_text(
         GTK_LABEL(label_text),
         text
