@@ -47,6 +47,7 @@ gint wintc_messagebox_show(
 
     wintc_messagebox_init_styles();
 
+    gtk_window_set_position(GTK_WINDOW(dlg), GTK_WIN_POS_CENTER);
     gtk_window_set_resizable(GTK_WINDOW(dlg), FALSE);
     wintc_widget_add_style_class(dlg, "wintc-msgbox");
 
