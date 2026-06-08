@@ -1,5 +1,3 @@
-bt,rt:canberra
-bt,rt:canberra-gtk3
 bt,rt:gdk-pixbuf2
 bt,rt:glib2
 bt,rt:gtk3
