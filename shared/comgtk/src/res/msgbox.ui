@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <object class="GtkBox" id="box-main">
+    <property name="visible">True</property>
+    <property name="orientation">horizontal</property>
+
+    <child>
+      <object class="GtkImage" id="img-icon">
+        <property name="visible">True</property>
+        <property name="pixel-size">32</property>
+        <property name="valign">GTK_ALIGN_START</property>
+      </object>
+    </child>
+
+    <child>
+      <object class="GtkLabel" id="label-text">
+        <property name="visible">True</property>
+        <property name="max-width-chars">92</property>
+        <property name="wrap">True</property>
+        <property name="xalign">0.0</property>
+
+        <style>
+          <class name="wintc-msgbox-body" />
+        </style>
+      </object>
+    </child>
+  </object>
+</interface>

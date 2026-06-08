@@ -23,6 +23,7 @@ include(../../packaging/cmake-inc/common/CMakeLists.txt)
 include(../../packaging/cmake-inc/libraries/CMakeLists.txt)
 include(../../packaging/cmake-inc/linking/CMakeLists.txt)
 include(../../packaging/cmake-inc/packaging/CMakeLists.txt)
+include(../../packaging/cmake-inc/resources/CMakeLists.txt)
 
 wintc_resolve_library(gio-2.0  GIO)
 wintc_resolve_library(glib-2.0 GLIB)
@@ -30,6 +31,8 @@ wintc_resolve_library(gtk+-3.0 GTK3)
 
 configure_file(public/location.h.in ${PROJECT_ROOT}/public/location.h @ONLY)
 configure_file(src/version.c.in   ${PROJECT_ROOT}/src/version.c   @ONLY)
+
+wintc_compile_resources()
 
 add_library(
     libwintc-comgtk
@@ -76,6 +79,7 @@ add_library(
     public/radio.h
     src/regex.c
     public/regex.h
+    src/resources.c
     public/shorthand.h
     src/signals.c
     public/signals.h
@@ -87,6 +91,8 @@ add_library(
     public/treemodel.h
     src/version.c
     public/version.h
+    src/widget.c
+    public/widget.h
     src/window.c
     public/window.h
 )

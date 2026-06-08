@@ -30,6 +30,7 @@
 #include "@LIB_HEADER_DIR@/styles.h"
 #include "@LIB_HEADER_DIR@/treemodel.h"
 #include "@LIB_HEADER_DIR@/version.h"
+#include "@LIB_HEADER_DIR@/widget.h"
 #include "@LIB_HEADER_DIR@/window.h"
 
 #endif

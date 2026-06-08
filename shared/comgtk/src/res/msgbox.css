@@ -1,0 +1,16 @@
+.wintc-msgbox button
+{
+    min-height: 15px;
+    min-width:  51px;
+}
+
+.wintc-msgbox .dialog-vbox
+{
+    margin: 10px;
+}
+
+.wintc-msgbox-body
+{
+    margin-bottom: 20px;
+    margin-left:   18px;
+}
