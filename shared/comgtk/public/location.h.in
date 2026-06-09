@@ -19,4 +19,11 @@
  */
 #define WINTC_CONFIG_DIR "/etc/wintc"
 
+/**
+ * @def WINTC_SYSTEM_BIN_DIR
+ *
+ * The absolute path for the directory that contains binaries.
+ */
+#define WINTC_SYSTEM_BIN_DIR "@CMAKE_INSTALL_PREFIX@/bin"
+
 #endif
