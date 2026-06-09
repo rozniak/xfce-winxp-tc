@@ -155,7 +155,7 @@ gboolean wintc_sh_new_menu_create_file(
     if (op_id == WINTC_SH_NEW_OP_NEW_SHORTCUT)
     {
         static gchar* s_shortcut_argv[] = {
-            "/usr/bin/appwiz.cpl",
+            WINTC_SYSTEM_BIN_DIR "/appwiz.cpl",
             "--new-link-here",
             "New Shortcut",
             NULL
