@@ -2,6 +2,7 @@
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
 #include <wintc/comgtk.h>
+#include <wintc/shell.h>
 #include <wintc/shlang.h>
 
 #include "dlggoto.h"
@@ -47,6 +48,13 @@ static gboolean on_button_cancel_clicked(
 static gboolean on_button_ok_clicked(
     GtkButton* self,
     gpointer   user_data
+);
+static void on_entry_line_insert_text(
+    GtkEditable* editable,
+    gchar*       new_text,
+    gint         new_text_length,
+    gpointer     position,
+    gpointer     user_data
 );
 static gboolean on_window_map_event(
     GtkWidget* widget,
@@ -203,6 +211,12 @@ static void wintc_notepad_go_to_dialog_constructed(
         dlg_goto->button_ok,
         "clicked",
         G_CALLBACK(on_button_ok_clicked),
+        dlg_goto
+    );
+    g_signal_connect(
+        dlg_goto->entry_line,
+        "insert-text",
+        G_CALLBACK(on_entry_line_insert_text),
         dlg_goto
     );
 }
@@ -414,6 +428,21 @@ static gboolean on_button_ok_clicked(
     gtk_window_close(GTK_WINDOW(dlg_goto));
 
     return FALSE;
+}
+
+static void on_entry_line_insert_text(
+    GtkEditable* editable,
+    gchar*       new_text,
+    WINTC_UNUSED(gint new_text_length),
+    WINTC_UNUSED(gpointer position),
+    WINTC_UNUSED(gpointer user_data)
+)
+{
+    if (!wintc_str_is_ascii_numeric(new_text))
+    {
+        wintc_sh_play_sound(WINTC_SHELL_SND_DEFAULT);
+        g_signal_stop_emission_by_name(G_OBJECT(editable), "insert-text");
+    }
 }
 
 static gboolean on_window_map_event(
