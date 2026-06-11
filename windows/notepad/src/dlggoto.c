@@ -48,6 +48,11 @@ static gboolean on_button_ok_clicked(
     GtkButton* self,
     gpointer   user_data
 );
+static gboolean on_window_map_event(
+    GtkWidget* widget,
+    GdkEvent*  event,
+    gpointer   user_data
+);
 
 //
 // STATIC DATA
@@ -65,6 +70,7 @@ struct _WinTCNotepadGoToDialog
 
     // State
     //
+    gint initial_line;
     gint max_line;
 
     // UI
@@ -180,6 +186,12 @@ static void wintc_notepad_go_to_dialog_constructed(
 
     // Connect signals
     //
+    g_signal_connect(
+        dlg_goto,
+        "map-event",
+        G_CALLBACK(on_window_map_event),
+        dlg_goto
+    );
     g_signal_connect(
         dlg_goto->button_cancel,
         "clicked",
@@ -379,6 +391,19 @@ static gboolean on_button_ok_clicked(
             WINTC_MESSAGE_NONE
         );
 
+        wintc_notepad_go_to_dialog_set_line_number(
+            dlg_goto,
+            dlg_goto->initial_line
+        );
+
+        gtk_editable_select_region(
+            GTK_EDITABLE(dlg_goto->entry_line),
+            0,
+            -1
+        );
+
+        gtk_widget_grab_focus(dlg_goto->entry_line);
+
         return FALSE;
     }
 
@@ -387,6 +412,26 @@ static gboolean on_button_ok_clicked(
     dlg_goto->response = GTK_RESPONSE_OK;
 
     gtk_window_close(GTK_WINDOW(dlg_goto));
+
+    return FALSE;
+}
+
+static gboolean on_window_map_event(
+    WINTC_UNUSED(GtkWidget* widget),
+    WINTC_UNUSED(GdkEvent* event),
+    gpointer user_data
+)
+{
+    WinTCNotepadGoToDialog* dlg_goto = WINTC_NOTEPAD_GO_TO_DIALOG(user_data);
+
+    dlg_goto->initial_line =
+        wintc_notepad_go_to_dialog_get_line_number(dlg_goto);
+
+    gtk_editable_select_region(
+        GTK_EDITABLE(dlg_goto->entry_line),
+        0,
+        -1
+    );
 
     return FALSE;
 }
