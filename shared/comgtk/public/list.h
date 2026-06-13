@@ -129,4 +129,16 @@ GList* wintc_list_read_from_string(
     const gchar* str
 );
 
+/**
+ * Converts a list of strings to a string array.
+ *
+ * @param list The list.
+ * @param consume Move the data out of the list and free it, rather than copy.
+ * @return The string array.
+ */
+gchar** wintc_list_to_strv(
+    GList*   list,
+    gboolean consume
+);
+
 #endif

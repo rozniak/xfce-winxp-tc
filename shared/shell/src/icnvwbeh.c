@@ -65,7 +65,7 @@ static gboolean on_icon_view_button_press_event(
     GdkEventButton* event,
     gpointer        user_data
 );
-static void on_icon_view_drag_data_begin(
+static void on_icon_view_drag_begin(
     GtkWidget*      widget,
     GdkDragContext* context,
     gpointer        user_data
@@ -73,7 +73,7 @@ static void on_icon_view_drag_data_begin(
 static void on_icon_view_drag_data_get(
     GtkWidget*        widget,
     GdkDragContext*   context,
-    GtkSelectionData* data,
+    GtkSelectionData* selection_data,
     guint             info,
     guint             time,
     gpointer          user_data
@@ -165,7 +165,7 @@ static GtkTargetEntry S_DRAG_SOURCES[] = {
     {
         "text/x-wintc-shell-list",
         0,
-        WINT_SHEXT_DND_TARGET_X_WINTC_SHELL_LIST
+        WINTC_SHEXT_DND_TARGET_X_WINTC_SHELL_LIST
     }
 };
 static GtkTargetEntry S_DRAG_TARGETS[] = {
@@ -387,7 +387,7 @@ static void wintc_sh_icon_view_behaviour_constructed(
     // Enable drag destination
     //
     gtk_drag_source_set(
-        GTK_ICON_VIEW(behaviour->icon_view),
+        behaviour->icon_view,
         GDK_BUTTON1_MASK,
         NULL,
         0,
@@ -407,6 +407,18 @@ static void wintc_sh_icon_view_behaviour_constructed(
         behaviour->icon_view,
         "button-press-event",
         G_CALLBACK(on_icon_view_button_press_event),
+        behaviour
+    );
+    g_signal_connect(
+        behaviour->icon_view,
+        "drag-begin",
+        G_CALLBACK(on_icon_view_drag_begin),
+        behaviour
+    );
+    g_signal_connect(
+        behaviour->icon_view,
+        "drag-data-get",
+        G_CALLBACK(on_icon_view_drag_data_get),
         behaviour
     );
     g_signal_connect(
@@ -914,10 +926,10 @@ static gboolean on_icon_view_button_press_event(
     return GDK_EVENT_PROPAGATE;
 }
 
-static void on_icon_view_drag_data_begin(
-    GtkWidget*      widget,
-    GdkDragContext* context,
-    gpointer        user_data
+static void on_icon_view_drag_begin(
+    GtkWidget* widget,
+    WINTC_UNUSED(GdkDragContext* context),
+    gpointer   user_data
 )
 {
     WinTCShIconViewBehaviour* behaviour =
@@ -929,9 +941,9 @@ static void on_icon_view_drag_data_begin(
     // Query what drag targets are actually available for the items in this
     // view
     //
-    GtkTargetList* target_list = gtk_target_list_new();
+    GtkTargetList* target_list = gtk_target_list_new(NULL, 0);
 
-    for (gint i = 0; i < G_N_ELEMENTS(S_DRAG_SOURCES); i++)
+    for (gsize i = 0; i < G_N_ELEMENTS(S_DRAG_SOURCES); i++)
     {
         if (
             wintc_ishext_view_drag_test(
@@ -943,24 +955,24 @@ static void on_icon_view_drag_data_begin(
         {
             gtk_target_list_add(
                 target_list,
-                gdk_atom_from_intern_string(S_DRAG_SOURCES[i].target),
+                gdk_atom_intern_static_string(S_DRAG_SOURCES[i].target),
                 S_DRAG_SOURCES[i].flags,
                 S_DRAG_SOURCES[i].info
             );
         }
     }
 
-    gtk_drag_set_target_list(context, target_list);
+    gtk_drag_source_set_target_list(widget, target_list);
 
     gtk_target_list_unref(target_list);
 }
 
 static void on_icon_view_drag_data_get(
-    GtkWidget*        widget,
-    GdkDragContext*   context,
-    GtkSelectionData* data,
+    WINTC_UNUSED(GtkWidget* widget),
+    WINTC_UNUSED(GdkDragContext* context),
+    GtkSelectionData* selection_data,
     guint             info,
-    guint             time,
+    WINTC_UNUSED(guint time),
     gpointer          user_data
 )
 {
@@ -975,8 +987,23 @@ static void on_icon_view_drag_data_get(
         return;
     }
 
+    // Acquire the data
     //
+    GList* uris =
+        wintc_ishext_view_drag_execute(
+            behaviour->current_view,
+            item_hashes,
+            info
+        );
 
+    gchar** uris_v = wintc_list_to_strv(uris, TRUE);
+
+    if (uris)
+    {
+        gtk_selection_data_set_uris(selection_data, uris_v);
+    }
+
+    g_strfreev(uris_v);
     g_list_free(item_hashes);
 }
 

@@ -241,3 +241,36 @@ GList* wintc_list_read_from_string(
     
     return list;
 }
+
+gchar** wintc_list_to_strv(
+    GList*   list,
+    gboolean consume
+)
+{
+    guint   len = g_list_length(list);
+    gchar** strv = g_malloc0_n(len + 1, sizeof(gchar*));
+
+    gint   i;
+    GList* iter;
+
+    for (
+        iter = list,
+        i = 0;
+        iter;
+        i++,
+        iter = iter->next
+    )
+    {
+        strv[i] =
+            consume ?
+                g_steal_pointer(&(iter->data)) :
+                g_strdup((gchar*) iter->data);
+    }
+
+    if (consume)
+    {
+        g_list_free(list);
+    }
+
+    return strv;
+}
