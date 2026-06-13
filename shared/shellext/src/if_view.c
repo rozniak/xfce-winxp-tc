@@ -119,6 +119,30 @@ gint wintc_ishext_view_compare_items(
     return iface->compare_items(view, item_hash1, item_hash2);
 }
 
+GList* wintc_ishext_view_drag_execute (
+    WinTCIShextView*    view,
+    GList*              item_hashes,
+    WinTCShextDndTarget target
+)
+{
+    WinTCIShextViewInterface* iface =
+        WINTC_ISHEXT_VIEW_GET_IFACE(view);
+
+    return iface->drag_execute(view, item_hashes, target);
+}
+
+gboolean wintc_ishext_view_drag_test (
+    WinTCIShextView*    view,
+    GList*              item_hashes,
+    WinTCShextDndTarget target
+)
+{
+    WinTCIShextViewInterface* iface =
+        WINTC_ISHEXT_VIEW_GET_IFACE(view);
+
+    return iface->drag_test(view, item_hashes, target);
+}
+
 gboolean wintc_ishext_view_drop_execute(
     WinTCIShextView*    view,
     GtkWindow*          wnd,

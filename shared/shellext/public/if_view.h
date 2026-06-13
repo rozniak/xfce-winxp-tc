@@ -6,6 +6,7 @@
 #include <glib.h>
 #include <gtk/gtk.h>
 
+#include "dnd.h"
 #include "viewitem.h"
 #include "viewops.h"
 
@@ -48,6 +49,16 @@ struct _WinTCIShextViewInterface
         guint            item_hash2
     );
 
+    GList* (*drag_execute) (
+        WinTCIShextView*    view,
+        GList*              item_hashes,
+        WinTCShextDndTarget target
+    );
+    gboolean (*drag_test) (
+        WinTCIShextView*    view,
+        GList*              item_hashes,
+        WinTCShextDndTarget target
+    );
     gboolean (*drop_execute) (
         WinTCIShextView*    view,
         GtkWindow*          wnd,
@@ -125,6 +136,16 @@ gint wintc_ishext_view_compare_items(
     guint            item_hash2
 );
 
+GList* wintc_ishext_view_drag_execute (
+    WinTCIShextView*    view,
+    GList*              item_hashes,
+    WinTCShextDndTarget target
+);
+gboolean wintc_ishext_view_drag_test (
+    WinTCIShextView*    view,
+    GList*              item_hashes,
+    WinTCShextDndTarget target
+);
 gboolean wintc_ishext_view_drop_execute(
     WinTCIShextView*    view,
     GtkWindow*          wnd,

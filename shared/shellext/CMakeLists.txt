@@ -34,6 +34,7 @@ configure_file(src/host_priv.h.in ${PROJECT_ROOT}/src/host_priv.h @ONLY)
 add_library(
     libwintc-shellext
     public/category.h
+    public/dnd.h
     src/error.c
     public/error.h
     src/host.c
