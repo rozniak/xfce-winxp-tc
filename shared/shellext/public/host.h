@@ -30,23 +30,10 @@ typedef enum
 } WinTCShextViewAssoc;
 
 //
-// GTK OOP BOILERPLATE
-//
-typedef struct _WinTCShextHostClass WinTCShextHostClass;
-typedef struct _WinTCShextHost      WinTCShextHost;
-
-#define WINTC_TYPE_SHEXT_HOST            (wintc_shext_host_get_type())
-#define WINTC_SHEXT_HOST(obj)            (G_TYPE_CHECK_INSTANCE_CAST((obj), WINTC_TYPE_SHEXT_HOST, WinTCShextHost))
-#define WINTC_SHEXT_HOST_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST((klass), WINTC_TYPE_SHEXT_HOST, WinTCShextHostClass))
-#define IS_WINTC_SHEXT_HOST(obj)         (G_TYPE_CHECK_INSTANCE_TYPE((obj), WINTC_TYPE_SHEXT_HOST))
-#define IS_WINTC_SHEXT_HOST_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE((klass), WINTC_TYPE_SHEXT_HOST))
-#define WINTC_SHEXT_HOST_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS((obj), WINTC_TYPE_SHEXT_HOST, WinTCShextHost))
-
-GType wintc_shext_host_get_type(void) G_GNUC_CONST;
-
-//
 // PUBLIC CALLBACK PROTOTYPES
 //
+typedef struct _WinTCShextHost WinTCShextHost;
+
 typedef GtkWidget** (*WinTCShextPropertyPagesCtor) (
     WinTCShextHost* shext_host,
     const gchar*    url,
@@ -58,6 +45,34 @@ typedef WinTCIShextView* (*WinTCShextViewCtor) (
     const gchar*              assoc_str,
     const WinTCShextPathInfo* path_info
 );
+typedef gboolean (*WinTCShextActivateItemFunc) (
+    WinTCShextHost*     shext_host,
+    WinTCShextViewItem* item,
+    WinTCShextPathInfo* path_info,
+    GError**            error
+);
+
+//
+// PUBLIC STRUCTURES
+//
+typedef struct _WinTCShextTopLevelItem
+{
+    WinTCShextViewItem*        item;
+    WinTCShextActivateItemFunc activate_cb;
+} WinTCShextTopLevelItem;
+
+//
+// GTK OOP BOILERPLATE
+//
+#define WINTC_TYPE_SHEXT_HOST (wintc_shext_host_get_type())
+
+G_DECLARE_FINAL_TYPE(
+    WinTCShextHost,
+    wintc_shext_host,
+    WINTC,
+    SHEXT_HOST,
+    GObject
+)
 
 //
 // PUBLIC FUNCTIONS
@@ -65,17 +80,18 @@ typedef WinTCIShextView* (*WinTCShextViewCtor) (
 WinTCShextHost* wintc_shext_host_new(void);
 
 gboolean wintc_shext_host_add_toplevel_item(
-    WinTCShextHost*     host,
-    const gchar*        guid_category,
-    WinTCShextViewItem* view_item,
-    WinTCIShextView*    view,
-    GError**            error
+    WinTCShextHost*            host,
+    const gchar*               guid_category,
+    const gchar*               id,
+    WinTCShextViewItem*        view_item,
+    WinTCShextActivateItemFunc activate_cb,
+    GError**                   error
 );
 
-const WinTCShextCategory** wintc_shext_host_get_toplevel_categories(
+GList* wintc_shext_host_get_toplevel_categories(
     WinTCShextHost* host
 );
-const WinTCShextViewItem** wintc_shext_host_get_toplevel_items(
+GList* wintc_shext_host_get_toplevel_items(
     WinTCShextHost* host,
     const gchar*    guid_category
 );
@@ -111,6 +127,12 @@ gboolean wintc_shext_host_register_view(
     WinTCShextHost*    host,
     const gchar*       guid,
     WinTCShextViewCtor factory_cb
+);
+
+void wintc_shext_host_remove_toplevel_item(
+    WinTCShextHost* host,
+    const gchar*    guid_category,
+    const gchar*    id
 );
 
 gboolean wintc_shext_host_use_view_for_mime(

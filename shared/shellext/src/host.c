@@ -20,6 +20,15 @@ typedef struct _ShextHostPoolMap
     guint       my_hash;
 } ShextHostPoolMap;
 
+typedef struct _ShextHostCategoryInternal
+{
+    WinTCShextCategory public;
+
+    // Private stuff
+    //
+    GHashTable* map_id_to_item;
+} ShextHostCategoryInternal;
+
 //
 // CALLBACK PROTOTYPES
 //
@@ -40,12 +49,16 @@ static void wintc_shext_host_finalize(
     GObject* object
 );
 
-WinTCIShextView* lookup_view_for_path_by_guid(
+static void shext_host_category_internal_free(
+    ShextHostCategoryInternal* category
+);
+
+static WinTCIShextView* lookup_view_for_path_by_guid(
     WinTCShextHost*           host,
     const WinTCShextPathInfo* path_info,
     GError**                  error
 );
-WinTCIShextView* lookup_view_for_path_by_mime(
+static WinTCIShextView* lookup_view_for_path_by_mime(
     WinTCShextHost*           host,
     const WinTCShextPathInfo* path_info,
     GError**                  error
@@ -90,6 +103,10 @@ struct _WinTCShextHost
     //
     GHashTable* map_views_by_guid;
     GHashTable* map_views_by_mime;
+
+    // Toplevel stuff
+    //
+    GHashTable* map_guid_to_category;
 };
 
 //
@@ -136,6 +153,16 @@ static void wintc_shext_host_init(
                                   g_free,
                                   NULL
                               );
+
+    // Set up toplevel stuff
+    //
+    self->map_guid_to_category =
+        g_hash_table_new_full(
+            g_str_hash,
+            g_str_equal,
+            g_free,
+            (GDestroyNotify) shext_host_category_internal_free
+        );
 }
 
 //
@@ -151,6 +178,8 @@ static void wintc_shext_host_finalize(
 
     g_hash_table_unref(host->map_views_by_guid);
     g_hash_table_unref(host->map_views_by_mime);
+
+    g_hash_table_unref(host->map_guid_to_category);
 
     (G_OBJECT_CLASS(wintc_shext_host_parent_class))->finalize(object);
 }
@@ -169,33 +198,82 @@ WinTCShextHost* wintc_shext_host_new(void)
 }
 
 gboolean wintc_shext_host_add_toplevel_item(
-    WINTC_UNUSED(WinTCShextHost*     host),
-    WINTC_UNUSED(const gchar*        guid_category),
-    WINTC_UNUSED(WinTCShextViewItem* view_item),
-    WINTC_UNUSED(WinTCIShextView*    view),
-    GError** error
+    WinTCShextHost*            host,
+    const gchar*               guid_category,
+    const gchar*               id,
+    WinTCShextViewItem*        view_item,
+    WinTCShextActivateItemFunc activate_cb,
+    WINTC_UNUSED(GError** error)
 )
 {
-    WINTC_SAFE_REF_CLEAR(error);
-    g_critical("%s Not Implemented", __func__);
-    return FALSE;
+    gchar*   guid_u = g_ascii_strup(guid_category, -1);
+    gboolean ret    = FALSE;
+
+    // Retrieve the category
+    //
+    ShextHostCategoryInternal* category =
+        g_hash_table_lookup(host->map_guid_to_category, guid_u);
+
+    if (!category)
+    {
+        goto cleanup;
+    }
+
+    // Ensure no item already exists
+    //
+    if (g_hash_table_lookup(category->map_id_to_item, id))
+    {
+        goto cleanup;
+    }
+
+    // Create the new item now
+    //
+    WinTCShextTopLevelItem* tl_item =
+        g_new(WinTCShextTopLevelItem, 1);
+
+    tl_item->item        = view_item;
+    tl_item->activate_cb = activate_cb;
+
+    g_hash_table_insert(
+        category->map_id_to_item,
+        g_strdup(id),
+        tl_item
+    );
+
+cleanup:
+    g_free(guid_u);
+
+    return ret;
 }
 
-const WinTCShextCategory** wintc_shext_host_get_toplevel_categories(
-    WINTC_UNUSED(WinTCShextHost* host)
+GList* wintc_shext_host_get_toplevel_categories(
+    WinTCShextHost* host
 )
 {
-    g_critical("%s Not Implemented", __func__);
-    return NULL;
+    return g_hash_table_get_values(host->map_guid_to_category);
 }
 
-const WinTCShextViewItem** wintc_shext_host_get_toplevel_items(
-    WINTC_UNUSED(WinTCShextHost* host),
-    WINTC_UNUSED(const gchar*    guid_category)
+GList* wintc_shext_host_get_toplevel_items(
+    WinTCShextHost* host,
+    const gchar*    guid_category
 )
 {
-    g_critical("%s Not Implemented", __func__);
-    return NULL;
+    gchar* guid_u = g_ascii_strup(guid_category, -1);
+    GList* ret    = NULL;
+
+    // Retrieve category
+    //
+    ShextHostCategoryInternal* category =
+        g_hash_table_lookup(host->map_guid_to_category, guid_u);
+
+    if (category)
+    {
+        ret = g_hash_table_get_values(category->map_id_to_item);
+    }
+
+    g_free(guid_u);
+
+    return ret;
 }
 
 WinTCIShextView* wintc_shext_host_get_view_for_path(
@@ -378,13 +456,38 @@ gboolean wintc_shext_host_register_property_pages_cb(
 }
 
 gboolean wintc_shext_host_register_toplevel_category(
-    WINTC_UNUSED(WinTCShextHost* host),
-    WINTC_UNUSED(const gchar*    guid),
-    WINTC_UNUSED(const gchar*    display_name)
+    WinTCShextHost* host,
+    const gchar*    guid,
+    const gchar*    display_name
 )
 {
-    g_critical("%s Not Implemented", __func__);
-    return FALSE;
+    gchar* guid_u = g_ascii_strup(guid, -1);
+
+    if (g_hash_table_lookup(host->map_guid_to_category, guid_u))
+    {
+        g_critical("shellext: category guid registered twice %s", guid_u);
+        g_free(guid_u);
+
+        return FALSE;
+    }
+
+    WINTC_LOG_DEBUG("shellext: category registered: %s", guid_u);
+
+    ShextHostCategoryInternal* category =
+        g_new(ShextHostCategoryInternal, 1);
+
+    category->public.guid         = guid_u;
+    category->public.display_name = g_strdup(display_name);
+
+    category->map_id_to_item =
+        g_hash_table_new_full(
+            g_str_hash,
+            g_str_equal,
+            g_free,
+            g_free // Up to owner to free underlying view item before removal
+        );
+
+    return TRUE;
 }
 
 gboolean wintc_shext_host_register_view(
@@ -412,6 +515,24 @@ gboolean wintc_shext_host_register_view(
     );
 
     return TRUE;
+}
+
+void wintc_shext_host_remove_toplevel_item(
+    WinTCShextHost* host,
+    const gchar*    guid_category,
+    const gchar*    id
+)
+{
+    gchar* guid_u = g_ascii_strup(guid_category, -1);
+
+    ShextHostCategoryInternal* category =
+        g_hash_table_lookup(host->map_guid_to_category, guid_u);
+
+    if (category)
+    {
+        g_hash_table_remove(category->map_id_to_item, id);
+    }
+    g_free(guid_u);
 }
 
 gboolean wintc_shext_host_use_view_for_mime(
@@ -477,7 +598,17 @@ WinTCIShextView* wintc_shext_host_fetch_from_pool(
     );
 }
 
-WinTCIShextView* lookup_view_for_path_by_guid(
+static void shext_host_category_internal_free(
+    ShextHostCategoryInternal* category
+)
+{
+    g_free(category->public.guid);
+    g_free(category->public.display_name);
+    g_hash_table_unref(category->map_id_to_item);
+    g_free(category);
+}
+
+static WinTCIShextView* lookup_view_for_path_by_guid(
     WinTCShextHost*           host,
     const WinTCShextPathInfo* path_info,
     WINTC_UNUSED(GError** error)
@@ -523,7 +654,7 @@ WinTCIShextView* lookup_view_for_path_by_guid(
     return view;
 }
 
-WinTCIShextView* lookup_view_for_path_by_mime(
+static WinTCIShextView* lookup_view_for_path_by_mime(
     WinTCShextHost*           host,
     const WinTCShextPathInfo* path_info,
     GError**                  error

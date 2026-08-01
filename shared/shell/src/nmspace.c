@@ -27,6 +27,34 @@ static WinTCIShextView* factory_view_for_filesystem(
     const WinTCShextPathInfo* path_info
 );
 
+static void on_volume_monitor_drive_changed(
+    GVolumeMonitor* self,
+    GDrive*         drive,
+    gpointer        user_data
+);
+static void on_volume_monitor_drive_connected(
+    GVolumeMonitor* self,
+    GDrive*         drive,
+    gpointer        user_data
+);
+static void on_volume_monitor_drive_disconnected(
+    GVolumeMonitor* self,
+    GDrive*         drive,
+    gpointer        user_data
+);
+
+//
+// PUBLIC CONSTANTS
+//
+const gchar* WINTC_SH_GUID_CATEGORY_DRIVES =
+    "4cd9ad86-1950-4412-a511-25d92d085519";
+const gchar* WINTC_SH_GUID_CATEGORY_LOCAL_FILES =
+    "3e93a6c1-efc5-435f-996f-5e0eb97e92a5";
+const gchar* WINTC_SH_GUID_CATEGORY_REMOVABLES =
+    "5cb97e0a-00ca-448c-8c89-6e79892ef3bb";
+const gchar* WINTC_SH_GUID_CATEGORY_OTHER =
+    "a388a67e-bdaf-47bf-844f-c68549ff574b";
+
 //
 // PUBLIC FUNCTIONS
 //
@@ -34,6 +62,71 @@ gboolean wintc_sh_init_builtin_extensions(
     WinTCShextHost* shext_host
 )
 {
+    static GVolumeMonitor* s_monitor = NULL;
+
+    if (!s_monitor)
+    {
+        s_monitor = g_volume_monitor_get();
+    }
+
+    // Establish volume monitor signals
+    //
+    g_signal_connect(
+        s_monitor,
+        "drive-changed",
+        G_CALLBACK(on_volume_monitor_drive_changed),
+        shext_host
+    );
+    g_signal_connect(
+        s_monitor,
+        "drive-connected",
+        G_CALLBACK(on_volume_monitor_drive_connected),
+        shext_host
+    );
+    g_signal_connect(
+        s_monitor,
+        "drive-disconnected",
+        G_CALLBACK(on_volume_monitor_drive_disconnected),
+        shext_host
+    );
+
+    // Register toplevels
+    //
+    WINTC_RETURN_VAL_IF_FAIL(
+        wintc_shext_host_register_toplevel_category(
+            shext_host,
+            WINTC_SH_GUID_CATEGORY_DRIVES,
+            "Hard Disk Drives"
+        ),
+        FALSE
+    );
+    WINTC_RETURN_VAL_IF_FAIL(
+        wintc_shext_host_register_toplevel_category(
+            shext_host,
+            WINTC_SH_GUID_CATEGORY_LOCAL_FILES,
+            "Files Stored on This Computer"
+        ),
+        FALSE
+    );
+    WINTC_RETURN_VAL_IF_FAIL(
+        wintc_shext_host_register_toplevel_category(
+            shext_host,
+            WINTC_SH_GUID_CATEGORY_REMOVABLES,
+            "Devices with Removable Storage"
+        ),
+        FALSE
+    );
+    WINTC_RETURN_VAL_IF_FAIL(
+        wintc_shext_host_register_toplevel_category(
+            shext_host,
+            WINTC_SH_GUID_CATEGORY_OTHER,
+            "Other"
+        ),
+        FALSE
+    );
+
+    // Register views
+    //
     WINTC_RETURN_VAL_IF_FAIL(
         wintc_shext_host_register_view(
             shext_host,
@@ -140,4 +233,40 @@ static WinTCIShextView* factory_view_for_filesystem(
     );
 
     return wintc_sh_view_fs_new(shext_host, path_info);
+}
+
+static void on_volume_monitor_drive_changed(
+    WINTC_UNUSED(GVolumeMonitor* self),
+    GDrive* drive,
+    WINTC_UNUSED(gpointer user_data)
+)
+{
+    WINTC_LOG_DEBUG(
+        "Drive just changed: %s",
+        g_drive_get_name(drive)
+    );
+}
+
+static void on_volume_monitor_drive_connected(
+    WINTC_UNUSED(GVolumeMonitor* self),
+    GDrive*  drive,
+    WINTC_UNUSED(gpointer user_data)
+)
+{
+    WINTC_LOG_DEBUG(
+        "Drive connected: %s",
+        g_drive_get_name(drive)
+    );
+}
+
+static void on_volume_monitor_drive_disconnected(
+    WINTC_UNUSED(GVolumeMonitor* self),
+    GDrive* drive,
+    WINTC_UNUSED(gpointer user_data)
+)
+{
+    WINTC_LOG_DEBUG(
+        "Drive disconnected: %s",
+        g_drive_get_name(drive)
+    );
 }

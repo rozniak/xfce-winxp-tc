@@ -6,6 +6,14 @@
 #include <wintc/shellext.h>
 
 //
+// PUBLIC CONSTANTS
+//
+extern const gchar* WINTC_SH_GUID_CATEGORY_DRIVES;
+extern const gchar* WINTC_SH_GUID_CATEGORY_LOCAL_FILES;
+extern const gchar* WINTC_SH_GUID_CATEGORY_REMOVABLES;
+extern const gchar* WINTC_SH_GUID_CATEGORY_OTHER;
+
+//
 // PUBLIC FUNCTIONS
 //
 gboolean wintc_sh_init_builtin_extensions(
