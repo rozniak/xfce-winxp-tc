@@ -33,6 +33,7 @@ static void wintc_shell_drive_add_icon(
     WinTCShellDrive*           sh_drive,
     gchar*                     ident,
     gchar*                     icon_name,
+    gpointer                   priv,
     WinTCShextActivateItemFunc activate_cb
 );
 static WinTCShellDrive* wintc_shell_drive_new(
@@ -228,6 +229,7 @@ gboolean wintc_sh_init_builtin_extensions(
                     sh_drive,
                     g_strdup(g_unix_mount_entry_get_mount_path(mount)),
                     g_strdup("drive-harddisk"),
+                    g_strdup(g_unix_mount_entry_get_mount_path(mount)),
                     (WinTCShextActivateItemFunc) cb_shext_activate_item_drive
                 );
             }
@@ -301,6 +303,7 @@ static void wintc_shell_drive_add_icon(
     WinTCShellDrive*           sh_drive,
     gchar*                     ident,
     gchar*                     icon_name,
+    gpointer                   priv,
     WinTCShextActivateItemFunc activate_cb
 )
 {
@@ -312,7 +315,7 @@ static void wintc_shell_drive_add_icon(
     item->is_leaf      = FALSE;
     item->hash         = g_str_hash(id);
     item->hint         = 0;
-    item->priv         = NULL;
+    item->priv         = priv;
 
     g_hash_table_insert(
         sh_drive->map_id_to_icon,
@@ -378,6 +381,7 @@ static void clear_view_item(
 {
     g_free(item->display_name);
     g_free(item->icon_name);
+    g_free((gchar*) item->priv);
     g_free(item);
 }
 
@@ -438,15 +442,21 @@ static WinTCIShextView* factory_view_for_filesystem(
 }
 
 static gboolean cb_shext_activate_item_drive(
-    WINTC_UNUSED(WinTCShextHost*     shext_host),
+    WINTC_UNUSED(WinTCShextHost* shext_host),
     WinTCShextViewItem* item,
-    WINTC_UNUSED(WinTCShextPathInfo* path_info),
-    WINTC_UNUSED(GError**            error)
+    WinTCShextPathInfo* path_info,
+    WINTC_UNUSED(GError**        error)
 )
 {
-    // FIXME: Implement this
-    //
-    g_message("Success! Activated %s", item->display_name);
+    if (item->priv)
+    {
+        path_info->base_path =
+            g_strdup_printf("file://%s", ((gchar*) item->priv));
+    }
+    else
+    {
+        g_warning("shell: no path for %s", item->display_name);
+    }
 
     return TRUE;
 }
@@ -533,12 +543,16 @@ static void cb_vm_drive_update_state(
 
         if (requires_placeholder)
         {
+            //
+            // FIXME: This should have its own callback for prompting for media
+            //
             wintc_shell_drive_add_icon(
                 sh_drive,
                 g_steal_pointer(&ident),
                 wintc_icon_get_available_name(
                     g_drive_get_icon(sh_drive->drive)
                 ),
+                NULL,
                 (WinTCShextActivateItemFunc) cb_shext_activate_item_drive
             );
         }
@@ -603,14 +617,19 @@ static gboolean cb_vm_volume_update_state(
     {
         if (!g_hash_table_lookup(sh_drive->map_id_to_icon, ident))
         {
+            GFile* root = g_mount_get_root(mount);
+
             wintc_shell_drive_add_icon(
                 sh_drive,
                 g_steal_pointer(&ident),
                 wintc_icon_get_available_name(
                     g_mount_get_icon(mount)
                 ),
+                g_file_get_path(root),
                 (WinTCShextActivateItemFunc) cb_shext_activate_item_drive
             );
+
+            g_object_unref(root);
         }
     }
     else
