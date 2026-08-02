@@ -20,7 +20,7 @@ typedef struct _WinTCShellDrive
     WinTCShextHost* shext_host;
     const gchar*    guid_category;
 
-    GHashTable* map_id_to_volume;
+    GList*      list_volumes;
     GHashTable* map_id_to_icon;
 } WinTCShellDrive;
 
@@ -30,6 +30,10 @@ typedef struct _WinTCShellDrive
 static WinTCShellDrive* wintc_shell_drive_new(
     GDrive*         drive,
     WinTCShextHost* shext_host
+);
+
+static void clear_view_item(
+    WinTCShextViewItem* item
 );
 
 static WinTCIShextView* factory_view_by_guid_cb(
@@ -58,6 +62,10 @@ static void cb_vm_drive_init(
 );
 static void cb_vm_drive_update_state(
     WinTCShellDrive* sh_drive
+);
+static gboolean cb_vm_volume_update_state(
+    WinTCShellDrive* sh_drive,
+    GVolume*         volume
 );
 
 static void on_drive_changed(
@@ -227,20 +235,14 @@ static WinTCShellDrive* wintc_shell_drive_new(
 
     sh_drive->drive         = drive;
     sh_drive->shext_host    = shext_host;
+    sh_drive->list_volumes  = NULL;
 
-    sh_drive->map_id_to_volume =
-        g_hash_table_new_full(
-            g_str_hash,
-            g_str_equal,
-            g_free,
-            g_object_unref
-        );
     sh_drive->map_id_to_icon =
         g_hash_table_new_full(
             g_str_hash,
             g_str_equal,
             g_free,
-            NULL // FIXME: Free view item here
+            (GDestroyNotify) clear_view_item
         );
 
     if (
@@ -256,6 +258,15 @@ static WinTCShellDrive* wintc_shell_drive_new(
     }
 
     return sh_drive;
+}
+
+static void clear_view_item(
+    WinTCShextViewItem* item
+)
+{
+    g_free(item->display_name);
+    g_free(item->icon_name);
+    g_free(item);
 }
 
 //
@@ -372,50 +383,179 @@ static void cb_vm_drive_update_state(
     WinTCShellDrive* sh_drive
 )
 {
-    // Determine icon(s) to display
-    //
-    // FIXME: Only testing whether icons display at all for now
-    //
     gchar* ident =
         g_drive_get_identifier(
             sh_drive->drive,
             G_DRIVE_IDENTIFIER_KIND_UNIX_DEVICE
         );
 
-    if (g_hash_table_lookup(sh_drive->map_id_to_icon, ident))
+    // If there are no volumes for this drive, then we need to clear its icons
+    // UNLESS it is a drive with removable media OR is removable itself (could
+    // be an unformatted USB or something)
+    //
+    if (!g_drive_has_volumes(sh_drive->drive))
     {
-        g_free(ident);
-        return;
+        gboolean requires_placeholder =
+            g_drive_is_media_removable(sh_drive->drive) ||
+            g_drive_is_removable(sh_drive->drive);
+
+        GHashTableIter iter;
+        const gchar*   id_iter;
+
+        WINTC_LOG_DEBUG("shell: drvmon: no volumes for drive %s", ident);
+
+        g_hash_table_iter_init(&iter, sh_drive->map_id_to_icon);
+
+        while (g_hash_table_iter_next(&iter, (void**) &id_iter, NULL))
+        {
+            wintc_shext_host_remove_toplevel_item(
+                sh_drive->shext_host,
+                sh_drive->guid_category,
+                id_iter
+            );
+
+            g_hash_table_iter_remove(&iter);
+        }
+
+        if (requires_placeholder)
+        {
+            gchar*              id   = g_strconcat("nmspace", ident, NULL);
+            WinTCShextViewItem* item = g_new(WinTCShextViewItem, 1);
+
+            item->display_name = ident;
+            item->icon_name    = wintc_icon_get_available_name(
+                                     g_drive_get_icon(sh_drive->drive)
+                                 );
+            item->is_leaf      = FALSE;
+            item->hash         = g_str_hash(id);
+            item->hint         = 0;
+            item->priv         = NULL;
+
+            g_hash_table_insert(
+                sh_drive->map_id_to_icon,
+                ident,
+                item
+            );
+
+            wintc_shext_host_add_toplevel_item(
+                sh_drive->shext_host,
+                sh_drive->guid_category,
+                ident,
+                item,
+                (WinTCShextActivateItemFunc) cb_shext_activate_item_drive,
+                NULL
+            );
+
+            g_free(id);
+            ident = NULL; // We've stolen it
+        }
+
+        goto cleanup;
     }
 
-    // Create drive icon
+    // Collect up any volumes for the drive
     //
-    gchar*              id   = g_strconcat("nmspace", ident, NULL);
-    WinTCShextViewItem* item = g_new(WinTCShextViewItem, 1);
+    GList* volumes = g_drive_get_volumes(sh_drive->drive);
 
-    item->display_name = ident;
-    item->icon_name    = wintc_icon_get_available_name(
-                             g_drive_get_icon(sh_drive->drive)
-                         );
-    item->is_leaf      = TRUE; // FIXME: Temp
-    item->hash         = g_str_hash(id);
-    item->hint         = 0;
-    item->priv         = NULL;
+    for (GList* iter = volumes; iter; iter = iter->next)
+    {
+        GVolume* volume = (GVolume*) iter->data;
 
-    g_hash_table_insert(
-        sh_drive->map_id_to_icon,
-        ident,
-        item
-    );
+        if (!cb_vm_volume_update_state(sh_drive, volume))
+        {
+            g_object_unref(volume);
+        }
+    }
 
-    wintc_shext_host_add_toplevel_item(
-        sh_drive->shext_host,
-        sh_drive->guid_category,
-        id,
-        item,
-        (WinTCShextActivateItemFunc) cb_shext_activate_item_drive,
-        NULL
-    );
+    g_list_free(volumes);
+
+cleanup:
+    g_free(ident);
+}
+
+static gboolean cb_vm_volume_update_state(
+    WinTCShellDrive* sh_drive,
+    GVolume*         volume
+)
+{
+    gboolean ref_transferred = FALSE;
+
+    // Is this a new volume?
+    //
+    if (!g_list_find(sh_drive->list_volumes, volume))
+    {
+        WINTC_LOG_DEBUG("shell: drvmon: new volume...");
+
+        sh_drive->list_volumes =
+            g_list_append(sh_drive->list_volumes, volume);
+
+        //
+        // FIXME: Connect signals
+        //
+
+        ref_transferred = TRUE;
+    }
+
+    // Does it have a mount point?
+    //
+    gchar*  ident = g_volume_get_identifier(
+                        volume,
+                        G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE
+                    );
+    GMount* mount = g_volume_get_mount(volume);
+
+    WINTC_LOG_DEBUG("shell: drvmon: examining volume %s", ident);
+
+    if (mount)
+    {
+        if (!g_hash_table_lookup(sh_drive->map_id_to_icon, ident))
+        {
+            gchar*              id   = g_strconcat("nmspace", ident, NULL);
+            WinTCShextViewItem* item = g_new(WinTCShextViewItem, 1);
+
+            item->display_name = ident;
+            item->icon_name    = wintc_icon_get_available_name(
+                                     g_mount_get_icon(mount)
+                                 );
+            item->is_leaf      = FALSE;
+            item->hash         = g_str_hash(id);
+            item->hint         = 0;
+            item->priv         = NULL;
+
+            g_hash_table_insert(
+                sh_drive->map_id_to_icon,
+                ident,
+                item
+            );
+
+            wintc_shext_host_add_toplevel_item(
+                sh_drive->shext_host,
+                sh_drive->guid_category,
+                ident,
+                item,
+                (WinTCShextActivateItemFunc) cb_shext_activate_item_drive,
+                NULL
+            );
+
+            g_free(id);
+            ident = NULL; // We've stolen it
+        }
+    }
+    else
+    {
+        if (g_hash_table_remove(sh_drive->map_id_to_icon, ident))
+        {
+            wintc_shext_host_remove_toplevel_item(
+                sh_drive->shext_host,
+                sh_drive->guid_category,
+                ident
+            );
+        }
+    }
+
+    g_free(ident);
+
+    return ref_transferred;
 }
 
 static void on_drive_changed(
