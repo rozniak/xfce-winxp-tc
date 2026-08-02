@@ -12,8 +12,26 @@
 #include "../public/vwtrash.h"
 
 //
+// PRIVATE STRUCTURES
+//
+typedef struct _WinTCShellDrive
+{
+    GDrive*         drive;
+    WinTCShextHost* shext_host;
+    const gchar*    guid_category;
+
+    GHashTable* map_id_to_volume;
+    GHashTable* map_id_to_icon;
+} WinTCShellDrive;
+
+//
 // FORWARD DECLARATIONS
 //
+static WinTCShellDrive* wintc_shell_drive_new(
+    GDrive*         drive,
+    WinTCShextHost* shext_host
+);
+
 static WinTCIShextView* factory_view_by_guid_cb(
     WinTCShextHost*           shext_host,
     WinTCShextViewAssoc       assoc,
@@ -27,17 +45,30 @@ static WinTCIShextView* factory_view_for_filesystem(
     const WinTCShextPathInfo* path_info
 );
 
-static void on_volume_monitor_drive_changed(
-    GVolumeMonitor* self,
+static gboolean cb_shext_activate_item_drive(
+    WinTCShextHost*     shext_host,
+    WinTCShextViewItem* item,
+    WinTCShextPathInfo* path_info,
+    GError**            error
+);
+
+static void cb_vm_drive_init(
+    GDrive*         drive,
+    WinTCShextHost* shext_host
+);
+static void cb_vm_drive_update_state(
+    WinTCShellDrive* sh_drive
+);
+
+static void on_drive_changed(
+    GDrive*         drive,
+    gpointer        user_data
+);
+static void on_drive_disconnected(
     GDrive*         drive,
     gpointer        user_data
 );
 static void on_volume_monitor_drive_connected(
-    GVolumeMonitor* self,
-    GDrive*         drive,
-    gpointer        user_data
-);
-static void on_volume_monitor_drive_disconnected(
     GVolumeMonitor* self,
     GDrive*         drive,
     gpointer        user_data
@@ -68,27 +99,6 @@ gboolean wintc_sh_init_builtin_extensions(
     {
         s_monitor = g_volume_monitor_get();
     }
-
-    // Establish volume monitor signals
-    //
-    g_signal_connect(
-        s_monitor,
-        "drive-changed",
-        G_CALLBACK(on_volume_monitor_drive_changed),
-        shext_host
-    );
-    g_signal_connect(
-        s_monitor,
-        "drive-connected",
-        G_CALLBACK(on_volume_monitor_drive_connected),
-        shext_host
-    );
-    g_signal_connect(
-        s_monitor,
-        "drive-disconnected",
-        G_CALLBACK(on_volume_monitor_drive_disconnected),
-        shext_host
-    );
 
     // Register toplevels
     //
@@ -123,6 +133,27 @@ gboolean wintc_sh_init_builtin_extensions(
             "Other"
         ),
         FALSE
+    );
+
+    // Establish volume monitor signals
+    //
+    GList* drives = g_volume_monitor_get_connected_drives(s_monitor);
+
+    for (GList* iter = drives; iter; iter = iter->next)
+    {
+        cb_vm_drive_init(
+            G_DRIVE(iter->data),
+            shext_host
+        );
+    }
+
+    g_list_free_full(drives, (GDestroyNotify) g_object_unref);
+
+    g_signal_connect(
+        s_monitor,
+        "drive-connected",
+        G_CALLBACK(on_volume_monitor_drive_connected),
+        shext_host
     );
 
     // Register views
@@ -180,6 +211,54 @@ void wintc_sh_init_namespace_tree(
 }
 
 //
+// PRIVATE FUNCTIONS
+//
+static WinTCShellDrive* wintc_shell_drive_new(
+    GDrive*         drive,
+    WinTCShextHost* shext_host
+)
+{
+    WinTCShellDrive* sh_drive = g_new(WinTCShellDrive, 1);
+
+    //
+    // FIXME: Potentially need to soft ref shext host to destroy ourselves +
+    //        the signals attached to GDrive?
+    //
+
+    sh_drive->drive         = drive;
+    sh_drive->shext_host    = shext_host;
+
+    sh_drive->map_id_to_volume =
+        g_hash_table_new_full(
+            g_str_hash,
+            g_str_equal,
+            g_free,
+            g_object_unref
+        );
+    sh_drive->map_id_to_icon =
+        g_hash_table_new_full(
+            g_str_hash,
+            g_str_equal,
+            g_free,
+            NULL // FIXME: Free view item here
+        );
+
+    if (
+        g_drive_is_media_removable(drive) ||
+        g_drive_is_removable(drive)
+    )
+    {
+        sh_drive->guid_category = WINTC_SH_GUID_CATEGORY_REMOVABLES;
+    }
+    else
+    {
+        sh_drive->guid_category = WINTC_SH_GUID_CATEGORY_DRIVES;
+    }
+
+    return sh_drive;
+}
+
+//
 // CALLBACKS
 //
 static WinTCIShextView* factory_view_by_guid_cb(
@@ -209,7 +288,7 @@ static WinTCIShextView* factory_view_by_guid_cb(
             return wintc_sh_view_desktop_new(shext_host);
 
         case WINTC_SH_PLACE_DRIVES:
-            return wintc_sh_view_drives_new();
+            return wintc_sh_view_drives_new(shext_host);
 
         case WINTC_SH_PLACE_RECYCLEBIN:
             return wintc_sh_view_trash_new();
@@ -235,8 +314,111 @@ static WinTCIShextView* factory_view_for_filesystem(
     return wintc_sh_view_fs_new(shext_host, path_info);
 }
 
-static void on_volume_monitor_drive_changed(
-    WINTC_UNUSED(GVolumeMonitor* self),
+static gboolean cb_shext_activate_item_drive(
+    WINTC_UNUSED(WinTCShextHost*     shext_host),
+    WinTCShextViewItem* item,
+    WINTC_UNUSED(WinTCShextPathInfo* path_info),
+    WINTC_UNUSED(GError**            error)
+)
+{
+    // FIXME: Implement this
+    //
+    g_message("Success! Activated %s", item->display_name);
+
+    return TRUE;
+}
+
+static void cb_vm_drive_init(
+    GDrive*         drive,
+    WinTCShextHost* shext_host
+)
+{
+    gchar* name  = g_drive_get_name(drive);
+    gchar* ident = g_drive_get_identifier(
+                       drive,
+                       G_DRIVE_IDENTIFIER_KIND_UNIX_DEVICE
+                   );
+
+    WINTC_LOG_DEBUG("shell: drvmon: init drive %s (id: %s)", name, ident);
+
+    g_free(name);
+    g_free(ident);
+
+    // Set up drive
+    //
+    WinTCShellDrive* sh_drive =
+        wintc_shell_drive_new(
+            drive,
+            shext_host
+        );
+
+    cb_vm_drive_update_state(sh_drive);
+
+    g_signal_connect(
+        drive,
+        "changed",
+        G_CALLBACK(on_drive_changed),
+        sh_drive
+    );
+    g_signal_connect(
+        drive,
+        "disconnected",
+        G_CALLBACK(on_drive_disconnected),
+        sh_drive
+    );
+}
+
+static void cb_vm_drive_update_state(
+    WinTCShellDrive* sh_drive
+)
+{
+    // Determine icon(s) to display
+    //
+    // FIXME: Only testing whether icons display at all for now
+    //
+    gchar* ident =
+        g_drive_get_identifier(
+            sh_drive->drive,
+            G_DRIVE_IDENTIFIER_KIND_UNIX_DEVICE
+        );
+
+    if (g_hash_table_lookup(sh_drive->map_id_to_icon, ident))
+    {
+        g_free(ident);
+        return;
+    }
+
+    // Create drive icon
+    //
+    gchar*              id   = g_strconcat("nmspace", ident, NULL);
+    WinTCShextViewItem* item = g_new(WinTCShextViewItem, 1);
+
+    item->display_name = ident;
+    item->icon_name    = wintc_icon_get_available_name(
+                             g_drive_get_icon(sh_drive->drive)
+                         );
+    item->is_leaf      = TRUE; // FIXME: Temp
+    item->hash         = g_str_hash(id);
+    item->hint         = 0;
+    item->priv         = NULL;
+
+    g_hash_table_insert(
+        sh_drive->map_id_to_icon,
+        ident,
+        item
+    );
+
+    wintc_shext_host_add_toplevel_item(
+        sh_drive->shext_host,
+        sh_drive->guid_category,
+        id,
+        item,
+        (WinTCShextActivateItemFunc) cb_shext_activate_item_drive,
+        NULL
+    );
+}
+
+static void on_drive_changed(
     GDrive* drive,
     WINTC_UNUSED(gpointer user_data)
 )
@@ -247,20 +429,7 @@ static void on_volume_monitor_drive_changed(
     );
 }
 
-static void on_volume_monitor_drive_connected(
-    WINTC_UNUSED(GVolumeMonitor* self),
-    GDrive*  drive,
-    WINTC_UNUSED(gpointer user_data)
-)
-{
-    WINTC_LOG_DEBUG(
-        "Drive connected: %s",
-        g_drive_get_name(drive)
-    );
-}
-
-static void on_volume_monitor_drive_disconnected(
-    WINTC_UNUSED(GVolumeMonitor* self),
+static void on_drive_disconnected(
     GDrive* drive,
     WINTC_UNUSED(gpointer user_data)
 )
@@ -269,4 +438,13 @@ static void on_volume_monitor_drive_disconnected(
         "Drive disconnected: %s",
         g_drive_get_name(drive)
     );
+}
+
+static void on_volume_monitor_drive_connected(
+    WINTC_UNUSED(GVolumeMonitor* self),
+    GDrive*  drive,
+    gpointer user_data
+)
+{
+    cb_vm_drive_init(drive, WINTC_SHEXT_HOST(user_data));
 }

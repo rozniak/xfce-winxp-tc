@@ -4,6 +4,7 @@
 #include <wintc/shellext.h>
 #include <wintc/shlang.h>
 
+#include "../public/nmspace.h"
 #include "../public/vwdrives.h"
 
 //
@@ -11,36 +12,8 @@
 //
 enum
 {
-    PROP_ICON_NAME = 1
-};
-
-//
-// STATIC DATA
-//
-
-// FIXME: Temp
-//
-static GHashTable* s_drives_map = NULL;
-
-// FIXME: Temporary - only item is the drive root atm
-//
-static WinTCShextViewItem s_temp_items[] = {
-    {
-        "/",
-        "drive-harddisk",
-        FALSE,
-        0,
-        WINTC_SHEXT_VIEW_ITEM_DEFAULT,
-        "file:///"
-    },
-    {
-        "Control Panel",
-        "preferences-other",
-        FALSE,
-        0,
-        WINTC_SHEXT_VIEW_ITEM_DEFAULT,
-        NULL
-    }
+    PROP_SHEXT_HOST = 1,
+    PROP_ICON_NAME
 };
 
 //
@@ -50,11 +23,20 @@ static void wintc_sh_view_drives_ishext_view_interface_init(
     WinTCIShextViewInterface* iface
 );
 
+static void wintc_sh_view_drives_dispose(
+    GObject* object
+);
 static void wintc_sh_view_drives_get_property(
     GObject*    object,
     guint       prop_id,
     GValue*     value,
     GParamSpec* pspec
+);
+static void wintc_sh_view_drives_set_property(
+    GObject*      object,
+    guint         prop_id,
+    const GValue* value,
+    GParamSpec*   pspec
 );
 
 static gboolean wintc_sh_view_drives_activate_item(
@@ -146,6 +128,9 @@ struct _WinTCShViewDrivesClass
 struct _WinTCShViewDrives
 {
     GObject __parent__;
+
+    WinTCShextHost* shext_host;
+    GList*          list_tl_items;
 };
 
 //
@@ -165,40 +150,28 @@ static void wintc_sh_view_drives_class_init(
     WinTCShViewDrivesClass* klass
 )
 {
-    s_drives_map = g_hash_table_new(g_direct_hash, g_direct_equal);
-
-    // TEMP: Assign CPL view path
-    //
-    s_temp_items[1].priv = wintc_sh_path_for_guid(WINTC_SH_GUID_CPL);
-
-    // TEMP: Assign hashes
-    //
-    s_temp_items[0].hash = g_str_hash("/");
-    s_temp_items[1].hash = g_str_hash(s_temp_items[1].priv);
-
-    // TEMP: Prepend items
-    //
-    g_hash_table_insert(
-        s_drives_map,
-        GUINT_TO_POINTER(s_temp_items[0].hash),
-        &(s_temp_items[0])
-    );
-    g_hash_table_insert(
-        s_drives_map,
-        GUINT_TO_POINTER(s_temp_items[1].hash),
-        &(s_temp_items[1])
-    );
-
-    // GObject initialisation
-    //
     GObjectClass* object_class = G_OBJECT_CLASS(klass);
 
+    object_class->dispose      = wintc_sh_view_drives_dispose;
     object_class->get_property = wintc_sh_view_drives_get_property;
+    object_class->set_property = wintc_sh_view_drives_set_property;
 
     g_object_class_override_property(
         object_class,
         PROP_ICON_NAME,
         "icon-name"
+    );
+
+    g_object_class_install_property(
+        object_class,
+        PROP_SHEXT_HOST,
+        g_param_spec_object(
+            "shext-host",
+            "ShextHost",
+            "The shell extension host.",
+            WINTC_TYPE_SHEXT_HOST,
+            G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY
+        )
     );
 }
 
@@ -236,6 +209,19 @@ static void wintc_sh_view_drives_ishext_view_interface_init(
 //
 // CLASS VIRTUAL METHODS
 //
+static void wintc_sh_view_drives_dispose(
+    GObject* object
+)
+{
+    WinTCShViewDrives* view_drives = WINTC_SH_VIEW_DRIVES(object);
+
+    g_clear_object(&(view_drives->shext_host));
+    g_clear_list(&(view_drives->list_tl_items), NULL);
+
+    (G_OBJECT_CLASS(wintc_sh_view_drives_parent_class))
+        ->dispose(object);
+}
+
 static void wintc_sh_view_drives_get_property(
     GObject*    object,
     guint       prop_id,
@@ -260,30 +246,61 @@ static void wintc_sh_view_drives_get_property(
     }
 }
 
+static void wintc_sh_view_drives_set_property(
+    GObject*      object,
+    guint         prop_id,
+    const GValue* value,
+    GParamSpec*   pspec
+)
+{
+    WinTCShViewDrives* view_drives = WINTC_SH_VIEW_DRIVES(object);
+
+    switch (prop_id)
+    {
+        case PROP_SHEXT_HOST:
+            view_drives->shext_host = g_value_dup_object(value);
+            break;
+
+        default:
+            G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
+            break;
+    }
+}
+
 //
 // INTERFACE METHODS (WinTCIShextView)
 //
 static gboolean wintc_sh_view_drives_activate_item(
-    WINTC_UNUSED(WinTCIShextView* view),
+    WinTCIShextView*    view,
     guint               item_hash,
     WinTCShextPathInfo* path_info,
     GError**            error
 )
 {
-    WINTC_SAFE_REF_CLEAR(error);
+    WinTCShViewDrives* view_drives = WINTC_SH_VIEW_DRIVES(view);
 
-    WinTCShextViewItem* item =
-        (WinTCShextViewItem*)
-            g_hash_table_lookup(
-                s_drives_map,
-                GUINT_TO_POINTER(item_hash)
-            );
-
-    // TODO: Handle properly, we're using temp items for now
+    // FIXME: Crude finding items
     //
-    path_info->base_path = g_strdup(item->priv);
+    WinTCShextTopLevelItem* found_tl_item = NULL;
 
-    return TRUE;
+    for (GList* iter = view_drives->list_tl_items; iter; iter = iter->next)
+    {
+        WinTCShextTopLevelItem* tl_item =
+            (WinTCShextTopLevelItem*) iter->data;
+
+        if (tl_item->item->hash == item_hash)
+        {
+            found_tl_item = tl_item;
+            break;
+        }
+    }
+
+    return found_tl_item->activate_cb(
+        view_drives->shext_host,
+        found_tl_item->item,
+        path_info,
+        error
+    );
 }
 
 static gint wintc_sh_view_drives_compare_items(
@@ -360,10 +377,24 @@ static const gchar* wintc_sh_view_drives_get_icon_name(
 }
 
 static GList* wintc_sh_view_drives_get_items(
-    WINTC_UNUSED(WinTCIShextView* view)
+    WinTCIShextView* view
 )
 {
-    return g_hash_table_get_values(s_drives_map);
+    WinTCShViewDrives* view_drives = WINTC_SH_VIEW_DRIVES(view);
+
+    // FIXME: Crude, improve later
+    //
+    GList* items = NULL;
+
+    for (GList* iter = view_drives->list_tl_items; iter; iter = iter->next)
+    {
+        WinTCShextTopLevelItem* tl_item =
+            (WinTCShextTopLevelItem*) iter->data;
+
+        items = g_list_prepend(items, tl_item->item);
+    }
+
+    return g_list_reverse(items);
 }
 
 static GMenuModel* wintc_sh_view_drives_get_operations_for_item(
@@ -460,16 +491,30 @@ static void wintc_sh_view_drives_refresh_items(
     WinTCIShextView* view
 )
 {
+    WinTCShViewDrives* view_drives = WINTC_SH_VIEW_DRIVES(view);
+
     WINTC_LOG_DEBUG("%s", "shell: refresh drives view");
 
     _wintc_ishext_view_refreshing(view);
 
-    // Emit only the root '/' for now
-    // TODO: Basically everything in My Computer!
+    // Update items from toplevel
     //
-    WinTCShextViewItemsUpdate update = { 0 };
+    if (view_drives->list_tl_items)
+    {
+        g_list_free(view_drives->list_tl_items);
+    }
 
-    GList* items = g_hash_table_get_values(s_drives_map);
+    view_drives->list_tl_items =
+        wintc_shext_host_get_toplevel_items(
+            view_drives->shext_host,
+            WINTC_SH_GUID_CATEGORY_DRIVES
+        );
+
+
+    // Emit the update
+    //
+    GList* items = wintc_sh_view_drives_get_items(view);
+    WinTCShextViewItemsUpdate update = { 0 };
 
     update.data = items;
     update.done = TRUE;
@@ -493,11 +538,14 @@ static WinTCShextOperation* wintc_sh_view_drives_spawn_operation(
 //
 // PUBLIC FUNCTIONS
 //
-WinTCIShextView* wintc_sh_view_drives_new(void)
+WinTCIShextView* wintc_sh_view_drives_new(
+    WinTCShextHost* shext_host
+)
 {
     return WINTC_ISHEXT_VIEW(
         g_object_new(
             WINTC_TYPE_SH_VIEW_DRIVES,
+            "shext-host", shext_host,
             NULL
         )
     );

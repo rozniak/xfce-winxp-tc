@@ -216,6 +216,11 @@ gboolean wintc_shext_host_add_toplevel_item(
 
     if (!category)
     {
+        g_critical(
+            "shellext: add toplevel: no toplevel category: %s",
+            guid_u
+        );
+
         goto cleanup;
     }
 
@@ -223,6 +228,11 @@ gboolean wintc_shext_host_add_toplevel_item(
     //
     if (g_hash_table_lookup(category->map_id_to_item, id))
     {
+        g_critical(
+            "shellext: add toplevel: item already exists: %s",
+            id
+        );
+
         goto cleanup;
     }
 
@@ -238,6 +248,12 @@ gboolean wintc_shext_host_add_toplevel_item(
         category->map_id_to_item,
         g_strdup(id),
         tl_item
+    );
+
+    WINTC_LOG_DEBUG(
+        "shellext: added toplevel item: %s (cat: %s)",
+        tl_item->item->display_name,
+        guid_u
     );
 
 cleanup:
@@ -471,8 +487,8 @@ gboolean wintc_shext_host_register_toplevel_category(
         return FALSE;
     }
 
-    WINTC_LOG_DEBUG("shellext: category registered: %s", guid_u);
-
+    // Insert category now
+    //
     ShextHostCategoryInternal* category =
         g_new(ShextHostCategoryInternal, 1);
 
@@ -486,6 +502,14 @@ gboolean wintc_shext_host_register_toplevel_category(
             g_free,
             g_free // Up to owner to free underlying view item before removal
         );
+
+    g_hash_table_insert(
+        host->map_guid_to_category,
+        guid_u,
+        category
+    );
+
+    WINTC_LOG_DEBUG("shellext: category registered: %s", guid_u);
 
     return TRUE;
 }
