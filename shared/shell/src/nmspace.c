@@ -1,3 +1,4 @@
+#include <gio/gunixmounts.h>
 #include <glib.h>
 #include <gtk/gtk.h>
 #include <wintc/comgtk.h>
@@ -20,6 +21,7 @@ typedef struct _WinTCShellDrive
     WinTCShextHost* shext_host;
     const gchar*    guid_category;
 
+    GList*      list_unix_paths;
     GList*      list_volumes;
     GHashTable* map_id_to_icon;
 } WinTCShellDrive;
@@ -27,6 +29,12 @@ typedef struct _WinTCShellDrive
 //
 // FORWARD DECLARATIONS
 //
+static void wintc_shell_drive_add_icon(
+    WinTCShellDrive*           sh_drive,
+    gchar*                     ident,
+    gchar*                     icon_name,
+    WinTCShextActivateItemFunc activate_cb
+);
 static WinTCShellDrive* wintc_shell_drive_new(
     GDrive*         drive,
     WinTCShextHost* shext_host
@@ -56,7 +64,7 @@ static gboolean cb_shext_activate_item_drive(
     GError**            error
 );
 
-static void cb_vm_drive_init(
+static WinTCShellDrive* cb_vm_drive_init(
     GDrive*         drive,
     WinTCShextHost* shext_host
 );
@@ -145,17 +153,20 @@ gboolean wintc_sh_init_builtin_extensions(
 
     // Establish volume monitor signals
     //
-    GList* drives = g_volume_monitor_get_connected_drives(s_monitor);
+    GList* drives    = g_volume_monitor_get_connected_drives(s_monitor);
+    GList* sh_drives = NULL;
 
     for (GList* iter = drives; iter; iter = iter->next)
     {
-        cb_vm_drive_init(
-            G_DRIVE(iter->data),
-            shext_host
-        );
+        sh_drives =
+            g_list_prepend(
+                sh_drives,
+                cb_vm_drive_init(
+                    G_DRIVE(iter->data),
+                    shext_host
+                )
+            );
     }
-
-    g_list_free_full(drives, (GDestroyNotify) g_object_unref);
 
     g_signal_connect(
         s_monitor,
@@ -163,6 +174,71 @@ gboolean wintc_sh_init_builtin_extensions(
         G_CALLBACK(on_volume_monitor_drive_connected),
         shext_host
     );
+
+    // Scan for UNIX mounts that the volume watcher hides from us
+    //
+    GList* unix_mounts = g_unix_mount_entries_get(NULL);
+
+    for (GList* iter = unix_mounts; iter; iter = iter->next)
+    {
+        GUnixMountEntry* mount = (GUnixMountEntry*) iter->data;
+
+        if (
+            !g_unix_mount_entry_is_system_internal(mount) ||
+            g_strcmp0(g_unix_mount_entry_get_mount_path(mount), "/") != 0
+        )
+        {
+            continue;
+        }
+
+        // Attempt to find the drive that should be mapped with this
+        //
+        for (GList* iter2 = sh_drives; iter2; iter2 = iter2->next)
+        {
+            WinTCShellDrive* sh_drive = (WinTCShellDrive*) iter2->data;
+
+            gchar* ident =
+                g_drive_get_identifier(
+                    sh_drive->drive,
+                    G_DRIVE_IDENTIFIER_KIND_UNIX_DEVICE
+                );
+
+            if (
+                g_str_has_prefix(
+                    g_unix_mount_entry_get_device_path(mount),
+                    ident
+                )
+            )
+            {
+                WINTC_LOG_DEBUG(
+                    "shell: drvmon: determined unix path %s mapped to %s",
+                    g_unix_mount_entry_get_mount_path(mount),
+                    g_unix_mount_entry_get_device_path(mount)
+                );
+
+                sh_drive->list_unix_paths =
+                    g_list_append(
+                        sh_drive->list_unix_paths,
+                        g_strdup(g_unix_mount_entry_get_device_path(mount))
+                    );
+
+                // We know this is a fixed path
+                //
+                wintc_shell_drive_add_icon(
+                    sh_drive,
+                    g_strdup(g_unix_mount_entry_get_mount_path(mount)),
+                    g_strdup("drive-harddisk"),
+                    (WinTCShextActivateItemFunc) cb_shext_activate_item_drive
+                );
+            }
+
+            g_free(ident);
+        }
+    }
+
+    g_list_free_full(unix_mounts, (GDestroyNotify) g_unix_mount_entry_free);
+    g_list_free_full(drives,      (GDestroyNotify) g_object_unref);
+    g_list_free(sh_drives);
 
     // Register views
     //
@@ -221,6 +297,41 @@ void wintc_sh_init_namespace_tree(
 //
 // PRIVATE FUNCTIONS
 //
+static void wintc_shell_drive_add_icon(
+    WinTCShellDrive*           sh_drive,
+    gchar*                     ident,
+    gchar*                     icon_name,
+    WinTCShextActivateItemFunc activate_cb
+)
+{
+    gchar*              id   = g_strconcat("nmspace", ident, NULL);
+    WinTCShextViewItem* item = g_new(WinTCShextViewItem, 1);
+
+    item->display_name = ident;
+    item->icon_name    = icon_name;
+    item->is_leaf      = FALSE;
+    item->hash         = g_str_hash(id);
+    item->hint         = 0;
+    item->priv         = NULL;
+
+    g_hash_table_insert(
+        sh_drive->map_id_to_icon,
+        ident,
+        item
+    );
+
+    wintc_shext_host_add_toplevel_item(
+        sh_drive->shext_host,
+        sh_drive->guid_category,
+        ident,
+        item,
+        activate_cb,
+        NULL
+    );
+
+    g_free(id);
+}
+
 static WinTCShellDrive* wintc_shell_drive_new(
     GDrive*         drive,
     WinTCShextHost* shext_host
@@ -233,9 +344,10 @@ static WinTCShellDrive* wintc_shell_drive_new(
     //        the signals attached to GDrive?
     //
 
-    sh_drive->drive         = drive;
-    sh_drive->shext_host    = shext_host;
-    sh_drive->list_volumes  = NULL;
+    sh_drive->drive           = drive;
+    sh_drive->shext_host      = shext_host;
+    sh_drive->list_volumes    = NULL;
+    sh_drive->list_unix_paths = NULL;
 
     sh_drive->map_id_to_icon =
         g_hash_table_new_full(
@@ -339,7 +451,7 @@ static gboolean cb_shext_activate_item_drive(
     return TRUE;
 }
 
-static void cb_vm_drive_init(
+static WinTCShellDrive* cb_vm_drive_init(
     GDrive*         drive,
     WinTCShextHost* shext_host
 )
@@ -377,6 +489,8 @@ static void cb_vm_drive_init(
         G_CALLBACK(on_drive_disconnected),
         sh_drive
     );
+
+    return sh_drive;
 }
 
 static void cb_vm_drive_update_state(
@@ -419,35 +533,14 @@ static void cb_vm_drive_update_state(
 
         if (requires_placeholder)
         {
-            gchar*              id   = g_strconcat("nmspace", ident, NULL);
-            WinTCShextViewItem* item = g_new(WinTCShextViewItem, 1);
-
-            item->display_name = ident;
-            item->icon_name    = wintc_icon_get_available_name(
-                                     g_drive_get_icon(sh_drive->drive)
-                                 );
-            item->is_leaf      = FALSE;
-            item->hash         = g_str_hash(id);
-            item->hint         = 0;
-            item->priv         = NULL;
-
-            g_hash_table_insert(
-                sh_drive->map_id_to_icon,
-                ident,
-                item
+            wintc_shell_drive_add_icon(
+                sh_drive,
+                g_steal_pointer(&ident),
+                wintc_icon_get_available_name(
+                    g_drive_get_icon(sh_drive->drive)
+                ),
+                (WinTCShextActivateItemFunc) cb_shext_activate_item_drive
             );
-
-            wintc_shext_host_add_toplevel_item(
-                sh_drive->shext_host,
-                sh_drive->guid_category,
-                ident,
-                item,
-                (WinTCShextActivateItemFunc) cb_shext_activate_item_drive,
-                NULL
-            );
-
-            g_free(id);
-            ident = NULL; // We've stolen it
         }
 
         goto cleanup;
@@ -510,35 +603,14 @@ static gboolean cb_vm_volume_update_state(
     {
         if (!g_hash_table_lookup(sh_drive->map_id_to_icon, ident))
         {
-            gchar*              id   = g_strconcat("nmspace", ident, NULL);
-            WinTCShextViewItem* item = g_new(WinTCShextViewItem, 1);
-
-            item->display_name = ident;
-            item->icon_name    = wintc_icon_get_available_name(
-                                     g_mount_get_icon(mount)
-                                 );
-            item->is_leaf      = FALSE;
-            item->hash         = g_str_hash(id);
-            item->hint         = 0;
-            item->priv         = NULL;
-
-            g_hash_table_insert(
-                sh_drive->map_id_to_icon,
-                ident,
-                item
+            wintc_shell_drive_add_icon(
+                sh_drive,
+                g_steal_pointer(&ident),
+                wintc_icon_get_available_name(
+                    g_mount_get_icon(mount)
+                ),
+                (WinTCShextActivateItemFunc) cb_shext_activate_item_drive
             );
-
-            wintc_shext_host_add_toplevel_item(
-                sh_drive->shext_host,
-                sh_drive->guid_category,
-                ident,
-                item,
-                (WinTCShextActivateItemFunc) cb_shext_activate_item_drive,
-                NULL
-            );
-
-            g_free(id);
-            ident = NULL; // We've stolen it
         }
     }
     else

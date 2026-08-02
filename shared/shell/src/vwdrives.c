@@ -326,7 +326,7 @@ static gint wintc_sh_view_drives_compare_items(
                     )
                 );
 
-    return pos1 < pos2 ? -1 : (pos1 > pos2 ? 1 : 0);
+    return pos1 > pos2 ? -1 : (pos1 < pos2 ? 1 : 0);
 }
 
 static GList* wintc_sh_view_drives_drag_execute(
