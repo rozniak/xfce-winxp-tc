@@ -44,6 +44,8 @@ add_library(
     public/cpl.h
     src/dialog.c
     public/dialog.h
+    src/drvmon.c
+    public/drvmon.h
     src/error.c
     public/error.h
     src/fldropts.c
