@@ -26,8 +26,8 @@ typedef struct _WinTCShellDrive
     const gchar*    guid_category;
 
     GList*      list_unix_paths;
-    GList*      list_volumes;
     GHashTable* map_id_to_icon;
+    GHashTable* map_volume_to_mount_path;
 } WinTCShellDrive;
 
 //
@@ -46,6 +46,7 @@ static void wintc_sh_drive_monitor_set_property(
 static void wintc_shell_drive_add_icon(
     WinTCShellDrive*           sh_drive,
     gchar*                     ident,
+    gchar*                     display_name,
     gchar*                     icon_name,
     gpointer                   priv,
     WinTCShextActivateItemFunc activate_cb
@@ -85,6 +86,14 @@ static void on_drive_changed(
 static void on_drive_disconnected(
     GDrive*         drive,
     gpointer        user_data
+);
+static void on_volume_changed(
+    GVolume* self,
+    gpointer user_data
+);
+static void on_volume_removed(
+    GVolume* self,
+    gpointer user_data
 );
 static void on_volume_monitor_drive_connected(
     GVolumeMonitor* self,
@@ -253,11 +262,18 @@ static void wintc_sh_drive_monitor_constructed(
 
                 // We know this is a fixed path
                 //
+                const gchar* mount_path =
+                    g_unix_mount_entry_get_mount_path(mount);
+
                 wintc_shell_drive_add_icon(
                     sh_drive,
-                    g_strdup(g_unix_mount_entry_get_mount_path(mount)),
+                    g_strdup(mount_path),
+                    g_strdup_printf(
+                        "Local Disk (%s)",
+                        mount_path
+                    ),
                     g_strdup("drive-harddisk"),
-                    g_strdup(g_unix_mount_entry_get_mount_path(mount)),
+                    g_strdup(mount_path),
                     (WinTCShextActivateItemFunc) cb_shext_activate_item_drive
                 );
             }
@@ -334,6 +350,7 @@ WinTCShDriveMonitor* wintc_sh_drive_monitor_get(
 static void wintc_shell_drive_add_icon(
     WinTCShellDrive*           sh_drive,
     gchar*                     ident,
+    gchar*                     display_name,
     gchar*                     icon_name,
     gpointer                   priv,
     WinTCShextActivateItemFunc activate_cb
@@ -342,7 +359,7 @@ static void wintc_shell_drive_add_icon(
     gchar*              id   = g_strconcat("nmspace", ident, NULL);
     WinTCShextViewItem* item = g_new(WinTCShextViewItem, 1);
 
-    item->display_name = ident;
+    item->display_name = display_name;
     item->icon_name    = icon_name;
     item->is_leaf      = FALSE;
     item->hash         = g_str_hash(id);
@@ -381,7 +398,6 @@ static WinTCShellDrive* wintc_shell_drive_new(
 
     sh_drive->drive           = drive;
     sh_drive->shext_host      = shext_host;
-    sh_drive->list_volumes    = NULL;
     sh_drive->list_unix_paths = NULL;
 
     sh_drive->map_id_to_icon =
@@ -390,6 +406,13 @@ static WinTCShellDrive* wintc_shell_drive_new(
             g_str_equal,
             g_free,
             (GDestroyNotify) clear_view_item
+        );
+    sh_drive->map_volume_to_mount_path =
+        g_hash_table_new_full(
+            g_direct_hash,
+            g_direct_equal,
+            NULL,
+            g_free
         );
 
     if (
@@ -528,6 +551,7 @@ static void cb_vm_drive_update_state(
             wintc_shell_drive_add_icon(
                 sh_drive,
                 g_steal_pointer(&ident),
+                g_strdup_printf("Media on %s", ident),
                 wintc_icon_get_available_name(
                     g_drive_get_icon(sh_drive->drive)
                 ),
@@ -542,6 +566,8 @@ static void cb_vm_drive_update_state(
     // Collect up any volumes for the drive
     //
     GList* volumes = g_drive_get_volumes(sh_drive->drive);
+
+    WINTC_LOG_DEBUG("shell: drvmon: this drive has volumes");
 
     for (GList* iter = volumes; iter; iter = iter->next)
     {
@@ -568,16 +594,35 @@ static gboolean cb_vm_volume_update_state(
 
     // Is this a new volume?
     //
-    if (!g_list_find(sh_drive->list_volumes, volume))
+    if (
+        !g_hash_table_lookup_extended(
+            sh_drive->map_volume_to_mount_path,
+            volume,
+            NULL,
+            NULL
+        )
+    )
     {
         WINTC_LOG_DEBUG("shell: drvmon: new volume...");
 
-        sh_drive->list_volumes =
-            g_list_append(sh_drive->list_volumes, volume);
+        g_hash_table_insert(
+            sh_drive->map_volume_to_mount_path,
+            volume,
+            NULL
+        );
 
-        //
-        // FIXME: Connect signals
-        //
+        g_signal_connect(
+            volume,
+            "changed",
+            G_CALLBACK(on_volume_changed),
+            sh_drive
+        );
+        g_signal_connect(
+            volume,
+            "removed",
+            G_CALLBACK(on_volume_removed),
+            sh_drive
+        );
 
         ref_transferred = TRUE;
     }
@@ -594,31 +639,102 @@ static gboolean cb_vm_volume_update_state(
 
     if (mount)
     {
-        if (!g_hash_table_lookup(sh_drive->map_id_to_icon, ident))
-        {
-            GFile* root = g_mount_get_root(mount);
+        GFile*       root      = g_mount_get_root(mount);
+        const gchar* root_path = g_file_peek_path(root);
 
-            wintc_shell_drive_add_icon(
-                sh_drive,
-                g_steal_pointer(&ident),
-                wintc_icon_get_available_name(
-                    g_mount_get_icon(mount)
-                ),
-                g_file_get_path(root),
-                (WinTCShextActivateItemFunc) cb_shext_activate_item_drive
-            );
+        WINTC_LOG_DEBUG(
+            "shell: drvmon: volume %s is mounted at %s",
+            ident,
+            root_path
+        );
 
-            g_object_unref(root);
-        }
-    }
-    else
-    {
+        // If there was a volume placeholder, remove it first
+        //
         if (g_hash_table_remove(sh_drive->map_id_to_icon, ident))
         {
             wintc_shext_host_remove_toplevel_item(
                 sh_drive->shext_host,
                 sh_drive->guid_category,
                 ident
+            );
+        }
+
+        // Check if we need to update the mount point info
+        //
+        if (
+            !g_hash_table_lookup(
+                sh_drive->map_volume_to_mount_path,
+                volume
+            )
+        )
+        {
+            g_hash_table_insert(
+                sh_drive->map_volume_to_mount_path,
+                volume,
+                g_strdup(root_path)
+            );
+        }
+
+        // If we have not yet added an icon for the mount, do so now
+        //
+        if (!g_hash_table_lookup(sh_drive->map_id_to_icon, root_path))
+        {
+            wintc_shell_drive_add_icon(
+                sh_drive,
+                g_strdup(root_path),
+                g_volume_get_name(volume),
+                wintc_icon_get_available_name(
+                    g_mount_get_icon(mount)
+                ),
+                g_strdup(root_path),
+                (WinTCShextActivateItemFunc) cb_shext_activate_item_drive
+            );
+        }
+
+        g_object_unref(root);
+    }
+    else
+    {
+        WINTC_LOG_DEBUG("shell: drvmon: volume %s has no mount", ident);
+
+        // If there was a mount already, remove the icon
+        //
+        // (Despite not being const, we don't own the string, it will be freed
+        // by the map)
+        //
+        gchar* root_path =
+            g_hash_table_lookup(sh_drive->map_volume_to_mount_path, volume);
+
+        if (root_path)
+        {
+            g_hash_table_remove(sh_drive->map_id_to_icon, root_path);
+
+            wintc_shext_host_remove_toplevel_item(
+                sh_drive->shext_host,
+                sh_drive->guid_category,
+                root_path
+            );
+
+            g_hash_table_insert(
+                sh_drive->map_volume_to_mount_path,
+                volume,
+                NULL
+            );
+        }
+
+        // If there's no icon for the placeholder, add it now
+        //
+        if (!g_hash_table_lookup(sh_drive->map_id_to_icon, ident))
+        {
+            wintc_shell_drive_add_icon(
+                sh_drive,
+                g_steal_pointer(&ident),
+                g_volume_get_name(volume),
+                wintc_icon_get_available_name(
+                    g_volume_get_icon(volume)
+                ),
+                NULL,
+                (WinTCShextActivateItemFunc) cb_shext_activate_item_drive
             );
         }
     }
@@ -629,14 +745,16 @@ static gboolean cb_vm_volume_update_state(
 }
 
 static void on_drive_changed(
-    GDrive* drive,
-    WINTC_UNUSED(gpointer user_data)
+    GDrive*  drive,
+    gpointer user_data
 )
 {
     WINTC_LOG_DEBUG(
         "Drive just changed: %s",
         g_drive_get_name(drive)
     );
+
+    cb_vm_drive_update_state((WinTCShellDrive*) user_data);
 }
 
 static void on_drive_disconnected(
@@ -647,6 +765,33 @@ static void on_drive_disconnected(
     WINTC_LOG_DEBUG(
         "Drive disconnected: %s",
         g_drive_get_name(drive)
+    );
+}
+
+static void on_volume_changed(
+    GVolume* self,
+    gpointer user_data
+)
+{
+    WINTC_LOG_DEBUG(
+        "Volume just changed: %s",
+        g_volume_get_name(self)
+    );
+
+    cb_vm_volume_update_state(
+        (WinTCShellDrive*) user_data,
+        self
+    );
+}
+
+static void on_volume_removed(
+    GVolume* self,
+    WINTC_UNUSED(gpointer user_data)
+)
+{
+    WINTC_LOG_DEBUG(
+        "Volume disconnected: %s",
+        g_volume_get_name(self)
     );
 }
 
