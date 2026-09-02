@@ -66,13 +66,15 @@ static void wintc_sh_drive_monitor_add_volume(
     GVolume*             volume
 );
 
-static WinTCShellDrive* wintc_sh_drive_get_shell_drive_for_mount(
+static WinTCShellDrive* wintc_sh_drive_monitor_get_shell_drive(
     WinTCShDriveMonitor* drvmon,
-    GMount*              mount
-);
-static WinTCShellDrive* wintc_sh_drive_get_shell_drive_for_volume(
-    WinTCShDriveMonitor* drvmon,
+    GMount*              mount,
     GVolume*             volume
+);
+
+static void wintc_sh_drive_monitor_register_drive_icon(
+    WinTCShDriveMonitor* drvmon,
+    WinTCShellDrive*     sh_drive
 );
 
 static void wintc_sh_drive_monitor_remove_drive(
@@ -95,6 +97,9 @@ static void wintc_shell_drive_add_icon(
     gchar*                     icon_name,
     gchar*                     priv,
     WinTCShextActivateItemFunc activate_cb
+);
+static void wintc_shell_drive_free(
+    WinTCShellDrive* sh_drive
 );
 static void wintc_shell_drive_remove_icon(
     WinTCShellDrive* sh_drive,
@@ -223,7 +228,7 @@ static void wintc_sh_drive_monitor_init(
             g_direct_hash,
             g_direct_equal,
             NULL,
-            NULL // FIXME: Destroy sh_drive
+            (GDestroyNotify) wintc_shell_drive_free
         );
 }
 
@@ -360,6 +365,36 @@ static void wintc_sh_drive_monitor_constructed(
         G_CALLBACK(on_volume_monitor_drive_connected),
         drvmon
     );
+    g_signal_connect(
+        s_monitor,
+        "drive-disconnected",
+        G_CALLBACK(on_volume_monitor_drive_disconnected),
+        drvmon
+    );
+    g_signal_connect(
+        s_monitor,
+        "mount-added",
+        G_CALLBACK(on_volume_monitor_mount_added),
+        drvmon
+    );
+    g_signal_connect(
+        s_monitor,
+        "mount-removed",
+        G_CALLBACK(on_volume_monitor_mount_removed),
+        drvmon
+    );
+    g_signal_connect(
+        s_monitor,
+        "volume-added",
+        G_CALLBACK(on_volume_monitor_volume_added),
+        drvmon
+    );
+    g_signal_connect(
+        s_monitor,
+        "volume-removed",
+        G_CALLBACK(on_volume_monitor_volume_removed),
+        drvmon
+    );
 }
 
 static void wintc_sh_drive_monitor_set_property(
@@ -448,62 +483,7 @@ static void wintc_sh_drive_monitor_add_drive(
             g_free
         );
 
-    // Determine drive type and category, insert default icon
-    //
-    GIcon* icon     = g_drive_get_icon(drive);
-    gchar* obj_path = g_drive_get_identifier(
-                          drive,
-                          G_DRIVE_IDENTIFIER_KIND_UNIX_DEVICE
-                      );
-    gchar* text;
-
-    if (g_drive_is_media_removable(drive))
-    {
-        sh_drive->drive_type    = WINTC_SH_DRIVE_TYPE_MEDIA_CONTAINER;
-        sh_drive->guid_category = WINTC_SH_GUID_CATEGORY_REMOVABLES;
-
-        text = g_strdup_printf("Media Drive (%s)", obj_path);
-
-        //
-        // FIXME: Activate func needs to be specific to media disks
-        //
-
-    }
-    else if (g_drive_is_removable(drive))
-    {
-        sh_drive->drive_type    = WINTC_SH_DRIVE_TYPE_REMOVABLE;
-        sh_drive->guid_category = WINTC_SH_GUID_CATEGORY_REMOVABLES;
-
-        text = g_strdup_printf("Removable Disk (%s)", obj_path);
-
-        //
-        // FIXME: Activate func probably needs to be format dialog
-        //
-    }
-    else
-    {
-        sh_drive->drive_type    = WINTC_SH_DRIVE_TYPE_FIXED;
-        sh_drive->guid_category = WINTC_SH_GUID_CATEGORY_DRIVES;
-
-        text = g_strdup_printf("Fixed Disk (%s)", obj_path);
-
-        //
-        // FIXME: Activate func probably needs to be format dialog
-        //
-    }
-
-    wintc_shell_drive_true_obj_path(&obj_path);
-
-    wintc_shell_drive_add_icon(
-        sh_drive,
-        obj_path,
-        text,
-        wintc_icon_get_available_name(icon),
-        obj_path,
-       (WinTCShextActivateItemFunc) cb_shext_activate_item_drive
-    );
-
-    g_object_unref(icon);
+    wintc_sh_drive_monitor_register_drive_icon(drvmon, sh_drive);
 
     // Map drive now
     //
@@ -519,7 +499,6 @@ static void wintc_sh_drive_monitor_add_mount(
     GMount*              mount
 )
 {
-    GDrive*  drive;
     gchar*   obj_path;
     GVolume* volume = g_mount_get_volume(mount);
 
@@ -532,15 +511,10 @@ static void wintc_sh_drive_monitor_add_mount(
         return;
     }
 
-    drive = g_volume_get_drive(volume);
-
     // Look up owner shell drive
     //
     WinTCShellDrive* sh_drive =
-        g_hash_table_lookup(
-            drvmon->map_drive_to_sh_drive,
-            drive
-        );
+        wintc_sh_drive_monitor_get_shell_drive(drvmon, mount, NULL);
 
     if (!sh_drive)
     {
@@ -587,7 +561,6 @@ static void wintc_sh_drive_monitor_add_mount(
     g_object_unref(icon);
 
 cleanup:
-    g_object_unref(drive);
     g_object_unref(volume);
 }
 
@@ -596,21 +569,17 @@ static void wintc_sh_drive_monitor_add_volume(
     GVolume*             volume
 )
 {
-   GDrive* drive    = g_volume_get_drive(volume);
-   gchar*  obj_path = NULL;
+   gchar* obj_path = NULL;
 
     // Look up owner shell drive
     //
     WinTCShellDrive* sh_drive =
-        g_hash_table_lookup(
-            drvmon->map_drive_to_sh_drive,
-            drive
-        );
+        wintc_sh_drive_monitor_get_shell_drive(drvmon, NULL, volume);
 
     if (!sh_drive)
     {
         g_critical("%s", "shell: drvmon: volume with no existing drive!");
-        goto cleanup;
+        return;
     }
 
     // If the drive has an icon, remove it
@@ -650,23 +619,89 @@ static void wintc_sh_drive_monitor_add_volume(
     );
 
     g_object_unref(icon);
-
-cleanup:
-    g_object_unref(drive);
 }
 
-static WinTCShellDrive* wintc_sh_drive_get_shell_drive_for_mount(
+static WinTCShellDrive* wintc_sh_drive_monitor_get_shell_drive(
     WinTCShDriveMonitor* drvmon,
-    GMount*              mount
-)
-{
-}
-
-static WinTCShellDrive* wintc_sh_drive_get_shell_drive_for_volume(
-    WinTCShDriveMonitor* drvmon,
+    GMount*              mount,
     GVolume*             volume
 )
 {
+    GDrive*          drive;
+    WinTCShellDrive* sh_drive;
+
+    drive =
+        mount ? g_mount_get_drive(mount) : g_volume_get_drive(volume);
+
+    sh_drive =
+        g_hash_table_lookup(drvmon->map_drive_to_sh_drive, drive);
+
+    g_object_unref(drive);
+
+    return sh_drive;
+}
+
+static void wintc_sh_drive_monitor_register_drive_icon(
+    WINTC_UNUSED(WinTCShDriveMonitor* drvmon),
+    WinTCShellDrive* sh_drive
+)
+{
+    // Determine drive type and category, insert default icon
+    //
+    GIcon* icon     = g_drive_get_icon(sh_drive->drive);
+    gchar* obj_path = g_drive_get_identifier(
+                          sh_drive->drive,
+                          G_DRIVE_IDENTIFIER_KIND_UNIX_DEVICE
+                      );
+    gchar* text;
+
+    if (g_drive_is_media_removable(sh_drive->drive))
+    {
+        sh_drive->drive_type    = WINTC_SH_DRIVE_TYPE_MEDIA_CONTAINER;
+        sh_drive->guid_category = WINTC_SH_GUID_CATEGORY_REMOVABLES;
+
+        text = g_strdup_printf("Media Drive (%s)", obj_path);
+
+        //
+        // FIXME: Activate func needs to be specific to media disks
+        //
+
+    }
+    else if (g_drive_is_removable(sh_drive->drive))
+    {
+        sh_drive->drive_type    = WINTC_SH_DRIVE_TYPE_REMOVABLE;
+        sh_drive->guid_category = WINTC_SH_GUID_CATEGORY_REMOVABLES;
+
+        text = g_strdup_printf("Removable Disk (%s)", obj_path);
+
+        //
+        // FIXME: Activate func probably needs to be format dialog
+        //
+    }
+    else
+    {
+        sh_drive->drive_type    = WINTC_SH_DRIVE_TYPE_FIXED;
+        sh_drive->guid_category = WINTC_SH_GUID_CATEGORY_DRIVES;
+
+        text = g_strdup_printf("Fixed Disk (%s)", obj_path);
+
+        //
+        // FIXME: Activate func probably needs to be format dialog
+        //
+    }
+
+    wintc_shell_drive_true_obj_path(&obj_path);
+
+    wintc_shell_drive_add_icon(
+        sh_drive,
+        obj_path,
+        text,
+        wintc_icon_get_available_name(icon),
+        obj_path,
+       (WinTCShextActivateItemFunc) cb_shext_activate_item_drive
+    );
+
+    g_object_unref(icon);
 }
 
 static void wintc_sh_drive_monitor_remove_drive(
@@ -674,6 +709,31 @@ static void wintc_sh_drive_monitor_remove_drive(
     GDrive*              drive
 )
 {
+    WinTCShellDrive* sh_drive =
+        g_hash_table_lookup(drvmon->map_drive_to_sh_drive, drive);
+
+    if (!sh_drive)
+    {
+        // Nothing to do
+        return;
+    }
+
+    // Find and bin the drive icon if needed
+    // 
+    gchar* obj_path =
+        g_drive_get_identifier(
+            sh_drive->drive,
+            G_DRIVE_IDENTIFIER_KIND_UNIX_DEVICE
+        );
+
+    wintc_shell_drive_true_obj_path(&obj_path);
+
+    wintc_shell_drive_remove_icon(
+        sh_drive,
+        obj_path
+    );
+
+    g_free(obj_path);
 }
 
 static void wintc_sh_drive_monitor_remove_mount(
@@ -681,6 +741,34 @@ static void wintc_sh_drive_monitor_remove_mount(
     GMount*              mount
 )
 {
+    WinTCShellDrive* sh_drive =
+        wintc_sh_drive_monitor_get_shell_drive(drvmon, mount, FALSE);
+
+    // Remove the mount icon
+    //
+    GFile* file     = g_mount_get_default_location(mount);
+    gchar* obj_path = g_file_get_path(file);
+
+    wintc_shell_drive_true_obj_path(&obj_path);
+
+    wintc_shell_drive_remove_icon(
+        sh_drive,
+        obj_path
+    );
+
+    g_free(obj_path);
+    g_object_unref(file);
+
+    // Add mount icon if there is a volume
+    //
+    GVolume* volume = g_mount_get_volume(mount);
+
+    if (volume)
+    {
+        wintc_sh_drive_monitor_add_volume(drvmon, volume);
+
+        g_object_unref(volume);
+    }
 }
 
 static void wintc_sh_drive_monitor_remove_volume(
@@ -688,6 +776,32 @@ static void wintc_sh_drive_monitor_remove_volume(
     GVolume*             volume
 )
 {
+    WinTCShellDrive* sh_drive =
+        wintc_sh_drive_monitor_get_shell_drive(drvmon, FALSE, volume);
+
+    // Remove the volume icon
+    //
+    gchar* obj_path =
+        g_volume_get_identifier(
+            volume,
+            G_DRIVE_IDENTIFIER_KIND_UNIX_DEVICE
+        );
+
+    wintc_shell_drive_true_obj_path(&obj_path);
+
+    wintc_shell_drive_remove_icon(
+        sh_drive,
+        obj_path
+    );
+
+    g_free(obj_path);
+
+    // Add drive icon if there are no more volumes
+    //
+    if (!g_drive_has_volumes(sh_drive->drive))
+    {
+        wintc_sh_drive_monitor_register_drive_icon(drvmon, sh_drive);
+    }
 }
 
 static void wintc_shell_drive_add_icon(
@@ -722,6 +836,17 @@ static void wintc_shell_drive_add_icon(
         g_strdup(obj_path),
         item
     );
+}
+
+static void wintc_shell_drive_free(
+    WinTCShellDrive* sh_drive
+)
+{
+    g_list_free_full(sh_drive->list_unix_paths, (GDestroyNotify) g_free);
+    g_hash_table_unref(sh_drive->map_id_to_icon);
+    g_hash_table_unref(sh_drive->map_volume_to_mount_path);
+
+    g_free(sh_drive);
 }
 
 static void wintc_shell_drive_remove_icon(
@@ -799,41 +924,61 @@ static void on_volume_monitor_drive_connected(
 }
 
 static void on_volume_monitor_drive_disconnected(
-    GVolumeMonitor* self,
-    GDrive*         drive,
-    gpointer        user_data
+    WINTC_UNUSED(GVolumeMonitor* self),
+    GDrive*  drive,
+    gpointer user_data
 )
 {
+    wintc_sh_drive_monitor_remove_drive(
+        WINTC_SH_DRIVE_MONITOR(user_data),
+        drive
+    );
 }
 
 static void on_volume_monitor_mount_added(
-    GVolumeMonitor* self,
-    GMount*         mount,
-    gpointer        user_data
+    WINTC_UNUSED(GVolumeMonitor* self),
+    GMount*  mount,
+    gpointer user_data
 )
 {
+    wintc_sh_drive_monitor_add_mount(
+        WINTC_SH_DRIVE_MONITOR(user_data),
+        mount
+    );
 }
 
 static void on_volume_monitor_mount_removed(
-    GVolumeMonitor* self,
-    GMount*         mount,
-    gpointer        user_data
+    WINTC_UNUSED(GVolumeMonitor* self),
+    GMount*  mount,
+    gpointer user_data
 )
 {
+    wintc_sh_drive_monitor_remove_mount(
+        WINTC_SH_DRIVE_MONITOR(user_data),
+        mount
+    );
 }
 
 static void on_volume_monitor_volume_added(
-    GVolumeMonitor* self,
-    GVolume*        volume,
-    gpointer        user_data
+    WINTC_UNUSED(GVolumeMonitor* self),
+    GVolume* volume,
+    gpointer user_data
 )
 {
+    wintc_sh_drive_monitor_add_volume(
+        WINTC_SH_DRIVE_MONITOR(user_data),
+        volume
+    );
 }
 
 static void on_volume_monitor_volume_removed(
-    GVolumeMonitor* self,
-    GVolume*        volume,
-    gpointer        user_data
+    WINTC_UNUSED(GVolumeMonitor* self),
+    GVolume* volume,
+    gpointer user_data
 )
 {
+    wintc_sh_drive_monitor_remove_volume(
+        WINTC_SH_DRIVE_MONITOR(user_data),
+        volume
+    );
 }
