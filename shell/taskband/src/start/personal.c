@@ -221,15 +221,19 @@ void create_personal_menu(
 
     // Set username labels
     //
+    const gchar*   display_name;
+    gchar*         user_fn  = NULL;
     struct passwd* user_pwd = getpwuid(getuid());
 
-    const gchar* real_name = NULL;
-    const gchar* short_name = NULL;
-
-    real_name = user_pwd ? user_pwd->pw_gecos : NULL;
-    short_name = user_pwd ? user_pwd->pw_name  : NULL;
-
-    const gchar* display_name = (real_name && real_name[0] != '\0') ? real_name : short_name;
+    if (user_pwd->pw_gecos && user_pwd->pw_gecos[0] != '\0')
+    {
+        user_fn = wintc_strdup_delimited(user_pwd->pw_gecos, ",", 0);
+        display_name = user_fn;
+    }
+    else
+    {
+        display_name = user_pwd->pw_name;
+    }
 
     gtk_label_set_text(
         GTK_LABEL(gtk_builder_get_object(builder, "label-username-horz")),
@@ -241,7 +245,7 @@ void create_personal_menu(
         display_name ? display_name : ""
     );
 
-
+    g_free(user_fn);
 
     // Attach Recent Documents submenu
     //
