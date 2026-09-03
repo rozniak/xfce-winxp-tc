@@ -93,20 +93,15 @@ gchar* wintc_strdup_delimited(
 
     for (guint i = 0; i < index; i++)
     {
-        if (next != str)
-        {
-            next += delim_len; // Advance past the delimiter
-        }
-
-        next = strstr(next, delim_str);
+        next  = strstr(next, delim_str);
 
         if (!next)
         {
             return NULL;
         }
-    }
 
-    next += delim_len;
+        next += delim_len; // Advance over delimiter
+    }
 
     return wintc_substr(next, strstr(next, delim_str));
 }
