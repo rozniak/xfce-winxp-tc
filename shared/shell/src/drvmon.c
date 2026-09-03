@@ -333,6 +333,10 @@ static void wintc_sh_drive_monitor_constructed(
                         g_strdup(g_unix_mount_entry_get_device_path(mount))
                     );
 
+                // Bin any existing drive icon
+                //
+                wintc_sh_drive_monitor_remove_drive(drvmon, sh_drive->drive);
+
                 // We know this is a fixed path
                 //
                 const gchar* mount_path =
@@ -646,6 +650,14 @@ static void wintc_sh_drive_monitor_register_drive_icon(
     WinTCShellDrive* sh_drive
 )
 {
+    // This should be a no-op if the drive has a UNIX mount, only the mount
+    // needs to be shown and not the drive placeholder
+    //
+    if (sh_drive->list_unix_paths)
+    {
+        return;
+    }
+
     // Determine drive type and category, insert default icon
     //
     GIcon* icon     = g_drive_get_icon(sh_drive->drive);
@@ -929,8 +941,18 @@ static void on_volume_monitor_drive_disconnected(
     gpointer user_data
 )
 {
+    WinTCShDriveMonitor* drvmon = WINTC_SH_DRIVE_MONITOR(user_data);
+
     wintc_sh_drive_monitor_remove_drive(
-        WINTC_SH_DRIVE_MONITOR(user_data),
+        drvmon,
+        drive
+    );
+
+    // Manually destroy the drive tracking since remove_drive only removes
+    // the icon representation
+    //
+    g_hash_table_remove(
+        drvmon->map_drive_to_sh_drive,
         drive
     );
 }
