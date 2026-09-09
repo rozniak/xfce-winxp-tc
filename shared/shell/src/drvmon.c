@@ -36,7 +36,6 @@ typedef struct _WinTCShellDrive
     gint            drive_type;
 
     GList*      list_unix_paths;
-    GHashTable* map_volume_to_mount_path;
 } WinTCShellDrive;
 
 //
@@ -497,14 +496,6 @@ static void wintc_sh_drive_monitor_add_drive(
     sh_drive->drive           = drive;
     sh_drive->list_unix_paths = NULL;
 
-    sh_drive->map_volume_to_mount_path =
-        g_hash_table_new_full(
-            g_direct_hash,
-            g_direct_equal,
-            NULL,
-            g_free
-        );
-
     wintc_sh_drive_monitor_register_drive_icon(drvmon, sh_drive);
 
     // Map drive now
@@ -911,7 +902,6 @@ static void wintc_shell_drive_free(
 )
 {
     g_list_free_full(sh_drive->list_unix_paths, (GDestroyNotify) g_free);
-    g_hash_table_unref(sh_drive->map_volume_to_mount_path);
 
     g_free(sh_drive);
 }
