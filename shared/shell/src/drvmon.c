@@ -660,6 +660,8 @@ static void wintc_sh_drive_monitor_add_volume(
             G_DRIVE_IDENTIFIER_KIND_UNIX_DEVICE
         );
 
+    wintc_shell_drive_true_obj_path(&obj_path);
+
     wintc_sh_drive_monitor_add_icon(
         drvmon,
         obj_path,
@@ -851,7 +853,7 @@ static void wintc_sh_drive_monitor_remove_mount(
     g_free(obj_path);
     g_object_unref(file);
 
-    // Add mount icon if there is a volume
+    // Add volume icon if there is a volume
     //
     GVolume* volume = g_mount_get_volume(mount);
 
