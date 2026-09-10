@@ -64,7 +64,7 @@ static void wintc_sh_drive_monitor_add_icon(
     const gchar*               guid_category,
     gchar*                     display_name,
     gchar*                     icon_name,
-    gchar*                     priv,
+    gpointer                   priv,
     WinTCShextActivateItemFunc activate_cb
 );
 static void wintc_sh_drive_monitor_add_mount(
@@ -116,7 +116,19 @@ static void clear_view_item(
     WinTCShextViewItem* item
 );
 
+static void cb_async_volume_mount(
+    GObject*      source_object,
+    GAsyncResult* res,
+    gpointer      user_data
+);
+
 static gboolean cb_shext_activate_item_drive(
+    WinTCShextHost*     shext_host,
+    WinTCShextViewItem* item,
+    WinTCShextPathInfo* path_info,
+    GError**            error
+);
+static gboolean cb_shext_activate_item_volume(
     WinTCShextHost*     shext_host,
     WinTCShextViewItem* item,
     WinTCShextPathInfo* path_info,
@@ -513,7 +525,7 @@ static void wintc_sh_drive_monitor_add_icon(
     const gchar*               guid_category,
     gchar*                     display_name,
     gchar*                     icon_name,
-    gchar*                     priv,
+    gpointer                   priv,
     WinTCShextActivateItemFunc activate_cb
 )
 {
@@ -668,8 +680,8 @@ static void wintc_sh_drive_monitor_add_volume(
         sh_drive->guid_category,
         g_volume_get_name(volume),
         wintc_icon_get_available_name(icon),
-        obj_path,
-        (WinTCShextActivateItemFunc) cb_shext_activate_item_drive
+        volume,
+        (WinTCShextActivateItemFunc) cb_shext_activate_item_volume
     );
 
     g_object_unref(icon);
@@ -923,13 +935,28 @@ static void clear_view_item(
 {
     g_free(item->display_name);
     g_free(item->icon_name);
-    g_free(item->priv);
     g_free(item);
 }
 
 //
 // CALLBACKS
 //
+static void cb_async_volume_mount(
+    GObject*      source_object,
+    GAsyncResult* res,
+    gpointer      user_data
+)
+{
+    GError* error = NULL;
+
+    if (!g_volume_mount_finish((GVolume*) source_object, res, &error))
+    {
+        wintc_display_error_and_clear(&error, NULL);
+    }
+
+    g_object_unref((GObject*) user_data);
+}
+
 static gboolean cb_shext_activate_item_drive(
     WINTC_UNUSED(WinTCShextHost* shext_host),
     WinTCShextViewItem* item,
@@ -946,6 +973,28 @@ static gboolean cb_shext_activate_item_drive(
     {
         g_warning("shell: no path for %s", item->display_name);
     }
+
+    return TRUE;
+}
+
+static gboolean cb_shext_activate_item_volume(
+    WINTC_UNUSED(WinTCShextHost* shext_host),
+    WinTCShextViewItem* item,
+    WINTC_UNUSED(WinTCShextPathInfo* path_info),
+    WINTC_UNUSED(GError** error)
+)
+{
+    GVolume*         volume   = (GVolume*) item->priv;
+    GMountOperation* mount_op = gtk_mount_operation_new(NULL);
+
+    g_volume_mount(
+        volume,
+        G_MOUNT_MOUNT_NONE,
+        mount_op,
+        NULL,
+        (GAsyncReadyCallback) cb_async_volume_mount,
+        mount_op // So we can clean up
+    );
 
     return TRUE;
 }
