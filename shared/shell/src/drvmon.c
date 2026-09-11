@@ -879,19 +879,16 @@ static void wintc_sh_drive_monitor_remove_icon(
     const gchar*         guid_category
 )
 {
-    if (
-        g_hash_table_remove(
-            drvmon->map_id_to_icon,
-            obj_path
-        )
-    )
-    {
-        wintc_shext_host_remove_toplevel_item(
-            drvmon->shext_host,
-            guid_category,
-            obj_path
-        );
-    }
+    wintc_shext_host_remove_toplevel_item(
+        drvmon->shext_host,
+        guid_category,
+        obj_path
+    );
+
+    g_hash_table_remove(
+        drvmon->map_id_to_icon,
+        obj_path
+    );
 }
 
 static void wintc_sh_drive_monitor_remove_mount(

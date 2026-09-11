@@ -12,6 +12,16 @@
 #include "host_priv.h"
 
 //
+// PRIVATE ENUMS
+//
+enum
+{
+    SIGNAL_TOPLEVEL_ADDED = 0,
+    SIGNAL_TOPLEVEL_REMOVED,
+    N_SIGNALS
+};
+
+//
 // PRIVATE STRUCTURES
 //
 typedef struct _ShextHostPoolMap
@@ -77,6 +87,8 @@ static void on_view_disposed(
 //
 // STATIC DATA
 //
+static gint wintc_shext_host_signals[N_SIGNALS] = { 0 };
+
 static LookupViewFunc s_lookup_view_funcs[] = {
     lookup_view_for_path_by_guid,
     lookup_view_for_path_by_mime,
@@ -125,6 +137,33 @@ static void wintc_shext_host_class_init(
     GObjectClass* object_class = G_OBJECT_CLASS(klass);
 
     object_class->finalize = wintc_shext_host_finalize;
+
+    wintc_shext_host_signals[SIGNAL_TOPLEVEL_ADDED] =
+        g_signal_new(
+            "toplevel-added",
+            G_TYPE_FROM_CLASS(object_class),
+            G_SIGNAL_RUN_FIRST,
+            0,
+            NULL,
+            NULL,
+            g_cclosure_marshal_VOID__POINTER,
+            G_TYPE_NONE,
+            1,
+            G_TYPE_POINTER
+        );
+    wintc_shext_host_signals[SIGNAL_TOPLEVEL_REMOVED] =
+        g_signal_new(
+            "toplevel-removed",
+            G_TYPE_FROM_CLASS(object_class),
+            G_SIGNAL_RUN_FIRST,
+            0,
+            NULL,
+            NULL,
+            g_cclosure_marshal_VOID__POINTER,
+            G_TYPE_NONE,
+            1,
+            G_TYPE_POINTER
+        );
 }
 
 static void wintc_shext_host_init(
@@ -243,10 +282,18 @@ gboolean wintc_shext_host_add_toplevel_item(
 
     tl_item->item        = view_item;
     tl_item->activate_cb = activate_cb;
+    tl_item->category    = (WinTCShextCategory*) category;
 
     g_hash_table_insert(
         category->map_id_to_item,
         g_strdup(id),
+        tl_item
+    );
+
+    g_signal_emit(
+        host,
+        wintc_shext_host_signals[SIGNAL_TOPLEVEL_ADDED],
+        0,
         tl_item
     );
 
@@ -554,8 +601,22 @@ void wintc_shext_host_remove_toplevel_item(
 
     if (category)
     {
-        g_hash_table_remove(category->map_id_to_item, id);
+        WinTCShextTopLevelItem* tl_item =
+            g_hash_table_lookup(category->map_id_to_item, id);
+
+        if (tl_item)
+        {
+            g_signal_emit(
+                host,
+                wintc_shext_host_signals[SIGNAL_TOPLEVEL_REMOVED],
+                0,
+                tl_item
+            );
+
+            g_hash_table_remove(category->map_id_to_item, id);
+        }
     }
+
     g_free(guid_u);
 }
 

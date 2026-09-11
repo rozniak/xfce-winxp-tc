@@ -23,6 +23,9 @@ static void wintc_sh_view_drives_ishext_view_interface_init(
     WinTCIShextViewInterface* iface
 );
 
+static void wintc_sh_view_drives_constructed(
+    GObject* object
+);
 static void wintc_sh_view_drives_dispose(
     GObject* object
 );
@@ -117,6 +120,26 @@ static WinTCShextOperation* wintc_sh_view_drives_spawn_operation(
     GError**         error
 );
 
+static gint wintc_sh_view_drives_get_category_order(
+    WinTCShViewDrives*  view_drives,
+    WinTCShextCategory* category
+);
+static WinTCShextTopLevelItem* wintc_sh_view_drives_get_toplevel_item(
+    WinTCShViewDrives* view_drives,
+    guint              item_hash
+);
+
+static void on_shext_host_toplevel_added(
+    WinTCShextHost*         shext_host,
+    WinTCShextTopLevelItem* tl_item,
+    gpointer                user_data
+);
+static void on_shext_host_toplevel_removed(
+    WinTCShextHost*         shext_host,
+    WinTCShextTopLevelItem* tl_item,
+    gpointer                user_data
+);
+
 //
 // GLIB OOP/CLASS INSTANCE DEFINITIONS
 //
@@ -130,7 +153,7 @@ struct _WinTCShViewDrives
     GObject __parent__;
 
     WinTCShextHost* shext_host;
-    GHashTable*     map_hash_to_order;
+    GList*          list_categories;
     GHashTable*     map_hash_to_tl_item;
 };
 
@@ -153,6 +176,7 @@ static void wintc_sh_view_drives_class_init(
 {
     GObjectClass* object_class = G_OBJECT_CLASS(klass);
 
+    object_class->constructed  = wintc_sh_view_drives_constructed;
     object_class->dispose      = wintc_sh_view_drives_dispose;
     object_class->get_property = wintc_sh_view_drives_get_property;
     object_class->set_property = wintc_sh_view_drives_set_property;
@@ -180,8 +204,6 @@ static void wintc_sh_view_drives_init(
     WinTCShViewDrives* self
 )
 {
-    self->map_hash_to_order   =
-        g_hash_table_new(g_direct_hash, g_direct_equal);
     self->map_hash_to_tl_item =
         g_hash_table_new(g_direct_hash, g_direct_equal);
 }
@@ -216,6 +238,31 @@ static void wintc_sh_view_drives_ishext_view_interface_init(
 //
 // CLASS VIRTUAL METHODS
 //
+static void wintc_sh_view_drives_constructed(
+    GObject* object
+)
+{
+    (G_OBJECT_CLASS(wintc_sh_view_drives_parent_class))
+        ->constructed(object);
+
+    WinTCShViewDrives* view_drives = WINTC_SH_VIEW_DRIVES(object);
+
+    // Attach to toplevel items notifs
+    //
+    g_signal_connect(
+        view_drives->shext_host,
+        "toplevel-added",
+        G_CALLBACK(on_shext_host_toplevel_added),
+        view_drives
+    );
+    g_signal_connect(
+        view_drives->shext_host,
+        "toplevel-removed",
+        G_CALLBACK(on_shext_host_toplevel_removed),
+        view_drives
+    );
+}
+
 static void wintc_sh_view_drives_dispose(
     GObject* object
 )
@@ -223,9 +270,7 @@ static void wintc_sh_view_drives_dispose(
     WinTCShViewDrives* view_drives = WINTC_SH_VIEW_DRIVES(object);
 
     g_clear_object(&(view_drives->shext_host));
-    g_hash_table_unref(
-        g_steal_pointer(&(view_drives->map_hash_to_order))
-    );
+    g_clear_list(&(view_drives->list_categories), NULL);
     g_hash_table_unref(
         g_steal_pointer(&(view_drives->map_hash_to_tl_item))
     );
@@ -313,20 +358,33 @@ static gint wintc_sh_view_drives_compare_items(
 {
     WinTCShViewDrives* view_drives = WINTC_SH_VIEW_DRIVES(view);
 
-    gint pos1 = GPOINTER_TO_INT(
-                    g_hash_table_lookup(
-                        view_drives->map_hash_to_order,
-                        GUINT_TO_POINTER(item_hash1)
-                    )
+    WinTCShextTopLevelItem* tl_item1 = wintc_sh_view_drives_get_toplevel_item(
+                                           view_drives,
+                                           item_hash1
+                                       );
+    WinTCShextTopLevelItem* tl_item2 = wintc_sh_view_drives_get_toplevel_item(
+                                           view_drives,
+                                           item_hash2
+                                       );
+
+    gint pos1 = wintc_sh_view_drives_get_category_order(
+                    view_drives,
+                    tl_item1->category
                 );
-    gint pos2 = GPOINTER_TO_INT(
-                    g_hash_table_lookup(
-                        view_drives->map_hash_to_order,
-                        GUINT_TO_POINTER(item_hash2)
-                    )
+    gint pos2 = wintc_sh_view_drives_get_category_order(
+                    view_drives,
+                    tl_item2->category
                 );
 
-    return pos1 > pos2 ? -1 : (pos1 < pos2 ? 1 : 0);
+    if (pos1 == pos2)
+    {
+        return wintc_shext_view_item_compare_by_name(
+            tl_item1->item,
+            tl_item2->item
+        );
+    }
+
+    return pos1 > pos2 ? -1 : 1;
 }
 
 static GList* wintc_sh_view_drives_drag_execute(
@@ -517,62 +575,55 @@ static void wintc_sh_view_drives_refresh_items(
 
     // Wipe out items
     //
-    g_hash_table_remove_all(view_drives->map_hash_to_order);
     g_hash_table_remove_all(view_drives->map_hash_to_tl_item);
+    g_clear_list(&(view_drives->list_categories), NULL);
 
     // We track the order of categories for later sorting
     //
-    GList* category_order = NULL;
-
-    category_order =
+    view_drives->list_categories =
         g_list_prepend(
-            category_order,
+            view_drives->list_categories,
             GUINT_TO_POINTER(g_str_hash(WINTC_SH_GUID_CATEGORY_LOCAL_FILES))
         );
-    category_order =
+    view_drives->list_categories =
         g_list_prepend(
-            category_order,
+            view_drives->list_categories,
             GUINT_TO_POINTER(g_str_hash(WINTC_SH_GUID_CATEGORY_DRIVES))
         );
-    category_order =
+    view_drives->list_categories =
         g_list_prepend(
-            category_order,
+            view_drives->list_categories,
             GUINT_TO_POINTER(g_str_hash(WINTC_SH_GUID_CATEGORY_REMOVABLES))
         );
-    category_order =
+    view_drives->list_categories =
         g_list_prepend(
-            category_order,
+            view_drives->list_categories,
             GUINT_TO_POINTER(g_str_hash(WINTC_SH_GUID_CATEGORY_OTHER))
         );
 
-    category_order = g_list_reverse(category_order);
+    view_drives->list_categories =
+        g_list_reverse(view_drives->list_categories);
 
     // Get categories first
     //
-    GList* categories = wintc_shext_host_get_toplevel_categories(
-                            view_drives->shext_host
-                        );
-    gint   order      = g_list_length(category_order);
+    GList* categories =
+        wintc_shext_host_get_toplevel_categories(
+            view_drives->shext_host
+        );
 
     for (GList* iter = categories; iter; iter = iter->next)
     {
         WinTCShextCategory* category = (WinTCShextCategory*) iter->data;
 
-        // Work out the order for this category
-        //
-        GList* el   = g_list_find(
-                          category_order,
-                          GUINT_TO_POINTER(g_str_hash(category->guid))
-                      );
-        gint   next;
-
-        if (el)
+        if (
+            !g_list_find(
+                view_drives->list_categories,
+                GUINT_TO_POINTER(g_str_hash(category->guid))
+            )
+        )
         {
-            next = g_list_position(categories, el);
-        }
-        else
-        {
-            next = order++;
+            view_drives->list_categories =
+                g_list_append(view_drives->list_categories, category);
         }
 
         // Get the items for this category
@@ -588,11 +639,12 @@ static void wintc_sh_view_drives_refresh_items(
             WinTCShextTopLevelItem* tl_item =
                 (WinTCShextTopLevelItem*) iter2->data;
 
-            g_hash_table_insert(
-                view_drives->map_hash_to_order,
-                GUINT_TO_POINTER(tl_item->item->hash),
-                GINT_TO_POINTER(next)
+            WINTC_LOG_DEBUG(
+                "shell: vwdrives: new item %s (%u)",
+                tl_item->item->display_name,
+                tl_item->item->hash
             );
+
             g_hash_table_insert(
                 view_drives->map_hash_to_tl_item,
                 GUINT_TO_POINTER(tl_item->item->hash),
@@ -604,7 +656,6 @@ static void wintc_sh_view_drives_refresh_items(
     }
 
     g_list_free(categories);
-    g_list_free(category_order);
 
     // Emit the update
     //
@@ -644,4 +695,111 @@ WinTCIShextView* wintc_sh_view_drives_new(
             NULL
         )
     );
+}
+
+//
+// PRIVATE FUNCTIONS
+//
+static gint wintc_sh_view_drives_get_category_order(
+    WinTCShViewDrives*  view_drives,
+    WinTCShextCategory* category
+)
+{
+    return g_list_position(
+        view_drives->list_categories,
+        g_list_find(view_drives->list_categories, category)
+    );
+}
+
+static WinTCShextTopLevelItem* wintc_sh_view_drives_get_toplevel_item(
+    WinTCShViewDrives* view_drives,
+    guint              item_hash
+)
+{
+    return g_hash_table_lookup(
+        view_drives->map_hash_to_tl_item,
+        GUINT_TO_POINTER(item_hash)
+    );
+}
+
+//
+// CALLBACKS
+//
+static void on_shext_host_toplevel_added(
+    WINTC_UNUSED(WinTCShextHost* shext_host),
+    WinTCShextTopLevelItem* tl_item,
+    gpointer                user_data
+)
+{
+    WinTCShViewDrives* view_drives = WINTC_SH_VIEW_DRIVES(user_data);
+
+    // Register the item - may need to register its category too
+    //
+    g_hash_table_insert(
+        view_drives->map_hash_to_tl_item,
+        GUINT_TO_POINTER(tl_item->item->hash),
+        tl_item
+    );
+
+    if (!g_list_find(view_drives->list_categories, tl_item->category))
+    {
+        view_drives->list_categories =
+            g_list_append(
+                view_drives->list_categories,
+                tl_item->category
+            );
+    }
+
+    WINTC_LOG_DEBUG(
+        "shell: vwdrives: new item %s (%u)",
+        tl_item->item->display_name,
+        tl_item->item->hash
+    );
+
+    // Issue the update
+    //
+    WinTCShextViewItemsUpdate update = { 0 };
+
+    GList* items = g_list_append(NULL, tl_item->item);
+
+    update.data = items;
+    update.done = TRUE;
+
+    _wintc_ishext_view_items_added(
+        WINTC_ISHEXT_VIEW(view_drives),
+        &update
+    );
+
+    g_list_free(items);
+}
+
+static void on_shext_host_toplevel_removed(
+    WINTC_UNUSED(WinTCShextHost* shext_host),
+    WinTCShextTopLevelItem* tl_item,
+    gpointer                user_data
+)
+{
+    WinTCShViewDrives* view_drives = WINTC_SH_VIEW_DRIVES(user_data);
+
+    g_hash_table_remove(
+        view_drives->map_hash_to_tl_item,
+        GUINT_TO_POINTER(tl_item->item->hash)
+    );
+
+    // Issue the update
+    //
+    WinTCShextViewItemsUpdate update = { 0 };
+
+    GList* items =
+        g_list_append(NULL, GUINT_TO_POINTER(tl_item->item->hash));
+
+    update.data = items;
+    update.done = TRUE;
+
+    _wintc_ishext_view_items_removed(
+        WINTC_ISHEXT_VIEW(view_drives),
+        &update
+    );
+
+    g_list_free(items);
 }
