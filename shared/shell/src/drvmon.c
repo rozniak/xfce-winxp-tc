@@ -243,14 +243,6 @@ static void wintc_sh_drive_monitor_class_init(
         wintc_sh_drive_monitor_properties
     );
 
-    // Init global map if necessary
-    //
-    if (!S_MAP_SHEXT_HOST_TO_DRVMON)
-    {
-        S_MAP_SHEXT_HOST_TO_DRVMON =
-            g_hash_table_new(g_direct_hash, g_direct_equal);
-    }
-
     // Set up our quark(s)
     //
     S_QUARK_DRVMON_DRIVE_MAPPING =
@@ -492,6 +484,16 @@ WinTCShDriveMonitor* wintc_sh_drive_monitor_get(
     WinTCShextHost* shext_host
 )
 {
+    // Init global map if necessary
+    //
+    if (!S_MAP_SHEXT_HOST_TO_DRVMON)
+    {
+        S_MAP_SHEXT_HOST_TO_DRVMON =
+            g_hash_table_new(g_direct_hash, g_direct_equal);
+    }
+
+    // Look up existing drive monitor
+    //
     WinTCShDriveMonitor* drvmon =
         g_hash_table_lookup(S_MAP_SHEXT_HOST_TO_DRVMON, shext_host);
 
