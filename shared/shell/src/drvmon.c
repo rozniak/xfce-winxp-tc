@@ -128,6 +128,18 @@ static gboolean cb_shext_activate_item_drive(
     WinTCShextPathInfo* path_info,
     GError**            error
 );
+static gboolean cb_shext_activate_item_mount(
+    WinTCShextHost*     shext_host,
+    WinTCShextViewItem* item,
+    WinTCShextPathInfo* path_info,
+    GError**            error
+);
+static gboolean cb_shext_activate_item_unix_mount(
+    WinTCShextHost*     shext_host,
+    WinTCShextViewItem* item,
+    WinTCShextPathInfo* path_info,
+    GError**            error
+);
 static gboolean cb_shext_activate_item_volume(
     WinTCShextHost*     shext_host,
     WinTCShextViewItem* item,
@@ -345,6 +357,9 @@ static void wintc_sh_drive_monitor_constructed(
                 )
             )
             {
+                gchar* mount_path =
+                    g_strdup(g_unix_mount_entry_get_mount_path(mount));
+
                 WINTC_LOG_DEBUG(
                     "shell: drvmon: determined unix path %s mapped to %s",
                     g_unix_mount_entry_get_mount_path(mount),
@@ -354,7 +369,7 @@ static void wintc_sh_drive_monitor_constructed(
                 sh_drive->list_unix_paths =
                     g_list_append(
                         sh_drive->list_unix_paths,
-                        g_strdup(g_unix_mount_entry_get_device_path(mount))
+                        mount_path
                     );
 
                 // Bin any existing drive icon
@@ -363,9 +378,6 @@ static void wintc_sh_drive_monitor_constructed(
 
                 // We know this is a fixed path
                 //
-                const gchar* mount_path =
-                    g_unix_mount_entry_get_mount_path(mount);
-
                 wintc_sh_drive_monitor_add_icon(
                     drvmon,
                     mount_path,
@@ -375,8 +387,9 @@ static void wintc_sh_drive_monitor_constructed(
                         mount_path
                     ),
                     g_strdup("drive-harddisk"),
-                    g_strdup(mount_path),
-                    (WinTCShextActivateItemFunc) cb_shext_activate_item_drive
+                    mount_path,
+                    (WinTCShextActivateItemFunc)
+                        cb_shext_activate_item_unix_mount
                 );
             }
 
@@ -615,8 +628,8 @@ static void wintc_sh_drive_monitor_add_mount(
         sh_drive->guid_category,
         g_mount_get_name(mount),
         wintc_icon_get_available_name(icon),
-        obj_path,
-        (WinTCShextActivateItemFunc) cb_shext_activate_item_drive
+        mount,
+        (WinTCShextActivateItemFunc) cb_shext_activate_item_mount
     );
 
     g_object_unref(file);
@@ -959,20 +972,54 @@ static void cb_async_volume_mount(
 
 static gboolean cb_shext_activate_item_drive(
     WINTC_UNUSED(WinTCShextHost* shext_host),
+    WINTC_UNUSED(WinTCShextViewItem* item),
+    WINTC_UNUSED(WinTCShextPathInfo* path_info),
+    GError** error
+)
+{
+    //
+    // FIXME: The only reason a raw disk drive would show is if it had no
+    //        volumes
+    //
+
+    g_set_error(
+        error,
+        WINTC_GENERAL_ERROR,
+        WINTC_GENERAL_ERROR_NOTIMPL,
+        "%s",
+        "Sorry, formatting disks is not yet implemented."
+    );
+
+    return FALSE;
+}
+
+static gboolean cb_shext_activate_item_mount(
+    WINTC_UNUSED(WinTCShextHost* shext_host),
+    WinTCShextViewItem* item,
+    WinTCShextPathInfo* path_info,
+    WINTC_UNUSED(GError** error)
+)
+{
+    GMount* mount = (GMount*) item->priv;
+    GFile*  file  = g_mount_get_root(mount);
+
+    path_info->base_path =
+        g_strdup_printf("file://%s", g_file_get_path(file));
+
+    g_object_unref(file);
+
+    return TRUE;
+}
+
+static gboolean cb_shext_activate_item_unix_mount(
+    WINTC_UNUSED(WinTCShextHost* shext_host),
     WinTCShextViewItem* item,
     WinTCShextPathInfo* path_info,
     WINTC_UNUSED(GError**        error)
 )
 {
-    if (item->priv)
-    {
-        path_info->base_path =
-            g_strdup_printf("file://%s", ((gchar*) item->priv));
-    }
-    else
-    {
-        g_warning("shell: no path for %s", item->display_name);
-    }
+    path_info->base_path =
+        g_strdup_printf("file://%s", (gchar*) item->priv);
 
     return TRUE;
 }
