@@ -183,7 +183,9 @@ static void on_volume_monitor_volume_removed(
 //
 // STATIC DATA
 //
-static GHashTable* S_MAP_SHEXT_HOST_TO_DRVMON = NULL;
+static GHashTable* S_MAP_SHEXT_HOST_TO_DRVMON   = NULL;
+static GQuark      S_QUARK_DRVMON_DRIVE_MAPPING = 0;
+static GQuark      S_QUARK_DRVMON_VOLUME_UUID   = 0;
 
 static GParamSpec* wintc_sh_drive_monitor_properties[N_PROPERTIES] = { 0 };
 
@@ -248,6 +250,13 @@ static void wintc_sh_drive_monitor_class_init(
         S_MAP_SHEXT_HOST_TO_DRVMON =
             g_hash_table_new(g_direct_hash, g_direct_equal);
     }
+
+    // Set up our quark(s)
+    //
+    S_QUARK_DRVMON_DRIVE_MAPPING =
+        g_quark_from_static_string("drvmon-drive-mapping");
+    S_QUARK_DRVMON_VOLUME_UUID =
+        g_quark_from_static_string("drvmon-volume-uuid");
 }
 
 static void wintc_sh_drive_monitor_init(
@@ -640,41 +649,53 @@ static void wintc_sh_drive_monitor_add_mount(
     gchar*   obj_path;
     GVolume* volume = g_mount_get_volume(mount);
 
-    if (!volume)
-    {
-        //
-        // FIXME: Handle mounts with no volume - likely network mounts?
-        //
-        g_warning("%s", "shell: drvmon: mounts w/ no volume unhandled");
-        return;
-    }
-
     // Look up owner shell drive
     //
     WinTCShellDrive* sh_drive =
         wintc_sh_drive_monitor_get_shell_drive(drvmon, mount, NULL);
 
-    if (!sh_drive)
+    // Attach references to source drive / mount now - this information gets
+    // lost by GIO when the mount is ripped away (such as when Brasero acquires
+    // a lock on the CD/DVD drive volume)
+    //
+    if (sh_drive)
     {
-        g_critical("%s", "shell: drvmon: mount with no existing drive!");
-        goto cleanup;
+        g_object_set_qdata_full(
+            G_OBJECT(mount),
+            S_QUARK_DRVMON_DRIVE_MAPPING,
+            g_object_ref(sh_drive->drive),
+            (GDestroyNotify) g_object_unref
+        );
+    }
+
+    if (volume)
+    {
+        g_object_set_qdata_full(
+            G_OBJECT(mount),
+            S_QUARK_DRVMON_VOLUME_UUID,
+            g_volume_get_uuid(volume),
+            (GDestroyNotify) g_free
+        );
     }
 
     // If the volume has an icon, remove it
     //
-    obj_path =
-        g_volume_get_identifier(
-            volume,
-            G_DRIVE_IDENTIFIER_KIND_UNIX_DEVICE
+    if (volume)
+    {
+        obj_path =
+            g_volume_get_identifier(
+                volume,
+                G_DRIVE_IDENTIFIER_KIND_UNIX_DEVICE
+            );
+
+        wintc_sh_drive_monitor_remove_icon(
+            drvmon,
+            obj_path,
+            sh_drive->guid_category
         );
 
-    wintc_sh_drive_monitor_remove_icon(
-        drvmon,
-        obj_path,
-        sh_drive->guid_category
-    );
-
-    g_free(obj_path);
+        g_free(obj_path);
+    }
 
     // Install mount icon
     //
@@ -686,7 +707,7 @@ static void wintc_sh_drive_monitor_add_mount(
     wintc_sh_drive_monitor_add_icon(
         drvmon,
         obj_path,
-        sh_drive->guid_category,
+        sh_drive ? sh_drive->guid_category : WINTC_SH_GUID_CATEGORY_OTHER,
         g_mount_get_name(mount),
         wintc_icon_get_available_name(icon),
         mount,
@@ -695,8 +716,6 @@ static void wintc_sh_drive_monitor_add_mount(
 
     g_object_unref(file);
     g_object_unref(icon);
-
-cleanup:
     g_object_unref(volume);
 }
 
@@ -763,16 +782,32 @@ static WinTCShellDrive* wintc_sh_drive_monitor_get_shell_drive(
     GVolume*             volume
 )
 {
-    GDrive*          drive;
-    WinTCShellDrive* sh_drive;
+    GDrive*          drive    = mount ?
+                                    g_mount_get_drive(mount) :
+                                    g_volume_get_drive(volume);
+    WinTCShellDrive* sh_drive = NULL;
 
-    drive =
-        mount ? g_mount_get_drive(mount) : g_volume_get_drive(volume);
+    if (drive)
+    {
+        sh_drive =
+            g_hash_table_lookup(drvmon->map_drive_to_sh_drive, drive);
 
-    sh_drive =
-        g_hash_table_lookup(drvmon->map_drive_to_sh_drive, drive);
-
-    g_object_unref(drive);
+        if (volume)
+        {
+            g_object_unref(drive);
+        }
+    }
+    else if (mount) // Second attempt
+    {
+        sh_drive =
+            g_hash_table_lookup(
+                drvmon->map_drive_to_sh_drive,
+                g_object_get_qdata(
+                    G_OBJECT(mount),
+                    S_QUARK_DRVMON_DRIVE_MAPPING
+                )
+            );
+    }
 
     return sh_drive;
 }
@@ -891,14 +926,6 @@ static void wintc_sh_drive_monitor_remove_mount(
     WinTCShellDrive* sh_drive =
         wintc_sh_drive_monitor_get_shell_drive(drvmon, mount, FALSE);
 
-    if (!sh_drive)
-    {
-        // FIXME: Need to handle this when network mounts supported
-        //
-        g_warning("shell: drvmon: mount with no drive removed, unhandled");
-        return;
-    }
-
     // Remove the mount icon
     //
     GFile* file     = g_mount_get_default_location(mount);
@@ -907,7 +934,7 @@ static void wintc_sh_drive_monitor_remove_mount(
     wintc_sh_drive_monitor_remove_icon(
         drvmon,
         obj_path,
-        sh_drive->guid_category
+        sh_drive ? sh_drive->guid_category : WINTC_SH_GUID_CATEGORY_OTHER
     );
 
     g_free(obj_path);
@@ -922,6 +949,47 @@ static void wintc_sh_drive_monitor_remove_mount(
         wintc_sh_drive_monitor_add_volume(drvmon, volume);
 
         g_object_unref(volume);
+    }
+    else
+    {
+        // Either this was a mount with no physical representation (such as
+        // a network mount) -- or it was a mount whose information has been
+        // lost by GIO
+        //
+        // Try to claw back the missing information we stored via quarks when
+        // this was initially mounted so we can store either the volume or
+        // drive icon
+        //
+        // If neither exist then nothing else needs to be done because it
+        // must've been a network mount or something like that
+        //
+        GVolumeMonitor* monitor     = g_volume_monitor_get();
+        const gchar*    volume_uuid = g_object_get_qdata(
+                                          G_OBJECT(mount),
+                                          S_QUARK_DRVMON_VOLUME_UUID
+                                      );
+
+        if (volume_uuid)
+        {
+            volume =
+                g_volume_monitor_get_volume_for_uuid(monitor, volume_uuid);
+
+            if (volume)
+            {
+                wintc_sh_drive_monitor_add_volume(drvmon, volume);
+                g_object_unref(volume);
+            }
+
+            goto cleanup;
+        }
+
+        if (sh_drive)
+        {
+            wintc_sh_drive_monitor_register_drive_icon(drvmon, sh_drive);
+        }
+
+cleanup:
+        g_object_unref(monitor);
     }
 }
 
