@@ -6,6 +6,7 @@
 #include <wintc/shellext.h>
 #include <wintc/shlang.h>
 
+#include "../public/drvmon.h"
 #include "../public/fsclipbd.h"
 #include "../public/fsop.h"
 #include "../public/newmenu.h"
@@ -508,9 +509,14 @@ static void wintc_sh_view_fs_set_property(
                 view_fs->path = g_steal_pointer(&raw_path);
             }
 
-            // Create parent path string
+            // Create parent path string, if this isn't a drive root
             //
-            if (g_strcmp0(view_fs->path, "/") != 0)
+            if (
+                !wintc_sh_drive_monitor_get_path_is_mount(
+                    wintc_sh_drive_monitor_get(view_fs->shext_host),
+                    view_fs->path
+                )
+            )
             {
                 view_fs->parent_path = g_path_get_dirname(view_fs->path);
             }

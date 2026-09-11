@@ -108,9 +108,6 @@ static void wintc_sh_drive_monitor_remove_volume(
 static void wintc_shell_drive_free(
     WinTCShellDrive* sh_drive
 );
-static void wintc_shell_drive_true_obj_path(
-    gchar** obj_path
-);
 
 static void clear_view_item(
     WinTCShextViewItem* item
@@ -507,6 +504,69 @@ WinTCShDriveMonitor* wintc_sh_drive_monitor_get(
     return drvmon;
 }
 
+gboolean wintc_sh_drive_monitor_get_path_is_mount(
+    WinTCShDriveMonitor* drvmon,
+    const gchar*         path
+)
+{
+    GList*          list_mounts    = NULL;
+    GList*          list_sh_drives = NULL;
+    GVolumeMonitor* monitor        = g_volume_monitor_get();
+    gboolean        ret            = FALSE;
+
+    // Check the normal GMounts
+    //
+    list_mounts = g_volume_monitor_get_mounts(monitor);
+
+    for (GList* iter = list_mounts; iter; iter = iter->next)
+    {
+        GFile* file = g_mount_get_root((GMount*) iter->data);
+
+        if (g_strcmp0(g_file_peek_path(file), path) == 0)
+        {
+            ret = TRUE;
+        }
+
+        g_object_unref(file);
+
+        if (ret)
+        {
+            goto cleanup;
+        }
+    }
+
+    // Didn't find any in the normal mounts - check if it exists in one
+    // of the UNIX mount paths we've picked up
+    //
+    list_sh_drives =
+        g_hash_table_get_values(drvmon->map_drive_to_sh_drive);
+
+    for (GList* iter = list_sh_drives; iter; iter = iter->next)
+    {
+        WinTCShellDrive* sh_drive = (WinTCShellDrive*) iter->data;
+
+        for (
+            GList* iter2 = sh_drive->list_unix_paths;
+            iter2;
+            iter2 = iter2->next
+        )
+        {
+            if (g_strcmp0((gchar*) iter2->data, path) == 0)
+            {
+                ret = TRUE;
+                goto cleanup;
+            }
+        }
+    }
+
+cleanup:
+    g_list_free(list_sh_drives);
+    g_list_free_full(list_mounts, (GDestroyNotify) g_object_unref);
+    g_object_unref(monitor);
+
+    return ret;
+}
+
 //
 // PRIVATE FUNCTIONS
 //
@@ -603,8 +663,6 @@ static void wintc_sh_drive_monitor_add_mount(
             G_DRIVE_IDENTIFIER_KIND_UNIX_DEVICE
         );
 
-    wintc_shell_drive_true_obj_path(&obj_path);
-
     wintc_sh_drive_monitor_remove_icon(
         drvmon,
         obj_path,
@@ -619,8 +677,6 @@ static void wintc_sh_drive_monitor_add_mount(
     GIcon* icon = g_mount_get_icon(mount);
 
     obj_path = g_file_get_path(file);
-
-    wintc_shell_drive_true_obj_path(&obj_path);
 
     wintc_sh_drive_monitor_add_icon(
         drvmon,
@@ -665,8 +721,6 @@ static void wintc_sh_drive_monitor_add_volume(
             G_DRIVE_IDENTIFIER_KIND_UNIX_DEVICE
         );
 
-    wintc_shell_drive_true_obj_path(&obj_path);
-
     wintc_sh_drive_monitor_remove_icon(
         drvmon,
         obj_path,
@@ -684,8 +738,6 @@ static void wintc_sh_drive_monitor_add_volume(
             volume,
             G_DRIVE_IDENTIFIER_KIND_UNIX_DEVICE
         );
-
-    wintc_shell_drive_true_obj_path(&obj_path);
 
     wintc_sh_drive_monitor_add_icon(
         drvmon,
@@ -777,8 +829,6 @@ static void wintc_sh_drive_monitor_register_drive_icon(
         //
     }
 
-    wintc_shell_drive_true_obj_path(&obj_path);
-
     wintc_sh_drive_monitor_add_icon(
         drvmon,
         obj_path,
@@ -813,8 +863,6 @@ static void wintc_sh_drive_monitor_remove_drive(
             sh_drive->drive,
             G_DRIVE_IDENTIFIER_KIND_UNIX_DEVICE
         );
-
-    wintc_shell_drive_true_obj_path(&obj_path);
 
     wintc_sh_drive_monitor_remove_icon(
         drvmon,
@@ -867,8 +915,6 @@ static void wintc_sh_drive_monitor_remove_mount(
     GFile* file     = g_mount_get_default_location(mount);
     gchar* obj_path = g_file_get_path(file);
 
-    wintc_shell_drive_true_obj_path(&obj_path);
-
     wintc_sh_drive_monitor_remove_icon(
         drvmon,
         obj_path,
@@ -906,8 +952,6 @@ static void wintc_sh_drive_monitor_remove_volume(
             G_DRIVE_IDENTIFIER_KIND_UNIX_DEVICE
         );
 
-    wintc_shell_drive_true_obj_path(&obj_path);
-
     wintc_sh_drive_monitor_remove_icon(
         drvmon,
         obj_path,
@@ -931,15 +975,6 @@ static void wintc_shell_drive_free(
     g_list_free_full(sh_drive->list_unix_paths, (GDestroyNotify) g_free);
 
     g_free(sh_drive);
-}
-
-static void wintc_shell_drive_true_obj_path(
-    gchar** obj_path
-)
-{
-    gchar* tmp = g_strdup_printf("file://%s", *obj_path);
-
-    wintc_strsteal(obj_path, &tmp);
 }
 
 static void clear_view_item(

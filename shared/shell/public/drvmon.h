@@ -24,4 +24,9 @@ WinTCShDriveMonitor* wintc_sh_drive_monitor_get(
     WinTCShextHost* shext_host
 );
 
+gboolean wintc_sh_drive_monitor_get_path_is_mount(
+    WinTCShDriveMonitor* drvmon,
+    const gchar*         path
+);
+
 #endif
