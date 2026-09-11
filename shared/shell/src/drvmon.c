@@ -113,6 +113,11 @@ static void clear_view_item(
     WinTCShextViewItem* item
 );
 
+static void cb_async_drive_poll(
+    GObject*      source_object,
+    GAsyncResult* res,
+    gpointer      user_data
+);
 static void cb_async_volume_mount(
     GObject*      source_object,
     GAsyncResult* res,
@@ -800,11 +805,6 @@ static void wintc_sh_drive_monitor_register_drive_icon(
         sh_drive->guid_category = WINTC_SH_GUID_CATEGORY_REMOVABLES;
 
         text = g_strdup_printf("Media Drive (%s)", obj_path);
-
-        //
-        // FIXME: Activate func needs to be specific to media disks
-        //
-
     }
     else if (g_drive_is_removable(sh_drive->drive))
     {
@@ -812,10 +812,6 @@ static void wintc_sh_drive_monitor_register_drive_icon(
         sh_drive->guid_category = WINTC_SH_GUID_CATEGORY_REMOVABLES;
 
         text = g_strdup_printf("Removable Disk (%s)", obj_path);
-
-        //
-        // FIXME: Activate func probably needs to be format dialog
-        //
     }
     else
     {
@@ -823,10 +819,6 @@ static void wintc_sh_drive_monitor_register_drive_icon(
         sh_drive->guid_category = WINTC_SH_GUID_CATEGORY_DRIVES;
 
         text = g_strdup_printf("Fixed Disk (%s)", obj_path);
-
-        //
-        // FIXME: Activate func probably needs to be format dialog
-        //
     }
 
     wintc_sh_drive_monitor_add_icon(
@@ -835,7 +827,7 @@ static void wintc_sh_drive_monitor_register_drive_icon(
         sh_drive->guid_category,
         text,
         wintc_icon_get_available_name(icon),
-        obj_path,
+        sh_drive->drive,
        (WinTCShextActivateItemFunc) cb_shext_activate_item_drive
     );
 
@@ -986,6 +978,20 @@ static void clear_view_item(
 //
 // CALLBACKS
 //
+static void cb_async_drive_poll(
+    GObject*      source_object,
+    GAsyncResult* res,
+    WINTC_UNUSED(gpointer user_data)
+)
+{
+    GError* error = NULL;
+
+    if (!g_drive_poll_for_media_finish((GDrive*) source_object, res, &error))
+    {
+        wintc_display_error_and_clear(&error, NULL);
+    }
+}
+
 static void cb_async_volume_mount(
     GObject*      source_object,
     GAsyncResult* res,
@@ -999,21 +1005,66 @@ static void cb_async_volume_mount(
         wintc_display_error_and_clear(&error, NULL);
     }
 
-    g_object_unref((GObject*) user_data);
+    g_object_unref((GObject*) user_data); // Bins the GtkMountOperation
 }
 
 static gboolean cb_shext_activate_item_drive(
     WINTC_UNUSED(WinTCShextHost* shext_host),
-    WINTC_UNUSED(WinTCShextViewItem* item),
+    WinTCShextViewItem* item,
     WINTC_UNUSED(WinTCShextPathInfo* path_info),
-    GError** error
+    GError**            error
 )
 {
-    //
-    // FIXME: The only reason a raw disk drive would show is if it had no
-    //        volumes
-    //
+    GDrive* drive = (GDrive*) item->priv;
 
+    if (g_drive_is_media_removable(drive))
+    {
+        if (g_drive_is_media_check_automatic(drive))
+        {
+            // Nothing inserted, user should insert something now!
+            //
+            // FIXME: Localise string
+            // FIXME: Uses a custom dialog in Windows XP, not the msgbox
+            //
+            gchar* drive_name = g_drive_get_identifier(
+                                    drive,
+                                    G_DRIVE_IDENTIFIER_KIND_UNIX_DEVICE
+                                );
+            gchar* msg        = g_strdup_printf(
+                                    "Please insert a disk into drive %s.",
+                                    drive_name
+                                );
+
+            wintc_messagebox_show(
+                NULL,
+                msg,
+                "Insert disk",
+                WINTC_BUTTONS_OK,
+                WINTC_MESSAGE_NONE
+            );
+
+            g_free(msg);
+            g_free(drive_name);
+        }
+        else
+        {
+            // Probably a floppy drive or something, we should poll now
+            //
+            g_drive_poll_for_media(
+                drive,
+                NULL,
+                (GAsyncReadyCallback) cb_async_drive_poll,
+                NULL
+            );
+        }
+
+        return TRUE;
+    }
+
+    // Else, assume a blank unformatted drive
+    //
+    // FIXME: Implement this
+    //
     g_set_error(
         error,
         WINTC_GENERAL_ERROR,
