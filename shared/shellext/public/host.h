@@ -59,6 +59,7 @@ typedef struct _WinTCShextTopLevelItem
 {
     WinTCShextViewItem*        item;
     WinTCShextActivateItemFunc activate_cb;
+    WinTCShextCategory*        category;
 } WinTCShextTopLevelItem;
 
 //
