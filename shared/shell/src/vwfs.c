@@ -1063,6 +1063,15 @@ static void wintc_sh_view_fs_refresh_items(
         file   = g_file_new_for_path(entry_path);
         is_dir = g_file_test(entry_path, G_FILE_TEST_IS_DIR);
 
+        if (is_dir)
+        {
+            is_dir =
+                !wintc_sh_drive_monitor_get_path_is_mount(
+                    wintc_sh_drive_monitor_get(view_fs->shext_host),
+                    entry_path
+                );
+        }
+
         item->display_name = (gchar*) g_steal_pointer(&(iter->data));
         item->icon_name    = is_dir ?
                                  g_strdup("inode-directory") :
@@ -1233,7 +1242,13 @@ static gboolean real_activate_item(
             FALSE
         );
 
-    if (!(item->is_leaf))
+    if (
+        !(item->is_leaf) ||
+        wintc_sh_drive_monitor_get_path_is_mount(
+            wintc_sh_drive_monitor_get(view_fs->shext_host),
+            next_path
+        )
+    )
     {
         target_path = g_strdup_printf("file://%s", next_path);
     }
