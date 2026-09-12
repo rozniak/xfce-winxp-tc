@@ -704,11 +704,9 @@ static void wintc_sh_drive_monitor_add_mount(
     GFile* file = g_mount_get_default_location(mount);
     GIcon* icon = g_mount_get_icon(mount);
 
-    obj_path = g_file_get_path(file);
-
     wintc_sh_drive_monitor_add_icon(
         drvmon,
-        obj_path,
+        g_file_peek_path(file),
         sh_drive ? sh_drive->guid_category : WINTC_SH_GUID_CATEGORY_OTHER,
         g_mount_get_name(mount),
         wintc_icon_get_available_name(icon),
@@ -775,6 +773,7 @@ static void wintc_sh_drive_monitor_add_volume(
         (WinTCShextActivateItemFunc) cb_shext_activate_item_volume
     );
 
+    g_free(obj_path);
     g_object_unref(icon);
 }
 
@@ -868,6 +867,7 @@ static void wintc_sh_drive_monitor_register_drive_icon(
        (WinTCShextActivateItemFunc) cb_shext_activate_item_drive
     );
 
+    g_free(obj_path);
     g_object_unref(icon);
 }
 
@@ -1157,7 +1157,7 @@ static gboolean cb_shext_activate_item_mount(
     GFile*  file  = g_mount_get_root(mount);
 
     path_info->base_path =
-        g_strdup_printf("file://%s", g_file_get_path(file));
+        g_strdup_printf("file://%s", g_file_peek_path(file));
 
     g_object_unref(file);
 
