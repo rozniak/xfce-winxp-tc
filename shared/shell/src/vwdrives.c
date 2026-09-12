@@ -456,6 +456,13 @@ static GList* wintc_sh_view_drives_get_items(
 {
     WinTCShViewDrives* view_drives = WINTC_SH_VIEW_DRIVES(view);
 
+    // Require a refresh?
+    //
+    if (g_hash_table_size(view_drives->map_hash_to_tl_item) == 0)
+    {
+        wintc_sh_view_drives_refresh_items(view);
+    }
+
     // Adapt list of tl items to underlying items
     //
     GHashTableIter          iter;
