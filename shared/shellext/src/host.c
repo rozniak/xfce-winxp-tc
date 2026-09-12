@@ -199,7 +199,7 @@ static void wintc_shext_host_init(
         g_hash_table_new_full(
             g_str_hash,
             g_str_equal,
-            g_free,
+            NULL,
             (GDestroyNotify) shext_host_category_internal_free
         );
 }
