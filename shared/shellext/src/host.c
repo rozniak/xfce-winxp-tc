@@ -303,6 +303,8 @@ gboolean wintc_shext_host_add_toplevel_item(
         guid_u
     );
 
+    ret = TRUE;
+
 cleanup:
     g_free(guid_u);
 

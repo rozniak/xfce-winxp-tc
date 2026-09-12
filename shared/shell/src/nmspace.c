@@ -13,8 +13,23 @@
 #include "../public/vwtrash.h"
 
 //
+// PRIVATE ENUMS
+//
+enum
+{
+    TOPLEVEL_CONTROL_PANEL
+};
+
+//
 // FORWARD DECLARATIONS
 //
+static gboolean cb_activate_item_default(
+    WinTCShextHost*     shext_host,
+    WinTCShextViewItem* item,
+    WinTCShextPathInfo* path_info,
+    GError**            error
+);
+
 static WinTCIShextView* factory_view_by_guid_cb(
     WinTCShextHost*           shext_host,
     WinTCShextViewAssoc       assoc,
@@ -39,6 +54,20 @@ const gchar* WINTC_SH_GUID_CATEGORY_REMOVABLES =
     "5cb97e0a-00ca-448c-8c89-6e79892ef3bb";
 const gchar* WINTC_SH_GUID_CATEGORY_OTHER =
     "a388a67e-bdaf-47bf-844f-c68549ff574b";
+
+//
+// STATIC DATA
+//
+static WinTCShextViewItem S_TOPLEVEL_ITEMS[] = {
+    {
+        "Control Panel", // FIXME: Localise
+        "preferences-other",
+        FALSE,
+        0,
+        WINTC_SHEXT_VIEW_ITEM_DEFAULT,
+        NULL
+    }
+};
 
 //
 // PUBLIC FUNCTIONS
@@ -78,6 +107,25 @@ gboolean wintc_sh_init_builtin_extensions(
             shext_host,
             WINTC_SH_GUID_CATEGORY_OTHER,
             "Other"
+        ),
+        FALSE
+    );
+
+    // Plop Control Panel in the top levels
+    //
+    S_TOPLEVEL_ITEMS[TOPLEVEL_CONTROL_PANEL].priv =
+        wintc_sh_path_for_guid(WINTC_SH_GUID_CPL);
+    S_TOPLEVEL_ITEMS[TOPLEVEL_CONTROL_PANEL].hash =
+        g_str_hash(S_TOPLEVEL_ITEMS[TOPLEVEL_CONTROL_PANEL].priv);
+
+    WINTC_RETURN_VAL_IF_FAIL(
+        wintc_shext_host_add_toplevel_item(
+            shext_host,
+            WINTC_SH_GUID_CATEGORY_OTHER,
+            S_TOPLEVEL_ITEMS[TOPLEVEL_CONTROL_PANEL].priv,
+            &S_TOPLEVEL_ITEMS[TOPLEVEL_CONTROL_PANEL],
+            (WinTCShextActivateItemFunc) cb_activate_item_default,
+            NULL
         ),
         FALSE
     );
@@ -144,6 +192,18 @@ void wintc_sh_init_namespace_tree(
 //
 // CALLBACKS
 //
+static gboolean cb_activate_item_default(
+    WINTC_UNUSED(WinTCShextHost* shext_host),
+    WinTCShextViewItem* item,
+    WinTCShextPathInfo* path_info,
+    WINTC_UNUSED(GError** error)
+)
+{
+    path_info->base_path = g_strdup(item->priv);
+
+    return TRUE;
+}
+
 static WinTCIShextView* factory_view_by_guid_cb(
     WinTCShextHost*           shext_host,
     WINTC_UNUSED(WinTCShextViewAssoc assoc),
