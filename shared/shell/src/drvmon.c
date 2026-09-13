@@ -949,6 +949,15 @@ static void wintc_sh_drive_monitor_register_drive_icon(
                       );
     gchar* text     = NULL;
 
+    if (!obj_path)
+    {
+        gchar* drive_name = g_drive_get_name(sh_drive->drive);
+
+        WINTC_LOG_DEBUG("shell: drvmon: drive with no ident: %s", drive_name);
+
+        g_free(drive_name);
+    }
+
     wintc_sh_drive_monitor_get_drive_info(
         drvmon,
         sh_drive->drive,
