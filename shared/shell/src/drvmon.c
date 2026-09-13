@@ -124,6 +124,12 @@ static void cb_async_volume_mount(
     gpointer      user_data
 );
 
+static gboolean cb_shext_activate_item_default(
+    WinTCShextHost*     shext_host,
+    WinTCShextViewItem* item,
+    WinTCShextPathInfo* path_info,
+    GError**            error
+);
 static gboolean cb_shext_activate_item_drive(
     WinTCShextHost*     shext_host,
     WinTCShextViewItem* item,
@@ -308,38 +314,15 @@ static void wintc_sh_drive_monitor_constructed(
     //
     if (!drives)
     {
-        static GMount* mount_root = NULL;
-
-        GError* error = NULL;
-        GFile*  file  = g_file_new_for_path("/");
-
-        mount_root =
-            g_file_find_enclosing_mount(
-                file,
-                NULL,
-                &error
-            );
-
-        if (mount_root)
-        {
-            GIcon* icon = g_mount_get_icon(mount_root);
-
-            wintc_sh_drive_monitor_add_icon(
-                drvmon,
-                g_file_peek_path(file),
-                WINTC_SH_GUID_CATEGORY_DRIVES,
-                g_mount_get_name(mount_root),
-                wintc_icon_get_available_name(icon),
-                mount_root,
-                (WinTCShextActivateItemFunc) cb_shext_activate_item_mount
-            );
-
-            g_object_unref(icon);
-        }
-        else
-        {
-            wintc_display_error_and_clear(&error, NULL);
-        }
+        wintc_sh_drive_monitor_add_icon(
+            drvmon,
+            "file:///",
+            WINTC_SH_GUID_CATEGORY_DRIVES,
+            "Local Disk (/)", // FIXME: Localise
+            g_strdup("drive-harddisk"),
+            "file:///",
+            (WinTCShextActivateItemFunc) cb_shext_activate_item_default
+        );
 
         goto cleanup;
     }
@@ -1120,6 +1103,17 @@ static void cb_async_volume_mount(
     }
 
     g_object_unref((GObject*) user_data); // Bins the GtkMountOperation
+}
+
+static gboolean cb_shext_activate_item_default(
+    WINTC_UNUSED(WinTCShextHost* shext_host),
+    WinTCShextViewItem* item,
+    WinTCShextPathInfo* path_info,
+    WINTC_UNUSED(GError** error)
+)
+{
+    path_info->base_path = g_strdup(item->priv);
+    return TRUE;
 }
 
 static gboolean cb_shext_activate_item_drive(
