@@ -557,6 +557,14 @@ gboolean wintc_sh_drive_monitor_get_path_is_mount(
     GVolumeMonitor* monitor        = g_volume_monitor_get();
     gboolean        ret            = FALSE;
 
+    // Basic check for system root
+    //
+    if (g_strcmp0(path, "/") == 0)
+    {
+        ret = TRUE;
+        goto cleanup;
+    }
+
     // Check the normal GMounts
     //
     list_mounts = g_volume_monitor_get_mounts(monitor);
