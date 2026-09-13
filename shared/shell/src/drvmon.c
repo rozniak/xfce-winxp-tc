@@ -280,6 +280,11 @@ static void wintc_sh_drive_monitor_constructed(
 {
     WinTCShDriveMonitor* drvmon = WINTC_SH_DRIVE_MONITOR(object);
 
+    GList* drives      = NULL;
+    GList* mounts      = NULL;
+    GList* unix_mounts = NULL;
+    GList* volumes     = NULL;
+
     // Grab volume monitor
     //
     static GVolumeMonitor* s_monitor = NULL;
@@ -291,40 +296,75 @@ static void wintc_sh_drive_monitor_constructed(
 
     // Enum drives
     //
-    GList* drives = g_volume_monitor_get_connected_drives(s_monitor);
+    drives = g_volume_monitor_get_connected_drives(s_monitor);
 
     for (GList* iter = drives; iter; iter = iter->next)
     {
         wintc_sh_drive_monitor_add_drive(drvmon, G_DRIVE(iter->data));
     }
 
-    g_list_free_full(drives, (GDestroyNotify) g_object_unref);
+    // No drives? Possibly GVFS isn't installed - just try to add the root
+    // mount manually
+    //
+    if (!drives)
+    {
+        static GMount* mount_root = NULL;
+
+        GError* error = NULL;
+        GFile*  file  = g_file_new_for_path("/");
+
+        mount_root =
+            g_file_find_enclosing_mount(
+                file,
+                NULL,
+                &error
+            );
+
+        if (mount_root)
+        {
+            GIcon* icon = g_mount_get_icon(mount_root);
+
+            wintc_sh_drive_monitor_add_icon(
+                drvmon,
+                g_file_peek_path(file),
+                WINTC_SH_GUID_CATEGORY_DRIVES,
+                g_mount_get_name(mount_root),
+                wintc_icon_get_available_name(icon),
+                mount_root,
+                (WinTCShextActivateItemFunc) cb_shext_activate_item_mount
+            );
+
+            g_object_unref(icon);
+        }
+        else
+        {
+            wintc_display_error_and_clear(&error, NULL);
+        }
+
+        goto cleanup;
+    }
 
     // Enum volumes
     //
-    GList* volumes = g_volume_monitor_get_volumes(s_monitor);
+    volumes = g_volume_monitor_get_volumes(s_monitor);
 
     for (GList* iter = volumes; iter; iter = iter->next)
     {
         wintc_sh_drive_monitor_add_volume(drvmon, G_VOLUME(iter->data));
     }
 
-    g_list_free_full(volumes, (GDestroyNotify) g_object_unref);
-
     // Enum mounts
     //
-    GList* mounts = g_volume_monitor_get_mounts(s_monitor);
+    mounts = g_volume_monitor_get_mounts(s_monitor);
 
     for (GList* iter = mounts; iter; iter = iter->next)
     {
         wintc_sh_drive_monitor_add_mount(drvmon, G_MOUNT(iter->data));
     }
 
-    g_list_free_full(mounts, (GDestroyNotify) g_object_unref);
-
     // Scan for UNIX mounts that the volume watcher hides from us
     //
-    GList* unix_mounts = g_unix_mount_entries_get(NULL);
+    unix_mounts = g_unix_mount_entries_get(NULL);
 
     for (GList* iter = unix_mounts; iter; iter = iter->next)
     {
@@ -400,8 +440,6 @@ static void wintc_sh_drive_monitor_constructed(
         }
     }
 
-    g_list_free_full(unix_mounts, (GDestroyNotify) g_unix_mount_entry_free);
-
     // Connect monitor signals
     //
     g_signal_connect(
@@ -440,6 +478,12 @@ static void wintc_sh_drive_monitor_constructed(
         G_CALLBACK(on_volume_monitor_volume_removed),
         drvmon
     );
+
+cleanup:
+    g_list_free_full(drives,      (GDestroyNotify) g_object_unref);
+    g_list_free_full(mounts,      (GDestroyNotify) g_object_unref);
+    g_list_free_full(unix_mounts, (GDestroyNotify) g_unix_mount_entry_free);
+    g_list_free_full(volumes,     (GDestroyNotify) g_object_unref);
 }
 
 static void wintc_sh_drive_monitor_dispose(
