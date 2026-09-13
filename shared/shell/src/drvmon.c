@@ -76,6 +76,12 @@ static void wintc_sh_drive_monitor_add_volume(
     GVolume*             volume
 );
 
+static void wintc_sh_drive_monitor_get_drive_info(
+    WinTCShDriveMonitor* drvmon,
+    GDrive*              drive,
+    GIcon**              icon,
+    gchar**              display_name
+);
 static WinTCShellDrive* wintc_sh_drive_monitor_get_shell_drive(
     WinTCShDriveMonitor* drvmon,
     GMount*              mount,
@@ -316,7 +322,7 @@ static void wintc_sh_drive_monitor_constructed(
     {
         wintc_sh_drive_monitor_add_icon(
             drvmon,
-            "file:///",
+            "/",
             WINTC_SH_GUID_CATEGORY_DRIVES,
             "Local Disk (/)", // FIXME: Localise
             g_strdup("drive-harddisk"),
@@ -547,9 +553,11 @@ WinTCShDriveMonitor* wintc_sh_drive_monitor_get(
     return drvmon;
 }
 
-gboolean wintc_sh_drive_monitor_get_path_is_mount(
+gboolean wintc_sh_drive_monitor_get_path_mount_info(
     WinTCShDriveMonitor* drvmon,
-    const gchar*         path
+    const gchar*         path,
+    GIcon**              icon,
+    gchar**              display_name
 )
 {
     GList*          list_mounts    = NULL;
@@ -557,10 +565,20 @@ gboolean wintc_sh_drive_monitor_get_path_is_mount(
     GVolumeMonitor* monitor        = g_volume_monitor_get();
     gboolean        ret            = FALSE;
 
+    GIcon* icon_tmp = NULL;
+    gchar* name_tmp = NULL;
+
     // Basic check for system root
     //
     if (g_strcmp0(path, "/") == 0)
     {
+        wintc_sh_drive_monitor_get_drive_info(
+            drvmon,
+            NULL,
+            &icon_tmp,
+            &name_tmp
+        );
+
         ret = TRUE;
         goto cleanup;
     }
@@ -571,10 +589,13 @@ gboolean wintc_sh_drive_monitor_get_path_is_mount(
 
     for (GList* iter = list_mounts; iter; iter = iter->next)
     {
-        GFile* file = g_mount_get_root((GMount*) iter->data);
+        GMount* mount = (GMount*) iter->data;
+        GFile*  file  = g_mount_get_root(mount);
 
         if (g_strcmp0(g_file_peek_path(file), path) == 0)
         {
+            icon_tmp = g_mount_get_icon(mount);
+            name_tmp = g_mount_get_name(mount);
             ret = TRUE;
         }
 
@@ -604,6 +625,8 @@ gboolean wintc_sh_drive_monitor_get_path_is_mount(
         {
             if (g_strcmp0((gchar*) iter2->data, path) == 0)
             {
+                icon_tmp = g_themed_icon_new("drive-hardisk");
+                name_tmp = g_path_get_basename(path);
                 ret = TRUE;
                 goto cleanup;
             }
@@ -614,6 +637,12 @@ cleanup:
     g_list_free(list_sh_drives);
     g_list_free_full(list_mounts, (GDestroyNotify) g_object_unref);
     g_object_unref(monitor);
+
+    WINTC_SAFE_REF_SET(icon,         g_steal_pointer(&icon_tmp));
+    WINTC_SAFE_REF_SET(display_name, g_steal_pointer(&name_tmp));
+
+    g_clear_object(&icon_tmp);
+    g_free(name_tmp);
 
     return ret;
 }
@@ -812,6 +841,56 @@ static void wintc_sh_drive_monitor_add_volume(
     g_object_unref(icon);
 }
 
+static void wintc_sh_drive_monitor_get_drive_info(
+    WINTC_UNUSED(WinTCShDriveMonitor* drvmon),
+    GDrive* drive,
+    GIcon** icon,
+    gchar** display_name
+)
+{
+    static const gchar* s_format_fixed = "Local Disk (%s)";
+
+    GIcon* icon_tmp;
+    gchar* name_tmp;
+
+    if (drive)
+    {
+        gchar* ident =
+            g_drive_get_identifier(
+                drive,
+                G_DRIVE_IDENTIFIER_KIND_UNIX_DEVICE
+            );
+
+        icon_tmp = g_drive_get_icon(drive);
+
+        if (drive && g_drive_is_media_removable(drive))
+        {
+            name_tmp = g_strdup_printf("Media Drive (%s)", ident);
+        }
+        else if (drive && g_drive_is_removable(drive))
+        {
+            name_tmp = g_strdup_printf("Removable Disk (%s)", ident);
+        }
+        else
+        {
+            name_tmp = g_strdup_printf(s_format_fixed, ident);
+        }
+
+        g_free(ident);
+    }
+    else // For /
+    {
+        icon_tmp = g_themed_icon_new("drive-harddisk");
+        name_tmp = g_strdup_printf(s_format_fixed, "/");
+    }
+
+    WINTC_SAFE_REF_SET(icon,         g_steal_pointer(&icon_tmp));
+    WINTC_SAFE_REF_SET(display_name, g_steal_pointer(&name_tmp));
+
+    g_clear_object(&icon_tmp);
+    g_free(name_tmp);
+}
+
 static WinTCShellDrive* wintc_sh_drive_monitor_get_shell_drive(
     WinTCShDriveMonitor* drvmon,
     GMount*              mount,
@@ -863,33 +942,34 @@ static void wintc_sh_drive_monitor_register_drive_icon(
 
     // Determine drive type and category, insert default icon
     //
-    GIcon* icon     = g_drive_get_icon(sh_drive->drive);
+    GIcon* icon     = NULL;
     gchar* obj_path = g_drive_get_identifier(
                           sh_drive->drive,
                           G_DRIVE_IDENTIFIER_KIND_UNIX_DEVICE
                       );
-    gchar* text;
+    gchar* text     = NULL;
+
+    wintc_sh_drive_monitor_get_drive_info(
+        drvmon,
+        sh_drive->drive,
+        &icon,
+        &text
+    );
 
     if (g_drive_is_media_removable(sh_drive->drive))
     {
         sh_drive->drive_type    = WINTC_SH_DRIVE_TYPE_MEDIA_CONTAINER;
         sh_drive->guid_category = WINTC_SH_GUID_CATEGORY_REMOVABLES;
-
-        text = g_strdup_printf("Media Drive (%s)", obj_path);
     }
     else if (g_drive_is_removable(sh_drive->drive))
     {
         sh_drive->drive_type    = WINTC_SH_DRIVE_TYPE_REMOVABLE;
         sh_drive->guid_category = WINTC_SH_GUID_CATEGORY_REMOVABLES;
-
-        text = g_strdup_printf("Removable Disk (%s)", obj_path);
     }
     else
     {
         sh_drive->drive_type    = WINTC_SH_DRIVE_TYPE_FIXED;
         sh_drive->guid_category = WINTC_SH_GUID_CATEGORY_DRIVES;
-
-        text = g_strdup_printf("Fixed Disk (%s)", obj_path);
     }
 
     wintc_sh_drive_monitor_add_icon(

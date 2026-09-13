@@ -456,6 +456,11 @@ static GList* wintc_sh_view_drives_get_items(
 {
     WinTCShViewDrives* view_drives = WINTC_SH_VIEW_DRIVES(view);
 
+    WINTC_LOG_DEBUG(
+        "shell: vwdrives - there are currently %u items",
+        g_hash_table_size(view_drives->map_hash_to_tl_item)
+    );
+
     // Require a refresh?
     //
     if (g_hash_table_size(view_drives->map_hash_to_tl_item) == 0)

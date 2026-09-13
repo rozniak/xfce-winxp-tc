@@ -29,6 +29,9 @@ static void wintc_sh_view_fs_ishext_view_interface_init(
     WinTCIShextViewInterface* iface
 );
 
+static void wintc_sh_view_fs_constructed(
+    GObject* object
+);
 static void wintc_sh_view_fs_dispose(
     GObject* object
 );
@@ -235,6 +238,11 @@ struct _WinTCShViewFS
     WinTCShextHost*     shext_host;
 
     guint  next_new_hash; // For flagging a view item we just made as new
+
+    // Visuals
+    //
+    gchar* custom_name;
+    gchar* custom_icon;
 };
 
 //
@@ -256,6 +264,7 @@ static void wintc_sh_view_fs_class_init(
 {
     GObjectClass* object_class = G_OBJECT_CLASS(klass);
 
+    object_class->constructed  = wintc_sh_view_fs_constructed;
     object_class->dispose      = wintc_sh_view_fs_dispose;
     object_class->finalize     = wintc_sh_view_fs_finalize;
     object_class->get_property = wintc_sh_view_fs_get_property;
@@ -285,7 +294,7 @@ static void wintc_sh_view_fs_class_init(
             "path-info",
             "PathInfo",
             "The path to open in the view.",
-            G_PARAM_READWRITE | G_PARAM_CONSTRUCT
+            G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY
         )
     );
 }
@@ -325,6 +334,33 @@ static void wintc_sh_view_fs_ishext_view_interface_init(
 //
 // CLASS VIRTUAL METHODS
 //
+static void wintc_sh_view_fs_constructed(
+    GObject* object
+)
+{
+    (G_OBJECT_CLASS(wintc_sh_view_fs_parent_class))->constructed(object);
+
+    WinTCShViewFS* view_fs = WINTC_SH_VIEW_FS(object);
+
+    GIcon* icon;
+
+    wintc_sh_drive_monitor_get_path_mount_info(
+        wintc_sh_drive_monitor_get(view_fs->shext_host),
+        view_fs->path,
+        &icon,
+        &(view_fs->custom_name)
+    );
+
+    // FIXME: We're not handling if the icon theme changes
+    //
+    if (icon)
+    {
+        view_fs->custom_icon = wintc_icon_get_available_name(icon);
+
+        g_object_unref(icon);
+    }
+}
+
 static void wintc_sh_view_fs_dispose(
     GObject* object
 )
@@ -347,6 +383,8 @@ static void wintc_sh_view_fs_finalize(
     g_free(view_fs->guid_context);
     g_free(view_fs->parent_path);
     g_free(view_fs->path);
+    g_free(view_fs->custom_icon);
+    g_free(view_fs->custom_name);
 
     if (view_fs->fs_map_entries)
     {
@@ -512,9 +550,11 @@ static void wintc_sh_view_fs_set_property(
             // Create parent path string, if this isn't a drive root
             //
             if (
-                !wintc_sh_drive_monitor_get_path_is_mount(
+                !wintc_sh_drive_monitor_get_path_mount_info(
                     wintc_sh_drive_monitor_get(view_fs->shext_host),
-                    view_fs->path
+                    view_fs->path,
+                    NULL,
+                    NULL
                 )
             )
             {
@@ -733,14 +773,11 @@ static const gchar* wintc_sh_view_fs_get_display_name(
 {
     WinTCShViewFS* view_fs = WINTC_SH_VIEW_FS(view);
 
-    if (g_strcmp0(view_fs->path, "/") == 0)
+    if (view_fs->custom_name)
     {
-        return view_fs->path;
+        return view_fs->custom_name;
     }
 
-    // FIXME: This could be broken if the path itself contains an escaped dir
-    //        separator, cba for now
-    //
     return g_strrstr(view_fs->path, G_DIR_SEPARATOR_S) + 1;
 }
 
@@ -750,9 +787,9 @@ static const gchar* wintc_sh_view_fs_get_icon_name(
 {
     WinTCShViewFS* view_fs = WINTC_SH_VIEW_FS(view);
 
-    if (g_strcmp0(view_fs->path, "/") == 0)
+    if (view_fs->custom_icon)
     {
-        return "drive-harddisk";
+        return view_fs->custom_icon;
     }
 
     return "inode-directory";
@@ -1049,6 +1086,7 @@ static void wintc_sh_view_fs_refresh_items(
     for (GList* iter = entries; iter; iter = iter->next)
     {
         GFile*              file;
+        GIcon*              icon = NULL;
         gboolean            is_dir;
         WinTCShextViewItem* item = g_new(WinTCShextViewItem, 1);
 
@@ -1066,16 +1104,22 @@ static void wintc_sh_view_fs_refresh_items(
         if (is_dir)
         {
             is_dir =
-                !wintc_sh_drive_monitor_get_path_is_mount(
+                !wintc_sh_drive_monitor_get_path_mount_info(
                     wintc_sh_drive_monitor_get(view_fs->shext_host),
-                    entry_path
+                    entry_path,
+                    &icon,
+                    NULL
                 );
         }
 
         item->display_name = (gchar*) g_steal_pointer(&(iter->data));
         item->icon_name    = is_dir ?
                                  g_strdup("inode-directory") :
-                                 get_file_mime_icon(file);
+                                 (
+                                     icon ?
+                                        wintc_icon_get_available_name(icon) :
+                                        get_file_mime_icon(file)
+                                 );
         item->is_leaf      = !is_dir;
         item->hash         = wintc_sh_view_fs_get_contextual_hash(
                                  view_fs,
@@ -1084,6 +1128,7 @@ static void wintc_sh_view_fs_refresh_items(
 
         g_free(entry_path);
         g_object_unref(file);
+        g_clear_object(&icon);
 
         g_hash_table_insert(
             view_fs->fs_map_entries,
@@ -1244,9 +1289,11 @@ static gboolean real_activate_item(
 
     if (
         !(item->is_leaf) ||
-        wintc_sh_drive_monitor_get_path_is_mount(
+        wintc_sh_drive_monitor_get_path_mount_info(
             wintc_sh_drive_monitor_get(view_fs->shext_host),
-            next_path
+            next_path,
+            NULL,
+            NULL
         )
     )
     {
