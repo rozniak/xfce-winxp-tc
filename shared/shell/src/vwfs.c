@@ -1318,10 +1318,12 @@ static gchar* wintc_sh_view_fs_build_path_for_view_item(
 {
     const gchar* format =
         uri ? "file://%s/%s" : "%s/%s";
+    const gchar* base =
+        g_strcmp0(view_fs->path, "/") == 0 ? "" : view_fs->path;
 
     return g_strdup_printf(
         format,
-        view_fs->path,
+        base,
         item->display_name
     );
 }
