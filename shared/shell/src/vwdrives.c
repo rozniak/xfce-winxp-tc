@@ -128,6 +128,10 @@ static WinTCShextTopLevelItem* wintc_sh_view_drives_get_toplevel_item(
     WinTCShViewDrives* view_drives,
     guint              item_hash
 );
+static void wintc_sh_view_drives_register_category_guid(
+    WinTCShViewDrives* view_drives,
+    const gchar*       category_guid
+);
 
 static void on_shext_host_toplevel_added(
     WinTCShextHost*         shext_host,
@@ -384,7 +388,7 @@ static gint wintc_sh_view_drives_compare_items(
         );
     }
 
-    return pos1 > pos2 ? -1 : 1;
+    return pos1 < pos2 ? -1 : 1;
 }
 
 static GList* wintc_sh_view_drives_drag_execute(
@@ -592,29 +596,22 @@ static void wintc_sh_view_drives_refresh_items(
 
     // We track the order of categories for later sorting
     //
-    view_drives->list_categories =
-        g_list_prepend(
-            view_drives->list_categories,
-            GUINT_TO_POINTER(g_str_hash(WINTC_SH_GUID_CATEGORY_LOCAL_FILES))
-        );
-    view_drives->list_categories =
-        g_list_prepend(
-            view_drives->list_categories,
-            GUINT_TO_POINTER(g_str_hash(WINTC_SH_GUID_CATEGORY_DRIVES))
-        );
-    view_drives->list_categories =
-        g_list_prepend(
-            view_drives->list_categories,
-            GUINT_TO_POINTER(g_str_hash(WINTC_SH_GUID_CATEGORY_REMOVABLES))
-        );
-    view_drives->list_categories =
-        g_list_prepend(
-            view_drives->list_categories,
-            GUINT_TO_POINTER(g_str_hash(WINTC_SH_GUID_CATEGORY_OTHER))
-        );
-
-    view_drives->list_categories =
-        g_list_reverse(view_drives->list_categories);
+    wintc_sh_view_drives_register_category_guid(
+        view_drives,
+        WINTC_SH_GUID_CATEGORY_LOCAL_FILES
+    );
+    wintc_sh_view_drives_register_category_guid(
+        view_drives,
+        WINTC_SH_GUID_CATEGORY_DRIVES
+    );
+    wintc_sh_view_drives_register_category_guid(
+        view_drives,
+        WINTC_SH_GUID_CATEGORY_REMOVABLES
+    );
+    wintc_sh_view_drives_register_category_guid(
+        view_drives,
+        WINTC_SH_GUID_CATEGORY_OTHER
+    );
 
     // Get categories first
     //
@@ -628,14 +625,16 @@ static void wintc_sh_view_drives_refresh_items(
         WinTCShextCategory* category = (WinTCShextCategory*) iter->data;
 
         if (
-            !g_list_find(
-                view_drives->list_categories,
-                GUINT_TO_POINTER(g_str_hash(category->guid))
-            )
+            wintc_sh_view_drives_get_category_order(
+                view_drives,
+                category
+            ) < 0
         )
         {
-            view_drives->list_categories =
-                g_list_append(view_drives->list_categories, category);
+            wintc_sh_view_drives_register_category_guid(
+                view_drives,
+                category->guid
+            );
         }
 
         // Get the items for this category
@@ -717,10 +716,21 @@ static gint wintc_sh_view_drives_get_category_order(
     WinTCShextCategory* category
 )
 {
-    return g_list_position(
-        view_drives->list_categories,
-        g_list_find(view_drives->list_categories, category)
-    );
+    gint   pos;
+    gchar* guid_u = g_ascii_strup(category->guid, -1);
+
+    pos =
+        g_list_position(
+            view_drives->list_categories,
+            g_list_find(
+                view_drives->list_categories,
+                GUINT_TO_POINTER(g_str_hash(guid_u))
+            )
+        );
+
+    g_free(guid_u);
+
+    return pos;
 }
 
 static WinTCShextTopLevelItem* wintc_sh_view_drives_get_toplevel_item(
@@ -732,6 +742,22 @@ static WinTCShextTopLevelItem* wintc_sh_view_drives_get_toplevel_item(
         view_drives->map_hash_to_tl_item,
         GUINT_TO_POINTER(item_hash)
     );
+}
+
+static void wintc_sh_view_drives_register_category_guid(
+    WinTCShViewDrives* view_drives,
+    const gchar*       category_guid
+)
+{
+    gchar* guid_u = g_ascii_strup(category_guid, -1);
+
+    view_drives->list_categories =
+        g_list_append(
+            view_drives->list_categories,
+            GUINT_TO_POINTER(g_str_hash(guid_u))
+        );
+
+    g_free(guid_u);
 }
 
 //
