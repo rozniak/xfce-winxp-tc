@@ -309,12 +309,27 @@ static void wintc_explorer_application_startup(
     //
     explorer_app->shext_host = wintc_shext_host_new();
 
-    wintc_sh_init_builtin_extensions(explorer_app->shext_host);
-    wintc_shext_host_load_extensions(
-        explorer_app->shext_host,
-        WINTC_SHEXT_LOAD_DEFAULT,
-        NULL
-    );
+    if (
+        !wintc_sh_init_builtin_extensions(explorer_app->shext_host) ||
+        !wintc_shext_host_load_extensions(
+            explorer_app->shext_host,
+            WINTC_SHEXT_LOAD_DEFAULT,
+            NULL
+        )
+    )
+    {
+        // FIXME: Localise
+        //
+        wintc_messagebox_show(
+            NULL,
+            "Failed to initialize shell extensions, Explorer cannot continue.",
+            "Error",
+            WINTC_BUTTONS_OK,
+            WINTC_MESSAGE_ERROR
+        );
+
+        g_application_quit(application);
+    }
 
     // Create folder options
     //
