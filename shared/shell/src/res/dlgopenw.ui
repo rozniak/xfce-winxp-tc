@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template class="WinTCShOpenWithDialog" parent="GtkWindow">
+    <property name="title">Open With</property>
+
+    <child>
+      <object class="GtkBox">
+        <property name="visible">True</property>
+        <property name="orientation">vertical</property>
+
+        <child>
+          <object class="GtkGrid">
+            <property name="visible">True</property>
+
+            <child>
+              <object class="GtkImage">
+                <property name="visible">True</property>
+                <property name="icon-name">folder</property>
+                <property name="pixel-size">32</property>
+              </object>
+              <packing>
+                <property name="left-attach">0</property>
+                <property name="top-attach">0</property>
+                <property name="height">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="label">Choose the program you want to use to open this file:</property>
+              </object>
+              <packing>
+                <property name="left-attach">1</property>
+                <property name="top-attach">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="label">File: %s</property>
+              </object>
+              <packing>
+                <property name="left-attach">1</property>
+                <property name="top-attach">1</property>
+              </packing>
+            </child>
+          </object>
+        </child>
+
+        <child>
+          <object class="GtkFrame">
+            <property name="visible">True</property>
+            <property name="label">Programs</property>
+
+            <child>
+              <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="orientation">vertical</property>
+
+                <child>
+                  <object class="GtkTreeView" id="tree-view">
+                    <property name="visible">True</property>
+                  </object>
+                </child>
+
+                <child>
+                  <object class="GtkCheckButton" id="check-mime">
+                    <property name="visible">True</property>
+                    <property name="label">Always use the selected program to open this kind of file</property>
+                  </object>
+                </child>
+
+                <child>
+                  <object class="GtkButton" id="button-browse">
+                    <property name="visible">True</property>
+                    <property name="label">Browse...</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+
+        <child>
+          <object class="GtkLabel">
+            <property name="visible">True</property>
+            <property name="max-width-chars">40</property>
+            <property name="wrap">True</property>
+            <property name="label">If the program you want is not in the list or on your computer, you can look for the appropriate program on the web.</property>
+          </object>
+        </child>
+
+        <child>
+          <object class="GtkBox">
+            <property name="visible">True</property>
+            <property name="orientation">horizontal</property>
+
+            <child>
+              <object class="GtkButton" id="button-ok">
+                <property name="visible">True</property>
+                <property name="label">OK</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton" id="button-cancel">
+                <property name="visible">True</property>
+                <property name="label">Cancel</property>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </template>
+</interface>

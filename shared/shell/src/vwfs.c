@@ -6,6 +6,7 @@
 #include <wintc/shellext.h>
 #include <wintc/shlang.h>
 
+#include "../public/dlgopenw.h"
 #include "../public/drvmon.h"
 #include "../public/fsclipbd.h"
 #include "../public/fsop.h"
@@ -186,6 +187,12 @@ static gboolean shopr_new(
     GError**             error
 );
 static gboolean shopr_open(
+    WinTCIShextView*     view,
+    WinTCShextOperation* operation,
+    GtkWindow*           wnd,
+    GError**             error
+);
+static gboolean shopr_open_with(
     WinTCIShextView*     view,
     WinTCShextOperation* operation,
     GtkWindow*           wnd,
@@ -1175,6 +1182,11 @@ static WinTCShextOperation* wintc_sh_view_fs_spawn_operation(
             ret->priv = g_steal_pointer(&targets);
             break;
 
+        case WINTC_SHEXT_KNOWN_OP_OPEN_WITH:
+            ret->func = shopr_open_with;
+            ret->priv = g_steal_pointer(&targets);
+            break;
+
         case WINTC_SHEXT_KNOWN_OP_CUT:
             ret->func = shopr_cut;
             ret->priv = wintc_sh_view_fs_convert_list_hashes(
@@ -1583,6 +1595,51 @@ static gboolean shopr_open(
     g_list_free(targets);
 
     return success;
+}
+
+static gboolean shopr_open_with(
+    WinTCIShextView*     view,
+    WinTCShextOperation* operation,
+    WINTC_UNUSED(GtkWindow* wnd),
+    WINTC_UNUSED(GError** error)
+)
+{
+    WinTCShViewFS* view_fs = WINTC_SH_VIEW_FS(view);
+
+    // Only need the first item from the list
+    //
+    WinTCShextViewItem* item;
+    gchar*              path;
+    GList*              targets = operation->priv;
+
+    if (!targets)
+    {
+        g_warning("%s", "shell: fs open with op - no files specified?");
+        return TRUE;
+    }
+
+    item =
+        wintc_sh_view_fs_get_view_item(
+            view_fs,
+            GPOINTER_TO_UINT(targets->data)
+        );
+
+    path =
+        wintc_sh_view_fs_build_path_for_view_item(
+            view_fs,
+            item,
+            FALSE
+        );
+
+    // Spawn the dialog
+    //
+    GtkWidget* dlg = wintc_sh_open_with_dialog_new(path);
+
+    gtk_window_present(GTK_WINDOW(dlg));
+
+    g_free(path);
+
+    return TRUE;
 }
 
 static gboolean shopr_paste(

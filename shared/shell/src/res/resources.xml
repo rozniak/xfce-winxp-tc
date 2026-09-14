@@ -4,6 +4,7 @@
     <!-- DIALOGS -->
     <file>dlgabout.ui</file>
     <file>dlgfsop.ui</file>
+    <file>dlgopenw.ui</file>
 
     <!-- MENUS -->
     <file>menuctx.ui</file>
