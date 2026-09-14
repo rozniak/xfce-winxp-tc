@@ -19,9 +19,9 @@ msgfmt-->bt,rt-->gettext
 networkmanager-->bt,rt-->NULL
 plymouth-->bt,rt-->splash
 pulseaudio-->bt,rt-->pulseaudio
-python3-packaging-->bt,rt-->py311-packaging
-python3-pil-->bt,rt-->py311-pillow
-python3-venv-->bt,rt-->py311-virtualenv
+python3-packaging-->bt,rt-->py312-packaging
+python3-pil-->bt,rt-->py312-pillow
+python3-venv-->bt,rt-->py312-virtualenv
 sass-->bt,rt-->rubygem-sass
 sqlite3-->bt,rt-->sqlite3
 sysinfo-->bt,rt-->libsysinfo
