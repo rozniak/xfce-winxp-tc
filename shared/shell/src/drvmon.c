@@ -34,8 +34,7 @@ typedef struct _WinTCShellDrive
     GDrive*         drive;
     const gchar*    guid_category;
     gint            drive_type;
-
-    GList*      list_unix_paths;
+    gboolean        suppress;
 } WinTCShellDrive;
 
 //
@@ -87,6 +86,10 @@ static WinTCShellDrive* wintc_sh_drive_monitor_get_shell_drive(
     GMount*              mount,
     GVolume*             volume
 );
+static WinTCShellDrive* wintc_sh_drive_monitor_find_shell_drive_by_device(
+    WinTCShDriveMonitor* drvmon,
+    const gchar*         dev_path
+);
 
 static void wintc_sh_drive_monitor_register_drive_icon(
     WinTCShDriveMonitor* drvmon,
@@ -109,10 +112,6 @@ static void wintc_sh_drive_monitor_remove_mount(
 static void wintc_sh_drive_monitor_remove_volume(
     WinTCShDriveMonitor* drvmon,
     GVolume*             volume
-);
-
-static void wintc_shell_drive_free(
-    WinTCShellDrive* sh_drive
 );
 
 static void clear_view_item(
@@ -143,12 +142,6 @@ static gboolean cb_shext_activate_item_drive(
     GError**            error
 );
 static gboolean cb_shext_activate_item_mount(
-    WinTCShextHost*     shext_host,
-    WinTCShextViewItem* item,
-    WinTCShextPathInfo* path_info,
-    GError**            error
-);
-static gboolean cb_shext_activate_item_unix_mount(
     WinTCShextHost*     shext_host,
     WinTCShextViewItem* item,
     WinTCShextPathInfo* path_info,
@@ -272,7 +265,7 @@ static void wintc_sh_drive_monitor_init(
             g_direct_hash,
             g_direct_equal,
             NULL,
-            (GDestroyNotify) wintc_shell_drive_free
+            (GDestroyNotify) g_free
         );
     self->map_id_to_icon =
         g_hash_table_new_full(
@@ -294,7 +287,6 @@ static void wintc_sh_drive_monitor_constructed(
 
     GList* drives      = NULL;
     GList* mounts      = NULL;
-    GList* unix_mounts = NULL;
     GList* volumes     = NULL;
 
     // Grab volume monitor
@@ -306,6 +298,30 @@ static void wintc_sh_drive_monitor_constructed(
         s_monitor = g_volume_monitor_get();
     }
 
+    // Always insert the root / because the volume monitor hides it
+    //
+    GIcon* root_icon;
+    gchar* root_name;
+
+    wintc_sh_drive_monitor_get_drive_info(
+        drvmon,
+        NULL,
+        &root_icon,
+        &root_name
+    );
+
+    wintc_sh_drive_monitor_add_icon(
+        drvmon,
+        "/",
+        WINTC_SH_GUID_CATEGORY_DRIVES,
+        g_steal_pointer(&root_name),
+        wintc_icon_get_available_name(root_icon),
+        "file:///",
+        (WinTCShextActivateItemFunc) cb_shext_activate_item_default
+    );
+
+    g_object_unref(root_icon);
+
     // Enum drives
     //
     drives = g_volume_monitor_get_connected_drives(s_monitor);
@@ -315,19 +331,12 @@ static void wintc_sh_drive_monitor_constructed(
         wintc_sh_drive_monitor_add_drive(drvmon, G_DRIVE(iter->data));
     }
 
-    // No drives? Possibly GVFS isn't installed - just try to add the root
-    // mount manually
+    // No drives? Possibly GVFS isn't installed
     //
     if (!drives)
     {
-        wintc_sh_drive_monitor_add_icon(
-            drvmon,
-            "/",
-            WINTC_SH_GUID_CATEGORY_DRIVES,
-            "Local Disk (/)", // FIXME: Localise
-            g_strdup("drive-harddisk"),
-            "file:///",
-            (WinTCShextActivateItemFunc) cb_shext_activate_item_default
+        WINTC_LOG_DEBUG(
+            "shell: drvmon: no drives found, GVFS may not be installed"
         );
 
         goto cleanup;
@@ -351,82 +360,122 @@ static void wintc_sh_drive_monitor_constructed(
         wintc_sh_drive_monitor_add_mount(drvmon, G_MOUNT(iter->data));
     }
 
-    // Scan for UNIX mounts that the volume watcher hides from us
+    // Locate the mount for / because the volume monitor hides it from us so
+    // we can suppress these drives from showing up
     //
-    unix_mounts = g_unix_mount_entries_get(NULL);
+    GUnixMountEntry* mount_root = g_unix_mount_entry_at("/", NULL);
 
-    for (GList* iter = unix_mounts; iter; iter = iter->next)
+    if (mount_root)
     {
-        GUnixMountEntry* mount = (GUnixMountEntry*) iter->data;
+        const gchar* dev_path = g_unix_mount_entry_get_device_path(mount_root);
+        const gchar* fs_type  = g_unix_mount_entry_get_fs_type(mount_root);
 
-        if (
-            !g_unix_mount_entry_is_system_internal(mount) ||
-            g_strcmp0(g_unix_mount_entry_get_mount_path(mount), "/") != 0
-        )
+        if (g_strcmp0(fs_type, "zfs") == 0) // ZFS - must find disks in the pool
         {
-            continue;
-        }
+            static gchar* s_zpool_argv[] = {
+                "",
+                "list",
+                "-PHv",
+                "-o",
+                "name",
+                "",
+                NULL
+            };
 
-        // Attempt to find the drive that should be mapped with this
-        //
-        WinTCShellDrive* sh_drive;
-        GHashTableIter   iter_ht;
+            gchar* zfs_bin  = g_find_program_in_path("zpool");
+            gchar* zfs_pool = wintc_strdup_delimited(dev_path, "/", 0);
+            gchar* zfs_stat = NULL;
 
-        g_hash_table_iter_init(&iter_ht, drvmon->map_drive_to_sh_drive);
-
-        while (g_hash_table_iter_next(&iter_ht, NULL, (void*) &sh_drive))
-        {
-            gchar* ident =
-                g_drive_get_identifier(
-                    sh_drive->drive,
-                    G_DRIVE_IDENTIFIER_KIND_UNIX_DEVICE
-                );
+            s_zpool_argv[0] = zfs_bin;
+            s_zpool_argv[5] = zfs_pool;
 
             if (
-                g_str_has_prefix(
-                    g_unix_mount_entry_get_device_path(mount),
-                    ident
+                g_spawn_sync(
+                    NULL,
+                    s_zpool_argv,
+                    NULL,
+                    G_SPAWN_STDERR_TO_DEV_NULL,
+                    NULL,
+                    NULL,
+                    &zfs_stat,
+                    NULL,
+                    NULL,
+                    NULL
                 )
             )
             {
-                gchar* mount_path =
-                    g_strdup(g_unix_mount_entry_get_mount_path(mount));
-
-                WINTC_LOG_DEBUG(
-                    "shell: drvmon: determined unix path %s mapped to %s",
-                    g_unix_mount_entry_get_mount_path(mount),
-                    g_unix_mount_entry_get_device_path(mount)
-                );
-
-                sh_drive->list_unix_paths =
-                    g_list_append(
-                        sh_drive->list_unix_paths,
-                        mount_path
-                    );
-
-                // Bin any existing drive icon
+                // Locate devices
                 //
-                wintc_sh_drive_monitor_remove_drive(drvmon, sh_drive->drive);
+                gchar** lines = g_strsplit(zfs_stat, "\n", -1);
 
-                // We know this is a fixed path
-                //
-                wintc_sh_drive_monitor_add_icon(
-                    drvmon,
-                    mount_path,
-                    sh_drive->guid_category,
-                    g_strdup_printf(
-                        "Local Disk (%s)",
-                        mount_path
-                    ),
-                    g_strdup("drive-harddisk"),
-                    mount_path,
-                    (WinTCShextActivateItemFunc)
-                        cb_shext_activate_item_unix_mount
-                );
+                for (gint i = 0; lines[i]; i++)
+                {
+                    const gchar* line = lines[i];
+                    const gchar* zpool_dev;
+
+                    if (line[0] != '\t')
+                    {
+                        continue;
+                    }
+
+                    zpool_dev = strstr(line, "/dev/");
+
+                    // Locate and suppress drive
+                    //
+                    WinTCShellDrive* sh_drive =
+                        wintc_sh_drive_monitor_find_shell_drive_by_device(
+                            drvmon,
+                            zpool_dev
+                        );
+
+                    if (sh_drive)
+                    {
+                        WINTC_LOG_DEBUG(
+                            "shell: drvmon: (zfs) suppressing %s",
+                            zpool_dev
+                        );
+
+                        sh_drive->suppress = TRUE;
+
+                        wintc_sh_drive_monitor_remove_drive(
+                            drvmon,
+                            sh_drive->drive
+                        );
+                    }
+                }
+
+                g_strfreev(lines);
             }
 
-            g_free(ident);
+            g_free(zfs_bin);
+            g_free(zfs_pool);
+            g_free(zfs_stat);
         }
+        else // Default, assume we can find the device path exactly
+        {
+            WinTCShellDrive* sh_drive =
+                wintc_sh_drive_monitor_find_shell_drive_by_device(
+                    drvmon,
+                    dev_path
+                );
+
+            if (sh_drive)
+            {
+                WINTC_LOG_DEBUG(
+                    "shell: drvmon: suppressing %s",
+                    dev_path
+                );
+
+                sh_drive->suppress = TRUE;
+
+                wintc_sh_drive_monitor_remove_drive(
+                    drvmon,
+                    sh_drive->drive
+                );
+            }
+        }
+
+        g_unix_mount_entry_free(mount_root);
     }
 
     // Connect monitor signals
@@ -471,7 +520,6 @@ static void wintc_sh_drive_monitor_constructed(
 cleanup:
     g_list_free_full(drives,      (GDestroyNotify) g_object_unref);
     g_list_free_full(mounts,      (GDestroyNotify) g_object_unref);
-    g_list_free_full(unix_mounts, (GDestroyNotify) g_unix_mount_entry_free);
     g_list_free_full(volumes,     (GDestroyNotify) g_object_unref);
 }
 
@@ -561,7 +609,6 @@ gboolean wintc_sh_drive_monitor_get_path_mount_info(
 )
 {
     GList*          list_mounts    = NULL;
-    GList*          list_sh_drives = NULL;
     GVolumeMonitor* monitor        = g_volume_monitor_get();
     gboolean        ret            = FALSE;
 
@@ -583,7 +630,7 @@ gboolean wintc_sh_drive_monitor_get_path_mount_info(
         goto cleanup;
     }
 
-    // Check the normal GMounts
+    // Check the mounts
     //
     list_mounts = g_volume_monitor_get_mounts(monitor);
 
@@ -607,34 +654,7 @@ gboolean wintc_sh_drive_monitor_get_path_mount_info(
         }
     }
 
-    // Didn't find any in the normal mounts - check if it exists in one
-    // of the UNIX mount paths we've picked up
-    //
-    list_sh_drives =
-        g_hash_table_get_values(drvmon->map_drive_to_sh_drive);
-
-    for (GList* iter = list_sh_drives; iter; iter = iter->next)
-    {
-        WinTCShellDrive* sh_drive = (WinTCShellDrive*) iter->data;
-
-        for (
-            GList* iter2 = sh_drive->list_unix_paths;
-            iter2;
-            iter2 = iter2->next
-        )
-        {
-            if (g_strcmp0((gchar*) iter2->data, path) == 0)
-            {
-                icon_tmp = g_themed_icon_new("drive-hardisk");
-                name_tmp = g_path_get_basename(path);
-                ret = TRUE;
-                goto cleanup;
-            }
-        }
-    }
-
 cleanup:
-    g_list_free(list_sh_drives);
     g_list_free_full(list_mounts, (GDestroyNotify) g_object_unref);
     g_object_unref(monitor);
 
@@ -657,9 +677,9 @@ static void wintc_sh_drive_monitor_add_drive(
 {
     WinTCShellDrive* sh_drive = g_new(WinTCShellDrive, 1);
 
-    sh_drive->drvmon          = drvmon;
-    sh_drive->drive           = drive;
-    sh_drive->list_unix_paths = NULL;
+    sh_drive->drvmon   = drvmon;
+    sh_drive->drive    = drive;
+    sh_drive->suppress = FALSE;
 
     wintc_sh_drive_monitor_register_drive_icon(drvmon, sh_drive);
 
@@ -927,15 +947,42 @@ static WinTCShellDrive* wintc_sh_drive_monitor_get_shell_drive(
     return sh_drive;
 }
 
+static WinTCShellDrive* wintc_sh_drive_monitor_find_shell_drive_by_device(
+    WinTCShDriveMonitor* drvmon,
+    const gchar*         dev_path
+)
+{
+    GHashTableIter   iter;
+    WinTCShellDrive* ret = NULL;
+    WinTCShellDrive* sh_drive;
+
+    g_hash_table_iter_init(&iter, drvmon->map_drive_to_sh_drive);
+
+    while (!ret && g_hash_table_iter_next(&iter, NULL, (void*) &sh_drive))
+    {
+        gchar* ident =
+            g_drive_get_identifier(
+                sh_drive->drive,
+                G_DRIVE_IDENTIFIER_KIND_UNIX_DEVICE
+            );
+
+        if (g_str_has_prefix(dev_path, ident))
+        {
+            ret = sh_drive;
+        }
+
+        g_free(ident);
+    }
+
+    return ret;
+}
+
 static void wintc_sh_drive_monitor_register_drive_icon(
     WinTCShDriveMonitor* drvmon,
     WinTCShellDrive*     sh_drive
 )
 {
-    // This should be a no-op if the drive has a UNIX mount, only the mount
-    // needs to be shown and not the drive placeholder
-    //
-    if (sh_drive->list_unix_paths)
+    if (sh_drive->suppress)
     {
         return;
     }
@@ -1151,15 +1198,6 @@ static void wintc_sh_drive_monitor_remove_volume(
     }
 }
 
-static void wintc_shell_drive_free(
-    WinTCShellDrive* sh_drive
-)
-{
-    g_list_free_full(sh_drive->list_unix_paths, (GDestroyNotify) g_free);
-
-    g_free(sh_drive);
-}
-
 static void clear_view_item(
     WinTCShextViewItem* item
 )
@@ -1295,19 +1333,6 @@ static gboolean cb_shext_activate_item_mount(
         g_strdup_printf("file://%s", g_file_peek_path(file));
 
     g_object_unref(file);
-
-    return TRUE;
-}
-
-static gboolean cb_shext_activate_item_unix_mount(
-    WINTC_UNUSED(WinTCShextHost* shext_host),
-    WinTCShextViewItem* item,
-    WinTCShextPathInfo* path_info,
-    WINTC_UNUSED(GError**        error)
-)
-{
-    path_info->base_path =
-        g_strdup_printf("file://%s", (gchar*) item->priv);
 
     return TRUE;
 }
