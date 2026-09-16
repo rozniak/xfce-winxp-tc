@@ -37,6 +37,9 @@ enum
 static void wintc_sh_open_with_dialog_constructed(
     GObject* object
 );
+static void wintc_sh_open_with_dialog_dispose(
+    GObject* object
+);
 static void wintc_sh_open_with_dialog_finalize(
     GObject* object
 );
@@ -133,6 +136,7 @@ static void wintc_sh_open_with_dialog_class_init(
     GtkWidgetClass* widget_class = GTK_WIDGET_CLASS(klass);
 
     object_class->constructed  = wintc_sh_open_with_dialog_constructed;
+    object_class->dispose      = wintc_sh_open_with_dialog_dispose;
     object_class->finalize     = wintc_sh_open_with_dialog_finalize;
     object_class->set_property = wintc_sh_open_with_dialog_set_property;
 
@@ -389,6 +393,18 @@ static void wintc_sh_open_with_dialog_constructed(
     );
 
     gtk_tree_view_expand_all(GTK_TREE_VIEW(dlg->tree_view));
+}
+
+static void wintc_sh_open_with_dialog_dispose(
+    GObject* object
+)
+{
+    WinTCShOpenWithDialog* dlg = WINTC_SH_OPEN_WITH_DIALOG(object);
+
+    g_clear_object(&(dlg->tree_model));
+
+    (G_OBJECT_CLASS(wintc_sh_open_with_dialog_parent_class))
+        ->dispose(object);
 }
 
 static void wintc_sh_open_with_dialog_finalize(
