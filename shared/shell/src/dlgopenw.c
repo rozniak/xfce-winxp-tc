@@ -581,10 +581,12 @@ static void wintc_sh_open_with_dialog_init_programs(
             dlg->tree_model,
             &iter_new,
             COLUMN_ICON_NAME,    icon_name,
-            COLUMN_DISPLAY_NAME, g_strdup(g_app_info_get_name(app_info)),
+            COLUMN_DISPLAY_NAME, g_app_info_get_name(app_info),
             COLUMN_APP_INFO,     app_info,
             -1
         );
+
+        g_free(icon_name);
     }
 
     g_list_free_full(list_programs, (GDestroyNotify) g_object_unref);
@@ -699,10 +701,10 @@ static void on_button_browse_clicked(
             {
                 // Not found - insert it into Other category
                 //
-                gchar* icon_name = wintc_icon_get_available_name(
-                                       g_app_info_get_icon(app_info)
-                                   );
-                gchar* name      = g_strdup(g_app_info_get_name(app_info));
+                gchar* icon_name =
+                    wintc_icon_get_available_name(
+                        g_app_info_get_icon(app_info)
+                    );
 
                 gtk_tree_store_append(
                     dlg->tree_model,
@@ -714,10 +716,12 @@ static void on_button_browse_clicked(
                     dlg->tree_model,
                     &iter,
                     COLUMN_ICON_NAME,    icon_name,
-                    COLUMN_DISPLAY_NAME, name,
+                    COLUMN_DISPLAY_NAME, g_app_info_get_name(app_info),
                     COLUMN_APP_INFO,     app_info,
                     -1
                 );
+
+                g_free(icon_name);
             }
 
             g_object_unref(app_info);
@@ -752,9 +756,9 @@ static void on_button_browse_clicked(
                 gtk_tree_store_set(
                     dlg->tree_model,
                     &iter,
-                    COLUMN_ICON_NAME,    g_strdup("application-x-executable"),
-                    COLUMN_DISPLAY_NAME, g_path_get_basename(file_path),
-                    COLUMN_EXE_PATH,     g_strdup(file_path),
+                    COLUMN_ICON_NAME,    "application-x-executable",
+                    COLUMN_DISPLAY_NAME, wintc_basename(file_path),
+                    COLUMN_EXE_PATH,     file_path,
                     -1
                 );
             }

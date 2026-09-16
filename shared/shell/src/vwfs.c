@@ -1638,6 +1638,7 @@ static gboolean shopr_open_with(
     gtk_window_present(GTK_WINDOW(dlg));
 
     g_free(path);
+    g_list_free(targets);
 
     return TRUE;
 }
