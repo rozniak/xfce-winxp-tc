@@ -14,9 +14,8 @@
             <property name="visible">True</property>
 
             <child>
-              <object class="GtkImage">
+              <object class="GtkImage" id="img_icon">
                 <property name="visible">True</property>
-                <property name="icon-name">folder</property>
                 <property name="pixel-size">32</property>
                 <property name="valign">GTK_ALIGN_START</property>
               </object>
@@ -44,7 +43,9 @@
             <child>
               <object class="GtkLabel" id="label_file">
                 <property name="visible">True</property>
+                <property name="ellipsize">PANGO_ELLIPSIZE_END</property>
                 <property name="label">File: %s</property>
+                <property name="width-chars">5</property>
                 <property name="xalign">0.0</property>
 
                 <style>

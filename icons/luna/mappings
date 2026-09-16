@@ -81,6 +81,7 @@ actions/help-about-->null
 actions/history-back-->nav_back
 actions/history-forward-->nav_forward
 actions/next-->right
+actions/open-with-->open_with
 actions/previous-->left
 actions/search-->search
 actions/system-log-out-->logoff

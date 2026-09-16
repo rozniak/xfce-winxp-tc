@@ -702,6 +702,12 @@ static void wintc_sh_drive_monitor_add_icon(
     WinTCShextActivateItemFunc activate_cb
 )
 {
+    if (!obj_path)
+    {
+        WINTC_LOG_DEBUG("shell: drvmon: no obj path for %s", display_name);
+        return;
+    }
+
     WinTCShextViewItem* item = g_new(WinTCShextViewItem, 1);
 
     item->display_name = display_name;

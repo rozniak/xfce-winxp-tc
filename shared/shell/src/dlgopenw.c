@@ -111,6 +111,7 @@ typedef struct _WinTCShOpenWithDialog
     GtkWidget* button_cancel;
     GtkWidget* button_ok;
     GtkWidget* check_mime;
+    GtkWidget* img_icon;
     GtkWidget* label_file;
     GtkWidget* tree_view;
 } WinTCShOpenWithDialog;
@@ -178,6 +179,11 @@ static void wintc_sh_open_with_dialog_class_init(
     gtk_widget_class_bind_template_child(
         widget_class,
         WinTCShOpenWithDialog,
+        img_icon
+    );
+    gtk_widget_class_bind_template_child(
+        widget_class,
+        WinTCShOpenWithDialog,
         label_file
     );
     gtk_widget_class_bind_template_child(
@@ -209,6 +215,29 @@ static void wintc_sh_open_with_dialog_init(
     gtk_widget_init_template(GTK_WIDGET(self));
 
     wintc_widget_add_style_class(GTK_WIDGET(self), "wintc-open-with");
+
+    // Set icon - we must do this here because we can't use GThemedIcon with
+    // multiple names in the XML
+    //
+    static gchar* s_icon_names[] = {
+        "open-with",
+        "text-x-generic",
+        "find"
+    };
+
+    GIcon* icon =
+        g_themed_icon_new_from_names(
+            s_icon_names,
+            G_N_ELEMENTS(s_icon_names)
+        );
+
+    gtk_image_set_from_gicon(
+        GTK_IMAGE(self->img_icon),
+        icon,
+        GTK_ICON_SIZE_INVALID
+    );
+
+    g_object_unref(icon);
 
     // Prepare tree store
     //
