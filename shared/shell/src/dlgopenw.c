@@ -102,6 +102,7 @@ typedef struct _WinTCShOpenWithDialog
     // State
     //
     gchar*        file_path;
+    gchar*        mime_type;
     GtkTreeStore* tree_model;
 
     // UI
@@ -333,7 +334,8 @@ static void wintc_sh_open_with_dialog_constructed(
     //
     GtkTreeIter iter_oth;
     GtkTreeIter iter_rec;
-    gchar* mime_type = wintc_query_mime_for_file(dlg->file_path, NULL);
+
+    dlg->mime_type = wintc_query_mime_for_file(dlg->file_path, NULL);
 
     wintc_sh_open_with_dialog_get_category_iter(
         dlg,
@@ -349,12 +351,12 @@ static void wintc_sh_open_with_dialog_constructed(
     wintc_sh_open_with_dialog_init_programs(
         dlg,
         &iter_rec,
-        g_app_info_get_recommended_for_type(mime_type)
+        g_app_info_get_recommended_for_type(dlg->mime_type)
     );
     wintc_sh_open_with_dialog_init_programs(
         dlg,
         &iter_oth,
-        g_app_info_get_fallback_for_type(mime_type)
+        g_app_info_get_fallback_for_type(dlg->mime_type)
     );
 
     gtk_tree_view_expand_all(GTK_TREE_VIEW(dlg->tree_view));
@@ -367,6 +369,7 @@ static void wintc_sh_open_with_dialog_finalize(
     WinTCShOpenWithDialog* dlg = WINTC_SH_OPEN_WITH_DIALOG(object);
 
     g_free(g_steal_pointer(&(dlg->file_path)));
+    g_free(g_steal_pointer(&(dlg->mime_type)));
 
     (G_OBJECT_CLASS(wintc_sh_open_with_dialog_parent_class))
         ->finalize(object);
@@ -768,13 +771,33 @@ static void on_button_ok_clicked(
         GList* list_file = g_list_append(NULL, file);
 
         if (
-            !g_app_info_launch(
+            g_app_info_launch(
                 app_info,
                 list_file,
                 NULL,
                 &error
             )
         )
+        {
+            g_app_info_set_as_last_used_for_type(
+                app_info,
+                dlg->mime_type,
+                NULL
+            );
+
+            if (
+                gtk_toggle_button_get_active(
+                    GTK_TOGGLE_BUTTON(dlg->check_mime))
+                )
+            {
+                g_app_info_set_as_default_for_type(
+                    app_info,
+                    dlg->mime_type,
+                    NULL
+                );
+            }
+        }
+        else
         {
             wintc_display_error_and_clear(&error, NULL);
         }
@@ -786,7 +809,32 @@ static void on_button_ok_clicked(
     {
         gchar* exec = g_strdup_printf("%s \"%s\"", exe_path, dlg->file_path);
 
-        if (!wintc_launch_command(exec, &error))
+        if (wintc_launch_command(exec, &error))
+        {
+            if (
+                gtk_toggle_button_get_active(
+                    GTK_TOGGLE_BUTTON(dlg->check_mime)
+                )
+            )
+            {
+                // We must create a desktop entry for this to work
+                //
+                app_info =
+                    g_app_info_create_from_commandline(
+                        exe_path,
+                        NULL,
+                        G_APP_INFO_CREATE_NONE,
+                        NULL
+                    );
+
+                g_app_info_set_as_default_for_type(
+                    app_info,
+                    dlg->mime_type,
+                    NULL
+                );
+            }
+        }
+        else
         {
             wintc_display_error_and_clear(&error, NULL);
         }
