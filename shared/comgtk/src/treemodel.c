@@ -134,3 +134,14 @@ gint wintc_tree_model_get_insertion_sort_pos(
         middle = start + (diff / 2);
     }
 }
+
+gboolean wintc_tree_view_get_selected_row(
+    GtkTreeView* tree_view,
+    GtkTreeIter* iter
+)
+{
+    GtkTreeModel*     model     = gtk_tree_view_get_model(tree_view);
+    GtkTreeSelection* selection = gtk_tree_view_get_selection(tree_view);
+
+    return gtk_tree_selection_get_selected(selection, &model, iter);
+}

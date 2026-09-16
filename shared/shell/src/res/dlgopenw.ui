@@ -166,6 +166,7 @@
               <object class="GtkButton" id="button_ok">
                 <property name="visible">True</property>
                 <property name="label">OK</property>
+                <property name="sensitive">False</property>
               </object>
               <packing>
                 <property name="pack-type">end</property>

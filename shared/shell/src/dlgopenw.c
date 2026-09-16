@@ -20,6 +20,7 @@ enum
     COLUMN_ICON_NAME,
     COLUMN_DISPLAY_NAME,
     COLUMN_EXE_PATH,
+    COLUMN_APP_INFO,
     N_COLUMNS
 };
 
@@ -43,6 +44,23 @@ static void wintc_sh_open_with_dialog_set_property(
     guint         prop_id,
     const GValue* value,
     GParamSpec*   pspec
+);
+
+static void on_button_browse_clicked(
+    GtkButton* self,
+    gpointer   user_data
+);
+static void on_button_cancel_clicked(
+    GtkButton* self,
+    gpointer   user_data
+);
+static void on_button_ok_clicked(
+    GtkButton* self,
+    gpointer   user_data
+);
+static void on_tree_view_cursor_changed(
+    GtkTreeView* self,
+    gpointer     user_data
 );
 
 //
@@ -160,7 +178,8 @@ static void wintc_sh_open_with_dialog_init(
             N_COLUMNS,
             G_TYPE_STRING,
             G_TYPE_STRING,
-            G_TYPE_STRING
+            G_TYPE_STRING,
+            G_TYPE_POINTER
         );
 
     gtk_tree_view_set_model(
@@ -223,6 +242,33 @@ static void wintc_sh_open_with_dialog_init(
         COLUMN_DISPLAY_NAME, "Other Programs",
         -1
     );
+
+    // Connect signals
+    //
+    g_signal_connect(
+        self->button_browse,
+        "clicked",
+        G_CALLBACK(on_button_browse_clicked),
+        self
+    );
+    g_signal_connect(
+        self->button_cancel,
+        "clicked",
+        G_CALLBACK(on_button_cancel_clicked),
+        self
+    );
+    g_signal_connect(
+        self->button_ok,
+        "clicked",
+        G_CALLBACK(on_button_ok_clicked),
+        self
+    );
+    g_signal_connect(
+        self->tree_view,
+        "cursor-changed",
+        G_CALLBACK(on_tree_view_cursor_changed),
+        self
+    );
 }
 
 //
@@ -263,6 +309,11 @@ static void wintc_sh_open_with_dialog_constructed(
     {
         GAppInfo* app_info = G_APP_INFO(iter->data);
 
+        gchar* icon_name =
+            wintc_icon_get_available_name(
+                g_app_info_get_icon(app_info)
+            );
+
         gtk_tree_store_append(
              dlg->tree_model,
              &iter_new,
@@ -272,14 +323,14 @@ static void wintc_sh_open_with_dialog_constructed(
         gtk_tree_store_set(
             dlg->tree_model,
             &iter_new,
-            COLUMN_ICON_NAME, wintc_icon_get_available_name(g_app_info_get_icon(app_info)),
+            COLUMN_ICON_NAME,    icon_name,
             COLUMN_DISPLAY_NAME, g_strdup(g_app_info_get_name(app_info)),
-            COLUMN_EXE_PATH, g_strdup(g_app_info_get_commandline(app_info)),
+            COLUMN_APP_INFO,     g_steal_pointer(&(iter->data)),
             -1
         );
     }
 
-    g_list_free_full(list_programs, (GDestroyNotify) g_object_unref);
+    g_list_free(list_programs);
 }
 
 static void wintc_sh_open_with_dialog_finalize(
@@ -329,4 +380,111 @@ GtkWidget* wintc_sh_open_with_dialog_new(
             NULL
         )
     );
+}
+
+//
+// CALLBACKS
+//
+static void on_button_browse_clicked(
+    WINTC_UNUSED(GtkButton* self),
+    WINTC_UNUSED(gpointer   user_data)
+)
+{
+    // FIXME: Implement this
+}
+
+static void on_button_cancel_clicked(
+    WINTC_UNUSED(GtkButton* self),
+    gpointer user_data
+)
+{
+    gtk_window_close(GTK_WINDOW(user_data));
+}
+
+static void on_button_ok_clicked(
+    WINTC_UNUSED(GtkButton* self),
+    gpointer user_data
+)
+{
+    WinTCShOpenWithDialog* dlg = WINTC_SH_OPEN_WITH_DIALOG(user_data);
+
+    // We try either the app info or command line to launch the file
+    //
+    GAppInfo*   app_info;
+    GError*     error = NULL;
+    gchar*      exe_path;
+    GtkTreeIter iter;
+
+    wintc_tree_view_get_selected_row(
+        GTK_TREE_VIEW(dlg->tree_view),
+        &iter
+    );
+
+    gtk_tree_model_get(
+        GTK_TREE_MODEL(dlg->tree_model),
+        &iter,
+        COLUMN_EXE_PATH, &exe_path,
+        COLUMN_APP_INFO, &app_info,
+        -1
+    );
+
+    if (app_info)
+    {
+        GFile* file      = g_file_new_for_path(dlg->file_path);
+        GList* list_file = g_list_append(NULL, file);
+
+        if (
+            !g_app_info_launch(
+                app_info,
+                list_file,
+                NULL,
+                &error
+            )
+        )
+        {
+            wintc_display_error_and_clear(&error, NULL);
+        }
+
+        g_list_free_full(list_file, (GDestroyNotify) g_object_unref);
+    }
+
+    if (exe_path)
+    {
+        gchar* exec = g_strdup_printf("%s \"%s\"", exe_path, dlg->file_path);
+
+        if (!wintc_launch_command(exec, &error))
+        {
+            wintc_display_error_and_clear(&error, NULL);
+        }
+
+        g_free(exec);
+    }
+
+    g_clear_object(&app_info);
+    g_free(exe_path);
+
+    gtk_window_close(GTK_WINDOW(dlg));
+}
+
+static void on_tree_view_cursor_changed(
+    GtkTreeView* self,
+    gpointer     user_data
+)
+{
+    WinTCShOpenWithDialog* dlg = WINTC_SH_OPEN_WITH_DIALOG(user_data);
+
+    GtkTreeIter parent;
+    GtkTreeIter selected;
+    gboolean    valid =
+        wintc_tree_view_get_selected_row(
+            self,
+            &selected
+        ) &&
+        gtk_tree_model_iter_parent(
+            gtk_tree_view_get_model(self),
+            &parent,
+            &selected
+        );
+
+    gtk_widget_set_sensitive(dlg->button_ok, valid);
 }
