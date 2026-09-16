@@ -46,6 +46,12 @@ static void wintc_sh_open_with_dialog_set_property(
     GParamSpec*   pspec
 );
 
+static void wintc_sh_open_with_dialog_init_programs(
+    WinTCShOpenWithDialog* dlg,
+    GtkTreeIter*           iter_parent,
+    GList*                 list_programs
+);
+
 static void on_button_browse_clicked(
     GtkButton* self,
     gpointer   user_data
@@ -288,49 +294,35 @@ static void wintc_sh_open_with_dialog_constructed(
         wintc_basename(dlg->file_path)
     );
 
-    // Init recommended programs
+    // Init programs
     //
-    GtkTreeIter iter_new;
-    GtkTreeIter iter_parent;
-    GList*      list_programs;
-    gchar*      mime_type = wintc_query_mime_for_file(dlg->file_path, NULL);
-
-    list_programs =
-        g_app_info_get_recommended_for_type(mime_type);
+    GtkTreeIter iter_oth;
+    GtkTreeIter iter_rec;
+    gchar* mime_type = wintc_query_mime_for_file(dlg->file_path, NULL);
 
     gtk_tree_model_iter_nth_child(
         GTK_TREE_MODEL(dlg->tree_model),
-        &iter_parent,
+        &iter_rec,
         NULL,
         TREE_ROW_RECOMMENDED
     );
+    gtk_tree_model_iter_nth_child(
+        GTK_TREE_MODEL(dlg->tree_model),
+        &iter_oth,
+        NULL,
+        TREE_ROW_OTHER
+    );
 
-    for (GList* iter = list_programs; iter; iter = iter->next)
-    {
-        GAppInfo* app_info = G_APP_INFO(iter->data);
-
-        gchar* icon_name =
-            wintc_icon_get_available_name(
-                g_app_info_get_icon(app_info)
-            );
-
-        gtk_tree_store_append(
-             dlg->tree_model,
-             &iter_new,
-             &iter_parent
-        );
-
-        gtk_tree_store_set(
-            dlg->tree_model,
-            &iter_new,
-            COLUMN_ICON_NAME,    icon_name,
-            COLUMN_DISPLAY_NAME, g_strdup(g_app_info_get_name(app_info)),
-            COLUMN_APP_INFO,     g_steal_pointer(&(iter->data)),
-            -1
-        );
-    }
-
-    g_list_free(list_programs);
+    wintc_sh_open_with_dialog_init_programs(
+        dlg,
+        &iter_rec,
+        g_app_info_get_recommended_for_type(mime_type)
+    );
+    wintc_sh_open_with_dialog_init_programs(
+        dlg,
+        &iter_oth,
+        g_app_info_get_fallback_for_type(mime_type)
+    );
 }
 
 static void wintc_sh_open_with_dialog_finalize(
@@ -380,6 +372,45 @@ GtkWidget* wintc_sh_open_with_dialog_new(
             NULL
         )
     );
+}
+
+//
+// PRIVATE FUNCTIONS
+//
+static void wintc_sh_open_with_dialog_init_programs(
+    WinTCShOpenWithDialog* dlg,
+    GtkTreeIter*           iter_parent,
+    GList*                 list_programs
+)
+{
+    GtkTreeIter iter_new;
+
+    for (GList* iter = list_programs; iter; iter = iter->next)
+    {
+        GAppInfo* app_info = G_APP_INFO(iter->data);
+
+        gchar* icon_name =
+            wintc_icon_get_available_name(
+                g_app_info_get_icon(app_info)
+            );
+
+        gtk_tree_store_append(
+             dlg->tree_model,
+             &iter_new,
+             iter_parent
+        );
+
+        gtk_tree_store_set(
+            dlg->tree_model,
+            &iter_new,
+            COLUMN_ICON_NAME,    icon_name,
+            COLUMN_DISPLAY_NAME, g_strdup(g_app_info_get_name(app_info)),
+            COLUMN_APP_INFO,     g_steal_pointer(&(iter->data)),
+            -1
+        );
+    }
+
+    g_list_free(list_programs);
 }
 
 //
