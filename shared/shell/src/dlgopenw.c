@@ -2,6 +2,7 @@
 #include <gtk/gtk.h>
 #include <wintc/comgtk.h>
 #include <wintc/exec.h>
+#include <wintc/shlang.h>
 
 #include "../public/dlgopenw.h"
 
@@ -46,10 +47,27 @@ static void wintc_sh_open_with_dialog_set_property(
     GParamSpec*   pspec
 );
 
+static void wintc_sh_open_with_dialog_get_category_iter(
+    WinTCShOpenWithDialog* dlg,
+    GtkTreeIter*           iter,
+    gint                   category
+);
+static gboolean wintc_sh_open_with_dialog_find_iter(
+    WinTCShOpenWithDialog* dlg,
+    GAppInfo*              app_info,
+    const gchar*           exe_path,
+    GtkTreeIter*           iter_parent,
+    GtkTreeIter*           iter_found
+);
 static void wintc_sh_open_with_dialog_init_programs(
     WinTCShOpenWithDialog* dlg,
     GtkTreeIter*           iter_parent,
     GList*                 list_programs
+);
+
+static gint cb_compare_app_info_by_name(
+    gconstpointer a,
+    gconstpointer b
 );
 
 static void on_button_browse_clicked(
@@ -202,7 +220,7 @@ static void wintc_sh_open_with_dialog_init(
             G_TYPE_STRING,
             G_TYPE_STRING,
             G_TYPE_STRING,
-            G_TYPE_POINTER
+            G_TYPE_OBJECT
         );
 
     gtk_tree_view_set_model(
@@ -317,16 +335,14 @@ static void wintc_sh_open_with_dialog_constructed(
     GtkTreeIter iter_rec;
     gchar* mime_type = wintc_query_mime_for_file(dlg->file_path, NULL);
 
-    gtk_tree_model_iter_nth_child(
-        GTK_TREE_MODEL(dlg->tree_model),
+    wintc_sh_open_with_dialog_get_category_iter(
+        dlg,
         &iter_rec,
-        NULL,
         TREE_ROW_RECOMMENDED
     );
-    gtk_tree_model_iter_nth_child(
-        GTK_TREE_MODEL(dlg->tree_model),
+    wintc_sh_open_with_dialog_get_category_iter(
+        dlg,
         &iter_oth,
-        NULL,
         TREE_ROW_OTHER
     );
 
@@ -396,6 +412,94 @@ GtkWidget* wintc_sh_open_with_dialog_new(
 //
 // PRIVATE FUNCTIONS
 //
+static void wintc_sh_open_with_dialog_get_category_iter(
+    WinTCShOpenWithDialog* dlg,
+    GtkTreeIter*           iter,
+    gint                   category
+)
+{
+    gtk_tree_model_iter_nth_child(
+        GTK_TREE_MODEL(dlg->tree_model),
+        iter,
+        NULL,
+        category
+    );
+}
+
+static gboolean wintc_sh_open_with_dialog_find_iter(
+    WinTCShOpenWithDialog* dlg,
+    GAppInfo*              app_info,
+    const gchar*           exe_path,
+    GtkTreeIter*           iter_parent,
+    GtkTreeIter*           iter_found
+)
+{
+    GtkTreeIter   iter;
+    GtkTreeModel* model = GTK_TREE_MODEL(dlg->tree_model);
+
+    if (
+        !gtk_tree_model_iter_children(
+            model,
+            &iter,
+            iter_parent
+        )
+    )
+    {
+        return FALSE;
+    }
+
+    do
+    {
+        GAppInfo* app_info_other;
+        gchar*    exe_path_other;
+        gint      result;
+
+        if (app_info)
+        {
+            gchar* disp;
+
+            gtk_tree_model_get(
+                model,
+                &iter,
+                COLUMN_DISPLAY_NAME, &disp,
+                COLUMN_APP_INFO, &app_info_other,
+                -1
+            );
+
+            WINTC_LOG_DEBUG("shell: dlgopenw: checking %s", disp);
+
+            result = 
+                g_strcmp0(
+                    g_app_info_get_id(app_info),
+                    g_app_info_get_id(app_info_other)
+                );
+
+            g_object_unref(app_info_other);
+        }
+        else // exe_path
+        {
+            gtk_tree_model_get(
+                model,
+                &iter,
+                COLUMN_EXE_PATH, &exe_path_other,
+                -1
+            );
+
+            result = g_strcmp0(exe_path, exe_path_other);
+
+            g_free(exe_path_other);
+        }
+
+        if (result == 0)
+        {
+            *iter_found = iter;
+            return TRUE;
+        }
+    } while (gtk_tree_model_iter_next(model, &iter));
+
+    return FALSE;
+}
+
 static void wintc_sh_open_with_dialog_init_programs(
     WinTCShOpenWithDialog* dlg,
     GtkTreeIter*           iter_parent,
@@ -403,6 +507,12 @@ static void wintc_sh_open_with_dialog_init_programs(
 )
 {
     GtkTreeIter iter_new;
+
+    list_programs =
+        g_list_sort(
+            list_programs,
+            (GCompareFunc) cb_compare_app_info_by_name
+        );
 
     for (GList* iter = list_programs; iter; iter = iter->next)
     {
@@ -424,23 +534,197 @@ static void wintc_sh_open_with_dialog_init_programs(
             &iter_new,
             COLUMN_ICON_NAME,    icon_name,
             COLUMN_DISPLAY_NAME, g_strdup(g_app_info_get_name(app_info)),
-            COLUMN_APP_INFO,     g_steal_pointer(&(iter->data)),
+            COLUMN_APP_INFO,     app_info,
             -1
         );
     }
 
-    g_list_free(list_programs);
+    g_list_free_full(list_programs, (GDestroyNotify) g_object_unref);
 }
 
 //
 // CALLBACKS
 //
+static gint cb_compare_app_info_by_name(
+    gconstpointer a,
+    gconstpointer b
+)
+{
+    return g_strcmp0(
+        g_app_info_get_name(G_APP_INFO(a)),
+        g_app_info_get_name(G_APP_INFO(b))
+    );
+}
+
 static void on_button_browse_clicked(
     WINTC_UNUSED(GtkButton* self),
     WINTC_UNUSED(gpointer   user_data)
 )
 {
-    // FIXME: Implement this
+    WinTCShOpenWithDialog* dlg = WINTC_SH_OPEN_WITH_DIALOG(user_data);
+
+    // Set up filter
+    //
+    GtkFileFilter* filter_programs = gtk_file_filter_new();
+
+    gtk_file_filter_set_name(filter_programs, "Programs");
+    gtk_file_filter_add_mime_type(filter_programs, "application/x-executable");
+
+    // Set up file dialog
+    //
+    GtkWidget* file_dlg =
+        gtk_file_chooser_dialog_new(
+            "Open With...", // FIXME: Localise
+            GTK_WINDOW(dlg),
+            GTK_FILE_CHOOSER_ACTION_OPEN,
+            wintc_lc_get_control_text(WINTC_CTLTXT_CANCEL, WINTC_PUNC_NONE),
+            GTK_RESPONSE_CANCEL,
+            wintc_lc_get_control_text(WINTC_CTLTXT_OPEN, WINTC_PUNC_NONE),
+            GTK_RESPONSE_ACCEPT,
+            NULL
+        );
+
+    gtk_file_chooser_set_current_folder(
+        GTK_FILE_CHOOSER(file_dlg),
+        "/usr/bin"
+    );
+
+    gtk_file_chooser_add_filter(
+        GTK_FILE_CHOOSER(file_dlg),
+        filter_programs
+    );
+
+    // Execute
+    //
+    gint result = gtk_dialog_run(GTK_DIALOG(file_dlg));
+
+    if (result == GTK_RESPONSE_ACCEPT)
+    {
+        gchar*      file_path = gtk_file_chooser_get_filename(
+                                    GTK_FILE_CHOOSER(file_dlg)
+                                );
+        GtkTreeIter iter;
+        GtkTreeIter iter_rec;
+        GtkTreeIter iter_oth;
+
+        wintc_sh_open_with_dialog_get_category_iter(
+            dlg,
+            &iter_rec,
+            TREE_ROW_RECOMMENDED
+        );
+        wintc_sh_open_with_dialog_get_category_iter(
+            dlg,
+            &iter_oth,
+            TREE_ROW_OTHER
+        );
+
+        // Is there a desktop file with this ID?
+        //
+        gchar*           desktop_id  = g_strdup_printf(
+                                           "%s.desktop",
+                                           wintc_basename(file_path)
+                                       );
+        GDesktopAppInfo* desktop_ent = g_desktop_app_info_new(desktop_id);
+
+        if (desktop_ent)
+        {
+            GAppInfo* app_info = G_APP_INFO(desktop_ent);
+
+            // Do we already know this ID?
+            //
+            if (
+                !wintc_sh_open_with_dialog_find_iter(
+                    dlg,
+                    app_info,
+                    NULL,
+                    &iter_rec,
+                    &iter
+                ) &&
+                !wintc_sh_open_with_dialog_find_iter(
+                    dlg,
+                    app_info,
+                    NULL,
+                    &iter_oth,
+                    &iter
+                )
+            )
+            {
+                // Not found - insert it into Other category
+                //
+                gchar* icon_name = wintc_icon_get_available_name(
+                                       g_app_info_get_icon(app_info)
+                                   );
+                gchar* name      = g_strdup(g_app_info_get_name(app_info));
+
+                gtk_tree_store_append(
+                    dlg->tree_model,
+                    &iter,
+                    &iter_oth
+                );
+
+                gtk_tree_store_set(
+                    dlg->tree_model,
+                    &iter,
+                    COLUMN_ICON_NAME,    icon_name,
+                    COLUMN_DISPLAY_NAME, name,
+                    COLUMN_APP_INFO,     app_info,
+                    -1
+                );
+            }
+
+            g_object_unref(app_info);
+        }
+        else
+        {
+            // No app info... do we know the executable yet?
+            //
+            if (
+                !wintc_sh_open_with_dialog_find_iter(
+                    dlg,
+                    NULL,
+                    file_path,
+                    &iter_rec,
+                    &iter
+                ) &&
+                !wintc_sh_open_with_dialog_find_iter(
+                    dlg,
+                    NULL,
+                    file_path,
+                    &iter_oth,
+                    &iter
+                )
+            )
+            {
+                gtk_tree_store_append(
+                    dlg->tree_model,
+                    &iter,
+                    &iter_oth
+                );
+
+                gtk_tree_store_set(
+                    dlg->tree_model,
+                    &iter,
+                    COLUMN_ICON_NAME,    g_strdup("application-x-executable"),
+                    COLUMN_DISPLAY_NAME, g_path_get_basename(file_path),
+                    COLUMN_EXE_PATH,     g_strdup(file_path),
+                    -1
+                );
+            }
+        }
+
+        g_free(desktop_id);
+        g_free(file_path);
+
+        // Select in the tree view
+        //
+        GtkTreeSelection* selection =
+            gtk_tree_view_get_selection(GTK_TREE_VIEW(dlg->tree_view));
+
+        gtk_tree_selection_select_iter(selection, &iter);
+    }
+
+    gtk_widget_destroy(file_dlg);
+    wintc_focus_window(GTK_WINDOW(dlg));
 }
 
 static void on_button_cancel_clicked(
