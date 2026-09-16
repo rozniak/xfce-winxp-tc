@@ -75,9 +75,16 @@
                 <property name="orientation">vertical</property>
 
                 <child>
-                  <object class="GtkTreeView" id="tree_view">
+                  <object class="GtkScrolledWindow">
                     <property name="visible">True</property>
-                    <property name="headers-visible">False</property>
+                    <property name="overlay-scrolling">False</property>
+
+                    <child>
+                      <object class="GtkTreeView" id="tree_view">
+                        <property name="visible">True</property>
+                        <property name="headers-visible">False</property>
+                      </object>
+                    </child>
 
                     <style>
                       <class name="wintc-mb-md" />

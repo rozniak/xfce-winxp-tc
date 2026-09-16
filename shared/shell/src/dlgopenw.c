@@ -166,6 +166,21 @@ static void wintc_sh_open_with_dialog_class_init(
         WinTCShOpenWithDialog,
         tree_view
     );
+
+    // Register CSS
+    //
+    GtkCssProvider* css_provider = gtk_css_provider_new();
+
+    gtk_css_provider_load_from_resource(
+        css_provider,
+        "/uk/oddmatics/wintc/shell/dlgopenw.css"
+    );
+
+    gtk_style_context_add_provider_for_screen(
+        gdk_screen_get_default(),
+        GTK_STYLE_PROVIDER(css_provider),
+        GTK_STYLE_PROVIDER_PRIORITY_FALLBACK
+    );
 }
 
 static void wintc_sh_open_with_dialog_init(
@@ -173,6 +188,8 @@ static void wintc_sh_open_with_dialog_init(
 )
 {
     gtk_widget_init_template(GTK_WIDGET(self));
+
+    wintc_widget_add_style_class(GTK_WIDGET(self), "wintc-open-with");
 
     // Prepare tree store
     //
@@ -323,6 +340,8 @@ static void wintc_sh_open_with_dialog_constructed(
         &iter_oth,
         g_app_info_get_fallback_for_type(mime_type)
     );
+
+    gtk_tree_view_expand_all(GTK_TREE_VIEW(dlg->tree_view));
 }
 
 static void wintc_sh_open_with_dialog_finalize(

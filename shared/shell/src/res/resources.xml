@@ -16,6 +16,9 @@
     <file>menurb.ui</file>
     <file>menurblf.ui</file>
 
+    <!-- STYLES -->
+    <file>dlgopenw.css</file>
+
     <!-- SUGGESTED ACTIONS -->
     <file>amcplvw.ui</file>
     <file>amdeskvw.ui</file>
