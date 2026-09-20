@@ -18,6 +18,11 @@ static void wintc_taskmgr_page_processes_constructed(
     GObject* object
 );
 
+static GtkTreeViewColumn* wintc_taskmgr_page_processes_new_column(
+    const gchar* caption,
+    gint         column_id
+);
+
 static void on_button_endproc_clicked(
     GtkButton* self,
     gpointer   user_data
@@ -73,6 +78,11 @@ static void wintc_taskmgr_page_processes_constructed(
     GObject* object
 )
 {
+    // Chain up
+    //
+    (G_OBJECT_CLASS(wintc_taskmgr_page_processes_parent_class))
+        ->constructed(object);
+
     WinTCTaskmgrPageProcesses* page = WINTC_TASKMGR_PAGE_PROCESSES(object);
 
     GtkBuilder* builder =
@@ -116,38 +126,31 @@ static void wintc_taskmgr_page_processes_constructed(
 
     gtk_tree_view_append_column(
         GTK_TREE_VIEW(page->treeview_procs),
-        gtk_tree_view_column_new_with_attributes(
+        wintc_taskmgr_page_processes_new_column(
             "Image Name",
-            gtk_cell_renderer_text_new(),
-            "text", COLUMN_IMAGE_NAME,
-            NULL
+            COLUMN_IMAGE_NAME
         )
     );
+
     gtk_tree_view_append_column(
         GTK_TREE_VIEW(page->treeview_procs),
-        gtk_tree_view_column_new_with_attributes(
+        wintc_taskmgr_page_processes_new_column(
             "User Name",
-            gtk_cell_renderer_text_new(),
-            "text", COLUMN_USER_NAME,
-            NULL
+            COLUMN_USER_NAME
         )
     );
     gtk_tree_view_append_column(
         GTK_TREE_VIEW(page->treeview_procs),
-        gtk_tree_view_column_new_with_attributes(
+        wintc_taskmgr_page_processes_new_column(
             "CPU",
-            gtk_cell_renderer_text_new(),
-            "text", COLUMN_CPU_USAGE,
-            NULL
+            COLUMN_CPU_USAGE
         )
     );
     gtk_tree_view_append_column(
         GTK_TREE_VIEW(page->treeview_procs),
-        gtk_tree_view_column_new_with_attributes(
+        wintc_taskmgr_page_processes_new_column(
             "Mem Usage",
-            gtk_cell_renderer_text_new(),
-            "text", COLUMN_MEM_USAGE,
-            NULL
+            COLUMN_MEM_USAGE
         )
     );
 
@@ -166,11 +169,27 @@ static void wintc_taskmgr_page_processes_constructed(
         G_CALLBACK(on_treeview_cursor_changed),
         page
     );
+}
 
-    // Chain up
-    //
-    (G_OBJECT_CLASS(wintc_taskmgr_page_processes_parent_class))
-        ->constructed(object);
+//
+// PRIVATE FUNCTIONS
+//
+static GtkTreeViewColumn* wintc_taskmgr_page_processes_new_column(
+    const gchar* caption,
+    gint         column_id
+)
+{
+    GtkTreeViewColumn* column =
+        gtk_tree_view_column_new_with_attributes(
+            caption,
+            gtk_cell_renderer_text_new(),
+            "text", column_id,
+            NULL
+        );
+
+    gtk_tree_view_column_set_sort_column_id(column, column_id);
+
+    return column;
 }
 
 //

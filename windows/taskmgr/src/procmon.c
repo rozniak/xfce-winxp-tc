@@ -271,6 +271,25 @@ static gboolean timeout_process_monitor(
 {
     WinTCTaskmgrProcmon* procmon = WINTC_TASKMGR_PROCMON(user_data);
 
+    // Store sort order so we want unsort the store whilst updating it
+    //
+    gint        sort_col;
+    gboolean    sort_enabled;
+    GtkSortType sort_type;
+
+    sort_enabled =
+        gtk_tree_sortable_get_sort_column_id(
+            GTK_TREE_SORTABLE(procmon->model_procs),
+            &sort_col,
+            &sort_type
+        );
+
+    gtk_tree_sortable_set_sort_column_id(
+        GTK_TREE_SORTABLE(procmon->model_procs),
+        GTK_TREE_SORTABLE_UNSORTED_SORT_COLUMN_ID,
+        GTK_SORT_ASCENDING
+    );
+
     // Acquire the total CPU time stats
     //
     guint total_cpu_delta = 0;
@@ -527,6 +546,20 @@ static gboolean timeout_process_monitor(
     // Update processor stats
     //
     procmon->last_cpu_time = total_cpu_time;
+
+    // Restore sort order
+    //
+    if (
+        sort_enabled &&
+        sort_col != GTK_TREE_SORTABLE_UNSORTED_SORT_COLUMN_ID
+    )
+    {
+        gtk_tree_sortable_set_sort_column_id(
+            GTK_TREE_SORTABLE(procmon->model_procs),
+            sort_col,
+            sort_type
+        );
+    }
 
     return G_SOURCE_CONTINUE;
 }
