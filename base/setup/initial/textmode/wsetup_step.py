@@ -5,6 +5,7 @@ import shutil
 import subprocess
 
 from wsetup_brand  import *
+from wsetup_init   import *
 from wsetup_pkg    import *
 from wsetup_screen import *
 
@@ -29,6 +30,31 @@ def wsetup_step_error(stdscr, errstr):
 
 def wsetup_step_init(stdscr):
     wsetup_screen_clear(stdscr)
+
+    sys_init = wsetup_get_init_sys()
+    sys_type = "unknown"
+
+    if sys_init == WSetupInitSys.SYSTEMD:
+        sys_type = "systemd"
+    elif sys_init == WSetupInitSys.RUNIT:
+        sys_type = "runit"
+    elif sys_init == WSetupInitSys.UPSTART:
+        sys_type = "upstart"
+    elif sys_init == WSetupInitSys.SYSVINIT:
+        sys_type = "sysv"
+    elif sys_init == WSetupInitSys.OPENRC:
+        sys_type = "openrc"
+
+    wsetup_screen_write_simple(
+        stdscr,
+        0, 0,
+        "The system init is: " + sys_type,
+        curses.color_pair(COLOR_PAIR_NORMAL_TEXT)
+    )
+
+    stdscr.getch()
+
+    return 0
 
     # Check the current distro is one we know about
     #
