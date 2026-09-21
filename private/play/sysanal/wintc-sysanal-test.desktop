@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=System Analysis (WinTC Test)
+Comment=WinTC system analysis test program.
+Exec=wintc-sysanal-test
+Icon=wintc-sysanal-test
+Terminal=false
+StartupNotify=false
+Type=Application
+Categories=Utility;GTK;X-WinTC-Dev;

@@ -33,6 +33,7 @@ wintc-exec-->bt,rt-->wintc-exec
 wintc-launch-->bt,rt-->wintc-launch
 wintc-msgina-->bt,rt-->wintc-msgina
 wintc-registry-->bt,rt-->wintc-registry
+wintc-setupapi-->bt,rt-->wintc-setupapi
 wintc-shcommon-->bt,rt-->wintc-shcommon
 wintc-shell-->bt,rt-->wintc-shell
 wintc-shelldpa-->bt,rt-->wintc-shelldpa
