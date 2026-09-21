@@ -13,20 +13,36 @@ export SETUPROOT
 
 # Probe for Python as we cannot run binaries at this point
 #
-python_path=`which python 2>/dev/null`
+python_path=`which python3 2>/dev/null`
 
 if [ $? != 0 ]
 then
-    python_path=`which python3 2>/dev/null`
+    python_path=`which python 2>/dev/null`
 
     if [ $? != 0 ]
     then
         clear
         printf "%s%s\n" \
             "Your system is missing the Python 3 interpreter, this is " \
-            "required by setup. Setup will now exit.";
-        exit 1;
+            "required by setup. Setup will now exit."
+        exit 1
     fi
+
+    python_ver=$($python_path --version 2>/dev/null)
+
+    case "$python_ver" in
+        "Python 3."*)
+            # All good
+            ;;
+
+        *)
+            clear
+            printf "%s%s\n" \
+                "Your system is missing the Python 3 interpreter, the " \
+                "currently installed Python is incompatible. Setup will now exit.";
+            exit 1
+            ;;
+    esac
 fi
 
 # Spawn the working dir for setup
