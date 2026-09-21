@@ -23,6 +23,7 @@ include(../../packaging/cmake-inc/packaging/CMakeLists.txt)
 wintc_resolve_library(glib-2.0     GLIB)
 wintc_resolve_library(gtk+-3.0     GTK3)
 wintc_resolve_library(wintc-comgtk WINTC_COMGTK)
+wintc_resolve_library(wintc-exec   WINTC_EXEC)
 
 add_library(
     libwintc-setupapi
@@ -49,6 +50,7 @@ target_include_directories(
     PRIVATE ${GLIB_INCLUDE_DIRS}
     PRIVATE ${GTK3_INCLUDE_DIRS}
     PRIVATE ${WINTC_COMGTK_INCLUDE_DIRS}
+    PRIVATE ${WINTC_EXEC_INCLUDE_DIRS}
 )
 
 target_link_directories(
@@ -56,6 +58,7 @@ target_link_directories(
     PRIVATE ${GLIB_LIBRARY_DIRS}
     PRIVATE ${GTK3_LIBRARY_DIRS}
     PRIVATE ${WINTC_COMGTK_LIBRARY_DIRS}
+    PRIVATE ${WINTC_EXEC_LIBRARY_DIRS}
 )
 
 target_link_libraries(
@@ -63,6 +66,7 @@ target_link_libraries(
     PRIVATE ${GLIB_LIBRARY_LIBRARIES}
     PRIVATE ${GTK3_LIBRARY_LIBRARIES}
     PRIVATE ${WINTC_COMGTK_LIBRARIES}
+    PRIVATE ${WINTC_EXEC_LIBRARIES}
 )
 
 # Installation

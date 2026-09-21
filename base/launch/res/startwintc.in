@@ -78,7 +78,23 @@ then
     if [ $WSETUP_PHASE -eq 3 ]
     then
         rm -f $K_PHASE_FILE
-        systemctl disable wintc-launch
+
+        # Unlink in each method
+        #
+        which systemctl >/dev/null 2>&1
+
+        if [ $? -eq 0 ]
+        then
+            systemctl disable wintc-launch
+        else
+            which update-rc.d >/dev/null 2>&1
+
+            if [ $? -eq 0 ]
+            then
+                update-rc.d wintc-launch disable
+            fi
+        fi
+
         exit 0
     else
         # Copy over default xfconf stuff

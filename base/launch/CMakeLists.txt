@@ -42,6 +42,11 @@ install(
     DESTINATION ${WINTC_ASSETS_INSTALL_DIR}/launch
 )
 install(
+    PROGRAMS
+        res/wintc-launch.sysv.sh
+    DESTINATION ${WINTC_ASSETS_INSTALL_DIR}/launch
+)
+install(
     PROGRAMS ${CMAKE_BINARY_DIR}/startwintc
     DESTINATION ${CMAKE_INSTALL_BINDIR}
 )

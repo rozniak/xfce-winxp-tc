@@ -45,8 +45,8 @@ static void wintc_sys_anal_window_init(
     gtk_container_add(
         GTK_CONTAINER(self),
         gtk_label_new(
-            wintc_get_init_system_name(
-                wintc_get_init_system()
+            wintc_init_system_get_name(
+                wintc_init_system_get()
             )
         )
     );

@@ -3,21 +3,10 @@
 # This script will export the vars for distro / init system detection, kinda
 # based off of /packaging/distid.sh
 #
-# TODO: No init detection yet...
-#
 
 if [ -f /etc/os-release ]
 then
     . /etc/os-release
-fi
-
-#
-# FIXME: TEST RELEASE RESTRICTED TO DEBIAN 13
-#
-if [ "$ID" != "debian" ] || [ "$VERSION_ID" != "13" ]
-then
-    echo "Sorry, this release is intended for testing on Debian 13 only."
-    exit 1
 fi
 
 export WSETUP_DIST_NAME="$PRETTY_NAME"
@@ -43,7 +32,7 @@ case "$ID" in
 
     # deb
     #
-    debian | linuxmint | ubuntu | zorin)
+    debian | devuan | linuxmint | ubuntu | zorin)
         export WSETUP_DIST_PKGFMT="deb"
         ;;
 

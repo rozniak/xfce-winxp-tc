@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <wintc/comgtk.h>
 #include <wintc/exec.h>
+#include <wintc/setupapi.h>
 
 #include "arm.h"
 #include "phase.h"
@@ -14,7 +15,8 @@
 //
 gboolean wintc_setup_arm_system(void)
 {
-    GError* error = NULL;
+    GError*         error    = NULL;
+    WinTCInitSystem init_sys = wintc_init_system_get();
 
     //
     // To arm the system for setup, we do the following things in order:
@@ -25,25 +27,47 @@ gboolean wintc_setup_arm_system(void)
     //     - Update grub
     //
 
-    //
-    // FIXME: This is only tested on Debian and systemd right now!!!!!!!
-    //
-
     // Deploy phase file for booting into graphical mode
     //
     wintc_setup_phase_set(WINTC_SETUP_PHASE_GUIMODE);
 
-    // Deploy the systemd service
+    // Deploy the service for starting setup at boot
     //
     WINTC_LOG_DEBUG("wsetupx: attempting to link setup service");
 
-    int res_sdlink =
-        symlink(
-            WINTC_LAUNCH_ASSETS_DIR "/wintc-launch.service",
-            "/etc/systemd/system/wintc-launch.service"
-        );
+    int res_svlink = 0;
 
-    if (!(res_sdlink == 0 || errno == EEXIST))
+    switch (init_sys)
+    {
+        case WINTC_INITSYS_SYSTEMD:
+            res_svlink =
+                symlink(
+                    WINTC_LAUNCH_ASSETS_DIR "/wintc-launch.service",
+                    "/etc/systemd/system/wintc-launch.service"
+                );
+            break;
+
+        case WINTC_INITSYS_SYSVINIT:
+            res_svlink =
+                symlink(
+                    WINTC_LAUNCH_ASSETS_DIR "/wintc-launch.sysv.sh",
+                    "/etc/init.d/wintc-launch"
+                );
+            break;
+
+        //
+        // FIXME: Implement other inits here!
+        //
+
+        default:
+            g_critical(
+                "wsetupx: no implementation for init system: %s",
+                wintc_init_system_get_name(init_sys)
+            );
+            return FALSE;
+    }
+
+    if (!(res_svlink == 0 || errno == EEXIST))
     {
         g_critical("wsetupx: unable to link setup service (err: %d)", errno);
         return FALSE;
@@ -54,10 +78,9 @@ gboolean wintc_setup_arm_system(void)
     WINTC_LOG_DEBUG("wsetupx: attempting to enable setup service");
 
     if (
-        !wintc_launch_command_sync(
-            "systemctl enable wintc-launch",
-            NULL,
-            NULL,
+        !wintc_init_system_enable_service(
+            "wintc-launch",
+            WINTC_INITSYS_PRIORITY_BEFORE_DM,
             &error
         )
     )
@@ -68,12 +91,12 @@ gboolean wintc_setup_arm_system(void)
 
     // FIXME: Disabling LightDM here because no matter what I do I CANNOT GET
     //        WSETUPX TO START FIRST!!!
+    //          (systemd problem)
     //
     if (
-        !wintc_launch_command_sync(
-            "systemctl disable lightdm",
-            NULL,
-            NULL,
+        init_sys == WINTC_INITSYS_SYSTEMD &&
+        !wintc_init_system_disable_service(
+            "lightdm",
             &error
         )
     )

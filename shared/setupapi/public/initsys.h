@@ -15,13 +15,28 @@ typedef enum {
     WINTC_INITSYS_OPENRC
 } WinTCInitSystem;
 
+typedef enum {
+    // Reserved for future API expansion
+    WINTC_INITSYS_PRIORITY_BEFORE_DM = 10
+} WinTCInitSystemPriority;
+
 //
 // PUBLIC FUNCTIONS
 //
-WinTCInitSystem wintc_get_init_system(void);
+WinTCInitSystem wintc_init_system_get(void);
 
-const gchar* wintc_get_init_system_name(
+const gchar* wintc_init_system_get_name(
     WinTCInitSystem init_sys
+);
+
+gboolean wintc_init_system_disable_service(
+    const gchar* service_name,
+    GError**     error
+);
+gboolean wintc_init_system_enable_service(
+    const gchar*            service_name,
+    WinTCInitSystemPriority priority,
+    GError**                error
 );
 
 #endif

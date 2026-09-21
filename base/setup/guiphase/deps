@@ -4,6 +4,7 @@ bt,rt:wintc-comctl
 bt,rt:wintc-comgtk
 bt,rt:wintc-exec
 rt:wintc-launch
+bt,rt:wintc-setupapi
 bt,rt:wintc-shcommon
 bt,rt:wintc-shelldpa
 bt,rt:wintc-shlang

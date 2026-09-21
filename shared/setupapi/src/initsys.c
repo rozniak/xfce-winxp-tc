@@ -1,17 +1,147 @@
 #include <glib.h>
 #include <wintc/comgtk.h>
+#include <wintc/exec.h>
 
 #include "../public/initsys.h"
 
 //
 // FORWARD DECLARATIONS
 //
-WinTCInitSystem wintc_probe_init_system(void);
+WinTCInitSystem wintc_init_system_probe(void);
 
 //
 // PUBLIC FUNCTIONS
 //
-WinTCInitSystem wintc_get_init_system(void)
+gboolean wintc_init_system_disable_service(
+    const gchar* service_name,
+    GError**     error
+)
+{
+    WinTCInitSystem init_sys = wintc_init_system_get();
+
+    gchar*   cmd;
+    gboolean ret;
+
+    switch (init_sys)
+    {
+        case WINTC_INITSYS_SYSTEMD:
+        {
+            cmd =
+                g_strdup_printf(
+                    "systemctl disable %s",
+                    service_name
+                );
+
+            break;
+        }
+
+        case WINTC_INITSYS_SYSVINIT:
+        {
+            cmd =
+                g_strdup_printf(
+                    "update-rc.d %s disable",
+                    service_name
+                );
+
+            break;
+        }
+
+        default:
+            g_set_error(
+                error,
+                WINTC_GENERAL_ERROR,
+                WINTC_GENERAL_ERROR_NOTIMPL,
+                "Unknown init system: %s",
+                wintc_init_system_get_name(init_sys)
+            );
+
+            return FALSE;
+    }
+
+    ret =
+        wintc_launch_command_sync(
+            cmd,
+            NULL,
+            NULL,
+            error
+        );
+
+    g_free(cmd);
+
+    return ret;
+}
+
+gboolean wintc_init_system_enable_service(
+    const gchar*            service_name,
+    WinTCInitSystemPriority priority,
+    GError**                error
+)
+{
+    WinTCInitSystem init_sys = wintc_init_system_get();
+
+    gchar*   cmd;
+    gboolean ret;
+
+    switch (init_sys)
+    {
+        case WINTC_INITSYS_SYSTEMD:
+        {
+            cmd =
+                g_strdup_printf(
+                    "systemctl enable %s",
+                    service_name
+                );
+
+            break;
+        }
+
+        case WINTC_INITSYS_SYSVINIT:
+        {
+            const gchar* priority_str = "";
+
+            switch (priority)
+            {
+                case WINTC_INITSYS_PRIORITY_BEFORE_DM:
+                    priority_str = "15";
+                    break;
+            }
+
+            cmd =
+                g_strdup_printf(
+                    "update-rc.d %s defaults %s",
+                    service_name,
+                    priority_str
+                );
+
+            break;
+        }
+
+        default:
+            g_set_error(
+                error,
+                WINTC_GENERAL_ERROR,
+                WINTC_GENERAL_ERROR_NOTIMPL,
+                "Unknown init system: %s",
+                wintc_init_system_get_name(init_sys)
+            );
+
+            return FALSE;
+    }
+
+    ret =
+        wintc_launch_command_sync(
+            cmd,
+            NULL,
+            NULL,
+            error
+        );
+
+    g_free(cmd);
+
+    return ret;
+}
+
+WinTCInitSystem wintc_init_system_get(void)
 {
     static WinTCInitSystem s_init_sys = WINTC_INITSYS_UNKNOWN;
 
@@ -20,12 +150,12 @@ WinTCInitSystem wintc_get_init_system(void)
         return s_init_sys;
     }
 
-    s_init_sys = wintc_probe_init_system();
+    s_init_sys = wintc_init_system_probe();
 
     return s_init_sys;
 }
 
-const gchar* wintc_get_init_system_name(
+const gchar* wintc_init_system_get_name(
     WinTCInitSystem init_sys
 )
 {
@@ -55,7 +185,7 @@ const gchar* wintc_get_init_system_name(
 //
 // PRIVATE FUNCTIONS
 //
-WinTCInitSystem wintc_probe_init_system(void)
+WinTCInitSystem wintc_init_system_probe(void)
 {
     // Simple path checks
     //
@@ -84,11 +214,11 @@ WinTCInitSystem wintc_probe_init_system(void)
 
         g_strstrip(pid1_cmd);
 
-        if (g_strcmp0(pid1_cmd, "runit-init"))
+        if (g_strcmp0(pid1_cmd, "runit-init") == 0)
         {
             ret = WINTC_INITSYS_RUNIT;
         }
-        else if (g_strcmp0(pid1_cmd, "init"))
+        else if (g_strcmp0(pid1_cmd, "init") == 0)
         {
             ret = WINTC_INITSYS_SYSVINIT;
         }

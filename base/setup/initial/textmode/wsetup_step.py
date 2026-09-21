@@ -31,31 +31,6 @@ def wsetup_step_error(stdscr, errstr):
 def wsetup_step_init(stdscr):
     wsetup_screen_clear(stdscr)
 
-    sys_init = wsetup_get_init_sys()
-    sys_type = "unknown"
-
-    if sys_init == WSetupInitSys.SYSTEMD:
-        sys_type = "systemd"
-    elif sys_init == WSetupInitSys.RUNIT:
-        sys_type = "runit"
-    elif sys_init == WSetupInitSys.UPSTART:
-        sys_type = "upstart"
-    elif sys_init == WSetupInitSys.SYSVINIT:
-        sys_type = "sysv"
-    elif sys_init == WSetupInitSys.OPENRC:
-        sys_type = "openrc"
-
-    wsetup_screen_write_simple(
-        stdscr,
-        0, 0,
-        "The system init is: " + sys_type,
-        curses.color_pair(COLOR_PAIR_NORMAL_TEXT)
-    )
-
-    stdscr.getch()
-
-    return 0
-
     # Check the current distro is one we know about
     #
     dist_pkgfmt = os.environ.get("WSETUP_DIST_PKGFMT", "unsupported")
@@ -460,7 +435,8 @@ def wsetup_step_install_base(stdscr):
             "The system package manager failed to install packages.\n\n" +
             "This may be an indication that you are missing files from the\n" +
             "install media, or that the package manager is unable to \n" +
-            "download from network sources."
+            "download from network sources.\n\n" +
+            process.stderr.readline()
         )
 
     wsetup_screen_write_direct(
@@ -516,11 +492,6 @@ def wsetup_step_prepare_chain_to_gui(stdscr):
         # FIXME: Again, display a proper error in setup
         raise Exception("Failed to chain graphical phase");
 
-    # FIXME: Should show reboot screen
-    subprocess.run(
-        [ "reboot", "now" ],
-        capture_output=True,
-        check=True
-    )
+    wsetup_reboot()
 
     return 0

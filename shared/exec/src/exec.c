@@ -656,17 +656,28 @@ static gchar** true_shell_parse_argv(
 
     if (resolved_path == NULL)
     {
-        g_set_error(
-            out_error,
-            G_FILE_ERROR,
-            G_FILE_ERROR_NOENT,
-            "Cannot find executable '%s'.",
-            argv[0]
-        );
+        // Sometimes if launched via sudo, we won't see /usr/sbin in the PATH
+        // so try it now
+        //
+        gchar* sbin_path = g_strdup_printf("/usr/sbin/%s", argv[0]);
 
-        g_strfreev(argv);
+        if (!g_file_test(sbin_path, G_FILE_TEST_IS_EXECUTABLE))
+        {
+            g_set_error(
+                out_error,
+                G_FILE_ERROR,
+                G_FILE_ERROR_NOENT,
+                "Cannot find executable '%s'.",
+                argv[0]
+            );
 
-        return NULL;
+            g_free(sbin_path);
+            g_strfreev(argv);
+
+            return NULL;
+        }
+
+        resolved_path = sbin_path;
     }
 
     g_free(argv[0]);

@@ -5,12 +5,12 @@ from pathlib import Path
 from enum    import Enum
 
 class WSetupInitSys(Enum):
-    UNKNOWN = 0
-    SYSTEMD = 1
-    RUNIT   = 2
-    UPSTART = 3
-    SYSVINT = 4
-    OPENRC  = 5
+    UNKNOWN  = 0
+    SYSTEMD  = 1
+    RUNIT    = 2
+    UPSTART  = 3
+    SYSVINIT = 4
+    OPENRC   = 5
 
 #
 # wsetup_get_init_sys()
@@ -55,3 +55,24 @@ def wsetup_get_init_sys():
     wsetup_init_sys = _wsetup_get_init_sys()
 
     return wsetup_init_sys
+
+#
+# wsetup_reboot()
+#
+def wsetup_reboot():
+    init_sys = wsetup_get_init_sys()
+
+    if init_sys == WSetupInitSys.SYSTEMD:
+        subprocess.run(
+            [ "reboot", "now" ],
+            capture_output=True,
+            check=True
+        )
+    elif init_sys == WSetupInitSys.SYSVINIT:
+        subprocess.run(
+            [ "reboot" ],
+            capture_output=True,
+            check=True
+        )
+    else:
+        raise Exception("No reboot mechanism known for the current init.")
