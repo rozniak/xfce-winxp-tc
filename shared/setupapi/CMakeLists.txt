@@ -29,6 +29,8 @@ add_library(
     libwintc-setupapi
     src/initsys.c
     public/initsys.h
+    src/pkgmgr.c
+    public/pkgmgr.h
 )
 
 set_target_properties(
