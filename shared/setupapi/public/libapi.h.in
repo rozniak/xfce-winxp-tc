@@ -3,5 +3,6 @@
 
 #include "@LIB_HEADER_DIR@/initsys.h"
 #include "@LIB_HEADER_DIR@/pkgmgr.h"
+#include "@LIB_HEADER_DIR@/pkgsesh.h"
 
 #endif

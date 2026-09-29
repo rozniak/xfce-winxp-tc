@@ -1,7 +1,7 @@
 [Desktop Entry]
 Name=Software Installation Wizard
 Comment=Installs software packages.
-Hidden=true
+NoDisplay=true
 Exec=wintc-pkg-exec -i %F
 Icon=package-x-generic
 Terminal=false

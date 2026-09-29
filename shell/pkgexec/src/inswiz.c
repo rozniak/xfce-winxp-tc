@@ -16,6 +16,10 @@ enum
     PROP_NULL,
     PROP_PATH,
     N_PROPERTIES,
+
+    OVERRIDE_PROP_CAN_CANCEL,
+    OVERRIDE_PROP_CAN_PREV,
+    OVERRIDE_PROP_CAN_NEXT
 };
 
 enum
@@ -37,6 +41,12 @@ static void wintc_pkg_exec_install_wizard_dispose(
 static void wintc_pkg_exec_install_wizard_finalize(
     GObject* object
 );
+static void wintc_pkg_exec_install_wizard_get_property(
+    GObject*    object,
+    guint       prop_id,
+    GValue*     value,
+    GParamSpec* pspec
+);
 static void wintc_pkg_exec_install_wizard_set_property(
     GObject*      object,
     guint         prop_id,
@@ -52,6 +62,16 @@ static void wintc_pkg_exec_install_wizard_constructing_page(
 static void wintc_pkg_exec_install_wizard_presenting_page(
     WinTCWizard97Window* wiz_wnd,
     guint                page_num
+);
+
+static void on_pkg_session_done(
+    WinTCPkgSession* session,
+    gpointer         user_data
+);
+static void on_pkg_session_progress(
+    WinTCPkgSession* session,
+    gdouble          progress,
+    gpointer         user_data
 );
 
 //
@@ -74,9 +94,11 @@ struct _WinTCPkgExecInstallWizard
 
     // State
     //
-    gchar*           package_name;
     gchar*           path;
     WinTCPkgSession* session;
+
+    gboolean can_cancel;
+    gboolean can_next;
 
     GtkWidget* label_pkgname;
     GtkWidget* label_pkgname2;
@@ -103,6 +125,7 @@ static void wintc_pkg_exec_install_wizard_class_init(
     object_class->constructed  = wintc_pkg_exec_install_wizard_constructed;
     object_class->dispose      = wintc_pkg_exec_install_wizard_dispose;
     object_class->finalize     = wintc_pkg_exec_install_wizard_finalize;
+    object_class->get_property = wintc_pkg_exec_install_wizard_get_property;
     object_class->set_property = wintc_pkg_exec_install_wizard_set_property;
     wizard_class->constructing_page =
         wintc_pkg_exec_install_wizard_constructing_page;
@@ -127,6 +150,22 @@ static void wintc_pkg_exec_install_wizard_class_init(
         wintc_pkg_exec_install_wizard_properties
     );
 
+    g_object_class_override_property(
+        object_class,
+        OVERRIDE_PROP_CAN_CANCEL,
+        "can-cancel"
+    );
+    g_object_class_override_property(
+        object_class,
+        OVERRIDE_PROP_CAN_PREV,
+        "can-prev"
+    );
+    g_object_class_override_property(
+        object_class,
+        OVERRIDE_PROP_CAN_NEXT,
+        "can-next"
+    );
+
     // Configure wizard
     //
     wintc_wizard97_window_class_setup_from_resources(
@@ -145,8 +184,6 @@ static void wintc_pkg_exec_install_wizard_init(
     WinTCPkgExecInstallWizard* self
 )
 {
-    self->package_name = g_strdup("Debian Package");
-
     wintc_wizard97_window_init_wizard(
         WINTC_WIZARD97_WINDOW(self)
     );
@@ -162,8 +199,42 @@ static void wintc_pkg_exec_install_wizard_constructed(
     (G_OBJECT_CLASS(wintc_pkg_exec_install_wizard_parent_class))
         ->constructed(object);
 
-    //WinTCPkgExecInstallWizard* inswiz =
-    //    WINTC_PKG_EXEC_INSTALL_WIZARD(object);
+    WinTCPkgExecInstallWizard* inswiz =
+        WINTC_PKG_EXEC_INSTALL_WIZARD(object);
+
+    // Ident package name
+    //
+    gchar* package_name = wintc_pkg_get_package_name(inswiz->path);
+
+    wintc_widget_printf(
+        inswiz->label_pkgname,
+        package_name
+    );
+    wintc_widget_printf(
+        inswiz->label_pkgname2,
+        package_name
+    );
+
+    g_free(package_name);
+
+    // Set up packaging session
+    //
+    GList* list_packages = g_list_append(NULL, inswiz->path);
+
+    inswiz->session = wintc_pkg_session_new(list_packages);
+
+    g_signal_connect(
+        inswiz->session,
+        "done",
+        G_CALLBACK(on_pkg_session_done),
+        inswiz
+    );
+    g_signal_connect(
+        inswiz->session,
+        "progress",
+        G_CALLBACK(on_pkg_session_progress),
+        inswiz
+    );
 }
 
 static void wintc_pkg_exec_install_wizard_dispose(
@@ -186,10 +257,40 @@ static void wintc_pkg_exec_install_wizard_finalize(
     WinTCPkgExecInstallWizard* inswiz =
         WINTC_PKG_EXEC_INSTALL_WIZARD(object);
 
-    g_free(g_steal_pointer(&(inswiz->package_name)));
+    g_free(inswiz->path);
 
     (G_OBJECT_CLASS(wintc_pkg_exec_install_wizard_parent_class))
         ->finalize(object);
+}
+
+static void wintc_pkg_exec_install_wizard_get_property(
+    GObject*    object,
+    guint       prop_id,
+    GValue*     value,
+    GParamSpec* pspec
+)
+{
+    WinTCPkgExecInstallWizard* inswiz =
+        WINTC_PKG_EXEC_INSTALL_WIZARD(object);
+
+    switch (prop_id)
+    {
+        case OVERRIDE_PROP_CAN_CANCEL:
+            g_value_set_boolean(value, inswiz->can_cancel);
+            break;
+
+        case OVERRIDE_PROP_CAN_PREV:
+            g_value_set_boolean(value, FALSE);
+            break;
+
+        case OVERRIDE_PROP_CAN_NEXT:
+            g_value_set_boolean(value, inswiz->can_next);
+            break;
+
+        default:
+            G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
+            break;
+    }
 }
 
 static void wintc_pkg_exec_install_wizard_set_property(
@@ -232,11 +333,6 @@ static void wintc_pkg_exec_install_wizard_constructing_page(
                 NULL
             );
 
-            wintc_widget_printf(
-                inswiz->label_pkgname,
-                inswiz->package_name
-            );
-
             break;
 
         case WIZPAGE_PROGRESS:
@@ -255,11 +351,6 @@ static void wintc_pkg_exec_install_wizard_constructing_page(
                 NULL
             );
 
-            wintc_widget_printf(
-                inswiz->label_pkgname2,
-                inswiz->package_name
-            );
-
             break;
 
         default: break;
@@ -274,15 +365,15 @@ static void wintc_pkg_exec_install_wizard_presenting_page(
     WinTCPkgExecInstallWizard* inswiz =
         WINTC_PKG_EXEC_INSTALL_WIZARD(wiz_wnd);
 
-    if (page_num != WIZPAGE_PROGRESS)
+    inswiz->can_cancel = page_num != WIZPAGE_PROGRESS;
+    inswiz->can_next   = page_num != WIZPAGE_PROGRESS;
+
+    if (page_num != WIZPAGE_PROGRESS || !(inswiz->session))
     {
         return;
     }
 
-    gtk_progress_bar_set_fraction(
-        GTK_PROGRESS_BAR(inswiz->progress_pkg),
-        0.5f
-    );
+    wintc_pkg_session_begin(inswiz->session);
 }
 
 //
@@ -300,5 +391,56 @@ GtkWidget* wintc_pkg_exec_install_wizard_new(
             "title",     "Package Installation Wizard",
             NULL
         )
+    );
+}
+
+//
+// CALLBACKS
+//
+static void on_pkg_session_done(
+    WINTC_UNUSED(WinTCPkgSession* session),
+    gpointer user_data
+)
+{
+    WinTCPkgExecInstallWizard* inswiz =
+        WINTC_PKG_EXEC_INSTALL_WIZARD(user_data);
+
+    GError* error = NULL;
+
+    if (!wintc_pkg_session_get_successful(inswiz->session, &error))
+    {
+        wintc_display_error_and_clear(&error, NULL);
+    }
+
+    // Re-enable next
+    //
+    inswiz->can_next = TRUE;
+
+    g_object_notify(G_OBJECT(inswiz), "can-next");
+
+    // Simulate a click on the Next button
+    //
+    GActionGroup* actions =
+        gtk_widget_get_action_group(GTK_WIDGET(inswiz), "win");
+
+    g_action_group_activate_action(
+        actions,
+        "next",
+        NULL
+    );
+}
+
+static void on_pkg_session_progress(
+    WINTC_UNUSED(WinTCPkgSession* session),
+    gdouble  progress,
+    gpointer user_data
+)
+{
+    WinTCPkgExecInstallWizard* inswiz =
+        WINTC_PKG_EXEC_INSTALL_WIZARD(user_data);
+
+    gtk_progress_bar_set_fraction(
+        GTK_PROGRESS_BAR(inswiz->progress_pkg),
+        progress
     );
 }

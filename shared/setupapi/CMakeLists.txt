@@ -31,6 +31,8 @@ add_library(
     public/initsys.h
     src/pkgmgr.c
     public/pkgmgr.h
+    src/pkgsesh.c
+    public/pkgsesh.h
 )
 
 set_target_properties(
