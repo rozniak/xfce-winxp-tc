@@ -2,7 +2,7 @@
 #include <glib.h>
 #include <wintc/comgtk.h>
 
-#include "../public/pkgsesh.h"
+#include "../../public/pkgsesh.h"
 
 //
 // PRIVATE ENUMS
@@ -309,8 +309,6 @@ static void cb_read_line_pkgmgr(
 
         return;
     }
-
-    WINTC_LOG_DEBUG(line);
 
     // Deal with package manager output
     //

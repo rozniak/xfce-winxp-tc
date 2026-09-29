@@ -27,11 +27,15 @@ wintc_resolve_library(wintc-exec   WINTC_EXEC)
 
 add_library(
     libwintc-setupapi
+    src/error.c
+    public/error.h
     src/initsys.c
     public/initsys.h
-    src/pkgmgr.c
+    src/${WINTC_PKGMGR}/pkgcmn.c
+    src/${WINTC_PKGMGR}/pkgcmn.h
+    src/${WINTC_PKGMGR}/pkgmgr.c
     public/pkgmgr.h
-    src/pkgsesh.c
+    src/${WINTC_PKGMGR}/pkgsesh.c
     public/pkgsesh.h
 )
 
@@ -72,6 +76,24 @@ target_link_libraries(
     PRIVATE ${WINTC_COMGTK_LIBRARIES}
     PRIVATE ${WINTC_EXEC_LIBRARIES}
 )
+
+#if (${WINTC_PKGMGR} STREQUAL "archpkg")
+if (TRUE)
+    wintc_resolve_library(libalpm ALPM)
+
+    target_include_directories(
+        libwintc-setupapi
+        PRIVATE ${LIBALPM_INCLUDE_DIRS}
+    )
+    target_link_directories(
+        libwintc-setupapi
+        PRIVATE ${LIBALPM_LIBRARY_DIRS}
+    )
+    target_link_libraries(
+        libwintc-setupapi
+        PRIVATE ${LIBALPM_LIBRARIES}
+    )
+endif()
 
 # Installation
 #
