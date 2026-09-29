@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <object class="WinTCWizard97Page" id="page">
+    <property name="visible">True</property>
+    <property name="is-exterior-page">True</property>
+    <property name="orientation">vertical</property>
+
+    <child>
+      <object class="GtkLabel">
+        <property name="visible">True</property>
+        <property name="label">Completing the Software Installation Wizard</property>
+        <property name="max-width-chars">25</property>
+        <property name="wrap">True</property>
+        <property name="xalign">0.0</property>
+
+        <style>
+          <class name="wintc-w97-title" />
+        </style>
+      </object>
+    </child>
+
+    <child>
+      <object class="GtkLabel">
+        <property name="visible">True</property>
+        <property name="label">The wizard has finished installing the following software:</property>
+        <property name="xalign">0.0</property>
+
+        <style>
+          <class name="wintc-mb-lg" />
+        </style>
+      </object>
+    </child>
+
+    <child>
+      <object class="GtkLabel" id="label-pkgname2">
+        <property name="visible">True</property>
+        <property name="label">%s</property>
+        <property name="xalign">0.0</property>
+        <property name="yalign">0.0</property>
+
+        <style>
+          <class name="wintc-ml-lg" />
+        </style>
+      </object>
+      <packing>
+        <property name="expand">True</property>
+        <property name="fill">True</property>
+      </packing>
+    </child>
+
+    <child>
+      <object class="GtkLabel">
+        <property name="visible">True</property>
+        <property name="label">Click Finish to close the wizard.</property>
+        <property name="xalign">0.0</property>
+      </object>
+    </child>
+  </object>
+</interface>

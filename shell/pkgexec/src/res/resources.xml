@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/uk/oddmatics/wintc/pkg-exec">
+    <file>header.png</file>
+    <file>watermk.png</file>
+    <file>inswizp1.ui</file>
+    <file>inswizp2.ui</file>
+    <file>inswizp3.ui</file>
+  </gresource>
+</gresources>
