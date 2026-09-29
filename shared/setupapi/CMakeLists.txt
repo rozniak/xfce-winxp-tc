@@ -77,21 +77,20 @@ target_link_libraries(
     PRIVATE ${WINTC_EXEC_LIBRARIES}
 )
 
-#if (${WINTC_PKGMGR} STREQUAL "archpkg")
-if (TRUE)
+if (${WINTC_PKGMGR} STREQUAL "archpkg")
     wintc_resolve_library(libalpm ALPM)
 
     target_include_directories(
         libwintc-setupapi
-        PRIVATE ${LIBALPM_INCLUDE_DIRS}
+        PRIVATE ${ALPM_INCLUDE_DIRS}
     )
     target_link_directories(
         libwintc-setupapi
-        PRIVATE ${LIBALPM_LIBRARY_DIRS}
+        PRIVATE ${ALPM_LIBRARY_DIRS}
     )
     target_link_libraries(
         libwintc-setupapi
-        PRIVATE ${LIBALPM_LIBRARIES}
+        PRIVATE ${ALPM_LIBRARIES}
     )
 endif()
 
