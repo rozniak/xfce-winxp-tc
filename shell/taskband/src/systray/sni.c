@@ -107,6 +107,8 @@ static gboolean on_handle_register_status_notifier_item(
 {
     WinTCNotificationSni* sni = WINTC_NOTIFICATION_SNI(user_data);
 
+    WINTC_LOG_DEBUG("SNI: Register service call for: %s", service);
+
     //
     // Call in to register an item - we take in the parameter 'service' as the
     // DBus name for where to look for a /StatusNotifierItem object

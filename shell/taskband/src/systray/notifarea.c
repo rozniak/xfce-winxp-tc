@@ -200,6 +200,8 @@ static GtkWidget* wintc_notification_area_get_ext_widget(
             ctx
         );
 
+    gtk_widget_show_all(notif_icon);
+
     return notif_icon;
 }
 
