@@ -24,22 +24,23 @@ include(../../packaging/cmake-inc/locale/CMakeLists.txt)
 include(../../packaging/cmake-inc/packaging/CMakeLists.txt)
 include(../../packaging/cmake-inc/resources/CMakeLists.txt)
 
-wintc_resolve_library(libcanberra      CANBERRA)
-wintc_resolve_library(libcanberra-gtk3 CANBERRA_GTK3)
-wintc_resolve_library(garcon-1         GARCON)
-wintc_resolve_library(garcon-gtk3-1    GARCON_GTK3)
-wintc_resolve_library(gdk-pixbuf-2.0   GDK_PIXBUF)
-wintc_resolve_library(glib-2.0         GLIB)
-wintc_resolve_library(gtk+-3.0         GTK3)
-wintc_resolve_library(upower-glib      UPOWER_GLIB)
-wintc_resolve_library(wintc-comctl     WINTC_COMCTL)
-wintc_resolve_library(wintc-comgtk     WINTC_COMGTK)
-wintc_resolve_library(wintc-exec       WINTC_EXEC)
-wintc_resolve_library(wintc-shcommon   WINTC_SHCOMMON)
-wintc_resolve_library(wintc-shelldpa   WINTC_SHELLDPA)
-wintc_resolve_library(wintc-shellext   WINTC_SHELLEXT)
-wintc_resolve_library(wintc-shlang     WINTC_SHLANG)
-wintc_resolve_library(wintc-sndapi     WINTC_SNDAPI)
+wintc_resolve_library(libcanberra       CANBERRA)
+wintc_resolve_library(libcanberra-gtk3  CANBERRA_GTK3)
+wintc_resolve_library(dbusmenu-gtk3-0.4 DBUSMENU_GTK3)
+wintc_resolve_library(garcon-1          GARCON)
+wintc_resolve_library(garcon-gtk3-1     GARCON_GTK3)
+wintc_resolve_library(gdk-pixbuf-2.0    GDK_PIXBUF)
+wintc_resolve_library(glib-2.0          GLIB)
+wintc_resolve_library(gtk+-3.0          GTK3)
+wintc_resolve_library(upower-glib       UPOWER_GLIB)
+wintc_resolve_library(wintc-comctl      WINTC_COMCTL)
+wintc_resolve_library(wintc-comgtk      WINTC_COMGTK)
+wintc_resolve_library(wintc-exec        WINTC_EXEC)
+wintc_resolve_library(wintc-shcommon    WINTC_SHCOMMON)
+wintc_resolve_library(wintc-shelldpa    WINTC_SHELLDPA)
+wintc_resolve_library(wintc-shellext    WINTC_SHELLEXT)
+wintc_resolve_library(wintc-shlang      WINTC_SHLANG)
+wintc_resolve_library(wintc-sndapi      WINTC_SNDAPI)
 
 wintc_compile_resources()
 wintc_create_meta_h()
@@ -138,6 +139,7 @@ target_include_directories(
     BEFORE
     PRIVATE ${CANBERRA_INCLUDE_DIRS}
     PRIVATE ${CANBERRA_GTK3_INCLUDE_DIRS}
+    PRIVATE ${DBUSMENU_GTK3_INCLUDE_DIRS}
     PRIVATE ${GARCON_INCLUDE_DIRS}
     PRIVATE ${GARCON_GTK3_INCLUDE_DIRS}
     PRIVATE ${GDK_PIXBUF_INCLUDE_DIRS}
@@ -158,6 +160,7 @@ target_link_directories(
     wintc-taskband
     PRIVATE ${CANBERRA_LIBRARY_DIRS}
     PRIVATE ${CANBERRA_GTK3_LIBRARY_DIRS}
+    PRIVATE ${DBUSMENU_GTK3_LIBRARY_DIRS}
     PRIVATE ${GARCON_LIBRARY_DIRS}
     PRIVATE ${GARCON_GTK3_LIBRARY_DIRS}
     PRIVATE ${GDK_PIXBUF_LIBRARY_DIRS}
@@ -179,6 +182,7 @@ target_link_libraries(
     PRIVATE m
     PRIVATE ${CANBERRA_LIBRARIES}
     PRIVATE ${CANBERRA_GTK3_LIBRARIES}
+    PRIVATE ${DBUSMENU_GTK3_LIBRARIES}
     PRIVATE ${GARCON_LIBRARIES}
     PRIVATE ${GARCON_GTK3_LIBRARIES}
     PRIVATE ${GDK_PIXBUF_LIBRARIES}

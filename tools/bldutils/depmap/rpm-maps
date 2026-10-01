@@ -1,6 +1,8 @@
 canberra-->bt-->libcanberra-devel
 canberra-->rt-->libcanberra
 canberra-gtk3-->bt,rt-->libcanberra-gtk3
+dbusmenu-gtk3-->bt-->libdbusmenu-gtk3-devel
+dbusmenu-gtk3-->rt-->libdbusmenu-gtk3
 garcon-->bt-->garcon-devel
 garcon-->rt-->garcon
 garcon-gtk3-->bt-->garcon-devel

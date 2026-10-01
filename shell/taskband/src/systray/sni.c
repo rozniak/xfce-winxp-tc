@@ -1,6 +1,7 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <glib.h>
 #include <gtk/gtk.h>
+#include <libdbusmenu-gtk/menu.h>
 #include <math.h>
 #include <wintc/comgtk.h>
 #include <wintc/shellext.h>
@@ -18,8 +19,9 @@ typedef struct _WinTCSniIcon
 {
     WinTCNotificationSni* sni;
 
-    GtkWidget*  widget;
+    GtkWidget*  menu;
     GDBusProxy* proxy;
+    GtkWidget*  widget;
 } WinTCSniIcon;
 
 //
@@ -52,6 +54,12 @@ static gboolean on_handle_register_status_notifier_host(
     GDBusMethodInvocation*        invocation,
     const gchar*                  service,
     gpointer                      user_data
+);
+
+static gboolean on_icon_button_release_event(
+    GtkWidget*      self,
+    GdkEventButton* event,
+    gpointer        user_data
 );
 
 static void on_name_acquired(
@@ -338,6 +346,25 @@ static gboolean on_handle_register_status_notifier_host(
     return TRUE;
 }
 
+static gboolean on_icon_button_release_event(
+    WINTC_UNUSED(GtkWidget* self),
+    GdkEventButton* event,
+    gpointer        user_data
+)
+{
+    WinTCSniIcon* sni_icon = (WinTCSniIcon*) user_data;
+
+    if (event->button == GDK_BUTTON_SECONDARY)
+    {
+        gtk_menu_popup_at_pointer(
+            GTK_MENU(sni_icon->menu),
+            (GdkEvent*) event
+        );
+    }
+
+    return FALSE;
+}
+
 static void on_name_acquired(
     GDBusConnection* connection,
     WINTC_UNUSED(const gchar* name),
@@ -432,6 +459,7 @@ static void on_proxy_created(
     WinTCSniIcon* sni_icon = g_new(WinTCSniIcon, 1);
 
     sni_icon->sni    = sni;
+    sni_icon->menu   = NULL;
     sni_icon->proxy  = proxy;
     sni_icon->widget =
         wintc_ishext_ui_host_get_ext_widget(
@@ -451,7 +479,29 @@ static void on_proxy_created(
     sni->list_icons =
         g_list_prepend(sni->list_icons, sni_icon);
 
-    // Set initial properties if available
+    // Set up menu
+    //
+    GVariant* v_menu =
+        g_dbus_proxy_get_cached_property(proxy, "Menu");
+
+    if (v_menu)
+    {
+        const gchar* object_path_menu = g_variant_get_string(v_menu, NULL);
+
+        sni_icon->menu =
+            GTK_WIDGET(
+                dbusmenu_gtkmenu_new(
+                    (gchar*) g_dbus_proxy_get_name(proxy),
+                    (gchar*) object_path_menu
+                )
+            );
+
+        g_object_ref_sink(sni_icon->menu);
+
+        g_variant_unref(v_menu);
+    }
+
+    // Set up initial icon
     //
     GVariant* v_icon_name =
         g_dbus_proxy_get_cached_property(proxy, "IconName");
@@ -487,6 +537,13 @@ static void on_proxy_created(
 
     // Attach signals
     //
+    g_signal_connect(
+        sni_icon->widget,
+        "button-release-event",
+        G_CALLBACK(on_icon_button_release_event),
+        sni_icon
+    );
+
     g_signal_connect(
         proxy,
         "notify::g-name-owner",
