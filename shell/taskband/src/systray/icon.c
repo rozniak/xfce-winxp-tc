@@ -571,6 +571,10 @@ void wintc_notif_area_icon_set_icon_pixbuf(
                 GDK_INTERP_BILINEAR
             );
     }
+    else
+    {
+        g_object_ref(pixbuf);
+    }
 
     notif_icon->pixbuf_icon  = real_pixbuf;
     notif_icon->surface_icon =

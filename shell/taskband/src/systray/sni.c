@@ -326,11 +326,15 @@ static gboolean wintc_notification_sni_set_icon_pixbuf(
         return FALSE;
     }
 
+    GdkPixbuf* pixbuf =
+        wintc_notification_sni_parse_pixmap_variant(v_icon_pixbuf);
+
     wintc_notif_area_icon_set_icon_pixbuf(
         WINTC_NOTIF_AREA_ICON(sni_icon->widget),
-        wintc_notification_sni_parse_pixmap_variant(v_icon_pixbuf)
+        pixbuf
     );
 
+    g_object_unref(pixbuf);
     g_variant_unref(v_icon_pixbuf);
     return TRUE;
 }
