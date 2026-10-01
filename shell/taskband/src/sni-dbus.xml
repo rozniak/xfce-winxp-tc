@@ -1,0 +1,42 @@
+<node name="/StatusNotifierItem">
+  <interface name="org.kde.StatusNotifierItem">
+    <!-- methods -->
+    <method name="Activate">
+      <arg name="x" type="i" direction="in"/>
+      <arg name="y" type="i" direction="in"/>
+    </method>
+    <method name="SecondaryActivate">
+      <arg name="x" type="i" direction="in"/>
+      <arg name="y" type="i" direction="in"/>
+    </method>
+    <method name="Scroll">
+      <arg name="delta" type="i" direction="in"/>
+      <arg name="dir"   type="s" direction="in"/>
+    </method>
+
+    <!-- properties -->
+    <property name="Category" type="s" access="read"/>
+    <property name="Id" type="s" access="read"/>
+    <property name="Title" type="s" access="read"/>
+    <property name="Status" type="s" access="read"/>
+    <property name="WindowId" type="i" access="read"/>
+    <property name="Menu" type="o" access="read" />
+    <property name="IconName" type="s" access="read" />
+    <property name="IconThemePath" type="s" access="read" />
+    <property name="IconPixmap" type="a(iiay)" access="read" />
+    <property name="OverlayIconName" type="s" access="read"/>
+    <property name="OverlayIconPixmap" type="a(iiay)" access="read" />
+    <property name="AttentionIconName" type="s" access="read"/>
+    <property name="AttentionIconPixmap" type="a(iiay)" access="read" />
+    <property name="ToolTip" type="(sa(iiay)ss)" access="read" />
+
+    <!-- signals -->
+    <signal name="NewTitle"></signal>
+    <signal name="NewIcon"></signal>
+    <signal name="NewIconThemePath"></signal>
+    <signal name="NewAttentionIcon"></signal>
+    <signal name="NewOverlayIcon"></signal>
+    <signal name="NewToolTip"></signal>
+    <signal name="NewStatus"></signal>
+  </interface>
+</node>

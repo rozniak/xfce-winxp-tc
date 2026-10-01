@@ -15,6 +15,7 @@ enum
 {
     PROP_NULL,
     PROP_ICON_NAME,
+    PROP_ICON_PIXBUF,
     N_PROPERTIES
 };
 
@@ -146,6 +147,14 @@ static void wintc_notif_area_icon_class_init(
             "image-missing",
             G_PARAM_READWRITE | G_PARAM_EXPLICIT_NOTIFY
         );
+    wintc_notif_area_icon_properties[PROP_ICON_PIXBUF] =
+        g_param_spec_object(
+            "icon-pixbuf",
+            "IconPixbuf",
+            "The pixbuf to use as the icon.",
+            GDK_TYPE_PIXBUF,
+            G_PARAM_READWRITE | G_PARAM_EXPLICIT_NOTIFY
+        );
 
     g_object_class_install_properties(
         object_class,
@@ -207,6 +216,10 @@ static void wintc_notif_area_icon_get_property(
             g_value_set_string(value, notif_icon->icon_name);
             break;
 
+        case PROP_ICON_PIXBUF:
+            g_value_set_object(value, notif_icon->pixbuf_icon);
+            break;
+
         default:
             G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
             break;
@@ -228,6 +241,13 @@ static void wintc_notif_area_icon_set_property(
             wintc_notif_area_icon_set_icon_name(
                 notif_icon,
                 g_value_get_string(value)
+            );
+            break;
+
+        case PROP_ICON_PIXBUF:
+            wintc_notif_area_icon_set_icon_pixbuf(
+                notif_icon,
+                g_value_get_object(value)
             );
             break;
 
@@ -438,6 +458,13 @@ GtkWidget* wintc_notif_area_icon_new(void)
     );
 }
 
+GdkPixbuf* wintc_notif_area_icon_get_pixbuf_icon(
+    WinTCNotifAreaIcon* notif_icon
+)
+{
+    return notif_icon->pixbuf_icon;
+}
+
 const gchar* wintc_notif_area_icon_get_icon_name(
     WinTCNotifAreaIcon* notif_icon
 )
@@ -454,12 +481,16 @@ void wintc_notif_area_icon_set_icon_name(
     //
     if (notif_icon->icon_name)
     {
-        g_free(notif_icon->icon_name);
+        g_free(
+            g_steal_pointer(&(notif_icon->icon_name))
+        );
     }
 
     if (notif_icon->pixbuf_icon)
     {
-        cairo_surface_destroy(notif_icon->surface_icon);
+        cairo_surface_destroy(
+            g_steal_pointer(&(notif_icon->surface_icon))
+        );
         g_clear_object(&(notif_icon->pixbuf_icon));
     }
 
@@ -471,7 +502,7 @@ void wintc_notif_area_icon_set_icon_name(
         gtk_icon_theme_load_icon(
             gtk_icon_theme_get_default(),
             notif_icon->icon_name,
-            16,
+            TRAY_ICON_SIZE,
             GTK_ICON_LOOKUP_FORCE_SIZE,
             NULL
         );
@@ -493,5 +524,67 @@ void wintc_notif_area_icon_set_icon_name(
     g_object_notify_by_pspec(
         G_OBJECT(notif_icon),
         wintc_notif_area_icon_properties[PROP_ICON_NAME]
+    );
+}
+
+void wintc_notif_area_icon_set_icon_pixbuf(
+    WinTCNotifAreaIcon* notif_icon,
+    GdkPixbuf*          pixbuf
+)
+{
+    // Bin old icon
+    //
+    if (notif_icon->icon_name)
+    {
+        g_free(
+            g_steal_pointer(&(notif_icon->icon_name))
+        );
+    }
+
+    if (notif_icon->pixbuf_icon)
+    {
+        cairo_surface_destroy(
+            g_steal_pointer(&(notif_icon->surface_icon))
+        );
+        g_clear_object(&(notif_icon->pixbuf_icon));
+    }
+
+    // Set new icon
+    //
+    GdkPixbuf* real_pixbuf = pixbuf;
+
+    if (!pixbuf)
+    {
+        goto done;
+    }
+
+    if (
+        gdk_pixbuf_get_height(pixbuf) != TRAY_ICON_SIZE ||
+        gdk_pixbuf_get_width(pixbuf)  != TRAY_ICON_SIZE
+    )
+    {
+        real_pixbuf =
+            gdk_pixbuf_scale_simple(
+                pixbuf,
+                TRAY_ICON_SIZE,
+                TRAY_ICON_SIZE,
+                GDK_INTERP_BILINEAR
+            );
+    }
+
+    notif_icon->pixbuf_icon  = real_pixbuf;
+    notif_icon->surface_icon =
+        gdk_cairo_surface_create_from_pixbuf(
+            notif_icon->pixbuf_icon,
+            1,
+            NULL
+        );
+
+done:
+    gtk_widget_queue_draw(GTK_WIDGET(notif_icon));
+
+    g_object_notify_by_pspec(
+        G_OBJECT(notif_icon),
+        wintc_notif_area_icon_properties[PROP_ICON_PIXBUF]
     );
 }

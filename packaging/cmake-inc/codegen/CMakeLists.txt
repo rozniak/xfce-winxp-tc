@@ -25,7 +25,7 @@ function(wintc_gdbus_codegen XML_FILE OUT_FILE_NOEXT IF_PREFIX C_PREFIX CP_PUBLI
     )
 
     add_custom_target(
-        dbus-codegen
+        dbus-codegen-${OUT_FILE_NOEXT}
         DEPENDS
             src/${OUT_FILE_NOEXT}.c
             src/${OUT_FILE_NOEXT}.h

@@ -1,6 +1,7 @@
 #ifndef __SYSTRAY_ICON_H__
 #define __SYSTRAY_ICON_H__
 
+#include <gdk-pixbuf/gdk-pixbuf.h>
 #include <glib.h>
 #include <gtk/gtk.h>
 
@@ -25,9 +26,16 @@ GtkWidget* wintc_notif_area_icon_new(void);
 const gchar* wintc_notif_area_icon_get_icon_name(
     WinTCNotifAreaIcon* notif_icon
 );
+GdkPixbuf* wintc_notif_area_icon_get_icon_pixbuf(
+    WinTCNotifAreaIcon* notif_icon
+);
 void wintc_notif_area_icon_set_icon_name(
     WinTCNotifAreaIcon* notif_icon,
     const gchar*        icon_name
+);
+void wintc_notif_area_icon_set_icon_pixbuf(
+    WinTCNotifAreaIcon* notif_icon,
+    GdkPixbuf*          pixbuf
 );
 
 #endif

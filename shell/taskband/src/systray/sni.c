@@ -1,18 +1,34 @@
+#include <gdk-pixbuf/gdk-pixbuf.h>
 #include <glib.h>
 #include <gtk/gtk.h>
+#include <math.h>
 #include <wintc/comgtk.h>
 #include <wintc/shellext.h>
 
 #include "../intapi.h"
+#include "../sni-dbus.h"
 #include "../snw-dbus.h"
 #include "icon.h"
 #include "sni.h"
+
+//
+// PRIVATE STRUCTURES
+//
+typedef struct _WinTCSniIcon
+{
+    GtkWidget*  widget;
+    GDBusProxy* proxy;
+} WinTCSniIcon;
 
 //
 // FORWARD DECLARATIONS
 //
 static void wintc_notification_sni_constructed(
     GObject* object
+);
+
+static GdkPixbuf* wintc_notification_sni_parse_pixmap_variant(
+    GVariant* variant
 );
 
 static gboolean on_handle_register_status_notifier_item(
@@ -39,6 +55,12 @@ static void on_name_lost(
     gpointer         user_data
 );
 
+static void on_proxy_created(
+    GObject*      source_object,
+    GAsyncResult* res,
+    gpointer      user_data
+);
+
 //
 // GTK OOP CLASS/INSTANCE DEFINITIONS
 //
@@ -46,7 +68,11 @@ struct _WinTCNotificationSni
 {
     WinTCShextUIController __parent__;
 
+    // State
+    //
     ZWinKdeStatusNotifierWatcher* dbus_snw;
+
+    GList* list_icons;
 };
 
 //
@@ -96,6 +122,99 @@ static void wintc_notification_sni_constructed(
 ) {}
 
 //
+// PRIVATE FUNCTIONS
+//
+static GdkPixbuf* wintc_notification_sni_parse_pixmap_variant(
+    GVariant* variant
+)
+{
+    WINTC_LOG_DEBUG("Variant is of type: %s", g_variant_get_type_string(variant));
+
+    GVariantIter* v_iter;
+
+    g_variant_get(variant, "a(iiay)", &v_iter);
+
+    // Parse out closest match to 16x16
+    //
+    const gint target_size = 16;
+
+    gint       closest_diff = G_MAXINT;
+    GdkPixbuf* pixbuf       = NULL;
+    gint       height;
+    gint       width;
+    GVariant*  v_data;
+
+    while (
+        g_variant_iter_loop(
+            v_iter,
+            "(ii@ay)",
+            &width,
+            &height,
+            &v_data
+        )
+    )
+    {
+        gint diff = abs(target_size - width);
+
+        if (diff >= closest_diff)
+        {
+            continue;
+        }
+
+        // Read out data
+        //
+        gsize len;
+
+        const guint8* pixmap_data =
+            g_variant_get_fixed_array(v_data, &len, sizeof(guint8));
+
+        if (!pixmap_data || len != (gsize)(width * height * 4))
+        {
+            continue;
+        }
+
+        // Create the pixbuf
+        //
+        guint8* pixbuf_data;
+        guint   stride;
+
+        g_clear_object(&pixbuf);
+
+        pixbuf      = gdk_pixbuf_new(
+                          GDK_COLORSPACE_RGB,
+                          TRUE,
+                          8,
+                          width,
+                          height
+                      );
+        pixbuf_data = gdk_pixbuf_get_pixels(pixbuf);
+        stride      = gdk_pixbuf_get_rowstride(pixbuf);
+
+        for (gint y = 0; y < height; y++)
+        {
+            for (gint x = 0; x < width; x++)
+            {
+                gint idx_pixmap = ((y * width) + x) * 4;
+                gint idx_pixbuf = (y * stride) + (x * 4);
+
+                // Pixbuf RGBA = Pixmap ARGB
+                //
+                pixbuf_data[idx_pixbuf + 0] = pixmap_data[idx_pixmap + 1];
+                pixbuf_data[idx_pixbuf + 1] = pixmap_data[idx_pixmap + 2];
+                pixbuf_data[idx_pixbuf + 2] = pixmap_data[idx_pixmap + 3];
+                pixbuf_data[idx_pixbuf + 3] = pixmap_data[idx_pixmap + 0];
+            }
+        }
+
+        closest_diff = diff;
+    }
+
+    g_variant_iter_free(v_iter);
+
+    return pixbuf;
+}
+
+//
 // CALLBACKS
 //
 static gboolean on_handle_register_status_notifier_item(
@@ -126,25 +245,21 @@ static gboolean on_handle_register_status_notifier_item(
         return FALSE;
     }
 
+    // Spawn the DBus connection to the icon
     //
-    // FIXME: Spawn an item in our GUI
-    //
-    GtkWidget* notif_icon =
-        wintc_ishext_ui_host_get_ext_widget(
-            wintc_shext_ui_controller_get_ui_host(
-                WINTC_SHEXT_UI_CONTROLLER(sni)
-            ),
-            WINTC_NOTIFAREA_HOSTEXT_ICON,
-            WINTC_TYPE_NOTIF_AREA_ICON,
-            sni
-        );
+    GDBusInterfaceInfo* info = zwin_kde_status_notifier_item_interface_info();
 
-    wintc_notif_area_icon_set_icon_name(
-        WINTC_NOTIF_AREA_ICON(notif_icon),
-        "preferences-desktop-locale"
+    g_dbus_proxy_new_for_bus(
+        G_BUS_TYPE_SESSION,
+        G_DBUS_PROXY_FLAGS_NONE,
+        info,
+        service,
+        "/StatusNotifierItem",
+        "org.kde.StatusNotifierItem",
+        NULL,
+        (GAsyncReadyCallback) on_proxy_created,
+        sni
     );
-
-    WINTC_LOG_DEBUG("SNI: New service: %s", service);
 
     zwin_kde_status_notifier_watcher_complete_register_status_notifier_item(
         dbus_snw,
@@ -236,4 +351,84 @@ static void on_name_lost(
 )
 {
     // FIXME: We should probably do something about this
+}
+
+static void on_proxy_created(
+    WINTC_UNUSED(GObject* source_object),
+    GAsyncResult* res,
+    gpointer      user_data
+)
+{
+    WinTCNotificationSni* sni   = WINTC_NOTIFICATION_SNI(user_data);
+
+    GError*     error = NULL;
+    GDBusProxy* proxy = g_dbus_proxy_new_for_bus_finish(res, &error);
+
+    if (!proxy)
+    {
+        wintc_log_error_and_clear(&error);
+        return;
+    }
+
+    WINTC_LOG_DEBUG(
+        "SNI: successfully attached to %s",
+        g_dbus_proxy_get_name(proxy)
+    );
+
+    // Spawn the struct to hold the icon widget and the DBus connection
+    //
+    WinTCSniIcon* sni_icon = g_new(WinTCSniIcon, 1);
+
+    sni_icon->proxy  = proxy;
+    sni_icon->widget =
+        wintc_ishext_ui_host_get_ext_widget(
+            wintc_shext_ui_controller_get_ui_host(
+                WINTC_SHEXT_UI_CONTROLLER(sni)
+            ),
+            WINTC_NOTIFAREA_HOSTEXT_ICON,
+            WINTC_TYPE_NOTIF_AREA_ICON,
+            sni
+        );
+
+    wintc_notif_area_icon_set_icon_name(
+        WINTC_NOTIF_AREA_ICON(sni_icon->widget),
+        "dialog-question"
+    );
+
+    sni->list_icons =
+        g_list_prepend(sni->list_icons, sni_icon);
+
+    // Set initial properties if available
+    //
+    GVariant* v_icon_name =
+        g_dbus_proxy_get_cached_property(proxy, "IconName");
+
+    if (v_icon_name)
+    {
+        const gchar* icon_name = NULL;
+
+        g_variant_get(v_icon_name, "&s", &icon_name);
+
+        wintc_notif_area_icon_set_icon_name(
+            WINTC_NOTIF_AREA_ICON(sni_icon->widget),
+            icon_name
+        );
+
+        g_variant_unref(v_icon_name);
+    }
+    else
+    {
+        GVariant* v_icon_pixmap =
+            g_dbus_proxy_get_cached_property(proxy, "IconPixmap");
+
+        if (v_icon_pixmap)
+        {
+            wintc_notif_area_icon_set_icon_pixbuf(
+                WINTC_NOTIF_AREA_ICON(sni_icon->widget),
+                wintc_notification_sni_parse_pixmap_variant(v_icon_pixmap)
+            );
+
+            g_variant_unref(v_icon_pixmap);
+        }
+    }
 }

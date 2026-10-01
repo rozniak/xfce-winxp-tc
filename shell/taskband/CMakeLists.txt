@@ -45,6 +45,13 @@ wintc_compile_resources()
 wintc_create_meta_h()
 
 wintc_gdbus_codegen(
+    sni-dbus.xml
+    sni-dbus
+    org.kde.
+    ZWinKde
+    false
+)
+wintc_gdbus_codegen(
     snw-dbus.xml
     snw-dbus
     org.kde.
@@ -61,6 +68,8 @@ set(
     src/main.c
     src/meta.h
     src/resources.c
+    src/sni-dbus.c
+    src/sni-dbus.h
     src/snw-dbus.c
     src/snw-dbus.h
     src/window.c
@@ -167,6 +176,7 @@ target_link_directories(
 
 target_link_libraries(
     wintc-taskband
+    PRIVATE m
     PRIVATE ${CANBERRA_LIBRARIES}
     PRIVATE ${CANBERRA_GTK3_LIBRARIES}
     PRIVATE ${GARCON_LIBRARIES}
