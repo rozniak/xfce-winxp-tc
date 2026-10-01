@@ -83,6 +83,11 @@ static void on_name_lost(
     gpointer         user_data
 );
 
+static void on_proxy_call_activate_done(
+    GObject*      source_object,
+    GAsyncResult* res,
+    gpointer      user_data
+);
 static void on_proxy_created(
     GObject*      source_object,
     GAsyncResult* res,
@@ -421,7 +426,20 @@ static gboolean on_icon_button_release_event(
 {
     WinTCSniIcon* sni_icon = (WinTCSniIcon*) user_data;
 
-    if (event->button == GDK_BUTTON_SECONDARY)
+    if (event->button == GDK_BUTTON_PRIMARY)
+    {
+        g_dbus_proxy_call(
+            sni_icon->proxy,
+            "Activate",
+            g_variant_new("(ii)", event->x, event->y),
+            G_DBUS_CALL_FLAGS_NONE,
+            -1,
+            NULL,
+            (GAsyncReadyCallback) on_proxy_call_activate_done,
+            NULL
+        );
+    }
+    else if (event->button == GDK_BUTTON_SECONDARY)
     {
         gtk_menu_popup_at_pointer(
             GTK_MENU(sni_icon->menu),
@@ -497,6 +515,29 @@ static void on_name_lost(
 )
 {
     // FIXME: We should probably do something about this
+}
+
+static void on_proxy_call_activate_done(
+    GObject*      source_object,
+    GAsyncResult* res,
+    WINTC_UNUSED(gpointer user_data)
+)
+{
+    GDBusProxy* proxy = G_DBUS_PROXY(source_object);
+
+    GError*   error = NULL;
+    GVariant* result = g_dbus_proxy_call_finish(proxy, res, &error);
+
+    if (error)
+    {
+        wintc_display_error_and_clear(&error, NULL);
+        return;
+    }
+
+    if (result)
+    {
+        g_variant_unref(result);
+    }
 }
 
 static void on_proxy_created(
