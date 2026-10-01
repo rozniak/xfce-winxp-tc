@@ -16,6 +16,8 @@
 //
 typedef struct _WinTCSniIcon
 {
+    WinTCNotificationSni* sni;
+
     GtkWidget*  widget;
     GDBusProxy* proxy;
 } WinTCSniIcon;
@@ -27,8 +29,16 @@ static void wintc_notification_sni_constructed(
     GObject* object
 );
 
+static void wintc_notification_sni_destroy_icon(
+    WinTCNotificationSni* sni,
+    WinTCSniIcon*         sni_icon
+);
 static GdkPixbuf* wintc_notification_sni_parse_pixmap_variant(
     GVariant* variant
+);
+
+static gboolean cb_proxy_destroy(
+    gpointer user_data
 );
 
 static gboolean on_handle_register_status_notifier_item(
@@ -59,6 +69,11 @@ static void on_proxy_created(
     GObject*      source_object,
     GAsyncResult* res,
     gpointer      user_data
+);
+static void on_proxy_notify_name_owner(
+    GObject*    self,
+    GParamSpec* pspec,
+    gpointer    user_data
 );
 
 //
@@ -124,6 +139,32 @@ static void wintc_notification_sni_constructed(
 //
 // PRIVATE FUNCTIONS
 //
+static void wintc_notification_sni_destroy_icon(
+    WinTCNotificationSni* sni,
+    WinTCSniIcon*         sni_icon
+)
+{
+    // Delete our tracking
+    //
+    sni->list_icons =
+        g_list_delete_link(
+            sni->list_icons,
+            g_list_find(sni->list_icons, sni_icon)
+        );
+
+    // Queue up destruction of proxy object (so this is signal-safe)
+    //
+    g_idle_add(
+        (GSourceFunc) cb_proxy_destroy,
+        sni_icon->proxy
+    );
+
+    // Finish destroying the struct
+    //
+    gtk_widget_destroy(sni_icon->widget);
+    g_free(sni_icon);
+}
+
 static GdkPixbuf* wintc_notification_sni_parse_pixmap_variant(
     GVariant* variant
 )
@@ -217,6 +258,17 @@ static GdkPixbuf* wintc_notification_sni_parse_pixmap_variant(
 //
 // CALLBACKS
 //
+static gboolean cb_proxy_destroy(
+    gpointer user_data
+)
+{
+    GDBusProxy* proxy = G_DBUS_PROXY(user_data);
+
+    g_object_unref(proxy);
+
+    return G_SOURCE_REMOVE;
+}
+
 static gboolean on_handle_register_status_notifier_item(
     ZWinKdeStatusNotifierWatcher* dbus_snw,
     GDBusMethodInvocation*        invocation,
@@ -359,7 +411,7 @@ static void on_proxy_created(
     gpointer      user_data
 )
 {
-    WinTCNotificationSni* sni   = WINTC_NOTIFICATION_SNI(user_data);
+    WinTCNotificationSni* sni = WINTC_NOTIFICATION_SNI(user_data);
 
     GError*     error = NULL;
     GDBusProxy* proxy = g_dbus_proxy_new_for_bus_finish(res, &error);
@@ -379,6 +431,7 @@ static void on_proxy_created(
     //
     WinTCSniIcon* sni_icon = g_new(WinTCSniIcon, 1);
 
+    sni_icon->sni    = sni;
     sni_icon->proxy  = proxy;
     sni_icon->widget =
         wintc_ishext_ui_host_get_ext_widget(
@@ -431,4 +484,30 @@ static void on_proxy_created(
             g_variant_unref(v_icon_pixmap);
         }
     }
+
+    // Attach signals
+    //
+    g_signal_connect(
+        proxy,
+        "notify::g-name-owner",
+        G_CALLBACK(on_proxy_notify_name_owner),
+        sni_icon
+    );
+}
+
+static void on_proxy_notify_name_owner(
+    WINTC_UNUSED(GObject*    self),
+    WINTC_UNUSED(GParamSpec* pspec),
+    gpointer user_data
+)
+{
+    WinTCSniIcon* sni_icon = (WinTCSniIcon*) user_data;
+
+    // Since the SNI DBus clients own unique names like :1.39, these can only
+    // disappear so no need to check for NULL, just destroy our proxy
+    //
+    wintc_notification_sni_destroy_icon(
+        sni_icon->sni,
+        sni_icon
+    );
 }
