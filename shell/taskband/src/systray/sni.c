@@ -506,15 +506,14 @@ static void on_proxy_created(
     GVariant* v_icon_name =
         g_dbus_proxy_get_cached_property(proxy, "IconName");
 
-    if (v_icon_name)
+    if (
+        v_icon_name &&
+        g_strcmp0(g_variant_get_string(v_icon_name, NULL), "") != 0
+    )
     {
-        const gchar* icon_name = NULL;
-
-        g_variant_get(v_icon_name, "&s", &icon_name);
-
         wintc_notif_area_icon_set_icon_name(
             WINTC_NOTIF_AREA_ICON(sni_icon->widget),
-            icon_name
+            g_variant_get_string(v_icon_name, NULL)
         );
 
         g_variant_unref(v_icon_name);
