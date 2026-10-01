@@ -45,6 +45,8 @@ struct _WinTCNotificationArea
 {
     GtkBin __parent__;
 
+    gboolean pack_end; // Enforce some icons at end of tray
+
     GtkWidget* box_container;
     GtkWidget* label_clock;
 
@@ -107,8 +109,13 @@ static void wintc_notification_area_init(
 
     // Create notification area icons
     //
+    self->pack_end = TRUE;
     wintc_shext_ui_controller_new_from_type(
-        WINTC_TYPE_NOTIFICATION_SNI,
+        WINTC_TYPE_NOTIFICATION_VOLUME,
+        WINTC_ISHEXT_UI_HOST(self)
+    );
+    wintc_shext_ui_controller_new_from_type(
+        WINTC_TYPE_NOTIFICATION_POWER,
         WINTC_ISHEXT_UI_HOST(self)
     );
 #ifndef WINTC_PKGMGR_BSDPKG
@@ -117,12 +124,10 @@ static void wintc_notification_area_init(
         WINTC_ISHEXT_UI_HOST(self)
     );
 #endif
+
+    self->pack_end = FALSE;
     wintc_shext_ui_controller_new_from_type(
-        WINTC_TYPE_NOTIFICATION_POWER,
-        WINTC_ISHEXT_UI_HOST(self)
-    );
-    wintc_shext_ui_controller_new_from_type(
-        WINTC_TYPE_NOTIFICATION_VOLUME,
+        WINTC_TYPE_NOTIFICATION_SNI,
         WINTC_ISHEXT_UI_HOST(self)
     );
 }
@@ -186,13 +191,26 @@ static GtkWidget* wintc_notification_area_get_ext_widget(
     //
     GtkWidget* notif_icon = wintc_notif_area_icon_new();
 
-    gtk_box_pack_start(
-        GTK_BOX(notif_area->box_container),
-        notif_icon,
-        FALSE,
-        FALSE,
-        0
-    );
+    if (notif_area->pack_end)
+    {
+        gtk_box_pack_end(
+            GTK_BOX(notif_area->box_container),
+            notif_icon,
+            FALSE,
+            FALSE,
+            0
+        );
+    }
+    else
+    {
+        gtk_box_pack_start(
+            GTK_BOX(notif_area->box_container),
+            notif_icon,
+            FALSE,
+            FALSE,
+            0
+        );
+    }
 
     notif_area->list_uictl_behaviours =
         g_slist_append(
