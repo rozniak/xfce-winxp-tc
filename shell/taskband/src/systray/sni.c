@@ -38,6 +38,16 @@ static void wintc_notification_sni_destroy_icon(
 static GdkPixbuf* wintc_notification_sni_parse_pixmap_variant(
     GVariant* variant
 );
+static gboolean wintc_notification_sni_set_icon_name(
+    WinTCNotificationSni* sni,
+    WinTCSniIcon*         sni_icon,
+    GVariant*             v_icon_name
+);
+static gboolean wintc_notification_sni_set_icon_pixbuf(
+    WinTCNotificationSni* sni,
+    WinTCSniIcon*         sni_icon,
+    GVariant*             v_icon_pixbuf
+);
 
 static gboolean cb_proxy_destroy(
     gpointer user_data
@@ -81,6 +91,12 @@ static void on_proxy_created(
 static void on_proxy_notify_name_owner(
     GObject*    self,
     GParamSpec* pspec,
+    gpointer    user_data
+);
+static void on_proxy_properties_changed(
+    GDBusProxy* self,
+    GVariant*   changed_properties,
+    gchar**     invalidated_properties,
     gpointer    user_data
 );
 
@@ -261,6 +277,57 @@ static GdkPixbuf* wintc_notification_sni_parse_pixmap_variant(
     g_variant_iter_free(v_iter);
 
     return pixbuf;
+}
+
+static gboolean wintc_notification_sni_set_icon_name(
+    WINTC_UNUSED(WinTCNotificationSni* sni),
+    WinTCSniIcon* sni_icon,
+    GVariant*     v_icon_name
+)
+{
+    if (!v_icon_name)
+    {
+        return FALSE;
+    }
+
+    const gchar* icon_name = g_variant_get_string(v_icon_name, NULL);
+    gboolean     ret       = FALSE;
+
+    if (g_strcmp0(icon_name, "") == 0)
+    {
+        goto cleanup;
+    }
+
+    wintc_notif_area_icon_set_icon_name(
+        WINTC_NOTIF_AREA_ICON(sni_icon->widget),
+        icon_name
+    );
+
+    ret = TRUE;
+
+cleanup:
+    g_variant_unref(v_icon_name);
+    return ret;
+}
+
+static gboolean wintc_notification_sni_set_icon_pixbuf(
+    WINTC_UNUSED(WinTCNotificationSni* sni),
+    WinTCSniIcon* sni_icon,
+    GVariant*     v_icon_pixbuf
+)
+{
+    if (!v_icon_pixbuf)
+    {
+        return FALSE;
+    }
+
+    wintc_notif_area_icon_set_icon_pixbuf(
+        WINTC_NOTIF_AREA_ICON(sni_icon->widget),
+        wintc_notification_sni_parse_pixmap_variant(v_icon_pixbuf)
+    );
+
+    g_variant_unref(v_icon_pixbuf);
+    return TRUE;
 }
 
 //
@@ -503,39 +570,26 @@ static void on_proxy_created(
 
     // Set up initial icon
     //
-    GVariant* v_icon_name =
-        g_dbus_proxy_get_cached_property(proxy, "IconName");
-
     if (
-        v_icon_name &&
-        g_strcmp0(g_variant_get_string(v_icon_name, NULL), "") != 0
+        wintc_notification_sni_set_icon_name(
+            sni,
+            sni_icon,
+            g_dbus_proxy_get_cached_property(proxy, "IconName")
+        )
     )
     {
-        wintc_notif_area_icon_set_icon_name(
-            WINTC_NOTIF_AREA_ICON(sni_icon->widget),
-            g_variant_get_string(v_icon_name, NULL)
-        );
-
-        g_variant_unref(v_icon_name);
+        goto icon_done;
     }
-    else
-    {
-        GVariant* v_icon_pixmap =
-            g_dbus_proxy_get_cached_property(proxy, "IconPixmap");
 
-        if (v_icon_pixmap)
-        {
-            wintc_notif_area_icon_set_icon_pixbuf(
-                WINTC_NOTIF_AREA_ICON(sni_icon->widget),
-                wintc_notification_sni_parse_pixmap_variant(v_icon_pixmap)
-            );
-
-            g_variant_unref(v_icon_pixmap);
-        }
-    }
+    wintc_notification_sni_set_icon_pixbuf(
+        sni,
+        sni_icon,
+        g_dbus_proxy_get_cached_property(proxy, "IconPixmap")
+    );
 
     // Attach signals
     //
+icon_done:
     g_signal_connect(
         sni_icon->widget,
         "button-release-event",
@@ -543,6 +597,12 @@ static void on_proxy_created(
         sni_icon
     );
 
+    g_signal_connect(
+        proxy,
+        "g-properties-changed",
+        G_CALLBACK(on_proxy_properties_changed),
+        sni_icon
+    );
     g_signal_connect(
         proxy,
         "notify::g-name-owner",
@@ -566,4 +626,46 @@ static void on_proxy_notify_name_owner(
         sni_icon->sni,
         sni_icon
     );
+}
+
+static void on_proxy_properties_changed(
+    WINTC_UNUSED(GDBusProxy* self),
+    GVariant* changed_properties,
+    WINTC_UNUSED(gchar** invalidated_properties),
+    gpointer  user_data
+)
+{
+    WinTCSniIcon* sni_icon = (WinTCSniIcon*) user_data;
+
+    GVariantIter iter;
+    gchar*       key;
+    GVariant*    value;
+
+    g_variant_iter_init(&iter, changed_properties);
+
+    while (g_variant_iter_next(&iter, "{sv}", &key, &value))
+    {
+        if (g_strcmp0(key, "IconName") == 0)
+        {
+            wintc_notification_sni_set_icon_name(
+                sni_icon->sni,
+                sni_icon,
+                value
+            );
+        }
+        else if (g_strcmp0(key, "IconPixmap") == 0)
+        {
+            wintc_notification_sni_set_icon_pixbuf(
+                sni_icon->sni,
+                sni_icon,
+                value
+            );
+        }
+        else
+        {
+            g_variant_unref(value);
+        }
+
+        g_free(key);
+    }
 }
