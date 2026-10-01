@@ -304,7 +304,8 @@ static gboolean parse_file_in_cmdline(
     {
         "application/x-executable",
         "application/x-shellscript",
-        "application/vnd.appimage"
+        "application/vnd.appimage",
+        "text/x-shellscript",
     };
 
     GError*          error           = NULL;
