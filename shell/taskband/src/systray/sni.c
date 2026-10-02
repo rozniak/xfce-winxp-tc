@@ -88,6 +88,16 @@ static void on_proxy_call_activate_done(
     GAsyncResult* res,
     gpointer      user_data
 );
+static void on_proxy_call_property_get_icon_name_done(
+    GObject*      source_object,
+    GAsyncResult* res,
+    gpointer      user_data
+);
+static void on_proxy_call_property_get_icon_pixmap_done(
+    GObject*      source_object,
+    GAsyncResult* res,
+    gpointer      user_data
+);
 static void on_proxy_created(
     GObject*      source_object,
     GAsyncResult* res,
@@ -102,6 +112,13 @@ static void on_proxy_properties_changed(
     GDBusProxy* self,
     GVariant*   changed_properties,
     gchar**     invalidated_properties,
+    gpointer    user_data
+);
+static void on_proxy_signal(
+    GDBusProxy* self,
+    gchar*      sender_name,
+    gchar*      signal_name,
+    GVariant*   parameters,
     gpointer    user_data
 );
 
@@ -134,7 +151,7 @@ static void wintc_notification_sni_class_init(
 {
     GObjectClass* object_class = G_OBJECT_CLASS(klass);
 
-    object_class->dispose     = wintc_notification_sni_dispose;
+    object_class->dispose = wintc_notification_sni_dispose;
 }
 
 static void wintc_notification_sni_init(
@@ -576,6 +593,98 @@ static void on_proxy_call_activate_done(
     }
 }
 
+static void on_proxy_call_property_get_icon_name_done(
+    WINTC_UNUSED(GObject* source_object),
+    GAsyncResult* res,
+    gpointer      user_data
+)
+{
+    WinTCSniIcon* sni_icon = (WinTCSniIcon*) user_data;
+
+    GError*   error  = NULL;
+    GVariant* result =
+        g_dbus_proxy_call_finish(sni_icon->proxy, res, &error);
+
+    if (error)
+    {
+        wintc_log_error_and_clear(&error);
+    }
+
+    // Update prop
+    //
+    GVariant* v_icon_name = NULL;
+
+    if (result)
+    {
+        g_variant_get(result, "(v)", &v_icon_name);
+        g_variant_ref(v_icon_name); // Life time for the next func
+    }
+
+    wintc_notification_sni_set_icon_name(
+        sni_icon->sni,
+        sni_icon,
+        v_icon_name
+    );
+    g_dbus_proxy_set_cached_property(
+        sni_icon->proxy,
+        "IconName",
+        v_icon_name
+    );
+
+    if (v_icon_name)
+    {
+        g_variant_unref(v_icon_name);
+    }
+
+    g_variant_unref(result);
+}
+
+static void on_proxy_call_property_get_icon_pixmap_done(
+    WINTC_UNUSED(GObject* source_object),
+    GAsyncResult* res,
+    gpointer      user_data
+)
+{
+    WinTCSniIcon* sni_icon = (WinTCSniIcon*) user_data;
+
+    GError*   error  = NULL;
+    GVariant* result =
+        g_dbus_proxy_call_finish(sni_icon->proxy, res, &error);
+
+    if (error)
+    {
+        wintc_log_error_and_clear(&error);
+    }
+
+    // Update prop
+    //
+    GVariant* v_icon_pixbuf = NULL;
+
+    if (result)
+    {
+        g_variant_get(result, "(v)", &v_icon_pixbuf);
+        g_variant_ref(v_icon_pixbuf); // Life time for the next func
+    }
+
+    wintc_notification_sni_set_icon_pixbuf(
+        sni_icon->sni,
+        sni_icon,
+        v_icon_pixbuf
+    );
+    g_dbus_proxy_set_cached_property(
+        sni_icon->proxy,
+        "IconPixmap",
+        v_icon_pixbuf
+    );
+
+    if (v_icon_pixbuf)
+    {
+        g_variant_unref(v_icon_pixbuf);
+    }
+
+    g_variant_unref(result);
+}
+
 static void on_proxy_created(
     WINTC_UNUSED(GObject* source_object),
     GAsyncResult* res,
@@ -676,14 +785,20 @@ icon_done:
 
     g_signal_connect(
         proxy,
+        "notify::g-name-owner",
+        G_CALLBACK(on_proxy_notify_name_owner),
+        sni_icon
+    );
+    g_signal_connect(
+        proxy,
         "g-properties-changed",
         G_CALLBACK(on_proxy_properties_changed),
         sni_icon
     );
     g_signal_connect(
         proxy,
-        "notify::g-name-owner",
-        G_CALLBACK(on_proxy_notify_name_owner),
+        "g-signal",
+        G_CALLBACK(on_proxy_signal),
         sni_icon
     );
 }
@@ -722,6 +837,12 @@ static void on_proxy_properties_changed(
 
     while (g_variant_iter_next(&iter, "{sv}", &key, &value))
     {
+        WINTC_LOG_DEBUG(
+            "SNI: prop changed %s %s",
+            g_dbus_proxy_get_name(self),
+            key
+        );
+
         if (g_strcmp0(key, "IconName") == 0)
         {
             wintc_notification_sni_set_icon_name(
@@ -744,5 +865,46 @@ static void on_proxy_properties_changed(
         }
 
         g_free(key);
+    }
+}
+
+static void on_proxy_signal(
+    GDBusProxy* self,
+    WINTC_UNUSED(gchar* sender_name),
+    gchar*      signal_name,
+    WINTC_UNUSED(GVariant* parameters),
+    gpointer    user_data
+)
+{
+    WinTCSniIcon* sni_icon = (WinTCSniIcon*) user_data;
+
+    WINTC_LOG_DEBUG(
+        "SNI: signal changed %s %s",
+        g_dbus_proxy_get_name(self),
+        signal_name
+    );
+
+    if (g_strcmp0(signal_name, "NewIcon") == 0)
+    {
+        g_dbus_proxy_call(
+            self,
+            "org.freedesktop.DBus.Properties.Get",
+            g_variant_new("(ss)", "org.kde.StatusNotifierItem", "IconName"),
+            G_DBUS_CALL_FLAGS_NONE,
+            -1,
+            NULL,
+            (GAsyncReadyCallback) on_proxy_call_property_get_icon_name_done,
+            sni_icon
+        );
+        g_dbus_proxy_call(
+            self,
+            "org.freedesktop.DBus.Properties.Get",
+            g_variant_new("(ss)", "org.kde.StatusNotifierItem", "IconPixmap"),
+            G_DBUS_CALL_FLAGS_NONE,
+            -1,
+            NULL,
+            (GAsyncReadyCallback) on_proxy_call_property_get_icon_pixmap_done,
+            sni_icon
+        );
     }
 }
