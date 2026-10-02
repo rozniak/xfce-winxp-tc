@@ -378,7 +378,7 @@ static gboolean on_handle_register_status_notifier_item(
             "Bus name provided is unacceptable."
         );
 
-        return FALSE;
+        return TRUE;
     }
 
     // Spawn the DBus connection to the icon
