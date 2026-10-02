@@ -362,14 +362,24 @@ static gboolean on_handle_register_status_notifier_item(
 {
     WinTCNotificationSni* sni = WINTC_NOTIFICATION_SNI(user_data);
 
-    WINTC_LOG_DEBUG("SNI: Register service call for: %s", service);
-
     //
     // Call in to register an item - we take in the parameter 'service' as the
     // DBus name for where to look for a /StatusNotifierItem object
     //
+    const gchar* real_obj_path = "/StatusNotifierItem";
+    const gchar* real_service  = NULL;
 
-    if (!g_dbus_is_name(service))
+    if (g_dbus_is_name(service))
+    {
+        real_service = service;
+    }
+    else
+    {
+        real_obj_path = service;
+        real_service  = g_dbus_method_invocation_get_sender(invocation);
+    }
+
+    if (!real_service || !g_dbus_is_name(real_service))
     {
         g_dbus_method_invocation_return_error_literal(
             invocation,
@@ -381,6 +391,8 @@ static gboolean on_handle_register_status_notifier_item(
         return TRUE;
     }
 
+    WINTC_LOG_DEBUG("SNI: Register service call for: %s", real_service);
+
     // Spawn the DBus connection to the icon
     //
     GDBusInterfaceInfo* info = zwin_kde_status_notifier_item_interface_info();
@@ -389,8 +401,8 @@ static gboolean on_handle_register_status_notifier_item(
         G_BUS_TYPE_SESSION,
         G_DBUS_PROXY_FLAGS_NONE,
         info,
-        service,
-        "/StatusNotifierItem",
+        real_service,
+        real_obj_path,
         "org.kde.StatusNotifierItem",
         NULL,
         (GAsyncReadyCallback) on_proxy_created,
