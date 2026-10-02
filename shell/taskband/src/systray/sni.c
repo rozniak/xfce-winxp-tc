@@ -27,7 +27,7 @@ typedef struct _WinTCSniIcon
 //
 // FORWARD DECLARATIONS
 //
-static void wintc_notification_sni_constructed(
+static void wintc_notification_sni_dispose(
     GObject* object
 );
 
@@ -134,7 +134,7 @@ static void wintc_notification_sni_class_init(
 {
     GObjectClass* object_class = G_OBJECT_CLASS(klass);
 
-    object_class->constructed = wintc_notification_sni_constructed;
+    object_class->dispose     = wintc_notification_sni_dispose;
 }
 
 static void wintc_notification_sni_init(
@@ -161,9 +161,24 @@ static void wintc_notification_sni_init(
 //
 // CLASS VIRTUAL METHODS
 //
-static void wintc_notification_sni_constructed(
-    WINTC_UNUSED(GObject* object)
-) {}
+static void wintc_notification_sni_dispose(
+    GObject* object
+)
+{
+    WinTCNotificationSni* sni = WINTC_NOTIFICATION_SNI(object);
+
+    while (sni->list_icons)
+    {
+        WinTCSniIcon* sni_icon = (WinTCSniIcon*) sni->list_icons->data;
+
+        wintc_notification_sni_destroy_icon(sni, sni_icon);
+    }
+
+    g_clear_object(&(sni->dbus_snw));
+
+    (G_OBJECT_CLASS(wintc_notification_sni_parent_class))
+        ->dispose(object);
+}
 
 //
 // PRIVATE FUNCTIONS
@@ -190,6 +205,7 @@ static void wintc_notification_sni_destroy_icon(
 
     // Finish destroying the struct
     //
+    gtk_widget_destroy(sni_icon->menu);
     gtk_widget_destroy(sni_icon->widget);
     g_free(sni_icon);
 }
@@ -391,7 +407,11 @@ static gboolean on_handle_register_status_notifier_item(
         return TRUE;
     }
 
-    WINTC_LOG_DEBUG("SNI: Register service call for: %s", real_service);
+    WINTC_LOG_DEBUG(
+        "SNI: Register service call for: %s %s",
+        real_service,
+        real_obj_path
+    );
 
     // Spawn the DBus connection to the icon
     //

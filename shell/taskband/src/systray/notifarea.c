@@ -212,11 +212,14 @@ static GtkWidget* wintc_notification_area_get_ext_widget(
         );
     }
 
-    notif_area->list_uictl_behaviours =
-        g_slist_append(
-            notif_area->list_uictl_behaviours,
-            ctx
-        );
+    if (!g_slist_find(notif_area->list_uictl_behaviours, ctx))
+    {
+        notif_area->list_uictl_behaviours =
+            g_slist_append(
+                notif_area->list_uictl_behaviours,
+                ctx
+            );
+    }
 
     gtk_widget_show_all(notif_icon);
 
