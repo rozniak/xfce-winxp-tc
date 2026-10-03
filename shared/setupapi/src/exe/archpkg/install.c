@@ -6,6 +6,12 @@
 //
 // FORWARD DECLARATIONS
 //
+static void cb_alpm_download(
+    gpointer                   user_data,
+    const gchar*               filename,
+    alpm_download_event_type_t event,
+    void*                      data
+);
 static void cb_alpm_progress(
     gpointer        user_data,
     alpm_progress_t progress,
@@ -56,7 +62,7 @@ gint wintc_setupapi_exec_install(
         for (gsize j = 0; j < G_N_ELEMENTS(s_mirrors); j++)
         {
             gchar* pass1 = wintc_strsubst(s_mirrors[j], "$repo", s_repos[i]);
-            gchar* pass2 = wintc_strsubst(pass2, "$arch", WINTC_ARCH);
+            gchar* pass2 = wintc_strsubst(pass1, "$arch", WINTC_ARCH);
 
             alpm_db_add_server(db, pass2);
 
@@ -65,6 +71,11 @@ gint wintc_setupapi_exec_install(
         }
     }
 
+    alpm_option_set_dlcb(
+        handle,
+        cb_alpm_download,
+        NULL
+    );
     alpm_option_set_progresscb(
         handle,
         cb_alpm_progress,
@@ -229,6 +240,29 @@ cleanup:
 //
 // CALLBACKS
 //
+static void cb_alpm_download(
+    WINTC_UNUSED(gpointer user_data),
+    WINTC_UNUSED(const gchar* filename),
+    alpm_download_event_type_t event,
+    WINTC_UNUSED(void* data)
+)
+{
+    switch (event)
+    {
+        case ALPM_DOWNLOAD_INIT:
+            WINTC_LOG_DEBUG("ALPM DOWNLOADING");
+            break;
+
+        case ALPM_DOWNLOAD_RETRY:
+            WINTC_LOG_DEBUG("ALPM RETRY");
+            break;
+
+        default:
+            WINTC_LOG_DEBUG("ALPM OTHER DOWNLOAD");
+            break;
+    }
+}
+
 static void cb_alpm_progress(
     WINTC_UNUSED(gpointer user_data),
     alpm_progress_t progress,
