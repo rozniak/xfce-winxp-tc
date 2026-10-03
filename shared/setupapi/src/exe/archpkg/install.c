@@ -6,12 +6,6 @@
 //
 // FORWARD DECLARATIONS
 //
-static void cb_alpm_download(
-    gpointer                   user_data,
-    const gchar*               filename,
-    alpm_download_event_type_t event,
-    void*                      data
-);
 static void cb_alpm_progress(
     gpointer        user_data,
     alpm_progress_t progress,
@@ -71,11 +65,6 @@ gint wintc_setupapi_exec_install(
         }
     }
 
-    alpm_option_set_dlcb(
-        handle,
-        cb_alpm_download,
-        NULL
-    );
     alpm_option_set_progresscb(
         handle,
         cb_alpm_progress,
@@ -84,7 +73,7 @@ gint wintc_setupapi_exec_install(
 
     // Init the transaction
     //
-    if (alpm_trans_init(handle, ALPM_TRANS_FLAG_NEEDED) != 0)
+    if (alpm_trans_init(handle, ALPM_TRANS_FLAG_NEEDED) < 0)
     {
         goto cleanup;
     }
@@ -104,11 +93,11 @@ gint wintc_setupapi_exec_install(
                 1,
                 ALPM_SIG_USE_DEFAULT,
                 &package
-            ) != 0 ||
+            ) < 0 ||
             alpm_add_pkg(
                 handle,
                 package
-            ) != 0
+            ) < 0
         )
         {
             if (package)
@@ -136,7 +125,7 @@ gint wintc_setupapi_exec_install(
     {
         alpm_list_t* alpm_dbs = alpm_get_syncdbs(handle);
 
-        if (alpm_db_update(handle, alpm_dbs, 0) != 0)
+        if (alpm_db_update(handle, alpm_dbs, 0) < 0)
         {
             goto cleanup;
         }
@@ -153,7 +142,7 @@ gint wintc_setupapi_exec_install(
 
                 package = alpm_db_get_pkg(alpm_db, name);
 
-                if (package && alpm_add_pkg(handle, package) != 0)
+                if (package && alpm_add_pkg(handle, package) < 0)
                 {
                     goto cleanup;
                 }
@@ -170,7 +159,7 @@ gint wintc_setupapi_exec_install(
     //
     alpm_list_t* alpm_conflicts = NULL;
 
-    if (alpm_trans_prepare(handle, &alpm_conflicts) != 0)
+    if (alpm_trans_prepare(handle, &alpm_conflicts) < 0)
     {
         for (alpm_list_t* iter = alpm_conflicts; iter; iter = iter->next)
         {
@@ -210,7 +199,13 @@ gint wintc_setupapi_exec_install(
 
     trans = TRUE;
 
-    if (alpm_trans_commit(handle, NULL) != 0)
+    if (!alpm_trans_get_add(handle))
+    {
+        status = EXIT_SUCCESS;
+        goto cleanup;
+    }
+
+    if (alpm_trans_commit(handle, NULL) < 0)
     {
         goto cleanup;
     }
@@ -218,7 +213,11 @@ gint wintc_setupapi_exec_install(
     status = EXIT_SUCCESS;
 
 cleanup:
-    if (status != EXIT_SUCCESS)
+    if (status == EXIT_SUCCESS)
+    {
+        g_print("%s\n", "STAT 100.0");
+    }
+    else
     {
         g_print(
             "ERR %s\n", 
@@ -240,29 +239,6 @@ cleanup:
 //
 // CALLBACKS
 //
-static void cb_alpm_download(
-    WINTC_UNUSED(gpointer user_data),
-    WINTC_UNUSED(const gchar* filename),
-    alpm_download_event_type_t event,
-    WINTC_UNUSED(void* data)
-)
-{
-    switch (event)
-    {
-        case ALPM_DOWNLOAD_INIT:
-            WINTC_LOG_DEBUG("ALPM DOWNLOADING");
-            break;
-
-        case ALPM_DOWNLOAD_RETRY:
-            WINTC_LOG_DEBUG("ALPM RETRY");
-            break;
-
-        default:
-            WINTC_LOG_DEBUG("ALPM OTHER DOWNLOAD");
-            break;
-    }
-}
-
 static void cb_alpm_progress(
     WINTC_UNUSED(gpointer user_data),
     alpm_progress_t progress,
