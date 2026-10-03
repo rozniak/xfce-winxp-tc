@@ -1,6 +1,6 @@
 #include <glib.h>
 
-#include "../public/error.h"
+#include "../../public/error.h"
 
 //
 // GLIB BOILERPLATE

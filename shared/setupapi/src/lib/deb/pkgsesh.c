@@ -2,7 +2,7 @@
 #include <glib.h>
 #include <wintc/comgtk.h>
 
-#include "../../public/pkgsesh.h"
+#include "../../../public/pkgsesh.h"
 
 //
 // PRIVATE ENUMS

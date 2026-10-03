@@ -2,7 +2,7 @@
 #include <glib.h>
 #include <wintc/comgtk.h>
 
-#include "../../public/pkgmgr.h"
+#include "../../../public/pkgmgr.h"
 #include "pkgcmn.h"
 
 //

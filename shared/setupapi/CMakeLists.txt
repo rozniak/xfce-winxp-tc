@@ -27,15 +27,15 @@ wintc_resolve_library(wintc-exec   WINTC_EXEC)
 
 add_library(
     libwintc-setupapi
-    src/error.c
+    src/lib/error.c
     public/error.h
-    src/initsys.c
+    src/lib/initsys.c
     public/initsys.h
-    src/${WINTC_PKGMGR}/pkgcmn.c
-    src/${WINTC_PKGMGR}/pkgcmn.h
-    src/${WINTC_PKGMGR}/pkgmgr.c
+    src/lib/${WINTC_PKGMGR}/pkgcmn.c
+    src/lib/${WINTC_PKGMGR}/pkgcmn.h
+    src/lib/${WINTC_PKGMGR}/pkgmgr.c
     public/pkgmgr.h
-    src/${WINTC_PKGMGR}/pkgsesh.c
+    src/lib/${WINTC_PKGMGR}/pkgsesh.c
     public/pkgsesh.h
 )
 

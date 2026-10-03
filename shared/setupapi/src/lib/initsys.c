@@ -2,7 +2,7 @@
 #include <wintc/comgtk.h>
 #include <wintc/exec.h>
 
-#include "../public/initsys.h"
+#include "../../public/initsys.h"
 
 //
 // FORWARD DECLARATIONS
