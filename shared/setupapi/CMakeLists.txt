@@ -33,9 +33,7 @@ add_library(
     public/error.h
     src/lib/initsys.c
     public/initsys.h
-    src/lib/${WINTC_PKGMGR}/pkgcmn.c
-    src/lib/${WINTC_PKGMGR}/pkgcmn.h
-    src/lib/${WINTC_PKGMGR}/pkgmgr.c
+    src/lib/pkgmgr.c
     public/pkgmgr.h
     src/lib/pkgsesh.c
     public/pkgsesh.h
@@ -117,24 +115,12 @@ if (${WINTC_PKGMGR} STREQUAL "archpkg")
     wintc_resolve_library(libalpm ALPM)
 
     target_include_directories(
-        libwintc-setupapi
-        PRIVATE ${ALPM_INCLUDE_DIRS}
-    )
-    target_include_directories(
         wintc-setupapi-exec
         PRIVATE ${ALPM_INCLUDE_DIRS}
     )
     target_link_directories(
-        libwintc-setupapi
-        PRIVATE ${ALPM_LIBRARY_DIRS}
-    )
-    target_link_directories(
         wintc-setupapi-exec
         PRIVATE ${ALPM_LIBRARY_DIRS}
-    )
-    target_link_libraries(
-        libwintc-setupapi
-        PRIVATE ${ALPM_LIBRARIES}
     )
     target_link_libraries(
         wintc-setupapi-exec
