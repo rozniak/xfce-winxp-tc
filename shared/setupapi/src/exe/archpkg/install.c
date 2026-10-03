@@ -258,5 +258,5 @@ static void cb_alpm_progress(
     gdouble real_pct    =
         (current0 * per_trans) + (per_trans * (percent / 100.0f));
 
-    g_print("STAT %f\n", real_pct);
+    g_print("STAT %f\n", real_pct * 100.0f);
 }
