@@ -23,6 +23,7 @@ gint wintc_setupapi_exec_install(
 )
 {
     GError* error     = NULL;
+    GList*  list_left = NULL;
     GList*  list_pkgs = NULL;
     int     status    = EXIT_FAILURE;
 
@@ -53,7 +54,7 @@ gint wintc_setupapi_exec_install(
     //
     for (gchar** iter = packages; *iter; iter++)
     {
-        const gchar* path = *iter;
+        gchar* path = *iter;
 
         alpm_pkg_t* package = NULL;
 
@@ -76,13 +77,39 @@ gint wintc_setupapi_exec_install(
                 alpm_pkg_free(package);
             }
 
-            goto cleanup;
+            // Not an error yet, we may resolve the packages in DB
+            //
+            list_left =
+                g_list_prepend(list_left, path);
         }
 
         // All good, track the package
         //
         list_pkgs =
             g_list_prepend(list_pkgs, package);
+    }
+
+    // Resolve any leftover packages from DB
+    //
+    if (list_left)
+    {
+        alpm_list_t* alpm_dbs = alpm_get_syncdbs(handle);
+
+        for (GList* iter = list_left; iter; iter = iter->next)
+        {
+            const gchar* name = (gchar*) iter->data;
+
+            for (alpm_list_t* iter_l = alpm_dbs; iter_l; iter_l = iter_l->next)
+            {
+                alpm_db_t*  alpm_db = (alpm_db_t*) iter_l->data;
+                alpm_pkg_t* package = alpm_db_get_pkg(alpm_db, name);
+
+                if (!package || alpm_add_pkg(handle, package) != 0)
+                {
+                    goto cleanup;
+                }
+            }
+        }
     }
 
     // Kick off commit
@@ -99,22 +126,13 @@ cleanup:
     {
         g_print(
             "ERR %s\n", 
-            alpm_errno(handle)
+            alpm_strerror(alpm_errno(handle))
         );
     }
 
     if (alpm_trans_get_flags(handle) == 0)
     {
-        if (list_pkgs)
-        {
-            for (GList* iter = list_pkgs; iter; iter = iter->next)
-            {
-                alpm_pkg_free((alpm_pkg_t*) iter->data);
-            }
-
-            g_list_free(list_pkgs);
-        }
-
+        g_clear_list(&list_pkgs, NULL);
         alpm_trans_release(handle);
     }
 
