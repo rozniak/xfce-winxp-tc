@@ -2,7 +2,8 @@
 #include <glib.h>
 #include <wintc/comgtk.h>
 
-#include "../../../public/pkgsesh.h"
+#include "../../public/error.h"
+#include "../../public/pkgsesh.h"
 
 //
 // PRIVATE ENUMS
@@ -46,13 +47,10 @@ static void cb_read_line_pkgmgr(
 static GParamSpec* wintc_pkg_session_properties[N_PROPERTIES] = { 0 };
 static gint        wintc_pkg_session_signals[N_SIGNALS]       = { 0 };
 
-static gchar* S_PKG_CMD_APT[] = {
-    "/usr/bin/pkexec",
-    "/usr/bin/apt-get",
-    "install",
-    "-y",
-    "-o",
-    "APT::Status-Fd=1",
+static gchar* S_CMD_INSTALL[] = {
+    WINTC_RT_PREFIX "/bin/pkexec",
+    WINTC_RT_PREFIX "/bin/wintc-setupapi-exec",
+    "-i",
     NULL
 };
 
@@ -189,12 +187,9 @@ void wintc_pkg_session_begin(
     WinTCPkgSession* session
 )
 {
+    // Set up command line
     //
-    // FIXME: Update for different package managers
-    //
-    gint fd_out = 1;
-
-    guint len_cmd      = g_strv_length(S_PKG_CMD_APT);
+    guint len_cmd      = g_strv_length(S_CMD_INSTALL);
     guint len_packages = g_list_length(session->list_packages);
 
     gchar** argv = g_malloc0(sizeof(gchar*) * (len_cmd + len_packages + 1));
@@ -202,7 +197,7 @@ void wintc_pkg_session_begin(
     gint   i;
     GList* iter;
 
-    memcpy(argv, S_PKG_CMD_APT, sizeof(gchar*) * len_cmd);
+    memcpy(argv, S_CMD_INSTALL, sizeof(gchar*) * len_cmd);
 
     for (
         i = len_cmd, iter = session->list_packages;
@@ -212,6 +207,10 @@ void wintc_pkg_session_begin(
     {
         argv[i] = iter->data;
     }
+
+    // Spawn process
+    //
+    gint fd_out = 1;
 
     gboolean success =
         g_spawn_async_with_pipes(
@@ -310,24 +309,29 @@ static void cb_read_line_pkgmgr(
         return;
     }
 
-    // Deal with package manager output
+    // Deal with helper output
     //
-    // FIXME: apt specific
-    //
-    gchar** apt_status = g_strsplit(line, ":", -1);
-
-    if (g_strcmp0(apt_status[0], "pmstatus") == 0) // pmstatus
+    if (strstr(line, "STAT "))
     {
         g_signal_emit(
             session,
             wintc_pkg_session_signals[SIGNAL_PROGRESS],
             0,
             G_TYPE_DOUBLE,
-            strtod(apt_status[2], NULL)
+            strtod(line + 5, NULL)
+        );
+    }
+    else if (strstr(line, "ERR "))
+    {
+        g_set_error(
+            &(session->error),
+            WINTC_SETUPAPI_ERROR,
+            WINTC_SETUPAPI_ERROR_FAILED,
+            "%s",
+            line + 4
         );
     }
 
-    g_strfreev(apt_status);
     g_free(line);
 
     // Wait for next line

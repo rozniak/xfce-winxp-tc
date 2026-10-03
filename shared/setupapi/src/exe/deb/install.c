@@ -58,8 +58,8 @@ gint wintc_setupapi_exec_install(
 
     if (!success)
     {
-        g_message(
-            "ERR %s",
+        g_print(
+            "ERR %s\n",
             error->message
         );
 
@@ -91,7 +91,7 @@ gint wintc_setupapi_exec_install(
 
         if (g_strcmp0(apt_status[0], "pmstatus") == 0) // pmstatus
         {
-            g_message("STAT %f", strtod(apt_status[2], NULL));
+            g_print("STAT %f\n", strtod(apt_status[2], NULL));
         }
 
         g_strfreev(apt_status);
@@ -102,8 +102,8 @@ gint wintc_setupapi_exec_install(
     {
         status = EXIT_FAILURE;
 
-        g_message(
-            "ERR %s",
+        g_print(
+            "ERR %s\n",
             error->message
         );
 
@@ -111,7 +111,7 @@ gint wintc_setupapi_exec_install(
     }
     else
     {
-        g_message("%s", "STAT 100.0");
+        g_print("%s\n", "STAT 100.0");
     }
 
     g_input_stream_close(G_INPUT_STREAM(stream), NULL, NULL);

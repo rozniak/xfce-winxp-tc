@@ -32,7 +32,7 @@ gint wintc_setupapi_exec_install(
 
     if (!handle)
     {
-        g_message("ERR %s", alpm_strerror(error_code));
+        g_print("ERR %s\n", alpm_strerror(error_code));
         return EXIT_FAILURE;
     }
 
@@ -97,8 +97,8 @@ gint wintc_setupapi_exec_install(
 cleanup:
     if (status != EXIT_SUCCESS)
     {
-        g_message(
-            "ERR %s", 
+        g_print(
+            "ERR %s\n", 
             alpm_errno(handle)
         );
     }
@@ -140,5 +140,5 @@ static void cb_alpm_progress(
     gdouble real_pct    =
         (current0 * per_trans) + (per_trans * (percent / 100.0f));
 
-    g_message("STAT %f", real_pct);
+    g_print("STAT %f\n", real_pct);
 }

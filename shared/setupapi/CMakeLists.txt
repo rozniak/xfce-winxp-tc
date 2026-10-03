@@ -37,7 +37,7 @@ add_library(
     src/lib/${WINTC_PKGMGR}/pkgcmn.h
     src/lib/${WINTC_PKGMGR}/pkgmgr.c
     public/pkgmgr.h
-    src/lib/${WINTC_PKGMGR}/pkgsesh.c
+    src/lib/pkgsesh.c
     public/pkgsesh.h
 )
 

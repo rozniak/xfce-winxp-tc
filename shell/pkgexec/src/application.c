@@ -31,7 +31,7 @@ static const GOptionEntry S_OPTION_ENTRIES[] = {
         "install",
         'i',
         G_OPTION_FLAG_NONE,
-        G_OPTION_ARG_FILENAME,
+        G_OPTION_ARG_STRING,
         &S_ARG_PATH_INSTALL,
         "Install a package using the installation wizard.",
         NULL
@@ -88,7 +88,10 @@ static void wintc_pkg_exec_application_activate(
         gchar* pkg_path =
             g_canonicalize_filename(S_ARG_PATH_INSTALL, NULL);
 
-        wintc_pkg_exec_application_install_wizard(pkg_path);
+        wintc_pkg_exec_application_install_wizard(
+            g_file_test(pkg_path, G_FILE_TEST_EXISTS) ?
+                pkg_path : S_ARG_PATH_INSTALL
+        );
 
         g_free(pkg_path);
 

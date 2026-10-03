@@ -24,7 +24,7 @@ static GOptionEntry S_OPTIONS[] = {
         G_OPTION_REMAINING,
         0,
         0,
-        G_OPTION_ARG_FILENAME_ARRAY,
+        G_OPTION_ARG_STRING_ARRAY,
         &S_OPT_FILES,
         "Package names.",
         NULL
