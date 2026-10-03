@@ -22,10 +22,6 @@ string(TOUPPER ${WINTC_PKGMGR} WINTC_PKGMGR_UPPER)
 
 add_compile_definitions(WINTC_PKGMGR_${WINTC_PKGMGR_UPPER})
 
-# Export install prefix (useful for retrieving data at runtime)
-#
-add_compile_definitions(WINTC_RT_PREFIX="${CMAKE_INSTALL_PREFIX}")
-
 # Set up library directory
 #
 if (

@@ -22,10 +22,17 @@ gint wintc_setupapi_exec_install(
     gchar** packages
 )
 {
-    GError* error     = NULL;
-    GList*  list_left = NULL;
-    GList*  list_pkgs = NULL;
-    int     status    = EXIT_FAILURE;
+    static const gchar* s_repos[]   = { "core", "extra" };
+    static const gchar* s_mirrors[] = {
+        "https://geo.mirror.pkgbuild.com/$repo/os/$arch",
+        "https://fastly.mirror.pkgbuild.com/$repo/os/$arch"
+    };
+
+    GError*  error     = NULL;
+    GList*   list_left = NULL;
+    GList*   list_pkgs = NULL;
+    int      status    = EXIT_FAILURE;
+    gboolean trans    = FALSE;
 
     alpm_errno_t   error_code;
     alpm_handle_t* handle =
@@ -35,6 +42,27 @@ gint wintc_setupapi_exec_install(
     {
         g_print("ERR %s\n", alpm_strerror(error_code));
         return EXIT_FAILURE;
+    }
+
+    for (gsize i = 0; i < G_N_ELEMENTS(s_repos); i++)
+    {
+        alpm_db_t* db =
+            alpm_register_syncdb(
+                handle,
+                s_repos[i],
+                ALPM_SIG_USE_DEFAULT
+            );
+
+        for (gsize j = 0; j < G_N_ELEMENTS(s_mirrors); j++)
+        {
+            gchar* pass1 = wintc_strsubst(s_mirrors[j], "$repo", s_repos[i]);
+            gchar* pass2 = wintc_strsubst(pass2, "$arch", WINTC_ARCH);
+
+            alpm_db_add_server(db, pass2);
+
+            g_free(pass1);
+            g_free(pass2);
+        }
     }
 
     alpm_option_set_progresscb(
@@ -81,6 +109,8 @@ gint wintc_setupapi_exec_install(
             //
             list_left =
                 g_list_prepend(list_left, path);
+
+            continue;
         }
 
         // All good, track the package
@@ -95,19 +125,32 @@ gint wintc_setupapi_exec_install(
     {
         alpm_list_t* alpm_dbs = alpm_get_syncdbs(handle);
 
+        if (alpm_db_update(handle, alpm_dbs, 0) != 0)
+        {
+            goto cleanup;
+        }
+
         for (GList* iter = list_left; iter; iter = iter->next)
         {
             const gchar* name = (gchar*) iter->data;
 
+            alpm_pkg_t* package = NULL;
+
             for (alpm_list_t* iter_l = alpm_dbs; iter_l; iter_l = iter_l->next)
             {
                 alpm_db_t*  alpm_db = (alpm_db_t*) iter_l->data;
-                alpm_pkg_t* package = alpm_db_get_pkg(alpm_db, name);
 
-                if (!package || alpm_add_pkg(handle, package) != 0)
+                package = alpm_db_get_pkg(alpm_db, name);
+
+                if (package && alpm_add_pkg(handle, package) != 0)
                 {
                     goto cleanup;
                 }
+            }
+
+            if (!package)
+            {
+                goto cleanup;
             }
         }
     }
@@ -154,6 +197,8 @@ gint wintc_setupapi_exec_install(
         goto cleanup;
     }
 
+    trans = TRUE;
+
     if (alpm_trans_commit(handle, NULL) != 0)
     {
         goto cleanup;
@@ -170,7 +215,7 @@ cleanup:
         );
     }
 
-    if (alpm_trans_get_flags(handle) == 0)
+    if (trans)
     {
         g_clear_list(&list_pkgs, NULL);
         alpm_trans_release(handle);
@@ -186,13 +231,18 @@ cleanup:
 //
 static void cb_alpm_progress(
     WINTC_UNUSED(gpointer user_data),
-    WINTC_UNUSED(alpm_progress_t progress),
+    alpm_progress_t progress,
     WINTC_UNUSED(const gchar* pkg),
-    gint     percent,
-    size_t   howmany,
-    size_t   current
+    gint            percent,
+    size_t          howmany,
+    size_t          current
 )
 {
+    if (progress != ALPM_PROGRESS_ADD_START)
+    {
+        return;
+    }
+
     gdouble current0    = current - 1;
     gdouble per_trans   = 1.0f / howmany;
     gdouble real_pct    =

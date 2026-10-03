@@ -30,6 +30,11 @@ if (${CMAKE_BUILD_TYPE} STREQUAL Debug)
     add_compile_definitions(WINTC_CHECKED)
 endif()
 
+# Export macros for distro/arch dependent bits
+#
+add_compile_definitions(WINTC_RT_PREFIX="${CMAKE_INSTALL_PREFIX}")
+add_compile_definitions(WINTC_ARCH="${CMAKE_SYSTEM_PROCESSOR}")
+
 # Enable ASAN for checked builds
 #   - Do not enable for musl targets or FreeBSD
 #
