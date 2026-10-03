@@ -25,6 +25,8 @@ wintc_resolve_library(gtk+-3.0     GTK3)
 wintc_resolve_library(wintc-comgtk WINTC_COMGTK)
 wintc_resolve_library(wintc-exec   WINTC_EXEC)
 
+# Add main setupapi library target
+#
 add_library(
     libwintc-setupapi
     src/lib/error.c
@@ -71,8 +73,8 @@ target_link_directories(
 
 target_link_libraries(
     libwintc-setupapi
-    PRIVATE ${GLIB_LIBRARY_LIBRARIES}
-    PRIVATE ${GTK3_LIBRARY_LIBRARIES}
+    PRIVATE ${GLIB_LIBRARIES}
+    PRIVATE ${GTK3_LIBRARIES}
     PRIVATE ${WINTC_COMGTK_LIBRARIES}
     PRIVATE ${WINTC_EXEC_LIBRARIES}
 )
@@ -94,6 +96,38 @@ if (${WINTC_PKGMGR} STREQUAL "archpkg")
     )
 endif()
 
+# Add helper program target
+#
+add_executable(
+    wintc-setupapi-exec
+    src/exe/install.h
+    src/exe/main.c
+    src/exe/${WINTC_PKGMGR}/install.c
+)
+
+target_include_directories(
+    wintc-setupapi-exec
+    SYSTEM
+    BEFORE
+    PRIVATE ${GLIB_INCLUDE_DIRS}
+    PRIVATE ${GTK3_INCLUDE_DIRS}
+    PRIVATE ${WINTC_COMGTK_INCLUDE_DIRS}
+)
+
+target_link_directories(
+    wintc-setupapi-exec
+    PRIVATE ${GLIB_LIBRARY_DIRS}
+    PRIVATE ${GTK3_LIBRARY_DIRS}
+    PRIVATE ${WINTC_COMGTK_LIBRARY_DIRS}
+)
+
+target_link_libraries(
+    wintc-setupapi-exec
+    PRIVATE ${GLIB_LIBRARIES}
+    PRIVATE ${GTK3_LIBRARIES}
+    PRIVATE ${WINTC_COMGTK_LIBRARIES}
+)
+
 # Installation
 #
 wintc_configure_and_install_packaging()
@@ -103,4 +137,8 @@ wintc_install_public_headers()
 install(
     TARGETS libwintc-setupapi
     LIBRARY DESTINATION ${LIB_DIR}
+)
+install(
+    TARGETS wintc-setupapi-exec
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
