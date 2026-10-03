@@ -2,7 +2,7 @@
 #include <glib.h>
 #include <wintc/comgtk.h>
 
-#include "../../public/error.h"
+#include "../../../public/error.h"
 #include "pkgcmn.h"
 
 //

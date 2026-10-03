@@ -79,23 +79,6 @@ target_link_libraries(
     PRIVATE ${WINTC_EXEC_LIBRARIES}
 )
 
-if (${WINTC_PKGMGR} STREQUAL "archpkg")
-    wintc_resolve_library(libalpm ALPM)
-
-    target_include_directories(
-        libwintc-setupapi
-        PRIVATE ${ALPM_INCLUDE_DIRS}
-    )
-    target_link_directories(
-        libwintc-setupapi
-        PRIVATE ${ALPM_LIBRARY_DIRS}
-    )
-    target_link_libraries(
-        libwintc-setupapi
-        PRIVATE ${ALPM_LIBRARIES}
-    )
-endif()
-
 # Add helper program target
 #
 add_executable(
@@ -127,6 +110,37 @@ target_link_libraries(
     PRIVATE ${GTK3_LIBRARIES}
     PRIVATE ${WINTC_COMGTK_LIBRARIES}
 )
+
+# Additional linking for certain package managers
+#
+if (${WINTC_PKGMGR} STREQUAL "archpkg")
+    wintc_resolve_library(libalpm ALPM)
+
+    target_include_directories(
+        libwintc-setupapi
+        PRIVATE ${ALPM_INCLUDE_DIRS}
+    )
+    target_include_directories(
+        wintc-setupapi-exec
+        PRIVATE ${ALPM_INCLUDE_DIRS}
+    )
+    target_link_directories(
+        libwintc-setupapi
+        PRIVATE ${ALPM_LIBRARY_DIRS}
+    )
+    target_link_directories(
+        wintc-setupapi-exec
+        PRIVATE ${ALPM_LIBRARY_DIRS}
+    )
+    target_link_libraries(
+        libwintc-setupapi
+        PRIVATE ${ALPM_LIBRARIES}
+    )
+    target_link_libraries(
+        wintc-setupapi-exec
+        PRIVATE ${ALPM_LIBRARIES}
+    )
+endif()
 
 # Installation
 #
