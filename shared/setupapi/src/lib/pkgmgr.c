@@ -12,8 +12,8 @@ gchar* wintc_pkg_get_package_name(
 {
     if (g_file_test(path, G_FILE_TEST_EXISTS))
     {
-        return g_strdup(path);
+        return g_path_get_basename(path);
     }
 
-    return g_path_get_basename(path);
+    return g_strdup(path);
 }
