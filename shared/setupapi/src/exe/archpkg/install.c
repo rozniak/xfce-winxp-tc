@@ -114,6 +114,46 @@ gint wintc_setupapi_exec_install(
 
     // Kick off commit
     //
+    alpm_list_t* alpm_conflicts = NULL;
+
+    if (alpm_trans_prepare(handle, &alpm_conflicts) != 0)
+    {
+        for (alpm_list_t* iter = alpm_conflicts; iter; iter = iter->next)
+        {
+            alpm_depmissing_t* problem = (alpm_depmissing_t*) iter->data;
+
+            if (problem->causingpkg)
+            {
+                g_print(
+                    "CONFLICT %s with %s because %s",
+                    problem->target,
+                    problem->depend->name,
+                    problem->causingpkg
+                );
+            }
+            else
+            {
+                char* sz_dep = alpm_dep_compute_string(problem->depend);
+
+                g_print(
+                    "MISSING %s requires %s",
+                    problem->target,
+                    sz_dep
+                );
+
+                free(sz_dep);
+            }
+        }
+
+        alpm_list_free_inner(
+            alpm_conflicts,
+            (alpm_list_fn_free) alpm_depmissing_free
+        );
+        alpm_list_free(alpm_conflicts);
+
+        goto cleanup;
+    }
+
     if (alpm_trans_commit(handle, NULL) != 0)
     {
         goto cleanup;
