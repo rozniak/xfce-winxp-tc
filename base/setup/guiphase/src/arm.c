@@ -242,7 +242,11 @@ gboolean wintc_setup_arm_system(void)
 
     if (
         !wintc_launch_command_sync(
+#if defined(WINTC_PKGMGR_DEB)
             "update-grub",
+#else
+            "grub-mkconfig -o /boot/grub/grub.cfg",
+#endif
             NULL,
             NULL,
             &error
