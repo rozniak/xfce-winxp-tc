@@ -33,7 +33,7 @@ networkmanager-->bt-->libnm-dev
 networkmanager-->rt-->network-manager
 plymouth-->bt,rt-->plymouth
 pulseaudio-->bt-->libpulse-dev
-pulseaudio-->rt-->libpulse0
+pulseaudio-->rt-->libpulse-mainloop-glib0
 python3-packaging-->bt,rt-->python3-packaging
 python3-pil-->bt,rt-->python3-pil
 python3-venv-->bt,rt-->python3-venv

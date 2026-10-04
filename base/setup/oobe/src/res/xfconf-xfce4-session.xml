@@ -9,43 +9,23 @@
   <property name="sessions" type="empty">
     <property name="Failsafe" type="empty">
       <property name="IsFailsafe" type="bool" value="true"/>
-      <property name="Count" type="int" value="3"/>
+      <property name="Count" type="int" value="1"/>
       <property name="Client0_Command" type="array">
         <value type="string" value="xfwm4"/>
         <value type="string" value="--replace"/>
       </property>
       <property name="Client0_Priority" type="int" value="15"/>
       <property name="Client0_PerScreen" type="bool" value="false"/>
-      <property name="Client1_Command" type="array">
-        <value type="string" value="wintc-desktop"/>
-      </property>
-      <property name="Client1_Priority" type="int" value="20"/>
-      <property name="Client1_PerScreen" type="bool" value="false"/>
-      <property name="Client2_Command" type="array">
-        <value type="string" value="wintc-taskband"/>
-      </property>
-      <property name="Client2_Priority" type="int" value="25"/>
-      <property name="Client2_PerScreen" type="bool" value="false"/>
     </property>
     <property name="FailsafeWayland" type="empty">
       <property name="IsFailsafe" type="bool" value="true"/>
-      <property name="Count" type="int" value="3"/>
+      <property name="Count" type="int" value="1"/>
       <property name="Client0_Command" type="array">
         <value type="string" value="xfwm4"/>
         <value type="string" value="--replace"/>
       </property>
       <property name="Client0_Priority" type="int" value="15"/>
       <property name="Client0_PerScreen" type="bool" value="false"/>
-      <property name="Client1_Command" type="array">
-        <value type="string" value="wintc-desktop"/>
-      </property>
-      <property name="Client1_Priority" type="int" value="20"/>
-      <property name="Client1_PerScreen" type="bool" value="false"/>
-      <property name="Client2_Command" type="array">
-        <value type="string" value="wintc-taskband"/>
-      </property>
-      <property name="Client2_Priority" type="int" value="25"/>
-      <property name="Client2_PerScreen" type="bool" value="false"/>
     </property>
   </property>
 </channel>

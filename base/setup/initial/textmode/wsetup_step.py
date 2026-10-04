@@ -267,7 +267,7 @@ def wsetup_step_prep_install(stdscr):
     stdscr.refresh()
 
     if pkgfmt == "deb":
-        pkgcmd = "apt update"
+        pkgcmd = "apt-get -y update"
 
     try:
         if pkgcmd:
@@ -286,11 +286,18 @@ def wsetup_step_prep_install(stdscr):
 
     # Install setupapi so we can use wintc-setupapi-exec to track progress
     #
+    # Also adding libasan so that checked builds work
+    #
     arr_pkgs  = [ "comgtk", "exec", "setupapi" ]
     path_pkgs = ""
 
     for i in range(len(arr_pkgs)):
         arr_pkgs[i] = wsetup_pkg_get_local_path(arr_pkgs[i], True)
+
+    if pkgfmt == "deb":
+        arr_pkgs.append("libasan8")
+    elif pkgfmt == "archpkg":
+        arr_pkgs.append("libasan")
 
     path_pkgs = " ".join(arr_pkgs)
 
@@ -302,7 +309,7 @@ def wsetup_step_prep_install(stdscr):
     )
 
     if pkgfmt == "deb":
-        pkgcmd = f"apt install {path_pkgs}"
+        pkgcmd = f"apt-get -y install {path_pkgs}"
     elif pkgfmt == "archpkg":
         pkgcmd = f"pacman -U --noconfirm --noprogressbar {path_pkgs}"
     else:

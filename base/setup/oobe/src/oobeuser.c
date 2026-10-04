@@ -2,7 +2,6 @@
 #include <pwd.h>
 #include <sys/types.h>
 #include <wintc/comgtk.h>
-#include <wintc/shcommon.h>
 
 #include "deploy.h"
 #include "oobeuser.h"
@@ -27,6 +26,13 @@ static const gchar* S_XFCONF_CHANNELS[] = {
     "xfce4-session",
     "xfwm4",
     "xsettings"
+};
+static const gchar* S_DEPLOYS_AUTOSTART[] = {
+    "/uk/oddmatics/wintc/oobe/startup-desktop.desktop",
+    "WinTC-Desktop.desktop",
+
+    "/uk/oddmatics/wintc/oobe/startup-taskband.desktop",
+    "WinTC-Taskband.desktop"
 };
 
 //
@@ -83,30 +89,33 @@ gboolean wintc_oobe_user_apply_all(
             );
         }
 
-        // Delete all sessions
+        // File deployments
         //
-        gchar* sessions_dir  = g_build_path(
-                                   G_DIR_SEPARATOR_S,
-                                   pwent->pw_dir,
-                                   ".cache",
-                                   "sessions",
-                                   NULL
-                               );
-        GList* session_files = wintc_sh_fs_get_names_as_list(
-                                   sessions_dir,
-                                   TRUE,
-                                   0,
-                                   FALSE,
-                                   NULL
-                               );
+        gchar* user_config_autostart =
+            g_build_path(
+                G_DIR_SEPARATOR_S,
+                pwent->pw_dir,
+                ".config",
+                "autostart",
+                NULL
+            );
 
-        for (GList* iter = session_files; iter; iter = iter->next)
+        for (gsize i = 0; i < G_N_ELEMENTS(S_DEPLOYS_AUTOSTART); i += 2)
         {
-            unlink((gchar*) iter->data);
+            if (
+                !wintc_oobe_deploy_drop_file(
+                    S_DEPLOYS_AUTOSTART[i],
+                    user_config_autostart,
+                    S_DEPLOYS_AUTOSTART[i + 1],
+                    &local_error
+                )
+            )
+            {
+                wintc_log_error_and_clear(&local_error);
+            }
         }
 
-        g_free(sessions_dir);
-        g_list_free_full(session_files, (GDestroyNotify) g_free);
+        g_free(user_config_autostart);
 
         // Fix up owner, since we'll be running as root
         //

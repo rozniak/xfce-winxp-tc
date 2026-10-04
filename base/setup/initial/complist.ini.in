@@ -1,8 +1,8 @@
 [BaseSystem]
 Libs=@WSETUP_LIBLIST@
 OurPackages=launch,setup-gui,setup-oobe,theme-native,icon-theme-luna,cursor-theme-standard-with-shadow,cursor-theme-standard-no-shadow,bootvid,fonts-xp
-DistPackagesDeb=xfwm4,xfconf,xfce4-session,plymouth,xserver-xorg,xinit,lightdm
-DistPackagesArchpkg=xfwm4,xfconf,xfce4-session,plymouth,xorg-server,xorg-xinit,lightdm
+DistPackagesDeb=xfwm4,xfconf,xfce4-session,plymouth,xserver-xorg,xinit,lightdm,pkexec
+DistPackagesArchpkg=xfwm4,xfconf,xfce4-session,plymouth,xorg-server,xorg-xinit,lightdm,polkit
 # FIXME: Other distro packages here
 
 #
