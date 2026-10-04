@@ -6,11 +6,13 @@ import subprocess
 wsetup_pkgpath = None
 
 def wsetup_pkg_get_local_path(pkg, is_lib):
+    K_NO_LIBNAME = [ "archpkg", "bsdpkg", "rpm", "xbps" ]
+
     pkgfmt         = os.environ.get("WSETUP_DIST_PKGFMT")
     pkgfmt_fileext = wsetup_pkg_get_pkgfmt_extension()
     pkg_src_dir    = wsetup_pkg_get_pkgpath()
 
-    if is_lib:
+    if is_lib and pkgfmt not in K_NO_LIBNAME:
         return f"{pkg_src_dir}/libwintc-{pkg}{pkgfmt_fileext}"
     else:
         return f"{pkg_src_dir}/wintc-{pkg}{pkgfmt_fileext}"
