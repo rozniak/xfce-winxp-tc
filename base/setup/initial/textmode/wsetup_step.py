@@ -286,7 +286,13 @@ def wsetup_step_prep_install(stdscr):
 
     # Install setupapi so we can use wintc-setupapi-exec to track progress
     #
-    path_setupapi = wsetup_pkg_get_local_path("setupapi", True)
+    arr_pkgs  = [ "comgtk", "exec", "setupapi" ]
+    path_pkgs = ""
+
+    for i in range(len(path_pkgs)):
+        arr_pkgs[i] = wsetup_pkg_get_local_path(arr_pkgs[i], True)
+
+    path_pkgs = " ".join(arr_pkgs)
 
     wsetup_screen_write_instructions(
         stdscr,
@@ -296,9 +302,9 @@ def wsetup_step_prep_install(stdscr):
     )
 
     if pkgfmt == "deb":
-        pkgcmd = f"apt install {path_setupapi}"
+        pkgcmd = f"apt install {path_pkgs}"
     elif pkgfmt == "archpkg":
-        pkgcmd = f"pacman -U --noconfirm --noprogressbar {path_setupapi}"
+        pkgcmd = f"pacman -U --noconfirm --noprogressbar {path_pkgs}"
     else:
         return wsetup_step_error(
             stdscr,
@@ -315,7 +321,7 @@ def wsetup_step_prep_install(stdscr):
         return wsetup_step_error(
             stdscr,
             "Setup was unable to initialize, you may have insufficient \n" +
-            "disk space or your install media is corrupted."
+            "disk space or your install media is corrupt."
         )
 
     # Copy complist to tmpdir
