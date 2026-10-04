@@ -289,7 +289,7 @@ def wsetup_step_prep_install(stdscr):
     arr_pkgs  = [ "comgtk", "exec", "setupapi" ]
     path_pkgs = ""
 
-    for i in range(len(path_pkgs)):
+    for i in range(len(arr_pkgs)):
         arr_pkgs[i] = wsetup_pkg_get_local_path(arr_pkgs[i], True)
 
     path_pkgs = " ".join(arr_pkgs)
