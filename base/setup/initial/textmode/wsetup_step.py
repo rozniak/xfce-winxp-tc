@@ -305,6 +305,19 @@ def wsetup_step_prep_install(stdscr):
             "No method to install setupapi."
         )
 
+    try:
+        subprocess.run(
+            pkgcmd.split(),
+            capture_output=True,
+            check=True
+        )
+    except:
+        return wsetup_step_error(
+            stdscr,
+            "Setup was unable to initialize, you may have insufficient \n" +
+            "disk space or your install media is corrupted."
+        )
+
     # Copy complist to tmpdir
     #
     setup_root = os.environ.get("SETUPROOT")
