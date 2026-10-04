@@ -1,6 +1,7 @@
 #include <glib.h>
 #include <gio/gunixinputstream.h>
 #include <wintc/comgtk.h>
+#include <wintc/setupapi.h>
 
 #include "netwiz.h"
 #include "perwiz.h"
@@ -589,10 +590,11 @@ static GList* collect_packages(
                         g_list_prepend(
                             list_packages,
                             g_strdup_printf(
-                                "%s%s%s.deb",
+                                "%s%s%s.%s",
                                 WINTC_SETUP_ACT_PKG_PATH,
                                 G_DIR_SEPARATOR_S,
-                                packages[j]
+                                packages[j],
+                                WINTC_PKG_FILE_EXT
                             )
                         );
                 }
