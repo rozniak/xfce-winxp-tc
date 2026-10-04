@@ -23,17 +23,10 @@ enum
 // STATIC DATA
 //
 static const gchar* S_XFCONF_CHANNELS[] = {
-    "keyboard-shortcuts",
-    "session",
+    "xfce4-keyboard-shortcuts",
+    "xfce4-session",
     "xfwm4",
     "xsettings"
-};
-static const gchar* S_DEPLOYS_AUTOSTART[] = {
-    "/uk/oddmatics/wintc/oobe/startup-desktop.desktop",
-    "WinTC-Desktop.desktop",
-
-    "/uk/oddmatics/wintc/oobe/startup-taskband.desktop",
-    "WinTC-Taskband.desktop"
 };
 
 //
@@ -89,34 +82,6 @@ gboolean wintc_oobe_user_apply_all(
                 S_XFCONF_CHANNELS[i]
             );
         }
-
-        // File deployments
-        //
-        gchar* user_config_autostart =
-            g_build_path(
-                G_DIR_SEPARATOR_S,
-                pwent->pw_dir,
-                ".config",
-                "autostart",
-                NULL
-            );
-
-        for (gsize i = 0; i < G_N_ELEMENTS(S_DEPLOYS_AUTOSTART); i += 2)
-        {
-            if (
-                !wintc_oobe_deploy_drop_file(
-                    S_DEPLOYS_AUTOSTART[i],
-                    user_config_autostart,
-                    S_DEPLOYS_AUTOSTART[i + 1],
-                    &local_error
-                )
-            )
-            {
-                wintc_log_error_and_clear(&local_error);
-            }
-        }
-
-        g_free(user_config_autostart);
 
         // Delete all sessions
         //

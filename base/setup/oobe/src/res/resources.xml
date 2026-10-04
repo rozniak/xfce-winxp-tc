@@ -38,10 +38,8 @@
     <!--             -->
     <!-- DEPLOYMENTS -->
     <!--             -->
-    <file>startup-desktop.desktop</file>
-    <file>startup-taskband.desktop</file>
-    <file>xfconf-keyboard-shortcuts.xml</file>
-    <file>xfconf-session.xml</file>
+    <file>xfconf-xfce4-keyboard-shortcuts.xml</file>
+    <file>xfconf-xfce4-session.xml</file>
     <file>xfconf-xfwm4.xml</file>
     <file>xfconf-xsettings.xml</file>
   </gresource>
