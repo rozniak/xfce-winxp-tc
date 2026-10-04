@@ -52,13 +52,13 @@ def wsetup_pkg_get_pkgnames_basesystem():
         if libs_arr[i] == "":
             continue
 
-        libs_arr[i] = wintc_pkg_get_local_path(libs_arr[i], True)
+        libs_arr[i] = wsetup_pkg_get_local_path(libs_arr[i], True)
 
     for i in range(len(ourpkgs_arr)):
         if ourpkgs_arr[i] == "":
             continue
 
-        ourpkgs_arr[i] = wintc_pkg_get_local_path(ourpkgs_arr[i], False)
+        ourpkgs_arr[i] = wsetup_pkg_get_local_path(ourpkgs_arr[i], False)
 
     return (libs_arr + ourpkgs_arr + distpkgs_arr)
 

@@ -105,9 +105,12 @@ fi
 
 # Build setup
 #
-${SH_BUILD} base/setup/initial
+build_dir=${CURDIR}/build/base/setup/initial
 
-(cd ${CURDIR}/build/base/setup/initial; DESTDIR="${staging_dir}" make install)
+rm -rf ${build_dir}
+mkdir -p ${build_dir}
+
+(cd ${build_dir}; cmake ${REPO_ROOT}/base/setup/initial -DWINTC_SKU=xpclient-pro -DCMAKE_INSTALL_PREFIX=${staging_dir}; make install)
 
 if [[ $? -gt 0 ]]
 then

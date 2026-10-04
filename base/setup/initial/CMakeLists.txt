@@ -17,8 +17,6 @@ include(GNUInstallDirs)
 
 include(../../../packaging/cmake-inc/common/CMakeLists.txt)
 
-set(CMAKE_INSTALL_PREFIX "")
-
 # Generate list of library names
 #
 execute_process(

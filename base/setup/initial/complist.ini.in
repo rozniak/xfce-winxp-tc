@@ -2,6 +2,7 @@
 Libs=@WSETUP_LIBLIST@
 OurPackages=wintc-launch,wintc-setup-gui,wintc-setup-oobe,wintc-theme-native,wintc-icon-theme-luna,wintc-cursor-theme-standard-with-shadow,wintc-cursor-theme-standard-no-shadow,wintc-bootvid,wintc-fonts-xp
 DistPackagesDeb=xfwm4,xfconf,xfce4-session,plymouth,xserver-xorg,xinit,lightdm
+DistPackagesArchpkg=xfwm4,xfconf,xfce4-session,plymouth,xorg-server,xorg-xinit,lightdm
 # FIXME: Other distro packages here
 
 #

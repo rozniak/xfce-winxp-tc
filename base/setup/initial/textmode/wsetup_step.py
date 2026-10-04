@@ -286,7 +286,7 @@ def wsetup_step_prep_install(stdscr):
 
     # Install setupapi so we can use wintc-setupapi-exec to track progress
     #
-    path_setupapi = wintc_pkg_get_local_path("setupapi", True)
+    path_setupapi = wsetup_pkg_get_local_path("setupapi", True)
 
     wsetup_screen_write_instructions(
         stdscr,
@@ -420,7 +420,7 @@ def wsetup_step_install_base(stdscr):
                 continue
 
             cur_pkg  = "FIXME" # FIXME: setupapi missing this info atm
-            pct      = float(cmd_out[5:)
+            pct      = float(cmd_out[5:])
             progress = str(int(pct)) + "%"
 
             if len(cur_pkg) > 16:
