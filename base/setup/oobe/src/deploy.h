@@ -12,5 +12,8 @@ gboolean wintc_oobe_deploy_drop_file(
     const gchar* drop_filename,
     GError**     error
 );
+gboolean wintc_oobe_deploy_lightdm_conf(
+    GError** error
+);
 
 #endif

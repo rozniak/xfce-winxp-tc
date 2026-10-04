@@ -8,6 +8,7 @@
 #include <wintc/exec.h>
 #include <wintc/shelldpa.h>
 
+#include "deploy.h"
 #include "oobewnd.h"
 
 #define WINTC_SETUP_ROOT_DIR "/var/tmp/.wintc-setup"
@@ -30,8 +31,14 @@ int main(
 {
     GError* error = NULL;
 
-    // Before all else, write to the phase file so if we crash, the OOBE
-    // doesn't start again
+    // Deploy lightdm conf as insurance if started via --aur
+    //
+    if (!wintc_oobe_deploy_lightdm_conf(&error))
+    {
+        wintc_log_error_and_clear(&error);
+    }
+
+    // Write to the phase file so if we crash, the OOBE doesn't start again
     //
     if (g_mkdir_with_parents(WINTC_SETUP_ROOT_DIR, S_IRWXU) < 0)
     {

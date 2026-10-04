@@ -221,7 +221,7 @@ static void wintc_setup_act_iter_setting_phase(
             )
             {
                 wintc_setup_act_raise_error(callbacks, &error);
-                return;
+                goto cleanup_lightdm;
             }
 
             g_key_file_set_string(
@@ -244,8 +244,11 @@ static void wintc_setup_act_iter_setting_phase(
             )
             {
                 wintc_setup_act_raise_error(callbacks, &error);
-                return;
             }
+
+cleanup_lightdm:
+            g_free(key_raw);
+            g_key_file_unref(key_file);
 
             break;
         }

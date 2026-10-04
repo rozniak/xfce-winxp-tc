@@ -80,3 +80,49 @@ gboolean wintc_oobe_deploy_drop_file(
 
     return success;
 }
+
+gboolean wintc_oobe_deploy_lightdm_conf(
+    GError** error
+)
+{
+    GKeyFile* key_file = g_key_file_new();
+    gchar*    key_raw  = NULL;
+    gboolean  ret;
+
+    ret =
+        g_key_file_load_from_file(
+            key_file,
+            "/etc/lightdm/lightdm.conf",
+            G_KEY_FILE_KEEP_COMMENTS,
+            error
+        );
+
+    if (!ret)
+    {
+        goto cleanup;
+    }
+
+    g_key_file_set_string(
+        key_file,
+        "Seat:*",
+        "greeter-session",
+        "wintc-logonui"
+    );
+
+    key_raw =
+        g_key_file_to_data(key_file, NULL, NULL);
+
+    ret =
+        g_file_set_contents(
+            "/etc/lightdm/lightdm.conf",
+            key_raw,
+            -1,
+            error
+        );
+
+cleanup:
+    g_free(key_raw);
+    g_key_file_unref(key_file);
+
+    return ret;
+}
