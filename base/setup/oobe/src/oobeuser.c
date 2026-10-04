@@ -2,6 +2,7 @@
 #include <pwd.h>
 #include <sys/types.h>
 #include <wintc/comgtk.h>
+#include <wintc/shcommon.h>
 
 #include "deploy.h"
 #include "oobeuser.h"
@@ -22,6 +23,8 @@ enum
 // STATIC DATA
 //
 static const gchar* S_XFCONF_CHANNELS[] = {
+    "keyboard-shortcuts",
+    "session",
     "xfwm4",
     "xsettings"
 };
@@ -114,6 +117,31 @@ gboolean wintc_oobe_user_apply_all(
         }
 
         g_free(user_config_autostart);
+
+        // Delete all sessions
+        //
+        gchar* sessions_dir  = g_build_path(
+                                   G_DIR_SEPARATOR_S,
+                                   pwent->pw_dir,
+                                   ".cache",
+                                   "sessions",
+                                   NULL
+                               );
+        GList* session_files = wintc_sh_fs_get_names_as_list(
+                                   sessions_dir,
+                                   TRUE,
+                                   0,
+                                   FALSE,
+                                   NULL
+                               );
+
+        for (GList* iter = session_files; iter; iter = iter->next)
+        {
+            unlink((gchar*) iter->data);
+        }
+
+        g_free(sessions_dir);
+        g_list_free_full(session_files, (GDestroyNotify) g_free);
 
         // Fix up owner, since we'll be running as root
         //
