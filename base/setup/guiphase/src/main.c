@@ -7,6 +7,7 @@
 #include <wintc/shelldpa.h>
 
 #include "arm.h"
+#include "phase.h"
 #include "setupclr.h"
 #include "setupwnd.h"
 
@@ -26,6 +27,7 @@ static void on_setup_controller_done(
 // STATIC DATA
 //
 static gboolean S_OPTION_ARM  = FALSE;
+static gboolean S_OPTION_AUR  = FALSE;
 static gboolean S_OPTION_TEST = FALSE;
 
 static GOptionEntry S_ENTRIES[] = {
@@ -36,6 +38,15 @@ static GOptionEntry S_ENTRIES[] = {
         G_OPTION_ARG_NONE,
         &S_OPTION_ARM,
         "Arm the system to boot into graphical-mode setup.",
+        NULL
+    },
+    {
+        "aur",
+        0,
+        0,
+        G_OPTION_ARG_NONE,
+        &S_OPTION_AUR,
+        "Arm the system to boot into OOBE, assuming packages are already installed.",
         NULL
     },
     {
@@ -84,9 +95,14 @@ int main(
     //
     // Handle options
     //
-    if (S_OPTION_ARM)
+    if (S_OPTION_ARM || S_OPTION_AUR)
     {
-        gboolean res_arm = wintc_setup_arm_system();
+        gboolean res_arm =
+            wintc_setup_arm_system(
+                S_OPTION_AUR ?
+                    WINTC_SETUP_PHASE_OOBE :
+                    WINTC_SETUP_PHASE_GUIMODE
+            );
 
         if (res_arm)
         {

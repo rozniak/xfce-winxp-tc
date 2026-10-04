@@ -13,7 +13,9 @@
 //
 // PUBLIC FUNCTIONS
 //
-gboolean wintc_setup_arm_system(void)
+gboolean wintc_setup_arm_system(
+    WinTCSetupPhase phase
+)
 {
     GError*         error    = NULL;
     WinTCInitSystem init_sys = wintc_init_system_get();
@@ -29,7 +31,7 @@ gboolean wintc_setup_arm_system(void)
 
     // Deploy phase file for booting into graphical mode
     //
-    wintc_setup_phase_set(WINTC_SETUP_PHASE_GUIMODE);
+    wintc_setup_phase_set(phase);
 
     // Deploy the service for starting setup at boot
     //

@@ -3,9 +3,13 @@
 
 #include <glib.h>
 
+#include "phase.h"
+
 //
 // PUBLIC FUNCTIONS
 //
-gboolean wintc_setup_arm_system(void);
+gboolean wintc_setup_arm_system(
+    WinTCSetupPhase phase
+);
 
 #endif
