@@ -38,6 +38,11 @@ static void wintc_setup_act_raise_error(
     GError**                error
 );
 
+static void cb_watch_ping(
+    GPid     pid,
+    gint     status,
+    gpointer user_data
+);
 static gboolean cb_idle_next_setting_phase(
     gpointer user_data
 );
@@ -109,9 +114,41 @@ gboolean wintc_setup_act_install_packages(
     WinTCSetupActErrorCallback    error_callback,
     WinTCSetupActProgressCallback progress_callback,
     gpointer                      user_data,
-    WINTC_UNUSED(GError** error)
+    GError**                      error
 )
 {
+    // HACK: On Arch Linux we may be too quick during start up and the network
+    //       isn't ready -- do a ping to determine we have a connection before
+    //       starting the packaging session
+    //
+    static gchar* s_ping_argv[] = {
+        WINTC_RT_PREFIX "/ping",
+        "-c",
+        "5",
+        "-w",
+        "2",
+        "8.8.8.8",
+        NULL
+    };
+
+    GPid pid;
+
+    if (
+        !g_spawn_async(
+            NULL,
+            s_ping_argv,
+            NULL,
+            G_SPAWN_DO_NOT_REAP_CHILD,
+            NULL,
+            NULL,
+            &pid,
+            error
+        )
+    )
+    {
+        return FALSE; 
+    }
+
     // Build our callback struct
     //
     WinTCSetupActCallbacks* callbacks =
@@ -122,8 +159,10 @@ gboolean wintc_setup_act_install_packages(
     callbacks->progress_cb = progress_callback;
     callbacks->user_data   = user_data;
 
-    // Kick off package session
+    // Build packaging session
     //
+    g_clear_object(&S_PKG_SESSION);
+
     S_PKG_SESSION = wintc_pkg_session_new(list_packages);
 
     g_signal_connect(
@@ -139,7 +178,13 @@ gboolean wintc_setup_act_install_packages(
         callbacks
     );
 
-    wintc_pkg_session_begin(S_PKG_SESSION);
+    // Watch the ping
+    //
+    g_child_watch_add(
+        pid,
+        (GChildWatchFunc) cb_watch_ping,
+        callbacks
+    );
 
     return TRUE;
 }
@@ -269,6 +314,28 @@ static void wintc_setup_act_raise_error(
 //
 // CALLBACKS
 //
+static void cb_watch_ping(
+    GPid     pid,
+    WINTC_UNUSED(gint status),
+    gpointer user_data
+)
+{
+    WinTCSetupActCallbacks* callbacks = 
+        (WinTCSetupActCallbacks*) user_data;
+
+    GError* error = NULL;
+
+    if (g_spawn_check_wait_status(pid, &error))
+    {
+        // Kick off package session
+        //
+        wintc_pkg_session_begin(S_PKG_SESSION);
+    }
+    else
+    {
+        wintc_setup_act_raise_error(callbacks, &error);
+    }
+}
 static gboolean cb_idle_next_setting_phase(
     gpointer user_data
 )
