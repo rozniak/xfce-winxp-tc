@@ -3,6 +3,18 @@ import os
 import shutil
 import subprocess
 
+wsetup_pkgpath = None
+
+def wsetup_pkg_get_local_path(pkg, is_lib):
+    pkgfmt         = os.environ.get("WSETUP_DIST_PKGFMT")
+    pkgfmt_fileext = wsetup_pkg_get_pkgfmt_extension()
+    pkg_src_dir    = wsetup_pkg_get_pkgpath()
+
+    if is_lib:
+        return f"{pkg_src_dir}/libwintc-{pkg}{pkgfmt_fileext}"
+    else:
+        return f"{pkg_src_dir}/wintc-{pkg}{pkgfmt_fileext}"
+
 def wsetup_pkg_get_pkgfmt_extension():
     pkgfmt = os.environ.get("WSETUP_DIST_PKGFMT")
 
@@ -22,11 +34,8 @@ def wsetup_pkg_get_pkgfmt_extension():
     raise Exception(f"Unknown package format {pkgfmt}")
 
 def wsetup_pkg_get_pkgnames_basesystem():
+    pkgfmt     = os.environ.get("WSETUP_DIST_PKGFMT")
     setup_root = os.environ.get("SETUPROOT")
-
-    pkgfmt         = os.environ.get("WSETUP_DIST_PKGFMT")
-    pkgfmt_fileext = wsetup_pkg_get_pkgfmt_extension()
-    pkg_src_dir    = wsetup_pkg_get_pkgpath()
 
     # Read complist.ini to set up the stuff we need to install for phase 2
     #
@@ -43,17 +52,22 @@ def wsetup_pkg_get_pkgnames_basesystem():
         if libs_arr[i] == "":
             continue
 
-        libs_arr[i] = f"{pkg_src_dir}/libwintc-{libs_arr[i]}{pkgfmt_fileext}"
+        libs_arr[i] = wintc_pkg_get_local_path(libs_arr[i], True)
 
     for i in range(len(ourpkgs_arr)):
         if ourpkgs_arr[i] == "":
             continue
 
-        ourpkgs_arr[i] = f"{pkg_src_dir}/{ourpkgs_arr[i]}{pkgfmt_fileext}"
+        ourpkgs_arr[i] = wintc_pkg_get_local_path(ourpkgs_arr[i], False)
 
     return (libs_arr + ourpkgs_arr + distpkgs_arr)
 
 def wsetup_pkg_get_pkgpath():
+    global wsetup_pkgpath
+
+    if wsetup_pkgpath:
+        return wsetup_pkgpath
+
     dir_setup_state = os.environ.get("WSETUP_STATE_ROOT")
     file_pkgpath = f"{dir_setup_state}/pkgpath"
 
@@ -65,6 +79,8 @@ def wsetup_pkg_get_pkgpath():
     return contents
 
 def wsetup_pkg_prepare_pkgpath():
+    global wsetup_pkgpath
+
     setup_root = os.environ.get("SETUPROOT")
 
     # Construct the package source path
@@ -90,3 +106,5 @@ def wsetup_pkg_prepare_pkgpath():
 
     with open(file_pkgpath, "w") as f:
         f.write(dir_dst)
+
+    wsetup_pkgpath = dir_dst

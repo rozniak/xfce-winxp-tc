@@ -254,7 +254,7 @@ def wsetup_step_prep_install(stdscr):
 
     # Check package manager works
     #
-    pkgcmd = ""
+    pkgcmd = None
     pkgfmt = os.environ.get("WSETUP_DIST_PKGFMT")
 
     wsetup_screen_write_instructions(
@@ -268,21 +268,41 @@ def wsetup_step_prep_install(stdscr):
 
     if pkgfmt == "deb":
         pkgcmd = "apt update"
-    else:
-        raise Exception(f"No install command for format {pkgfmt}")
 
     try:
-        subprocess.run(
-            pkgcmd.split(),
-            capture_output=True,
-            check=True
-        )
+        if pkgcmd:
+            subprocess.run(
+                pkgcmd.split(),
+                capture_output=True,
+                check=True
+            )
     except:
         return wsetup_step_error(
             stdscr,
             "The system package manager failed to update.\n\n" +
             "Make sure your package manager is able to download from its\n" +
             "configured sources successfully, then try running Setup again."
+        )
+
+    # Install setupapi so we can use wintc-setupapi-exec to track progress
+    #
+    path_setupapi = wintc_pkg_get_local_path("setupapi", True)
+
+    wsetup_screen_write_instructions(
+        stdscr,
+        [
+            "Please wait..."
+        ]
+    )
+
+    if pkgfmt == "deb":
+        pkgcmd = f"apt install {path_setupapi}"
+    elif pkgfmt == "archpkg":
+        pkgcmd = f"pacman -U --noconfirm --noprogressbar {path_setupapi}"
+    else:
+        return wsetup_step_error(
+            stdscr,
+            "No method to install setupapi."
         )
 
     # Copy complist to tmpdir
@@ -302,8 +322,12 @@ def wsetup_step_prep_install(stdscr):
             os.environ.get("WSETUP_STATE_ROOT")
         )
     except:
-        # FIXME: Ditto
-        raise Exception(f"Failed to copy complist.ini to setup state dir")
+        return wsetup_step_error(
+            stdscr,
+            "Setup was unable to copy the list of files for the next phase\n" +
+            "of the installation process. Please ensure you have enough\n"    +
+            "disk space to complete Setup."
+        )
 
     return 7
 
@@ -369,15 +393,11 @@ def wsetup_step_install_base(stdscr):
 
     # Install the base packages to get to phase 2
     #
-    pkgcmd       = ""
     pkgfmt       = os.environ.get("WSETUP_DIST_PKGFMT")
     pkgnames_arr = wsetup_pkg_get_pkgnames_basesystem()
     pkgnames     = " ".join(pkgnames_arr)
 
-    if pkgfmt == "deb":
-        pkgcmd = f"apt-get install -y -o APT::Status-Fd=1 {pkgnames}"
-    else:
-        raise Exception(f"No install command for format {pkgfmt}")
+    pkgcmd = f"wintc-setupapi-exec -i {pkgnames}"
 
     process = subprocess.Popen(
             pkgcmd.split(),
@@ -393,41 +413,38 @@ def wsetup_step_install_base(stdscr):
         if process.poll() is not None:
             break
 
+        # Parse setupapi output
+        #
         if cmd_out:
-            if pkgfmt == "deb":
-                # Parse apt-get status output
-                #
-                if not cmd_out.startswith("pmstatus"):
-                    continue
+            if not cmd_out.startswith("STAT"):
+                continue
 
-                cmd_split = cmd_out.split(":")
+            cur_pkg  = "FIXME" # FIXME: setupapi missing this info atm
+            pct      = float(cmd_out[5:)
+            progress = str(int(pct)) + "%"
 
-                cur_pkg  = cmd_split[1]
-                pct      = float(cmd_split[2])
-                progress = str(int(pct)) + "%"
+            if len(cur_pkg) > 16:
+                cur_pkg = cur_pkg[:16]
 
-                if len(cur_pkg) > 16:
-                    cur_pkg = cur_pkg[:16]
+            wsetup_screen_write_direct(
+                stdscr,
+                box_y + 2,
+                wsetup_screen_get_scaled_x(stdscr, 40) - 3,
+                progress,
+                curses.color_pair(COLOR_PAIR_NORMAL_TEXT)
+            )
+            wsetup_screen_draw_bar(
+                stdscr,
+                progbox_y + 1,
+                progbox_x + 1,
+                math.floor((pct / 100) * (progbox_w - 2))
+            )
+            wsetup_screen_write_status(
+                stdscr,
+                "Copying {package: <16}".format(package=cur_pkg)
+            )
 
-                wsetup_screen_write_direct(
-                    stdscr,
-                    box_y + 2,
-                    wsetup_screen_get_scaled_x(stdscr, 40) - 3,
-                    progress,
-                    curses.color_pair(COLOR_PAIR_NORMAL_TEXT)
-                )
-                wsetup_screen_draw_bar(
-                    stdscr,
-                    progbox_y + 1,
-                    progbox_x + 1,
-                    math.floor((pct / 100) * (progbox_w - 2))
-                )
-                wsetup_screen_write_status(
-                    stdscr,
-                    "Copying {package: <16}".format(package=cur_pkg)
-                )
-
-                stdscr.refresh()
+            stdscr.refresh()
 
     if process.returncode != 0:
         return wsetup_step_error(
