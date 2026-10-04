@@ -139,6 +139,8 @@ gboolean wintc_setup_act_install_packages(
         callbacks
     );
 
+    wintc_pkg_session_begin(S_PKG_SESSION);
+
     return TRUE;
 }
 
