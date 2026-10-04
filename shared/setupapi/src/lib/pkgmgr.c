@@ -35,3 +35,19 @@ gchar* wintc_pkg_get_package_name(
 
     return g_strdup(path);
 }
+
+const gchar* wintc_pkg_true_package_name(
+    const gchar* name
+)
+{
+#if defined(WINTC_PKGMGR_DEB) || defined(WINTC_PKGMGR_APK)
+    return name;
+#else
+    if (g_str_has_prefix(name, "lib"))
+    {
+        return name + 3;
+    }
+
+    return name;
+#endif
+}

@@ -14,5 +14,8 @@ extern const gchar* WINTC_PKG_FILE_EXT;
 gchar* wintc_pkg_get_package_name(
     const gchar* path
 );
+const gchar* wintc_pkg_true_package_name(
+    const gchar* name
+);
 
 #endif

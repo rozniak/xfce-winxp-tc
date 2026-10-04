@@ -39,6 +39,9 @@ enum
 //
 // FORWARD DECLARATIONS
 //
+static void wintc_setup_controller_dispose(
+    GObject* object
+);
 static void wintc_setup_controller_get_property(
     GObject*    object,
     guint       prop_id,
@@ -113,6 +116,7 @@ struct _WinTCSetupController
 
     WinTCSetupWindow* wnd_setup;
     guint             current_phase;
+    GList*            list_packages;
 };
 
 //
@@ -130,6 +134,7 @@ static void wintc_setup_controller_class_init(
 {
     GObjectClass* object_class = G_OBJECT_CLASS(klass);
 
+    object_class->dispose      = wintc_setup_controller_dispose;
     object_class->get_property = wintc_setup_controller_get_property;
     object_class->set_property = wintc_setup_controller_set_property;
 
@@ -169,6 +174,21 @@ static void wintc_setup_controller_init(
 //
 // CLASS VIRTUAL METHODS
 //
+static void wintc_setup_controller_dispose(
+    GObject* object
+)
+{
+    WinTCSetupController* setup = WINTC_SETUP_CONTROLLER(object);
+
+    g_clear_list(
+        &(setup->list_packages),
+        (GDestroyNotify) g_free
+    );
+
+    (G_OBJECT_CLASS(wintc_setup_controller_parent_class))
+        ->dispose(object);
+}
+
 static void wintc_setup_controller_get_property(
     GObject*    object,
     guint       prop_id,
@@ -176,7 +196,7 @@ static void wintc_setup_controller_get_property(
     GParamSpec* pspec
 )
 {
-    //WinTCSetupController* setup_ctl = WINTC_SETUP_CONTROLLER(object);
+    //WinTCSetupController* setup = WINTC_SETUP_CONTROLLER(object);
 
     switch (prop_id)
     {
@@ -193,12 +213,12 @@ static void wintc_setup_controller_set_property(
     GParamSpec*   pspec
 )
 {
-    WinTCSetupController* setup_ctl = WINTC_SETUP_CONTROLLER(object);
+    WinTCSetupController* setup = WINTC_SETUP_CONTROLLER(object);
 
     switch (prop_id)
     {
         case PROP_SETUP_WINDOW:
-            setup_ctl->wnd_setup = g_value_dup_object(value);
+            setup->wnd_setup = g_value_dup_object(value);
             break;
 
         default:
@@ -458,8 +478,7 @@ static void wintc_setup_controller_install_files(
     WinTCSetupController* setup
 )
 {
-    GError* error         = NULL;
-    GList*  list_packages = NULL;
+    GError* error = NULL;
 
     //
     // FIXME: We're just iterating over all packages listed in the
@@ -493,18 +512,21 @@ static void wintc_setup_controller_install_files(
 
     // Add from top level
     //
-    list_packages =
-        collect_packages(
-            ini_complist,
-            "TopLevel",
-            list_packages
-        );
+    if (!(setup->list_packages))
+    {
+        setup->list_packages =
+            collect_packages(
+                ini_complist,
+                "TopLevel",
+                setup->list_packages
+            );
+    }
 
     // Install everything
     //
     if (
         !wintc_setup_act_install_packages(
-            list_packages,
+            setup->list_packages,
             cb_setup_act_done,
             cb_setup_act_error,
             cb_setup_act_progress,
@@ -518,11 +540,6 @@ static void wintc_setup_controller_install_files(
             GTK_WINDOW(setup->wnd_setup)
         );
     }
-
-    g_list_free_full(
-        list_packages,
-        (GDestroyNotify) g_free
-    );
 }
 
 static GList* collect_packages(
@@ -590,10 +607,10 @@ static GList* collect_packages(
                         g_list_prepend(
                             list_packages,
                             g_strdup_printf(
-                                "%s%s%s.%s",
+                                "%s%s%s%s",
                                 WINTC_SETUP_ACT_PKG_PATH,
                                 G_DIR_SEPARATOR_S,
-                                packages[j],
+                                wintc_pkg_true_package_name(packages[j]),
                                 WINTC_PKG_FILE_EXT
                             )
                         );

@@ -37,7 +37,14 @@ static void wintc_setup_act_raise_error(
     WinTCSetupActCallbacks* callbacks,
     GError**                error
 );
+static gboolean wintc_setup_act_spawn_ping(
+    WinTCSetupActCallbacks* callbacks,
+    GError**                error
+);
 
+static gboolean cb_timeout_retry_ping(
+    gpointer user_data
+);
 static void cb_watch_ping(
     GPid     pid,
     gint     status,
@@ -117,38 +124,6 @@ gboolean wintc_setup_act_install_packages(
     GError**                      error
 )
 {
-    // HACK: On Arch Linux we may be too quick during start up and the network
-    //       isn't ready -- do a ping to determine we have a connection before
-    //       starting the packaging session
-    //
-    static gchar* s_ping_argv[] = {
-        WINTC_RT_PREFIX "/ping",
-        "-c",
-        "5",
-        "-w",
-        "2",
-        "8.8.8.8",
-        NULL
-    };
-
-    GPid pid;
-
-    if (
-        !g_spawn_async(
-            NULL,
-            s_ping_argv,
-            NULL,
-            G_SPAWN_DO_NOT_REAP_CHILD,
-            NULL,
-            NULL,
-            &pid,
-            error
-        )
-    )
-    {
-        return FALSE; 
-    }
-
     // Build our callback struct
     //
     WinTCSetupActCallbacks* callbacks =
@@ -178,13 +153,14 @@ gboolean wintc_setup_act_install_packages(
         callbacks
     );
 
-    // Watch the ping
+    // HACK: On Arch Linux we may be too quick during start up and the network
+    //       isn't ready -- do a ping to determine we have a connection before
+    //       starting the packaging session
     //
-    g_child_watch_add(
-        pid,
-        (GChildWatchFunc) cb_watch_ping,
-        callbacks
-    );
+    if (!wintc_setup_act_spawn_ping(callbacks, error))
+    {
+        return FALSE;
+    }
 
     return TRUE;
 }
@@ -311,12 +287,54 @@ static void wintc_setup_act_raise_error(
     g_free(callbacks);
 }
 
+static gboolean wintc_setup_act_spawn_ping(
+    WinTCSetupActCallbacks* callbacks,
+    GError**                error
+)
+{
+    static gchar* s_ping_argv[] = {
+        WINTC_RT_PREFIX "/bin/ping",
+        "-c",
+        "1",
+        "-w",
+        "1",
+        "8.8.8.8",
+        NULL
+    };
+
+    GPid pid;
+
+    if (
+        !g_spawn_async(
+            NULL,
+            s_ping_argv,
+            NULL,
+            G_SPAWN_DO_NOT_REAP_CHILD,
+            NULL,
+            NULL,
+            &pid,
+            error
+        )
+    )
+    {
+        return FALSE;
+    }
+
+    // Watch the ping
+    //
+    g_child_watch_add(
+        pid,
+        (GChildWatchFunc) cb_watch_ping,
+        callbacks
+    );
+
+    return TRUE;
+}
+
 //
 // CALLBACKS
 //
-static void cb_watch_ping(
-    GPid     pid,
-    WINTC_UNUSED(gint status),
+static gboolean cb_timeout_retry_ping(
     gpointer user_data
 )
 {
@@ -325,7 +343,28 @@ static void cb_watch_ping(
 
     GError* error = NULL;
 
-    if (g_spawn_check_wait_status(pid, &error))
+    if (!wintc_setup_act_spawn_ping(callbacks, &error))
+    {
+        wintc_setup_act_raise_error(callbacks, &error);
+    }
+
+    return G_SOURCE_REMOVE;
+}
+
+static void cb_watch_ping(
+    WINTC_UNUSED(GPid pid),
+    gint     status,
+    gpointer user_data
+)
+{
+    static gint s_attempts = 0;
+
+    WinTCSetupActCallbacks* callbacks = 
+        (WinTCSetupActCallbacks*) user_data;
+
+    GError* error = NULL;
+
+    if (g_spawn_check_wait_status(status, &error))
     {
         // Kick off package session
         //
@@ -333,7 +372,18 @@ static void cb_watch_ping(
     }
     else
     {
-        wintc_setup_act_raise_error(callbacks, &error);
+        if (s_attempts++ < 3)
+        {
+            g_timeout_add_seconds(
+                5,
+                (GSourceFunc) cb_timeout_retry_ping,
+                callbacks
+            );
+        }
+        else
+        {
+            wintc_setup_act_raise_error(callbacks, &error);
+        }
     }
 }
 static gboolean cb_idle_next_setting_phase(
