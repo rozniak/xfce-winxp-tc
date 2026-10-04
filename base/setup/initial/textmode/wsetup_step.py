@@ -286,18 +286,12 @@ def wsetup_step_prep_install(stdscr):
 
     # Install setupapi so we can use wintc-setupapi-exec to track progress
     #
-    # Also adding libasan so that checked builds work
-    #
+    asancmd   = ""
     arr_pkgs  = [ "comgtk", "exec", "setupapi" ]
     path_pkgs = ""
 
     for i in range(len(arr_pkgs)):
         arr_pkgs[i] = wsetup_pkg_get_local_path(arr_pkgs[i], True)
-
-    if pkgfmt == "deb":
-        arr_pkgs.append("libasan8")
-    elif pkgfmt == "archpkg":
-        arr_pkgs.append("libasan")
 
     path_pkgs = " ".join(arr_pkgs)
 
@@ -309,9 +303,11 @@ def wsetup_step_prep_install(stdscr):
     )
 
     if pkgfmt == "deb":
-        pkgcmd = f"apt-get -y install {path_pkgs}"
+        pkgcmd  = f"apt-get -y install {path_pkgs}"
+        asancmd =  "apt-get -y install libasan8"
     elif pkgfmt == "archpkg":
-        pkgcmd = f"pacman -U --noconfirm --noprogressbar {path_pkgs}"
+        pkgcmd  = f"pacman -U --noconfirm --noprogressbar {path_pkgs}"
+        asancmd =  "pacman -S --noconfirm --noprogressbar libasan"
     else:
         return wsetup_step_error(
             stdscr,
@@ -324,12 +320,18 @@ def wsetup_step_prep_install(stdscr):
             capture_output=True,
             check=True
         )
+        subprocess.run(
+            asancmd.split(),
+            capture_output=True,
+            check=True
+        )
     except:
         return wsetup_step_error(
             stdscr,
             "Setup was unable to initialize, you may have insufficient \n" +
             "disk space or your install media is corrupt."
         )
+
 
     # Copy complist to tmpdir
     #
