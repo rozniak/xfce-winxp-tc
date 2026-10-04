@@ -59,6 +59,20 @@ int main(
 
     if (S_OPT_MODE_INSTALL)
     {
+        // Resolve any paths - fixes issues with package managers that do not
+        // like relative paths
+        //
+        for (gchar** iter = S_OPT_FILES; *iter; iter++)
+        {
+            if (g_file_test(*iter, G_FILE_TEST_EXISTS))
+            {
+                gchar* tmp = g_canonicalize_filename(*iter, NULL);
+
+                g_free(*iter);
+                *iter = tmp;
+            }
+        }
+
         status = wintc_setupapi_exec_install(S_OPT_FILES);
 
         g_strfreev(S_OPT_FILES);
