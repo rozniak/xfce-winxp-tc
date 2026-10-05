@@ -25,7 +25,7 @@ SubGroups=
 
 [Group.Shell]
 Name=System Shell
-Components=DocTemplates,Desktop,ExitWin,Explorer,ShellRun,Taskband
+Components=DocTemplates,Desktop,ExitWin,Explorer,PkgExec,ShellRun,Taskband
 SubGroups=ShellCpl,ShellExt
 
 [Group.ShellCpl]
@@ -105,6 +105,11 @@ Description=Launches the end session dialog, replaces xfce4-session-logout.
 Name=Explorer
 Packages=wintc-explorer
 Description=The Windows Explorer file manager.
+
+[Component.PkgExec]
+Name=Packaging Wizards
+Packages=wintc-pkg-exec
+Description=Wizards for managing packages interactively.
 
 [Component.ShellRun]
 Name=Run Dialog Stub

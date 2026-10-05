@@ -29,6 +29,7 @@ shell/desktop
 shell/doctmpls
 shell/exitwin
 shell/explorer
+shell/pkgexec
 shell/run
 shell/shext/zip
 shell/taskband
