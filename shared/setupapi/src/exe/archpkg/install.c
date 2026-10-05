@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <wintc/comgtk.h>
 
+#include "../install.h"
+
 //
 // FORWARD DECLARATIONS
 //
