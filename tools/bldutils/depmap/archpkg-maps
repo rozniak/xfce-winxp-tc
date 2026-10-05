@@ -14,6 +14,8 @@ gstreamer-pb-->rt-->gst-plugins-base
 gstreamer-pu-->bt,rt-->gst-plugins-ugly
 gtk3-->bt,rt-->gtk3
 gtk4-->bt,rt-->gtk4
+gvfs-->bt-->NULL
+gvfs-->rt-->gvfs
 lightdm-->bt,rt-->lightdm
 msgfmt-->bt,rt-->gettext
 networkmanager-->bt,rt-->networkmanager

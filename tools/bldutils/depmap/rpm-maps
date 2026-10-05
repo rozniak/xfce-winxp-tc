@@ -24,6 +24,8 @@ gtk3-->bt-->gtk3-devel
 gtk3-->rt-->gtk3
 gtk4-->bt-->gtk4-devel
 gtk4-->rt-->gtk4
+gvfs-->bt-->NULL
+gvfs-->rt-->gvfs
 lightdm-->bt-->lightdm-gobject-devel
 lightdm-->rt-->lightdm-gobject
 msgfmt-->bt,rt-->gettext
