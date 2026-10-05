@@ -8,7 +8,8 @@
 //
 void wintc_oobe_xfconf_update_channel(
     const gchar* user_home,
-    const gchar* channel
+    const gchar* channel,
+    gboolean     replace
 );
 
 #endif

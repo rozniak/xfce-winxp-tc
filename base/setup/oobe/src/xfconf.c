@@ -70,7 +70,8 @@ static void xml_xfconf_mirror_property_node(
 //
 void wintc_oobe_xfconf_update_channel(
     const gchar* user_home,
-    const gchar* channel
+    const gchar* channel,
+    gboolean     replace
 )
 {
     GError*  error = NULL;
@@ -123,6 +124,7 @@ void wintc_oobe_xfconf_update_channel(
         );
 
     if (
+        !replace &&
         g_file_get_contents(
             channel_dest_path,
             &channel_dest_data,
@@ -349,7 +351,7 @@ void wintc_oobe_xfconf_update_channel(
     {
         // File not found is fine, anything else is a real problem
         //
-        if (error->code != G_FILE_ERROR_NOENT)
+        if (error && error->code != G_FILE_ERROR_NOENT)
         {
             wintc_log_error_and_clear(&error);
 

@@ -2,6 +2,7 @@
 #include <pwd.h>
 #include <sys/types.h>
 #include <wintc/comgtk.h>
+#include <wintc/shcommon.h>
 
 #include "deploy.h"
 #include "oobeuser.h"
@@ -81,11 +82,17 @@ gboolean wintc_oobe_user_apply_all(
 
         // XFCONF deployments
         //
+        // HACK: Always replace xfce4-session.xml, it's just easier
+        //
         for (gsize i = 0; i < G_N_ELEMENTS(S_XFCONF_CHANNELS); i++)
         {
+            gboolean should_replace =
+                g_strcmp0(S_XFCONF_CHANNELS[i], "xfce4-session") == 0;
+
             wintc_oobe_xfconf_update_channel(
                 pwent->pw_dir,
-                S_XFCONF_CHANNELS[i]
+                S_XFCONF_CHANNELS[i],
+                should_replace
             );
         }
 
@@ -116,6 +123,31 @@ gboolean wintc_oobe_user_apply_all(
         }
 
         g_free(user_config_autostart);
+
+        // Clear cached sessions
+        //
+        gchar* sessions_dir  = g_build_path(
+                                   G_DIR_SEPARATOR_S,
+                                   pwent->pw_dir,
+                                   ".cache",
+                                   "sessions",
+                                   NULL
+                               );
+        GList* session_files = wintc_sh_fs_get_names_as_list(
+                                   sessions_dir,
+                                   TRUE,
+                                   0,
+                                   FALSE,
+                                   NULL
+                               );
+
+        for (GList* iter = session_files; iter; iter = iter->next)
+        {
+            unlink((gchar*) iter->data);
+        }
+
+        g_free(session_files);
+        g_free(sessions_dir);
 
         // Fix up owner, since we'll be running as root
         //
