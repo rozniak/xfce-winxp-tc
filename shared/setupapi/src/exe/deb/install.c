@@ -91,7 +91,11 @@ gint wintc_setupapi_exec_install(
 
         if (g_strcmp0(apt_status[0], "pmstatus") == 0) // pmstatus
         {
-            g_print("STAT %f\n", strtod(apt_status[2], NULL));
+            g_print(
+                "STAT %s %f\n",
+                apt_status[1],
+                strtod(apt_status[2], NULL)
+            );
         }
 
         g_strfreev(apt_status);
@@ -111,7 +115,7 @@ gint wintc_setupapi_exec_install(
     }
     else
     {
-        g_print("%s\n", "STAT 100.0");
+        g_print("%s\n", "STAT done 100.0");
     }
 
     g_input_stream_close(G_INPUT_STREAM(stream), NULL, NULL);

@@ -313,13 +313,17 @@ static void cb_read_line_pkgmgr(
     //
     if (strstr(line, "STAT "))
     {
+        gchar** stat_split = g_strsplit(line, " ", -1);
+
         g_signal_emit(
             session,
             wintc_pkg_session_signals[SIGNAL_PROGRESS],
             0,
             G_TYPE_DOUBLE,
-            strtod(line + 5, NULL)
+            strtod(stat_split[2], NULL)
         );
+
+        g_strfreev(stat_split);
     }
     else if (strstr(line, "ERR "))
     {

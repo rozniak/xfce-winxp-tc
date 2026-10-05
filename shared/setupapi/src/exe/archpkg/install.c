@@ -215,7 +215,7 @@ gint wintc_setupapi_exec_install(
 cleanup:
     if (status == EXIT_SUCCESS)
     {
-        g_print("%s\n", "STAT 100.0");
+        g_print("%s\n", "STAT done 100.0");
     }
     else
     {
@@ -242,7 +242,7 @@ cleanup:
 static void cb_alpm_progress(
     WINTC_UNUSED(gpointer user_data),
     alpm_progress_t progress,
-    WINTC_UNUSED(const gchar* pkg),
+    const gchar*    pkg,
     gint            percent,
     size_t          howmany,
     size_t          current
@@ -258,5 +258,10 @@ static void cb_alpm_progress(
     gdouble real_pct    =
         (current0 * per_trans) + (per_trans * (percent / 100.0f));
 
-    g_print("STAT %f\n", real_pct * 100.0f);
+    if (real_pct > 1.0f)
+    {
+        real_pct = 1.0f;
+    }
+
+    g_print("STAT %s %f\n", pkg, real_pct * 100.0f);
 }

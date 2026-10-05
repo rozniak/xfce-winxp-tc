@@ -447,8 +447,10 @@ def wsetup_step_install_base(stdscr):
             if not cmd_out.startswith("STAT"):
                 continue
 
-            cur_pkg  = "FIXME" # FIXME: setupapi missing this info atm
-            pct      = float(cmd_out[5:])
+            cmd_split = cmd_out.split(" ")
+
+            cur_pkg  = cmd_split[1]
+            pct      = float(cmd_split[2])
             progress = str(int(pct)) + "%"
 
             if len(cur_pkg) > 16:
