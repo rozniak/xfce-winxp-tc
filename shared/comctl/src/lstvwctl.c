@@ -1735,15 +1735,20 @@ static void wintc_ctl_list_view_render_large_icon(
 
             for (gint i = 0; i < LABEL_TEXT_SHADOW_INTENSITY; i++)
             {
+                // The shadow has a slight drop to it in XP, we render directly
+                // behind then slightly off to reproduce an accurate shadow
+                //
+                gint drop = i / 2;
+
                 cairo_mask_surface(
                     cr,
                     large_icon->surface_text_shadow,
                     (gdouble) large_icon->hitbox_label.x +
                     offset_x - LABEL_TEXT_SHADOW_OFFSET -
-                    large_icon->offset_label_render.x,
+                    large_icon->offset_label_render.x + drop,
                     (gdouble) large_icon->hitbox_label.y +
                     offset_y - LABEL_TEXT_SHADOW_OFFSET -
-                    large_icon->offset_label_render.y
+                    large_icon->offset_label_render.y + drop
                 );
             }
 
