@@ -57,6 +57,15 @@ box.vertical.wintc-button-box button:last-child
 }
 
 /**
+ * 3D Borders - Placeholder for Adwaita et al.
+ */
+.wintc-frame-3d,
+.wintc-frame-3d-opt
+{
+    border: 1px solid @borders;
+}
+
+/**
  * Edges
  */
 .wintc-edge-bottom

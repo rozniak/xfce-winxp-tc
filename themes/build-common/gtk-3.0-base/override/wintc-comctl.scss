@@ -78,3 +78,19 @@ box.wintc-button-box
         }
     }
 }
+
+/** 3d frames **/
+.wintc-frame-3d
+{
+    border-image: url('../Resources/frame_3d_border.png') 2;
+    border-style: solid;
+    border-width: 2px;
+}
+
+@if ($frames_comctl_opt_3d)
+{
+    .wintc-frame-3d-opt
+    {
+        @extend .wintc-frame-3d;
+    }
+}

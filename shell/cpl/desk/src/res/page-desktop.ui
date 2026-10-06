@@ -63,19 +63,13 @@
             <property name="orientation">vertical</property>
 
             <child>
-              <object class="GtkFrame">
-                <property name="visible">True</property>
+              <object class="GtkScrolledWindow">
+                <property name="overlay-scrolling">False</property>
+                <property name="vscrollbar-policy">0</property>
 
                 <child>
-                  <object class="GtkScrolledWindow">
-                    <property name="overlay-scrolling">False</property>
-                    <property name="vscrollbar-policy">0</property>
-
-                    <child>
-                      <object class="GtkListBox" id="listbox-wallpapers">
-                        <property name="visible">True</property>
-                      </object>
-                    </child>
+                  <object class="GtkListBox" id="listbox-wallpapers">
+                    <property name="visible">True</property>
                   </object>
                 </child>
 
