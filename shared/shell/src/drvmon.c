@@ -363,12 +363,12 @@ static void wintc_sh_drive_monitor_constructed(
     // Locate the mount for / because the volume monitor hides it from us so
     // we can suppress these drives from showing up
     //
-    GUnixMountEntry* mount_root = g_unix_mount_entry_at("/", NULL);
+    GUnixMountPoint* mount_root = g_unix_mount_point_at("/", NULL);
 
     if (mount_root)
     {
-        const gchar* dev_path = g_unix_mount_entry_get_device_path(mount_root);
-        const gchar* fs_type  = g_unix_mount_entry_get_fs_type(mount_root);
+        const gchar* dev_path = g_unix_mount_point_get_device_path(mount_root);
+        const gchar* fs_type  = g_unix_mount_point_get_fs_type(mount_root);
 
         if (g_strcmp0(fs_type, "zfs") == 0) // ZFS - must find disks in the pool
         {
@@ -475,7 +475,7 @@ static void wintc_sh_drive_monitor_constructed(
             }
         }
 
-        g_unix_mount_entry_free(mount_root);
+        g_unix_mount_point_free(mount_root);
     }
 
     // Connect monitor signals
