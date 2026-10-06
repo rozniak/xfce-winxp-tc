@@ -26,30 +26,21 @@
   <!-- UI begins here -->
   <object class="GtkLabel" id="label-title">
     <property name="visible">True</property>
-    <property name="can-focus">True</property>
     <property name="label" translatable="yes">Desktop</property>
   </object>
   <object class="GtkBox" id="page">
     <property name="visible">True</property>
-    <property name="can-focus">False</property>
     <property name="orientation">vertical</property>
 
     <child>
       <object class="WinTCDeskMonitor" id="monitor">
         <property name="visible">True</property>
-        <property name="can-focus">False</property>
       </object>
-      <packing>
-        <property name="expand">False</property>
-        <property name="fill">False</property>
-        <property name="position">0</property>
-      </packing>
     </child>
 
     <child>
       <object class="GtkLabel">
         <property name="visible">True</property>
-        <property name="can-focus">False</property>
         <property name="label" translatable="yes">Background:</property>
         <property name="xalign">0.0</property>
 
@@ -57,38 +48,29 @@
           <class name="wintc-ml-lg" />
         </style>
       </object>
-      <packing>
-        <property name="expand">False</property>
-        <property name="fill">False</property>
-        <property name="position">1</property>
-      </packing>
     </child>
 
     <!-- Form stuff - one horizontal outer box with two inner vert boxes -->
     <child>
       <object class="GtkBox">
         <property name="visible">True</property>
-        <property name="can-focus">False</property>
         <property name="orientation">horizontal</property>
 
         <!-- Wallpaper selection -->
         <child>
           <object class="GtkBox">
             <property name="visible">True</property>
-            <property name="can-focus">False</property>
             <property name="orientation">vertical</property>
 
             <child>
               <object class="GtkScrolledWindow">
                 <property name="visible">True</property>
-                <property name="can-focus">False</property>
                 <property name="overlay-scrolling">False</property>
                 <property name="vscrollbar-policy">0</property>
 
                 <child>
                   <object class="GtkListBox" id="listbox-wallpapers">
                     <property name="visible">True</property>
-                    <property name="can-focus">True</property>
                   </object>
                 </child>
 
@@ -99,24 +81,16 @@
               <packing>
                 <property name="expand">True</property>
                 <property name="fill">True</property>
-                <property name="position">0</property>
               </packing>
             </child>
 
             <child>
               <object class="GtkButton">
                 <property name="visible">True</property>
-                <property name="can-focus">True</property>
-                <property name="receives-default">True</property>
                 <property name="label" translatable="yes">Customize Desktop...</property>
                 <property name="halign">GTK_ALIGN_START</property>
                 <property name="sensitive">False</property>
               </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
-                <property name="position">1</property>
-              </packing>
             </child>
 
             <style>
@@ -126,7 +100,6 @@
           <packing>
             <property name="expand">True</property>
             <property name="fill">True</property>
-            <property name="position">0</property>
           </packing>
         </child>
 
@@ -134,14 +107,11 @@
         <child>
           <object class="GtkBox">
             <property name="visible">True</property>
-            <property name="can-focus">False</property>
             <property name="orientation">vertical</property>
 
             <child>
               <object class="GtkButton">
                 <property name="visible">True</property>
-                <property name="can-focus">True</property>
-                <property name="receives-default">True</property>
                 <property name="label" translatable="yes">%PUNC_MOREINPUT%%CTL_BROWSE%</property>
                 <property name="action-name">desktop.browse</property>
 
@@ -150,17 +120,11 @@
                   <class name="wintc-mb-lg" />
                 </style>
               </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
-                <property name="position">0</property>
-              </packing>
             </child>
 
             <child>
               <object class="GtkLabel">
                 <property name="visible">True</property>
-                <property name="can-focus">False</property>
                 <property name="label" translatable="yes">Position:</property>
                 <property name="xalign">0.0</property>
 
@@ -168,16 +132,10 @@
                   <class name="wintc-mb-md" />
                 </style>
               </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
-                <property name="position">1</property>
-              </packing>
             </child>
             <child>
               <object class="GtkComboBox" id="combo-style">
                 <property name="visible">True</property>
-                <property name="can-focus">True</property>
                 <property name="id-column">0</property>
                 <property name="model">model-style</property>
 
@@ -192,17 +150,11 @@
                   <class name="wintc-mb-lg" />
                 </style>
               </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
-                <property name="position">2</property>
-              </packing>
             </child>
 
             <child>
               <object class="GtkLabel">
                 <property name="visible">True</property>
-                <property name="can-focus">False</property>
                 <property name="label" translatable="yes">Color:</property>
                 <property name="xalign">0.0</property>
 
@@ -210,33 +162,17 @@
                   <class name="wintc-mb-md" />
                 </style>
               </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
-                <property name="position">3</property>
-              </packing>
             </child>
             <child>
               <object class="GtkColorButton">
                 <property name="visible">True</property>
-                <property name="can-focus">True</property>
 
                 <style>
                   <class name="wintc-button" />
                 </style>
               </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
-                <property name="position">4</property>
-              </packing>
             </child>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">False</property>
-            <property name="position">1</property>
-          </packing>
         </child>
 
         <style>
@@ -249,7 +185,6 @@
       <packing>
         <property name="expand">True</property>
         <property name="fill">True</property>
-        <property name="position">2</property>
       </packing>
     </child>
 
