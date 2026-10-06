@@ -188,9 +188,19 @@ static void wintc_ctl_list_view_update_icon(
     WinTCCtlListViewIcon* icon,
     GtkTreeIter*          iter
 );
+static void wintc_ctl_list_view_update_icon_text_shadow(
+    WinTCCtlListView*     list_view,
+    WinTCCtlListViewIcon* icon
+);
 
 static void wintc_ctl_list_view_icon_free(
     WinTCCtlListViewIcon* icon
+);
+
+static void on_gtk_settings_font_name_notify(
+    GObject*    self,
+    GParamSpec* pspec,
+    gpointer    user_data
 );
 
 static void on_list_view_drag_end(
@@ -330,6 +340,7 @@ struct _WinTCCtlListView
 
     // Rendering
     //
+    gboolean dirty_labels;
     gboolean solid_bg;
 };
 
@@ -456,6 +467,18 @@ static void wintc_ctl_list_view_init(
         G_CALLBACK(on_list_view_realize),
         NULL
     );
+
+    // Watch for font setting changes
+    //
+    GtkSettings* settings = gtk_settings_get_default();
+
+    g_signal_connect_object(
+        settings,
+        "notify::gtk-font-name",
+        G_CALLBACK(on_gtk_settings_font_name_notify),
+        self,
+        G_CONNECT_DEFAULT
+    );
 }
 
 //
@@ -481,6 +504,23 @@ static gboolean wintc_ctl_list_view_draw(
 )
 {
     WinTCCtlListView* list_view = WINTC_CTL_LIST_VIEW(widget);
+
+    // Update icon labels if needed
+    //
+    if (list_view->dirty_labels)
+    {
+        // Iterate over icons to update text shadows
+        //
+        for (GList* iter = list_view->list_icons; iter; iter = iter->next)
+        {
+            wintc_ctl_list_view_update_icon_text_shadow(
+                list_view,
+                (WinTCCtlListViewIcon*) iter->data
+            );
+        }
+
+        list_view->dirty_labels = FALSE;
+    }
 
     // Paint BG
     //
@@ -1802,12 +1842,94 @@ static void wintc_ctl_list_view_set_icon_text(
     g_free(icon->text);
     icon->text = text; // Ref should've already been taken from model_get
 
+    wintc_ctl_list_view_update_icon_text_shadow(list_view, icon);
+}
+
+static void wintc_ctl_list_view_update_dnd_state(
+    WinTCCtlListView* list_view
+)
+{
+    gtk_drag_dest_unset(GTK_WIDGET(list_view));
+
+    if (
+        list_view->dnd_src_targets ||
+        list_view->dnd_dest_targets
+    )
+    {
+        gtk_drag_dest_set(
+            GTK_WIDGET(list_view),
+            0,
+            NULL,
+            0,
+            list_view->dnd_dest_actions ?
+                list_view->dnd_dest_actions :
+                GDK_ACTION_COPY
+        );
+
+        if (list_view->dnd_dest_targets)
+        {
+            gtk_drag_dest_set_target_list(
+                GTK_WIDGET(list_view),
+                list_view->dnd_dest_targets
+            );
+        }
+    }
+}
+
+static void wintc_ctl_list_view_update_icon(
+    WinTCCtlListView*     list_view,
+    WinTCCtlListViewIcon* icon,
+    GtkTreeIter*          iter
+)
+{
+    if (list_view->col_pixbuf > -1)
+    {
+        GdkPixbuf* pixbuf = NULL;
+
+        gtk_tree_model_get(
+            list_view->model,
+            iter,
+            list_view->col_pixbuf, &pixbuf,
+            -1
+        );
+
+        wintc_ctl_list_view_set_icon_pixbuf(
+            list_view,
+            icon,
+            pixbuf
+        );
+    }
+
+    if (list_view->col_text > -1)
+    {
+        gchar* text = NULL;
+
+        gtk_tree_model_get(
+            list_view->model,
+            iter,
+            list_view->col_text, &text,
+            -1
+        );
+
+        wintc_ctl_list_view_set_icon_text(
+            list_view,
+            icon,
+            text
+        );
+    }
+}
+
+static void wintc_ctl_list_view_update_icon_text_shadow(
+    WinTCCtlListView*     list_view,
+    WinTCCtlListViewIcon* icon
+)
+{
     if (icon->surface_text_shadow)
     {
         cairo_surface_destroy(icon->surface_text_shadow);
     }
 
-    if (!text)
+    if (!(icon->text))
     {
         return;
     }
@@ -1929,80 +2051,6 @@ static void wintc_ctl_list_view_set_icon_text(
     cairo_surface_mark_dirty(icon->surface_text_shadow);
 }
 
-static void wintc_ctl_list_view_update_dnd_state(
-    WinTCCtlListView* list_view
-)
-{
-    gtk_drag_dest_unset(GTK_WIDGET(list_view));
-
-    if (
-        list_view->dnd_src_targets ||
-        list_view->dnd_dest_targets
-    )
-    {
-        gtk_drag_dest_set(
-            GTK_WIDGET(list_view),
-            0,
-            NULL,
-            0,
-            list_view->dnd_dest_actions ?
-                list_view->dnd_dest_actions :
-                GDK_ACTION_COPY
-        );
-
-        if (list_view->dnd_dest_targets)
-        {
-            gtk_drag_dest_set_target_list(
-                GTK_WIDGET(list_view),
-                list_view->dnd_dest_targets
-            );
-        }
-    }
-}
-
-static void wintc_ctl_list_view_update_icon(
-    WinTCCtlListView*     list_view,
-    WinTCCtlListViewIcon* icon,
-    GtkTreeIter*          iter
-)
-{
-    if (list_view->col_pixbuf > -1)
-    {
-        GdkPixbuf* pixbuf = NULL;
-
-        gtk_tree_model_get(
-            list_view->model,
-            iter,
-            list_view->col_pixbuf, &pixbuf,
-            -1
-        );
-
-        wintc_ctl_list_view_set_icon_pixbuf(
-            list_view,
-            icon,
-            pixbuf
-        );
-    }
-
-    if (list_view->col_text > -1)
-    {
-        gchar* text = NULL;
-
-        gtk_tree_model_get(
-            list_view->model,
-            iter,
-            list_view->col_text, &text,
-            -1
-        );
-
-        wintc_ctl_list_view_set_icon_text(
-            list_view,
-            icon,
-            text
-        );
-    }
-}
-
 static void wintc_ctl_list_view_icon_free(
     WinTCCtlListViewIcon* icon
 )
@@ -2021,6 +2069,17 @@ static void wintc_ctl_list_view_icon_free(
 //
 // CALLBACKS
 //
+static void on_gtk_settings_font_name_notify(
+    WINTC_UNUSED(GObject* self),
+    WINTC_UNUSED(GParamSpec* pspec),
+    gpointer user_data
+)
+{
+    WinTCCtlListView* list_view = WINTC_CTL_LIST_VIEW(user_data);
+
+    list_view->dirty_labels = TRUE;
+}
+
 static gboolean on_list_view_button_press_event(
     GtkWidget* widget,
     GdkEvent*  event,
