@@ -11,7 +11,7 @@ DistPackagesArchpkg=xfwm4,xfconf,xfce4-session,xfce4-settings,plymouth,xorg-serv
 [Group.TopLevel]
 Name=
 Components=BuildTag,LogonUI,Registry,Winver
-SubGroups=Accessories,DevOnly,Personalisation,Shell,VisualStyles
+SubGroups=Accessories,DevOnly,Personalisation,Shell
 
 [Group.Accessories]
 Name=Accessories
