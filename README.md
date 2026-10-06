@@ -1,10 +1,10 @@
 # xfce-winxp-tc
 This is my little chipping-away spot for a Windows XP Total Conversion for XFCE.
 
-![luna-blue-promo](https://github.com/user-attachments/assets/53ce3a26-9d51-47f5-9c6e-8104b654b019)
-![luna-metallic-promo](https://github.com/user-attachments/assets/a113ca1b-4047-4519-95dc-3d1feb479426)
-![professional-promo](https://github.com/user-attachments/assets/33c063ea-9456-42d0-b969-c131d1b72d96)
-![classic-promo](https://github.com/user-attachments/assets/09cb558e-900e-4dd1-b1c0-994680969504)
+<img width="800" height="600" alt="Image" src="https://github.com/user-attachments/assets/e794e3e5-26a0-4159-9e1b-3bac0059c146" />
+<img width="800" height="600" alt="Image" src="https://github.com/user-attachments/assets/bd64b4d5-b651-4bb2-8277-a5612aa6c991" />
+<img width="800" height="600" alt="Image" src="https://github.com/user-attachments/assets/ae5c289b-8b56-44ba-95c6-536ce4d7bb2f" />
+<img width="800" height="600" alt="Image" src="https://github.com/user-attachments/assets/7dc1702d-7d2f-4e15-ae75-ef9f5ed2f8e3" />
 
 ## What?
 Essentially this repo is a 'project' to replicate the XP experience on XFCE / Linux in general. This includes everything from desktop themes, icons, cursors, all the way to programs and the shell itself.
