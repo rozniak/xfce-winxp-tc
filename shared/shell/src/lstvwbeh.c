@@ -45,6 +45,10 @@ static gboolean wintc_sh_list_view_behaviour_find_child_iter(
     GtkTreeIter*              iter,
     guint                     item_hash
 );
+static void wintc_sh_list_view_behaviour_insert_item(
+    WinTCShListViewBehaviour* behaviour,
+    WinTCShextViewItem*       item
+);
 static void wintc_sh_list_view_behaviour_update_view(
     WinTCShListViewBehaviour* behaviour
 );
@@ -428,6 +432,24 @@ static void wintc_sh_list_view_behaviour_constructed(
         G_CONNECT_DEFAULT
     );
 
+    // Load initial items
+    //
+    if (behaviour->current_view)
+    {
+        GList* list_items =
+            wintc_ishext_view_get_items(behaviour->current_view);
+
+        for (GList* iter = list_items; iter; iter = iter->next)
+        {
+            wintc_sh_list_view_behaviour_insert_item(
+                behaviour,
+                (WinTCShextViewItem*) iter->data
+            );
+        }
+
+        g_clear_list(&list_items, NULL);
+    }
+
     (G_OBJECT_CLASS(wintc_sh_list_view_behaviour_parent_class))
         ->constructed(object);
 }
@@ -438,6 +460,14 @@ static void wintc_sh_list_view_behaviour_dispose(
 {
     WinTCShListViewBehaviour* behaviour =
         WINTC_SH_LIST_VIEW_BEHAVIOUR(object);
+
+    if (behaviour->list_view)
+    {
+        wintc_ctl_list_view_set_model(
+            WINTC_CTL_LIST_VIEW(behaviour->list_view),
+            NULL
+        );
+    }
 
     g_clear_object(&(behaviour->current_view));
     g_clear_object(&(behaviour->browser));
@@ -581,6 +611,93 @@ static gboolean wintc_sh_list_view_behaviour_find_child_iter(
     }
 
     return FALSE;
+}
+
+static void wintc_sh_list_view_behaviour_insert_item(
+    WinTCShListViewBehaviour* behaviour,
+    WinTCShextViewItem*       item
+)
+{
+    // Load icon
+    //
+    GtkIconTheme* icon_theme = gtk_icon_theme_get_default();
+    GdkPixbuf*    icon       = gtk_icon_theme_load_icon(
+                                   icon_theme,
+                                   item->icon_name,
+                                   32,
+                                   GTK_ICON_LOOKUP_FORCE_SIZE |
+                                   GTK_ICON_LOOKUP_FORCE_REGULAR,
+                                   NULL // FIXME: Error handling
+                               );
+
+    // Update model based on if this is a new item or an existing one
+    //
+    GtkTreeIter iter;
+
+    if (
+        !wintc_sh_list_view_behaviour_find_child_iter(
+            behaviour,
+            &iter,
+            item->hash
+        )
+    )
+    {
+        GCompareFunc sort_func =
+            wintc_ishext_view_get_sort_func(
+                behaviour->current_view
+            );
+
+        gint item_pos =
+            wintc_tree_model_get_insertion_sort_pos(
+                GTK_TREE_MODEL(behaviour->list_model),
+                NULL,
+                COLUMN_VIEW_HASH,
+                G_TYPE_UINT,
+                sort_func,
+                GUINT_TO_POINTER(item->hash)
+            );
+
+        gtk_list_store_insert(
+            behaviour->list_model,
+            &iter,
+            item_pos
+        );
+    }
+
+    gtk_list_store_set(
+        behaviour->list_model,
+        &iter,
+        COLUMN_ICON,       icon,
+        COLUMN_ENTRY_NAME, item->display_name,
+        COLUMN_VIEW_HASH,  item->hash,
+        -1
+    );
+
+    // If this is a new item then focus it
+    //
+    if (item->hint == WINTC_SHEXT_VIEW_ITEM_IS_NEW)
+    {
+        WINTC_LOG_DEBUG("shell: list view - new item for editing");
+
+        GtkTreePath* tree_path =
+            gtk_tree_model_get_path(
+                GTK_TREE_MODEL(behaviour->list_model),
+                &iter
+            );
+
+        gtk_widget_grab_focus(
+            behaviour->list_view
+        );
+        wintc_ctl_list_view_unselect_all(
+            WINTC_CTL_LIST_VIEW(behaviour->list_view)
+        );
+        wintc_ctl_list_view_select_path(
+            WINTC_CTL_LIST_VIEW(behaviour->list_view),
+            tree_path
+        );
+
+        gtk_tree_path_free(tree_path);
+    }
 }
 
 static void wintc_sh_list_view_behaviour_update_view(
@@ -1259,7 +1376,7 @@ static void on_browser_load_changed(
 }
 
 static void on_current_view_items_added(
-    WinTCIShextView*           view,
+    WINTC_UNUSED(WinTCIShextView* view),
     WinTCShextViewItemsUpdate* update,
     gpointer                   user_data
 )
@@ -1269,98 +1386,10 @@ static void on_current_view_items_added(
 
     for (GList* iter = update->data; iter; iter = iter->next)
     {
-        WinTCShextViewItem* item = iter->data;
-
-        // Load icon
-        //
-        GtkIconTheme* icon_theme = gtk_icon_theme_get_default();
-        GdkPixbuf*    icon       = gtk_icon_theme_load_icon(
-                                       icon_theme,
-                                       item->icon_name,
-                                       32,
-                                       GTK_ICON_LOOKUP_FORCE_SIZE |
-                                       GTK_ICON_LOOKUP_FORCE_REGULAR,
-                                       NULL // FIXME: Error handling
-                                   );
-
-        // Update model based on if this is a new item or an existing one
-        //
-        GtkTreeIter iter;
-
-        if (
-            !wintc_sh_list_view_behaviour_find_child_iter(
-                behaviour,
-                &iter,
-                item->hash
-            )
-        )
-        {
-            GCompareFunc sort_func = wintc_ishext_view_get_sort_func(view);
-
-            gint item_pos =
-                wintc_tree_model_get_insertion_sort_pos(
-                    GTK_TREE_MODEL(behaviour->list_model),
-                    NULL,
-                    COLUMN_VIEW_HASH,
-                    G_TYPE_UINT,
-                    sort_func,
-                    GUINT_TO_POINTER(item->hash)
-                );
-
-            gtk_list_store_insert(
-                behaviour->list_model,
-                &iter,
-                item_pos
-            );
-        }
-
-        gtk_list_store_set(
-            behaviour->list_model,
-            &iter,
-            COLUMN_ICON,       icon,
-            COLUMN_ENTRY_NAME, item->display_name,
-            COLUMN_VIEW_HASH,  item->hash,
-            -1
+        wintc_sh_list_view_behaviour_insert_item(
+            behaviour,
+            (WinTCShextViewItem*) iter->data
         );
-
-        // If this is a new item then focus it
-        //
-        if (item->hint == WINTC_SHEXT_VIEW_ITEM_IS_NEW)
-        {
-            WINTC_LOG_DEBUG("shell: list view - new item for editing");
-
-            GtkTreePath* tree_path =
-                gtk_tree_model_get_path(
-                    GTK_TREE_MODEL(behaviour->list_model),
-                    &iter
-                );
-
-            gtk_widget_grab_focus(
-                behaviour->list_view
-            );
-            wintc_ctl_list_view_unselect_all(
-                WINTC_CTL_LIST_VIEW(behaviour->list_view)
-            );
-            wintc_ctl_list_view_select_path(
-                WINTC_CTL_LIST_VIEW(behaviour->list_view),
-                tree_path
-            );
-
-            //
-            // FIXME: Commented out, this function is broken and doesn't
-            //        actually do anything
-            // 
-            /**
-            gtk_icon_view_set_cursor(
-                GTK_ICON_VIEW(behaviour->icon_view),
-                tree_path,
-                behaviour->icon_view_text_cell,
-                TRUE
-            );
-            */
-
-            gtk_tree_path_free(tree_path);
-        }
     }
 }
 

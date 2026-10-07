@@ -4,10 +4,8 @@
 #include <gtk/gtk.h>
 #include <wintc/comctl.h>
 #include <wintc/comgtk.h>
-#include <wintc/shcommon.h>
 #include <wintc/shell.h>
 #include <wintc/shelldpa.h>
-#include <wintc/shellext.h>
 #include <wintc/syscfg.h>
 
 #include "application.h"
@@ -20,8 +18,9 @@
 enum
 {
     PROP_NULL,
+    PROP_BROWSER,
+    PROP_IS_PRIMARY,
     PROP_SETTINGS,
-    PROP_SHEXT_HOST,
     N_PROPERTIES
 };
 
@@ -33,6 +32,12 @@ static void wintc_desktop_window_constructed(
 );
 static void wintc_desktop_window_dispose(
     GObject* object
+);
+static void wintc_desktop_window_get_property(
+    GObject*    object,
+    guint       prop_id,
+    GValue*     value,
+    GParamSpec* pspec
 );
 static void wintc_desktop_window_set_property(
     GObject*      object,
@@ -86,9 +91,7 @@ struct _WinTCDesktopWindow
 
     // Shell stuff
     //
-    WinTCShBrowser*       browser;
-    WinTCShFolderOptions* fldr_opts;
-    WinTCShextHost*       shext_host;
+    WinTCShBrowser* browser;
 
     // Drawing-related
     //
@@ -98,6 +101,8 @@ struct _WinTCDesktopWindow
     // State
     //
     WinTCDesktopSettings* settings;
+
+    gboolean is_primary;
 };
 
 //
@@ -118,24 +123,33 @@ static void wintc_desktop_window_class_init(
 
     object_class->constructed  = wintc_desktop_window_constructed;
     object_class->dispose      = wintc_desktop_window_dispose;
+    object_class->get_property = wintc_desktop_window_get_property;
     object_class->set_property = wintc_desktop_window_set_property;
 
     widget_class->draw = wintc_desktop_window_draw;
 
+    wintc_desktop_window_properties[PROP_BROWSER] =
+        g_param_spec_object(
+            "browser",
+            "Browser",
+            "The shell browser to use.",
+            WINTC_TYPE_SH_BROWSER,
+            G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY
+        );
+    wintc_desktop_window_properties[PROP_IS_PRIMARY] =
+        g_param_spec_boolean(
+            "is-primary",
+            "IsPrimary",
+            "The value that indicates whether this desktop window is primary.",
+            FALSE,
+            G_PARAM_READWRITE | G_PARAM_EXPLICIT_NOTIFY
+        );
     wintc_desktop_window_properties[PROP_SETTINGS] =
         g_param_spec_object(
             "settings",
             "Settings",
             "The shared desktop settings",
             WINTC_TYPE_DESKTOP_SETTINGS,
-            G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY
-        );
-    wintc_desktop_window_properties[PROP_SHEXT_HOST] =
-        g_param_spec_object(
-            "shext-host",
-            "ShextHost",
-            "The shell extension host object to use.",
-            WINTC_TYPE_SHEXT_HOST,
             G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY
         );
 
@@ -182,53 +196,10 @@ static void wintc_desktop_window_constructed(
     GObject* object
 )
 {
+    (G_OBJECT_CLASS(wintc_desktop_window_parent_class))
+        ->constructed(object);
+
     WinTCDesktopWindow* wnd = WINTC_DESKTOP_WINDOW(object);
-
-    // If we have a shext host, then we can set up the browser
-    //
-    if (wnd->shext_host)
-    {
-        wnd->fldr_opts = wintc_sh_folder_options_new();
-
-        wintc_sh_folder_options_set_browse_in_same_window(
-            wnd->fldr_opts,
-            FALSE
-        );
-
-        wnd->browser =
-            wintc_sh_browser_new(
-                wnd->shext_host,
-                wnd->fldr_opts
-            );
-
-        wintc_sh_browser_set_behaviour_flags(
-            wnd->browser,
-            WINTC_SH_BROWSER_BEHAVIOUR_DONT_USE_SELF_EXE
-        );
-
-        wnd->behaviour_icons =
-            wintc_sh_list_view_behaviour_new(
-                WINTC_CTL_LIST_VIEW(wnd->listview_browser),
-                wnd->browser
-            );
-
-        // Navigate to desktop
-        //
-        WinTCShextPathInfo path_info = { 0 };
-
-        path_info.base_path =
-            g_strdup(
-                wintc_sh_get_place_path(WINTC_SH_PLACE_DESKTOP)
-            );
-
-        wintc_sh_browser_set_location(
-            wnd->browser,
-            &path_info,
-            NULL
-        );
-
-        wintc_shext_path_info_free_data(&path_info);
-    }
 
     g_signal_connect(
         wnd->settings,
@@ -242,8 +213,6 @@ static void wintc_desktop_window_constructed(
         G_CALLBACK(on_settings_notify_wallpaper_style),
         wnd
     );
-
-    (G_OBJECT_CLASS(wintc_desktop_window_parent_class))->constructed(object);
 }
 
 static void wintc_desktop_window_dispose(
@@ -254,8 +223,6 @@ static void wintc_desktop_window_dispose(
 
     g_clear_object(&(wnd->behaviour_icons));
     g_clear_object(&(wnd->browser));
-    g_clear_object(&(wnd->fldr_opts));
-    g_clear_object(&(wnd->shext_host));
 
     if (wnd->surface_wallpaper)
     {
@@ -263,7 +230,29 @@ static void wintc_desktop_window_dispose(
         g_clear_object(&(wnd->pixbuf_wallpaper));
     }
 
-    (G_OBJECT_CLASS(wintc_desktop_window_parent_class))->dispose(object);
+    (G_OBJECT_CLASS(wintc_desktop_window_parent_class))
+        ->dispose(object);
+}
+
+static void wintc_desktop_window_get_property(
+    GObject*    object,
+    guint       prop_id,
+    GValue*     value,
+    GParamSpec* pspec
+)
+{
+    WinTCDesktopWindow* wnd = WINTC_DESKTOP_WINDOW(object);
+
+    switch (prop_id)
+    {
+        case PROP_IS_PRIMARY:
+            g_value_set_boolean(value, wnd->is_primary);
+            break;
+
+        default:
+            G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
+            break;
+    }
 }
 
 static void wintc_desktop_window_set_property(
@@ -277,12 +266,19 @@ static void wintc_desktop_window_set_property(
 
     switch (prop_id)
     {
-        case PROP_SETTINGS:
-            wnd->settings = g_value_get_object(value);
+        case PROP_BROWSER:
+            wnd->browser = g_value_dup_object(value);
             break;
 
-        case PROP_SHEXT_HOST:
-            wnd->shext_host = g_value_dup_object(value);
+        case PROP_IS_PRIMARY:
+            wintc_desktop_window_set_is_primary(
+                wnd,
+                g_value_get_boolean(value)
+            );
+            break;
+
+        case PROP_SETTINGS:
+            wnd->settings = g_value_get_object(value);
             break;
 
         default:
@@ -372,11 +368,7 @@ static gboolean wintc_desktop_window_draw(
 
     // Rough watermark drawing
     //
-    // NOTE: We assume that we're the primary monitor if we have a shext host
-    //       passed in -- this is quite cheeky to do, until we properly deal
-    //       with primary monitor business on Waheyland
-    //
-    if (wnd->shext_host)
+    if (wnd->is_primary)
     {
         static gchar* s_tag = NULL;
 
@@ -483,7 +475,7 @@ GtkWidget* wintc_desktop_window_new(
     WinTCDesktopApplication* app,
     GdkMonitor*              monitor,
     WinTCDesktopSettings*    settings,
-    WinTCShextHost*          shext_host
+    WinTCShBrowser*          browser
 )
 {
     return GTK_WIDGET(
@@ -494,11 +486,49 @@ GtkWidget* wintc_desktop_window_new(
             "decorated",   TRUE,
             "monitor",     monitor,
             "resizable",   FALSE,
+            "browser",     browser,
             "settings",    settings,
-            "shext-host",  shext_host,
             NULL
         )
     );
+}
+
+gboolean wintc_desktop_window_get_is_primary(
+    WinTCDesktopWindow* wnd
+)
+{
+    return wnd->is_primary;
+}
+
+void wintc_desktop_window_set_is_primary(
+    WinTCDesktopWindow* wnd,
+    gboolean            primary
+)
+{
+    gboolean was_primary = wnd->is_primary;
+
+    wnd->is_primary = primary;
+
+    if (!was_primary && primary)
+    {
+        WINTC_LOG_DEBUG("desktop window is now primary");
+        wnd->behaviour_icons =
+            wintc_sh_list_view_behaviour_new(
+                WINTC_CTL_LIST_VIEW(wnd->listview_browser),
+                wnd->browser
+            );
+    }
+    else if (was_primary && !primary)
+    {
+        g_clear_object(&(wnd->behaviour_icons));
+    }
+
+    g_object_notify_by_pspec(
+        G_OBJECT(wnd),
+        wintc_desktop_window_properties[PROP_IS_PRIMARY]
+    );
+
+    gtk_widget_queue_draw(GTK_WIDGET(wnd));
 }
 
 //

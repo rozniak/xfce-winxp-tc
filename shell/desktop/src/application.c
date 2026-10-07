@@ -1,6 +1,7 @@
 #include <glib.h>
 #include <gtk/gtk.h>
 #include <wintc/comgtk.h>
+#include <wintc/shcommon.h>
 #include <wintc/shell.h>
 #include <wintc/shelldpa.h>
 #include <wintc/shellext.h>
@@ -17,7 +18,12 @@ struct _WinTCDesktopApplication
     GtkApplication __parent__;
 
     WinTCDesktopSettings* settings;
+
+    // Shell stuff
+    //
     WinTCShextHost*       shext_host;
+    WinTCShFolderOptions* fldr_opts;
+    WinTCShBrowser*       browser;
 };
 
 //
@@ -106,6 +112,8 @@ static void wintc_desktop_application_dispose(
     WinTCDesktopApplication* desktop_app =
         WINTC_DESKTOP_APPLICATION(object);
 
+    g_clear_object(&(desktop_app->browser));
+    g_clear_object(&(desktop_app->fldr_opts));
     g_clear_object(&(desktop_app->shext_host));
 
     (G_OBJECT_CLASS(wintc_desktop_application_parent_class))
@@ -130,6 +138,53 @@ static void wintc_desktop_application_activate(
 
     desktop_app->settings = wintc_desktop_settings_new();
 
+    // Create the shell stuff - the browser will be handed to all, but only
+    // used by the current primary desktop
+    //
+    desktop_app->shext_host = wintc_shext_host_new();
+
+    wintc_sh_init_builtin_extensions(desktop_app->shext_host);
+    wintc_shext_host_load_extensions(
+        desktop_app->shext_host,
+        WINTC_SHEXT_LOAD_DEFAULT,
+        NULL
+    );
+
+    desktop_app->fldr_opts = wintc_sh_folder_options_new();
+
+    wintc_sh_folder_options_set_browse_in_same_window(
+        desktop_app->fldr_opts,
+        FALSE
+    );
+
+    desktop_app->browser =
+        wintc_sh_browser_new(
+            desktop_app->shext_host,
+            desktop_app->fldr_opts
+        );
+
+    wintc_sh_browser_set_behaviour_flags(
+        desktop_app->browser,
+        WINTC_SH_BROWSER_BEHAVIOUR_DONT_USE_SELF_EXE
+    );
+
+    // Navigate to desktop
+    //
+    WinTCShextPathInfo path_info = { 0 };
+
+    path_info.base_path =
+        g_strdup(
+            wintc_sh_get_place_path(WINTC_SH_PLACE_DESKTOP)
+        );
+
+    wintc_sh_browser_set_location(
+        desktop_app->browser,
+        &path_info,
+        NULL
+    );
+
+    wintc_shext_path_info_free_data(&path_info);
+
     // FIXME: Just create a desktop window per monitor for now, connect up
     //        signals for monitors added/removed later
     //
@@ -143,9 +198,16 @@ static void wintc_desktop_application_activate(
                                   desktop_app,
                                   monitor,
                                   desktop_app->settings,
-                                  gdk_monitor_is_primary(monitor) ?
-                                      desktop_app->shext_host : NULL
+                                  desktop_app->browser
                               );
+
+        if (gdk_monitor_is_primary(monitor))
+        {
+            wintc_desktop_window_set_is_primary(
+                WINTC_DESKTOP_WINDOW(wnd),
+                TRUE
+            );
+        }
 
         gtk_widget_show_all(wnd);
     }
@@ -185,9 +247,6 @@ static void wintc_desktop_application_startup(
     GApplication* application
 )
 {
-    WinTCDesktopApplication* desktop_app =
-        WINTC_DESKTOP_APPLICATION(application);
-
     // Chain up for gtk init
     // 
     G_APPLICATION_CLASS(wintc_desktop_application_parent_class)
@@ -214,17 +273,6 @@ static void wintc_desktop_application_startup(
         gdk_screen_get_default(),
         GTK_STYLE_PROVIDER(css_provider),
         GTK_STYLE_PROVIDER_PRIORITY_APPLICATION
-    );
-
-    // Init shext host
-    //
-    desktop_app->shext_host = wintc_shext_host_new();
-
-    wintc_sh_init_builtin_extensions(desktop_app->shext_host);
-    wintc_shext_host_load_extensions(
-        desktop_app->shext_host,
-        WINTC_SHEXT_LOAD_DEFAULT,
-        NULL
     );
 }
 

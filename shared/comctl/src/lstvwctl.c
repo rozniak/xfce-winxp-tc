@@ -109,6 +109,9 @@ static WinTCCtlListViewIcon* wintc_ctl_list_view_create_large_icon(
 static PangoLayout* wintc_ctl_list_view_create_pango_layout(
     WinTCCtlListView* list_view
 );
+static void wintc_ctl_list_view_detach_from_model(
+    WinTCCtlListView* list_view
+);
 static void wintc_ctl_list_view_emit_item_activated(
     WinTCCtlListView*     list_view,
     WinTCCtlListViewIcon* icon
@@ -201,6 +204,11 @@ static void on_gtk_settings_font_name_notify(
     GObject*    self,
     GParamSpec* pspec,
     gpointer    user_data
+);
+
+static void cb_weak_ref_model(
+    gpointer user_data,
+    GObject* where_the_object_was
 );
 
 static void on_list_view_drag_end(
@@ -970,37 +978,7 @@ void wintc_ctl_list_view_set_model(
     //
     if (list_view->model)
     {
-        g_signal_handler_disconnect(
-            list_view->model,
-            list_view->sigid_row_changed
-        );
-        g_signal_handler_disconnect(
-            list_view->model,
-            list_view->sigid_row_deleted
-        );
-        g_signal_handler_disconnect(
-            list_view->model,
-            list_view->sigid_row_inserted
-        );
-        g_signal_handler_disconnect(
-            list_view->model,
-            list_view->sigid_rows_reordered
-        );
-
-        list_view->sigid_row_changed    = 0;
-        list_view->sigid_row_deleted    = 0;
-        list_view->sigid_row_inserted   = 0;
-        list_view->sigid_rows_reordered = 0;
-
-        // Erase all rows
-        //
-        g_clear_list(&(list_view->list_selected), NULL);
-        g_sequence_free(list_view->seq_icons);
-
-        g_clear_list(
-            &(list_view->list_icons),
-            (GDestroyNotify) wintc_ctl_list_view_icon_free
-        );
+        wintc_ctl_list_view_detach_from_model(list_view);
     }
 
     // Attach to new model
@@ -1046,6 +1024,12 @@ void wintc_ctl_list_view_set_model(
             list_view,
             G_CONNECT_DEFAULT
         );
+
+    g_object_weak_ref(
+        G_OBJECT(list_view->model),
+        (GWeakNotify) cb_weak_ref_model,
+        list_view
+    );
 
     // Create items for new model
     //
@@ -1328,6 +1312,52 @@ static PangoLayout* wintc_ctl_list_view_create_pango_layout(
     pango_layout_set_wrap(layout, PANGO_WRAP_WORD_CHAR);
 
     return layout;
+}
+
+static void wintc_ctl_list_view_detach_from_model(
+    WinTCCtlListView* list_view
+)
+{
+    if (list_view->model)
+    {
+        g_signal_handler_disconnect(
+            list_view->model,
+            list_view->sigid_row_changed
+        );
+        g_signal_handler_disconnect(
+            list_view->model,
+            list_view->sigid_row_deleted
+        );
+        g_signal_handler_disconnect(
+            list_view->model,
+            list_view->sigid_row_inserted
+        );
+        g_signal_handler_disconnect(
+            list_view->model,
+            list_view->sigid_rows_reordered
+        );
+
+        g_object_weak_unref(
+            G_OBJECT(list_view->model),
+            (GWeakNotify) cb_weak_ref_model,
+            list_view
+        );
+    }
+
+    list_view->sigid_row_changed    = 0;
+    list_view->sigid_row_deleted    = 0;
+    list_view->sigid_row_inserted   = 0;
+    list_view->sigid_rows_reordered = 0;
+
+    // Erase all rows
+    //
+    g_clear_list(&(list_view->list_selected), NULL);
+    g_sequence_free(list_view->seq_icons);
+
+    g_clear_list(
+        &(list_view->list_icons),
+        (GDestroyNotify) wintc_ctl_list_view_icon_free
+    );
 }
 
 static void wintc_ctl_list_view_emit_item_activated(
@@ -2074,6 +2104,18 @@ static void wintc_ctl_list_view_icon_free(
 //
 // CALLBACKS
 //
+static void cb_weak_ref_model(
+    gpointer user_data,
+    WINTC_UNUSED(GObject* where_the_object_was)
+)
+{
+    WinTCCtlListView* list_view = WINTC_CTL_LIST_VIEW(user_data);
+
+    list_view->model = NULL;
+
+    wintc_ctl_list_view_detach_from_model(list_view);
+}
+
 static void on_gtk_settings_font_name_notify(
     WINTC_UNUSED(GObject* self),
     WINTC_UNUSED(GParamSpec* pspec),

@@ -4,7 +4,7 @@
 #include <glib.h>
 #include <gtk/gtk.h>
 #include <wintc/shelldpa.h>
-#include <wintc/shellext.h>
+#include <wintc/shell.h>
 
 #include "application.h"
 #include "settings.h"
@@ -29,7 +29,16 @@ GtkWidget* wintc_desktop_window_new(
     WinTCDesktopApplication* app,
     GdkMonitor*              monitor,
     WinTCDesktopSettings*    settings,
-    WinTCShextHost*          shext_host
+    WinTCShBrowser*          browser
+);
+
+gboolean wintc_desktop_window_get_is_primary(
+    WinTCDesktopWindow* wnd
+);
+
+void wintc_desktop_window_set_is_primary(
+    WinTCDesktopWindow* wnd,
+    gboolean            primary
 );
 
 #endif
