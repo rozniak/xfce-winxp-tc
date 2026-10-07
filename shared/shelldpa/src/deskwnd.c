@@ -34,11 +34,21 @@ static void wintc_dpa_desktop_window_set_property(
     GParamSpec*   pspec
 );
 
+static void wintc_dpa_desktop_window_update_geometry(
+    WinTCDpaDesktopWindow* wnd
+);
+
 static void window_setup_wayland(
     WinTCDpaDesktopWindow* wnd
 );
 static void window_setup_x11(
     WinTCDpaDesktopWindow* wnd
+);
+
+static void on_monitor_notify_geometry(
+    GObject*    object,
+    GParamSpec* pspec,
+    gpointer    user_data
 );
 
 //
@@ -168,6 +178,25 @@ GdkMonitor* wintc_dpa_desktop_window_get_monitor(
 //
 // PRIVATE FUNCTIONS
 //
+static void wintc_dpa_desktop_window_update_geometry(
+    WinTCDpaDesktopWindow* wnd
+)
+{
+    WinTCDpaDesktopWindowPrivate* priv =
+        wintc_dpa_desktop_window_get_instance_private(wnd);
+
+    GdkRectangle geometry;
+
+    gdk_monitor_get_geometry(priv->monitor, &geometry);
+
+    gtk_window_move(GTK_WINDOW(wnd), geometry.x, geometry.y);
+    gtk_widget_set_size_request(
+        GTK_WIDGET(wnd),
+        geometry.width,
+        geometry.height
+    );
+}
+
 static void window_setup_wayland(
     WinTCDpaDesktopWindow* wnd
 )
@@ -199,17 +228,29 @@ static void window_setup_x11(
     WinTCDpaDesktopWindowPrivate* priv =
         wintc_dpa_desktop_window_get_instance_private(wnd);
 
-    // Directly size the window based on monitor geometry
-    //
-    GdkRectangle geometry;
-
-    gdk_monitor_get_geometry(priv->monitor, &geometry);
-
-    gtk_window_move(GTK_WINDOW(wnd), geometry.x, geometry.y);
     gtk_window_set_type_hint(GTK_WINDOW(wnd), GDK_WINDOW_TYPE_HINT_DESKTOP);
-    gtk_widget_set_size_request(
-        GTK_WIDGET(wnd),
-        geometry.width,
-        geometry.height
+
+    wintc_dpa_desktop_window_update_geometry(wnd);
+
+    g_signal_connect_object(
+        G_OBJECT(priv->monitor),
+        "notify::geometry",
+        G_CALLBACK(on_monitor_notify_geometry),
+        wnd,
+        G_CONNECT_DEFAULT
+    );
+}
+
+//
+// CALLBACKS
+//
+static void on_monitor_notify_geometry(
+    WINTC_UNUSED(GObject* object),
+    WINTC_UNUSED(GParamSpec* pspec),
+    gpointer user_data
+)
+{
+    wintc_dpa_desktop_window_update_geometry(
+        WINTC_DPA_DESKTOP_WINDOW(user_data)
     );
 }
