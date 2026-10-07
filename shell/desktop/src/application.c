@@ -17,7 +17,11 @@ struct _WinTCDesktopApplication
 {
     GtkApplication __parent__;
 
+    // State
+    //
     WinTCDesktopSettings* settings;
+
+    GList* list_desktops;
 
     // Shell stuff
     //
@@ -46,6 +50,21 @@ static gint wintc_desktop_application_handle_local_options(
 );
 static void wintc_desktop_application_startup(
     GApplication* application
+);
+
+static gboolean is_monitor_primary(
+    GdkMonitor* monitor
+);
+
+static void on_display_monitor_added(
+    GdkDisplay* display,
+    GdkMonitor* monitor,
+    gpointer    user_data
+);
+static void on_display_monitor_removed(
+    GdkDisplay* display,
+    GdkMonitor* monitor,
+    gpointer    user_data
 );
 
 //
@@ -115,6 +134,7 @@ static void wintc_desktop_application_dispose(
     g_clear_object(&(desktop_app->browser));
     g_clear_object(&(desktop_app->fldr_opts));
     g_clear_object(&(desktop_app->shext_host));
+    g_clear_list(&(desktop_app->list_desktops), NULL);
 
     (G_OBJECT_CLASS(wintc_desktop_application_parent_class))
         ->dispose(object);
@@ -185,8 +205,7 @@ static void wintc_desktop_application_activate(
 
     wintc_shext_path_info_free_data(&path_info);
 
-    // FIXME: Just create a desktop window per monitor for now, connect up
-    //        signals for monitors added/removed later
+    // Set up initial desktop windows
     //
     GdkDisplay* display    = gdk_display_get_default();
     int         n_monitors = gdk_display_get_n_monitors(display);
@@ -210,7 +229,28 @@ static void wintc_desktop_application_activate(
         }
 
         gtk_widget_show_all(wnd);
+
+        desktop_app->list_desktops =
+            g_list_append(
+                desktop_app->list_desktops,
+                wnd
+            );
     }
+
+    // Connect to display signals to manage monitors
+    //
+    g_signal_connect(
+        display,
+        "monitor-added",
+        G_CALLBACK(on_display_monitor_added),
+        desktop_app
+    );
+    g_signal_connect(
+        display,
+        "monitor-removed",
+        G_CALLBACK(on_display_monitor_removed),
+        desktop_app
+    );
 }
 
 static gint wintc_desktop_application_command_line(
@@ -277,7 +317,7 @@ static void wintc_desktop_application_startup(
 }
 
 //
-// PUBLIC MEHTODS
+// PUBLIC FUNCTIONS
 //
 WinTCDesktopApplication* wintc_desktop_application_new(void)
 {
@@ -294,4 +334,147 @@ WinTCDesktopApplication* wintc_desktop_application_new(void)
         );
 
     return app;
+}
+
+//
+// PRIVATE FUNCTIONS
+//
+static gboolean is_monitor_primary(
+    GdkMonitor* monitor
+)
+{
+    if (wintc_get_display_protocol_in_use() == WINTC_DISPPROTO_WAYLAND)
+    {
+        return gdk_display_get_monitor(
+            gdk_display_get_default(),
+            0
+        ) == monitor;
+    }
+    else // X11
+    {
+        return gdk_monitor_is_primary(monitor);
+    }
+}
+
+//
+// CALLBACKS
+//
+static void on_display_monitor_added(
+    WINTC_UNUSED(GdkDisplay* display),
+    GdkMonitor* monitor,
+    gpointer    user_data
+)
+{
+    WinTCDesktopApplication* desktop_app =
+        WINTC_DESKTOP_APPLICATION(user_data);
+
+    gboolean is_primary = is_monitor_primary(monitor);
+
+    // If this is a new primary monitor, check we haven't already got a primary
+    // desktop
+    //
+    if (is_primary)
+    {
+        for (GList* iter = desktop_app->list_desktops; iter; iter = iter->next)
+        {
+            WinTCDesktopWindow* wnd = WINTC_DESKTOP_WINDOW(iter->data);
+
+            if (wintc_desktop_window_get_is_primary(wnd))
+            {
+                wintc_desktop_window_set_is_primary(wnd, FALSE);
+                break;
+            }
+        }
+    }
+
+    // Create the new window
+    // 
+    GtkWidget* wnd =
+        wintc_desktop_window_new(
+            desktop_app,
+            monitor,
+            desktop_app->settings,
+            desktop_app->browser
+        );
+
+    if (is_primary)
+    {
+        wintc_desktop_window_set_is_primary(
+            WINTC_DESKTOP_WINDOW(wnd),
+            TRUE
+        );
+    }
+
+    gtk_widget_show_all(wnd);
+
+    desktop_app->list_desktops =
+        g_list_append(
+            desktop_app->list_desktops,
+            wnd
+        );
+}
+
+static void on_display_monitor_removed(
+    WINTC_UNUSED(GdkDisplay* display),
+    GdkMonitor* monitor,
+    gpointer    user_data
+)
+{
+    WinTCDesktopApplication* desktop_app =
+        WINTC_DESKTOP_APPLICATION(user_data);
+
+    // Find the desktop window
+    //
+    WinTCDesktopWindow* wnd = NULL;
+
+    for (GList* iter = desktop_app->list_desktops; iter; iter = iter->next)
+    {
+        if (
+            wintc_dpa_desktop_window_get_monitor(
+                WINTC_DPA_DESKTOP_WINDOW(iter->data)
+            ) == monitor
+        )
+        {
+            wnd = WINTC_DESKTOP_WINDOW(iter->data);
+            break;
+        }
+    }
+
+    if (!wnd)
+    {
+        return;
+    }
+
+    // If it was a primary desktop we'll need to select a new one
+    //
+    if (wintc_desktop_window_get_is_primary(wnd))
+    {
+        for (GList* iter = desktop_app->list_desktops; iter; iter = iter->next)
+        {
+            if (
+                is_monitor_primary(
+                    wintc_dpa_desktop_window_get_monitor(
+                        WINTC_DPA_DESKTOP_WINDOW(iter->data)
+                    )
+                )
+            )
+            {
+                wintc_desktop_window_set_is_primary(
+                    WINTC_DESKTOP_WINDOW(iter->data),
+                    TRUE
+                );
+                break;
+            }
+        }
+    }
+
+    // Can now safely destroy the window in peace
+    //
+    gtk_widget_destroy(GTK_WIDGET(wnd));
+
+    desktop_app->list_desktops =
+        g_list_delete_link(
+            desktop_app->list_desktops,
+            g_list_find(desktop_app->list_desktops, wnd)
+        );
 }
