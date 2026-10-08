@@ -175,6 +175,7 @@ struct _WinTCShListViewBehaviour
     // View state
     //
     WinTCIShextView* current_view;
+    GActionGroup*    actions;
     GtkListStore*    list_model;
 
     gulong sigid_items_added;
@@ -670,6 +671,13 @@ static void wintc_sh_list_view_behaviour_update_view(
         );
 
         g_clear_object(&(behaviour->current_view));
+        g_clear_object(&(behaviour->actions));
+
+        gtk_widget_insert_action_group(
+            behaviour->list_view,
+            "control",
+            NULL
+        );
     }
 
     // Update the view
@@ -705,6 +713,17 @@ static void wintc_sh_list_view_behaviour_update_view(
             behaviour,
             G_CONNECT_DEFAULT
         );
+
+    // Connect actions
+    //
+    behaviour->actions =
+        wintc_ishext_view_get_actions(behaviour->current_view);
+
+    gtk_widget_insert_action_group(
+        behaviour->list_view,
+        "control",
+        behaviour->actions
+    );
 }
 
 //
@@ -721,9 +740,6 @@ static gboolean on_list_view_button_press_event(
 
     if (event->button == GDK_BUTTON_SECONDARY)
     {
-        WinTCIShextView* view =
-            wintc_sh_browser_get_current_view(behaviour->browser);
-
         // We need to update the hit test target ourselves, since this signal
         // always runs before the icon view handles clicks
         //
@@ -776,7 +792,9 @@ static gboolean on_list_view_button_press_event(
         if (!target_item) // The view itself
         {
             menu_model =
-                wintc_ishext_view_get_operations_for_view(view);
+                wintc_ishext_view_get_operations_for_view(
+                    behaviour->current_view
+                );
 
             if (menu_model)
             {
@@ -839,7 +857,7 @@ static gboolean on_list_view_button_press_event(
 
             menu_model =
                 wintc_ishext_view_get_operations_for_item(
-                    view,
+                    behaviour->current_view,
                     item_hash
                 );
 
@@ -860,17 +878,12 @@ static gboolean on_list_view_button_press_event(
                 behaviour
             );
 
-        GActionGroup* action_group = wintc_ishext_view_get_actions(view);
-
-        wintc_ishext_view_update_actions(view, action_group, items);
-
-        gtk_widget_insert_action_group(
-            GTK_WIDGET(self),
-            "control",
-            action_group
+        wintc_ishext_view_update_actions(
+            behaviour->current_view,
+            behaviour->actions,
+            items
         );
 
-        g_object_unref(action_group);
         g_list_free(items);
 
         if (menu)
