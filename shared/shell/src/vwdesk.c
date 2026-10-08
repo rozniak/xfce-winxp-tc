@@ -79,6 +79,9 @@ static gboolean wintc_sh_view_desktop_drop_test(
     guint               item_hash,
     const gchar* const* uris
 );
+static GActionGroup* wintc_sh_view_desktop_get_actions(
+    WinTCIShextView* view
+);
 static const gchar* wintc_sh_view_desktop_get_display_name(
     WinTCIShextView* view
 );
@@ -122,6 +125,11 @@ static WinTCShextOperation* wintc_sh_view_desktop_spawn_operation(
     GList*           targets,
     GError**         error
 );
+static void wintc_sh_view_desktop_update_actions(
+    WinTCIShextView* view,
+    GActionGroup*    actions,
+    GList*           items
+);
 
 static gint wintc_sh_view_desktop_get_item_order(
     guint item_hash
@@ -136,6 +144,12 @@ static WinTCShextViewItem* wintc_sh_view_desktop_get_view_item(
 );
 static void wintc_sh_view_desktop_real_refresh_items(
     WinTCShViewDesktop* view_desk
+);
+
+static void action_notimpl(
+    GSimpleAction* action,
+    GVariant*      parameter,
+    gpointer       user_data
 );
 
 static gboolean shopr_properties(
@@ -201,6 +215,16 @@ static WinTCShextViewItem S_DESKTOP_ITEMS[] = {
         0,
         WINTC_SHEXT_VIEW_ITEM_DEFAULT,
         NULL,
+    }
+};
+
+static GActionEntry S_DESKTOP_ACTIONS[] = {
+    {
+        .name           = "notimpl",
+        .activate       = action_notimpl,
+        .parameter_type = NULL,
+        .state          = NULL,
+        .change_state   = NULL
     }
 };
 
@@ -325,6 +349,7 @@ static void wintc_sh_view_desktop_ishext_view_interface_init(
     iface->drag_test               = wintc_sh_view_desktop_drag_test;
     iface->drop_execute            = wintc_sh_view_desktop_drop_execute;
     iface->drop_test               = wintc_sh_view_desktop_drop_test;
+    iface->get_actions             = wintc_sh_view_desktop_get_actions;
     iface->get_display_name        = wintc_sh_view_desktop_get_display_name;
     iface->get_icon_name           = wintc_sh_view_desktop_get_icon_name;
     iface->get_items               = wintc_sh_view_desktop_get_items;
@@ -340,6 +365,7 @@ static void wintc_sh_view_desktop_ishext_view_interface_init(
     iface->has_parent              = wintc_sh_view_desktop_has_parent;
     iface->refresh_items           = wintc_sh_view_desktop_refresh_items;
     iface->spawn_operation         = wintc_sh_view_desktop_spawn_operation;
+    iface->update_actions          = wintc_sh_view_desktop_update_actions;
 }
 
 //
@@ -662,6 +688,22 @@ static gboolean wintc_sh_view_desktop_drop_test(
     }
 }
 
+static GActionGroup* wintc_sh_view_desktop_get_actions(
+    WinTCIShextView* view
+)
+{
+    GSimpleActionGroup* actions = g_simple_action_group_new();
+
+    g_action_map_add_action_entries(
+        G_ACTION_MAP(actions),
+        S_DESKTOP_ACTIONS,
+        G_N_ELEMENTS(S_DESKTOP_ACTIONS),
+        view
+    );
+
+    return G_ACTION_GROUP(actions);
+}
+
 static const gchar* wintc_sh_view_desktop_get_display_name(
     WINTC_UNUSED(WinTCIShextView* view)
 )
@@ -931,6 +973,24 @@ static WinTCShextOperation* wintc_sh_view_desktop_spawn_operation(
     return ret;
 }
 
+static void wintc_sh_view_desktop_update_actions(
+    WINTC_UNUSED(WinTCIShextView* view),
+    GActionGroup* actions,
+    GList*        items
+)
+{
+    // For testing purposes - disable op depending on if there's any selected
+    // items
+    //
+    GAction* action =
+        g_action_map_lookup_action(G_ACTION_MAP(actions), "notimpl");
+
+    g_simple_action_set_enabled(
+        G_SIMPLE_ACTION(action),
+        !items
+    );
+}
+
 //
 // PUBLIC FUNCTIONS
 //
@@ -1070,6 +1130,21 @@ static void wintc_sh_view_desktop_real_refresh_items(
 //
 // CALLBACKS
 //
+static void action_notimpl(
+    WINTC_UNUSED(GSimpleAction* action),
+    WINTC_UNUSED(GVariant*      parameter),
+    WINTC_UNUSED(gpointer       user_data)
+)
+{
+    wintc_messagebox_show(
+        NULL,
+        "Hooray! Not implemented!",
+        "Win",
+        WINTC_BUTTONS_OK,
+        WINTC_MESSAGE_INFORMATION
+    );
+}
+
 static gboolean shopr_properties(
     WINTC_UNUSED(WinTCIShextView* view),
     WINTC_UNUSED(WinTCShextOperation* operation),

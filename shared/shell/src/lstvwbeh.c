@@ -53,17 +53,6 @@ static void wintc_sh_list_view_behaviour_update_view(
     WinTCShListViewBehaviour* behaviour
 );
 
-static void action_paste_operation(
-    GSimpleAction* action,
-    GVariant*      parameter,
-    gpointer       user_data
-);
-static void action_view_operation(
-    GSimpleAction* action,
-    GVariant*      parameter,
-    gpointer       user_data
-);
-
 static gboolean on_list_view_button_press_event(
     WinTCCtlListView* self,
     GdkEventButton*   event,
@@ -138,25 +127,6 @@ static void on_current_view_refreshing(
 //
 // STATIC DATA
 //
-static GSimpleAction* S_ACTION_NOOP = NULL;
-
-static GActionEntry S_ACTIONS[] = {
-    {
-        .name           = "paste-op",
-        .activate       = action_paste_operation,
-        .parameter_type = "i",
-        .state          = NULL,
-        .change_state   = NULL
-    },
-    {
-        .name           = "view-op",
-        .activate       = action_view_operation,
-        .parameter_type = "i",
-        .state          = NULL,
-        .change_state   = NULL
-    }
-};
-
 static GdkAtom S_ATOM_TEXT_URI_LIST;
 static GdkAtom S_ATOM_TEXT_X_WINTC_SHELL_LIST;
 
@@ -298,40 +268,11 @@ static void wintc_sh_list_view_behaviour_constructed(
             G_TYPE_UINT
         );
 
-    // Define GActions
-    //
-    GSimpleActionGroup* action_group = g_simple_action_group_new();
-
-    if (!S_ACTION_NOOP)
-    {
-        S_ACTION_NOOP =
-            g_simple_action_new("no-op", NULL);
-
-        g_simple_action_set_enabled(
-            S_ACTION_NOOP,
-            FALSE
-        );
-    }
-
-    g_action_map_add_action_entries(
-        G_ACTION_MAP(action_group),
-        S_ACTIONS,
-        G_N_ELEMENTS(S_ACTIONS),
-        behaviour
-    );
-    g_action_map_add_action(
-        G_ACTION_MAP(action_group),
-        G_ACTION(S_ACTION_NOOP)
-    );
-
-    gtk_widget_insert_action_group(
-        behaviour->list_view,
-        "control",
-        G_ACTION_GROUP(action_group)
-    );
-
     // Bind special action states
     //
+    // FIXME: Shift to view implementations
+    //
+    /**
     GAction* action_paste_op =
         g_action_map_lookup_action(G_ACTION_MAP(action_group), "paste-op");
 
@@ -342,8 +283,7 @@ static void wintc_sh_list_view_behaviour_constructed(
         "enabled",
         G_BINDING_DEFAULT
     );
-
-    g_object_unref(action_group);
+    */
 
     // Attach stuff to view
     //
@@ -770,82 +710,6 @@ static void wintc_sh_list_view_behaviour_update_view(
 //
 // CALLBACKS
 //
-static void action_paste_operation(
-    WINTC_UNUSED(GSimpleAction* action),
-    GVariant* parameter,
-    gpointer  user_data
-)
-{
-    WinTCShListViewBehaviour* behaviour =
-        WINTC_SH_LIST_VIEW_BEHAVIOUR(user_data);
-
-    // Forward to normal view op
-    //
-    g_action_group_activate_action(
-        gtk_widget_get_action_group(
-            behaviour->list_view,
-            "control"
-        ),
-        "view-op",
-        parameter
-    );
-}
-
-static void action_view_operation(
-    WINTC_UNUSED(GSimpleAction* action),
-    GVariant*      parameter,
-    gpointer       user_data
-)
-{
-    WinTCShListViewBehaviour* behaviour =
-        WINTC_SH_LIST_VIEW_BEHAVIOUR(user_data);
-
-    WINTC_LOG_DEBUG("op selected: %d", g_variant_get_int32(parameter));
-
-    // Prepare items - need to convert the selected items to their hashes
-    //
-    GList* item_hashes =
-        wintc_sh_list_view_behaviour_get_selected_items(behaviour);
-
-    // Ask the view to spawn the operation
-    //
-    GError*              error        = NULL;
-    WinTCShextOperation* operation;
-    gint                 operation_id = g_variant_get_int32(parameter);
-    WinTCIShextView*     view         = wintc_sh_browser_get_current_view(
-                                            behaviour->browser
-                                        );
-    GtkWindow*           wnd          = wintc_widget_get_toplevel_window(
-                                            behaviour->list_view
-                                        );
-
-    operation =
-        wintc_ishext_view_spawn_operation(
-            view,
-            operation_id,
-            item_hashes, // Ownership transferred
-            &error
-        );
-
-    if (!operation)
-    {
-        wintc_display_error_and_clear(
-            &error,
-            wnd
-        );
-        return;
-    }
-
-    // Execute!
-    //
-    if (!(operation->func) (operation->view, operation, wnd, &error))
-    {
-        wintc_display_error_and_clear(&error, wnd);
-    }
-
-    g_free(operation);
-}
-
 static gboolean on_list_view_button_press_event(
     WinTCCtlListView* self,
     GdkEventButton*   event,
@@ -857,6 +721,9 @@ static gboolean on_list_view_button_press_event(
 
     if (event->button == GDK_BUTTON_SECONDARY)
     {
+        WinTCIShextView* view =
+            wintc_sh_browser_get_current_view(behaviour->browser);
+
         // We need to update the hit test target ourselves, since this signal
         // always runs before the icon view handles clicks
         //
@@ -909,11 +776,7 @@ static gboolean on_list_view_button_press_event(
         if (!target_item) // The view itself
         {
             menu_model =
-                wintc_ishext_view_get_operations_for_view(
-                    wintc_sh_browser_get_current_view(
-                        behaviour->browser
-                    )
-                );
+                wintc_ishext_view_get_operations_for_view(view);
 
             if (menu_model)
             {
@@ -976,7 +839,7 @@ static gboolean on_list_view_button_press_event(
 
             menu_model =
                 wintc_ishext_view_get_operations_for_item(
-                    wintc_sh_browser_get_current_view(behaviour->browser),
+                    view,
                     item_hash
                 );
 
@@ -989,6 +852,26 @@ static gboolean on_list_view_button_press_event(
 
             gtk_tree_path_free(target_item);
         }
+
+        // Update GActions
+        //
+        GList* items =
+            wintc_sh_list_view_behaviour_get_selected_items(
+                behaviour
+            );
+
+        GActionGroup* action_group = wintc_ishext_view_get_actions(view);
+
+        wintc_ishext_view_update_actions(view, action_group, items);
+
+        gtk_widget_insert_action_group(
+            GTK_WIDGET(self),
+            "control",
+            action_group
+        );
+
+        g_object_unref(action_group);
+        g_list_free(items);
 
         if (menu)
         {
