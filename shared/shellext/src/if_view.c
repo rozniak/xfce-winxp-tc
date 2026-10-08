@@ -177,6 +177,16 @@ gboolean wintc_ishext_view_drop_test(
     return iface->drop_test(view, item_hash, uris);
 }
 
+GActionGroup* wintc_ishext_view_get_actions(
+    WinTCIShextView* view
+)
+{
+    WinTCIShextViewInterface* iface =
+        WINTC_ISHEXT_VIEW_GET_IFACE(view);
+
+    return iface->get_actions(view);
+}
+
 const gchar* wintc_ishext_view_get_display_name(
     WinTCIShextView* view
 )
@@ -306,6 +316,22 @@ WinTCShextOperation* wintc_ishext_view_spawn_operation(
         operation_id,
         targets,
         error
+    );
+}
+
+void wintc_ishext_view_update_actions(
+    WinTCIShextView* view,
+    GActionGroup*    actions,
+    GList*           items
+)
+{
+    WinTCIShextViewInterface* iface =
+        WINTC_ISHEXT_VIEW_GET_IFACE(view);
+
+    return iface->update_actions(
+        view,
+        actions,
+        items
     );
 }
 

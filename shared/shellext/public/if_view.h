@@ -73,6 +73,9 @@ struct _WinTCIShextViewInterface
         const gchar* const* uris
     );
 
+    GActionGroup* (*get_actions) (
+        WinTCIShextView* view
+    );
     const gchar* (*get_display_name) (
         WinTCIShextView* view
     );
@@ -118,6 +121,12 @@ struct _WinTCIShextViewInterface
         GList*           targets,
         GError**         error
     );
+
+    void (*update_actions) (
+        WinTCIShextView* view,
+        GActionGroup*    actions,
+        GList*           items
+    );
 };
 
 //
@@ -160,10 +169,9 @@ gboolean wintc_ishext_view_drop_test(
     const gchar* const* uris
 );
 
-void wintc_ishext_view_refresh_items(
+GActionGroup* wintc_ishext_view_get_actions(
     WinTCIShextView* view
 );
-
 const gchar* wintc_ishext_view_get_display_name(
     WinTCIShextView* view
 );
@@ -198,11 +206,19 @@ guint wintc_ishext_view_get_unique_hash(
 gboolean wintc_ishext_view_has_parent(
     WinTCIShextView* view
 );
+void wintc_ishext_view_refresh_items(
+    WinTCIShextView* view
+);
 WinTCShextOperation* wintc_ishext_view_spawn_operation(
     WinTCIShextView* view,
     gint             operation_id,
     GList*           targets,
     GError**         error
+);
+void wintc_ishext_view_update_actions(
+    WinTCIShextView* view,
+    GActionGroup*    actions,
+    GList*           items
 );
 
 //
