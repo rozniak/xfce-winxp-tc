@@ -67,14 +67,9 @@ static const WinTCTaskbandToolbarId S_LAYOUT[] = {
 //
 // GTK OOP CLASS/INSTANCE DEFINITIONS
 //
-struct _WinTCTaskbandWindowClass
-{
-    GtkApplicationWindowClass __parent__;
-};
-
 struct _WinTCTaskbandWindow
 {
-    GtkApplicationWindow __parent__;
+    WinTCDpaPanelWindow __parent__;
 
     // UI
     //
@@ -94,7 +89,7 @@ struct _WinTCTaskbandWindow
 G_DEFINE_TYPE_WITH_CODE(
     WinTCTaskbandWindow,
     wintc_taskband_window,
-    GTK_TYPE_APPLICATION_WINDOW,
+    WINTC_TYPE_DPA_PANEL_WINDOW,
     G_IMPLEMENT_INTERFACE(
         WINTC_TYPE_ISHEXT_UI_HOST,
         wintc_taskband_window_ishext_ui_host_interface_init
@@ -125,7 +120,6 @@ static void wintc_taskband_window_init(
     // FIXME: This is obviously hard coded rubbish!
     //
     gtk_widget_set_size_request(GTK_WIDGET(self), -1, TASKBAND_HEIGHT);
-    wintc_anchor_taskband_to_bottom(GTK_WINDOW(self));
 
     // Create main container box
     //

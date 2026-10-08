@@ -3,5 +3,6 @@
 
 #include "@LIB_HEADER_DIR@/api.h"
 #include "@LIB_HEADER_DIR@/deskwnd.h"
+#include "@LIB_HEADER_DIR@/panelwnd.h"
 
 #endif

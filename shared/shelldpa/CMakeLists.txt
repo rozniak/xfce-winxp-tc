@@ -33,14 +33,12 @@ add_library(
     public/api.h
     src/deskwnd.c
     public/deskwnd.h
-    src/impl-wayland.c
-    src/impl-wayland.h
+    src/panelwnd.c
+    public/panelwnd.h
     src/impl-wndmgmt-wnck.c
     src/impl-wndmgmt-wnck.h
     src/impl-wndmgmt-xfw.c
     src/impl-wndmgmt-xfw.h
-    src/impl-x11.c
-    src/impl-x11.h
     src/dll/layersh.c
     src/dll/layersh.h
     src/dll/wnck.c

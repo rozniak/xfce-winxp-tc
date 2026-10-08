@@ -92,18 +92,6 @@ WinTCDisplayProtocol wintc_get_display_protocol_in_use(void);
 gboolean wintc_init_display_protocol_apis(void);
 
 /**
- * Anchors the window to the bottom of the primary display, assuming it is the
- * taskband.
- *
- * @param taskband The taskband window.
- *
- * @remarks This function will be retired with a better, general purpose API.
- */
-extern void (*wintc_anchor_taskband_to_bottom) (
-    GtkWindow* taskband
-);
-
-/**
  * Retrieves the active window on the specified screen.
  *
  * @param screen The screen.

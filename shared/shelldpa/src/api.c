@@ -5,8 +5,6 @@
 #include <wintc/comgtk.h>
 
 #include "../public/api.h"
-#include "impl-wayland.h"
-#include "impl-x11.h"
 #include "impl-wndmgmt-wnck.h"
 #include "impl-wndmgmt-xfw.h"
 
@@ -270,12 +268,6 @@ gboolean wintc_init_display_protocol_apis(void)
     )
     {
         s_dispproto = WINTC_DISPPROTO_X11;
-
-        if (!init_x11_protocol_impl())
-        {
-            g_critical("%s", "Failed to initialize X11 implementation.");
-            return FALSE;
-        }
     }
     else if (
         p_gdk_wayland_display_get_type != NULL &&
@@ -283,12 +275,6 @@ gboolean wintc_init_display_protocol_apis(void)
     )
     {
         s_dispproto = WINTC_DISPPROTO_WAYLAND;
-
-        if (!init_wayland_protocol_impl())
-        {
-            g_critical("%s", "Failed to initialize Wayland implementation.");
-            return FALSE;
-        }
     }
     else
     {
