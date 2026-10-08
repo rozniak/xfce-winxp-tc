@@ -152,11 +152,10 @@ static void action_notimpl(
     gpointer       user_data
 );
 
-static gboolean shopr_properties(
-    WinTCIShextView*     view,
-    WinTCShextOperation* operation,
-    GtkWindow*           wnd,
-    GError**             error
+static void action_properties(
+    GSimpleAction* action,
+    GVariant*      parameter,
+    gpointer       user_data
 );
 
 static void on_view_user_desktop_items_added(
@@ -222,6 +221,14 @@ static GActionEntry S_DESKTOP_ACTIONS[] = {
     {
         .name           = "notimpl",
         .activate       = action_notimpl,
+        .parameter_type = NULL,
+        .state          = NULL,
+        .change_state   = NULL
+    },
+
+    {
+        .name           = "properties",
+        .activate       = action_properties,
         .parameter_type = NULL,
         .state          = NULL,
         .change_state   = NULL
@@ -943,12 +950,6 @@ static WinTCShextOperation* wintc_sh_view_desktop_spawn_operation(
 
         switch (operation_id)
         {
-            case WINTC_SHEXT_KNOWN_OP_PROPERTIES:
-                // FIXME: Handle for view items
-                //
-                ret->func = shopr_properties;
-                break;
-
             default:
                 g_clear_pointer(&ret, (GDestroyNotify) g_free);
 
@@ -1145,15 +1146,18 @@ static void action_notimpl(
     );
 }
 
-static gboolean shopr_properties(
-    WINTC_UNUSED(WinTCIShextView* view),
-    WINTC_UNUSED(WinTCShextOperation* operation),
-    WINTC_UNUSED(GtkWindow* wnd),
-    GError** error
+static void action_properties(
+    WINTC_UNUSED(GSimpleAction* action),
+    WINTC_UNUSED(GVariant*      parameter),
+    WINTC_UNUSED(gpointer       user_data)
 )
 {
-    // FIXME: Clash with WINE
-    return wintc_launch_command("desk.cpl", error);
+    GError* error = NULL;
+
+    if (!wintc_launch_command("desk.cpl", &error))
+    {
+        wintc_display_error_and_clear(&error, NULL);
+    }
 }
 
 static void on_view_user_desktop_items_added(
