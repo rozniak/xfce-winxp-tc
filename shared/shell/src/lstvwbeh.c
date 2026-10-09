@@ -884,8 +884,6 @@ static gboolean on_list_view_button_press_event(
             items
         );
 
-        g_list_free(items);
-
         if (menu)
         {
             gtk_menu_attach_to_widget(

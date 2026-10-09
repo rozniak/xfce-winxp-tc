@@ -158,6 +158,11 @@ static void action_properties(
     gpointer       user_data
 );
 
+static void cb_weak_ref_actions(
+    gpointer user_data,
+    GObject* where_the_object_was
+);
+
 static void on_view_user_desktop_items_added(
     WinTCIShextView*           view,
     WinTCShextViewItemsUpdate* update,
@@ -251,6 +256,8 @@ struct _WinTCShViewDesktop
     //
     WinTCShextHost*  shext_host;
     WinTCIShextView* view_user_desktop;
+
+    GHashTable* map_actions_to_targets;
 };
 
 //
@@ -343,8 +350,17 @@ static void wintc_sh_view_desktop_class_init(
 }
 
 static void wintc_sh_view_desktop_init(
-    WINTC_UNUSED(WinTCShViewDesktop* self)
-) {}
+    WinTCShViewDesktop* self
+)
+{
+    self->map_actions_to_targets =
+        g_hash_table_new_full(
+            g_direct_hash,
+            g_direct_equal,
+            NULL, // We don't own the GActionGroup
+            (GDestroyNotify) g_list_free
+        );
+}
 
 static void wintc_sh_view_desktop_ishext_view_interface_init(
     WinTCIShextViewInterface* iface
@@ -708,6 +724,12 @@ static GActionGroup* wintc_sh_view_desktop_get_actions(
         view
     );
 
+    g_object_weak_ref(
+        G_OBJECT(actions),
+        (GWeakNotify) cb_weak_ref_actions,
+        view
+    );
+
     return G_ACTION_GROUP(actions);
 }
 
@@ -975,11 +997,27 @@ static WinTCShextOperation* wintc_sh_view_desktop_spawn_operation(
 }
 
 static void wintc_sh_view_desktop_update_actions(
-    WINTC_UNUSED(WinTCIShextView* view),
-    GActionGroup* actions,
-    GList*        items
+    WinTCIShextView* view,
+    GActionGroup*    actions,
+    GList*           items
 )
 {
+    WinTCShViewDesktop* view_desk = WINTC_SH_VIEW_DESKTOP(view);
+
+    // Update our context
+    //
+    if (!g_hash_table_lookup(view_desk->map_actions_to_targets, actions))
+    {
+        g_critical("%s", "vwdesk: invalid action group");
+        return;
+    }
+
+    g_hash_table_insert(
+        view_desk->map_actions_to_targets,
+        actions,
+        items
+    );
+
     // For testing purposes - disable op depending on if there's any selected
     // items
     //
@@ -1158,6 +1196,19 @@ static void action_properties(
     {
         wintc_display_error_and_clear(&error, NULL);
     }
+}
+
+static void cb_weak_ref_actions(
+    gpointer user_data,
+    GObject* where_the_object_was
+)
+{
+    WinTCShViewDesktop* view_desk = WINTC_SH_VIEW_DESKTOP(user_data);
+
+    g_hash_table_remove(
+        view_desk->map_actions_to_targets,
+        where_the_object_was
+    );
 }
 
 static void on_view_user_desktop_items_added(
