@@ -357,7 +357,7 @@ static void wintc_sh_view_desktop_init(
         g_hash_table_new_full(
             g_direct_hash,
             g_direct_equal,
-            NULL, // We don't own the GActionGroup
+            NULL,
             (GDestroyNotify) g_list_free
         );
 }
@@ -715,6 +715,8 @@ static GActionGroup* wintc_sh_view_desktop_get_actions(
     WinTCIShextView* view
 )
 {
+    WinTCShViewDesktop* view_desk = WINTC_SH_VIEW_DESKTOP(view);
+
     GSimpleActionGroup* actions = g_simple_action_group_new();
 
     g_action_map_add_action_entries(
@@ -728,6 +730,12 @@ static GActionGroup* wintc_sh_view_desktop_get_actions(
         G_OBJECT(actions),
         (GWeakNotify) cb_weak_ref_actions,
         view
+    );
+
+    g_hash_table_insert(
+        view_desk->map_actions_to_targets,
+        actions,
+        NULL
     );
 
     return G_ACTION_GROUP(actions);
@@ -1006,17 +1014,19 @@ static void wintc_sh_view_desktop_update_actions(
 
     // Update our context
     //
-    if (!g_hash_table_lookup(view_desk->map_actions_to_targets, actions))
+    if (
+        g_hash_table_insert(
+            view_desk->map_actions_to_targets,
+            actions,
+            items
+        )
+    )
     {
         g_critical("%s", "vwdesk: invalid action group");
+        g_hash_table_remove(view_desk->map_actions_to_targets, actions);
         return;
     }
 
-    g_hash_table_insert(
-        view_desk->map_actions_to_targets,
-        actions,
-        items
-    );
 
     // For testing purposes - disable op depending on if there's any selected
     // items

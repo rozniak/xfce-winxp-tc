@@ -1,5 +1,6 @@
 #include <glib.h>
 #include <wintc/comgtk.h>
+#include <wintc/exec.h>
 #include <wintc/shcommon.h>
 #include <wintc/shellext.h>
 #include <wintc/shlang.h>
@@ -76,6 +77,9 @@ static gboolean wintc_sh_view_drives_drop_test(
     guint               item_hash,
     const gchar* const* uris
 );
+static GActionGroup* wintc_sh_view_drives_get_actions(
+    WinTCIShextView* view
+);
 static const gchar* wintc_sh_view_drives_get_display_name(
     WinTCIShextView* view
 );
@@ -119,6 +123,11 @@ static WinTCShextOperation* wintc_sh_view_drives_spawn_operation(
     GList*           targets,
     GError**         error
 );
+static void wintc_sh_view_drives_update_actions(
+    WinTCIShextView* view,
+    GActionGroup*    actions,
+    GList*           items
+);
 
 static gint wintc_sh_view_drives_get_category_order(
     WinTCShViewDrives*  view_drives,
@@ -133,6 +142,17 @@ static void wintc_sh_view_drives_register_category_guid(
     const gchar*       category_guid
 );
 
+static void action_properties(
+    GSimpleAction* action,
+    GVariant*      parameter,
+    gpointer       user_data
+);
+
+static void cb_weak_ref_actions(
+    gpointer user_data,
+    GObject* where_the_object_was
+);
+
 static void on_shext_host_toplevel_added(
     WinTCShextHost*         shext_host,
     WinTCShextTopLevelItem* tl_item,
@@ -143,6 +163,19 @@ static void on_shext_host_toplevel_removed(
     WinTCShextTopLevelItem* tl_item,
     gpointer                user_data
 );
+
+//
+// STATIC DATA
+//
+static GActionEntry S_DRIVES_ACTIONS[] = {
+    {
+        .name           = "properties",
+        .activate       = action_properties,
+        .parameter_type = NULL,
+        .state          = NULL,
+        .change_state   = NULL
+    }
+};
 
 //
 // GLIB OOP/CLASS INSTANCE DEFINITIONS
@@ -159,6 +192,8 @@ struct _WinTCShViewDrives
     WinTCShextHost* shext_host;
     GList*          list_categories;
     GHashTable*     map_hash_to_tl_item;
+
+    GHashTable* map_actions_to_targets;
 };
 
 //
@@ -210,6 +245,13 @@ static void wintc_sh_view_drives_init(
 {
     self->map_hash_to_tl_item =
         g_hash_table_new(g_direct_hash, g_direct_equal);
+    self->map_actions_to_targets =
+        g_hash_table_new_full(
+            g_direct_hash,
+            g_direct_equal,
+            NULL,
+            (GDestroyNotify) g_list_free
+        );
 }
 
 static void wintc_sh_view_drives_ishext_view_interface_init(
@@ -222,6 +264,7 @@ static void wintc_sh_view_drives_ishext_view_interface_init(
     iface->drag_test               = wintc_sh_view_drives_drag_test;
     iface->drop_execute            = wintc_sh_view_drives_drop_execute;
     iface->drop_test               = wintc_sh_view_drives_drop_test;
+    iface->get_actions             = wintc_sh_view_drives_get_actions;
     iface->get_display_name        = wintc_sh_view_drives_get_display_name;
     iface->get_icon_name           = wintc_sh_view_drives_get_icon_name;
     iface->get_items               = wintc_sh_view_drives_get_items;
@@ -237,6 +280,7 @@ static void wintc_sh_view_drives_ishext_view_interface_init(
     iface->has_parent              = wintc_sh_view_drives_has_parent;
     iface->refresh_items           = wintc_sh_view_drives_refresh_items;
     iface->spawn_operation         = wintc_sh_view_drives_spawn_operation;
+    iface->update_actions          = wintc_sh_view_drives_update_actions;
 }
 
 //
@@ -438,6 +482,36 @@ static gboolean wintc_sh_view_drives_drop_test(
     return FALSE;
 }
 
+static GActionGroup* wintc_sh_view_drives_get_actions(
+    WinTCIShextView* view
+)
+{
+    WinTCShViewDrives* view_drives = WINTC_SH_VIEW_DRIVES(view);
+
+    GSimpleActionGroup* actions = g_simple_action_group_new();
+
+    g_action_map_add_action_entries(
+        G_ACTION_MAP(actions),
+        S_DRIVES_ACTIONS,
+        G_N_ELEMENTS(S_DRIVES_ACTIONS),
+        view
+    );
+
+    g_object_weak_ref(
+        G_OBJECT(actions),
+        (GWeakNotify) cb_weak_ref_actions,
+        view
+    );
+
+    g_hash_table_insert(
+        view_drives->map_actions_to_targets,
+        actions,
+        NULL
+    );
+
+    return G_ACTION_GROUP(actions);
+}
+
 static const gchar* wintc_sh_view_drives_get_display_name(
     WINTC_UNUSED(WinTCIShextView* view)
 )
@@ -502,8 +576,26 @@ static GMenuModel* wintc_sh_view_drives_get_operations_for_view(
     WINTC_UNUSED(WinTCIShextView* view)
 )
 {
-    g_warning("%s Not Implemented", __func__);
-    return NULL;
+    GtkBuilder* builder;
+    GMenuModel* menu;
+
+    builder =
+        gtk_builder_new_from_resource(
+            "/uk/oddmatics/wintc/shell/menudv.ui"
+        );
+
+    wintc_lc_builder_preprocess_widget_text(builder);
+
+    menu =
+        G_MENU_MODEL(
+            g_object_ref(
+                gtk_builder_get_object(builder, "menu")
+            )
+        );
+
+    g_object_unref(builder);
+
+    return menu;
 }
 
 static void wintc_sh_view_drives_get_parent_path(
@@ -692,6 +784,30 @@ static WinTCShextOperation* wintc_sh_view_drives_spawn_operation(
     return NULL;
 }
 
+static void wintc_sh_view_drives_update_actions(
+    WinTCIShextView* view,
+    GActionGroup*    actions,
+    GList*           items
+)
+{
+    WinTCShViewDrives* view_drives = WINTC_SH_VIEW_DRIVES(view);
+
+    // Update our context
+    //
+    if (
+        g_hash_table_insert(
+            view_drives->map_actions_to_targets,
+            actions,
+            items
+        )
+    )
+    {
+        g_critical("%s", "vwdrives: invalid action group");
+        g_hash_table_remove(view_drives->map_actions_to_targets, actions);
+        return;
+    }
+}
+
 //
 // PUBLIC FUNCTIONS
 //
@@ -763,6 +879,33 @@ static void wintc_sh_view_drives_register_category_guid(
 //
 // CALLBACKS
 //
+static void action_properties(
+    WINTC_UNUSED(GSimpleAction* action),
+    WINTC_UNUSED(GVariant* parameter),
+    WINTC_UNUSED(gpointer user_data)
+)
+{
+    GError* error = NULL;
+
+    if (!wintc_launch_command("sysdm.cpl", &error))
+    {
+        wintc_display_error_and_clear(&error, NULL);
+    }
+}
+
+static void cb_weak_ref_actions(
+    gpointer user_data,
+    GObject* where_the_object_was
+)
+{
+    WinTCShViewDrives* view_drives = WINTC_SH_VIEW_DRIVES(user_data);
+
+    g_hash_table_remove(
+        view_drives->map_actions_to_targets,
+        where_the_object_was
+    );
+}
+
 static void on_shext_host_toplevel_added(
     WINTC_UNUSED(WinTCShextHost* shext_host),
     WinTCShextTopLevelItem* tl_item,
