@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <menu id="menu">
+    <section>
+      <item>
+        <attribute name="action">control.open</attribute>
+        <attribute name="label">Open</attribute>
+      </item>
+      <!-- Merge 'Explore' here programmatically if item is a shell folder -->
+    </section>
+    <section>
+      <item>
+        <attribute name="action">control.create-shortcut</attribute>
+        <attribute name="label">Create Shortcut</attribute>
+      </item>
+    </section>
+  </menu>
+</interface>

@@ -38,6 +38,7 @@ wintc_compile_resources()
 
 add_library(
     libwintc-shell
+    public/actions.h
     src/browser.c
     public/browser.h
     src/cpl.c

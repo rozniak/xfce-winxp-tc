@@ -5,6 +5,7 @@
 #include <wintc/shellext.h>
 #include <wintc/shlang.h>
 
+#include "../public/actions.h"
 #include "../public/nmspace.h"
 #include "../public/vwdrives.h"
 
@@ -148,11 +149,6 @@ static void action_properties(
     gpointer       user_data
 );
 
-static void cb_weak_ref_actions(
-    gpointer user_data,
-    GObject* where_the_object_was
-);
-
 static void on_shext_host_toplevel_added(
     WinTCShextHost*         shext_host,
     WinTCShextTopLevelItem* tl_item,
@@ -209,6 +205,12 @@ G_DEFINE_TYPE_WITH_CODE(
     )
 )
 
+WINTC_SH_DEFINE_CB_VW_ACTIONS_CLEANUP(
+    WinTCShViewDrives,
+    vw_drives,
+    map_actions_to_targets
+)
+
 static void wintc_sh_view_drives_class_init(
     WinTCShViewDrivesClass* klass
 )
@@ -245,13 +247,8 @@ static void wintc_sh_view_drives_init(
 {
     self->map_hash_to_tl_item =
         g_hash_table_new(g_direct_hash, g_direct_equal);
-    self->map_actions_to_targets =
-        g_hash_table_new_full(
-            g_direct_hash,
-            g_direct_equal,
-            NULL,
-            (GDestroyNotify) g_list_free
-        );
+
+    WINTC_SH_INIT_VW_ACTIONS(self, map_actions_to_targets);
 }
 
 static void wintc_sh_view_drives_ishext_view_interface_init(
@@ -319,6 +316,9 @@ static void wintc_sh_view_drives_dispose(
 
     g_clear_object(&(view_drives->shext_host));
     g_clear_list(&(view_drives->list_categories), NULL);
+    g_hash_table_unref(
+        g_steal_pointer(&(view_drives->map_actions_to_targets))
+    );
     g_hash_table_unref(
         g_steal_pointer(&(view_drives->map_hash_to_tl_item))
     );
@@ -490,23 +490,11 @@ static GActionGroup* wintc_sh_view_drives_get_actions(
 
     GSimpleActionGroup* actions = g_simple_action_group_new();
 
-    g_action_map_add_action_entries(
-        G_ACTION_MAP(actions),
-        S_DRIVES_ACTIONS,
-        G_N_ELEMENTS(S_DRIVES_ACTIONS),
-        view
-    );
-
-    g_object_weak_ref(
-        G_OBJECT(actions),
-        (GWeakNotify) cb_weak_ref_actions,
-        view
-    );
-
-    g_hash_table_insert(
-        view_drives->map_actions_to_targets,
+    WINTC_SH_CREATE_VW_ACTIONS_GROUP(
+        view_drives,
+        map_actions_to_targets,
         actions,
-        NULL
+        S_DRIVES_ACTIONS
     );
 
     return G_ACTION_GROUP(actions);
@@ -792,20 +780,12 @@ static void wintc_sh_view_drives_update_actions(
 {
     WinTCShViewDrives* view_drives = WINTC_SH_VIEW_DRIVES(view);
 
-    // Update our context
-    //
-    if (
-        g_hash_table_insert(
-            view_drives->map_actions_to_targets,
-            actions,
-            items
-        )
-    )
-    {
-        g_critical("%s", "vwdrives: invalid action group");
-        g_hash_table_remove(view_drives->map_actions_to_targets, actions);
-        return;
-    }
+    WINTC_SH_UPDATE_VW_ACTIONS_GROUP(
+        view_drives,
+        map_actions_to_targets,
+        actions,
+        items
+    );
 }
 
 //
@@ -891,19 +871,6 @@ static void action_properties(
     {
         wintc_display_error_and_clear(&error, NULL);
     }
-}
-
-static void cb_weak_ref_actions(
-    gpointer user_data,
-    GObject* where_the_object_was
-)
-{
-    WinTCShViewDrives* view_drives = WINTC_SH_VIEW_DRIVES(user_data);
-
-    g_hash_table_remove(
-        view_drives->map_actions_to_targets,
-        where_the_object_was
-    );
 }
 
 static void on_shext_host_toplevel_added(

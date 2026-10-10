@@ -460,6 +460,9 @@ static void wintc_sh_view_desktop_dispose(
 
     g_clear_object(&(view_desk->shext_host));
     g_clear_object(&(view_desk->view_user_desktop));
+    g_hash_table_destroy(
+        g_steal_pointer(&(view_desk->map_actions_to_targets))
+    );
 
     (G_OBJECT_CLASS(wintc_sh_view_desktop_parent_class))
         ->dispose(object);

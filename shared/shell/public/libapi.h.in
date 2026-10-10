@@ -1,6 +1,7 @@
 #ifndef __WINTC_SHELL_H__
 #define __WINTC_SHELL_H__
 
+#include "@LIB_HEADER_DIR@/actions.h"
 #include "@LIB_HEADER_DIR@/browser.h"
 #include "@LIB_HEADER_DIR@/cpl.h"
 #include "@LIB_HEADER_DIR@/dialog.h"

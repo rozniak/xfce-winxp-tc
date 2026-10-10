@@ -8,6 +8,8 @@
 
     <!-- MENUS -->
     <file>menuctx.ui</file>
+    <file>menucp.ui</file>
+    <file>menucplf.ui</file>
     <file>menudesk.ui</file>
     <file>menudv.ui</file>
     <file>menufs.ui</file>

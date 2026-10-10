@@ -5,6 +5,7 @@
 #include <wintc/shellext.h>
 #include <wintc/shlang.h>
 
+#include "../public/actions.h"
 #include "../public/cpl.h"
 #include "../public/vwcpl.h"
 
@@ -67,6 +68,9 @@ static gboolean wintc_sh_view_cpl_drop_test(
     guint               item_hash,
     const gchar* const* uris
 );
+static GActionGroup* wintc_sh_view_cpl_get_actions(
+    WinTCIShextView* view
+);
 static const gchar* wintc_sh_view_cpl_get_display_name(
     WinTCIShextView* view
 );
@@ -110,11 +114,38 @@ static WinTCShextOperation* wintc_sh_view_cpl_spawn_operation(
     GList*           targets,
     GError**         error
 );
+static void wintc_sh_view_cpl_update_actions(
+    WinTCIShextView* view,
+    GActionGroup*    actions,
+    GList*           items
+);
 
 static WinTCShextViewItem* wintc_sh_view_cpl_get_view_item(
     WinTCShViewCpl* view_cpl,
     guint           item_hash
 );
+
+static void action_open(
+    GSimpleAction* action,
+    GVariant*      parameter,
+    gpointer       user_data
+);
+
+//
+// STATIC DATA
+//
+static GActionEntry S_CPL_ACTIONS[] = {
+    {
+        .name           = "open",
+        .activate       = action_open,
+        .parameter_type = NULL,
+        .state          = NULL,
+        .change_state   = NULL
+    }
+
+    // TODO: explore
+    // TODO: create-shortcut
+};
 
 //
 // GLIB OOP/CLASS INSTANCE DEFINITIONS
@@ -132,6 +163,8 @@ struct _WinTCShViewCpl
     //
     GList*      cpls;
     GHashTable* map_items;
+
+    GHashTable* map_actions_to_targets;
 };
 
 //
@@ -145,6 +178,12 @@ G_DEFINE_TYPE_WITH_CODE(
         WINTC_TYPE_ISHEXT_VIEW,
         wintc_sh_view_cpl_ishext_view_interface_init
     )
+)
+
+WINTC_SH_DEFINE_CB_VW_ACTIONS_CLEANUP(
+    WinTCShViewCpl,
+    view_cpl,
+    map_actions_to_targets
 )
 
 static void wintc_sh_view_cpl_class_init(
@@ -164,8 +203,11 @@ static void wintc_sh_view_cpl_class_init(
 }
 
 static void wintc_sh_view_cpl_init(
-    WINTC_UNUSED(WinTCShViewCpl* self)
-) {}
+    WinTCShViewCpl* self
+)
+{
+    WINTC_SH_INIT_VW_ACTIONS(self, map_actions_to_targets);
+}
 
 static void wintc_sh_view_cpl_ishext_view_interface_init(
     WinTCIShextViewInterface* iface
@@ -177,6 +219,7 @@ static void wintc_sh_view_cpl_ishext_view_interface_init(
     iface->drag_test               = wintc_sh_view_cpl_drag_test;
     iface->drop_execute            = wintc_sh_view_cpl_drop_execute;
     iface->drop_test               = wintc_sh_view_cpl_drop_test;
+    iface->get_actions             = wintc_sh_view_cpl_get_actions;
     iface->get_display_name        = wintc_sh_view_cpl_get_display_name;
     iface->get_icon_name           = wintc_sh_view_cpl_get_icon_name;
     iface->get_items               = wintc_sh_view_cpl_get_items;
@@ -189,6 +232,7 @@ static void wintc_sh_view_cpl_ishext_view_interface_init(
     iface->has_parent              = wintc_sh_view_cpl_has_parent;
     iface->refresh_items           = wintc_sh_view_cpl_refresh_items;
     iface->spawn_operation         = wintc_sh_view_cpl_spawn_operation;
+    iface->update_actions          = wintc_sh_view_cpl_update_actions;
 }
 
 //
@@ -203,6 +247,10 @@ static void wintc_sh_view_cpl_finalize(
     g_clear_list(
         &(view_cpl->cpls),
         (GDestroyNotify) wintc_sh_cpl_applet_free
+    );
+
+    g_hash_table_destroy(
+        g_steal_pointer(&(view_cpl->map_actions_to_targets))
     );
 
     if (view_cpl->map_items)
@@ -339,6 +387,24 @@ static const gchar* wintc_sh_view_cpl_get_display_name(
     return "Control Panel";
 }
 
+static GActionGroup* wintc_sh_view_cpl_get_actions(
+    WinTCIShextView* view
+)
+{
+    WinTCShViewCpl* view_cpl = WINTC_SH_VIEW_CPL(view);
+
+    GSimpleActionGroup* actions = g_simple_action_group_new();
+
+    WINTC_SH_CREATE_VW_ACTIONS_GROUP(
+        view_cpl,
+        map_actions_to_targets,
+        actions,
+        S_CPL_ACTIONS
+    );
+
+    return G_ACTION_GROUP(actions);
+}
+
 static const gchar* wintc_sh_view_cpl_get_icon_name(
     WINTC_UNUSED(WinTCIShextView* view)
 )
@@ -360,16 +426,52 @@ static GMenuModel* wintc_sh_view_cpl_get_operations_for_item(
     WINTC_UNUSED(guint            item_hash)
 )
 {
-    g_warning("%s Not Implemented", __func__);
-    return NULL;
+    GtkBuilder* builder;
+    GMenuModel* menu;
+
+    builder =
+        gtk_builder_new_from_resource(
+            "/uk/oddmatics/wintc/shell/menucplf.ui"
+        );
+
+    wintc_lc_builder_preprocess_widget_text(builder);
+
+    menu =
+        G_MENU_MODEL(
+            g_object_ref(
+                gtk_builder_get_object(builder, "menu")
+            )
+        );
+
+    g_object_unref(builder);
+
+    return menu;
 }
 
 static GMenuModel* wintc_sh_view_cpl_get_operations_for_view(
     WINTC_UNUSED(WinTCIShextView* view)
 )
 {
-    g_warning("%s Not Implemented", __func__);
-    return NULL;
+    GtkBuilder* builder;
+    GMenuModel* menu;
+
+    builder =
+        gtk_builder_new_from_resource(
+            "/uk/oddmatics/wintc/shell/menucp.ui"
+        );
+
+    wintc_lc_builder_preprocess_widget_text(builder);
+
+    menu =
+        G_MENU_MODEL(
+            g_object_ref(
+                gtk_builder_get_object(builder, "menu")
+            )
+        );
+
+    g_object_unref(builder);
+
+    return menu;
 }
 
 static void wintc_sh_view_cpl_get_parent_path(
@@ -520,6 +622,26 @@ static WinTCShextOperation* wintc_sh_view_cpl_spawn_operation(
     return NULL;
 }
 
+static void wintc_sh_view_cpl_update_actions(
+    WinTCIShextView* view,
+    GActionGroup*    actions,
+    GList*           items
+)
+{
+    WinTCShViewCpl* view_cpl = WINTC_SH_VIEW_CPL(view);
+
+    WINTC_SH_UPDATE_VW_ACTIONS_GROUP(
+        view_cpl,
+        map_actions_to_targets,
+        actions,
+        items
+    );
+
+    //
+    // FIXME: explore would be enabled/disabled here for shell folders
+    //
+}
+
 //
 // PUBLIC FUNCTIONS
 //
@@ -547,4 +669,70 @@ static WinTCShextViewItem* wintc_sh_view_cpl_get_view_item(
             view_cpl->map_items,
             GUINT_TO_POINTER(item_hash)
         );
+}
+
+//
+// CALLBACKS
+//
+static void action_open(
+    WINTC_UNUSED(GSimpleAction* action),
+    WINTC_UNUSED(GVariant* parameter),
+    gpointer user_data
+)
+{
+    WinTCShViewActions* ctx = (WinTCShViewActions*) user_data;
+
+    WinTCShViewCpl* view_cpl = WINTC_SH_VIEW_CPL(ctx->view);
+
+    // Retrieve the targets
+    // 
+    GList* targets =
+        g_hash_table_lookup(
+            view_cpl->map_actions_to_targets,
+            ctx->action_group
+        );
+
+    if (!targets)
+    {
+        g_critical("%s", "vwcpl: somehow launched 'open' with no targets");
+    }
+
+    for (GList* iter = targets; iter; iter = iter->next)
+    {
+        GError*            error     = NULL;
+        WinTCShextPathInfo path_info = { 0 };
+
+        if (
+            wintc_sh_view_cpl_activate_item(
+                ctx->view,
+                GPOINTER_TO_UINT(iter->data),
+                &path_info,
+                &error
+            )
+        )
+        {
+            // If this was a shell folder, open in new window
+            //
+            if (path_info.base_path)
+            {
+                gchar* uri = wintc_shext_path_info_get_as_single_path(
+                                 &path_info
+                             );
+                gchar* cmd = g_strdup_printf("explorer %s", uri);
+
+                if (!wintc_launch_command(cmd, &error))
+                {
+                    wintc_display_error_and_clear(&error, NULL);
+                }
+
+                g_free(uri);
+                g_free(cmd);
+                wintc_shext_path_info_free_data(&path_info);
+            }
+        }
+        else
+        {
+            wintc_display_error_and_clear(&error, NULL);
+        }
+    }
 }
