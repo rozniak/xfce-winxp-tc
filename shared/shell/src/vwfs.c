@@ -181,7 +181,7 @@ static void action_delete(
     GVariant*      parameter,
     gpointer       user_data
 );
-static void action_paste(
+static void action_new(
     GSimpleAction* action,
     GVariant*      parameter,
     gpointer       user_data
@@ -196,12 +196,10 @@ static void action_open_with(
     GVariant*      parameter,
     gpointer       user_data
 );
-
-static gboolean shopr_new(
-    WinTCIShextView*     view,
-    WinTCShextOperation* operation,
-    GtkWindow*           wnd,
-    GError**             error
+static void action_paste(
+    GSimpleAction* action,
+    GVariant*      parameter,
+    gpointer       user_data
 );
 
 static void on_file_monitor_changed(
@@ -231,6 +229,13 @@ static GActionEntry S_FS_ACTIONS[] = {
         .name           = "delete",
         .activate       = action_delete,
         .parameter_type = NULL,
+        .state          = NULL,
+        .change_state   = NULL
+    },
+    {
+        .name           = "new",
+        .activate       = action_new,
+        .parameter_type = "i",
         .state          = NULL,
         .change_state   = NULL
     },
@@ -1250,18 +1255,8 @@ static WinTCShextOperation* wintc_sh_view_fs_spawn_operation(
     switch (operation_id)
     {
         default:
-            // Could be a NEW operation...
-            //
-            if (WINTC_SHEXT_OP_IS_NEW_OP(operation_id))
-            {
-                ret->func = shopr_new;
-                ret->priv = GINT_TO_POINTER(operation_id);
-            }
-            else
-            {
-                g_clear_pointer(&ret, g_free);
-                g_critical("%s", "shell: fs - invalid op");
-            }
+            g_clear_pointer(&ret, g_free);
+            g_critical("%s", "shell: fs - invalid op");
 
             break;
     }
@@ -1582,6 +1577,30 @@ static void action_delete(
     wintc_sh_fs_operation_do(op, NULL); // wnd
 }
 
+static void action_new(
+    WINTC_UNUSED(GSimpleAction* action),
+    GVariant* parameter,
+    gpointer  user_data
+)
+{
+    WinTCShViewActions* ctx     = (WinTCShViewActions*) user_data;
+    WinTCShViewFS*      view_fs = WINTC_SH_VIEW_FS(ctx->view);
+
+    GError* error = NULL;
+
+    if (
+        !wintc_sh_new_menu_create_file(
+            view_fs->path,
+            g_variant_get_int32(parameter),
+            &(view_fs->next_new_hash),
+            &error
+        )
+    )
+    {
+        wintc_display_error_and_clear(&error, NULL); // wnd
+    }
+}
+
 static void action_open(
     WINTC_UNUSED(GSimpleAction* action),
     WINTC_UNUSED(GVariant* parameter),
@@ -1698,23 +1717,6 @@ static void action_paste(
     {
         wintc_display_error_and_clear(&error, NULL);
     }
-}
-
-static gboolean shopr_new(
-    WinTCIShextView*     view,
-    WinTCShextOperation* operation,
-    WINTC_UNUSED(GtkWindow* wnd),
-    GError**             error
-)
-{
-    WinTCShViewFS* view_fs = WINTC_SH_VIEW_FS(view);
-
-    return wintc_sh_new_menu_create_file(
-        view_fs->path,
-        GPOINTER_TO_INT(operation->priv),
-        &(view_fs->next_new_hash),
-        error
-    );
 }
 
 static void on_file_monitor_changed(

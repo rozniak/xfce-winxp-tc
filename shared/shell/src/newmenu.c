@@ -15,7 +15,7 @@
 //
 enum
 {
-    WINTC_SH_NEW_OP_NEW_FOLDER = 80,
+    WINTC_SH_NEW_OP_NEW_FOLDER = 0,
     WINTC_SH_NEW_OP_NEW_SHORTCUT,
     WINTC_SH_NEW_OP_FIRST_TEMPLATE
 };
@@ -83,7 +83,9 @@ GMenuModel* wintc_sh_new_menu_get_menu(void)
             )
         );
 
-    gint view_op_id = WINTC_SHEXT_OP_NEW + 2;
+    const gint max_items = 20;
+
+    gint view_op_id = WINTC_SH_NEW_OP_FIRST_TEMPLATE;
 
     for (GList* iter = S_LIST_TEMPLATES; iter; iter = iter->next)
     {
@@ -92,7 +94,7 @@ GMenuModel* wintc_sh_new_menu_get_menu(void)
 
         // Cap off menu items
         //
-        if (!WINTC_SHEXT_OP_IS_NEW_OP(view_op_id))
+        if (view_op_id >= max_items)
         {
             break;
         }
@@ -107,7 +109,7 @@ GMenuModel* wintc_sh_new_menu_get_menu(void)
 
         g_menu_item_set_action_and_target(
             menu_item,
-            "control.view-op",
+            "control.new",
             "i",
             view_op_id
         );
