@@ -5,6 +5,7 @@
 #include <wintc/shellext.h>
 #include <wintc/shlang.h>
 
+#include "../public/actions.h"
 #include "../public/newmenu.h"
 #include "../public/vwdesk.h"
 
@@ -158,11 +159,6 @@ static void action_properties(
     gpointer       user_data
 );
 
-static void cb_weak_ref_actions(
-    gpointer user_data,
-    GObject* where_the_object_was
-);
-
 static void on_view_user_desktop_items_added(
     WinTCIShextView*           view,
     WinTCShextViewItemsUpdate* update,
@@ -273,6 +269,12 @@ G_DEFINE_TYPE_WITH_CODE(
     )
 )
 
+WINTC_SH_DEFINE_CB_VW_ACTIONS_CLEANUP(
+    WinTCShViewDesktop,
+    vw_desk,
+    map_actions_to_targets
+)
+
 static void wintc_sh_view_desktop_class_init(
     WinTCShViewDesktopClass* klass
 )
@@ -353,13 +355,7 @@ static void wintc_sh_view_desktop_init(
     WinTCShViewDesktop* self
 )
 {
-    self->map_actions_to_targets =
-        g_hash_table_new_full(
-            g_direct_hash,
-            g_direct_equal,
-            NULL,
-            (GDestroyNotify) g_list_free
-        );
+    WINTC_SH_INIT_VW_ACTIONS(self, map_actions_to_targets);
 }
 
 static void wintc_sh_view_desktop_ishext_view_interface_init(
@@ -722,23 +718,11 @@ static GActionGroup* wintc_sh_view_desktop_get_actions(
 
     GSimpleActionGroup* actions = g_simple_action_group_new();
 
-    g_action_map_add_action_entries(
-        G_ACTION_MAP(actions),
-        S_DESKTOP_ACTIONS,
-        G_N_ELEMENTS(S_DESKTOP_ACTIONS),
-        view
-    );
-
-    g_object_weak_ref(
-        G_OBJECT(actions),
-        (GWeakNotify) cb_weak_ref_actions,
-        view
-    );
-
-    g_hash_table_insert(
-        view_desk->map_actions_to_targets,
+    WINTC_SH_CREATE_VW_ACTIONS_GROUP(
+        view_desk,
+        map_actions_to_targets,
         actions,
-        NULL
+        S_DESKTOP_ACTIONS
     );
 
     return G_ACTION_GROUP(actions);
@@ -1015,21 +999,12 @@ static void wintc_sh_view_desktop_update_actions(
 {
     WinTCShViewDesktop* view_desk = WINTC_SH_VIEW_DESKTOP(view);
 
-    // Update our context
-    //
-    if (
-        g_hash_table_insert(
-            view_desk->map_actions_to_targets,
-            actions,
-            items
-        )
-    )
-    {
-        g_critical("%s", "vwdesk: invalid action group");
-        g_hash_table_remove(view_desk->map_actions_to_targets, actions);
-        return;
-    }
-
+    WINTC_SH_UPDATE_VW_ACTIONS_GROUP(
+        view_desk,
+        map_actions_to_targets,
+        actions,
+        items
+    );
 
     // For testing purposes - disable op depending on if there's any selected
     // items
@@ -1209,19 +1184,6 @@ static void action_properties(
     {
         wintc_display_error_and_clear(&error, NULL);
     }
-}
-
-static void cb_weak_ref_actions(
-    gpointer user_data,
-    GObject* where_the_object_was
-)
-{
-    WinTCShViewDesktop* view_desk = WINTC_SH_VIEW_DESKTOP(user_data);
-
-    g_hash_table_remove(
-        view_desk->map_actions_to_targets,
-        where_the_object_was
-    );
 }
 
 static void on_view_user_desktop_items_added(
