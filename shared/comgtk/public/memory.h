@@ -20,6 +20,14 @@ void wintc_clear_variant(
 );
 
 /**
+ * Wrapper for g_free() for use as a GFunc callback.
+ */
+void wintc_free_cb(
+    gpointer data,
+    gpointer user_data
+);
+
+/**
  * Frees a null-terminated array - the provided function will be called to free
  * each of the array elements.
  *

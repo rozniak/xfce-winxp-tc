@@ -1,6 +1,7 @@
 #include <glib.h>
 
 #include "../public/memory.h"
+#include "../public/shorthand.h"
 
 //
 // PUBLIC FUNCTIONS
@@ -14,6 +15,14 @@ void wintc_clear_variant(
         g_variant_unref(*variant_ptr);
         *variant_ptr = NULL;
     }
+}
+
+void wintc_free_cb(
+    gpointer data,
+    WINTC_UNUSED(gpointer user_data)
+)
+{
+    g_free(data);
 }
 
 void wintc_freev(
