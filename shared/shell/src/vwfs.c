@@ -850,6 +850,22 @@ static GActionGroup* wintc_sh_view_fs_get_actions(
         S_FS_ACTIONS
     );
 
+    // Bind paste to clipboard
+    //
+    GAction* action_paste =
+        g_action_map_lookup_action(
+            G_ACTION_MAP(actions),
+            "paste"
+        );
+
+    g_object_bind_property(
+        G_OBJECT(view_fs->fs_clipboard),
+        "can-paste",
+        G_OBJECT(action_paste),
+        "enabled",
+        G_BINDING_SYNC_CREATE
+    );
+
     return G_ACTION_GROUP(actions);
 }
 
