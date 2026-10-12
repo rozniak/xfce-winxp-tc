@@ -4,6 +4,7 @@
 #include <wintc/shellext.h>
 #include <wintc/shlang.h>
 
+#include "../public/actions.h"
 #include "../public/fsclipbd.h"
 #include "../public/fsop.h"
 #include "../public/sound.h"
@@ -77,6 +78,9 @@ static gboolean wintc_sh_view_trash_drop_test(
     guint               item_hash,
     const gchar* const* uris
 );
+static GActionGroup* wintc_sh_view_trash_get_actions(
+    WinTCIShextView* view
+);
 static const gchar* wintc_sh_view_trash_get_display_name(
     WinTCIShextView* view
 );
@@ -120,6 +124,11 @@ static WinTCShextOperation* wintc_sh_view_trash_spawn_operation(
     GList*           targets,
     GError**         error
 );
+static void wintc_sh_view_trash_update_actions(
+    WinTCIShextView* view,
+    GActionGroup*    actions,
+    GList*           items
+);
 
 static void clear_view_item(
     WinTCShextViewItem* item
@@ -142,35 +151,30 @@ static WinTCShextViewItem* wintc_sh_view_trash_get_view_item(
     guint             item_hash
 );
 
-static gboolean shopr_cut(
-    WinTCIShextView*     view,
-    WinTCShextOperation* operation,
-    GtkWindow*           wnd,
-    GError**             error
+void action_cut(
+    GSimpleAction* action,
+    GVariant*      parameter,
+    gpointer       user_data
 );
-static gboolean shopr_delete(
-    WinTCIShextView*     view,
-    WinTCShextOperation* operation,
-    GtkWindow*           wnd,
-    GError**             error
+void action_delete(
+    GSimpleAction* action,
+    GVariant*      parameter,
+    gpointer       user_data
 );
-static gboolean shopr_empty(
-    WinTCIShextView*     view,
-    WinTCShextOperation* operation,
-    GtkWindow*           wnd,
-    GError**             error
+void action_empty(
+    GSimpleAction* action,
+    GVariant*      parameter,
+    gpointer       user_data
 );
-static gboolean shopr_paste(
-    WinTCIShextView*     view,
-    WinTCShextOperation* operation,
-    GtkWindow*           wnd,
-    GError**             error
+void action_paste(
+    GSimpleAction* action,
+    GVariant*      parameter,
+    gpointer       user_data
 );
-static gboolean shopr_restore(
-    WinTCIShextView*     view,
-    WinTCShextOperation* operation,
-    GtkWindow*           wnd,
-    GError**             error
+void action_restore(
+    GSimpleAction* action,
+    GVariant*      parameter,
+    gpointer       user_data
 );
 
 static void on_file_monitor_changed(
@@ -190,6 +194,47 @@ static void on_fs_operation_done_with_sound(
 );
 
 //
+// STATIC DATA
+//
+static GActionEntry S_TRASH_ACTIONS[] = {
+    {
+        .name           = "cut",
+        .activate       = action_cut,
+        .parameter_type = NULL,
+        .state          = NULL,
+        .change_state   = NULL
+    },
+    {
+        .name           = "delete",
+        .activate       = action_delete,
+        .parameter_type = NULL,
+        .state          = NULL,
+        .change_state   = NULL
+    },
+    {
+        .name           = "empty",
+        .activate       = action_empty,
+        .parameter_type = NULL,
+        .state          = NULL,
+        .change_state   = NULL
+    },
+    {
+        .name           = "paste",
+        .activate       = action_paste,
+        .parameter_type = NULL,
+        .state          = NULL,
+        .change_state   = NULL
+    },
+    {
+        .name           = "restore",
+        .activate       = action_restore,
+        .parameter_type = NULL,
+        .state          = NULL,
+        .change_state   = NULL
+    }
+};
+
+//
 // GTK OOP CLASS/INSTANCE DEFINITIONS
 //
 struct _WinTCShViewTrash
@@ -203,6 +248,7 @@ struct _WinTCShViewTrash
     GHashTable*   map_entries;
 
     WinTCShFSClipboard* fs_clipboard;
+    GHashTable* map_actions_to_targets;
 };
 
 //
@@ -216,6 +262,12 @@ G_DEFINE_TYPE_WITH_CODE(
         WINTC_TYPE_ISHEXT_VIEW,
         wintc_sh_view_trash_ishext_view_interface_init
     )
+)
+
+WINTC_SH_DEFINE_CB_VW_ACTIONS_CLEANUP(
+    WinTCShViewTrash,
+    vw_trash,
+    map_actions_to_targets
 )
 
 static void wintc_sh_view_trash_class_init(
@@ -261,6 +313,8 @@ static void wintc_sh_view_trash_init(
             self
         );
     }
+
+    WINTC_SH_INIT_VW_ACTIONS(self, map_actions_to_targets);
 }
 
 static void wintc_sh_view_trash_ishext_view_interface_init(
@@ -273,6 +327,7 @@ static void wintc_sh_view_trash_ishext_view_interface_init(
     iface->drag_test               = wintc_sh_view_trash_drag_test;
     iface->drop_execute            = wintc_sh_view_trash_drop_execute;
     iface->drop_test               = wintc_sh_view_trash_drop_test;
+    iface->get_actions             = wintc_sh_view_trash_get_actions;
     iface->get_display_name        = wintc_sh_view_trash_get_display_name;
     iface->get_icon_name           = wintc_sh_view_trash_get_icon_name;
     iface->get_items               = wintc_sh_view_trash_get_items;
@@ -287,6 +342,7 @@ static void wintc_sh_view_trash_ishext_view_interface_init(
     iface->has_parent              = wintc_sh_view_trash_has_parent;
     iface->refresh_items           = wintc_sh_view_trash_refresh_items;
     iface->spawn_operation         = wintc_sh_view_trash_spawn_operation;
+    iface->update_actions          = wintc_sh_view_trash_update_actions;
 }
 
 //
@@ -311,6 +367,10 @@ static void wintc_sh_view_trash_finalize(
 )
 {
     WinTCShViewTrash* view_trash = WINTC_SH_VIEW_TRASH(object);
+
+    g_hash_table_destroy(
+        g_steal_pointer(&(view_trash->map_actions_to_targets))
+    );
 
     if (view_trash->map_entries)
     {
@@ -467,6 +527,26 @@ static gboolean wintc_sh_view_trash_drop_test(
     // Accept all drops - treat them all as the view
     //
     return TRUE;
+}
+
+static GActionGroup* wintc_sh_view_trash_get_actions(
+    WinTCIShextView* view
+)
+{
+    WinTCShViewTrash* view_trash = WINTC_SH_VIEW_TRASH(view);
+
+    GSimpleActionGroup* actions = g_simple_action_group_new();
+
+    WINTC_SH_CREATE_VW_ACTIONS_GROUP(
+        view_trash,
+        map_actions_to_targets,
+        actions,
+        S_TRASH_ACTIONS
+    );
+
+    // FIXME: bind 'trash' state to bin empty
+
+    return G_ACTION_GROUP(actions);
 }
 
 static const gchar* wintc_sh_view_trash_get_display_name(
@@ -718,62 +798,17 @@ static void wintc_sh_view_trash_refresh_items(
 }
 
 static WinTCShextOperation* wintc_sh_view_trash_spawn_operation(
-    WinTCIShextView* view,
-    gint             operation_id,
+    WINTC_UNUSED(WinTCIShextView* view),
+    WINTC_UNUSED(gint operation_id),
     GList*           targets,
     GError**         error
 )
 {
-    WinTCShViewTrash* view_trash = WINTC_SH_VIEW_TRASH(view);
-
     // Spawn op
     //
-    WinTCShextOperation* ret = g_new(WinTCShextOperation, 1);
-
-    ret->view = view;
-
     switch (operation_id)
     {
-        case WINTC_SHEXT_KNOWN_OP_CUT:
-            ret->func = shopr_cut;
-            ret->priv = wintc_sh_view_trash_convert_list_hashes(
-                            view_trash,
-                            g_steal_pointer(&targets)
-                        );
-            break;
-
-        case WINTC_SHEXT_KNOWN_OP_DELETE:
-            ret->func = shopr_delete;
-            ret->priv = wintc_sh_view_trash_convert_list_hashes(
-                            view_trash,
-                            g_steal_pointer(&targets)
-                        );
-            break;
-
-        case WINTC_SHEXT_KNOWN_OP_PASTE:
-            ret->func = shopr_paste;
-            ret->priv = wintc_sh_view_trash_convert_list_hashes(
-                            view_trash,
-                            g_steal_pointer(&targets)
-                        );
-            break;
-
-        case SHEXT_CUSTOM_OP_EMPTY:
-            ret->func = shopr_empty;
-            ret->priv = NULL;
-            break;
-
-        case SHEXT_CUSTOM_OP_RESTORE:
-            ret->func = shopr_restore;
-            ret->priv = wintc_sh_view_trash_convert_list_hashes(
-                            view_trash,
-                            g_steal_pointer(&targets)
-                        );
-            break;
-
         default:
-            g_clear_pointer(&ret, g_free);
-
             g_set_error(
                 error,
                 wintc_general_error_quark(),
@@ -787,7 +822,23 @@ static WinTCShextOperation* wintc_sh_view_trash_spawn_operation(
 
     g_clear_list(&targets, NULL);
 
-    return ret;
+    return NULL;
+}
+
+static void wintc_sh_view_trash_update_actions(
+    WinTCIShextView* view,
+    GActionGroup*    actions,
+    GList*           items
+)
+{
+    WinTCShViewTrash* view_trash = WINTC_SH_VIEW_TRASH(view);
+
+    WINTC_SH_UPDATE_VW_ACTIONS_GROUP(
+        view_trash,
+        map_actions_to_targets,
+        actions,
+        items
+    );
 }
 
 //
@@ -871,33 +922,65 @@ static WinTCShextViewItem* wintc_sh_view_trash_get_view_item(
         );
 }
 
-static gboolean shopr_cut(
-    WinTCIShextView*     view,
-    WinTCShextOperation* operation,
-    WINTC_UNUSED(GtkWindow* wnd),
-    GError**             error
+//
+// CALLBACKS
+//
+void action_cut(
+    WINTC_UNUSED(GSimpleAction* action),
+    WINTC_UNUSED(GVariant* parameter),
+    gpointer user_data
 )
 {
-    WinTCShViewTrash* view_trash = WINTC_SH_VIEW_TRASH(view);
+    WinTCShViewActions* ctx        = (WinTCShViewActions*) user_data;
+    WinTCShViewTrash*   view_trash = WINTC_SH_VIEW_TRASH(ctx->view);
 
-    return wintc_sh_fs_clipboard_copymove(
-        view_trash->fs_clipboard,
-        (GList*) operation->priv,
-        TRUE,
-        error
-    );
+    GError* error        = NULL;
+    GList*  list_targets =
+        wintc_sh_view_trash_convert_list_hashes(
+            view_trash,
+            g_hash_table_lookup(
+                view_trash->map_actions_to_targets,
+                ctx->action_group
+            )
+        );
+
+    if (
+        !wintc_sh_fs_clipboard_copymove(
+            view_trash->fs_clipboard,
+            list_targets,
+            TRUE,
+            &error
+        )
+    )
+    {
+        wintc_display_error_and_clear(&error, NULL); // wnd
+    }
 }
 
-static gboolean shopr_delete(
-    WINTC_UNUSED(WinTCIShextView* view),
-    WinTCShextOperation* operation,
-    GtkWindow*           wnd,
-    WINTC_UNUSED(GError** error)
+void action_delete(
+    WINTC_UNUSED(GSimpleAction* action),
+    WINTC_UNUSED(GVariant* parameter),
+    gpointer user_data
 )
 {
-    WinTCShFSOperation* op =
+    WinTCShViewActions* ctx        = (WinTCShViewActions*) user_data;
+    WinTCShViewTrash*   view_trash = WINTC_SH_VIEW_TRASH(ctx->view);
+
+    GList*              list_targets;
+    WinTCShFSOperation* op;
+
+    list_targets =
+        wintc_sh_view_trash_convert_list_hashes(
+            view_trash,
+            g_hash_table_lookup(
+                view_trash->map_actions_to_targets,
+                ctx->action_group
+            )
+        );
+
+    op =
         wintc_sh_fs_operation_new(
-            (GList*) operation->priv,
+            list_targets,
             NULL,
             WINTC_SH_FS_OPERATION_DELETE
         );
@@ -906,37 +989,36 @@ static gboolean shopr_delete(
         op,
         "done",
         G_CALLBACK(on_fs_operation_done),
-        operation->priv
+        list_targets
     );
 
-    wintc_sh_fs_operation_do(op, wnd);
-
-    return TRUE;
+    wintc_sh_fs_operation_do(op, NULL); // wnd
 }
 
-static gboolean shopr_empty(
-    WinTCIShextView* view,
-    WINTC_UNUSED(WinTCShextOperation* operation),
-    GtkWindow*       wnd,
-    WINTC_UNUSED(GError** error)
+void action_empty(
+    WINTC_UNUSED(GSimpleAction* action),
+    WINTC_UNUSED(GVariant* parameter),
+    gpointer user_data
 )
 {
-    WinTCShViewTrash* view_trash = WINTC_SH_VIEW_TRASH(view);
+    WinTCShViewActions* ctx        = (WinTCShViewActions*) user_data;
+    WinTCShViewTrash*   view_trash = WINTC_SH_VIEW_TRASH(ctx->view);
 
     // Convert all the entries into paths for deletion
     //
-    GList* entries = g_hash_table_get_keys(view_trash->map_entries);
+    GList* list_targets =
+        g_hash_table_get_keys(view_trash->map_entries);
 
     wintc_sh_view_trash_convert_list_hashes(
         view_trash,
-        entries
+        list_targets
     );
 
     // Set up and execute the delete operation
     //
     WinTCShFSOperation* op =
         wintc_sh_fs_operation_new(
-            entries,
+            list_targets,
             NULL,
             WINTC_SH_FS_OPERATION_DELETE
         );
@@ -945,46 +1027,63 @@ static gboolean shopr_empty(
         op,
         "done",
         G_CALLBACK(on_fs_operation_done_with_sound),
-        entries
+        list_targets
     );
 
-    wintc_sh_fs_operation_do(op, wnd);
-
-    return TRUE;
+    wintc_sh_fs_operation_do(op, NULL); // wnd
 }
 
-static gboolean shopr_paste(
-    WinTCIShextView*     view,
-    WINTC_UNUSED(WinTCShextOperation* operation),
-    GtkWindow*           wnd,
-    GError**             error
+void action_paste(
+    WINTC_UNUSED(GSimpleAction* action),
+    WINTC_UNUSED(GVariant* parameter),
+    gpointer user_data
 )
 {
-    WinTCShViewTrash* view_trash = WINTC_SH_VIEW_TRASH(view);
+    WinTCShViewActions* ctx        = (WinTCShViewActions*) user_data;
+    WinTCShViewTrash*   view_trash = WINTC_SH_VIEW_TRASH(ctx->view);
 
-    return wintc_sh_fs_clipboard_paste(
-        view_trash->fs_clipboard,
-        "trash:///",
-        wnd,
-        error
-    );
+    GError* error = NULL;
+
+    if (
+        !wintc_sh_fs_clipboard_paste(
+            view_trash->fs_clipboard,
+            "trash:///",
+            NULL, // wnd
+            &error
+        )
+    )
+    {
+        wintc_display_error_and_clear(&error, NULL); // wnd
+    }
 }
 
-static gboolean shopr_restore(
-    WINTC_UNUSED(WinTCIShextView* view),
-    WinTCShextOperation* operation,
-    WINTC_UNUSED(GtkWindow* wnd),
-    GError**             error
+void action_restore(
+    WINTC_UNUSED(GSimpleAction* action),
+    WINTC_UNUSED(GVariant* parameter),
+    gpointer user_data
 )
 {
+    WinTCShViewActions* ctx        = (WinTCShViewActions*) user_data;
+    WinTCShViewTrash*   view_trash = WINTC_SH_VIEW_TRASH(ctx->view);
+
     //
     // FIXME: FSOP cannot do a restore, since each src->dest is different so
     //        we're just doing a simple set of moves here, single threaded
     //
-    GList*   entries = (GList*) operation->priv;
+    GError*  error   = NULL;
+    GList*   list_targets;
     gboolean success = TRUE;
 
-    for (GList* iter = entries; iter; iter = iter->next)
+    list_targets =
+        wintc_sh_view_trash_convert_list_hashes(
+            view_trash,
+            g_hash_table_lookup(
+                view_trash->map_actions_to_targets,
+                ctx->action_group
+            )
+        );
+
+    for (GList* iter = list_targets; iter; iter = iter->next)
     {
         const gchar* uri = (gchar*) iter->data;
 
@@ -1011,7 +1110,7 @@ static gboolean shopr_restore(
                 NULL,
                 NULL,
                 NULL,
-                error
+                &error
             );
 
         g_object_unref(dest);
@@ -1020,13 +1119,12 @@ static gboolean shopr_restore(
 
         if (!success)
         {
+            wintc_display_error_and_clear(&error, NULL);
             break;
         }
     }
 
-    g_clear_list(&entries, (GDestroyNotify) g_free);
-
-    return success;
+    g_list_foreach(list_targets, (GFunc) wintc_free_cb, NULL);
 }
 
 static void on_file_monitor_changed(
@@ -1132,7 +1230,7 @@ static void on_fs_operation_done(
     gpointer            user_data
 )
 {
-    g_list_free_full((GList*) user_data, g_free);
+    g_list_foreach((GList*) user_data, (GFunc) wintc_free_cb, NULL);
     g_object_unref(self);
 }
 
@@ -1142,6 +1240,5 @@ static void on_fs_operation_done_with_sound(
 )
 {
     wintc_sh_play_sound(WINTC_SHELL_SND_EMPTYBIN);
-
     on_fs_operation_done(self, user_data);
 }
