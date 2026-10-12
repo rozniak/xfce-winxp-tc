@@ -1,5 +1,6 @@
 #include <glib.h>
 #include <wintc/comgtk.h>
+#include <wintc/shell.h>
 #include <wintc/shellext.h>
 #include <wintc/shlang.h>
 #include <string.h>
@@ -74,17 +75,23 @@ static gboolean wintc_view_zip_drop_test(
     guint               item_hash,
     const gchar* const* uris
 );
-static GMenuModel* wintc_view_zip_get_operations_for_item(
-    WinTCIShextView* view,
-    guint            item_hash
-);
-static GMenuModel* wintc_view_zip_get_operations_for_view(
+static GActionGroup* wintc_view_zip_get_actions(
     WinTCIShextView* view
 );
 static const gchar* wintc_view_zip_get_display_name(
     WinTCIShextView* view
 );
 static const gchar* wintc_view_zip_get_icon_name(
+    WinTCIShextView* view
+);
+static GList* wintc_view_zip_get_items(
+    WinTCIShextView* view
+);
+static GMenuModel* wintc_view_zip_get_operations_for_item(
+    WinTCIShextView* view,
+    guint            item_hash
+);
+static GMenuModel* wintc_view_zip_get_operations_for_view(
     WinTCIShextView* view
 );
 static void wintc_view_zip_get_parent_path(
@@ -108,6 +115,11 @@ static gboolean wintc_view_zip_has_parent(
 static void wintc_view_zip_refresh_items(
     WinTCIShextView* view
 );
+static void wintc_view_zip_update_actions(
+    WinTCIShextView* view,
+    GActionGroup*    actions,
+    GList*           items
+);
 
 static WinTCShextViewItem* wintc_view_zip_get_view_item(
     WinTCViewZip* view_zip,
@@ -128,6 +140,25 @@ static void clear_view_item(
     WinTCShextViewItem* item
 );
 
+static void action_no_op(
+    GSimpleAction* action,
+    GVariant*      parameter,
+    gpointer       user_data
+);
+
+//
+// STATIC DATA
+//
+static GActionEntry S_ZIP_ACTIONS[] = {
+    {
+        .name           = "no-op",
+        .activate       = action_no_op,
+        .parameter_type = NULL,
+        .state          = NULL,
+        .change_state   = NULL
+    }
+};
+
 //
 // GLIB OOP/CLASS INSTANCE DEFINITIONS
 //
@@ -147,6 +178,10 @@ struct _WinTCViewZip
     gchar*  zip_uri;
 
     GHashTable* map_items;
+
+    // View state
+    //
+    GHashTable* map_actions_to_targets;
 };
 
 //
@@ -160,6 +195,12 @@ G_DEFINE_TYPE_WITH_CODE(
         WINTC_TYPE_ISHEXT_VIEW,
         wintc_view_zip_ishext_view_interface_init
     )
+)
+
+WINTC_SH_DEFINE_CB_VW_ACTIONS_CLEANUP(
+    WinTCViewZip,
+    view_zip,
+    map_actions_to_targets
 )
 
 static void wintc_view_zip_class_init(
@@ -203,8 +244,11 @@ static void wintc_view_zip_class_init(
 }
 
 static void wintc_view_zip_init(
-    WINTC_UNUSED(WinTCViewZip* self)
-) {}
+    WinTCViewZip* self
+)
+{
+    WINTC_SH_INIT_VW_ACTIONS(self, map_actions_to_targets);
+}
 
 static void wintc_view_zip_ishext_view_interface_init(
     WinTCIShextViewInterface* iface
@@ -216,16 +260,19 @@ static void wintc_view_zip_ishext_view_interface_init(
     iface->drag_test               = wintc_view_zip_drag_test;
     iface->drop_execute            = wintc_view_zip_drop_execute;
     iface->drop_test               = wintc_view_zip_drop_test;
-    iface->get_operations_for_item = wintc_view_zip_get_operations_for_item;
-    iface->get_operations_for_view = wintc_view_zip_get_operations_for_view;
+    iface->get_actions             = wintc_view_zip_get_actions;
     iface->get_display_name        = wintc_view_zip_get_display_name;
     iface->get_icon_name           = wintc_view_zip_get_icon_name;
+    iface->get_items               = wintc_view_zip_get_items;
+    iface->get_operations_for_item = wintc_view_zip_get_operations_for_item;
+    iface->get_operations_for_view = wintc_view_zip_get_operations_for_view;
     iface->get_parent_path         = wintc_view_zip_get_parent_path;
     iface->get_path                = wintc_view_zip_get_path;
     iface->get_suggested_actions   = wintc_view_zip_get_suggested_actions;
     iface->get_unique_hash         = wintc_view_zip_get_unique_hash;
     iface->has_parent              = wintc_view_zip_has_parent;
     iface->refresh_items           = wintc_view_zip_refresh_items;
+    iface->update_actions          = wintc_view_zip_update_actions;
 }
 
 //
@@ -240,6 +287,10 @@ static void wintc_view_zip_finalize(
     g_free(view_zip->parent_path);
     g_free(view_zip->rel_path);
     g_free(view_zip->zip_uri);
+
+    g_hash_table_destroy(
+        g_steal_pointer(&(view_zip->map_actions_to_targets))
+    );
 
     if (view_zip->map_items)
     {
@@ -411,21 +462,22 @@ static gboolean wintc_view_zip_drop_test(
     return FALSE;
 }
 
-static GMenuModel* wintc_view_zip_get_operations_for_item(
-    WINTC_UNUSED(WinTCIShextView* view),
-    WINTC_UNUSED(guint            item_hash)
+static GActionGroup* wintc_view_zip_get_actions(
+    WinTCIShextView* view
 )
 {
-    g_warning("%s Not Implemented", __func__);
-    return NULL;
-}
+    WinTCViewZip* view_zip = WINTC_VIEW_ZIP(view);
 
-static GMenuModel* wintc_view_zip_get_operations_for_view(
-    WINTC_UNUSED(WinTCIShextView* view)
-)
-{
-    g_warning("%s Not Implemented", __func__);
-    return NULL;
+    GSimpleActionGroup* actions = g_simple_action_group_new();
+
+    WINTC_SH_CREATE_VW_ACTIONS_GROUP(
+        view_zip,
+        map_actions_to_targets,
+        actions,
+        S_ZIP_ACTIONS
+    );
+
+    return G_ACTION_GROUP(actions);
 }
 
 static const gchar* wintc_view_zip_get_display_name(
@@ -478,6 +530,38 @@ static const gchar* wintc_view_zip_get_icon_name(
 )
 {
     return "application-zip";
+}
+
+static GList* wintc_view_zip_get_items(
+    WinTCIShextView* view
+)
+{
+    WinTCViewZip* view_zip = WINTC_VIEW_ZIP(view);
+
+    if (view_zip->map_items)
+    {
+        return g_hash_table_get_values(view_zip->map_items);
+    }
+
+    wintc_view_zip_refresh_items(view);
+    return NULL;
+}
+
+static GMenuModel* wintc_view_zip_get_operations_for_item(
+    WINTC_UNUSED(WinTCIShextView* view),
+    WINTC_UNUSED(guint            item_hash)
+)
+{
+    g_warning("%s Not Implemented", __func__);
+    return NULL;
+}
+
+static GMenuModel* wintc_view_zip_get_operations_for_view(
+    WINTC_UNUSED(WinTCIShextView* view)
+)
+{
+    g_warning("%s Not Implemented", __func__);
+    return NULL;
 }
 
 static void wintc_view_zip_get_parent_path(
@@ -702,6 +786,22 @@ static void wintc_view_zip_refresh_items(
     g_list_free(items);
 }
 
+static void wintc_view_zip_update_actions(
+    WinTCIShextView* view,
+    GActionGroup*    actions,
+    GList*           items
+)
+{
+    WinTCViewZip* view_zip = WINTC_VIEW_ZIP(view);
+
+    WINTC_SH_UPDATE_VW_ACTIONS_GROUP(
+        view_zip,
+        map_actions_to_targets,
+        actions,
+        items
+    );
+}
+
 //
 // PUBLIC FUNCTIONS
 //
@@ -813,4 +913,13 @@ static void clear_view_item(
     //
     g_free(item->priv);
     g_free(item);
+}
+
+static void action_no_op(
+    WINTC_UNUSED(GSimpleAction* action),
+    WINTC_UNUSED(GVariant* parameter),
+    WINTC_UNUSED(gpointer user_data)
+)
+{
+    g_critical("%s", "vwzip: no op action called");
 }
