@@ -16,33 +16,15 @@ enum
 };
 
 //
-// STATIC DATA
-//
-
-// FIXME: Temp
-//
-static GHashTable* s_printers_map = NULL;
-
-// FIXME: Temporary, until we display printers
-//
-static WinTCShextViewItem s_temp_items[] = {
-    {
-        "FPO",
-        "printer",
-        TRUE,
-        0,
-        WINTC_SHEXT_VIEW_ITEM_DEFAULT,
-        NULL
-    }
-};
-
-//
 // FORWARD DECLARATIONS
 //
 static void wintc_cpl_view_printers_ishext_view_interface_init(
     WinTCIShextViewInterface* iface
 );
 
+static void wintc_cpl_view_printers_finalize(
+    GObject* object
+);
 static void wintc_cpl_view_printers_get_property(
     GObject*    object,
     guint       prop_id,
@@ -84,10 +66,16 @@ static gboolean wintc_cpl_view_printers_drop_test(
     guint               item_hash,
     const gchar* const* uris
 );
+static GActionGroup* wintc_cpl_view_printers_get_actions(
+    WinTCIShextView* view
+);
 static const gchar* wintc_cpl_view_printers_get_display_name(
     WinTCIShextView* view
 );
 static const gchar* wintc_cpl_view_printers_get_icon_name(
+    WinTCIShextView* view
+);
+static GList* wintc_cpl_view_printers_get_items(
     WinTCIShextView* view
 );
 static GMenuModel* wintc_cpl_view_printers_get_operations_for_item(
@@ -118,6 +106,49 @@ static gboolean wintc_cpl_view_printers_has_parent(
 static void wintc_cpl_view_printers_refresh_items(
     WinTCIShextView* view
 );
+static void wintc_cpl_view_printers_update_actions(
+    WinTCIShextView* view,
+    GActionGroup*    actions,
+    GList*           items
+);
+
+void action_no_op(
+    GSimpleAction* action,
+    GVariant*      parameter,
+    gpointer       user_data
+);
+
+//
+// STATIC DATA
+//
+static GActionEntry S_PRINTERS_ACTIONS[] =
+{
+    {
+        .name           = "no-op",
+        .activate       = action_no_op,
+        .parameter_type = NULL,
+        .state          = NULL,
+        .change_state   = NULL
+    }
+};
+
+// FIXME: Temp
+//
+static GHashTable* S_MAP_PRINTERS = NULL;
+
+// FIXME: Temporary, until we display printers
+//
+static WinTCShextViewItem S_TEMP_ITEMS[] = {
+    {
+        "FPO",
+        "printer",
+        TRUE,
+        0,
+        WINTC_SHEXT_VIEW_ITEM_DEFAULT,
+        NULL
+    }
+};
+
 
 //
 // GLIB OOP/CLASS INSTANCE DEFINITIONS
@@ -130,6 +161,10 @@ struct _WinTCCplViewPrintersClass
 struct _WinTCCplViewPrinters
 {
     GObject __parent__;
+
+    // State
+    //
+    GHashTable* map_actions_to_targets;
 };
 
 //
@@ -145,29 +180,36 @@ G_DEFINE_TYPE_WITH_CODE(
     )
 )
 
+WINTC_SH_DEFINE_CB_VW_ACTIONS_CLEANUP(
+    WinTCCplViewPrinters,
+    view_printers,
+    map_actions_to_targets
+)
+
 static void wintc_cpl_view_printers_class_init(
     WinTCCplViewPrintersClass* klass
 )
 {
     gchar* temp = g_strdup_printf("printers%d", g_random_int());
 
-    s_temp_items[0].hash = g_str_hash(temp);
+    S_TEMP_ITEMS[0].hash = g_str_hash(temp);
 
     g_free(temp);
 
-    s_printers_map =
+    S_MAP_PRINTERS =
         g_hash_table_new(g_direct_hash, g_direct_equal);
 
     g_hash_table_insert(
-        s_printers_map,
-        GUINT_TO_POINTER(s_temp_items[0].hash),
-        &(s_temp_items[0])
+        S_MAP_PRINTERS,
+        GUINT_TO_POINTER(S_TEMP_ITEMS[0].hash),
+        &(S_TEMP_ITEMS[0])
     );
 
     // GObject initialisation
     //
     GObjectClass* object_class = G_OBJECT_CLASS(klass);
 
+    object_class->finalize     = wintc_cpl_view_printers_finalize;
     object_class->get_property = wintc_cpl_view_printers_get_property;
 
     g_object_class_override_property(
@@ -178,8 +220,11 @@ static void wintc_cpl_view_printers_class_init(
 }
 
 static void wintc_cpl_view_printers_init(
-    WINTC_UNUSED(WinTCCplViewPrinters* self)
-) {}
+    WinTCCplViewPrinters* self
+)
+{
+    WINTC_SH_INIT_VW_ACTIONS(self, map_actions_to_targets);
+}
 
 static void wintc_cpl_view_printers_ishext_view_interface_init(
     WinTCIShextViewInterface* iface
@@ -191,8 +236,10 @@ static void wintc_cpl_view_printers_ishext_view_interface_init(
     iface->drag_test               = wintc_cpl_view_printers_drag_test;
     iface->drop_execute            = wintc_cpl_view_printers_drop_execute;
     iface->drop_test               = wintc_cpl_view_printers_drop_test;
+    iface->get_actions             = wintc_cpl_view_printers_get_actions;
     iface->get_display_name        = wintc_cpl_view_printers_get_display_name;
     iface->get_icon_name           = wintc_cpl_view_printers_get_icon_name;
+    iface->get_items               = wintc_cpl_view_printers_get_items;
     iface->get_operations_for_item =
         wintc_cpl_view_printers_get_operations_for_item;
     iface->get_operations_for_view =
@@ -204,11 +251,26 @@ static void wintc_cpl_view_printers_ishext_view_interface_init(
     iface->get_unique_hash         = wintc_cpl_view_printers_get_unique_hash;
     iface->has_parent              = wintc_cpl_view_printers_has_parent;
     iface->refresh_items           = wintc_cpl_view_printers_refresh_items;
+    iface->update_actions          = wintc_cpl_view_printers_update_actions;
 }
 
 //
 // CLASS VIRTUAL METHODS
 //
+static void wintc_cpl_view_printers_finalize(
+    GObject* object
+)
+{
+    WinTCCplViewPrinters* view_printers = WINTC_CPL_VIEW_PRINTERS(object);
+
+    g_hash_table_destroy(
+        g_steal_pointer(&(view_printers->map_actions_to_targets))
+    );
+
+    (G_OBJECT_CLASS(wintc_cpl_view_printers_parent_class))
+        ->finalize(object);
+}
+
 static void wintc_cpl_view_printers_get_property(
     GObject*    object,
     guint       prop_id,
@@ -303,21 +365,22 @@ static gboolean wintc_cpl_view_printers_drop_test(
     return FALSE;
 }
 
-static GMenuModel* wintc_cpl_view_printers_get_operations_for_item(
-    WINTC_UNUSED(WinTCIShextView* view),
-    WINTC_UNUSED(guint            item_hash)
+static GActionGroup* wintc_cpl_view_printers_get_actions(
+    WinTCIShextView* view
 )
 {
-    g_warning("%s Not Implemented", __func__);
-    return NULL;
-}
+    WinTCCplViewPrinters* view_printers = WINTC_CPL_VIEW_PRINTERS(view);
 
-static GMenuModel* wintc_cpl_view_printers_get_operations_for_view(
-    WINTC_UNUSED(WinTCIShextView* view)
-)
-{
-    g_warning("%s Not Implemented", __func__);
-    return NULL;
+    GSimpleActionGroup* actions = g_simple_action_group_new();
+
+    WINTC_SH_CREATE_VW_ACTIONS_GROUP(
+        view_printers,
+        map_actions_to_targets,
+        actions,
+        S_PRINTERS_ACTIONS
+    );
+
+    return G_ACTION_GROUP(actions);
 }
 
 static const gchar* wintc_cpl_view_printers_get_display_name(
@@ -334,6 +397,30 @@ static const gchar* wintc_cpl_view_printers_get_icon_name(
 )
 {
     return "uk.co.oddmatics.wintc.cpl-printers";
+}
+
+static GList* wintc_cpl_view_printers_get_items(
+    WINTC_UNUSED(WinTCIShextView* view)
+)
+{
+    return g_hash_table_get_values(S_MAP_PRINTERS);
+}
+
+static GMenuModel* wintc_cpl_view_printers_get_operations_for_item(
+    WINTC_UNUSED(WinTCIShextView* view),
+    WINTC_UNUSED(guint            item_hash)
+)
+{
+    g_warning("%s Not Implemented", __func__);
+    return NULL;
+}
+
+static GMenuModel* wintc_cpl_view_printers_get_operations_for_view(
+    WINTC_UNUSED(WinTCIShextView* view)
+)
+{
+    g_warning("%s Not Implemented", __func__);
+    return NULL;
 }
 
 static void wintc_cpl_view_printers_get_parent_path(
@@ -424,7 +511,7 @@ static void wintc_cpl_view_printers_refresh_items(
     //
     WinTCShextViewItemsUpdate update = { 0 };
 
-    GList* items = g_hash_table_get_values(s_printers_map);
+    GList* items = g_hash_table_get_values(S_MAP_PRINTERS);
 
     update.data = items;
     update.done = TRUE;
@@ -432,6 +519,22 @@ static void wintc_cpl_view_printers_refresh_items(
     _wintc_ishext_view_items_added(view, &update);
 
     g_list_free(items);
+}
+
+static void wintc_cpl_view_printers_update_actions(
+    WinTCIShextView* view,
+    GActionGroup*    actions,
+    GList*           items
+)
+{
+    WinTCCplViewPrinters* view_printers = WINTC_CPL_VIEW_PRINTERS(view);
+
+    WINTC_SH_UPDATE_VW_ACTIONS_GROUP(
+        view_printers,
+        map_actions_to_targets,
+        actions,
+        items
+    );
 }
 
 //
@@ -445,4 +548,16 @@ WinTCIShextView* wintc_cpl_view_printers_new(void)
             NULL
         )
     );
+}
+
+//
+// CALLBACKS
+//
+void action_no_op(
+    WINTC_UNUSED(GSimpleAction* action),
+    WINTC_UNUSED(GVariant* parameter),
+    WINTC_UNUSED(gpointer user_data)
+)
+{
+    g_critical("%s", "vwprntrs: no op action called");
 }
