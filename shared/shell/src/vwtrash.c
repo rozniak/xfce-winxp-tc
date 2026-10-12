@@ -15,7 +15,10 @@
 //
 enum
 {
-    PROP_ICON_NAME = 1
+    PROP_CAN_EMPTY = 1,
+    N_PROPERTIES,
+
+    PROP_ICON_NAME
 };
 
 enum
@@ -196,6 +199,8 @@ static void on_fs_operation_done_with_sound(
 //
 // STATIC DATA
 //
+static GParamSpec* wintc_sh_view_trash_properties[N_PROPERTIES] = { 0 };
+
 static GActionEntry S_TRASH_ACTIONS[] = {
     {
         .name           = "cut",
@@ -284,6 +289,21 @@ static void wintc_sh_view_trash_class_init(
         object_class,
         PROP_ICON_NAME,
         "icon-name"
+    );
+
+    wintc_sh_view_trash_properties[PROP_CAN_EMPTY] =
+        g_param_spec_boolean(
+            "can-empty",
+            "CanEmpty",
+            "Determines whether the Recycle Bin can be emptied.",
+            FALSE,
+            G_PARAM_READABLE
+        );
+
+    g_object_class_install_properties(
+        object_class,
+        N_PROPERTIES,
+        wintc_sh_view_trash_properties
     );
 }
 
@@ -390,14 +410,24 @@ static void wintc_sh_view_trash_get_property(
     GParamSpec* pspec
 )
 {
-    WinTCIShextView* view = WINTC_ISHEXT_VIEW(object);
+    WinTCShViewTrash* view_trash = WINTC_SH_VIEW_TRASH(object);
 
     switch (prop_id)
     {
         case PROP_ICON_NAME:
             g_value_set_string(
                 value,
-                wintc_ishext_view_get_icon_name(view)
+                wintc_sh_view_trash_get_icon_name(
+                    WINTC_ISHEXT_VIEW(view_trash)
+                )
+            );
+            break;
+
+        case PROP_CAN_EMPTY:
+            g_value_set_boolean(
+                value,
+                view_trash->map_entries &&
+                g_hash_table_size(view_trash->map_entries)
             );
             break;
 
@@ -544,7 +574,21 @@ static GActionGroup* wintc_sh_view_trash_get_actions(
         S_TRASH_ACTIONS
     );
 
-    // FIXME: bind 'trash' state to bin empty
+    // Bind 'empty' action
+    //
+    GAction* action_empty =
+        g_action_map_lookup_action(
+            G_ACTION_MAP(actions),
+            "empty"
+        );
+
+    g_object_bind_property(
+        G_OBJECT(view_trash),
+        "can-empty",
+        G_OBJECT(action_empty),
+        "enabled",
+        G_BINDING_SYNC_CREATE
+    );
 
     return G_ACTION_GROUP(actions);
 }
@@ -795,6 +839,11 @@ static void wintc_sh_view_trash_refresh_items(
     _wintc_ishext_view_items_added(view, &update);
 
     g_list_free(items);
+
+    g_object_notify_by_pspec(
+        G_OBJECT(view_trash),
+        wintc_sh_view_trash_properties[PROP_CAN_EMPTY]
+    );
 }
 
 static WinTCShextOperation* wintc_sh_view_trash_spawn_operation(
@@ -1193,19 +1242,26 @@ static void on_file_monitor_changed(
             break;
 
         case G_FILE_MONITOR_EVENT_DELETED:
+        {
+            guint item_hash =
+                wintc_sh_view_trash_get_unique_item_hash(
+                    view_trash,
+                    name
+                );
+
             WINTC_LOG_DEBUG("shell: trash monitor - %s deleted", name);
+
+            g_hash_table_remove(
+                view_trash->map_entries,
+                GUINT_TO_POINTER(item_hash)
+            );
 
             // Issue update
             //
             data =
                 g_list_prepend(
                     data,
-                    GUINT_TO_POINTER(
-                        wintc_sh_view_trash_get_unique_item_hash(
-                            view_trash,
-                            name
-                        )
-                    )
+                    GUINT_TO_POINTER(item_hash)
                 );
 
             update.data = data;
@@ -1217,12 +1273,18 @@ static void on_file_monitor_changed(
             );
 
             break;
+        }
 
         default: break;
     }
 
     g_list_free(data);
     g_free(name);
+
+    g_object_notify_by_pspec(
+        G_OBJECT(view_trash),
+        wintc_sh_view_trash_properties[PROP_CAN_EMPTY]
+    );
 }
 
 static void on_fs_operation_done(
