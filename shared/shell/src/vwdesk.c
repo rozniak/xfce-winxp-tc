@@ -147,12 +147,6 @@ static void wintc_sh_view_desktop_real_refresh_items(
     WinTCShViewDesktop* view_desk
 );
 
-static void action_notimpl(
-    GSimpleAction* action,
-    GVariant*      parameter,
-    gpointer       user_data
-);
-
 static void action_properties(
     GSimpleAction* action,
     GVariant*      parameter,
@@ -219,14 +213,6 @@ static WinTCShextViewItem S_DESKTOP_ITEMS[] = {
 };
 
 static GActionEntry S_DESKTOP_ACTIONS[] = {
-    {
-        .name           = "notimpl",
-        .activate       = action_notimpl,
-        .parameter_type = NULL,
-        .state          = NULL,
-        .change_state   = NULL
-    },
-
     {
         .name           = "properties",
         .activate       = action_properties,
@@ -716,7 +702,11 @@ static GActionGroup* wintc_sh_view_desktop_get_actions(
 {
     WinTCShViewDesktop* view_desk = WINTC_SH_VIEW_DESKTOP(view);
 
-    GSimpleActionGroup* actions = g_simple_action_group_new();
+    // Start with the FS view actions
+    GSimpleActionGroup* actions =
+        G_SIMPLE_ACTION_GROUP(
+            wintc_ishext_view_get_actions(view_desk->view_user_desktop)
+        );
 
     WINTC_SH_CREATE_VW_ACTIONS_GROUP(
         view_desk,
@@ -999,22 +989,20 @@ static void wintc_sh_view_desktop_update_actions(
 {
     WinTCShViewDesktop* view_desk = WINTC_SH_VIEW_DESKTOP(view);
 
+    // We give the backing view a copy of the list for it to take ownership
+    // of
+    //
+    wintc_ishext_view_update_actions(
+        view_desk->view_user_desktop,
+        actions,
+        g_list_copy(items)
+    );
+
     WINTC_SH_UPDATE_VW_ACTIONS_GROUP(
         view_desk,
         map_actions_to_targets,
         actions,
         items
-    );
-
-    // For testing purposes - disable op depending on if there's any selected
-    // items
-    //
-    GAction* action =
-        g_action_map_lookup_action(G_ACTION_MAP(actions), "notimpl");
-
-    g_simple_action_set_enabled(
-        G_SIMPLE_ACTION(action),
-        !items
     );
 }
 
@@ -1157,21 +1145,6 @@ static void wintc_sh_view_desktop_real_refresh_items(
 //
 // CALLBACKS
 //
-static void action_notimpl(
-    WINTC_UNUSED(GSimpleAction* action),
-    WINTC_UNUSED(GVariant*      parameter),
-    WINTC_UNUSED(gpointer       user_data)
-)
-{
-    wintc_messagebox_show(
-        NULL,
-        "Hooray! Not implemented!",
-        "Win",
-        WINTC_BUTTONS_OK,
-        WINTC_MESSAGE_INFORMATION
-    );
-}
-
 static void action_properties(
     WINTC_UNUSED(GSimpleAction* action),
     WINTC_UNUSED(GVariant*      parameter),

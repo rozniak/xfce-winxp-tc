@@ -3,7 +3,7 @@
   <menu id="menu">
     <section>
       <item>
-        <attribute name="action">control.notimpl</attribute>
+        <attribute name="action">control.paste</attribute>
         <attribute name="label">Paste</attribute>
       </item>
       <item>
