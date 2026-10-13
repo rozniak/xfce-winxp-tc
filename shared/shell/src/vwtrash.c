@@ -79,7 +79,8 @@ static gboolean wintc_sh_view_trash_drop_test(
     const gchar* const* uris
 );
 static GActionGroup* wintc_sh_view_trash_get_actions(
-    WinTCIShextView* view
+    WinTCIShextView* view,
+    GtkWindow*       wnd
 );
 static const gchar* wintc_sh_view_trash_get_display_name(
     WinTCIShextView* view
@@ -544,7 +545,8 @@ static gboolean wintc_sh_view_trash_drop_test(
 }
 
 static GActionGroup* wintc_sh_view_trash_get_actions(
-    WinTCIShextView* view
+    WinTCIShextView* view,
+    GtkWindow*       wnd
 )
 {
     WinTCShViewTrash* view_trash = WINTC_SH_VIEW_TRASH(view);
@@ -555,7 +557,8 @@ static GActionGroup* wintc_sh_view_trash_get_actions(
         view_trash,
         map_actions_to_targets,
         actions,
-        S_TRASH_ACTIONS
+        S_TRASH_ACTIONS,
+        wnd
     );
 
     // Bind 'empty' action
@@ -986,7 +989,7 @@ void action_cut(
         )
     )
     {
-        wintc_display_error_and_clear(&error, NULL); // wnd
+        wintc_display_error_and_clear(&error, ctx->wnd);
     }
 }
 
@@ -1025,7 +1028,7 @@ void action_delete(
         list_targets
     );
 
-    wintc_sh_fs_operation_do(op, NULL); // wnd
+    wintc_sh_fs_operation_do(op, ctx->wnd);
 }
 
 void action_empty(
@@ -1063,7 +1066,7 @@ void action_empty(
         list_targets
     );
 
-    wintc_sh_fs_operation_do(op, NULL); // wnd
+    wintc_sh_fs_operation_do(op, ctx->wnd);
 }
 
 void action_paste(
@@ -1081,12 +1084,12 @@ void action_paste(
         !wintc_sh_fs_clipboard_paste(
             view_trash->fs_clipboard,
             "trash:///",
-            NULL, // wnd
+            ctx->wnd,
             &error
         )
     )
     {
-        wintc_display_error_and_clear(&error, NULL); // wnd
+        wintc_display_error_and_clear(&error, ctx->wnd);
     }
 }
 

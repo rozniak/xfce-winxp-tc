@@ -79,7 +79,8 @@ static gboolean wintc_sh_view_drives_drop_test(
     const gchar* const* uris
 );
 static GActionGroup* wintc_sh_view_drives_get_actions(
-    WinTCIShextView* view
+    WinTCIShextView* view,
+    GtkWindow*       wnd
 );
 static const gchar* wintc_sh_view_drives_get_display_name(
     WinTCIShextView* view
@@ -482,7 +483,8 @@ static gboolean wintc_sh_view_drives_drop_test(
 }
 
 static GActionGroup* wintc_sh_view_drives_get_actions(
-    WinTCIShextView* view
+    WinTCIShextView* view,
+    GtkWindow*       wnd
 )
 {
     WinTCShViewDrives* view_drives = WINTC_SH_VIEW_DRIVES(view);
@@ -493,7 +495,8 @@ static GActionGroup* wintc_sh_view_drives_get_actions(
         view_drives,
         map_actions_to_targets,
         actions,
-        S_DRIVES_ACTIONS
+        S_DRIVES_ACTIONS,
+        wnd
     );
 
     return G_ACTION_GROUP(actions);

@@ -81,7 +81,8 @@ static gboolean wintc_sh_view_desktop_drop_test(
     const gchar* const* uris
 );
 static GActionGroup* wintc_sh_view_desktop_get_actions(
-    WinTCIShextView* view
+    WinTCIShextView* view,
+    GtkWindow*       wnd
 );
 static const gchar* wintc_sh_view_desktop_get_display_name(
     WinTCIShextView* view
@@ -696,7 +697,8 @@ static gboolean wintc_sh_view_desktop_drop_test(
 }
 
 static GActionGroup* wintc_sh_view_desktop_get_actions(
-    WinTCIShextView* view
+    WinTCIShextView* view,
+    GtkWindow*       wnd
 )
 {
     WinTCShViewDesktop* view_desk = WINTC_SH_VIEW_DESKTOP(view);
@@ -704,14 +706,18 @@ static GActionGroup* wintc_sh_view_desktop_get_actions(
     // Start with the FS view actions
     GSimpleActionGroup* actions =
         G_SIMPLE_ACTION_GROUP(
-            wintc_ishext_view_get_actions(view_desk->view_user_desktop)
+            wintc_ishext_view_get_actions(
+                view_desk->view_user_desktop,
+                wnd
+            )
         );
 
     WINTC_SH_CREATE_VW_ACTIONS_GROUP(
         view_desk,
         map_actions_to_targets,
         actions,
-        S_DESKTOP_ACTIONS
+        S_DESKTOP_ACTIONS,
+        wnd
     );
 
     return G_ACTION_GROUP(actions);

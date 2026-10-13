@@ -12,6 +12,7 @@ typedef struct _WinTCShViewActions
 {
     WinTCIShextView* view;
     GActionGroup*    action_group;
+    GtkWindow*       wnd;
 } WinTCShViewActions;
 
 //
@@ -35,10 +36,11 @@ typedef struct _WinTCShViewActions
             (GDestroyNotify) g_list_free \
         );
 
-#define WINTC_SH_CREATE_VW_ACTIONS_GROUP(vw, map, actions, entries) \
+#define WINTC_SH_CREATE_VW_ACTIONS_GROUP(vw, map, actions, entries, wnd) \
     WinTCShViewActions* ctx = g_new(WinTCShViewActions, 1); \
     ctx->view = WINTC_ISHEXT_VIEW(vw); \
     ctx->action_group = G_ACTION_GROUP(actions); \
+    ctx->wnd          = wnd; \
     g_action_map_add_action_entries( \
         G_ACTION_MAP(actions), \
         entries, \

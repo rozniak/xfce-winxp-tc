@@ -67,7 +67,8 @@ static gboolean wintc_cpl_view_printers_drop_test(
     const gchar* const* uris
 );
 static GActionGroup* wintc_cpl_view_printers_get_actions(
-    WinTCIShextView* view
+    WinTCIShextView* view,
+    GtkWindow*       wnd
 );
 static const gchar* wintc_cpl_view_printers_get_display_name(
     WinTCIShextView* view
@@ -364,7 +365,8 @@ static gboolean wintc_cpl_view_printers_drop_test(
 }
 
 static GActionGroup* wintc_cpl_view_printers_get_actions(
-    WinTCIShextView* view
+    WinTCIShextView* view,
+    GtkWindow*       wnd
 )
 {
     WinTCCplViewPrinters* view_printers = WINTC_CPL_VIEW_PRINTERS(view);
@@ -375,7 +377,8 @@ static GActionGroup* wintc_cpl_view_printers_get_actions(
         view_printers,
         map_actions_to_targets,
         actions,
-        S_PRINTERS_ACTIONS
+        S_PRINTERS_ACTIONS,
+        wnd
     );
 
     return G_ACTION_GROUP(actions);

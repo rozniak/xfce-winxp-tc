@@ -178,13 +178,14 @@ gboolean wintc_ishext_view_drop_test(
 }
 
 GActionGroup* wintc_ishext_view_get_actions(
-    WinTCIShextView* view
+    WinTCIShextView* view,
+    GtkWindow*       wnd
 )
 {
     WinTCIShextViewInterface* iface =
         WINTC_ISHEXT_VIEW_GET_IFACE(view);
 
-    return iface->get_actions(view);
+    return iface->get_actions(view, wnd);
 }
 
 const gchar* wintc_ishext_view_get_display_name(

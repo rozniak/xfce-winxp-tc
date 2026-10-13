@@ -701,7 +701,10 @@ static void wintc_sh_list_view_behaviour_update_view(
     // Connect actions
     //
     behaviour->actions =
-        wintc_ishext_view_get_actions(behaviour->current_view);
+        wintc_ishext_view_get_actions(
+            behaviour->current_view,
+            wintc_widget_get_toplevel_window(behaviour->list_view)
+        );
 
     gtk_widget_insert_action_group(
         behaviour->list_view,

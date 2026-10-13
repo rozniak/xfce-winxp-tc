@@ -88,7 +88,8 @@ static gboolean wintc_sh_view_fs_drop_test(
     const gchar* const* uris
 );
 static GActionGroup* wintc_sh_view_fs_get_actions(
-    WinTCIShextView* view
+    WinTCIShextView* view,
+    GtkWindow*       wnd
 );
 static const gchar* wintc_sh_view_fs_get_display_name(
     WinTCIShextView* view
@@ -834,7 +835,8 @@ static gboolean wintc_sh_view_fs_drop_test(
 }
 
 static GActionGroup* wintc_sh_view_fs_get_actions(
-    WinTCIShextView* view
+    WinTCIShextView* view,
+    GtkWindow*       wnd
 )
 {
     WinTCShViewFS* view_fs = WINTC_SH_VIEW_FS(view);
@@ -845,7 +847,8 @@ static GActionGroup* wintc_sh_view_fs_get_actions(
         view_fs,
         map_actions_to_targets,
         actions,
-        S_FS_ACTIONS
+        S_FS_ACTIONS,
+        wnd
     );
 
     // Bind paste to clipboard
@@ -1588,7 +1591,7 @@ static void action_delete(
         list_targets
     );
 
-    wintc_sh_fs_operation_do(op, NULL); // wnd
+    wintc_sh_fs_operation_do(op, ctx->wnd);
 }
 
 static void action_new(
@@ -1611,7 +1614,7 @@ static void action_new(
         )
     )
     {
-        wintc_display_error_and_clear(&error, NULL); // wnd
+        wintc_display_error_and_clear(&error, ctx->wnd);
     }
 }
 
@@ -1724,12 +1727,12 @@ static void action_paste(
         !wintc_sh_fs_clipboard_paste(
             view_fs->fs_clipboard,
             view_fs->path,
-            NULL, // wnd
+            ctx->wnd,
             &error
         )
     )
     {
-        wintc_display_error_and_clear(&error, NULL);
+        wintc_display_error_and_clear(&error, ctx->wnd);
     }
 }
 

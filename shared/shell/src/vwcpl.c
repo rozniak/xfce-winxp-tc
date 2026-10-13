@@ -69,7 +69,8 @@ static gboolean wintc_sh_view_cpl_drop_test(
     const gchar* const* uris
 );
 static GActionGroup* wintc_sh_view_cpl_get_actions(
-    WinTCIShextView* view
+    WinTCIShextView* view,
+    GtkWindow*       wnd
 );
 static const gchar* wintc_sh_view_cpl_get_display_name(
     WinTCIShextView* view
@@ -386,7 +387,8 @@ static const gchar* wintc_sh_view_cpl_get_display_name(
 }
 
 static GActionGroup* wintc_sh_view_cpl_get_actions(
-    WinTCIShextView* view
+    WinTCIShextView* view,
+    GtkWindow*       wnd
 )
 {
     WinTCShViewCpl* view_cpl = WINTC_SH_VIEW_CPL(view);
@@ -397,7 +399,8 @@ static GActionGroup* wintc_sh_view_cpl_get_actions(
         view_cpl,
         map_actions_to_targets,
         actions,
-        S_CPL_ACTIONS
+        S_CPL_ACTIONS,
+        wnd
     );
 
     return G_ACTION_GROUP(actions);

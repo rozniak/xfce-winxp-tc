@@ -74,7 +74,8 @@ struct _WinTCIShextViewInterface
     );
 
     GActionGroup* (*get_actions) (
-        WinTCIShextView* view
+        WinTCIShextView* view,
+        GtkWindow*       wnd
     );
     const gchar* (*get_display_name) (
         WinTCIShextView* view
@@ -170,7 +171,8 @@ gboolean wintc_ishext_view_drop_test(
 );
 
 GActionGroup* wintc_ishext_view_get_actions(
-    WinTCIShextView* view
+    WinTCIShextView* view,
+    GtkWindow*       wnd
 );
 const gchar* wintc_ishext_view_get_display_name(
     WinTCIShextView* view

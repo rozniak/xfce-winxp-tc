@@ -79,7 +79,8 @@ static gboolean wintc_view_zip_drop_test(
     const gchar* const* uris
 );
 static GActionGroup* wintc_view_zip_get_actions(
-    WinTCIShextView* view
+    WinTCIShextView* view,
+    GtkWindow*       wnd
 );
 static const gchar* wintc_view_zip_get_display_name(
     WinTCIShextView* view
@@ -474,7 +475,8 @@ static gboolean wintc_view_zip_drop_test(
 }
 
 static GActionGroup* wintc_view_zip_get_actions(
-    WinTCIShextView* view
+    WinTCIShextView* view,
+    GtkWindow*       wnd
 )
 {
     WinTCViewZip* view_zip = WINTC_VIEW_ZIP(view);
@@ -485,7 +487,8 @@ static GActionGroup* wintc_view_zip_get_actions(
         view_zip,
         map_actions_to_targets,
         actions,
-        S_ZIP_ACTIONS
+        S_ZIP_ACTIONS,
+        wnd
     );
 
     return G_ACTION_GROUP(actions);
