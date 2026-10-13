@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Command Prompt
+Comment=
+Exec=wintc-cmd
+Icon=wintc-cmd
+Terminal=false
+StartupNotify=false
+Type=Application
+Categories=Utility;GTK;

@@ -45,6 +45,8 @@ sqlite3-->rt-->libsqlite3-0
 sysinfo-->bt,rt-->NULL
 upower-glib-->bt-->libupower-glib-dev
 upower-glib-->rt-->libupower-glib3
+vte-->bt-->libvte-2.91-dev
+vte-->rt-->libvte-2.91-0
 webkitgtk-->bt-->libwebkit2gtk-4.1-dev
 webkitgtk-->rt-->libwebkit2gtk-4.1-0
 wintc-comctl-->bt,rt-->libwintc-comctl
