@@ -203,7 +203,6 @@ G_DEFINE_TYPE_WITH_CODE(
 
 WINTC_SH_DEFINE_CB_VW_ACTIONS_CLEANUP(
     WinTCViewZip,
-    view_zip,
     map_actions_to_targets
 )
 
@@ -289,7 +288,9 @@ static void wintc_view_zip_dispose(
 {
     WinTCViewZip* view_zip = WINTC_VIEW_ZIP(object);
 
-    WINTC_SH_DESTROY_VW_ACTIONS_MAP(view_zip, map_actions_to_targets);
+    g_hash_table_destroy(
+        g_steal_pointer(&(view_zip->map_actions_to_targets))
+    );
 
     if (view_zip->map_items)
     {
@@ -808,12 +809,10 @@ static void wintc_view_zip_update_actions(
 {
     WinTCViewZip* view_zip = WINTC_VIEW_ZIP(view);
 
-    WINTC_SH_UPDATE_VW_ACTIONS_GROUP(
-        view_zip,
-        map_actions_to_targets,
-        actions,
-        items
-    );
+    WinTCShViewActions* ctx =
+        g_hash_table_lookup(view_zip->map_actions_to_targets, actions);
+
+    WINTC_SH_UPDATE_VW_ACTIONS_GROUP(ctx, items);
 }
 
 //

@@ -315,7 +315,6 @@ G_DEFINE_TYPE_WITH_CODE(
 
 WINTC_SH_DEFINE_CB_VW_ACTIONS_CLEANUP(
     WinTCShViewFS,
-    vw_fs,
     map_actions_to_targets
 )
 
@@ -436,7 +435,9 @@ static void wintc_sh_view_fs_dispose(
     g_clear_object(&(view_fs->fs_monitor));
     g_clear_object(&(view_fs->shext_host));
 
-    WINTC_SH_DESTROY_VW_ACTIONS_MAP(view_fs, map_actions_to_targets);
+    g_hash_table_destroy(
+        g_steal_pointer(&(view_fs->map_actions_to_targets))
+    );
 
     if (view_fs->fs_map_entries)
     {
@@ -1291,15 +1292,10 @@ static void wintc_sh_view_fs_update_actions(
 {
     WinTCShViewFS* view_fs = WINTC_SH_VIEW_FS(view);
 
-    WINTC_SH_UPDATE_VW_ACTIONS_GROUP(
-        view_fs,
-        map_actions_to_targets,
-        actions,
-        items
-    );
+    WinTCShViewActions* ctx =
+        g_hash_table_lookup(view_fs->map_actions_to_targets, actions);
 
-    // Update actions
-    //
+    WINTC_SH_UPDATE_VW_ACTIONS_GROUP(ctx, items);
 }
 
 //
@@ -1537,10 +1533,7 @@ static void action_copymove(
     GList*  list_targets =
         wintc_sh_view_fs_convert_list_hashes(
             view_fs,
-            g_hash_table_lookup(
-                view_fs->map_actions_to_targets,
-                ctx->action_group
-            )
+            ctx->targets
         );
 
     if (
@@ -1571,10 +1564,7 @@ static void action_delete(
     list_targets =
         wintc_sh_view_fs_convert_list_hashes(
             view_fs,
-            g_hash_table_lookup(
-                view_fs->map_actions_to_targets,
-                ctx->action_group
-            )
+            ctx->targets
         );
 
     op =
@@ -1631,10 +1621,7 @@ static void action_open(
     GList*  list_targets =
         wintc_sh_view_fs_convert_list_hashes(
             view_fs,
-            g_hash_table_lookup(
-                view_fs->map_actions_to_targets,
-                ctx->action_group
-            )
+            ctx->targets
         );
 
     // Iterate over to activate the items
@@ -1679,12 +1666,6 @@ static void action_open_with(
     WinTCShViewActions* ctx     = (WinTCShViewActions*) user_data;
     WinTCShViewFS*      view_fs = WINTC_SH_VIEW_FS(ctx->view);
 
-    GList* list_targets =
-        g_hash_table_lookup(
-            view_fs->map_actions_to_targets,
-            ctx->action_group
-        );
-
     // Only need the first item from the list
     //
     WinTCShextViewItem* item;
@@ -1693,7 +1674,7 @@ static void action_open_with(
     item =
         wintc_sh_view_fs_get_view_item(
             view_fs,
-            GPOINTER_TO_UINT(list_targets->data)
+            GPOINTER_TO_UINT(ctx->targets->data)
         );
 
     path =

@@ -208,7 +208,6 @@ G_DEFINE_TYPE_WITH_CODE(
 
 WINTC_SH_DEFINE_CB_VW_ACTIONS_CLEANUP(
     WinTCShViewDrives,
-    vw_drives,
     map_actions_to_targets
 )
 
@@ -317,11 +316,12 @@ static void wintc_sh_view_drives_dispose(
 
     g_clear_object(&(view_drives->shext_host));
     g_clear_list(&(view_drives->list_categories), NULL);
+    g_hash_table_destroy(
+        g_steal_pointer(&(view_drives->map_actions_to_targets))
+    );
     g_hash_table_unref(
         g_steal_pointer(&(view_drives->map_hash_to_tl_item))
     );
-
-    WINTC_SH_DESTROY_VW_ACTIONS_MAP(view_drives, map_actions_to_targets);
 
     (G_OBJECT_CLASS(wintc_sh_view_drives_parent_class))
         ->dispose(object);
@@ -782,12 +782,10 @@ static void wintc_sh_view_drives_update_actions(
 {
     WinTCShViewDrives* view_drives = WINTC_SH_VIEW_DRIVES(view);
 
-    WINTC_SH_UPDATE_VW_ACTIONS_GROUP(
-        view_drives,
-        map_actions_to_targets,
-        actions,
-        items
-    );
+    WinTCShViewActions* ctx =
+        g_hash_table_lookup(view_drives->map_actions_to_targets, actions);
+
+    WINTC_SH_UPDATE_VW_ACTIONS_GROUP(ctx, items);
 }
 
 //
@@ -864,14 +862,16 @@ static void wintc_sh_view_drives_register_category_guid(
 static void action_properties(
     WINTC_UNUSED(GSimpleAction* action),
     WINTC_UNUSED(GVariant* parameter),
-    WINTC_UNUSED(gpointer user_data)
+    gpointer user_data
 )
 {
+    WinTCShViewActions* ctx = (WinTCShViewActions*) user_data;
+
     GError* error = NULL;
 
     if (!wintc_launch_command("sysdm.cpl", &error))
     {
-        wintc_display_error_and_clear(&error, NULL);
+        wintc_display_error_and_clear(&error, ctx->wnd);
     }
 }
 

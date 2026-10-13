@@ -258,7 +258,6 @@ G_DEFINE_TYPE_WITH_CODE(
 
 WINTC_SH_DEFINE_CB_VW_ACTIONS_CLEANUP(
     WinTCShViewDesktop,
-    vw_desk,
     map_actions_to_targets
 )
 
@@ -444,7 +443,9 @@ static void wintc_sh_view_desktop_dispose(
     g_clear_object(&(view_desk->shext_host));
     g_clear_object(&(view_desk->view_user_desktop));
 
-    WINTC_SH_DESTROY_VW_ACTIONS_MAP(view_desk, map_actions_to_targets);
+    g_hash_table_destroy(
+        g_steal_pointer(&(view_desk->map_actions_to_targets))
+    );
 
     (G_OBJECT_CLASS(wintc_sh_view_desktop_parent_class))
         ->dispose(object);
@@ -994,6 +995,9 @@ static void wintc_sh_view_desktop_update_actions(
 {
     WinTCShViewDesktop* view_desk = WINTC_SH_VIEW_DESKTOP(view);
 
+    WinTCShViewActions* ctx =
+        g_hash_table_lookup(view_desk->map_actions_to_targets, actions);
+
     // We give the backing view a copy of the list for it to take ownership
     // of
     //
@@ -1003,12 +1007,7 @@ static void wintc_sh_view_desktop_update_actions(
         g_list_copy(items)
     );
 
-    WINTC_SH_UPDATE_VW_ACTIONS_GROUP(
-        view_desk,
-        map_actions_to_targets,
-        actions,
-        items
-    );
+    WINTC_SH_UPDATE_VW_ACTIONS_GROUP(ctx, items);
 }
 
 //
@@ -1153,14 +1152,16 @@ static void wintc_sh_view_desktop_real_refresh_items(
 static void action_properties(
     WINTC_UNUSED(GSimpleAction* action),
     WINTC_UNUSED(GVariant*      parameter),
-    WINTC_UNUSED(gpointer       user_data)
+    gpointer user_data
 )
 {
+    WinTCShViewActions* ctx = (WinTCShViewActions*) user_data;
+
     GError* error = NULL;
 
     if (!wintc_launch_command("desk.cpl", &error))
     {
-        wintc_display_error_and_clear(&error, NULL);
+        wintc_display_error_and_clear(&error, ctx->wnd);
     }
 }
 

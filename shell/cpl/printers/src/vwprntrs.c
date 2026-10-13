@@ -183,7 +183,6 @@ G_DEFINE_TYPE_WITH_CODE(
 
 WINTC_SH_DEFINE_CB_VW_ACTIONS_CLEANUP(
     WinTCCplViewPrinters,
-    view_printers,
     map_actions_to_targets
 )
 
@@ -264,7 +263,9 @@ static void wintc_cpl_view_printers_dispose(
 {
     WinTCCplViewPrinters* view_printers = WINTC_CPL_VIEW_PRINTERS(object);
 
-    WINTC_SH_DESTROY_VW_ACTIONS_MAP(view_printers, map_actions_to_targets);
+    g_hash_table_destroy(
+        g_steal_pointer(&(view_printers->map_actions_to_targets))
+    );
 
     (G_OBJECT_CLASS(wintc_cpl_view_printers_parent_class))
         ->dispose(object);
@@ -530,12 +531,10 @@ static void wintc_cpl_view_printers_update_actions(
 {
     WinTCCplViewPrinters* view_printers = WINTC_CPL_VIEW_PRINTERS(view);
 
-    WINTC_SH_UPDATE_VW_ACTIONS_GROUP(
-        view_printers,
-        map_actions_to_targets,
-        actions,
-        items
-    );
+    WinTCShViewActions* ctx =
+        g_hash_table_lookup(view_printers->map_actions_to_targets, actions);
+
+    WINTC_SH_UPDATE_VW_ACTIONS_GROUP(ctx, items);
 }
 
 //

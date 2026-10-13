@@ -183,7 +183,6 @@ G_DEFINE_TYPE_WITH_CODE(
 
 WINTC_SH_DEFINE_CB_VW_ACTIONS_CLEANUP(
     WinTCShViewCpl,
-    view_cpl,
     map_actions_to_targets
 )
 
@@ -250,7 +249,9 @@ static void wintc_sh_view_cpl_dispose(
         (GDestroyNotify) wintc_sh_cpl_applet_free
     );
 
-    WINTC_SH_DESTROY_VW_ACTIONS_MAP(view_cpl, map_actions_to_targets);
+    g_hash_table_destroy(
+        g_steal_pointer(&(view_cpl->map_actions_to_targets))
+    );
 
     if (view_cpl->map_items)
     {
@@ -631,12 +632,10 @@ static void wintc_sh_view_cpl_update_actions(
 {
     WinTCShViewCpl* view_cpl = WINTC_SH_VIEW_CPL(view);
 
-    WINTC_SH_UPDATE_VW_ACTIONS_GROUP(
-        view_cpl,
-        map_actions_to_targets,
-        actions,
-        items
-    );
+    WinTCShViewActions* ctx =
+        g_hash_table_lookup(view_cpl->map_actions_to_targets, actions);
+
+    WINTC_SH_UPDATE_VW_ACTIONS_GROUP(ctx, items);
 
     //
     // FIXME: explore would be enabled/disabled here for shell folders
@@ -683,22 +682,14 @@ static void action_open(
 {
     WinTCShViewActions* ctx = (WinTCShViewActions*) user_data;
 
-    WinTCShViewCpl* view_cpl = WINTC_SH_VIEW_CPL(ctx->view);
-
-    // Retrieve the targets
-    // 
-    GList* targets =
-        g_hash_table_lookup(
-            view_cpl->map_actions_to_targets,
-            ctx->action_group
-        );
-
-    if (!targets)
+    if (!ctx->targets)
     {
         g_critical("%s", "vwcpl: somehow launched 'open' with no targets");
     }
 
-    for (GList* iter = targets; iter; iter = iter->next)
+    // Retrieve the targets
+    // 
+    for (GList* iter = ctx->targets; iter; iter = iter->next)
     {
         GError*            error     = NULL;
         WinTCShextPathInfo path_info = { 0 };

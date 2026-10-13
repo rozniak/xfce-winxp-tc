@@ -269,7 +269,6 @@ G_DEFINE_TYPE_WITH_CODE(
 
 WINTC_SH_DEFINE_CB_VW_ACTIONS_CLEANUP(
     WinTCShViewTrash,
-    vw_trash,
     map_actions_to_targets
 )
 
@@ -375,7 +374,9 @@ static void wintc_sh_view_trash_dispose(
     g_clear_object(&(view_trash->file_trash));
     g_clear_object(&(view_trash->fs_clipboard));
 
-    WINTC_SH_DESTROY_VW_ACTIONS_MAP(view_trash, map_actions_to_targets);
+    g_hash_table_destroy(
+        g_steal_pointer(&(view_trash->map_actions_to_targets))
+    );
 
     if (view_trash->map_entries)
     {
@@ -869,12 +870,10 @@ static void wintc_sh_view_trash_update_actions(
 {
     WinTCShViewTrash* view_trash = WINTC_SH_VIEW_TRASH(view);
 
-    WINTC_SH_UPDATE_VW_ACTIONS_GROUP(
-        view_trash,
-        map_actions_to_targets,
-        actions,
-        items
-    );
+    WinTCShViewActions* ctx =
+        g_hash_table_lookup(view_trash->map_actions_to_targets, actions);
+
+    WINTC_SH_UPDATE_VW_ACTIONS_GROUP(ctx, items);
 }
 
 //
@@ -974,10 +973,7 @@ void action_cut(
     GList*  list_targets =
         wintc_sh_view_trash_convert_list_hashes(
             view_trash,
-            g_hash_table_lookup(
-                view_trash->map_actions_to_targets,
-                ctx->action_group
-            )
+            ctx->targets
         );
 
     if (
@@ -1008,10 +1004,7 @@ void action_delete(
     list_targets =
         wintc_sh_view_trash_convert_list_hashes(
             view_trash,
-            g_hash_table_lookup(
-                view_trash->map_actions_to_targets,
-                ctx->action_group
-            )
+            ctx->targets
         );
 
     op =
@@ -1113,10 +1106,7 @@ void action_restore(
     list_targets =
         wintc_sh_view_trash_convert_list_hashes(
             view_trash,
-            g_hash_table_lookup(
-                view_trash->map_actions_to_targets,
-                ctx->action_group
-            )
+            ctx->targets
         );
 
     for (GList* iter = list_targets; iter; iter = iter->next)
