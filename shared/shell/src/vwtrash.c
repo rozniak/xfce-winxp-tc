@@ -37,9 +37,6 @@ static void wintc_sh_view_trash_ishext_view_interface_init(
 static void wintc_sh_view_trash_dispose(
     GObject* object
 );
-static void wintc_sh_view_trash_finalize(
-    GObject* object
-);
 static void wintc_sh_view_trash_get_property(
     GObject*    object,
     guint       prop_id,
@@ -282,7 +279,6 @@ static void wintc_sh_view_trash_class_init(
     GObjectClass* object_class = G_OBJECT_CLASS(klass);
 
     object_class->dispose      = wintc_sh_view_trash_dispose;
-    object_class->finalize     = wintc_sh_view_trash_finalize;
     object_class->get_property = wintc_sh_view_trash_get_property;
 
     g_object_class_override_property(
@@ -378,19 +374,7 @@ static void wintc_sh_view_trash_dispose(
     g_clear_object(&(view_trash->file_trash));
     g_clear_object(&(view_trash->fs_clipboard));
 
-    (G_OBJECT_CLASS(wintc_sh_view_trash_parent_class))
-        ->dispose(object);
-}
-
-static void wintc_sh_view_trash_finalize(
-    GObject* object
-)
-{
-    WinTCShViewTrash* view_trash = WINTC_SH_VIEW_TRASH(object);
-
-    g_hash_table_destroy(
-        g_steal_pointer(&(view_trash->map_actions_to_targets))
-    );
+    WINTC_SH_DESTROY_VW_ACTIONS_MAP(view_trash, map_actions_to_targets);
 
     if (view_trash->map_entries)
     {
@@ -400,7 +384,7 @@ static void wintc_sh_view_trash_finalize(
     }
 
     (G_OBJECT_CLASS(wintc_sh_view_trash_parent_class))
-        ->finalize(object);
+        ->dispose(object);
 }
 
 static void wintc_sh_view_trash_get_property(

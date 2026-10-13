@@ -269,23 +269,6 @@ static void wintc_sh_list_view_behaviour_constructed(
             G_TYPE_UINT
         );
 
-    // Bind special action states
-    //
-    // FIXME: Shift to view implementations
-    //
-    /**
-    GAction* action_paste_op =
-        g_action_map_lookup_action(G_ACTION_MAP(action_group), "paste-op");
-
-    g_object_bind_property(
-        behaviour->fs_clipboard,
-        "can-paste",
-        action_paste_op,
-        "enabled",
-        G_BINDING_DEFAULT
-    );
-    */
-
     // Attach stuff to view
     //
     wintc_ctl_list_view_set_model(
@@ -410,6 +393,7 @@ static void wintc_sh_list_view_behaviour_dispose(
         );
     }
 
+    g_clear_object(&(behaviour->actions));
     g_clear_object(&(behaviour->current_view));
     g_clear_object(&(behaviour->browser));
     g_clear_object(&(behaviour->list_view));

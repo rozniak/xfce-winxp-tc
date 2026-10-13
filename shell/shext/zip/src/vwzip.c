@@ -25,6 +25,9 @@ static void wintc_view_zip_ishext_view_interface_init(
     WinTCIShextViewInterface* iface
 );
 
+static void wintc_view_zip_dispose(
+    GObject* object
+);
 static void wintc_view_zip_finalize(
     GObject* object
 );
@@ -209,6 +212,7 @@ static void wintc_view_zip_class_init(
 {
     GObjectClass* object_class = G_OBJECT_CLASS(klass);
 
+    object_class->dispose      = wintc_view_zip_dispose;
     object_class->finalize     = wintc_view_zip_finalize;
     object_class->get_property = wintc_view_zip_get_property;
     object_class->set_property = wintc_view_zip_set_property;
@@ -278,6 +282,24 @@ static void wintc_view_zip_ishext_view_interface_init(
 //
 // CLASS VIRTUAL METHODS
 //
+static void wintc_view_zip_dispose(
+    GObject* object
+)
+{
+    WinTCViewZip* view_zip = WINTC_VIEW_ZIP(object);
+
+    WINTC_SH_DESTROY_VW_ACTIONS_MAP(view_zip, map_actions_to_targets);
+
+    if (view_zip->map_items)
+    {
+        g_hash_table_destroy(
+            g_steal_pointer(&(view_zip->map_items))
+        );
+    }
+
+    (G_OBJECT_CLASS(wintc_view_zip_parent_class))->dispose(object);
+}
+
 static void wintc_view_zip_finalize(
     GObject* object
 )
@@ -287,17 +309,6 @@ static void wintc_view_zip_finalize(
     g_free(view_zip->parent_path);
     g_free(view_zip->rel_path);
     g_free(view_zip->zip_uri);
-
-    g_hash_table_destroy(
-        g_steal_pointer(&(view_zip->map_actions_to_targets))
-    );
-
-    if (view_zip->map_items)
-    {
-        g_hash_table_destroy(
-            g_steal_pointer(&(view_zip->map_items))
-        );
-    }
 
     (G_OBJECT_CLASS(wintc_view_zip_parent_class))->finalize(object);
 }

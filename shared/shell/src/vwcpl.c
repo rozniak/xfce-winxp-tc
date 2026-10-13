@@ -24,7 +24,7 @@ static void wintc_sh_view_cpl_ishext_view_interface_init(
     WinTCIShextViewInterface* iface
 );
 
-static void wintc_sh_view_cpl_finalize(
+static void wintc_sh_view_cpl_dispose(
     GObject* object
 );
 static void wintc_sh_view_cpl_get_property(
@@ -192,7 +192,7 @@ static void wintc_sh_view_cpl_class_init(
 {
     GObjectClass* object_class = G_OBJECT_CLASS(klass);
 
-    object_class->finalize     = wintc_sh_view_cpl_finalize;
+    object_class->dispose      = wintc_sh_view_cpl_dispose;
     object_class->get_property = wintc_sh_view_cpl_get_property;
 
     g_object_class_override_property(
@@ -238,7 +238,7 @@ static void wintc_sh_view_cpl_ishext_view_interface_init(
 //
 // CLASS VIRTUAL METHODS
 //
-static void wintc_sh_view_cpl_finalize(
+static void wintc_sh_view_cpl_dispose(
     GObject* object
 )
 {
@@ -249,9 +249,7 @@ static void wintc_sh_view_cpl_finalize(
         (GDestroyNotify) wintc_sh_cpl_applet_free
     );
 
-    g_hash_table_destroy(
-        g_steal_pointer(&(view_cpl->map_actions_to_targets))
-    );
+    WINTC_SH_DESTROY_VW_ACTIONS_MAP(view_cpl, map_actions_to_targets);
 
     if (view_cpl->map_items)
     {

@@ -22,7 +22,7 @@ static void wintc_cpl_view_printers_ishext_view_interface_init(
     WinTCIShextViewInterface* iface
 );
 
-static void wintc_cpl_view_printers_finalize(
+static void wintc_cpl_view_printers_dispose(
     GObject* object
 );
 static void wintc_cpl_view_printers_get_property(
@@ -209,7 +209,7 @@ static void wintc_cpl_view_printers_class_init(
     //
     GObjectClass* object_class = G_OBJECT_CLASS(klass);
 
-    object_class->finalize     = wintc_cpl_view_printers_finalize;
+    object_class->dispose      = wintc_cpl_view_printers_dispose;
     object_class->get_property = wintc_cpl_view_printers_get_property;
 
     g_object_class_override_property(
@@ -257,18 +257,16 @@ static void wintc_cpl_view_printers_ishext_view_interface_init(
 //
 // CLASS VIRTUAL METHODS
 //
-static void wintc_cpl_view_printers_finalize(
+static void wintc_cpl_view_printers_dispose(
     GObject* object
 )
 {
     WinTCCplViewPrinters* view_printers = WINTC_CPL_VIEW_PRINTERS(object);
 
-    g_hash_table_destroy(
-        g_steal_pointer(&(view_printers->map_actions_to_targets))
-    );
+    WINTC_SH_DESTROY_VW_ACTIONS_MAP(view_printers, map_actions_to_targets);
 
     (G_OBJECT_CLASS(wintc_cpl_view_printers_parent_class))
-        ->finalize(object);
+        ->dispose(object);
 }
 
 static void wintc_cpl_view_printers_get_property(

@@ -317,11 +317,10 @@ static void wintc_sh_view_drives_dispose(
     g_clear_object(&(view_drives->shext_host));
     g_clear_list(&(view_drives->list_categories), NULL);
     g_hash_table_unref(
-        g_steal_pointer(&(view_drives->map_actions_to_targets))
-    );
-    g_hash_table_unref(
         g_steal_pointer(&(view_drives->map_hash_to_tl_item))
     );
+
+    WINTC_SH_DESTROY_VW_ACTIONS_MAP(view_drives, map_actions_to_targets);
 
     (G_OBJECT_CLASS(wintc_sh_view_drives_parent_class))
         ->dispose(object);

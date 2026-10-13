@@ -435,6 +435,15 @@ static void wintc_sh_view_fs_dispose(
     g_clear_object(&(view_fs->fs_monitor));
     g_clear_object(&(view_fs->shext_host));
 
+    WINTC_SH_DESTROY_VW_ACTIONS_MAP(view_fs, map_actions_to_targets);
+
+    if (view_fs->fs_map_entries)
+    {
+        g_hash_table_destroy(
+            g_steal_pointer(&(view_fs->fs_map_entries))
+        );
+    }
+
     (G_OBJECT_CLASS(wintc_sh_view_fs_parent_class))->dispose(object);
 }
 
@@ -449,17 +458,6 @@ static void wintc_sh_view_fs_finalize(
     g_free(view_fs->path);
     g_free(view_fs->custom_icon);
     g_free(view_fs->custom_name);
-
-    g_hash_table_destroy(
-        g_steal_pointer(&(view_fs->map_actions_to_targets))
-    );
-
-    if (view_fs->fs_map_entries)
-    {
-        g_hash_table_destroy(
-            g_steal_pointer(&(view_fs->fs_map_entries))
-        );
-    }
 
     (G_OBJECT_CLASS(wintc_sh_view_fs_parent_class))->finalize(object);
 }

@@ -56,6 +56,22 @@ typedef struct _WinTCShViewActions
         NULL \
     );
 
+#define WINTC_SH_DESTROY_VW_ACTIONS_MAP(vw, map) \
+    { \
+        GHashTableIter iter_ht; \
+        gpointer       key; \
+        g_hash_table_iter_init(&iter_ht, vw->map); \
+        while (g_hash_table_iter_next(&iter_ht, &key, NULL)) \
+        { \
+            g_object_weak_unref( \
+                G_OBJECT(key), \
+                (GWeakNotify) cb_weak_ref_actions, \
+                vw \
+            ); \
+        } \
+        g_hash_table_destroy(g_steal_pointer(&(vw->map))); \
+    }
+
 #define WINTC_SH_UPDATE_VW_ACTIONS_GROUP(vw, map, actions, items) \
     if (g_hash_table_insert(vw->map, actions, items)) \
     { \
