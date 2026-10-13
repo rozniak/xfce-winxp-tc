@@ -260,7 +260,7 @@ static void wintc_sh_view_cpl_dispose(
         );
     }
 
-    (G_OBJECT_CLASS(wintc_sh_view_cpl_parent_class))->finalize(object);
+    (G_OBJECT_CLASS(wintc_sh_view_cpl_parent_class))->dispose(object);
 }
 
 static void wintc_sh_view_cpl_get_property(
