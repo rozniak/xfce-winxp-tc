@@ -112,7 +112,7 @@ target_link_libraries(
 # Additional linking for certain package managers
 #
 if (${WINTC_PKGMGR} STREQUAL "archpkg")
-    wintc_resolve_library(libalpm ALPM)
+    wintc_resolve_library(libalpm ALPM PRIVATE)
 
     target_include_directories(
         wintc-setupapi-exec
