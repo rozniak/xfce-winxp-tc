@@ -21,13 +21,13 @@ include(../../packaging/cmake-inc/linking/CMakeLists.txt)
 include(../../packaging/cmake-inc/packaging/CMakeLists.txt)
 include(../../packaging/cmake-inc/resources/CMakeLists.txt)
 
-wintc_resolve_library(gdk-pixbuf-2.0       GDK_PIXBUF)
-wintc_resolve_library(glib-2.0             GLIB)
-wintc_resolve_library(gtk+-3.0             GTK3)
-wintc_resolve_library(liblightdm-gobject-1 LIGHTDM)
-wintc_resolve_library(wintc-comctl         WINTC_COMCTL)
-wintc_resolve_library(wintc-comgtk         WINTC_COMGTK)
-wintc_resolve_library(wintc-winbrand       WINTC_WINBRAND)
+wintc_resolve_library(gdk-pixbuf-2.0       GDK_PIXBUF     PRIVATE)
+wintc_resolve_library(glib-2.0             GLIB           PUBLIC)
+wintc_resolve_library(gtk+-3.0             GTK3           PUBLIC)
+wintc_resolve_library(liblightdm-gobject-1 LIGHTDM        PRIVATE)
+wintc_resolve_library(wintc-comctl         WINTC_COMCTL   PRIVATE)
+wintc_resolve_library(wintc-comgtk         WINTC_COMGTK   PRIVATE)
+wintc_resolve_library(wintc-winbrand       WINTC_WINBRAND PRIVATE)
 
 wintc_compile_resources()
 
@@ -73,8 +73,8 @@ target_include_directories(
     SYSTEM
     BEFORE
     PRIVATE ${GDK_PIXBUF_INCLUDE_DIRS}
-    PRIVATE ${GLIB_INCLUDE_DIRS}
-    PRIVATE ${GTK3_INCLUDE_DIRS}
+    PUBLIC  ${GLIB_INCLUDE_DIRS}
+    PUBLIC  ${GTK3_INCLUDE_DIRS}
     PRIVATE ${LIGHTDM_INCLUDE_DIRS}
     PRIVATE ${WINTC_COMCTL_INCLUDE_DIRS}
     PRIVATE ${WINTC_COMGTK_INCLUDE_DIRS}
@@ -84,8 +84,8 @@ target_include_directories(
 target_link_directories(
     libwintc-msgina
     PRIVATE ${GDK_PIXBUF_LIBRARY_DIRS}
-    PRIVATE ${GLIB_LIBRARY_DIRS}
-    PRIVATE ${GTK3_LIBRARY_DIRS}
+    PUBLIC  ${GLIB_LIBRARY_DIRS}
+    PUBLIC  ${GTK3_LIBRARY_DIRS}
     PRIVATE ${LIGHTDM_LIBRARY_DIRS}
     PRIVATE ${WINTC_COMCTL_LIBRARY_DIRS}
     PRIVATE ${WINTC_COMGTK_LIBRARY_DIRS}
@@ -95,8 +95,8 @@ target_link_directories(
 target_link_libraries(
     libwintc-msgina
     PRIVATE ${GDK_PIXBUF_LIBRARIES}
-    PRIVATE ${GLIB_LIBRARIES}
-    PRIVATE ${GTK3_LIBRARIES}
+    PUBLIC  ${GLIB_LIBRARIES}
+    PUBLIC  ${GTK3_LIBRARIES}
     PRIVATE ${LIGHTDM_LIBRARIES}
     PRIVATE ${WINTC_COMCTL_LIBRARIES}
     PRIVATE ${WINTC_COMGTK_LIBRARIES}

@@ -19,14 +19,14 @@ include(../../packaging/cmake-inc/common/CMakeLists.txt)
 include(../../packaging/cmake-inc/linking/CMakeLists.txt)
 include(../../packaging/cmake-inc/packaging/CMakeLists.txt)
 
-wintc_resolve_library(gdk-pixbuf-2.0 GDK_PIXBUF)
-wintc_resolve_library(glib-2.0       GLIB)
-wintc_resolve_library(gtk+-3.0       GTK3)
-wintc_resolve_library(wintc-comctl   WINTC_COMCTL)
-wintc_resolve_library(wintc-comgtk   WINTC_COMGTK)
-wintc_resolve_library(wintc-shell    WINTC_SHELL)
-wintc_resolve_library(wintc-winbrand WINTC_WINBRAND)
-wintc_resolve_library(wintc-shellext WINTC_SHELLEXT)
+wintc_resolve_library(gdk-pixbuf-2.0 GDK_PIXBUF     PRIVATE)
+wintc_resolve_library(glib-2.0       GLIB           PRIVATE)
+wintc_resolve_library(gtk+-3.0       GTK3           PRIVATE)
+wintc_resolve_library(wintc-comctl   WINTC_COMCTL   PRIVATE)
+wintc_resolve_library(wintc-comgtk   WINTC_COMGTK   PRIVATE)
+wintc_resolve_library(wintc-shell    WINTC_SHELL    PRIVATE)
+wintc_resolve_library(wintc-winbrand WINTC_WINBRAND PRIVATE)
+wintc_resolve_library(wintc-shellext WINTC_SHELLEXT PRIVATE)
 
 add_executable(
     wintc-winver

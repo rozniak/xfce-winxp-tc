@@ -19,11 +19,11 @@ include(../../packaging/cmake-inc/common/CMakeLists.txt)
 include(../../packaging/cmake-inc/linking/CMakeLists.txt)
 include(../../packaging/cmake-inc/packaging/CMakeLists.txt)
 
-wintc_resolve_library(glib-2.0       GLIB)
-wintc_resolve_library(gtk+-3.0       GTK3)
-wintc_resolve_library(sqlite3        SQLITE3)
-wintc_resolve_library(wintc-comgtk   WINTC_COMGTK)
-wintc_resolve_library(wintc-registry WINTC_REGISTRY)
+wintc_resolve_library(glib-2.0       GLIB           PRIVATE)
+wintc_resolve_library(gtk+-3.0       GTK3           PRIVATE)
+wintc_resolve_library(sqlite3        SQLITE3        PRIVATE)
+wintc_resolve_library(wintc-comgtk   WINTC_COMGTK   PRIVATE)
+wintc_resolve_library(wintc-registry WINTC_REGISTRY PRIVATE)
 
 add_executable(
     wintc-regsvc

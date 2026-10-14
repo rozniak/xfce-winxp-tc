@@ -21,11 +21,11 @@ include(../../packaging/cmake-inc/locale/CMakeLists.txt)
 include(../../packaging/cmake-inc/packaging/CMakeLists.txt)
 include(../../packaging/cmake-inc/resources/CMakeLists.txt)
 
-wintc_resolve_library(gio-2.0      GIO)
-wintc_resolve_library(glib-2.0     GLIB)
-wintc_resolve_library(gtk+-3.0     GTK3)
-wintc_resolve_library(wintc-comgtk WINTC_COMGTK)
-wintc_resolve_library(wintc-msgina WINTC_MSGINA)
+wintc_resolve_library(gio-2.0      GIO          PRIVATE)
+wintc_resolve_library(glib-2.0     GLIB         PRIVATE)
+wintc_resolve_library(gtk+-3.0     GTK3         PRIVATE)
+wintc_resolve_library(wintc-comgtk WINTC_COMGTK PRIVATE)
+wintc_resolve_library(wintc-msgina WINTC_MSGINA PRIVATE)
 
 wintc_create_meta_h()
 

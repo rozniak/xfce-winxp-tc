@@ -22,10 +22,10 @@ include(../../packaging/cmake-inc/libraries/CMakeLists.txt)
 include(../../packaging/cmake-inc/linking/CMakeLists.txt)
 include(../../packaging/cmake-inc/packaging/CMakeLists.txt)
 
-wintc_resolve_library(gdk-pixbuf-2.0 GDK_PIXBUF)
-wintc_resolve_library(glib-2.0       GLIB)
-wintc_resolve_library(gtk+-3.0       GTK3)
-wintc_resolve_library(wintc-comgtk   WINTC_COMGTK)
+wintc_resolve_library(gdk-pixbuf-2.0 GDK_PIXBUF   PUBLIC)
+wintc_resolve_library(glib-2.0       GLIB         PUBLIC)
+wintc_resolve_library(gtk+-3.0       GTK3         PUBLIC)
+wintc_resolve_library(wintc-comgtk   WINTC_COMGTK PRIVATE)
 
 add_library(
     libwintc-shelldpa
@@ -63,26 +63,26 @@ target_include_directories(
     libwintc-shelldpa
     SYSTEM
     BEFORE
-    PRIVATE ${GDK_PIXBUF_INCLUDE_DIRS}
-    PRIVATE ${GLIB_INCLUDE_DIRS}
-    PRIVATE ${GTK3_INCLUDE_DIRS}
+    PUBLIC  ${GDK_PIXBUF_INCLUDE_DIRS}
+    PUBLIC  ${GLIB_INCLUDE_DIRS}
+    PUBLIC  ${GTK3_INCLUDE_DIRS}
     PRIVATE ${WINTC_COMGTK_INCLUDE_DIRS}
 )
 
 target_link_directories(
     libwintc-shelldpa
-    PRIVATE ${GDK_PIXBUF_LIBRARY_DIRS}
-    PRIVATE ${GLIB_LIBRARY_DIRS}
-    PRIVATE ${GTK3_LIBRARY_DIRS}
+    PUBLIC  ${GDK_PIXBUF_LIBRARY_DIRS}
+    PUBLIC  ${GLIB_LIBRARY_DIRS}
+    PUBLIC  ${GTK3_LIBRARY_DIRS}
     PRIVATE ${WINTC_COMGTK_LIBRARY_DIRS}
 )
 
 target_link_libraries(
     libwintc-shelldpa
     PRIVATE ${CMAKE_DL_LIBS}
-    PRIVATE ${GDK_PIXBUF_LIBRARIES}
-    PRIVATE ${GLIB_LIBRARIES}
-    PRIVATE ${GTK3_LIBRARIES}
+    PUBLIC  ${GDK_PIXBUF_LIBRARIES}
+    PUBLIC  ${GLIB_LIBRARIES}
+    PUBLIC  ${GTK3_LIBRARIES}
     PRIVATE ${WINTC_COMGTK_LIBRARIES}
 )
 

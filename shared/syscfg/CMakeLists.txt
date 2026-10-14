@@ -20,7 +20,7 @@ include(../../packaging/cmake-inc/libraries/CMakeLists.txt)
 include(../../packaging/cmake-inc/linking/CMakeLists.txt)
 include(../../packaging/cmake-inc/packaging/CMakeLists.txt)
 
-wintc_resolve_library(glib-2.0 GLIB)
+wintc_resolve_library(glib-2.0 GLIB PUBLIC)
 
 add_library(
     libwintc-syscfg
@@ -45,17 +45,17 @@ target_include_directories(
     libwintc-syscfg
     SYSTEM
     BEFORE
-    PRIVATE ${GLIB_INCLUDE_DIRS}
+    PUBLIC ${GLIB_INCLUDE_DIRS}
 )
 
 target_link_directories(
     libwintc-syscfg
-    PRIVATE ${GLIB_LIBRARY_DIRS}
+    PUBLIC ${GLIB_LIBRARY_DIRS}
 )
 
 target_link_libraries(
     libwintc-syscfg
-    PRIVATE ${GLIB_LIBRARIES}
+    PUBLIC ${GLIB_LIBRARIES}
 )
 
 # Installation
