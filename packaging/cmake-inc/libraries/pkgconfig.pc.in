@@ -7,6 +7,6 @@ Name: @PROJECT_NAME@
 Description: @PROJECT_DESCRIPTION@
 Version: @PROJECT_VERSION@
 
-Requires:
+Requires: @WINTC_PKGCONF_REQUIRES@
 Libs: -L${libdir} -l@LIB_NAME@
 Cflags: -I${includedir}

@@ -25,11 +25,11 @@ include(../../packaging/cmake-inc/linking/CMakeLists.txt)
 include(../../packaging/cmake-inc/packaging/CMakeLists.txt)
 include(../../packaging/cmake-inc/resources/CMakeLists.txt)
 
-wintc_resolve_library(libcanberra      CANBERRA)
-wintc_resolve_library(libcanberra-gtk3 CANBERRA_GTK3)
-wintc_resolve_library(gio-2.0          GIO)
-wintc_resolve_library(glib-2.0         GLIB)
-wintc_resolve_library(gtk+-3.0         GTK3)
+wintc_resolve_library(libcanberra      CANBERRA      PRIVATE)
+wintc_resolve_library(libcanberra-gtk3 CANBERRA_GTK3 PRIVATE)
+wintc_resolve_library(gio-2.0          GIO           PUBLIC)
+wintc_resolve_library(glib-2.0         GLIB          PUBLIC)
+wintc_resolve_library(gtk+-3.0         GTK3          PUBLIC)
 
 configure_file(public/location.h.in ${PROJECT_ROOT}/public/location.h @ONLY)
 configure_file(src/version.c.in   ${PROJECT_ROOT}/src/version.c   @ONLY)
@@ -123,27 +123,27 @@ target_include_directories(
     BEFORE
     PRIVATE ${CANBERRA_INCLUDE_DIRS}
     PRIVATE ${CANBERRA_GTK3_INCLUDE_DIRS}
-    PRIVATE ${GIO_INCLUDE_DIRS}
-    PRIVATE ${GLIB_INCLUDE_DIRS}
-    PRIVATE ${GTK3_INCLUDE_DIRS}
+    PUBLIC  ${GIO_INCLUDE_DIRS}
+    PUBLIC  ${GLIB_INCLUDE_DIRS}
+    PUBLIC  ${GTK3_INCLUDE_DIRS}
 )
 
 target_link_directories(
     libwintc-comgtk
     PRIVATE ${CANBERRA_LIBRARY_DIRS}
     PRIVATE ${CANBERRA_GTK3_LIBRARY_DIRS}
-    PRIVATE ${GIO_LIBRARY_DIRS}
-    PRIVATE ${GLIB_LIBRARY_DIRS}
-    PRIVATE ${GTK3_LIBRARY_DIRS}
+    PUBLIC  ${GIO_LIBRARY_DIRS}
+    PUBLIC  ${GLIB_LIBRARY_DIRS}
+    PUBLIC  ${GTK3_LIBRARY_DIRS}
 )
 
 target_link_libraries(
     libwintc-comgtk
     PRIVATE ${CANBERRA_LIBRARIES}
     PRIVATE ${CANBERRA_GTK3_LIBRARIES}
-    PRIVATE ${GIO_LIBRARIES}
-    PRIVATE ${GLIB_LIBRARIES}
-    PRIVATE ${GTK3_LIBRARIES}
+    PUBLIC  ${GIO_LIBRARIES}
+    PUBLIC  ${GLIB_LIBRARIES}
+    PUBLIC  ${GTK3_LIBRARIES}
 )
 
 # Installation

@@ -26,6 +26,8 @@ endif()
 # Function for adding pkgconfig to install
 #
 function(wintc_add_pkgconfig_install)
+    list(JOIN WINTC_PKGCONF_REQUIRE_LIST ", " WINTC_PKGCONF_REQUIRES)
+
     configure_file(${DEFAULT_LIB_PKGCONFIG} ${LIB_NAME}.pc @ONLY)
     install(FILES ${CMAKE_BINARY_DIR}/${LIB_NAME}.pc DESTINATION ${WINTC_SAFE_PKGCONFIG_DIR}/pkgconfig)
 endfunction()
