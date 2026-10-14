@@ -26,21 +26,10 @@ function(wintc_resolve_library REQUESTED_LIB REQUESTED_LIB_NICE_NAME SCOPE)
         ${WINTC_USE_LOCAL_LIBS} AND
         ${REQUESTED_LIB} MATCHES "^wintc-(.+)"
     )
-        wintc_set(
-            "${REQUESTED_LIB_NICE_NAME}_INCLUDE_DIRS"
-            "${WINTC_LOCAL_LIBS_ROOT}/shared/${CMAKE_MATCH_1}"
-        )
-        wintc_set(
-            "${REQUESTED_LIB_NICE_NAME}_LIBRARY_DIRS"
-            ""
-        )
-        wintc_set(
-            "${REQUESTED_LIB_NICE_NAME}_LIBRARIES"
-            "${WINTC_LOCAL_LIBS_ROOT}/shared/${CMAKE_MATCH_1}/lib${REQUESTED_LIB}.so"
-        )
-    else()
-        pkg_check_modules(${REQUESTED_LIB_NICE_NAME} REQUIRED ${REQUESTED_LIB})
+        set(ENV{PKG_CONFIG_PATH} "${WINTC_LOCAL_LIBS_ROOT}/shared/${CMAKE_MATCH_1}:$ENV{PKG_CONFIG_PATH}")
     endif()
+
+    pkg_check_modules(${REQUESTED_LIB_NICE_NAME} REQUIRED ${REQUESTED_LIB})
 
     if (${SCOPE} STREQUAL "PUBLIC")
         list(APPEND WINTC_PKGCONF_REQUIRE_LIST ${REQUESTED_LIB})
