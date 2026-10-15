@@ -50,8 +50,8 @@ function(wintc_install_public_headers)
 
     # Configure file output
     #
-    set(LIB_HEADER_DIR "${PROJECT_ROOT}/public")
-    configure_file(public/libapi.h.in wintc/${LIB_NAME_SIMPLE}.h @ONLY)
+    set(LIB_HEADER_DIR "${LIB_NAME_SIMPLE}")
+    configure_file(public/libapi.h.in ${PROJECT_ROOT}/public/libapi.h @ONLY)
 
     # Add installs
     #
