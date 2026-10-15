@@ -102,7 +102,7 @@ target_link_libraries(
 # FreeBSD requires linking to libsysinfo port
 #
 if (${WINTC_PKGMGR} STREQUAL "bsdpkg")
-    wintc_resolve_library(libsysinfo SYSINFO)
+    wintc_resolve_library(libsysinfo SYSINFO PRIVATE)
 
     target_include_directories(
         wintc-cpl-sysdm
