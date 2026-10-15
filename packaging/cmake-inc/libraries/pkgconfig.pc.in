@@ -1,4 +1,4 @@
-prefix=@CMAKE_INSTALL_PREFIX@
+prefix=@PKGCONF_PREFIX@
 exec_prefix=${prefix}
 libdir=${prefix}/@LIB_DIR@
 includedir=${exec_prefix}/include

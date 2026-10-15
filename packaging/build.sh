@@ -188,7 +188,9 @@ then
 
     echo "Installing libs to ${meta_lib_dir}"
     cd "${full_build_dir}"
+    cmake -DPKGCONF_PREFIX="${meta_lib_dir}" "${full_component_dir}"
     DESTDIR="${meta_lib_dir}" make install
+    cmake -DPKGCONF_PREFIX="" "${full_component_dir}"
     cd "${CURDIR}"
 fi
 

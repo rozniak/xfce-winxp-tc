@@ -26,6 +26,7 @@ endif()
 # Function for adding pkgconfig to install
 #
 function(wintc_add_pkgconfig_install)
+    set(PKGCONF_PREFIX "${PKGCONF_PREFIX}${CMAKE_INSTALL_PREFIX}")
     list(JOIN WINTC_PKGCONF_REQUIRE_LIST ", " WINTC_PKGCONF_REQUIRES)
 
     configure_file(${DEFAULT_LIB_PKGCONFIG} ${LIB_NAME}.pc @ONLY)
