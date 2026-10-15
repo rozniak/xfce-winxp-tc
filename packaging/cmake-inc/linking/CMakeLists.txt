@@ -26,7 +26,7 @@ function(wintc_resolve_library REQUESTED_LIB REQUESTED_LIB_NICE_NAME SCOPE)
         ${WINTC_USE_LOCAL_LIBS} AND
         ${REQUESTED_LIB} MATCHES "^wintc-(.+)"
     )
-        set(ENV{PKG_CONFIG_PATH} "${WINTC_LOCAL_LIBS_ROOT}/shared/${CMAKE_MATCH_1}:$ENV{PKG_CONFIG_PATH}")
+        set(CMAKE_PREFIX_PATH ${WINTC_LOCAL_LIBS_ROOT} ${CMAKE_PREFIX_PATH})
     endif()
 
     pkg_check_modules(${REQUESTED_LIB_NICE_NAME} REQUIRED ${REQUESTED_LIB})

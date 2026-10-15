@@ -151,6 +151,7 @@ fi
 
 # Compile component
 #
+meta_lib_dir="${OPT_BUILD_ROOT}/_meta"
 build_result=0
 
 cd "${full_build_dir}"
@@ -164,7 +165,7 @@ cmake -DBUILD_SHARED_LIBS=ON                         \
       -DWINTC_PKGMGR="${DIST_ID}"                    \
       -DWINTC_PKGMGR_EXT="${DIST_ID_EXT}"            \
       -DWINTC_USE_LOCAL_LIBS="${OPT_USE_LOCAL_LIBS}" \
-      -DWINTC_LOCAL_LIBS_ROOT="${OPT_BUILD_ROOT}"    \
+      -DWINTC_LOCAL_LIBS_ROOT="${meta_lib_dir}"      \
       "${full_component_dir}"
 ((build_result+=$?))
 
@@ -177,6 +178,18 @@ if [[ $build_result -gt 0 ]]
 then
     echo "build: Failed build for ${rel_component_dir}" >&2
     exit 1
+fi
+
+# If we're building local libs - install this into the _meta root
+#
+if [[ ${OPT_USE_LOCAL_LIBS} -eq 1 && "${rel_component_dir}" =~ "shared/" ]]
+then
+    mkdir "${meta_lib_dir}"
+
+    echo "Installing libs to ${meta_lib_dir}"
+    cd "${full_build_dir}"
+    DESTDIR="${meta_lib_dir}" make install
+    cd "${CURDIR}"
 fi
 
 echo "build: Built ${rel_component_dir}"
