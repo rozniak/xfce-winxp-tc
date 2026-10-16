@@ -1,4 +1,6 @@
+#include <fontconfig/fontconfig.h>
 #include <glib.h>
+#include <wintc/comgtk.h>
 
 #include "application.h"
 
@@ -7,10 +9,28 @@ int main(
     char* argv[]
 )
 {
-    WinTCCmdApplication* app = wintc_cmd_application_new();
-    int                    status;
+    // HACK: A bit of a bodge I guess? Insert the VGA font directly into
+    //       fontconfig so we can use it in VTE
+    //
+    FcConfig* fc = FcConfigGetCurrent();
 
-    g_set_application_name("Hello");
+    if (
+        !fc ||
+        !FcConfigAppFontAddFile(
+            fc,
+            (FcChar8*) (WINTC_ASSETS_DIR "/conhost/oemfon.ttf")
+        )
+    )
+    {
+        g_warning("%s", "cmd: unable to set oem font");
+    }
+
+    // Start app
+    //
+    WinTCCmdApplication* app = wintc_cmd_application_new();
+    int                  status;
+
+    g_set_application_name("Cmd");
 
     status = g_application_run(G_APPLICATION(app), argc, argv);
 

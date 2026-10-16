@@ -49,6 +49,15 @@ static void wintc_cmd_window_init(
         term
     );
 
+    // Try to set the font to the OEM 8x16 one
+    //
+    PangoFontDescription* desc =
+        pango_font_description_from_string("PxPlus IBM VGA 8x16 12");
+
+    vte_terminal_set_font(VTE_TERMINAL(term), desc);
+
+    pango_font_description_free(desc);
+
     // Launch the user's shell
     //
     static gchar* s_cmd[] = {

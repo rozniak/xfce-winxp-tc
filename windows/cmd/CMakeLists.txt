@@ -19,10 +19,11 @@ include(../../packaging/cmake-inc/common/CMakeLists.txt)
 include(../../packaging/cmake-inc/linking/CMakeLists.txt)
 include(../../packaging/cmake-inc/packaging/CMakeLists.txt)
 
-wintc_resolve_library(glib-2.0     GLIB)
-wintc_resolve_library(gtk+-3.0     GTK3)
-wintc_resolve_library(vte-2.91     VTE)
-wintc_resolve_library(wintc-comgtk WINTC_COMGTK)
+wintc_resolve_library(fontconfig   FONTCONFIG   PRIVATE)
+wintc_resolve_library(glib-2.0     GLIB         PRIVATE)
+wintc_resolve_library(gtk+-3.0     GTK3         PRIVATE)
+wintc_resolve_library(vte-2.91     VTE          PRIVATE)
+wintc_resolve_library(wintc-comgtk WINTC_COMGTK PRIVATE)
 
 add_executable(
     wintc-cmd
@@ -33,6 +34,12 @@ add_executable(
     src/window.h
 )
 
+set_target_properties(
+    wintc-cmd
+    PROPERTIES
+    OUTPUT_NAME cmd
+)
+
 target_compile_options(
     wintc-cmd
     PRIVATE ${WINTC_COMPILE_OPTIONS}
@@ -41,6 +48,7 @@ target_compile_options(
 target_include_directories(
     wintc-cmd
     SYSTEM
+    PRIVATE ${FONTCONFIG_INCLUDE_DIRS}
     PRIVATE ${GLIB_INCLUDE_DIRS}
     PRIVATE ${GTK3_INCLUDE_DIRS}
     PRIVATE ${VTE_INCLUDE_DIRS}
@@ -49,6 +57,7 @@ target_include_directories(
 
 target_link_directories(
     wintc-cmd
+    PRIVATE ${FONTCONFIG_LIBRARY_DIRS}
     PRIVATE ${GLIB_LIBRARY_DIRS}
     PRIVATE ${GTK3_LIBRARY_DIRS}
     PRIVATE ${VTE_LIBRARY_DIRS}
@@ -57,6 +66,7 @@ target_link_directories(
 
 target_link_libraries(
     wintc-cmd
+    PRIVATE ${FONTCONFIG_LIBRARIES}
     PRIVATE ${GLIB_LIBRARIES}
     PRIVATE ${GTK3_LIBRARIES}
     PRIVATE ${VTE_LIBRARIES}
@@ -71,6 +81,10 @@ wintc_install_icons_into_package()
 install(
     FILES wintc-cmd.desktop
     DESTINATION share/applications
+)
+install(
+    FILES res/oemfon.ttf
+    DESTINATION ${WINTC_ASSETS_INSTALL_DIR}/conhost
 )
 install(
     TARGETS wintc-cmd

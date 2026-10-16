@@ -1,3 +1,4 @@
+bt,rt:fontconfig
 bt,rt:glib2
 bt,rt:gtk3
 bt,rt:vte
