@@ -227,8 +227,12 @@ static void wintc_cmd_window_finalize(
 {
     WinTCCmdWindow* wnd = WINTC_CMD_WINDOW(object);
 
-    g_source_remove(wnd->id_watch_pid);
     g_free(g_steal_pointer(&(wnd->buf_left)));
+
+    if (wnd->id_watch_pid)
+    {
+        g_source_remove(wnd->id_watch_pid);
+    }
 
     (G_OBJECT_CLASS(wintc_cmd_window_parent_class))
         ->finalize(object);
@@ -480,6 +484,8 @@ static void cb_watch_pid_shell(
 )
 {
     WinTCCmdWindow* wnd = WINTC_CMD_WINDOW(user_data);
+
+    wnd->id_watch_pid = 0;
 
     // Just exit
     //
