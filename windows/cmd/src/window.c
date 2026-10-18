@@ -13,6 +13,10 @@
 static void wintc_cmd_window_dispose(
     GObject* object
 );
+static void wintc_cmd_window_finalize(
+    GObject* object
+);
+
 static gboolean cb_io_watch_pty(
     GIOChannel*  source,
     GIOCondition condition,
@@ -49,8 +53,13 @@ struct _WinTCCmdWindow
 
     // State
     //
+    GtkWidget* term;
+
     GPid    pid_shell;
     VtePty* pty;
+
+    gchar* buf_left;
+    gint   buf_left_len;
 };
 
 //
@@ -68,7 +77,8 @@ static void wintc_cmd_window_class_init(
 {
     GObjectClass* object_class = G_OBJECT_CLASS(klass);
 
-    object_class->dispose = wintc_cmd_window_dispose;
+    object_class->dispose  = wintc_cmd_window_dispose;
+    object_class->finalize = wintc_cmd_window_finalize;
 }
 
 static void wintc_cmd_window_init(
@@ -77,7 +87,8 @@ static void wintc_cmd_window_init(
 {
     GError*    error     = NULL;
     GtkWidget* scrollwnd = gtk_scrolled_window_new(NULL, NULL);
-    GtkWidget* term      = vte_terminal_new();
+
+    self->term = vte_terminal_new();
 
     gtk_window_set_default_size(
         GTK_WINDOW(self),
@@ -97,7 +108,7 @@ static void wintc_cmd_window_init(
 
     gtk_container_add(
         GTK_CONTAINER(scrollwnd),
-        term
+        self->term
     );
     gtk_container_add(
         GTK_CONTAINER(self),
@@ -133,7 +144,7 @@ static void wintc_cmd_window_init(
         channel,
         G_IO_IN | G_IO_HUP,
         (GIOFunc) cb_io_watch_pty,
-        term
+        self
     );
 
     g_io_channel_unref(channel);
@@ -143,7 +154,7 @@ static void wintc_cmd_window_init(
     PangoFontDescription* desc =
         pango_font_description_from_string("TerminalVector 9");
 
-    vte_terminal_set_font(VTE_TERMINAL(term), desc);
+    vte_terminal_set_font(VTE_TERMINAL(self->term), desc);
 
     pango_font_description_free(desc);
 
@@ -159,7 +170,7 @@ static void wintc_cmd_window_init(
             wintc_build_query(WINTC_VER_BUILD)
         );
 
-    vte_terminal_feed(VTE_TERMINAL(term), motd, -1);
+    vte_terminal_feed(VTE_TERMINAL(self->term), motd, -1);
 
     g_free(motd);
 
@@ -176,7 +187,7 @@ static void wintc_cmd_window_init(
         s_cmd[1] = g_strdup(g_getenv("SHELL"));
     }
 
-    vte_terminal_set_pty(VTE_TERMINAL(term), self->pty);
+    vte_terminal_set_pty(VTE_TERMINAL(self->term), self->pty);
 
     vte_pty_spawn_async(
         self->pty,
@@ -209,6 +220,18 @@ static void wintc_cmd_window_dispose(
         ->dispose(object);
 }
 
+static void wintc_cmd_window_finalize(
+    GObject* object
+)
+{
+    WinTCCmdWindow* wnd = WINTC_CMD_WINDOW(object);
+
+    g_free(g_steal_pointer(&(wnd->buf_left)));
+
+    (G_OBJECT_CLASS(wintc_cmd_window_parent_class))
+        ->finalize(object);
+}
+
 //
 // PUBLIC FUNCTIONS
 //
@@ -235,7 +258,7 @@ static gboolean cb_io_watch_pty(
     gpointer     user_data
 )
 {
-    VteTerminal* term = VTE_TERMINAL(user_data);
+    WinTCCmdWindow* wnd = WINTC_CMD_WINDOW(user_data);
 
     if (condition & G_IO_HUP)
     {
@@ -248,14 +271,24 @@ static gboolean cb_io_watch_pty(
     GError* error = NULL;
     gsize   n_read = 0;
 
+    if (wnd->buf_left) // Insert any previous leftover buffer to the start
+    {
+        WINTC_LOG_DEBUG("Parsing leftover buffer");
+
+        memcpy(buf, wnd->buf_left, wnd->buf_left_len);
+        g_free(g_steal_pointer(&(wnd->buf_left)));
+    }
+
     GIOStatus status =
         g_io_channel_read_chars(
             source,
-            buf,
-            4096,
+            buf + wnd->buf_left_len,
+            4096 - wnd->buf_left_len,
             &n_read,
             &error
         );
+
+    wnd->buf_left = 0;
 
     if (status == G_IO_STATUS_NORMAL && n_read > 0)
     {
@@ -287,13 +320,16 @@ static gboolean cb_io_watch_pty(
                     }
                 }
 
-                // Didn't find it? bail!
-                //
-                // FIXME: This could fudge things up if an escape sequence
-                //        gets split across buffers...?
+                // Didn't find the terminator in the buffer - store for the
+                // next buffer pass
                 //
                 if (m_idx == n_read)
                 {
+                    wnd->buf_left_len = n_read - i_src;
+                    wnd->buf_left = g_malloc(wnd->buf_left_len);
+
+                    memcpy(wnd->buf_left, &buf[i_src], wnd->buf_left_len);
+
                     break;
                 }
 
@@ -377,7 +413,7 @@ static gboolean cb_io_watch_pty(
             buf_nofmt[i_dst++] = buf[i_src++];
         }
 
-        vte_terminal_feed(term, buf_nofmt, i_dst);
+        vte_terminal_feed(VTE_TERMINAL(wnd->term), buf_nofmt, i_dst);
 
         g_free(buf_nofmt);
     }
