@@ -15,7 +15,7 @@ SubGroups=Accessories,DevOnly,Personalisation,Shell
 
 [Group.Accessories]
 Name=Accessories
-Components=Notepad,Taskmgr
+Components=Cmd,Notepad,Taskmgr
 SubGroups=
 
 [Group.DevOnly]
@@ -30,7 +30,7 @@ SubGroups=ShellCpl,ShellExt
 
 [Group.ShellCpl]
 Name=Control Panel Applets
-Components=CplDesk,CplPrinters,CplSysdm
+Components=CplAppwiz,CplDesk,CplPrinters,CplSysdm
 SubGroups=
 
 [Group.ShellExt]
@@ -70,6 +70,11 @@ Description=The registry service daemon.
 Name=Winver
 Packages=wintc-winver
 Description=The Windows version applet.
+
+[Component.Cmd]
+Name=Command Prompt
+Packages=wintc-cmd
+Description=The command-line interface utility.
 
 [Component.Notepad]
 Name=Notepad
@@ -120,6 +125,11 @@ Description=Launches the Run dialog, replaces xfce4-appfinder.
 Name=Taskbar
 Packages=wintc-taskband
 Description=The Windows taskbar, replaces xfce4-panel.
+
+[Component.CplAppwiz]
+Name=Add or Remove Programs
+Packages=wintc-cpl-appwiz
+Description=The Add or Remove Programs applet.
 
 [Component.CplDesk]
 Name=Desktop Properties
