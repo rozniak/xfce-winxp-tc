@@ -5,6 +5,8 @@
 #include "application.h"
 #include "window.h"
 
+#define S_APP_ID "uk.co.oddmatics.wintc.cmd"
+
 //
 // GTK OOP CLASS/INSTANCE DEFINITIONS
 //
@@ -24,6 +26,9 @@ struct _WinTCCmdApplication
 static void wintc_cmd_application_activate(
     GApplication* application
 );
+static void wintc_cmd_application_startup(
+    GApplication* application
+);
 
 //
 // GTK TYPE DEFINITIONS & CTORS
@@ -41,6 +46,7 @@ static void wintc_cmd_application_class_init(
     GApplicationClass* application_class = G_APPLICATION_CLASS(klass);
 
     application_class->activate = wintc_cmd_application_activate;
+    application_class->startup  = wintc_cmd_application_startup;
 }
 
 static void wintc_cmd_application_init(
@@ -60,6 +66,16 @@ static void wintc_cmd_application_activate(
     gtk_widget_show_all(new_window);
 }
 
+static void wintc_cmd_application_startup(
+    GApplication* application
+)
+{
+    (G_APPLICATION_CLASS(wintc_cmd_application_parent_class))
+        ->startup(application);
+
+    g_set_prgname(S_APP_ID);
+}
+
 //
 // PUBLIC FUNCTIONS
 //
@@ -68,7 +84,7 @@ WinTCCmdApplication* wintc_cmd_application_new(void)
     return WINTC_CMD_APPLICATION(
         g_object_new(
             wintc_cmd_application_get_type(),
-            "application-id", "uk.co.oddmatics.wintc.cmd",
+            "application-id", S_APP_ID,
             NULL
         )
     );

@@ -4,6 +4,6 @@ Comment=Performs text-based (command-line) functions.
 Exec=cmd
 Icon=uk.co.oddmatics.wintc.cmd
 Terminal=false
-StartupNotify=false
+StartupNotify=true
 Type=Application
 Categories=Utility;GTK;
