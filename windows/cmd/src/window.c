@@ -55,6 +55,7 @@ struct _WinTCCmdWindow
     //
     GtkWidget* term;
 
+    guint   id_watch_pid;
     GPid    pid_shell;
     VtePty* pty;
 
@@ -226,6 +227,7 @@ static void wintc_cmd_window_finalize(
 {
     WinTCCmdWindow* wnd = WINTC_CMD_WINDOW(object);
 
+    g_source_remove(wnd->id_watch_pid);
     g_free(g_steal_pointer(&(wnd->buf_left)));
 
     (G_OBJECT_CLASS(wintc_cmd_window_parent_class))
@@ -463,11 +465,12 @@ static void cb_spawn_pty(
 
     // Watch the PID to kill the window when exited
     //
-    g_child_watch_add(
-        wnd->pid_shell,
-        (GChildWatchFunc) cb_watch_pid_shell,
-        wnd
-    );
+    wnd->id_watch_pid =
+        g_child_watch_add(
+            wnd->pid_shell,
+            (GChildWatchFunc) cb_watch_pid_shell,
+            wnd
+        );
 }
 
 static void cb_watch_pid_shell(
