@@ -66,8 +66,9 @@ static void wintc_cmd_window_init(
     WinTCCmdWindow* self
 )
 {
-    GError*    error = NULL;
-    GtkWidget* term  = vte_terminal_new();
+    GError*    error     = NULL;
+    GtkWidget* scrollwnd = gtk_scrolled_window_new(NULL, NULL);
+    GtkWidget* term      = vte_terminal_new();
 
     gtk_window_set_default_size(
         GTK_WINDOW(self),
@@ -75,9 +76,23 @@ static void wintc_cmd_window_init(
         300
     );
 
+    gtk_scrolled_window_set_policy(
+        GTK_SCROLLED_WINDOW(scrollwnd),
+        GTK_POLICY_NEVER,
+        GTK_POLICY_ALWAYS
+    );
+    gtk_scrolled_window_set_overlay_scrolling(
+        GTK_SCROLLED_WINDOW(scrollwnd),
+        FALSE
+    );
+
+    gtk_container_add(
+        GTK_CONTAINER(scrollwnd),
+        term
+    );
     gtk_container_add(
         GTK_CONTAINER(self),
-        term
+        scrollwnd
     );
 
     g_signal_connect(
