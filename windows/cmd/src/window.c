@@ -107,6 +107,11 @@ static void wintc_cmd_window_init(
         FALSE
     );
 
+    vte_terminal_set_cursor_shape(
+        VTE_TERMINAL(self->term),
+        VTE_CURSOR_SHAPE_UNDERLINE
+    );
+
     gtk_container_add(
         GTK_CONTAINER(scrollwnd),
         self->term
