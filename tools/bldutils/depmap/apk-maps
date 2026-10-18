@@ -3,6 +3,8 @@ canberra-->rt-->libcanberra
 canberra-gtk3-->bt,rt-->libcanberra-gtk3
 dbusmenu-gtk3-->bt-->libdbusmenu-gtk3-dev
 dbusmenu-gtk3-->rt-->libdbusmenu-gtk3
+fontconfig-->bt-->fontconfig-dev
+fontconfig-->rt-->fontconfig
 garcon-->bt-->garcon-dev
 garcon-->rt-->garcon
 garcon-gtk3-->bt-->garcon-dev
@@ -41,6 +43,8 @@ sqlite3-->rt-->sqlite
 sysinfo-->bt,rt-->NULL
 upower-glib-->bt-->upower-dev
 upower-glib-->rt-->upower
+vte-->bt-->vte3-dev
+vte-->rt-->vte3
 webkitgtk-->bt-->webkit2gtk-4.1-dev
 webkitgtk-->rt-->webkit2gtk-4.1
 wintc-comctl-->bt,rt-->libwintc-comctl
