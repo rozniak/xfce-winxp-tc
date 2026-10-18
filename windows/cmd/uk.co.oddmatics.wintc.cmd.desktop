@@ -1,8 +1,8 @@
 [Desktop Entry]
 Name=Command Prompt
 Comment=
-Exec=wintc-cmd
-Icon=wintc-cmd
+Exec=cmd
+Icon=uk.co.oddmatics.wintc.cmd
 Terminal=false
 StartupNotify=false
 Type=Application

@@ -79,7 +79,7 @@ wintc_configure_and_install_packaging()
 wintc_install_icons_into_package()
 
 install(
-    FILES wintc-cmd.desktop
+    FILES uk.co.oddmatics.wintc.cmd.desktop
     DESTINATION share/applications
 )
 install(

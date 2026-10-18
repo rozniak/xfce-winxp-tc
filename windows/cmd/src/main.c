@@ -30,8 +30,6 @@ int main(
     WinTCCmdApplication* app = wintc_cmd_application_new();
     int                  status;
 
-    g_set_application_name("Cmd");
-
     status = g_application_run(G_APPLICATION(app), argc, argv);
 
     g_object_unref(app);
