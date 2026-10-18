@@ -95,6 +95,22 @@ static void wintc_cmd_window_init(
 
     pango_font_description_free(desc);
 
+    // Print default str
+    //
+    gchar* motd =
+        g_strdup_printf(
+            "%s [Version %s.%s.%s]\r\n"
+            "(C) Copyright 1985-2005 Microsoft Corp\r\n\n.",
+            wintc_build_query(WINTC_VER_NAME),
+            wintc_build_query(WINTC_VER_MAJOR),
+            wintc_build_query(WINTC_VER_MINOR),
+            wintc_build_query(WINTC_VER_BUILD)
+        );
+
+    vte_terminal_feed(VTE_TERMINAL(term), motd, -1);
+
+    g_free(motd);
+
     // Launch the user's shell
     //
     static gchar* s_cmd[] = {
