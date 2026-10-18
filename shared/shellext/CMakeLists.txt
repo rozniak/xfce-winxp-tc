@@ -40,6 +40,8 @@ add_library(
     src/host.c
     public/host.h
     src/host_priv.h
+    src/if_shwnd.c
+    public/if_shwnd.h
     src/if_uihost.c
     public/if_uihost.h
     src/if_view.c
