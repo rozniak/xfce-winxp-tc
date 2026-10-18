@@ -10,6 +10,9 @@
 //
 // FORWARD DECLARATIONS
 //
+static void wintc_cmd_window_dispose(
+    GObject* object
+);
 static gboolean cb_io_watch_pty(
     GIOChannel*  source,
     GIOCondition condition,
@@ -46,7 +49,8 @@ struct _WinTCCmdWindow
 
     // State
     //
-    GPid pid_shell;
+    GPid    pid_shell;
+    VtePty* pty;
 };
 
 //
@@ -59,8 +63,13 @@ G_DEFINE_TYPE(
 )
 
 static void wintc_cmd_window_class_init(
-    WINTC_UNUSED(WinTCCmdWindowClass* klass)
-) {}
+    WinTCCmdWindowClass* klass
+)
+{
+    GObjectClass* object_class = G_OBJECT_CLASS(klass);
+
+    object_class->dispose = wintc_cmd_window_dispose;
+}
 
 static void wintc_cmd_window_init(
     WinTCCmdWindow* self
@@ -104,9 +113,9 @@ static void wintc_cmd_window_init(
 
     // Create the PTY...
     //
-    VtePty* pty = vte_pty_new_sync(VTE_PTY_DEFAULT, NULL, &error);
+    self->pty = vte_pty_new_sync(VTE_PTY_DEFAULT, NULL, &error);
 
-    if (!pty)
+    if (!(self->pty))
     {
         wintc_display_error_and_clear(&error, NULL);
         return;
@@ -114,7 +123,8 @@ static void wintc_cmd_window_init(
 
     // ...attach to it to do filtering on incoming data
     //
-    GIOChannel* channel = g_io_channel_unix_new(vte_pty_get_fd(pty));
+    GIOChannel* channel =
+        g_io_channel_unix_new(vte_pty_get_fd(self->pty));
 
     g_io_channel_set_encoding(channel, NULL, NULL);
     g_io_channel_set_buffered(channel, FALSE);
@@ -142,7 +152,7 @@ static void wintc_cmd_window_init(
     gchar* motd =
         g_strdup_printf(
             "%s [Version %s.%s.%s]\r\n"
-            "(C) Copyright 1985-2005 Microsoft Corp\r\n\n.",
+            "(C) Copyright 1985-2005 Microsoft Corp\r\n\n",
             wintc_build_query(WINTC_VER_NAME),
             wintc_build_query(WINTC_VER_MAJOR),
             wintc_build_query(WINTC_VER_MINOR),
@@ -166,10 +176,10 @@ static void wintc_cmd_window_init(
         s_cmd[1] = g_strdup(g_getenv("SHELL"));
     }
 
-    vte_terminal_set_pty(VTE_TERMINAL(term), pty);
+    vte_terminal_set_pty(VTE_TERMINAL(term), self->pty);
 
     vte_pty_spawn_async(
-        pty,
+        self->pty,
         g_get_home_dir(),
         s_cmd,
         NULL,
@@ -182,6 +192,21 @@ static void wintc_cmd_window_init(
         (GAsyncReadyCallback) cb_spawn_pty,
         self
     );
+}
+
+//
+// CLASS VIRTUAL METHODS
+//
+static void wintc_cmd_window_dispose(
+    GObject* object
+)
+{
+    WinTCCmdWindow* wnd = WINTC_CMD_WINDOW(object);
+
+    g_clear_object(&(wnd->pty));
+
+    (G_OBJECT_CLASS(wintc_cmd_window_parent_class))
+        ->dispose(object);
 }
 
 //
