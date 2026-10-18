@@ -179,12 +179,13 @@ static GHashTable* S_KNOWN_MAPPINGS_TABLE  = NULL;
 static GHashTable* S_VENDOR_MAPPINGS_TABLE = NULL;
 
 static gchar* S_KNOWN_MAPPINGS[] = {
-    "explorer.desktop",    K_DIR_ACCESSORIES,
-    "firefox.desktop",     K_DIR_ROOT,
-    "firefox-esr.desktop", K_DIR_ROOT,
-    "iexplore.desktop",    K_DIR_ROOT,
-    "mspaint.desktop",     K_DIR_ACCESSORIES,
-    "notepad.desktop",     K_DIR_ACCESSORIES
+    "explorer.desktop",                  K_DIR_ACCESSORIES,
+    "firefox.desktop",                   K_DIR_ROOT,
+    "firefox-esr.desktop",               K_DIR_ROOT,
+    "iexplore.desktop",                  K_DIR_ROOT,
+    "mspaint.desktop",                   K_DIR_ACCESSORIES,
+    "notepad.desktop",                   K_DIR_ACCESSORIES,
+    "uk.co.oddmatics.wintc.cmd.desktop", K_DIR_ACCESSORIES
 };
 
 static const gchar* S_EXCLUDED_CATEGORIES[] = {
