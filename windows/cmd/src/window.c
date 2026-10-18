@@ -15,6 +15,22 @@ static gboolean cb_io_watch_pty(
     GIOCondition condition,
     gpointer     user_data
 );
+static void cb_spawn_pty(
+    GObject*      source_object,
+    GAsyncResult* res,
+    gpointer      user_data
+);
+static void cb_watch_pid_shell(
+    GPid     pid,
+    gint     wait_status,
+    gpointer user_data
+);
+
+static void on_window_map_event(
+    GtkWidget* self,
+    GdkEvent*  event,
+    gpointer   user_data
+);
 
 //
 // GTK OOP CLASS/INSTANCE DEFINITIONS
@@ -27,6 +43,10 @@ struct _WinTCCmdWindowClass
 struct _WinTCCmdWindow
 {
     GtkApplicationWindow __parent__;
+
+    // State
+    //
+    GPid pid_shell;
 };
 
 //
@@ -58,6 +78,13 @@ static void wintc_cmd_window_init(
     gtk_container_add(
         GTK_CONTAINER(self),
         term
+    );
+
+    g_signal_connect(
+        self,
+        "map-event",
+        G_CALLBACK(on_window_map_event),
+        NULL
     );
 
     // Create the PTY...
@@ -137,8 +164,8 @@ static void wintc_cmd_window_init(
         NULL,
         -1,
         NULL,
-        NULL, // cb
-        term
+        (GAsyncReadyCallback) cb_spawn_pty,
+        self
     );
 }
 
@@ -322,4 +349,74 @@ static gboolean cb_io_watch_pty(
     }
 
     return TRUE;
+}
+
+static void cb_spawn_pty(
+    GObject*      source_object,
+    GAsyncResult* res,
+    gpointer      user_data
+)
+{
+    WinTCCmdWindow* wnd = WINTC_CMD_WINDOW(user_data);
+
+    GError* error = NULL;
+
+    if (
+        !vte_pty_spawn_finish(
+            VTE_PTY(source_object),
+            res,
+            &(wnd->pid_shell),
+            &error
+        )
+    )
+    {
+        wintc_log_error_and_clear(&error);
+
+        // If mapped we should destroy now, otherwise set PID to -1 so it'll
+        // destroy on map-event
+        //
+        wnd->pid_shell = -1;
+
+        if (gtk_widget_get_mapped(GTK_WIDGET(wnd)))
+        {
+            gtk_window_close(GTK_WINDOW(wnd));
+        }
+
+        return;
+    }
+
+    // Watch the PID to kill the window when exited
+    //
+    g_child_watch_add(
+        wnd->pid_shell,
+        (GChildWatchFunc) cb_watch_pid_shell,
+        wnd
+    );
+}
+
+static void cb_watch_pid_shell(
+    WINTC_UNUSED(GPid pid),
+    WINTC_UNUSED(gint wait_status),
+    gpointer user_data
+)
+{
+    WinTCCmdWindow* wnd = WINTC_CMD_WINDOW(user_data);
+
+    // Just exit
+    //
+    gtk_window_close(GTK_WINDOW(wnd));
+}
+
+static void on_window_map_event(
+    GtkWidget* self,
+    WINTC_UNUSED(GdkEvent* event),
+    WINTC_UNUSED(gpointer user_data)
+)
+{
+    WinTCCmdWindow* wnd = WINTC_CMD_WINDOW(self);
+
+    if (wnd->pid_shell < 0)
+    {
+        gtk_window_close(GTK_WINDOW(wnd));
+    }
 }
