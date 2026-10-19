@@ -787,6 +787,7 @@ static void wintc_sh_drive_monitor_add_mount(
         );
 
         g_free(obj_path);
+        g_object_unref(volume);
     }
 
     // Install mount icon
@@ -806,7 +807,6 @@ static void wintc_sh_drive_monitor_add_mount(
 
     g_object_unref(file);
     g_object_unref(icon);
-    g_object_unref(volume);
 }
 
 static void wintc_sh_drive_monitor_add_volume(

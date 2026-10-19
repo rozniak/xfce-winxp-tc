@@ -106,3 +106,28 @@ gboolean wintc_ishext_shell_window_navigate_simple(
 
     return iface->navigate_simple(shwnd, path, error);
 }
+
+//
+// PUBLIC FUNCTIONS
+//
+void _wintc_ishext_shell_window_location_changed(
+    WinTCIShextShellWindow* shwnd
+)
+{
+    g_signal_emit(
+        shwnd,
+        wintc_ishext_shell_window_signals[SIGNAL_LOCATION_CHANGED],
+        0
+    );
+}
+
+void _wintc_ishext_shell_window_mode_changed(
+    WinTCIShextShellWindow* shwnd
+)
+{
+    g_signal_emit(
+        shwnd,
+        wintc_ishext_shell_window_signals[SIGNAL_MODE_CHANGED],
+        0
+    );
+}

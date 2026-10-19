@@ -2,40 +2,30 @@
 <interface>
   <object class="GtkToolbar" id="toolbar">
     <property name="visible">True</property>
-    <property name="can-focus">False</property>
     <child>
       <object class="GtkToolItem">
         <property name="visible">True</property>
-        <property name="can-focus">False</property>
         <property name="sensitive">False</property>
         <child>
           <object class="GtkLabel">
             <property name="visible">True</property>
-            <property name="can-focus">False</property>
             <property name="label" translatable="yes">Address</property>
           </object>
         </child>
       </object>
-      <packing>
-        <property name="expand">False</property>
-        <property name="homogeneous">False</property>
-      </packing>
     </child>
     <child>
       <object class="GtkToolItem">
         <property name="visible">True</property>
-        <property name="can-focus">False</property>
         <child>
           <object class="GtkComboBoxText" id="combo-address">
             <property name="visible">True</property>
-            <property name="can-focus">False</property>
             <property name="has-entry">True</property>
             <property name="valign">GTK_ALIGN_CENTER</property>
 
             <child internal-child="entry">
               <object class="GtkEntry">
                 <property name="visible">True</property>
-                <property name="can-focus">True</property>
               </object>
             </child>
           </object>
@@ -49,43 +39,27 @@
     <child>
       <object class="GtkToolItem">
         <property name="visible">True</property>
-        <property name="can-focus">False</property>
         <child>
           <object class="GtkButton" id="button-nav-go">
             <property name="visible">True</property>
-            <property name="can-focus">False</property>
-            <property name="receives-default">False</property>
 
             <child>
               <object class="GtkBox">
                 <property name="visible">True</property>
-                <property name="can-focus">False</property>
                 <property name="orientation">horizontal</property>
 
                 <child>
                   <object class="GtkImage">
                     <property name="visible">True</property>
-                    <property name="can-focus">False</property>
                     <property name="icon-name">wintc-go-button</property>
                     <property name="pixel-size">20</property>
                   </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">False</property>
-                    <property name="position">0</property>
-                  </packing>
                 </child>
                 <child>
                   <object class="GtkLabel">
                     <property name="visible">True</property>
-                    <property name="can-focus">False</property>
                     <property name="label" translatable="yes">Go</property>
                   </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">False</property>
-                    <property name="position">1</property>
-                  </packing>
                 </child>
               </object>
             </child>
@@ -97,10 +71,6 @@
           </object>
         </child>
       </object>
-      <packing>
-        <property name="expand">False</property>
-        <property name="homogeneous">False</property>
-      </packing>
     </child>
   </object>
 </interface>

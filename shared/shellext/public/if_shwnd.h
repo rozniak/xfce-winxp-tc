@@ -18,6 +18,12 @@ typedef enum _WinTCShextBrowserMode
     WINTC_SHEXT_BROWSER_MODE_INTERNET
 } WinTCShextBrowserMode;
 
+typedef enum _WinTCShextShellWindowExtension
+{
+    WINTC_SHEXT_SHWND_HOSTEXT_INVALID = 0,
+    WINTC_SHEXT_SHWND_HOSTEXT_TOOLBAR
+} WinTCShextShellWindowExtension;
+
 //
 // GTK INTERFACE DEFINITIONS
 //
@@ -74,6 +80,16 @@ gboolean wintc_ishext_shell_window_navigate_simple(
     WinTCIShextShellWindow* shwnd,
     const gchar*            path,
     GError**                error
+);
+
+//
+// PUBLIC FUNCTIONS
+//
+void _wintc_ishext_shell_window_location_changed(
+    WinTCIShextShellWindow* shwnd
+);
+void _wintc_ishext_shell_window_mode_changed(
+    WinTCIShextShellWindow* shwnd
 );
 
 #endif

@@ -35,13 +35,6 @@ enum
     N_PROPERTIES
 };
 
-enum
-{
-    SIGNAL_LOCATION_CHANGED = 0,
-    SIGNAL_MODE_CHANGED,
-    N_SIGNALS
-};
-
 typedef enum _WinTCExplorerNavMode
 {
     WINTC_EXPLORER_NAV_NONE,
@@ -53,6 +46,13 @@ typedef enum _WinTCExplorerNavMode
 //
 // FORWARD DECLARATIONS
 //
+static void wintc_explorer_window_ishext_ui_host_interface_init(
+    WinTCIShextUIHostInterface* iface
+);
+static void wintc_explorer_window_ishext_shell_window_interface_init(
+    WinTCIShextShellWindowInterface* iface
+);
+
 static void wintc_explorer_window_constructed(
     GObject* object
 );
@@ -73,6 +73,31 @@ static void wintc_explorer_window_set_property(
     guint         prop_id,
     const GValue* value,
     GParamSpec*   pspec
+);
+
+static GtkWidget* wintc_explorer_window_get_ext_widget(
+    WinTCIShextUIHost* host,
+    guint              ext_id,
+    GType              expected_type,
+    gpointer           ctx
+);
+
+static void wintc_explorer_window_x_get_location(
+    WinTCIShextShellWindow* shwnd,
+    WinTCShextPathInfo*     path_info
+);
+static WinTCShextBrowserMode wintc_explorer_window_x_get_mode(
+    WinTCIShextShellWindow* shwnd
+);
+gboolean wintc_explorer_window_x_navigate(
+    WinTCIShextShellWindow*   shwnd,
+    const WinTCShextPathInfo* path_info,
+    GError**                  error
+);
+gboolean wintc_explorer_window_x_navigate_simple(
+    WinTCIShextShellWindow* shwnd,
+    const gchar*            path,
+    GError**                error
 );
 
 static void wintc_explorer_window_do_navigation_via_path(
@@ -197,7 +222,6 @@ static GActionEntry s_window_actions[] = {
 };
 
 static GParamSpec* wintc_explorer_window_properties[N_PROPERTIES] = { 0 };
-static gint        wintc_explorer_window_signals[N_SIGNALS]       = { 0 };
 
 //
 // GTK OOP CLASS/INSTANCE DEFINITIONS
@@ -231,8 +255,8 @@ struct _WinTCExplorerWindow
     gchar*                active_sidebar_id;
     WinTCExplorerSidebar* active_sidebar;
 
-    WinTCExplorerToolbar* toolbar_adr;
-    WinTCExplorerToolbar* toolbar_std;
+    WinTCShextUIController* ctl_adr;
+    WinTCExplorerToolbar*   toolbar_std;
 
     GList*               history_backward;
     GList*               history_forward;
@@ -258,10 +282,18 @@ struct _WinTCExplorerWindow
 //
 // GTK TYPE DEFINITION & CTORS
 //
-G_DEFINE_TYPE(
+G_DEFINE_TYPE_WITH_CODE(
     WinTCExplorerWindow,
     wintc_explorer_window,
-    GTK_TYPE_APPLICATION_WINDOW
+    GTK_TYPE_APPLICATION_WINDOW,
+    G_IMPLEMENT_INTERFACE(
+        WINTC_TYPE_ISHEXT_UI_HOST,
+        wintc_explorer_window_ishext_ui_host_interface_init
+    )
+    G_IMPLEMENT_INTERFACE(
+        WINTC_TYPE_ISHEXT_SHELL_WINDOW,
+        wintc_explorer_window_ishext_shell_window_interface_init
+    )
 )
 
 static void wintc_explorer_window_class_init(
@@ -322,31 +354,6 @@ static void wintc_explorer_window_class_init(
         N_PROPERTIES,
         wintc_explorer_window_properties
     );
-
-    wintc_explorer_window_signals[SIGNAL_LOCATION_CHANGED] =
-        g_signal_new(
-            "location-changed",
-            G_TYPE_FROM_CLASS(object_class),
-            G_SIGNAL_RUN_FIRST,
-            0,
-            NULL,
-            NULL,
-            g_cclosure_marshal_VOID__VOID,
-            G_TYPE_NONE,
-            0
-        );
-    wintc_explorer_window_signals[SIGNAL_MODE_CHANGED] =
-        g_signal_new(
-            "mode-changed",
-            G_TYPE_FROM_CLASS(object_class),
-            G_SIGNAL_RUN_FIRST,
-            0,
-            NULL,
-            NULL,
-            g_cclosure_marshal_VOID__VOID,
-            G_TYPE_NONE,
-            0
-        );
 }
 
 static void wintc_explorer_window_init(
@@ -423,8 +430,6 @@ static void wintc_explorer_window_init(
 
     // FIXME: Toolbars are configurable!
     //
-    self->toolbar_adr =
-        wintc_exp_address_toolbar_new(self);
     self->toolbar_std =
         wintc_exp_standard_toolbar_new(self);
 
@@ -432,10 +437,14 @@ static void wintc_explorer_window_init(
         GTK_CONTAINER(self->box_toolbars),
         wintc_explorer_toolbar_get_toolbar(self->toolbar_std)
     );
-    gtk_container_add(
-        GTK_CONTAINER(self->box_toolbars),
-        wintc_explorer_toolbar_get_toolbar(self->toolbar_adr)
-    );
+
+    // FIXME: Manually spawning in the address bar...
+    //
+    self->ctl_adr =
+        wintc_shext_ui_controller_new_from_type(
+            WINTC_TYPE_EXP_ADDRESS_TOOLBAR,
+            WINTC_ISHEXT_UI_HOST(self)
+        );
 
     // Attempt to set the throbber pixbuf
     //
@@ -451,6 +460,23 @@ static void wintc_explorer_window_init(
                 50
             );
     }
+}
+
+static void wintc_explorer_window_ishext_ui_host_interface_init(
+    WinTCIShextUIHostInterface* iface
+)
+{
+    iface->get_ext_widget = wintc_explorer_window_get_ext_widget;
+}
+
+static void wintc_explorer_window_ishext_shell_window_interface_init(
+    WinTCIShextShellWindowInterface* iface
+)
+{
+    iface->get_location    = wintc_explorer_window_x_get_location;
+    iface->get_mode        = wintc_explorer_window_x_get_mode;
+    iface->navigate        = wintc_explorer_window_x_navigate;
+    iface->navigate_simple = wintc_explorer_window_x_navigate_simple;
 }
 
 //
@@ -523,7 +549,7 @@ static void wintc_explorer_window_dispose(
 
     g_clear_object(&(wnd->loader));
     g_clear_object(&(wnd->active_sidebar));
-    g_clear_object(&(wnd->toolbar_adr));
+    g_clear_object(&(wnd->ctl_adr));
     g_clear_object(&(wnd->toolbar_std));
 
     g_clear_list(
@@ -713,6 +739,139 @@ static void wintc_explorer_window_set_property(
             G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
             break;
     }
+}
+
+//
+// INTERFACE METHODS (WinTCIShextUIHost)
+//
+static GtkWidget* wintc_explorer_window_get_ext_widget(
+    WinTCIShextUIHost* host,
+    guint              ext_id,
+    GType              expected_type,
+    gpointer           ctx
+)
+{
+    WinTCExplorerWindow* wnd = WINTC_EXPLORER_WINDOW(host);
+
+    switch ((WinTCShextShellWindowExtension) ext_id)
+    {
+        // Toolbars - ctx is the toolbar created by the shell extension, we
+        // simply host it
+        //
+        // FIXME: Should track the currently loading shell extension so we
+        //        know where this toolbar came from
+        //
+        case WINTC_SHEXT_SHWND_HOSTEXT_TOOLBAR:
+            if (
+                expected_type != GTK_TYPE_TOOLBAR ||
+                !GTK_IS_TOOLBAR(ctx)
+            )
+            {
+                g_critical(
+                    "%s",
+                    "explorer: toolbar requested, but toolbar not expected"
+                );
+                return NULL;
+            }
+
+            gtk_container_add(
+                GTK_CONTAINER(wnd->box_toolbars),
+                GTK_WIDGET(ctx)
+            );
+
+            return ctx;
+
+        default:
+            g_critical("explorer: invalid extension requested: %d", ext_id);
+            return NULL;
+    }
+}
+
+//
+// INTERFACE METHODS (WinTCIShextShellWindow)
+//
+static void wintc_explorer_window_x_get_location(
+    WinTCIShextShellWindow* shwnd,
+    WinTCShextPathInfo*     path_info
+)
+{
+    WinTCExplorerWindow* wnd = WINTC_EXPLORER_WINDOW(shwnd);
+
+    // FIXME: temp - using internal API modes
+    //
+    switch (wnd->mode)
+    {
+        case WINTC_EXPLORER_WINDOW_MODE_LOCAL:
+            if (!wnd->local_path.base_path)
+            {
+                return;
+            }
+
+            wintc_shext_path_info_copy(
+                path_info,
+                &(wnd->local_path)
+            );
+
+            break;
+
+        case WINTC_EXPLORER_WINDOW_MODE_INTERNET:
+            wintc_shext_path_info_free_data(path_info);
+
+            path_info->base_path = g_strdup(wnd->internet_path);
+
+            break;
+
+        default:
+            g_critical("explorer: in invalid state %d", wnd->mode);
+            break;
+    }
+}
+
+static WinTCShextBrowserMode wintc_explorer_window_x_get_mode(
+    WinTCIShextShellWindow* shwnd
+)
+{
+    WinTCExplorerWindow* wnd = WINTC_EXPLORER_WINDOW(shwnd);
+
+    // FIXME: temp - translating from internal API atm
+    //
+    return (WinTCShextBrowserMode) wnd->mode;
+}
+
+gboolean wintc_explorer_window_x_navigate(
+    WinTCIShextShellWindow*   shwnd,
+    const WinTCShextPathInfo* path_info,
+    WINTC_UNUSED(GError** error)
+)
+{
+    WinTCExplorerWindow* wnd = WINTC_EXPLORER_WINDOW(shwnd);
+
+    // FIXME: Shift the implementation to here
+    //
+    wintc_explorer_window_do_navigation_via_path_info(
+        wnd,
+        path_info
+    );
+
+    return TRUE;
+}
+
+gboolean wintc_explorer_window_x_navigate_simple(
+    WinTCIShextShellWindow* shwnd,
+    const gchar*            path,
+    WINTC_UNUSED(GError** error)
+)
+{
+    WinTCExplorerWindow* wnd = WINTC_EXPLORER_WINDOW(shwnd);
+
+    // FIXME: Shift the implementation to here
+    //
+    wintc_explorer_window_do_navigation_via_path(
+        wnd,
+        path
+    );
+
+    return TRUE;
 }
 
 //
@@ -1227,10 +1386,8 @@ static void wintc_explorer_window_switch_mode_to(
 
     // Emit signal for things like toolbars etc.
     //
-    g_signal_emit(
-        wnd,
-        wintc_explorer_window_signals[SIGNAL_MODE_CHANGED],
-        0
+    _wintc_ishext_shell_window_mode_changed(
+        WINTC_ISHEXT_SHELL_WINDOW(wnd)
     );
 }
 
@@ -1537,10 +1694,8 @@ static void on_browser_load_changed(
                 &(wnd->local_path)
             );
 
-            g_signal_emit(
-                wnd,
-                wintc_explorer_window_signals[SIGNAL_LOCATION_CHANGED],
-                0
+            _wintc_ishext_shell_window_location_changed(
+                WINTC_ISHEXT_SHELL_WINDOW(wnd)
             );
 
             // Update action(s)
@@ -1707,10 +1862,8 @@ static void on_webkit_browser_load_changed(
                 )
             );
 
-            g_signal_emit(
-                wnd,
-                wintc_explorer_window_signals[SIGNAL_LOCATION_CHANGED],
-                0
+            _wintc_ishext_shell_window_location_changed(
+                WINTC_ISHEXT_SHELL_WINDOW(wnd)
             );
 
             break;

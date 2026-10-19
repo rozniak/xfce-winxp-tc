@@ -24,24 +24,23 @@ static void on_combo_address_entry_activate(
     gpointer  user_data
 );
 static void on_explorer_wnd_location_changed(
-    WinTCExplorerWindow* wnd,
-    gpointer             user_data
+    WinTCIShextShellWindow* shwnd,
+    gpointer                user_data
 );
 
 //
 // GTK OOP CLASS/INSTANCE DEFINITIONS
 //
-struct _WinTCExpAddressToolbarClass
-{
-    WinTCExplorerToolbarClass __parent__;
-};
-
 struct _WinTCExpAddressToolbar
 {
-    WinTCExplorerToolbar __parent__;
+    WinTCShextUIController __parent__;
+
+    WinTCIShextShellWindow* shwnd;
 
     // UI
     //
+    GtkWidget* toolbar;
+
     GtkWidget* button_nav_go;
     GtkWidget* combo_address;
 };
@@ -52,7 +51,7 @@ struct _WinTCExpAddressToolbar
 G_DEFINE_TYPE(
     WinTCExpAddressToolbar,
     wintc_exp_address_toolbar,
-    WINTC_TYPE_EXPLORER_TOOLBAR
+    WINTC_TYPE_SHEXT_UI_CONTROLLER
 )
 
 static void wintc_exp_address_toolbar_class_init(
@@ -65,53 +64,8 @@ static void wintc_exp_address_toolbar_class_init(
 }
 
 static void wintc_exp_address_toolbar_init(
-    WinTCExpAddressToolbar* self
-)
-{
-    WinTCExplorerToolbar* toolbar = WINTC_EXPLORER_TOOLBAR(self);
-
-    GtkBuilder* builder =
-        gtk_builder_new_from_resource(
-            "/uk/oddmatics/wintc/explorer/adrbar.ui"
-        );
-
-    wintc_lc_builder_preprocess_widget_text(builder);
-
-    // Replace toolbar with the built one
-    //
-    g_clear_object(&(toolbar->toolbar));
-
-    toolbar->toolbar =
-        GTK_WIDGET(
-            g_object_ref(
-                gtk_builder_get_object(builder, "toolbar")
-            )
-        );
-
-    // Pull out other widgets we need
-    //
-    self->button_nav_go =
-        GTK_WIDGET(gtk_builder_get_object(builder, "button-nav-go"));
-    self->combo_address =
-        GTK_WIDGET(gtk_builder_get_object(builder, "combo-address"));
-
-    g_object_unref(builder);
-
-    // Connect signals
-    //
-    g_signal_connect(
-        self->button_nav_go,
-        "clicked",
-        G_CALLBACK(on_button_nav_go_clicked),
-        self
-    );
-    g_signal_connect(
-        gtk_bin_get_child(GTK_BIN(self->combo_address)),
-        "activate",
-        G_CALLBACK(on_combo_address_entry_activate),
-        self
-    );
-}
+    WINTC_UNUSED(WinTCExpAddressToolbar* self)
+) {}
 
 //
 // CLASS VIRTUAL METHODS
@@ -120,34 +74,66 @@ static void wintc_exp_address_toolbar_constructed(
     GObject* object
 )
 {
-    WinTCExplorerToolbar* toolbar = WINTC_EXPLORER_TOOLBAR(object);
+    (G_OBJECT_CLASS(wintc_exp_address_toolbar_parent_class))
+        ->constructed(object);
+
+    WinTCExpAddressToolbar* ctl_adr = WINTC_EXP_ADDRESS_TOOLBAR(object);
+
+    // Create the toolbar from builder
+    //
+    GtkBuilder* builder =
+        gtk_builder_new_from_resource(
+            "/uk/oddmatics/wintc/explorer/adrbar.ui"
+        );
+
+    wintc_lc_builder_preprocess_widget_text(builder);
+
+    wintc_builder_get_objects(
+        builder,
+        "toolbar",       &(ctl_adr->toolbar),
+        "button-nav-go", &(ctl_adr->button_nav_go),
+        "combo-address", &(ctl_adr->combo_address),
+        NULL
+    );
+
+    // Create toolbar in host shell window
+    //
+    WinTCIShextUIHost* ui_host =
+        wintc_shext_ui_controller_get_ui_host(
+            WINTC_SHEXT_UI_CONTROLLER(ctl_adr)
+        );
+
+    ctl_adr->shwnd = WINTC_ISHEXT_SHELL_WINDOW(ui_host);
+
+    wintc_ishext_ui_host_get_ext_widget(
+        ui_host,
+        WINTC_SHEXT_SHWND_HOSTEXT_TOOLBAR,
+        GTK_TYPE_TOOLBAR,
+        ctl_adr->toolbar
+    );
+
+    g_object_unref(builder);
 
     // Connect to location changed signal to update the entry
     //
     g_signal_connect(
-        toolbar->owner_explorer_wnd,
-        "location_changed",
-        G_CALLBACK(on_explorer_wnd_location_changed),
-        object
+        ctl_adr->button_nav_go,
+        "clicked",
+        G_CALLBACK(on_button_nav_go_clicked),
+        ctl_adr
+    );
+    g_signal_connect(
+        gtk_bin_get_child(GTK_BIN(ctl_adr->combo_address)),
+        "activate",
+        G_CALLBACK(on_combo_address_entry_activate),
+        ctl_adr
     );
 
-    (G_OBJECT_CLASS(wintc_exp_address_toolbar_parent_class))
-        ->constructed(object);
-}
-
-//
-// PUBLIC FUNCTIONS
-//
-WinTCExplorerToolbar* wintc_exp_address_toolbar_new(
-    WinTCExplorerWindow* wnd
-)
-{
-    return WINTC_EXPLORER_TOOLBAR(
-        g_object_new(
-            WINTC_TYPE_EXP_ADDRESS_TOOLBAR,
-            "owner-explorer", wnd,
-            NULL
-        )
+    g_signal_connect(
+        ctl_adr->shwnd,
+        "location-changed",
+        G_CALLBACK(on_explorer_wnd_location_changed),
+        ctl_adr
     );
 }
 
@@ -159,19 +145,14 @@ static void on_button_nav_go_clicked(
     gpointer user_data
 )
 {
-    WinTCExplorerToolbar*   toolbar     = WINTC_EXPLORER_TOOLBAR(user_data);
-    WinTCExpAddressToolbar* toolbar_adr = WINTC_EXP_ADDRESS_TOOLBAR(user_data);
+    WinTCExpAddressToolbar* ctl_adr = WINTC_EXP_ADDRESS_TOOLBAR(user_data);
 
-    GtkWidget* entry = gtk_bin_get_child(GTK_BIN(toolbar_adr->combo_address));
+    GtkWidget* entry = gtk_bin_get_child(GTK_BIN(ctl_adr->combo_address));
 
-    g_action_activate(
-        g_action_map_lookup_action(
-            G_ACTION_MAP(toolbar->owner_explorer_wnd),
-            "nav-go"
-        ),
-        g_variant_new_string(
-            gtk_entry_get_text(GTK_ENTRY(entry))
-        )
+    wintc_ishext_shell_window_navigate_simple(
+        ctl_adr->shwnd,
+        gtk_entry_get_text(GTK_ENTRY(entry)),
+        NULL // FIXME: Error handling
     );
 }
 
@@ -180,27 +161,27 @@ static void on_combo_address_entry_activate(
     gpointer user_data
 )
 {
-    WinTCExpAddressToolbar* toolbar_adr = WINTC_EXP_ADDRESS_TOOLBAR(user_data);
+    WinTCExpAddressToolbar* ctl_adr = WINTC_EXP_ADDRESS_TOOLBAR(user_data);
 
     gtk_widget_activate(
-        GTK_WIDGET(toolbar_adr->button_nav_go)
+        GTK_WIDGET(ctl_adr->button_nav_go)
     );
 }
 
 static void on_explorer_wnd_location_changed(
-    WinTCExplorerWindow* wnd,
-    gpointer             user_data
+    WinTCIShextShellWindow* shwnd,
+    gpointer                user_data
 )
 {
-    WinTCExpAddressToolbar* toolbar_adr = WINTC_EXP_ADDRESS_TOOLBAR(user_data);
+    WinTCExpAddressToolbar* ctl_adr = WINTC_EXP_ADDRESS_TOOLBAR(user_data);
 
     GtkWidget*         entry     = gtk_bin_get_child(
-                                       GTK_BIN(toolbar_adr->combo_address)
+                                       GTK_BIN(ctl_adr->combo_address)
                                    );
     WinTCShextPathInfo path_info = { 0 };
 
-    wintc_explorer_window_get_location(
-        wnd,
+    wintc_ishext_shell_window_get_location(
+        shwnd,
         &path_info
     );
 
