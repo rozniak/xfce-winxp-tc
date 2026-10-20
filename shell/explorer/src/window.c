@@ -15,11 +15,15 @@
 #include "sidebars/fldrside.h"
 #include "sidebars/webside.h"
 #include "toolbar.h"
-#include "toolbars/adrbar.h"
 #include "toolbars/stdbar.h"
 #include "window.h"
 
 #define EXPLORER_HISTORY_LIMIT 10 // FIXME: Check Windows
+
+#define S_TOOLBAR_GROUP_NAME "ShToolbar"
+#define S_TOOLBAR_KEY_LIB  "Lib"
+#define S_TOOLBAR_KEY_NAME "Name"
+#define S_TOOLBAR_KEY_USE  "UseInBrowser"
 
 //
 // PRIVATE ENUMS
@@ -42,6 +46,15 @@ typedef enum _WinTCExplorerNavMode
     WINTC_EXPLORER_NAV_GOING_BACK,
     WINTC_EXPLORER_NAV_GOING_FORWARD
 } WinTCExplorerNavMode;
+
+//
+// PRIVATE STRUCTURES
+//
+typedef struct _WinTCShellToolbarInfo
+{
+    gchar*     name;
+    GtkWidget* toolbar;
+} WinTCShellToolbarInfo;
 
 //
 // FORWARD DECLARATIONS
@@ -128,6 +141,10 @@ static void wintc_explorer_window_switch_mode_to(
 );
 static void wintc_explorer_window_update_history(
     WinTCExplorerWindow* wnd
+);
+
+static void wintc_shell_toolbar_info_free(
+    WinTCShellToolbarInfo* toolbar_info
 );
 
 static void action_about(
@@ -240,6 +257,9 @@ struct _WinTCExplorerWindow
     WinTCShBrowser*       browser;
     WinTCShFolderOptions* fldr_opts;
     WinTCShextHost*       shext_host;
+
+    GHashTable* map_lib_to_toolbar_info;
+    GtkWidget*  latest_toolbar;
 
     // State
     //
@@ -361,7 +381,16 @@ static void wintc_explorer_window_init(
 )
 {
     GtkBuilder* builder;
+    GError*     error = NULL;
     GtkWidget*  main_box;
+
+    self->map_lib_to_toolbar_info =
+        g_hash_table_new_full(
+            g_str_hash,
+            g_str_equal,
+            (GDestroyNotify) g_free,
+            (GDestroyNotify) wintc_shell_toolbar_info_free
+        );
 
     // Define GActions
     //
@@ -428,7 +457,8 @@ static void wintc_explorer_window_init(
         TRUE
     );
 
-    // FIXME: Toolbars are configurable!
+    // FIXME: Standard toolbar is being manually inserted and relies on old
+    //        code for now
     //
     self->toolbar_std =
         wintc_exp_standard_toolbar_new(self);
@@ -438,13 +468,136 @@ static void wintc_explorer_window_init(
         wintc_explorer_toolbar_get_toolbar(self->toolbar_std)
     );
 
-    // FIXME: Manually spawning in the address bar...
+    // Init toolbars
     //
-    self->ctl_adr =
-        wintc_shext_ui_controller_new_from_type(
-            WINTC_TYPE_EXP_ADDRESS_TOOLBAR,
-            WINTC_ISHEXT_UI_HOST(self)
+    GList* list_tb_inis =
+        wintc_sh_fs_get_names_as_list(
+            WINTC_ASSETS_DIR "/toolbar",
+            TRUE,
+            G_FILE_TEST_EXISTS,
+            FALSE,
+            &error
         );
+
+    for (GList* iter = list_tb_inis; iter; iter = iter->next)
+    {
+        GKeyFile* ini       = g_key_file_new();
+        gchar*    lib_name  = NULL;
+        gchar*    lib_path  = NULL;
+        gchar*    lib_fpath = NULL;
+
+        if (
+            !g_key_file_load_from_file(
+                ini,
+                (gchar*) iter->data,
+                G_KEY_FILE_NONE,
+                &error
+            ) ||
+            !g_key_file_get_boolean(
+                ini,
+                S_TOOLBAR_GROUP_NAME,
+                S_TOOLBAR_KEY_USE,
+                &error
+            )
+        )
+        {
+            goto cleanup_ini;
+        }
+
+        lib_name =
+            g_key_file_get_string(
+                ini,
+                S_TOOLBAR_GROUP_NAME,
+                S_TOOLBAR_KEY_NAME,
+                NULL
+            );
+        lib_path =
+            g_key_file_get_string(
+                ini,
+                S_TOOLBAR_GROUP_NAME,
+                S_TOOLBAR_KEY_LIB,
+                NULL
+            );
+
+        if (!lib_name || !lib_path)
+        {
+            goto cleanup_ini;
+        }
+
+        lib_fpath =
+            g_build_path(
+                G_DIR_SEPARATOR_S,
+                WINTC_SYSTEM_LIB_DIR,
+                "wintc",
+                "toolbar",
+                lib_path,
+                NULL
+            );
+
+        // Attempt to load the toolbar - it will call get_ext_widget()
+        //
+        WinTCShextExtFunc fn_shext =
+            wintc_shext_ext_get_api(lib_fpath);
+
+        if (!fn_shext || !fn_shext(self, &error))
+        {
+            goto cleanup_ini;
+        }
+
+        if (!(self->latest_toolbar))
+        {
+            g_warning(
+                "explorer: %s was loaded but didn't create a toolbar",
+                lib_path
+            );
+            goto cleanup_ini;
+        }
+
+        // Toolbar loaded, store it now
+        //
+        WinTCShellToolbarInfo* toolbar_info =
+            g_new(WinTCShellToolbarInfo, 1);
+
+        toolbar_info->name    = g_steal_pointer(&lib_name);
+        toolbar_info->toolbar = g_steal_pointer(&(self->latest_toolbar));
+
+        g_hash_table_insert(
+            self->map_lib_to_toolbar_info,
+            g_steal_pointer(&lib_path),
+            toolbar_info
+        );
+
+cleanup_ini:
+        if (error)
+        {
+            wintc_log_error_and_clear(&error);
+        }
+
+        g_free(lib_name);
+        g_free(lib_path);
+        g_free(lib_fpath);
+        g_key_file_unref(ini);
+    }
+
+    // FIXME: Manually insert the Address Bar, hacky
+    //
+    WinTCShellToolbarInfo* tb_adrbar =
+        g_hash_table_lookup(
+            self->map_lib_to_toolbar_info,
+            "libwintc-toolbar-address.so"
+        );
+
+    if (tb_adrbar)
+    {
+        gtk_container_add(
+            GTK_CONTAINER(self->box_toolbars),
+            tb_adrbar->toolbar
+        );
+    }
+    else
+    {
+        g_warning("%s", "explorer: could not find Address Bar");
+    }
 
     // Attempt to set the throbber pixbuf
     //
@@ -560,6 +713,13 @@ static void wintc_explorer_window_dispose(
         &(wnd->history_forward),
         (GDestroyNotify) wintc_shext_path_info_free
     );
+
+    if (wnd->map_lib_to_toolbar_info)
+    {
+        g_hash_table_destroy(
+            g_steal_pointer(&(wnd->map_lib_to_toolbar_info))
+        );
+    }
 
     (G_OBJECT_CLASS(wintc_explorer_window_parent_class))->dispose(object);
 }
@@ -758,9 +918,6 @@ static GtkWidget* wintc_explorer_window_get_ext_widget(
         // Toolbars - ctx is the toolbar created by the shell extension, we
         // simply host it
         //
-        // FIXME: Should track the currently loading shell extension so we
-        //        know where this toolbar came from
-        //
         case WINTC_SHEXT_SHWND_HOSTEXT_TOOLBAR:
             if (
                 expected_type != GTK_TYPE_TOOLBAR ||
@@ -774,10 +931,17 @@ static GtkWidget* wintc_explorer_window_get_ext_widget(
                 return NULL;
             }
 
-            gtk_container_add(
-                GTK_CONTAINER(wnd->box_toolbars),
-                GTK_WIDGET(ctx)
-            );
+            if (wnd->latest_toolbar)
+            {
+                g_critical(
+                    "%s",
+                    "explorer: attempted to create more than one toolbar"
+                );
+                return NULL;
+            }
+
+            wnd->latest_toolbar = GTK_WIDGET(ctx);
+            g_object_ref(wnd->latest_toolbar);
 
             return ctx;
 
@@ -1543,6 +1707,15 @@ static void wintc_explorer_window_update_history(
     wnd->nav_mode = WINTC_EXPLORER_NAV_NONE;
 
     wintc_shext_path_info_free_data(&path_info);
+}
+
+static void wintc_shell_toolbar_info_free(
+    WinTCShellToolbarInfo* toolbar_info
+)
+{
+    g_free(toolbar_info->name);
+    g_object_unref(toolbar_info->toolbar);
+    g_free(toolbar_info);
 }
 
 //

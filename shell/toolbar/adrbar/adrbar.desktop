@@ -1,0 +1,5 @@
+[ShToolbar]
+Name=Address Bar
+Lib=libwintc-toolbar-address.so
+UseInBrowser=true
+UseInChrome=true

@@ -20,6 +20,13 @@
 #define WINTC_CONFIG_DIR "/etc/wintc"
 
 /**
+ * @def WINTC_SYSTEM_LIB_DIR
+ *
+ * The absolute path for the directory that contains libraries.
+ */
+#define WINTC_SYSTEM_LIB_DIR "@CMAKE_INSTALL_PREFIX@/@LIB_DIR@"
+
+/**
  * @def WINTC_SYSTEM_BIN_DIR
  *
  * The absolute path for the directory that contains binaries.

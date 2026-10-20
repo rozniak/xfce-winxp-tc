@@ -4,8 +4,6 @@
 #include <wintc/shellext.h>
 #include <wintc/shlang.h>
 
-#include "../toolbar.h"
-#include "../window.h"
 #include "adrbar.h"
 
 //
@@ -83,7 +81,7 @@ static void wintc_exp_address_toolbar_constructed(
     //
     GtkBuilder* builder =
         gtk_builder_new_from_resource(
-            "/uk/oddmatics/wintc/explorer/adrbar.ui"
+            "/uk/oddmatics/wintc/toolbar/adrbar/adrbar.ui"
         );
 
     wintc_lc_builder_preprocess_widget_text(builder);

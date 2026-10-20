@@ -29,17 +29,16 @@ wintc_resolve_library(wintc-comgtk   WINTC_COMGTK   PRIVATE)
 wintc_resolve_library(wintc-exec     WINTC_EXEC     PRIVATE)
 wintc_resolve_library(wintc-shcommon WINTC_SHCOMMON PRIVATE)
 
-configure_file(src/host_priv.h.in ${PROJECT_ROOT}/src/host_priv.h @ONLY)
-
 add_library(
     libwintc-shellext
     public/category.h
     public/dnd.h
     src/error.c
     public/error.h
+    src/ext.c
+    public/ext.h
     src/host.c
     public/host.h
-    src/host_priv.h
     src/if_shwnd.c
     public/if_shwnd.h
     src/if_uihost.c

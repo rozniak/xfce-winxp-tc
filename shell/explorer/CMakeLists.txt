@@ -54,8 +54,6 @@ add_executable(
     src/sidebars/webside.h
     src/toolbar.c
     src/toolbar.h
-    src/toolbars/adrbar.c
-    src/toolbars/adrbar.h
     src/toolbars/stdbar.c
     src/toolbars/stdbar.h
     src/window.c

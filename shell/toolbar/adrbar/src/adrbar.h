@@ -5,9 +5,6 @@
 #include <gtk/gtk.h>
 #include <wintc/shellext.h>
 
-#include "../toolbar.h"
-#include "../window.h"
-
 //
 // GTK OOP BOILERPLATE
 //

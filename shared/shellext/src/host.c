@@ -9,7 +9,8 @@
 #include "../public/host.h"
 #include "../public/if_view.h"
 #include "../public/viewitem.h"
-#include "host_priv.h"
+
+#define SHEXT_LIB_DIR WINTC_SYSTEM_LIB_DIR "/wintc/shext"
 
 //
 // PRIVATE ENUMS
