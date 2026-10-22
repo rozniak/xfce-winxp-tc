@@ -48,15 +48,6 @@ typedef enum _WinTCExplorerNavMode
 } WinTCExplorerNavMode;
 
 //
-// PRIVATE STRUCTURES
-//
-typedef struct _WinTCShellToolbarInfo
-{
-    gchar*     name;
-    GtkWidget* toolbar;
-} WinTCShellToolbarInfo;
-
-//
 // FORWARD DECLARATIONS
 //
 static void wintc_explorer_window_ishext_ui_host_interface_init(
@@ -141,10 +132,6 @@ static void wintc_explorer_window_switch_mode_to(
 );
 static void wintc_explorer_window_update_history(
     WinTCExplorerWindow* wnd
-);
-
-static void wintc_shell_toolbar_info_free(
-    WinTCShellToolbarInfo* toolbar_info
 );
 
 static void action_about(
@@ -388,8 +375,8 @@ static void wintc_explorer_window_init(
         g_hash_table_new_full(
             g_str_hash,
             g_str_equal,
-            (GDestroyNotify) g_free,
-            (GDestroyNotify) wintc_shell_toolbar_info_free
+            NULL,
+            (GDestroyNotify) wintc_shext_toolbar_info_free
         );
 
     // Define GActions
@@ -470,118 +457,49 @@ static void wintc_explorer_window_init(
 
     // Init toolbars
     //
-    GList* list_tb_inis =
-        wintc_sh_fs_get_names_as_list(
-            WINTC_ASSETS_DIR "/toolbar",
-            TRUE,
-            G_FILE_TEST_EXISTS,
-            FALSE,
-            &error
+    GList* list_toolbars =
+        wintc_shext_ext_get_toolbar_apis(
+            WINTC_SHEXT_SHWND_KIND_BROWSER
         );
 
-    for (GList* iter = list_tb_inis; iter; iter = iter->next)
+    for (GList* iter = list_toolbars; iter; iter = iter->next)
     {
-        GKeyFile* ini       = g_key_file_new();
-        gchar*    lib_name  = NULL;
-        gchar*    lib_path  = NULL;
-        gchar*    lib_fpath = NULL;
+        WinTCShextToolbarInfo* toolbar_info =
+            (WinTCShextToolbarInfo*) iter->data;
 
-        if (
-            !g_key_file_load_from_file(
-                ini,
-                (gchar*) iter->data,
-                G_KEY_FILE_NONE,
-                &error
-            ) ||
-            !g_key_file_get_boolean(
-                ini,
-                S_TOOLBAR_GROUP_NAME,
-                S_TOOLBAR_KEY_USE,
-                &error
-            )
-        )
+        if (!toolbar_info->fn_shext(self, &error))
         {
-            goto cleanup_ini;
-        }
-
-        lib_name =
-            g_key_file_get_string(
-                ini,
-                S_TOOLBAR_GROUP_NAME,
-                S_TOOLBAR_KEY_NAME,
-                NULL
-            );
-        lib_path =
-            g_key_file_get_string(
-                ini,
-                S_TOOLBAR_GROUP_NAME,
-                S_TOOLBAR_KEY_LIB,
-                NULL
-            );
-
-        if (!lib_name || !lib_path)
-        {
-            goto cleanup_ini;
-        }
-
-        lib_fpath =
-            g_build_path(
-                G_DIR_SEPARATOR_S,
-                WINTC_SYSTEM_LIB_DIR,
-                "wintc",
-                "toolbar",
-                lib_path,
-                NULL
-            );
-
-        // Attempt to load the toolbar - it will call get_ext_widget()
-        //
-        WinTCShextExtFunc fn_shext =
-            wintc_shext_ext_get_api(lib_fpath);
-
-        if (!fn_shext || !fn_shext(self, &error))
-        {
-            goto cleanup_ini;
+            wintc_log_error_and_clear(&error);
+            continue;
         }
 
         if (!(self->latest_toolbar))
         {
             g_warning(
                 "explorer: %s was loaded but didn't create a toolbar",
-                lib_path
+                toolbar_info->soname
             );
-            goto cleanup_ini;
+
+            continue;
         }
 
-        // Toolbar loaded, store it now
-        //
-        WinTCShellToolbarInfo* toolbar_info =
-            g_new(WinTCShellToolbarInfo, 1);
-
-        toolbar_info->name    = g_steal_pointer(&lib_name);
         toolbar_info->toolbar = g_steal_pointer(&(self->latest_toolbar));
 
         g_hash_table_insert(
             self->map_lib_to_toolbar_info,
-            g_steal_pointer(&lib_path),
-            toolbar_info
+            toolbar_info->soname,
+            g_steal_pointer(&(iter->data)) // toolbar_info
         );
-
-cleanup_ini:
-        if (error)
-        {
-            wintc_log_error_and_clear(&error);
-        }
-
-        g_free(lib_name);
-        g_free(lib_path);
-        g_free(lib_fpath);
-        g_key_file_unref(ini);
     }
+
+    g_clear_list(
+        &list_toolbars,
+        (GDestroyNotify) wintc_shext_toolbar_info_free
+    );
 
     // FIXME: Manually insert the Address Bar, hacky
     //
-    WinTCShellToolbarInfo* tb_adrbar =
+    WinTCShextToolbarInfo* tb_adrbar =
         g_hash_table_lookup(
             self->map_lib_to_toolbar_info,
             "libwintc-toolbar-address.so"
@@ -1707,15 +1625,6 @@ static void wintc_explorer_window_update_history(
     wnd->nav_mode = WINTC_EXPLORER_NAV_NONE;
 
     wintc_shext_path_info_free_data(&path_info);
-}
-
-static void wintc_shell_toolbar_info_free(
-    WinTCShellToolbarInfo* toolbar_info
-)
-{
-    g_free(toolbar_info->name);
-    g_object_unref(toolbar_info->toolbar);
-    g_free(toolbar_info);
 }
 
 //

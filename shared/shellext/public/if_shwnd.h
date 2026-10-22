@@ -24,6 +24,13 @@ typedef enum _WinTCShextShellWindowExtension
     WINTC_SHEXT_SHWND_HOSTEXT_TOOLBAR
 } WinTCShextShellWindowExtension;
 
+typedef enum _WinTCShextShellWindowKind
+{
+    WINTC_SHEXT_SHWND_KIND_INVALID = 0,
+    WINTC_SHEXT_SHWND_KIND_BROWSER,
+    WINTC_SHEXT_SHWND_KIND_CHROME
+} WinTCShextShellWindowKind;
+
 //
 // GTK INTERFACE DEFINITIONS
 //

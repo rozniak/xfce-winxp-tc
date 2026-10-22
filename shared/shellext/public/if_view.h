@@ -249,7 +249,7 @@ void wintc_shext_path_info_demangle_uri(
     const gchar*        uri
 );
 gchar* wintc_shext_path_info_get_as_single_path(
-    WinTCShextPathInfo* path_info
+    const WinTCShextPathInfo* path_info
 );
 
 void wintc_shext_path_info_copy(
