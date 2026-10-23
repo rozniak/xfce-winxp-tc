@@ -7,7 +7,7 @@
 
 // Taskband host API
 //
-#define WINTC_TASKBAND_HOSTEXT_TOOLBAR 1
+#define WINTC_TASKBAND_HOSTEXT_TOOLBAR 1000
 
 // Notification area host API
 //

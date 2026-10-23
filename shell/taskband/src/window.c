@@ -2,6 +2,7 @@
 #include <glib.h>
 #include <gtk/gtk.h>
 #include <wintc/comgtk.h>
+#include <wintc/exec.h>
 #include <wintc/shelldpa.h>
 #include <wintc/shellext.h>
 
@@ -31,12 +32,33 @@ typedef enum
 //
 // FORWARD DECLARATIONS
 //
+static void wintc_taskband_window_ishext_shell_window_interface_init(
+    WinTCIShextShellWindowInterface* iface
+);
 static void wintc_taskband_window_ishext_ui_host_interface_init(
     WinTCIShextUIHostInterface* iface
 );
 
 static void wintc_taskband_window_dispose(
     GObject* object
+);
+
+static void wintc_taskband_window_get_location(
+    WinTCIShextShellWindow* shwnd,
+    WinTCShextPathInfo*     path_info
+);
+static WinTCShextBrowserMode wintc_taskband_window_get_mode(
+    WinTCIShextShellWindow* shwnd
+);
+static gboolean wintc_taskband_window_navigate(
+    WinTCIShextShellWindow*   shwnd,
+    const WinTCShextPathInfo* path_info,
+    GError**                  error
+);
+static gboolean wintc_taskband_window_navigate_simple(
+    WinTCIShextShellWindow* shwnd,
+    const gchar*            path,
+    GError**                error
 );
 
 static GtkWidget* wintc_taskband_window_get_ext_widget(
@@ -77,6 +99,9 @@ struct _WinTCTaskbandWindow
 
     GSList* toolbars;
 
+    GHashTable* map_lib_to_toolbar_info;
+    GtkWidget*  latest_toolbar;
+
     WinTCShextUIController* uictl_qaccess;
     WinTCShextUIController* uictl_notifarea;
     WinTCShextUIController* uictl_start;
@@ -90,6 +115,10 @@ G_DEFINE_TYPE_WITH_CODE(
     WinTCTaskbandWindow,
     wintc_taskband_window,
     WINTC_TYPE_DPA_PANEL_WINDOW,
+    G_IMPLEMENT_INTERFACE(
+        WINTC_TYPE_ISHEXT_SHELL_WINDOW,
+        wintc_taskband_window_ishext_shell_window_interface_init
+    )
     G_IMPLEMENT_INTERFACE(
         WINTC_TYPE_ISHEXT_UI_HOST,
         wintc_taskband_window_ishext_ui_host_interface_init
@@ -109,6 +138,58 @@ static void wintc_taskband_window_init(
     WinTCTaskbandWindow* self
 )
 {
+    GError* error = NULL;
+
+    self->map_lib_to_toolbar_info =
+        g_hash_table_new_full(
+            g_str_hash,
+            g_str_equal,
+            NULL,
+            (GDestroyNotify) wintc_shext_toolbar_info_free
+        );
+
+    // Init toolbars
+    //
+    GList* list_toolbars =
+        wintc_shext_ext_get_toolbar_apis(
+            WINTC_SHEXT_SHWND_KIND_CHROME
+        );
+
+    for (GList* iter = list_toolbars; iter; iter = iter->next)
+    {
+        WinTCShextToolbarInfo* toolbar_info =
+            (WinTCShextToolbarInfo*) iter->data;
+
+        if (!toolbar_info->fn_shext(self, &error))
+        {
+            wintc_log_error_and_clear(&error);
+            continue;
+        }
+
+        if (!(self->latest_toolbar))
+        {
+            g_warning(
+                "taskband: %s was loaded but didn't create a toolbar",
+                toolbar_info->soname
+            );
+
+            continue;
+        }
+
+        toolbar_info->toolbar = g_steal_pointer(&(self->latest_toolbar));
+
+        g_hash_table_insert(
+            self->map_lib_to_toolbar_info,
+            toolbar_info->soname,
+            g_steal_pointer(&(iter->data)) // toolbar_info
+        );
+    }
+
+    g_clear_list(
+        &list_toolbars,
+        (GDestroyNotify) wintc_shext_toolbar_info_free
+    );
+
     //
     // WINDOW SETUP
     //
@@ -140,6 +221,16 @@ static void wintc_taskband_window_init(
     );
 }
 
+static void wintc_taskband_window_ishext_shell_window_interface_init(
+    WinTCIShextShellWindowInterface* iface
+)
+{
+    iface->get_location    = wintc_taskband_window_get_location;
+    iface->get_mode        = wintc_taskband_window_get_mode;
+    iface->navigate        = wintc_taskband_window_navigate;
+    iface->navigate_simple = wintc_taskband_window_navigate_simple;
+}
+
 static void wintc_taskband_window_ishext_ui_host_interface_init(
     WinTCIShextUIHostInterface* iface
 )
@@ -163,7 +254,57 @@ static void wintc_taskband_window_dispose(
     g_clear_object(&(taskband->uictl_start));
     g_clear_object(&(taskband->uictl_taskbuttons));
 
+    if (taskband->map_lib_to_toolbar_info)
+    {
+        g_hash_table_destroy(
+            g_steal_pointer(&(taskband->map_lib_to_toolbar_info))
+        );
+    }
+
     (G_OBJECT_CLASS(wintc_taskband_window_parent_class))->dispose(object);
+}
+
+//
+// INTERFACE METHODS (WinTCIShextShellWindow)
+//
+static void wintc_taskband_window_get_location(
+    WINTC_UNUSED(WinTCIShextShellWindow* shwnd),
+    WINTC_UNUSED(WinTCShextPathInfo* path_info)
+) {}
+
+static WinTCShextBrowserMode wintc_taskband_window_get_mode(
+    WINTC_UNUSED(WinTCIShextShellWindow* shwnd)
+)
+{
+    return WINTC_SHEXT_BROWSER_MODE_INVALID;
+}
+
+static gboolean wintc_taskband_window_navigate(
+    WinTCIShextShellWindow*   shwnd,
+    const WinTCShextPathInfo* path_info,
+    GError**                  error
+)
+{
+    gchar*   path = wintc_shext_path_info_get_as_single_path(path_info);
+    gboolean ret  = wintc_taskband_window_navigate_simple(shwnd, path, error);
+
+    g_free(path);
+
+    return ret;
+}
+
+static gboolean wintc_taskband_window_navigate_simple(
+    WINTC_UNUSED(WinTCIShextShellWindow* shwnd),
+    const gchar* path,
+    GError**     error
+)
+{
+    gchar*   cmd = g_strdup_printf("explorer %s", path);
+    gboolean ret = wintc_launch_command(cmd, error);
+
+    g_free(cmd);
+
+    return ret;
 }
 
 //
@@ -178,47 +319,79 @@ static GtkWidget* wintc_taskband_window_get_ext_widget(
 {
     WinTCTaskbandWindow* taskband = WINTC_TASKBAND_WINDOW(host);
 
-    // Only toolbars are supported
-    //
-    if (ext_id != WINTC_TASKBAND_HOSTEXT_TOOLBAR)
+    switch (ext_id)
     {
-        g_critical("taskband: unsupported ext widget type: %d", ext_id);
-        return NULL;
+        // Shell toolbars - ctx coming in is the toolbar created by the shell
+        // extension, we just host it
+        //
+        case WINTC_SHEXT_SHWND_HOSTEXT_TOOLBAR:
+            if (
+                expected_type != GTK_TYPE_TOOLBAR ||
+                !GTK_IS_TOOLBAR(ctx)
+            )
+            {
+                g_critical(
+                    "%s",
+                    "taskband: toolbar requested, but toolbar not expected"
+                );
+                return NULL;
+            }
+
+            if (taskband->latest_toolbar)
+            {
+                g_critical(
+                    "%s",
+                    "taskband: attempted to create more than one toolbar"
+                );
+                return NULL;
+            }
+
+            taskband->latest_toolbar = GTK_WIDGET(ctx);
+            g_object_ref(taskband->latest_toolbar);
+
+            return ctx;
+
+        // Internal toolbars
+        //
+        case WINTC_TASKBAND_HOSTEXT_TOOLBAR:
+            // No special type expected, we host any kind of widget as a 'toolbar'
+            //
+            if (expected_type != GTK_TYPE_WIDGET || !GTK_IS_WIDGET(ctx))
+            {
+                g_critical("%s", "taskband: invalid ext widget type");
+                return NULL;
+            }
+
+            // Go ahead and import the widget
+            //
+            // FIXME: We expand based on hexpand... this isn't SUPER intuitive when
+            //        vertical taskbar support is implemented, but it'll do
+            //
+            GtkWidget* toolbar = GTK_WIDGET(ctx);
+            gboolean   expand  = gtk_widget_get_hexpand(toolbar);
+
+            taskband->toolbars =
+                g_slist_append(
+                    taskband->toolbars,
+                    toolbar
+                );
+
+            gtk_box_pack_start(
+                GTK_BOX(taskband->main_box),
+                toolbar,
+                expand,
+                expand,
+                0
+            );
+
+            gtk_widget_show_all(toolbar);
+
+            return ctx;
+
+        default:
+            g_critical("taskband: invalid extension requested: %d", ext_id);
+            return NULL;
     }
-
-    // No special type expected, we host any kind of widget as a 'toolbar'
-    //
-    if (expected_type != GTK_TYPE_WIDGET || !GTK_IS_WIDGET(ctx))
-    {
-        g_critical("%s", "taskband: invalid ext widget type");
-        return NULL;
-    }
-
-    // Go ahead and import the widget
-    //
-    // FIXME: We expand based on hexpand... this isn't SUPER intuitive when
-    //        vertical taskbar support is implemented, but it'll do
-    //
-    GtkWidget* toolbar = GTK_WIDGET(ctx);
-    gboolean   expand  = gtk_widget_get_hexpand(toolbar);
-
-    taskband->toolbars =
-        g_slist_append(
-            taskband->toolbars,
-            toolbar
-        );
-
-    gtk_box_pack_start(
-        GTK_BOX(taskband->main_box),
-        toolbar,
-        expand,
-        expand,
-        0
-    );
-
-    gtk_widget_show_all(toolbar);
-
-    return ctx;
 }
 
 //

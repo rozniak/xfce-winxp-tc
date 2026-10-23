@@ -20,11 +20,6 @@
 
 #define EXPLORER_HISTORY_LIMIT 10 // FIXME: Check Windows
 
-#define S_TOOLBAR_GROUP_NAME "ShToolbar"
-#define S_TOOLBAR_KEY_LIB  "Lib"
-#define S_TOOLBAR_KEY_NAME "Name"
-#define S_TOOLBAR_KEY_USE  "UseInBrowser"
-
 //
 // PRIVATE ENUMS
 //
