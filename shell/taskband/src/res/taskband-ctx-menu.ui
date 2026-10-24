@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <object class="GtkMenu" id="context-menu">
+    <property name="visible">True</property>
+    <property name="reserve-toggle-size">False</property>
+  </object>
+
+  <menu id="menu-model">
+    <section>
+      <submenu>
+        <attribute name="label">Toolbars</attribute>
+
+        <section>
+          <item>
+            <attribute name="label">Address</attribute>
+            <attribute name="action">win.toolbar-toggle</attribute>
+          </item>
+          <item>
+            <attribute name="label">Quick Access</attribute>
+            <attribute name="action">win.toolbar-toggle</attribute>
+          </item>
+        </section>
+      </submenu>
+    </section>
+
+    <section>
+      <item>
+        <attribute name="label">Cascade Windows</attribute>
+        <attribute name="action">win.wm-cascade</attribute>
+      </item>
+      <item>
+        <attribute name="label">Tile Windows Horizontally</attribute>
+        <attribute name="action">win.wm-tilehorz</attribute>
+      </item>
+      <item>
+        <attribute name="label">Tile Windows Vertically</attribute>
+        <attribute name="action">win.wm-tilevert</attribute>
+      </item>
+      <item>
+        <attribute name="label">Show the Desktop</attribute>
+        <attribute name="action">win.wm-showdesk</attribute>
+      </item>
+    </section>
+
+    <section>
+      <item>
+        <attribute name="label">Task Manager</attribute>
+        <attribute name="action">win.taskmgr</attribute>
+      </item>
+    </section>
+
+    <section>
+      <item>
+        <attribute name="label">Lock the Taskbar</attribute>
+        <attribute name="action">win.lock-toggle</attribute>
+      </item>
+      <item>
+        <attribute name="label">Properties</attribute>
+        <attribute name="action">win.properties</attribute>
+      </item>
+    </section>
+  </menu>
+</interface>

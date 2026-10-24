@@ -816,7 +816,7 @@ static gboolean on_window_button_button_release_event(
                 event
             );
 
-            break;
+            return TRUE;
 
         default: break;
     }

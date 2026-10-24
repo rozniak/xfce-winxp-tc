@@ -68,6 +68,11 @@ static GtkWidget* wintc_taskband_window_get_ext_widget(
     gpointer           ctx
 );
 
+static gboolean on_window_button_release_event(
+    GtkWidget*      self,
+    GdkEventButton* event,
+    gpointer        user_data
+);
 static gboolean on_window_map_event(
     GtkWidget*   self,
     GdkEventAny* event,
@@ -85,6 +90,8 @@ static const WinTCTaskbandToolbarId S_LAYOUT[] = {
     WINTC_TASKBAND_TOOLBAR_POST_BUTTONS,
     WINTC_TASKBAND_TOOLBAR_NOTIFICATION_AREA
 };
+
+static GtkWidget* S_CTX_MENU = NULL;
 
 //
 // GTK OOP CLASS/INSTANCE DEFINITIONS
@@ -106,6 +113,9 @@ struct _WinTCTaskbandWindow
     WinTCShextUIController* uictl_notifarea;
     WinTCShextUIController* uictl_start;
     WinTCShextUIController* uictl_taskbuttons;
+
+    GtkWidget* box_pre;
+    GtkWidget* box_post;
 };
 
 //
@@ -132,6 +142,34 @@ static void wintc_taskband_window_class_init(
     GObjectClass* object_class = G_OBJECT_CLASS(klass);
 
     object_class->dispose = wintc_taskband_window_dispose;
+
+    // Create context menu
+    //
+    GtkBuilder* builder;
+    GMenuModel* menu_model;
+
+    builder =
+        gtk_builder_new_from_resource(
+            "/uk/oddmatics/wintc/taskband/taskband-ctx-menu.ui"
+        );
+
+    wintc_builder_get_objects(
+        builder,
+        "context-menu", &S_CTX_MENU,
+        "menu-model",   &menu_model,
+        NULL
+    );
+
+    g_object_ref(S_CTX_MENU);
+
+    gtk_menu_shell_bind_model(
+        GTK_MENU_SHELL(S_CTX_MENU),
+        menu_model,
+        NULL,
+        TRUE
+    );
+
+    g_object_unref(builder);
 }
 
 static void wintc_taskband_window_init(
@@ -209,6 +247,13 @@ static void wintc_taskband_window_init(
     gtk_container_add(
         GTK_CONTAINER(self),
         self->main_box
+    );
+
+    g_signal_connect(
+        self,
+        "button-release-event",
+        G_CALLBACK(on_window_button_release_event),
+        NULL
     );
 
     // Connect to map-event signal to spawn toolbars once the window opens
@@ -426,6 +471,25 @@ void wintc_taskband_window_toggle_start_menu(
 //
 // CALLBACKS
 //
+static gboolean on_window_button_release_event(
+    WINTC_UNUSED(GtkWidget* self),
+    GdkEventButton* event,
+    WINTC_UNUSED(gpointer user_data)
+)
+{
+    if (event->button != GDK_BUTTON_SECONDARY)
+    {
+        return FALSE;
+    }
+
+    gtk_menu_popup_at_pointer(
+        GTK_MENU(S_CTX_MENU),
+        (GdkEvent*) event
+    );
+
+    return TRUE;
+}
+
 static gboolean on_window_map_event(
     GtkWidget* self,
     WINTC_UNUSED(GdkEventAny* event),
@@ -465,12 +529,28 @@ static gboolean on_window_map_event(
 
                 break;
 
+            case WINTC_TASKBAND_TOOLBAR_PRE_BUTTONS:
+                taskband->box_pre =
+                    gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+
+                gtk_widget_show_all(taskband->box_pre);
+
+                break;
+
             case WINTC_TASKBAND_TOOLBAR_BUTTONS:
                 taskband->uictl_taskbuttons =
                     wintc_shext_ui_controller_new_from_type(
                         WINTC_TYPE_TOOLBAR_TASK_BUTTONS,
                         WINTC_ISHEXT_UI_HOST(taskband)
                     );
+
+                break;
+
+            case WINTC_TASKBAND_TOOLBAR_POST_BUTTONS:
+                taskband->box_post =
+                    gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+
+                gtk_widget_show_all(taskband->box_post);
 
                 break;
 
@@ -481,11 +561,6 @@ static gboolean on_window_map_event(
                         WINTC_ISHEXT_UI_HOST(taskband)
                     );
 
-                break;
-
-            case WINTC_TASKBAND_TOOLBAR_PRE_BUTTONS:
-            case WINTC_TASKBAND_TOOLBAR_POST_BUTTONS:
-                WINTC_LOG_DEBUG("Not implemented toolbar: %d", S_LAYOUT[i]);
                 break;
         }
     }
