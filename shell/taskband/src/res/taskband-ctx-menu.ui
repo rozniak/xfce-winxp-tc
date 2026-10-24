@@ -10,14 +10,14 @@
       <submenu>
         <attribute name="label">Toolbars</attribute>
 
+        <section id="section-toolbars">
+          <!-- Populated dynamically -->
+        </section>
+
         <section>
           <item>
-            <attribute name="label">Address</attribute>
-            <attribute name="action">win.toolbar-toggle</attribute>
-          </item>
-          <item>
-            <attribute name="label">Quick Access</attribute>
-            <attribute name="action">win.toolbar-toggle</attribute>
+            <attribute name="label">New Toolbar...</attribute>
+            <attribute name="action">win.toolbar-new</attribute>
           </item>
         </section>
       </submenu>

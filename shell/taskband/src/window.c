@@ -68,6 +68,16 @@ static GtkWidget* wintc_taskband_window_get_ext_widget(
     gpointer           ctx
 );
 
+static GtkWidget* wintc_taskband_window_get_context_menu(
+    WinTCTaskbandWindow* taskband
+);
+
+static void action_toolbar_toggle(
+    GSimpleAction* self,
+    GVariant*      parameter,
+    gpointer       user_data
+);
+
 static gboolean on_window_button_release_event(
     GtkWidget*      self,
     GdkEventButton* event,
@@ -91,7 +101,15 @@ static const WinTCTaskbandToolbarId S_LAYOUT[] = {
     WINTC_TASKBAND_TOOLBAR_NOTIFICATION_AREA
 };
 
-static GtkWidget* S_CTX_MENU = NULL;
+static GActionEntry S_ACTIONS[] = {
+    {
+        .name           = "toolbar-toggle",
+        .activate       = action_toolbar_toggle,
+        .parameter_type = "s",
+        .state          = NULL,
+        .change_state   = NULL
+    }
+};
 
 //
 // GTK OOP CLASS/INSTANCE DEFINITIONS
@@ -103,6 +121,9 @@ struct _WinTCTaskbandWindow
     // UI
     //
     GtkWidget* main_box;
+    GtkWidget* box_pre;
+    GtkWidget* box_post;
+    GtkWidget* menu_ctx;
 
     GSList* toolbars;
 
@@ -113,9 +134,6 @@ struct _WinTCTaskbandWindow
     WinTCShextUIController* uictl_notifarea;
     WinTCShextUIController* uictl_start;
     WinTCShextUIController* uictl_taskbuttons;
-
-    GtkWidget* box_pre;
-    GtkWidget* box_post;
 };
 
 //
@@ -142,34 +160,6 @@ static void wintc_taskband_window_class_init(
     GObjectClass* object_class = G_OBJECT_CLASS(klass);
 
     object_class->dispose = wintc_taskband_window_dispose;
-
-    // Create context menu
-    //
-    GtkBuilder* builder;
-    GMenuModel* menu_model;
-
-    builder =
-        gtk_builder_new_from_resource(
-            "/uk/oddmatics/wintc/taskband/taskband-ctx-menu.ui"
-        );
-
-    wintc_builder_get_objects(
-        builder,
-        "context-menu", &S_CTX_MENU,
-        "menu-model",   &menu_model,
-        NULL
-    );
-
-    g_object_ref(S_CTX_MENU);
-
-    gtk_menu_shell_bind_model(
-        GTK_MENU_SHELL(S_CTX_MENU),
-        menu_model,
-        NULL,
-        TRUE
-    );
-
-    g_object_unref(builder);
 }
 
 static void wintc_taskband_window_init(
@@ -254,6 +244,15 @@ static void wintc_taskband_window_init(
         "button-release-event",
         G_CALLBACK(on_window_button_release_event),
         NULL
+    );
+
+    // Add actions to window
+    //
+    g_action_map_add_action_entries(
+        G_ACTION_MAP(self),
+        S_ACTIONS,
+        G_N_ELEMENTS(S_ACTIONS),
+        self
     );
 
     // Connect to map-event signal to spawn toolbars once the window opens
@@ -469,21 +468,150 @@ void wintc_taskband_window_toggle_start_menu(
 }
 
 //
+// PRIVATE FUNCTIONS
+//
+static GtkWidget* wintc_taskband_window_get_context_menu(
+    WinTCTaskbandWindow* taskband
+)
+{
+    if (taskband->menu_ctx)
+    {
+        return taskband->menu_ctx;
+    }
+
+    // Create the context menu now
+    //
+    GtkBuilder* builder;
+    GtkWidget*  menu;
+    GMenuModel* menu_model;
+    GMenu*      section_toolbars;
+
+    builder =
+        gtk_builder_new_from_resource(
+            "/uk/oddmatics/wintc/taskband/taskband-ctx-menu.ui"
+        );
+
+    wintc_builder_get_objects(
+        builder,
+        "context-menu",     &menu,
+        "menu-model",       &menu_model,
+        "section-toolbars", &section_toolbars,
+        NULL
+    );
+
+    gtk_menu_attach_to_widget(
+        GTK_MENU(menu),
+        GTK_WIDGET(taskband),
+        NULL
+    );
+
+    gtk_menu_shell_bind_model(
+        GTK_MENU_SHELL(menu),
+        menu_model,
+        NULL,
+        TRUE
+    );
+
+    // Add the toolbars to the menu
+    //
+    GHashTableIter         iter;
+    WinTCShextToolbarInfo* toolbar_info;
+
+    g_hash_table_iter_init(
+        &iter,
+        taskband->map_lib_to_toolbar_info
+    );
+
+    while (g_hash_table_iter_next(&iter, NULL, (gpointer) &toolbar_info))
+    {
+        GMenuItem* menu_item = g_menu_item_new(NULL, NULL);
+
+        g_menu_item_set_label(menu_item, toolbar_info->name);
+
+        g_menu_item_set_action_and_target(
+            menu_item,
+            "win.toolbar-toggle",
+            "s",
+            toolbar_info->soname
+        );
+
+        g_menu_append_item(
+            section_toolbars,
+            menu_item
+        );
+
+        g_object_unref(menu_item);
+    }
+
+    taskband->menu_ctx = g_object_ref(menu);
+
+    g_object_unref(builder);
+
+    return taskband->menu_ctx;
+}
+
+//
 // CALLBACKS
 //
+static void action_toolbar_toggle(
+    WINTC_UNUSED(GSimpleAction* self),
+    GVariant* parameter,
+    gpointer  user_data
+)
+{
+    WinTCTaskbandWindow* taskband = WINTC_TASKBAND_WINDOW(user_data);
+
+    // Look for the toolbar...
+    //
+    const gchar*           soname = g_variant_get_string(parameter, NULL);
+    WinTCShextToolbarInfo* toolbar_info;
+
+    toolbar_info =
+        g_hash_table_lookup(taskband->map_lib_to_toolbar_info, soname);
+
+    if (!toolbar_info)
+    {
+        g_critical("taskband: unknown toolbar requested: %s", soname);
+        return;
+    }
+
+    // Toggle based on whether the widget is currently mapped
+    //
+    // FIXME: Assuming post box here
+    //
+    if (gtk_widget_get_mapped(toolbar_info->toolbar))
+    {
+        gtk_container_remove(
+            GTK_CONTAINER(taskband->box_post),
+            toolbar_info->toolbar
+        );
+    }
+    else
+    {
+        gtk_container_add(
+            GTK_CONTAINER(taskband->box_post),
+            toolbar_info->toolbar
+        );
+
+        gtk_widget_show_all(toolbar_info->toolbar);
+    }
+}
+
 static gboolean on_window_button_release_event(
-    WINTC_UNUSED(GtkWidget* self),
+    GtkWidget*      self,
     GdkEventButton* event,
     WINTC_UNUSED(gpointer user_data)
 )
 {
+    WinTCTaskbandWindow* taskband = WINTC_TASKBAND_WINDOW(self);
+
     if (event->button != GDK_BUTTON_SECONDARY)
     {
         return FALSE;
     }
 
     gtk_menu_popup_at_pointer(
-        GTK_MENU(S_CTX_MENU),
+        GTK_MENU(wintc_taskband_window_get_context_menu(taskband)),
         (GdkEvent*) event
     );
 
@@ -533,6 +661,13 @@ static gboolean on_window_map_event(
                 taskband->box_pre =
                     gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 
+                gtk_box_pack_start(
+                    GTK_BOX(taskband->main_box),
+                    taskband->box_pre,
+                    FALSE,
+                    FALSE,
+                    0
+                );
                 gtk_widget_show_all(taskband->box_pre);
 
                 break;
@@ -550,6 +685,13 @@ static gboolean on_window_map_event(
                 taskband->box_post =
                     gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 
+                gtk_box_pack_start(
+                    GTK_BOX(taskband->main_box),
+                    taskband->box_post,
+                    FALSE,
+                    FALSE,
+                    0
+                );
                 gtk_widget_show_all(taskband->box_post);
 
                 break;
@@ -569,4 +711,3 @@ static gboolean on_window_map_event(
 
     return TRUE;
 }
-
