@@ -19,6 +19,8 @@ typedef struct _WindowManagerSingle
     WinTCWndMgmtWindow* managed_window;
     WindowMonitor*      parent_monitor;
 
+    gint64 time_window_minimised;
+
     guint id_timeout_drag;
     guint event_time_drag;
 } WindowManagerSingle;
@@ -638,6 +640,9 @@ static void on_active_window_changed(
             window_manager_old->button != NULL
         )
         {
+            window_manager_old->time_window_minimised =
+                g_get_monotonic_time();
+
             gtk_toggle_button_set_active(
                 window_manager_old->button,
                 FALSE
@@ -779,6 +784,27 @@ static gboolean on_window_button_button_release_event(
 
     switch (event->button) {
         case GDK_BUTTON_PRIMARY:
+        {
+            const gint64 k_threshold = 100000;
+
+            gint64 time_diff =
+                g_get_monotonic_time() -
+                window_manager->time_window_minimised;
+
+            // If the window was active a moment ago and this signal is now
+            // running we can assume the taskband window got focused as a
+            // result of clicking this window's button
+            //
+            // We should reset the window button's state to how it was so
+            // that this logic continues to work - previously the taskband
+            // window was not able to be focused, but since toolbars with
+            // text entries were added that has changed
+            //
+            if (time_diff < k_threshold)
+            {
+                gtk_toggle_button_set_active(toggle_button, TRUE);
+            }
+
             if (gtk_toggle_button_get_active(toggle_button))
             {
                 wintc_wndmgmt_window_minimize(
@@ -794,6 +820,7 @@ static gboolean on_window_button_button_release_event(
             }
 
             break;
+        }
 
         case GDK_BUTTON_SECONDARY:
             // Match XP behavior: if the window isn't minimized, display it on

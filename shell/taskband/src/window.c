@@ -226,6 +226,8 @@ static void wintc_taskband_window_init(
         "wintc-taskband"
     );
 
+    gtk_window_set_keep_above(GTK_WINDOW(self), TRUE);
+
     // FIXME: This is obviously hard coded rubbish!
     //
     gtk_widget_set_size_request(GTK_WIDGET(self), -1, TASKBAND_HEIGHT);
@@ -452,7 +454,7 @@ GtkWidget* wintc_taskband_window_new(
             "type",        GTK_WINDOW_TOPLEVEL,
             "decorated",   FALSE,
             "resizable",   FALSE,
-            "type-hint",   GDK_WINDOW_TYPE_HINT_DOCK,
+            "type-hint",   GDK_WINDOW_TYPE_HINT_TOOLBAR,
             NULL
         )
     );

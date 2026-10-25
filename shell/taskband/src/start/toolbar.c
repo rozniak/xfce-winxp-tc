@@ -25,6 +25,10 @@ static void on_start_button_toggled(
     GtkToggleButton* self,
     gpointer         user_data
 );
+static void on_start_menu_hide(
+    GtkWidget* self,
+    gpointer   user_data
+);
 
 //
 // GTK TYPE DEFINITION & CTORS
@@ -115,7 +119,19 @@ static void wintc_toolbar_start_constructed(
     // FIXME: Hard coded to the personal menu for now, 'til DBus and stuff is
     //        understood and we can support a 'Use classic menu' property
     //
+    // FIXME: Complete and utter rubbish, this whole Start menu mess is actual
+    //        crap and needs changing so that the Start menu is just its own
+    //        GtkWindow subclass and divorced from the internals of the
+    //        toolbar
+    //
     create_personal_menu(toolbar_start);
+
+    g_signal_connect(
+        toolbar_start->personal.popup_menu,
+        "hide",
+        G_CALLBACK(on_start_menu_hide),
+        toolbar_start
+    );
 
     // Attach signals for popup
     //
@@ -185,11 +201,28 @@ static void on_start_button_toggled(
         return;
     }
 
-    // FIXME: Only dealing with personal menu here until class menu exists
+    // FIXME: Only dealing with personal menu here until classic menu exists
     //
     if (gtk_toggle_button_get_active(self))
     {
-        open_personal_menu(toolbar_start);
+        const gint64 k_threshold = 100000;
+
+        gint64 time_diff =
+            g_get_monotonic_time() - toolbar_start->time_menu_closed;
+
+        // Do not reopen the Start menu if it was just closed, user likely
+        // clicked the button
+        //
+        if (time_diff < k_threshold)
+        {
+            toolbar_start->sync_button = TRUE;
+            gtk_toggle_button_set_active(self, FALSE);
+            toolbar_start->sync_button = FALSE;
+        }
+        else
+        {
+            open_personal_menu(toolbar_start);
+        }
     }
     else
     {
@@ -197,3 +230,23 @@ static void on_start_button_toggled(
     }
 }
 
+static void on_start_menu_hide(
+    WINTC_UNUSED(GtkWidget* self),
+    gpointer user_data
+)
+{
+    WinTCToolbarStart* toolbar_start = WINTC_TOOLBAR_START(user_data);
+
+    // Track the last closed time, important for toggling the menu properly
+    //
+    toolbar_start->time_menu_closed = g_get_monotonic_time();
+
+    // Sync Start button state
+    //
+    toolbar_start->sync_button = TRUE;
+    gtk_toggle_button_set_active(
+        GTK_TOGGLE_BUTTON(toolbar_start->start_button),
+        FALSE
+    );
+    toolbar_start->sync_button = FALSE;
+}

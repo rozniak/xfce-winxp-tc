@@ -108,10 +108,6 @@ static void on_mfu_tracker_updated(
     WinTCStartMfuTracker* self,
     gpointer              user_data
 );
-static void on_personal_menu_hide(
-    GtkWidget* self,
-    gpointer   user_data
-);
 
 //
 // STATIC DATA
@@ -310,13 +306,6 @@ void create_personal_menu(
     );
 
     g_object_unref(G_OBJECT(builder));
-
-    g_signal_connect(
-        toolbar_start->personal.popup_menu,
-        "hide",
-        G_CALLBACK(on_personal_menu_hide),
-        toolbar_start
-    );
 
     // Take extra references to All Programs items, so we can safely take
     // them out of the menu bar whilst refreshing without them being disposed
@@ -1311,24 +1300,3 @@ static void on_mfu_tracker_updated(
     update_personal_menu_mfu_items(toolbar_start);
 }
 
-static void on_personal_menu_hide(
-    WINTC_UNUSED(GtkWidget* self),
-    gpointer   user_data
-)
-{
-    WinTCToolbarStart* toolbar_start = WINTC_TOOLBAR_START(user_data);
-
-    // Track the last closed time, important for toggling the menu properly
-    //   (see toolbar.c)
-    //
-    toolbar_start->time_menu_closed = g_get_monotonic_time();
-
-    // Sync Start button state
-    //
-    toolbar_start->sync_button = TRUE;
-    gtk_toggle_button_set_active(
-        GTK_TOGGLE_BUTTON(toolbar_start->start_button),
-        FALSE
-    );
-    toolbar_start->sync_button = FALSE;
-}
