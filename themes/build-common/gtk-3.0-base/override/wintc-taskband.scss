@@ -83,6 +83,7 @@
     {
         @include __wintc_apply_props($taskband_button_styles);
 
+        &:focus,
         &:hover
         {
             @include __wintc_apply_props(
@@ -116,6 +117,7 @@
         {
             @include __wintc_apply_props($taskband_flat_button_styles);
 
+            &:focus,
             &:hover
             {
                 @include __wintc_apply_props(
