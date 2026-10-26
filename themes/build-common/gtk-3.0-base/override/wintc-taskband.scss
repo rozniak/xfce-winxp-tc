@@ -39,6 +39,41 @@
         }
     }
 
+    .wintc-taskband-pre,
+    .wintc-taskband-post
+    {
+        & > toolbar
+        {
+            background: none;
+            border:     none;
+            padding:    0px;
+        }
+
+        toolitem
+        {
+            & > label
+            {
+                @include __wintc_apply_specific_props(
+                    $taskband_styles,
+                    "color"
+                );
+
+                &:disabled
+                {
+                    color: $taskband_toolbar_color;
+                }
+            }
+        }
+
+        /** Dumb specificity hack to override toolbar.scss which adds margin */
+        /** blindly to all widgets in toolbars - a GTK special!              */
+        toolbar:not(.inline-toolbar):not(.osd) > toolitem:not(.toggle):not(.popup) > *
+        {
+            margin-bottom: 0px;
+            margin-top:    0px;
+        }
+    }
+
     menuitem
     {
         color: $fg_color;
@@ -161,5 +196,10 @@
                 $taskband_task_button_icon_styles
             );
         }
+    }
+
+    combobox button
+    {
+        padding: 0px;
     }
 }

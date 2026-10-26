@@ -663,6 +663,11 @@ static gboolean on_window_map_event(
                 taskband->box_pre =
                     gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 
+                wintc_widget_add_style_class(
+                    taskband->box_post,
+                    "wintc-taskband-pre"
+                );
+
                 gtk_box_pack_start(
                     GTK_BOX(taskband->main_box),
                     taskband->box_pre,
@@ -686,6 +691,11 @@ static gboolean on_window_map_event(
             case WINTC_TASKBAND_TOOLBAR_POST_BUTTONS:
                 taskband->box_post =
                     gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+
+                wintc_widget_add_style_class(
+                    taskband->box_post,
+                    "wintc-taskband-post"
+                );
 
                 gtk_box_pack_start(
                     GTK_BOX(taskband->main_box),

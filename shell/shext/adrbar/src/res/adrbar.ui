@@ -2,6 +2,8 @@
 <interface>
   <object class="GtkToolbar" id="toolbar">
     <property name="visible">True</property>
+    <property name="valign">GTK_ALIGN_CENTER</property>
+
     <child>
       <object class="GtkToolItem">
         <property name="visible">True</property>
