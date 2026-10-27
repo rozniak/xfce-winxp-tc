@@ -2,5 +2,6 @@
 <gresources>
   <gresource prefix="/uk/oddmatics/wintc/toolbar/adrbar">
     <file>adrbar.ui</file>
+    <file>appstyles.css</file>
   </gresource>
 </gresources>

@@ -286,13 +286,6 @@ static void wintc_explorer_application_startup(
         GTK_STYLE_PROVIDER_PRIORITY_APPLICATION
     );
 
-    // Install icon resource path
-    //
-    gtk_icon_theme_add_resource_path(
-        gtk_icon_theme_get_default(),
-        "/uk/oddmatics/wintc/explorer"
-    );
-
     // Init comctl
     //
     wintc_ctl_install_default_styles();

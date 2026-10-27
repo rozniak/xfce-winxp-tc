@@ -41,6 +41,7 @@ struct _WinTCExpAddressToolbar
 
     GtkWidget* button_nav_go;
     GtkWidget* combo_address;
+    GtkWidget* img_go;
 };
 
 //
@@ -59,6 +60,21 @@ static void wintc_exp_address_toolbar_class_init(
     GObjectClass* object_class = G_OBJECT_CLASS(klass);
 
     object_class->constructed = wintc_exp_address_toolbar_constructed;
+
+    // Add default styles
+    //
+    GtkCssProvider* css = gtk_css_provider_new();
+
+    gtk_css_provider_load_from_resource(
+        css,
+        "/uk/oddmatics/wintc/toolbar/adrbar/appstyles.css"
+    );
+
+    gtk_style_context_add_provider_for_screen(
+        gdk_screen_get_default(),
+        GTK_STYLE_PROVIDER(css),
+        GTK_STYLE_PROVIDER_PRIORITY_FALLBACK
+    );
 }
 
 static void wintc_exp_address_toolbar_init(
@@ -91,8 +107,29 @@ static void wintc_exp_address_toolbar_constructed(
         "toolbar",       &(ctl_adr->toolbar),
         "button-nav-go", &(ctl_adr->button_nav_go),
         "combo-address", &(ctl_adr->combo_address),
+        "img-go",        &(ctl_adr->img_go),
         NULL
     );
+
+    // Set the Go button icon with fallbacks
+    //
+    gchar* s_icon_names_go[] = {
+        "wintc-go-button"
+    };
+
+    GIcon* icon_go =
+        g_themed_icon_new_from_names(
+            s_icon_names_go,
+            G_N_ELEMENTS(s_icon_names_go)
+        );
+
+    gtk_image_set_from_gicon(
+        GTK_IMAGE(ctl_adr->img_go),
+        icon_go,
+        GTK_ICON_SIZE_BUTTON
+    );
+
+    g_object_unref(icon_go);
 
     // Create toolbar in host shell window
     //

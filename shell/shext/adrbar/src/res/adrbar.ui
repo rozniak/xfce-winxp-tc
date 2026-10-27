@@ -51,9 +51,8 @@
                 <property name="orientation">horizontal</property>
 
                 <child>
-                  <object class="GtkImage">
+                  <object class="GtkImage" id="img-go">
                     <property name="visible">True</property>
-                    <property name="icon-name">wintc-go-button</property>
                     <property name="pixel-size">20</property>
                   </object>
                 </child>

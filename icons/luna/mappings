@@ -91,6 +91,7 @@ actions/system-shutdown-->shutdown
 actions/up-->up
 actions/views-->views
 actions/windows-messenger-->messenger
+actions/wintc-go-button-->wintc-go-button
 apps/firefox-->firefox
 apps/firefox-esr-->firefox
 apps/help-browser-->help
