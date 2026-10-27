@@ -5,11 +5,11 @@
 
 #include "../public/ext.h"
 
-#define S_TOOLBAR_GROUP_NAME      "ShToolbar"
-#define S_TOOLBAR_KEY_LIB         "Lib"
-#define S_TOOLBAR_KEY_NAME        "Name"
-#define S_TOOLBAR_KEY_USE_BROWSER "UseInBrowser"
-#define S_TOOLBAR_KEY_USE_CHROME  "UseInChrome"
+#define TOOLBAR_GROUP_NAME      "ShToolbar"
+#define TOOLBAR_KEY_LIB         "Lib"
+#define TOOLBAR_KEY_NAME        "Name"
+#define TOOLBAR_KEY_USE_BROWSER "UseInBrowser"
+#define TOOLBAR_KEY_USE_CHROME  "UseInChrome"
 
 //
 // PUBLIC FUNCTIONS
@@ -76,9 +76,9 @@ GList* wintc_shext_ext_get_toolbar_apis(
             ) ||
             !g_key_file_get_boolean(
                 ini,
-                S_TOOLBAR_GROUP_NAME,
+                TOOLBAR_GROUP_NAME,
                 shwnd_kind == WINTC_SHEXT_SHWND_KIND_BROWSER ?
-                    S_TOOLBAR_KEY_USE_BROWSER : S_TOOLBAR_KEY_USE_CHROME,
+                    TOOLBAR_KEY_USE_BROWSER : TOOLBAR_KEY_USE_CHROME,
                 &error
             )
         )
@@ -89,15 +89,15 @@ GList* wintc_shext_ext_get_toolbar_apis(
         lib_name =
             g_key_file_get_string(
                 ini,
-                S_TOOLBAR_GROUP_NAME,
-                S_TOOLBAR_KEY_NAME,
+                TOOLBAR_GROUP_NAME,
+                TOOLBAR_KEY_NAME,
                 NULL
             );
         lib_path =
             g_key_file_get_string(
                 ini,
-                S_TOOLBAR_GROUP_NAME,
-                S_TOOLBAR_KEY_LIB,
+                TOOLBAR_GROUP_NAME,
+                TOOLBAR_KEY_LIB,
                 NULL
             );
 

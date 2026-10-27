@@ -16,6 +16,13 @@
 
 #define TASKBAND_HEIGHT 30
 
+#define TB_LAYOUT_GROUP_NAME "ToolbarLayout"
+#define TB_LAYOUT_KEY_PRE    "Pre"
+#define TB_LAYOUT_KEY_POST   "Post"
+
+#define PRE_TOOLBARS  0
+#define POST_TOOLBARS 1
+
 //
 // PRIVATE ENUMS
 //
@@ -71,6 +78,17 @@ static GtkWidget* wintc_taskband_window_get_ext_widget(
 static GtkWidget* wintc_taskband_window_get_context_menu(
     WinTCTaskbandWindow* taskband
 );
+static void wintc_taskband_window_restore_toolbar_layout(
+    WinTCTaskbandWindow* taskband
+);
+static void wintc_taskband_window_save_toolbar_layout(
+    WinTCTaskbandWindow* taskband
+);
+static void wintc_taskband_window_toggle_toolbar(
+    WinTCTaskbandWindow* taskband,
+    const gchar*         tb_soname,
+    gint                 prefer_region
+);
 
 static void action_toolbar_toggle(
     GSimpleAction* self,
@@ -110,6 +128,8 @@ static GActionEntry S_ACTIONS[] = {
         .change_state   = NULL
     }
 };
+
+static gchar* S_PATH_TB_LAYOUT_INI = NULL;
 
 //
 // GTK OOP CLASS/INSTANCE DEFINITIONS
@@ -160,6 +180,9 @@ static void wintc_taskband_window_class_init(
     GObjectClass* object_class = G_OBJECT_CLASS(klass);
 
     object_class->dispose = wintc_taskband_window_dispose;
+
+    S_PATH_TB_LAYOUT_INI =
+        wintc_profile_get_path("taskband", "tb-layout.ini");
 }
 
 static void wintc_taskband_window_init(
@@ -292,6 +315,8 @@ static void wintc_taskband_window_dispose(
 )
 {
     WinTCTaskbandWindow* taskband = WINTC_TASKBAND_WINDOW(object);
+
+    wintc_taskband_window_save_toolbar_layout(taskband);
 
     g_clear_slist(&(taskband->toolbars), NULL);
 
@@ -552,6 +577,223 @@ static GtkWidget* wintc_taskband_window_get_context_menu(
     return taskband->menu_ctx;
 }
 
+static void wintc_taskband_window_restore_toolbar_layout(
+    WinTCTaskbandWindow* taskband
+)
+{
+    GError*   error = NULL;
+    GKeyFile* ini   = g_key_file_new();
+
+    if (
+        !g_key_file_load_from_file(
+            ini,
+            S_PATH_TB_LAYOUT_INI,
+            G_KEY_FILE_NONE,
+            &error
+        )
+    )
+    {
+        wintc_log_error_and_clear(&error);
+        goto cleanup;
+    }
+
+    gchar* csvs[2] = { 0 };
+
+    for (gsize i = 0; i < G_N_ELEMENTS(csvs); i++)
+    {
+        csvs[i] =
+            g_key_file_get_string(
+                ini,
+                TB_LAYOUT_GROUP_NAME,
+                i == PRE_TOOLBARS ?
+                    TB_LAYOUT_KEY_PRE : TB_LAYOUT_KEY_POST,
+                &error
+            );
+
+        if (!csvs[i])
+        {
+            wintc_log_error_and_clear(&error);
+            continue;
+        }
+
+        // Parse out the CSV and handle it
+        //
+        gchar** csv = g_strsplit(csvs[i], ",", -1);
+
+        for (gchar** tb_soname = csv; *tb_soname; tb_soname++)
+        {
+            wintc_taskband_window_toggle_toolbar(
+                taskband,
+                *tb_soname,
+                i
+            );
+        }
+
+        g_strfreev(csv);
+    }
+
+cleanup:
+    g_key_file_unref(ini);
+}
+
+static void wintc_taskband_window_save_toolbar_layout(
+    WinTCTaskbandWindow* taskband
+)
+{
+    GList* list_toolbars[2] = { 0 };
+
+    // First step is to figure out what toolbars are active and where
+    //
+    GHashTableIter         iter;
+    WinTCShextToolbarInfo* toolbar_info;
+
+    g_hash_table_iter_init(&iter, taskband->map_lib_to_toolbar_info);
+
+    while (g_hash_table_iter_next(&iter, NULL, (gpointer) &toolbar_info))
+    {
+        GList**    list;
+        GtkWidget* parent = gtk_widget_get_parent(toolbar_info->toolbar);
+
+        if (!parent)
+        {
+            continue;
+        }
+
+        if (parent == taskband->box_pre)
+        {
+            list = &(list_toolbars[PRE_TOOLBARS]);
+        }
+        else
+        {
+            list = &(list_toolbars[POST_TOOLBARS]);
+        }
+
+        *list = g_list_append(*list, toolbar_info);
+    }
+
+    // Create the CSVs
+    //
+    gchar* csvs[2]     = { 0 };
+    gsize  len_csvs[2] = { 0 };
+
+    for (gsize i = 0; i < G_N_ELEMENTS(list_toolbars); i++)
+    {
+        // First pass - measure how much space we need
+        //
+        for (GList* li = list_toolbars[i]; li; li = li->next)
+        {
+            toolbar_info =
+                (WinTCShextToolbarInfo*) li->data;
+
+            len_csvs[i] += strlen(toolbar_info->soname);
+        }
+
+        len_csvs[i] +=
+            MIN(0, g_list_length(list_toolbars[i]) - 1);
+
+        // Second pass - create the string
+        //
+        gint idx = 0;
+
+        csvs[i] = g_malloc(len_csvs[i] + 1);
+
+        for (GList* li = list_toolbars[i]; li; li = li->next)
+        {
+            gsize len;
+
+            toolbar_info =
+                (WinTCShextToolbarInfo*) li->data;
+
+            len = strlen(toolbar_info->soname);
+
+            memcpy(
+                &(csvs[i][idx]),
+                toolbar_info->soname,
+                len
+            );
+            idx += len;
+
+            csvs[i][idx++] = ',';
+        }
+
+        csvs[i][len_csvs[i]] = '\0';
+    }
+
+    // Store the configuration
+    //
+    GError*   error = NULL;
+    GKeyFile* ini   = g_key_file_new();
+
+    g_key_file_set_string(
+        ini,
+        TB_LAYOUT_GROUP_NAME,
+        TB_LAYOUT_KEY_PRE,
+        csvs[PRE_TOOLBARS]
+    );
+    g_key_file_set_string(
+        ini,
+        TB_LAYOUT_GROUP_NAME,
+        TB_LAYOUT_KEY_POST,
+        csvs[POST_TOOLBARS]
+    );
+
+    if (
+        !wintc_profile_ensure_exists(
+            "taskband",
+            &error
+        ) ||
+        !g_key_file_save_to_file(
+            ini,
+            S_PATH_TB_LAYOUT_INI,
+            &error
+        )
+    )
+    {
+        wintc_log_error_and_clear(&error);
+    }
+
+    g_key_file_unref(ini);
+}
+
+static void wintc_taskband_window_toggle_toolbar(
+    WinTCTaskbandWindow* taskband,
+    const gchar*         tb_soname,
+    gint                 prefer_region
+)
+{
+    WinTCShextToolbarInfo* toolbar_info;
+
+    toolbar_info =
+        g_hash_table_lookup(taskband->map_lib_to_toolbar_info, tb_soname);
+
+    if (!toolbar_info)
+    {
+        g_critical("taskband: unknown toolbar requested: %s", tb_soname);
+        return;
+    }
+
+    if (gtk_widget_get_mapped(toolbar_info->toolbar))
+    {
+        gtk_container_remove(
+            GTK_CONTAINER(gtk_widget_get_parent(toolbar_info->toolbar)),
+            toolbar_info->toolbar
+        );
+    }
+    else
+    {
+        GtkWidget* box_target =
+            prefer_region == PRE_TOOLBARS ?
+                taskband->box_pre : taskband->box_post;
+
+        gtk_container_add(
+            GTK_CONTAINER(box_target),
+            toolbar_info->toolbar
+        );
+
+        gtk_widget_show_all(toolbar_info->toolbar);
+    }
+}
+
 //
 // CALLBACKS
 //
@@ -563,40 +805,15 @@ static void action_toolbar_toggle(
 {
     WinTCTaskbandWindow* taskband = WINTC_TASKBAND_WINDOW(user_data);
 
-    // Look for the toolbar...
+    // Just toggle the toolbar
     //
-    const gchar*           soname = g_variant_get_string(parameter, NULL);
-    WinTCShextToolbarInfo* toolbar_info;
+    const gchar* soname = g_variant_get_string(parameter, NULL);
 
-    toolbar_info =
-        g_hash_table_lookup(taskband->map_lib_to_toolbar_info, soname);
-
-    if (!toolbar_info)
-    {
-        g_critical("taskband: unknown toolbar requested: %s", soname);
-        return;
-    }
-
-    // Toggle based on whether the widget is currently mapped
-    //
-    // FIXME: Assuming post box here
-    //
-    if (gtk_widget_get_mapped(toolbar_info->toolbar))
-    {
-        gtk_container_remove(
-            GTK_CONTAINER(taskband->box_post),
-            toolbar_info->toolbar
-        );
-    }
-    else
-    {
-        gtk_container_add(
-            GTK_CONTAINER(taskband->box_post),
-            toolbar_info->toolbar
-        );
-
-        gtk_widget_show_all(toolbar_info->toolbar);
-    }
+    wintc_taskband_window_toggle_toolbar(
+        taskband,
+        soname,
+        POST_TOOLBARS
+    );
 }
 
 static gboolean on_window_button_release_event(
@@ -718,6 +935,8 @@ static gboolean on_window_map_event(
                 break;
         }
     }
+
+    wintc_taskband_window_restore_toolbar_layout(taskband);
 
     WINTC_LOG_DEBUG("taskband: toolbar init complete");
 
