@@ -8,13 +8,13 @@
 //
 // GTK OOP BOILERPLATE
 //
-#define WINTC_TYPE_EXP_ADDRESS_TOOLBAR (wintc_exp_address_toolbar_get_type())
+#define WINTC_TYPE_TOOLBAR_ADDRESS (wintc_toolbar_address_get_type())
 
 G_DECLARE_FINAL_TYPE(
-    WinTCExpAddressToolbar,
-    wintc_exp_address_toolbar,
+    WinTCToolbarAddress,
+    wintc_toolbar_address,
     WINTC,
-    EXP_ADDRESS_TOOLBAR,
+    TOOLBAR_ADDRESS,
     WinTCShextUIController
 )
 

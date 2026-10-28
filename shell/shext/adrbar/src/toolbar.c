@@ -13,7 +13,7 @@ gboolean wintc_shext_init(
 )
 {
     wintc_shext_ui_controller_new_from_type(
-        WINTC_TYPE_EXP_ADDRESS_TOOLBAR,
+        WINTC_TYPE_TOOLBAR_ADDRESS,
         WINTC_ISHEXT_UI_HOST(shwnd)
     );
 
