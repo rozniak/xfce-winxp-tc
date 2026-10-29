@@ -13,6 +13,11 @@ static void wintc_toolbar_address_constructed(
     GObject* object
 );
 
+static void cb_weak_ref_widget(
+    gpointer user_data,
+    GObject* where_the_object_was
+);
+
 static void on_button_nav_go_clicked(
     GtkButton* self,
     gpointer   user_data
@@ -170,11 +175,27 @@ static void wintc_toolbar_address_constructed(
         G_CALLBACK(on_explorer_wnd_location_changed),
         ctl_adr
     );
+
+    // Listen for when the toolbar is destroyed, and destroy ourselves with it
+    //
+    g_object_weak_ref(
+        G_OBJECT(ctl_adr->toolbar),
+        (GWeakNotify) cb_weak_ref_widget,
+        ctl_adr
+    );
 }
 
 //
 // CALLBACKS
 //
+static void cb_weak_ref_widget(
+    gpointer user_data,
+    WINTC_UNUSED(GObject* where_the_object_was)
+)
+{
+    g_object_unref(G_OBJECT(user_data));
+}
+
 static void on_button_nav_go_clicked(
     WINTC_UNUSED(GtkButton* self),
     gpointer user_data
