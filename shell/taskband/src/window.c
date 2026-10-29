@@ -752,6 +752,10 @@ static void wintc_taskband_window_save_toolbar_layout(
         wintc_log_error_and_clear(&error);
     }
 
+    g_free(csvs[PRE_TOOLBARS]);
+    g_free(csvs[POST_TOOLBARS]);
+    g_list_free(list_toolbars[PRE_TOOLBARS]);
+    g_list_free(list_toolbars[POST_TOOLBARS]);
     g_key_file_unref(ini);
 }
 
@@ -881,7 +885,7 @@ static gboolean on_window_map_event(
                     gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 
                 wintc_widget_add_style_class(
-                    taskband->box_post,
+                    taskband->box_pre,
                     "wintc-taskband-pre"
                 );
 
