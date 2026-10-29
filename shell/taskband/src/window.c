@@ -597,11 +597,9 @@ static void wintc_taskband_window_restore_toolbar_layout(
         goto cleanup;
     }
 
-    gchar* csvs[2] = { 0 };
-
-    for (gsize i = 0; i < G_N_ELEMENTS(csvs); i++)
+    for (gsize i = 0; i <= POST_TOOLBARS; i++)
     {
-        csvs[i] =
+        gchar* csv =
             g_key_file_get_string(
                 ini,
                 TB_LAYOUT_GROUP_NAME,
@@ -610,7 +608,7 @@ static void wintc_taskband_window_restore_toolbar_layout(
                 &error
             );
 
-        if (!csvs[i])
+        if (!csv)
         {
             wintc_log_error_and_clear(&error);
             continue;
@@ -618,9 +616,9 @@ static void wintc_taskband_window_restore_toolbar_layout(
 
         // Parse out the CSV and handle it
         //
-        gchar** csv = g_strsplit(csvs[i], ",", -1);
+        gchar** csv_iter = g_strsplit(csv, ",", -1);
 
-        for (gchar** tb_soname = csv; *tb_soname; tb_soname++)
+        for (gchar** tb_soname = csv_iter; *tb_soname; tb_soname++)
         {
             wintc_taskband_window_toggle_toolbar(
                 taskband,
@@ -629,7 +627,8 @@ static void wintc_taskband_window_restore_toolbar_layout(
             );
         }
 
-        g_strfreev(csv);
+        g_strfreev(csv_iter);
+        g_free(csv);
     }
 
 cleanup:
