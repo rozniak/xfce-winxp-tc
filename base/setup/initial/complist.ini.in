@@ -35,7 +35,7 @@ SubGroups=
 
 [Group.ShellExt]
 Name=Shell Extensions
-Components=ExtZip
+Components=ExtAdrBar,ExtZip
 SubGroups=
 
 [Group.Personalisation]
@@ -145,6 +145,11 @@ Description=The Printers & Faxes shell extension.
 Name=System Properties
 Packages=wintc-cpl-sysdm
 Description=The System Properties applet.
+
+[Component.ExtAdrBar]
+Name=Address Bar Toolbar
+Packages=libwintc-toolbar-address
+Description=The Address Bar shell toolbar.
 
 [Component.ExtZip]
 Name=ZIP Files Extension
