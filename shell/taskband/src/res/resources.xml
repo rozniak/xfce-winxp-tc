@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
     <gresource prefix="/uk/oddmatics/wintc/taskband">
-        <file>menu-tray-nm.ui</file>
+        <file>menu-tray-net.ui</file>
+        <file>net.css</file>
+        <file>net_p.css</file>
+        <file>net-repairdlg.ui</file>
+        <file>net-statwnd.ui</file>
         <file>personal-menu.ui</file>
         <file>start-button.ui</file>
         <file>start-menu.css</file>
@@ -9,5 +13,12 @@
         <file>taskbutton-ctx-menu.ui</file>
         <file>userpic.bmp</file>
         <file>volume-popup.css</file>
+        <file>wlan-connect.png</file>
+        <file>wlan-keydlg.ui</file>
+        <file>wlan-netitem.ui</file>
+        <file>wlan-netwnd.ui</file>
+        <file>wlan-opendlg.ui</file>
+        <file>wlan-progdlg.ui</file>
+        <file>wlan-tasks.ui</file>
     </gresource>
 </gresources>

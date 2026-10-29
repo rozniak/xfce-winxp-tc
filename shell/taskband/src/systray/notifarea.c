@@ -6,14 +6,11 @@
 #include "../intapi.h"
 #include "clock.h"
 #include "icon.h"
+#include "network.h"
 #include "notifarea.h"
 #include "power.h"
 #include "sni.h"
 #include "volume.h"
-
-#ifndef WINTC_PKGMGR_BSDPKG
-#include "network.h"
-#endif
 
 //
 // FORWARD DECLARATIONS
@@ -118,12 +115,10 @@ static void wintc_notification_area_init(
         WINTC_TYPE_NOTIFICATION_POWER,
         WINTC_ISHEXT_UI_HOST(self)
     );
-#ifndef WINTC_PKGMGR_BSDPKG
     wintc_shext_ui_controller_new_from_type(
         WINTC_TYPE_NOTIFICATION_NETWORK,
         WINTC_ISHEXT_UI_HOST(self)
     );
-#endif
 
     self->pack_end = FALSE;
     wintc_shext_ui_controller_new_from_type(
