@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk+" version="3.24"/>
+
+  <!-- Task group, mirrors Explorer's web view sidebar so themes apply -->
+  <object class="GtkBox" id="box-group">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="orientation">vertical</property>
+
+    <child>
+      <object class="GtkBox">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="orientation">horizontal</property>
+
+        <child>
+          <object class="GtkLabel" id="label-heading">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="xalign">0.0</property>
+          </object>
+        </child>
+
+        <style>
+          <class name="wintc-explorer-task-header" />
+        </style>
+      </object>
+    </child>
+
+    <child>
+      <object class="GtkBox" id="box-items">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="orientation">vertical</property>
+
+        <style>
+          <class name="wintc-explorer-task-items" />
+        </style>
+      </object>
+    </child>
+
+    <style>
+      <class name="wintc-explorer-task" />
+    </style>
+  </object>
+
+  <object class="GtkLinkButton" id="button-item">
+    <property name="visible">True</property>
+    <property name="can-focus">True</property>
+
+    <child>
+      <object class="GtkBox">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="orientation">horizontal</property>
+
+        <child>
+          <object class="GtkImage" id="img-item-icon">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="icon-size">1</property>
+            <property name="valign">start</property>
+          </object>
+        </child>
+
+        <child>
+          <object class="GtkLabel" id="label-item-label">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="width-chars">20</property>
+            <property name="wrap">True</property>
+            <property name="xalign">0.0</property>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

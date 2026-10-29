@@ -1,0 +1,109 @@
+/** Network connection UI - layout defaults, themes may override */
+
+/** Wireless networks window */
+.wintc-wlan-networks .wintc-wlan-content
+{
+    margin: 12px 14px 10px 14px;
+}
+
+/** Task pane - same defaults as Explorer's web view sidebar */
+.wintc-wlan-networks .wintc-explorer-sidebar-web
+{
+    background-color: @content_view_bg;
+}
+
+.wintc-wlan-networks .wintc-explorer-task
+{
+    background-color: @text_view_bg;
+    border: 1px solid @theme_bg_color;
+    border-radius: 5px;
+    margin: 6px;
+}
+
+.wintc-wlan-networks .wintc-explorer-task-header
+{
+    background-color: @theme_bg_color;
+}
+
+.wintc-wlan-networks .wintc-explorer-task-header label
+{
+    font-weight: bold;
+    margin: 4px 8px;
+}
+
+.wintc-wlan-networks .wintc-explorer-task button
+{
+    margin: 2px;
+}
+
+.wintc-wlan-networks .wintc-explorer-task button:first-of-type
+{
+    margin-top: 6px;
+}
+
+.wintc-wlan-networks .wintc-explorer-task button:last-of-type
+{
+    margin-bottom: 6px;
+}
+
+.wintc-wlan-networks .wintc-explorer-task button label
+{
+    margin-left: 4px;
+}
+
+.wintc-wlan-heading
+{
+    font-size: 13pt;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.wintc-wlan-list,
+.wintc-wlan-list list
+{
+    background-color: @theme_base_color;
+}
+
+.wintc-wlan-item
+{
+    margin: 6px 8px;
+}
+
+.wintc-wlan-ssid,
+.wintc-wlan-connected
+{
+    font-weight: bold;
+}
+
+.wintc-wlan-detail
+{
+    margin-top: 6px;
+}
+
+.wintc-wlan-message
+{
+    margin: 12px;
+}
+
+/** Status window */
+.wintc-net-page
+{
+    margin: 8px;
+}
+
+.wintc-net-page > frame,
+.wintc-net-page > box
+{
+    margin-bottom: 8px;
+}
+
+.wintc-net-frame-body
+{
+    margin: 6px 10px 10px 10px;
+}
+
+/** Bold default item in the tray context menu */
+menuitem.wintc-default-item label
+{
+    font-weight: bold;
+}
