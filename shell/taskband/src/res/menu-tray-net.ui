@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk+" version="3.24"/>
+  <!--
+    The connection icon menus, laid out as in XP - which one is shown
+    depends on the connection type and state
+  -->
+
+  <!-- Connected (or connecting) -->
+  <object class="GtkMenu" id="menu-connected">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+
+    <child>
+      <object class="GtkMenuItem" id="item-disable">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="action-name">net.disable</property>
+        <property name="label" translatable="yes">_Disable</property>
+        <property name="use-underline">True</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkMenuItem" id="item-status">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="action-name">net.status</property>
+        <property name="label" translatable="yes">_Status</property>
+        <property name="use-underline">True</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkMenuItem">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="action-name">net.repair</property>
+        <property name="label" translatable="yes">Re_pair</property>
+        <property name="use-underline">True</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkSeparatorMenuItem">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkMenuItem" id="item-view-networks">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="action-name">net.view-networks</property>
+        <property name="label" translatable="yes">_View Available Wireless Networks</property>
+        <property name="use-underline">True</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkSeparatorMenuItem" id="sep-view-networks">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkMenuItem">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="action-name">net.firewall</property>
+        <property name="label" translatable="yes">_Change Windows Firewall settings</property>
+        <property name="use-underline">True</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkSeparatorMenuItem">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkMenuItem">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="action-name">net.open-connections</property>
+        <property name="label" translatable="yes">_Open Network Connections</property>
+        <property name="use-underline">True</property>
+      </object>
+    </child>
+  </object>
+
+  <!-- Wireless, not connected -->
+  <object class="GtkMenu" id="menu-wlan-disconnected">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+
+    <child>
+      <object class="GtkMenuItem">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="action-name">net.firewall</property>
+        <property name="label" translatable="yes">_Change Windows Firewall settings</property>
+        <property name="use-underline">True</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkSeparatorMenuItem">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkMenuItem">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="action-name">net.open-connections</property>
+        <property name="label" translatable="yes">_Open Network Connections</property>
+        <property name="use-underline">True</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkSeparatorMenuItem">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkMenuItem">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="action-name">net.repair</property>
+        <property name="label" translatable="yes">Re_pair</property>
+        <property name="use-underline">True</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkMenuItem">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="action-name">net.view-networks</property>
+        <property name="label" translatable="yes">_View Available Wireless Networks</property>
+        <property name="use-underline">True</property>
+
+        <style>
+          <class name="wintc-default-item" />
+        </style>
+      </object>
+    </child>
+  </object>
+
+  <!-- Wired, cable unplugged -->
+  <object class="GtkMenu" id="menu-lan-disconnected">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+
+    <child>
+      <object class="GtkMenuItem">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="action-name">net.firewall</property>
+        <property name="label" translatable="yes">_Change Windows Firewall settings</property>
+        <property name="use-underline">True</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkSeparatorMenuItem">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkMenuItem">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="action-name">net.open-connections</property>
+        <property name="label" translatable="yes">_Open Network Connections</property>
+        <property name="use-underline">True</property>
+
+        <style>
+          <class name="wintc-default-item" />
+        </style>
+      </object>
+    </child>
+  </object>
+
+  <!--
+    FIXME: Disabled - XP removes the icon instead, but there is no Network
+           Connections folder yet to enable the connection again from
+  -->
+  <object class="GtkMenu" id="menu-disabled">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+
+    <child>
+      <object class="GtkMenuItem">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="action-name">net.enable</property>
+        <property name="label" translatable="yes">En_able</property>
+        <property name="use-underline">True</property>
+
+        <style>
+          <class name="wintc-default-item" />
+        </style>
+      </object>
+    </child>
+    <child>
+      <object class="GtkSeparatorMenuItem">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkMenuItem">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="action-name">net.open-connections</property>
+        <property name="label" translatable="yes">_Open Network Connections</property>
+        <property name="use-underline">True</property>
+      </object>
+    </child>
+  </object>
+</interface>

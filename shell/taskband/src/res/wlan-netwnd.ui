@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk+" version="3.24"/>
+  <object class="GtkBox" id="main-box">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="orientation">horizontal</property>
+
+    <!-- Task pane, same look as Explorer's web view sidebar -->
+    <child>
+      <object class="GtkScrolledWindow">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="hscrollbar-policy">never</property>
+        <property name="width-request">190</property>
+
+        <child>
+          <object class="GtkViewport">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="shadow-type">none</property>
+
+            <child>
+              <object class="GtkBox" id="box-tasks">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="orientation">vertical</property>
+
+                <style>
+                  <class name="wintc-explorer-sidebar-web" />
+                </style>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+
+    <!-- Network list -->
+    <child>
+      <object class="GtkBox">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="hexpand">True</property>
+        <property name="orientation">vertical</property>
+
+        <child>
+          <object class="GtkLabel">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="label" translatable="yes">Choose a wireless network</property>
+            <property name="xalign">0.0</property>
+
+            <style>
+              <class name="wintc-wlan-heading" />
+            </style>
+          </object>
+        </child>
+
+        <child>
+          <object class="GtkLabel">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="label" translatable="yes">Click an item in the list below to connect to a wireless network in range or to get more information.</property>
+            <property name="max-width-chars">60</property>
+            <property name="wrap">True</property>
+            <property name="xalign">0.0</property>
+
+            <style>
+              <class name="wintc-mb-md" />
+            </style>
+          </object>
+        </child>
+
+        <child>
+          <object class="GtkFrame">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="shadow-type">in</property>
+            <property name="vexpand">True</property>
+
+            <child>
+              <object class="GtkStack" id="stack-list">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+
+                <child>
+                  <object class="GtkScrolledWindow">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="hscrollbar-policy">never</property>
+
+                    <child>
+                      <object class="GtkListBox" id="list-networks">
+                        <property name="visible">True</property>
+                        <property name="can-focus">True</property>
+                        <property name="activate-on-single-click">False</property>
+                        <property name="selection-mode">single</property>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="name">list</property>
+                  </packing>
+                </child>
+
+                <child>
+                  <object class="GtkBox">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="orientation">horizontal</property>
+                    <property name="spacing">8</property>
+                    <property name="valign">start</property>
+
+                    <child>
+                      <object class="GtkImage" id="img-message">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="icon-name">dialog-information</property>
+                        <property name="pixel-size">32</property>
+                        <property name="valign">start</property>
+                      </object>
+                    </child>
+
+                    <child>
+                      <object class="GtkLabel" id="label-message">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="max-width-chars">50</property>
+                        <property name="wrap">True</property>
+                        <property name="xalign">0.0</property>
+                      </object>
+                    </child>
+
+                    <style>
+                      <class name="wintc-wlan-message" />
+                    </style>
+                  </object>
+                  <packing>
+                    <property name="name">message</property>
+                  </packing>
+                </child>
+
+                <style>
+                  <class name="wintc-wlan-list" />
+                </style>
+              </object>
+            </child>
+          </object>
+        </child>
+
+        <child>
+          <object class="GtkBox">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="halign">end</property>
+            <property name="orientation">horizontal</property>
+
+            <child>
+              <object class="GtkButton" id="button-connect">
+                <property name="visible">True</property>
+                <property name="can-default">True</property>
+                <property name="can-focus">True</property>
+                <property name="label" translatable="yes">_Connect</property>
+                <property name="receives-default">True</property>
+                <property name="sensitive">False</property>
+                <property name="use-underline">True</property>
+              </object>
+            </child>
+
+            <style>
+              <class name="wintc-button-box" />
+              <class name="wintc-mt-md" />
+            </style>
+          </object>
+        </child>
+
+        <style>
+          <class name="wintc-wlan-content" />
+        </style>
+      </object>
+    </child>
+  </object>
+</interface>
