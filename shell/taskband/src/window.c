@@ -316,7 +316,14 @@ static void wintc_taskband_window_dispose(
 {
     WinTCTaskbandWindow* taskband = WINTC_TASKBAND_WINDOW(object);
 
-    wintc_taskband_window_save_toolbar_layout(taskband);
+    if (taskband->map_lib_to_toolbar_info)
+    {
+        wintc_taskband_window_save_toolbar_layout(taskband);
+
+        g_hash_table_destroy(
+            g_steal_pointer(&(taskband->map_lib_to_toolbar_info))
+        );
+    }
 
     g_clear_slist(&(taskband->toolbars), NULL);
 
@@ -324,13 +331,6 @@ static void wintc_taskband_window_dispose(
     g_clear_object(&(taskband->uictl_notifarea));
     g_clear_object(&(taskband->uictl_start));
     g_clear_object(&(taskband->uictl_taskbuttons));
-
-    if (taskband->map_lib_to_toolbar_info)
-    {
-        g_hash_table_destroy(
-            g_steal_pointer(&(taskband->map_lib_to_toolbar_info))
-        );
-    }
 
     (G_OBJECT_CLASS(wintc_taskband_window_parent_class))->dispose(object);
 }
