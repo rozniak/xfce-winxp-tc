@@ -31,6 +31,7 @@ shell/exitwin
 shell/explorer
 shell/pkgexec
 shell/run
+shell/shext/adrbar
 shell/shext/zip
 shell/taskband
 shell/winver
