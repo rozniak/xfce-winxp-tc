@@ -249,7 +249,14 @@ static void wintc_taskband_window_init(
         "wintc-taskband"
     );
 
-    gtk_window_set_keep_above(GTK_WINDOW(self), TRUE);
+    // #654 - The taskband uses the TOOLBAR hint now so that the Address bar
+    //        toolbar can receive focus, I set the keep above flag to thus make
+    //        sure windows cannot overlap however this causes a problem with
+    //        full screen windows that SHOULD overlap the taskband
+    //
+    //        Disabling keep above until a solution can be found
+    //
+//    gtk_window_set_keep_above(GTK_WINDOW(self), TRUE);
 
     // FIXME: This is obviously hard coded rubbish!
     //
