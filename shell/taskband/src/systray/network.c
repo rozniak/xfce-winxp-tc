@@ -2,11 +2,11 @@
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
 #include <net/if.h>
-#include <NetworkManager.h>
 #include <wintc/comgtk.h>
 #include <wintc/shellext.h>
 
 #include "../intapi.h"
+#include "../net/client.h"
 #include "../net/device.h"
 #include "../net/dialogs.h"
 #include "../net/netwnd.h"
@@ -64,11 +64,11 @@ static void wintc_notification_network_dispose(
 
 static void wintc_notification_network_add_adapter(
     WinTCNotificationNetwork* network,
-    NMDevice*                 nm_device
+    WinTCNetDevice*           device
 );
 static WinTCNetAdapter* wintc_notification_network_find_adapter(
     WinTCNotificationNetwork* network,
-    NMDevice*                 nm_device
+    WinTCNetDevice*           device
 );
 static void wintc_notification_network_popup_menu(
     WinTCNotificationNetwork* network,
@@ -102,9 +102,6 @@ static void net_adapter_update_icon(
 static gint net_compare_devices(
     gconstpointer a,
     gconstpointer b
-);
-static gboolean net_device_is_shown(
-    NMDevice* nm_device
 );
 static gboolean net_state_has_status(
     WinTCNetState state
@@ -146,6 +143,10 @@ static void action_view_networks(
     gpointer       user_data
 );
 
+static void on_client_devices_changed(
+    WinTCNetClient* client,
+    gpointer        user_data
+);
 static void on_device_action_finished(
     GObject*      source_object,
     GAsyncResult* res,
@@ -162,26 +163,6 @@ static void on_device_state_changed(
 static void on_icon_theme_changed(
     GtkIconTheme* self,
     gpointer      user_data
-);
-static void on_nm_client_device_added(
-    NMClient* nm_client,
-    NMDevice* nm_device,
-    gpointer  user_data
-);
-static void on_nm_client_device_removed(
-    NMClient* nm_client,
-    NMDevice* nm_device,
-    gpointer  user_data
-);
-static void on_nm_client_ready(
-    GObject*      source_object,
-    GAsyncResult* res,
-    gpointer      user_data
-);
-static void on_nm_device_notify_state(
-    NMDevice*   nm_device,
-    GParamSpec* pspec,
-    gpointer    user_data
 );
 static gboolean on_notif_icon_button_press_event(
     GtkWidget*      self,
@@ -279,15 +260,10 @@ struct _WinTCNotificationNetwork
 
     // Network stuff
     //
-    NMClient*     nm_client;
-    GCancellable* cancellable;
-    gboolean      disposed;
+    WinTCNetClient* client;
+    GList*          adapters;
 
-    GList*      adapters;
-    GHashTable* map_watched_devices;
-
-    gulong sigid_device_added;
-    gulong sigid_device_removed;
+    gulong sigid_devices_changed;
     gulong sigid_theme_changed;
 };
 
@@ -317,15 +293,6 @@ static void wintc_notification_network_init(
     GtkBuilder* builder;
 
     wintc_net_ensure_styles();
-
-    self->cancellable         = g_cancellable_new();
-    self->map_watched_devices =
-        g_hash_table_new_full(
-            g_direct_hash,
-            g_direct_equal,
-            g_object_unref,
-            NULL
-        );
 
     // Set up the context menus
     //
@@ -427,15 +394,19 @@ static void wintc_notification_network_constructed(
             network
         );
 
-    // Connect to NetworkManager
+    // Adapters come and go with the backend, see net/client.h
     //
-    WINTC_LOG_DEBUG("net: connecting to NM...");
+    network->client = wintc_net_client_new();
 
-    nm_client_new_async(
-        network->cancellable,
-        (GAsyncReadyCallback) on_nm_client_ready,
-        g_object_ref(network)
-    );
+    network->sigid_devices_changed =
+        g_signal_connect(
+            network->client,
+            "devices-changed",
+            G_CALLBACK(on_client_devices_changed),
+            network
+        );
+
+    wintc_notification_network_sync_devices(network);
 }
 
 static void wintc_notification_network_dispose(
@@ -443,13 +414,6 @@ static void wintc_notification_network_dispose(
 )
 {
     WinTCNotificationNetwork* network = WINTC_NOTIFICATION_NETWORK(object);
-
-    network->disposed = TRUE;
-
-    if (network->cancellable)
-    {
-        g_cancellable_cancel(network->cancellable);
-    }
 
     g_clear_signal_handler(
         &(network->sigid_theme_changed),
@@ -464,34 +428,11 @@ static void wintc_notification_network_dispose(
         );
     }
 
-    if (network->map_watched_devices)
-    {
-        GHashTableIter iter;
-        gpointer       key;
-        gpointer       value;
-
-        g_hash_table_iter_init(&iter, network->map_watched_devices);
-
-        while (g_hash_table_iter_next(&iter, &key, &value))
-        {
-            g_signal_handler_disconnect(key, GPOINTER_TO_SIZE(value));
-        }
-
-        g_clear_pointer(
-            &(network->map_watched_devices),
-            g_hash_table_unref
-        );
-    }
-
-    if (network->nm_client)
+    if (network->client)
     {
         g_clear_signal_handler(
-            &(network->sigid_device_added),
-            network->nm_client
-        );
-        g_clear_signal_handler(
-            &(network->sigid_device_removed),
-            network->nm_client
+            &(network->sigid_devices_changed),
+            network->client
         );
     }
 
@@ -522,8 +463,7 @@ static void wintc_notification_network_dispose(
     }
 
     g_clear_object(&(network->action_group));
-    g_clear_object(&(network->cancellable));
-    g_clear_object(&(network->nm_client));
+    g_clear_object(&(network->client));
 
     (G_OBJECT_CLASS(wintc_notification_network_parent_class))
         ->dispose(object);
@@ -534,13 +474,13 @@ static void wintc_notification_network_dispose(
 //
 static void wintc_notification_network_add_adapter(
     WinTCNotificationNetwork* network,
-    NMDevice*                 nm_device
+    WinTCNetDevice*           device
 )
 {
     WinTCNetAdapter* adapter = g_new0(WinTCNetAdapter, 1);
 
     adapter->owner  = network;
-    adapter->device = wintc_net_device_new(network->nm_client, nm_device);
+    adapter->device = g_object_ref(device);
     adapter->kind   = wintc_net_device_get_kind(adapter->device);
 
     // XP numbers connections of each kind, pick the lowest number not in
@@ -682,7 +622,7 @@ static void wintc_notification_network_add_adapter(
 
     WINTC_LOG_DEBUG(
         "net: added adapter %s as '%s'",
-        nm_device_get_iface(nm_device),
+        wintc_net_device_get_interface(device),
         adapter->connection_name
     );
 
@@ -691,14 +631,14 @@ static void wintc_notification_network_add_adapter(
 
 static WinTCNetAdapter* wintc_notification_network_find_adapter(
     WinTCNotificationNetwork* network,
-    NMDevice*                 nm_device
+    WinTCNetDevice*           device
 )
 {
     for (GList* iter = network->adapters; iter; iter = iter->next)
     {
         WinTCNetAdapter* adapter = (WinTCNetAdapter*) iter->data;
 
-        if (wintc_net_device_get_nm_device(adapter->device) == nm_device)
+        if (adapter->device == device)
         {
             return adapter;
         }
@@ -856,42 +796,7 @@ static void wintc_notification_network_sync_devices(
     WinTCNotificationNetwork* network
 )
 {
-    const GPtrArray* nm_devices = nm_client_get_devices(network->nm_client);
-    GPtrArray*       shown      = g_ptr_array_new();
-
-    for (guint i = 0; nm_devices && i < nm_devices->len; i++)
-    {
-        NMDevice* nm_device = g_ptr_array_index(nm_devices, i);
-
-        if (!NM_IS_DEVICE_ETHERNET(nm_device) && !NM_IS_DEVICE_WIFI(nm_device))
-        {
-            continue;
-        }
-
-        // Watch for devices becoming (un)managed
-        //
-        if (!g_hash_table_contains(network->map_watched_devices, nm_device))
-        {
-            gulong sigid =
-                g_signal_connect(
-                    nm_device,
-                    "notify::" NM_DEVICE_STATE,
-                    G_CALLBACK(on_nm_device_notify_state),
-                    network
-                );
-
-            g_hash_table_insert(
-                network->map_watched_devices,
-                g_object_ref(nm_device),
-                GSIZE_TO_POINTER(sigid)
-            );
-        }
-
-        if (net_device_is_shown(nm_device))
-        {
-            g_ptr_array_add(shown, nm_device);
-        }
-    }
+    GPtrArray* devices = wintc_net_client_get_devices(network->client);
 
     // Remove adapters that went away...
     //
@@ -903,13 +808,7 @@ static void wintc_notification_network_sync_devices(
 
         iter = iter->next;
 
-        if (
-            !g_ptr_array_find(
-                shown,
-                wintc_net_device_get_nm_device(adapter->device),
-                NULL
-            )
-        )
+        if (!g_ptr_array_find(devices, adapter->device, NULL))
         {
             wintc_notification_network_remove_adapter(network, adapter);
         }
@@ -918,15 +817,22 @@ static void wintc_notification_network_sync_devices(
     // ...and add new ones, in adapter order so the numbering stays the same
     // across restarts
     //
+    GPtrArray* shown = g_ptr_array_new();
+
+    for (guint i = 0; i < devices->len; i++)
+    {
+        g_ptr_array_add(shown, g_ptr_array_index(devices, i));
+    }
+
     g_ptr_array_sort(shown, net_compare_devices);
 
     for (guint i = 0; i < shown->len; i++)
     {
-        NMDevice* nm_device = g_ptr_array_index(shown, i);
+        WinTCNetDevice* device = g_ptr_array_index(shown, i);
 
-        if (!wintc_notification_network_find_adapter(network, nm_device))
+        if (!wintc_notification_network_find_adapter(network, device))
         {
-            wintc_notification_network_add_adapter(network, nm_device);
+            wintc_notification_network_add_adapter(network, device);
         }
     }
 
@@ -1079,29 +985,12 @@ static void net_adapter_update(
 
     if (adapter->kind == WINTC_NET_DEVICE_KIND_WIRELESS)
     {
-        NMAccessPoint* ap =
-            nm_device_wifi_get_active_access_point(
-                NM_DEVICE_WIFI(
-                    wintc_net_device_get_nm_device(adapter->device)
-                )
-            );
+        WinTCWlanNetwork* active_network =
+            wintc_net_device_get_active_network(adapter->device);
 
-        if (active && ap)
+        if (active && active_network)
         {
-            GBytes* ssid = nm_access_point_get_ssid(ap);
-
-            if (ssid)
-            {
-                gchar* ssid_utf8 =
-                    nm_utils_ssid_to_utf8(
-                        g_bytes_get_data(ssid, NULL),
-                        g_bytes_get_size(ssid)
-                    );
-
-                g_string_append_printf(tooltip, " (%s)", ssid_utf8);
-
-                g_free(ssid_utf8);
-            }
+            g_string_append_printf(tooltip, " (%s)", active_network->ssid);
 
             gchar* speed =
                 wintc_net_speed_to_text(
@@ -1114,7 +1003,7 @@ static void net_adapter_update(
             g_string_append_printf(
                 tooltip,
                 _("Signal Strength: %s"),
-                wintc_wlan_signal_to_text(nm_access_point_get_strength(ap))
+                wintc_wlan_signal_to_text(active_network->signal)
             );
             g_string_append_c(tooltip, '\n');
             g_string_append_printf(
@@ -1224,18 +1113,17 @@ static gint net_compare_devices(
     gconstpointer b
 )
 {
-    NMDevice* device_a = *((NMDevice**) a);
-    NMDevice* device_b = *((NMDevice**) b);
+    const gchar* iface_a =
+        wintc_net_device_get_interface(*((WinTCNetDevice**) a));
+    const gchar* iface_b =
+        wintc_net_device_get_interface(*((WinTCNetDevice**) b));
 
-    guint index_a = if_nametoindex(nm_device_get_iface(device_a));
-    guint index_b = if_nametoindex(nm_device_get_iface(device_b));
+    guint index_a = if_nametoindex(iface_a);
+    guint index_b = if_nametoindex(iface_b);
 
     if (index_a == index_b)
     {
-        return g_strcmp0(
-            nm_device_get_iface(device_a),
-            nm_device_get_iface(device_b)
-        );
+        return g_strcmp0(iface_a, iface_b);
     }
 
     // Interfaces that have gone away (index 0) go last
@@ -1246,18 +1134,6 @@ static gint net_compare_devices(
     }
 
     return index_a < index_b ? -1 : 1;
-}
-
-static gboolean net_device_is_shown(
-    NMDevice* nm_device
-)
-{
-    // Only show adapters NetworkManager manages - anything else isn't ours to
-    // control (eg. container interfaces)
-    //
-    return nm_device_is_real(nm_device) &&
-           nm_device_get_state(nm_device) != NM_DEVICE_STATE_UNMANAGED &&
-           nm_device_get_state(nm_device) != NM_DEVICE_STATE_UNKNOWN;
 }
 
 static gboolean net_state_has_status(
@@ -1383,6 +1259,16 @@ static void action_view_networks(
     net_adapter_show_networks(network->menu_adapter);
 }
 
+static void on_client_devices_changed(
+    WINTC_UNUSED(WinTCNetClient* client),
+    gpointer user_data
+)
+{
+    wintc_notification_network_sync_devices(
+        WINTC_NOTIFICATION_NETWORK(user_data)
+    );
+}
+
 static void on_device_action_finished(
     GObject*      source_object,
     GAsyncResult* res,
@@ -1399,7 +1285,14 @@ static void on_device_action_finished(
         )
     )
     {
-        wintc_display_error_and_clear(&error, NULL);
+        if (g_error_matches(error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+        {
+            g_clear_error(&error);
+        }
+        else
+        {
+            wintc_display_error_and_clear(&error, NULL);
+        }
     }
 }
 
@@ -1434,115 +1327,6 @@ static void on_icon_theme_changed(
 
         net_adapter_update_icon(adapter);
     }
-}
-
-static void on_nm_client_device_added(
-    WINTC_UNUSED(NMClient* nm_client),
-    WINTC_UNUSED(NMDevice* nm_device),
-    gpointer user_data
-)
-{
-    wintc_notification_network_sync_devices(
-        WINTC_NOTIFICATION_NETWORK(user_data)
-    );
-}
-
-static void on_nm_client_device_removed(
-    WINTC_UNUSED(NMClient* nm_client),
-    NMDevice* nm_device,
-    gpointer  user_data
-)
-{
-    WinTCNotificationNetwork* network = WINTC_NOTIFICATION_NETWORK(user_data);
-
-    WinTCNetAdapter* adapter =
-        wintc_notification_network_find_adapter(network, nm_device);
-
-    if (adapter)
-    {
-        wintc_notification_network_remove_adapter(network, adapter);
-    }
-
-    gpointer sigid;
-
-    if (
-        g_hash_table_lookup_extended(
-            network->map_watched_devices,
-            nm_device,
-            NULL,
-            &sigid
-        )
-    )
-    {
-        g_signal_handler_disconnect(nm_device, GPOINTER_TO_SIZE(sigid));
-        g_hash_table_remove(network->map_watched_devices, nm_device);
-    }
-}
-
-static void on_nm_client_ready(
-    WINTC_UNUSED(GObject* source_object),
-    GAsyncResult* res,
-    gpointer      user_data
-)
-{
-    WinTCNotificationNetwork* network = WINTC_NOTIFICATION_NETWORK(user_data);
-
-    // Finish up async connection
-    //
-    GError*   error     = NULL;
-    NMClient* nm_client = nm_client_new_finish(res, &error);
-
-    if (network->disposed)
-    {
-        g_clear_error(&error);
-        g_clear_object(&nm_client);
-        g_object_unref(network);
-        return;
-    }
-
-    if (!nm_client)
-    {
-        wintc_log_error_and_clear(&error);
-        g_object_unref(network);
-        return;
-    }
-
-    WINTC_LOG_DEBUG("net: connected to NM");
-
-    network->nm_client = nm_client;
-
-    // NMClient keeps track of NetworkManager restarting, the devices come
-    // and go with it
-    //
-    network->sigid_device_added =
-        g_signal_connect(
-            nm_client,
-            "device-added",
-            G_CALLBACK(on_nm_client_device_added),
-            network
-        );
-    network->sigid_device_removed =
-        g_signal_connect(
-            nm_client,
-            "device-removed",
-            G_CALLBACK(on_nm_client_device_removed),
-            network
-        );
-
-    wintc_notification_network_sync_devices(network);
-
-    g_object_unref(network);
-}
-
-static void on_nm_device_notify_state(
-    WINTC_UNUSED(NMDevice*   nm_device),
-    WINTC_UNUSED(GParamSpec* pspec),
-    gpointer user_data
-)
-{
-    wintc_notification_network_sync_devices(
-        WINTC_NOTIFICATION_NETWORK(user_data)
-    );
 }
 
 static gboolean on_notif_icon_button_press_event(

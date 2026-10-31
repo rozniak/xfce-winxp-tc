@@ -68,12 +68,15 @@ add_executable(
     src/intapi.h
     src/main.c
     src/meta.h
-    src/net/device.c
+    src/net/client.h
     src/net/device.h
     src/net/dialogs.c
     src/net/dialogs.h
     src/net/netwnd.c
     src/net/netwnd.h
+    src/net/nm/backend.h
+    src/net/nm/client.c
+    src/net/nm/device.c
     src/net/statwnd.c
     src/net/statwnd.h
     src/net/util.c

@@ -82,4 +82,12 @@ void wintc_net_launch_tool(
     GtkWidget*   widget
 );
 
+void wintc_wlan_network_free(
+    WinTCWlanNetwork* network
+);
+gint wintc_wlan_network_compare(
+    gconstpointer a,
+    gconstpointer b
+);
+
 #endif

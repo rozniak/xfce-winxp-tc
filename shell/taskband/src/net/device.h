@@ -3,7 +3,6 @@
 
 #include <gio/gio.h>
 #include <glib.h>
-#include <NetworkManager.h>
 
 //
 // PUBLIC ENUMS
@@ -114,17 +113,6 @@ G_DECLARE_FINAL_TYPE(
 //
 GQuark wintc_net_error_quark(void);
 
-WinTCNetDevice* wintc_net_device_new(
-    NMClient* nm_client,
-    NMDevice* nm_device
-);
-
-NMDevice* wintc_net_device_get_nm_device(
-    WinTCNetDevice* device
-);
-NMDeviceState wintc_net_device_get_nm_state(
-    WinTCNetDevice* device
-);
 WinTCNetDeviceKind wintc_net_device_get_kind(
     WinTCNetDevice* device
 );

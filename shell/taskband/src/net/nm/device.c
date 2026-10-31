@@ -2,15 +2,11 @@
 #include <glib/gi18n.h>
 #include <NetworkManager.h>
 #include <string.h>
-#include <sys/socket.h>
 #include <wintc/comgtk.h>
 
-#ifndef __linux__
-#include <ifaddrs.h>
-#include <net/if.h>
-#endif
-
-#include "device.h"
+#include "../device.h"
+#include "../util.h"
+#include "backend.h"
 
 //
 // PRIVATE CONSTANTS
@@ -135,13 +131,6 @@ static void net_set_wlan_key(
     NMConnection*     connection,
     WinTCWlanSecurity security,
     const gchar*      key
-);
-static void net_wlan_network_free(
-    WinTCWlanNetwork* network
-);
-static gint net_wlan_network_compare(
-    gconstpointer a,
-    gconstpointer b
 );
 
 static void on_action_cancelled(
@@ -277,8 +266,6 @@ G_DEFINE_TYPE(
     wintc_net_device,
     G_TYPE_OBJECT
 )
-
-G_DEFINE_QUARK(wintc-net-error-quark, wintc_net_error)
 
 static void wintc_net_device_class_init(
     WinTCNetDeviceClass* klass
@@ -473,7 +460,7 @@ static void wintc_net_device_dispose(
 
     g_list_free_full(
         g_steal_pointer(&(device->networks)),
-        (GDestroyNotify) net_wlan_network_free
+        (GDestroyNotify) wintc_wlan_network_free
     );
 
     g_clear_object(&(device->nm_device));
@@ -530,13 +517,6 @@ NMDevice* wintc_net_device_get_nm_device(
 )
 {
     return device->nm_device;
-}
-
-NMDeviceState wintc_net_device_get_nm_state(
-    WinTCNetDevice* device
-)
-{
-    return nm_device_get_state(device->nm_device);
 }
 
 WinTCNetDeviceKind wintc_net_device_get_kind(
@@ -1066,23 +1046,6 @@ gboolean wintc_net_device_action_finish(
     return g_task_propagate_boolean(G_TASK(res), error);
 }
 
-void wintc_net_ip_info_free(
-    WinTCNetIpInfo* info
-)
-{
-    if (!info)
-    {
-        return;
-    }
-
-    g_free(info->hwaddr);
-    g_free(info->address);
-    g_free(info->gateway);
-    g_strfreev(info->dns);
-    g_free(info->dhcp_server);
-    g_free(info);
-}
-
 //
 // PRIVATE FUNCTIONS
 //
@@ -1112,7 +1075,7 @@ static void wintc_net_device_update_networks(
 {
     g_list_free_full(
         g_steal_pointer(&(device->networks)),
-        (GDestroyNotify) net_wlan_network_free
+        (GDestroyNotify) wintc_wlan_network_free
     );
 
     if (
@@ -1210,7 +1173,7 @@ static void wintc_net_device_update_networks(
     }
 
     device->networks =
-        g_list_sort(device->networks, net_wlan_network_compare);
+        g_list_sort(device->networks, wintc_wlan_network_compare);
 }
 
 static void wintc_net_device_update_state(
@@ -1844,7 +1807,6 @@ static gboolean net_read_traffic(
         return FALSE;
     }
 
-#ifdef __linux__
     // The counters in sysfs are 64-bit, unlike the ones from getifaddrs()
     //
     static const gchar* s_counters[] = {
@@ -1890,42 +1852,6 @@ static gboolean net_read_traffic(
     }
 
     return TRUE;
-#else
-    struct ifaddrs* ifap  = NULL;
-    gboolean        found = FALSE;
-
-    if (getifaddrs(&ifap) != 0)
-    {
-        return FALSE;
-    }
-
-    for (struct ifaddrs* ifa = ifap; ifa; ifa = ifa->ifa_next)
-    {
-        if (
-            !(ifa->ifa_addr)                     ||
-            ifa->ifa_addr->sa_family != AF_LINK  ||
-            !(ifa->ifa_data)                     ||
-            g_strcmp0(ifa->ifa_name, iface) != 0
-        )
-        {
-            continue;
-        }
-
-        struct if_data* data = (struct if_data*) ifa->ifa_data;
-
-        traffic->tx_bytes   = data->ifi_obytes;
-        traffic->rx_bytes   = data->ifi_ibytes;
-        traffic->tx_packets = data->ifi_opackets;
-        traffic->rx_packets = data->ifi_ipackets;
-
-        found = TRUE;
-        break;
-    }
-
-    freeifaddrs(ifap);
-
-    return found;
-#endif
 }
 
 static void net_set_wlan_key(
@@ -1981,45 +1907,6 @@ static void net_set_wlan_key(
         NM_SETTING_WIRELESS_SECURITY_PSK_FLAGS, NM_SETTING_SECRET_FLAG_NONE,
         NULL
     );
-}
-
-static void net_wlan_network_free(
-    WinTCWlanNetwork* network
-)
-{
-    g_free(network->ssid);
-    g_free(network->ap_path);
-    g_free(network->profile_uuid);
-    g_clear_pointer(&(network->ssid_raw), g_bytes_unref);
-    g_free(network);
-}
-
-static gint net_wlan_network_compare(
-    gconstpointer a,
-    gconstpointer b
-)
-{
-    const WinTCWlanNetwork* network_a = a;
-    const WinTCWlanNetwork* network_b = b;
-
-    // Connected network first, then the preferred ones, then by signal
-    //
-    if (network_a->in_use != network_b->in_use)
-    {
-        return network_a->in_use ? -1 : 1;
-    }
-
-    if (!(network_a->profile_uuid) != !(network_b->profile_uuid))
-    {
-        return network_a->profile_uuid ? -1 : 1;
-    }
-
-    if (network_a->signal != network_b->signal)
-    {
-        return network_b->signal - network_a->signal;
-    }
-
-    return g_utf8_collate(network_a->ssid, network_b->ssid);
 }
 
 //

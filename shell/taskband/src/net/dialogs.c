@@ -349,17 +349,14 @@ void wintc_wlan_progress_dialog_update(
     const gchar* text     = _("Connecting...");
     gdouble      fraction = 0.1f;
 
-    switch (wintc_net_device_get_nm_state(device))
+    switch (wintc_net_device_get_state(device))
     {
-        case NM_DEVICE_STATE_CONFIG:
-        case NM_DEVICE_STATE_NEED_AUTH:
+        case WINTC_NET_STATE_CONNECTING:
             text     = _("Waiting for the network...");
             fraction = 0.4f;
             break;
 
-        case NM_DEVICE_STATE_IP_CONFIG:
-        case NM_DEVICE_STATE_IP_CHECK:
-        case NM_DEVICE_STATE_SECONDARIES:
+        case WINTC_NET_STATE_ACQUIRING:
             text     = _("Waiting for network to be ready...");
             fraction = 0.7f;
             break;
@@ -617,13 +614,20 @@ static void net_repair_update_step(
     WinTCNetRepair* repair
 )
 {
-    const gchar* step = _("Renewing your IP address");
+    const gchar*  step  = _("Renewing your IP address");
+    WinTCNetState state = wintc_net_device_get_state(repair->device);
 
+    // Until the wireless network is back there's no address to renew
+    //
     if (
         wintc_net_device_get_kind(repair->device) ==
             WINTC_NET_DEVICE_KIND_WIRELESS &&
-        wintc_net_device_get_nm_state(repair->device) <
-            NM_DEVICE_STATE_IP_CONFIG
+        (
+            state == WINTC_NET_STATE_UNAVAILABLE  ||
+            state == WINTC_NET_STATE_DISABLED     ||
+            state == WINTC_NET_STATE_DISCONNECTED ||
+            state == WINTC_NET_STATE_CONNECTING
+        )
     )
     {
         step = _("Connecting to the wireless network");
