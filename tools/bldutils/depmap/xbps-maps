@@ -32,6 +32,7 @@ lightdm-->rt-->liblightdm-gobject
 msgfmt-->bt,rt-->gettext
 networkmanager-->bt-->NetworkManager-devel
 networkmanager-->rt-->NetworkManager
+polkit-->rt-->NULL
 plymouth-->bt,rt-->plymouth
 pulseaudio-->bt-->pulseaudio-devel
 pulseaudio-->rt-->pulseaudio

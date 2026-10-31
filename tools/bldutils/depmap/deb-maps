@@ -35,6 +35,7 @@ lightdm-->rt-->liblightdm-gobject-1-0
 msgfmt-->bt,rt-->gettext
 networkmanager-->bt-->libnm-dev
 networkmanager-->rt-->network-manager
+polkit-->rt-->NULL
 plymouth-->bt,rt-->plymouth
 pulseaudio-->bt-->libpulse-dev
 pulseaudio-->rt-->libpulse-mainloop-glib0

@@ -32,7 +32,6 @@ wintc_resolve_library(garcon-gtk3-1     GARCON_GTK3    PRIVATE)
 wintc_resolve_library(gdk-pixbuf-2.0    GDK_PIXBUF     PRIVATE)
 wintc_resolve_library(glib-2.0          GLIB           PRIVATE)
 wintc_resolve_library(gtk+-3.0          GTK3           PRIVATE)
-wintc_resolve_library(libnm             NM             PRIVATE)
 wintc_resolve_library(upower-glib       UPOWER_GLIB    PRIVATE)
 wintc_resolve_library(wintc-comctl      WINTC_COMCTL   PRIVATE)
 wintc_resolve_library(wintc-comgtk      WINTC_COMGTK   PRIVATE)
@@ -74,9 +73,6 @@ add_executable(
     src/net/dialogs.h
     src/net/netwnd.c
     src/net/netwnd.h
-    src/net/nm/backend.h
-    src/net/nm/client.c
-    src/net/nm/device.c
     src/net/statwnd.c
     src/net/statwnd.h
     src/net/util.c
@@ -126,6 +122,64 @@ add_executable(
     src/taskbuttons/windowmonitor.c
     src/taskbuttons/windowmonitor.h
 )
+
+# The network adapters are driven by NetworkManager, except on FreeBSD which
+# doesn't have it - there they are driven through the kernel and wpa_supplicant
+# directly (see src/net/client.h), with devd(8) bringing up new adapters and a
+# pkexec(1) helper for changing them (see bsd/)
+#
+if (${WINTC_PKGMGR} STREQUAL "bsdpkg")
+    target_sources(
+        wintc-taskband
+        PRIVATE src/net/bsd/backend.h
+        PRIVATE src/net/bsd/client.c
+        PRIVATE src/net/bsd/device.c
+        PRIVATE src/net/bsd/wpactrl.c
+        PRIVATE src/net/bsd/wpactrl.h
+    )
+
+    set(WINTC_NETCTL_PATH ${CMAKE_INSTALL_FULL_LIBEXECDIR}/wintc/wintc-netctl)
+
+    target_compile_definitions(
+        wintc-taskband
+        PRIVATE WINTC_NETCTL_PATH="${WINTC_NETCTL_PATH}"
+    )
+
+    configure_file(
+        bsd/uk.co.oddmatics.wintc.taskband.policy.in
+        uk.co.oddmatics.wintc.taskband.policy
+        @ONLY
+    )
+    configure_file(
+        bsd/wintc-net.conf.in
+        wintc-net.conf
+        @ONLY
+    )
+
+    install(
+        PROGRAMS
+            bsd/wintc-net-devd
+            bsd/wintc-netctl
+        DESTINATION ${CMAKE_INSTALL_LIBEXECDIR}/wintc
+    )
+    install(
+        FILES ${CMAKE_BINARY_DIR}/uk.co.oddmatics.wintc.taskband.policy
+        DESTINATION share/polkit-1/actions
+    )
+    install(
+        FILES ${CMAKE_BINARY_DIR}/wintc-net.conf
+        DESTINATION etc/devd
+    )
+else()
+    wintc_resolve_library(libnm NM PRIVATE)
+
+    target_sources(
+        wintc-taskband
+        PRIVATE src/net/nm/backend.h
+        PRIVATE src/net/nm/client.c
+        PRIVATE src/net/nm/device.c
+    )
+endif()
 
 target_compile_options(
     wintc-taskband

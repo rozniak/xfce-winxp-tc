@@ -20,6 +20,7 @@ gvfs-->rt-->gvfs
 lightdm-->bt,rt-->lightdm
 msgfmt-->bt,rt-->gettext
 networkmanager-->bt,rt-->networkmanager
+polkit-->rt-->NULL
 plymouth-->bt,rt-->plymouth
 pulseaudio-->bt,rt-->libpulse
 python3-packaging-->bt,rt-->python-packaging

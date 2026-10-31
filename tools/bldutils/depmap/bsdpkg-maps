@@ -20,7 +20,8 @@ gvfs-->bt-->NULL
 gvfs-->rt-->gvfs
 lightdm-->bt,rt-->lightdm
 msgfmt-->bt,rt-->gettext
-networkmanager-->bt,rt-->networkmanager-shim
+networkmanager-->bt,rt-->NULL
+polkit-->rt-->polkit
 plymouth-->bt,rt-->splash
 pulseaudio-->bt,rt-->pulseaudio
 python3-packaging-->bt,rt-->py312-packaging

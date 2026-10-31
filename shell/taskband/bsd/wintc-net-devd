@@ -1,0 +1,210 @@
+#!/bin/sh
+#
+# wintc-net-devd - Bring up network adapters that nobody configured
+#
+# Run by devd(8) through wintc-net.conf, which takes over the stock rules for
+# adapters appearing and links coming up. Those stock actions always run
+# first, so anything set up in rc.conf(5) behaves exactly as before - only
+# adapters rc.conf says nothing about are dealt with here, the same way
+# NetworkManager leaves alone the ones in /etc/network/interfaces:
+#
+#   - Ethernet adapters are switched on, and get an address by DHCP once a
+#     cable is plugged in
+#   - Wireless adapters get a wlan(4) interface with wpa_supplicant(8) on it
+#     for the taskband to talk to, and an address by DHCP once associated
+#
+# rc.conf(5) variables:
+#   wintc_net_enable  Set to "NO" to leave all adapters alone
+#   wintc_net_group   Group allowed to scan and connect (default: wheel)
+#
+# usage: wintc-net-devd attach|detach|ifnet-attach|link-up <name>
+#
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+export PATH
+
+. /etc/rc.subr
+. /etc/network.subr
+
+name="wintc_net"
+load_rc_config $name
+load_rc_config network
+
+: ${wintc_net_enable:="YES"}
+: ${wintc_net_group:="wheel"}
+
+#
+# CONSTANTS
+#
+K_GROUP="wintc"
+K_PID_DIR="/var/run/wintc"
+K_WPA_CONF="/var/db/wintc/wpa_supplicant.conf"
+K_WPA_CTRL_DIR="/var/run/wpa_supplicant"
+
+#
+# FUNCTIONS
+#
+is_configured()
+{
+    [ -n "$(get_if_var $1 ifconfig_IF)" ]      && return 0
+    [ -n "$(get_if_var $1 ifconfig_IF_ipv6)" ] && return 0
+    [ -n "${ifconfig_DEFAULT}" ]               && return 0
+
+    return 1
+}
+
+is_physical_ethernet()
+{
+    ifconfig "$1" 2>/dev/null | grep -q "media: Ethernet" || return 1
+
+    # Cloned interfaces (tap, epair, vlan, lagg...) belong to whatever made
+    # them
+    #
+    for cloner in $(ifconfig -C)
+    do
+        case "$1" in
+        ${cloner}[0-9]*)
+            return 1
+            ;;
+        esac
+    done
+
+    return 0
+}
+
+is_ours()
+{
+    ifconfig -g "${K_GROUP}" 2>/dev/null | grep -qx "$1"
+}
+
+wpa_start()
+{
+    ifn=$1
+
+    kldload -n wlan_wep wlan_tkip wlan_ccmp wlan_gcmp
+    mkdir -p "${K_WPA_CONF%/*}" "${K_PID_DIR}"
+
+    # Saved networks go in here, keys and all - only root may read it, and
+    # that has to hold for the copies wpa_supplicant writes when a network
+    # is saved too
+    #
+    umask 077
+
+    if [ -f "${K_WPA_CONF}" ]
+    then
+        group_line="ctrl_interface_group=${wintc_net_group}"
+
+        sed -i '' "s/^ctrl_interface_group=.*/${group_line}/" "${K_WPA_CONF}"
+    else
+        printf '%s\n' \
+            "ctrl_interface=${K_WPA_CTRL_DIR}" \
+            "ctrl_interface_group=${wintc_net_group}" \
+            "update_config=1" \
+            > "${K_WPA_CONF}"
+    fi
+
+    wpa_supplicant -B -s -D bsd -i "${ifn}" -c "${K_WPA_CONF}" \
+        -P "${K_PID_DIR}/wpa_supplicant.${ifn}.pid"
+
+    # The bsd driver takes the interface down while it sets up, and only
+    # brings it back for a scan - with no networks saved that would never
+    # happen, so the adapter would look switched off
+    #
+    ifconfig "${ifn}" up
+    wpa_cli -p "${K_WPA_CTRL_DIR}" -i "${ifn}" scan >/dev/null
+}
+
+do_attach()
+{
+    radio=$1
+
+    /etc/pccard_ether "${radio}" startchildren
+
+    checkyesno wintc_net_enable                  || return
+    [ -z "$(get_if_var ${radio} wlans_IF)" ]     || return
+
+    # One wlan(4) interface per radio, unless there's one already
+    #
+    for ifn in $(ifconfig -g wlan)
+    do
+        if [ "$(sysctl -n net.wlan.${ifn#wlan}.%parent 2>/dev/null)" = \
+             "${radio}" ]
+        then
+            return
+        fi
+    done
+
+    ifn=$(ifconfig wlan create wlandev "${radio}") || return
+
+    ifconfig "${ifn}" group "${K_GROUP}"
+    wpa_start "${ifn}"
+}
+
+do_detach()
+{
+    /etc/pccard_ether "$1" stopchildren
+
+    # The kernel took our wlan(4) interfaces away along with the radio
+    #
+    for pidfile in "${K_PID_DIR}"/wpa_supplicant.*.pid
+    do
+        [ -f "${pidfile}" ] || continue
+
+        ifn=${pidfile##*/wpa_supplicant.}
+        ifn=${ifn%.pid}
+
+        if ! ifconfig "${ifn}" >/dev/null 2>&1
+        then
+            pkill -F "${pidfile}"
+            rm -f "${pidfile}"
+        fi
+    done
+}
+
+do_ifnet_attach()
+{
+    ifn=$1
+
+    /etc/pccard_ether "${ifn}" start
+
+    checkyesno wintc_net_enable    || return
+    is_physical_ethernet "${ifn}"  || return
+    is_configured "${ifn}"         && return
+
+    # Switch it on, DHCP follows once there's a link
+    #
+    ifconfig "${ifn}" group "${K_GROUP}" up
+}
+
+do_link_up()
+{
+    ifn=$1
+
+    if checkyesno wintc_net_enable && is_ours "${ifn}"
+    then
+        service dhclient forcestart "${ifn}" >/dev/null 2>&1
+    else
+        service dhclient quietstart "${ifn}"
+    fi
+}
+
+#
+# MAIN SCRIPT
+#
+case "$1" in
+attach)
+    do_attach "$2"
+    ;;
+detach)
+    do_detach "$2"
+    ;;
+ifnet-attach)
+    do_ifnet_attach "$2"
+    ;;
+link-up)
+    do_link_up "$2"
+    ;;
+*)
+    echo "usage: $0 attach|detach|ifnet-attach|link-up <name>" >&2
+    exit 1
+    ;;
+esac

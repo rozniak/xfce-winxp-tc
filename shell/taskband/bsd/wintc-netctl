@@ -1,0 +1,58 @@
+#!/bin/sh
+#
+# wintc-netctl - Network adapter actions for the taskband
+#
+# Run as root through pkexec(1), the polkit policy that comes with it lets
+# the user in the active session do this without a password, the same as
+# NetworkManager does
+#
+# usage: wintc-netctl up|down|renew <interface>
+#
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+export PATH
+
+verb=$1
+ifn=$2
+
+# Only the adapters the taskband shows - wlan(4) interfaces and physical
+# Ethernet
+#
+case "${ifn}" in
+''|*[!a-z0-9]*)
+    exit 2
+    ;;
+esac
+
+ifconfig "${ifn}" >/dev/null 2>&1 || exit 2
+
+if ! ifconfig -g wlan | grep -qx "${ifn}"
+then
+    ifconfig "${ifn}" | grep -q "media: Ethernet" || exit 2
+
+    for cloner in $(ifconfig -C)
+    do
+        case "${ifn}" in
+        ${cloner}[0-9]*)
+            exit 2
+            ;;
+        esac
+    done
+fi
+
+case "${verb}" in
+up|down)
+    exec ifconfig "${ifn}" "${verb}"
+    ;;
+renew)
+    # Only adapters on DHCP have a lease to renew
+    #
+    if ifconfig -g wintc 2>/dev/null | grep -qx "${ifn}" ||
+       service dhclient status "${ifn}" >/dev/null 2>&1
+    then
+        exec service dhclient forcerestart "${ifn}"
+    fi
+    ;;
+*)
+    exit 2
+    ;;
+esac

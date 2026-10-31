@@ -7,6 +7,7 @@ bt,rt:gdk-pixbuf2
 bt,rt:glib2
 bt,rt:gtk3
 bt,rt:networkmanager
+rt:polkit
 bt,rt:upower-glib
 bt,rt:wintc-comctl
 bt,rt:wintc-comgtk
