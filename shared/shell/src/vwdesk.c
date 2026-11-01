@@ -46,11 +46,11 @@ static void wintc_sh_view_desktop_set_property(
     GParamSpec*   pspec
 );
 
-static gboolean wintc_sh_view_desktop_activate_item(
-    WinTCIShextView*    view,
-    guint               item_hash,
-    WinTCShextPathInfo* path_info,
-    GError**            error
+static void wintc_sh_view_desktop_activate_item(
+    WinTCIShextView*      view,
+    guint                 item_hash,
+    WinTCShextActCallback callback,
+    gpointer              user_data
 );
 static gint wintc_sh_view_desktop_compare_items(
     WinTCIShextView* view,
@@ -499,16 +499,14 @@ static void wintc_sh_view_desktop_set_property(
 //
 // INTERFACE METHODS (WinTCIShextView)
 //
-static gboolean wintc_sh_view_desktop_activate_item(
-    WinTCIShextView*    view,
-    guint               item_hash,
-    WinTCShextPathInfo* path_info,
-    GError**            error
+static void wintc_sh_view_desktop_activate_item(
+    WinTCIShextView*      view,
+    guint                 item_hash,
+    WinTCShextActCallback callback,
+    gpointer              user_data
 )
 {
     WinTCShViewDesktop* view_desk = WINTC_SH_VIEW_DESKTOP(view);
-
-    WINTC_SAFE_REF_CLEAR(error);
 
     WinTCShextViewItem* item =
         wintc_sh_view_desktop_get_view_item(view_desk, item_hash);
@@ -517,12 +515,14 @@ static gboolean wintc_sh_view_desktop_activate_item(
     //
     if (!item)
     {
-        return wintc_ishext_view_activate_item(
+        wintc_ishext_view_activate_item(
             view_desk->view_user_desktop,
             item_hash,
-            path_info,
-            error
+            callback,
+            user_data
         );
+
+        return;
     }
 
     // This is ours, deal with it
@@ -530,12 +530,24 @@ static gboolean wintc_sh_view_desktop_activate_item(
     if (!(item->priv))
     {
         g_critical("%s", "shell: desk view can't activate item, no target");
-        return FALSE;
+        return;
     }
+
+    WinTCShextPathInfo*  path_info = g_new(WinTCShextPathInfo, 1);
+    WinTCShextActResult* result    = g_new(WinTCShextActResult, 1);
 
     path_info->base_path = g_strdup(item->priv);
 
-    return TRUE;
+    result->view   = view;
+    result->result = WINTC_SHEXT_ACT_RESULT_NAVIGATE;
+    result->data   = path_info;
+
+    if (callback)
+    {
+        callback(result, user_data);
+    }
+
+    wintc_shext_act_result_free(result);
 }
 
 static gint wintc_sh_view_desktop_compare_items(

@@ -44,11 +44,11 @@ static void wintc_sh_view_trash_get_property(
     GParamSpec* pspec
 );
 
-static gboolean wintc_sh_view_trash_activate_item(
-    WinTCIShextView*    view,
-    guint               item_data,
-    WinTCShextPathInfo* path_info,
-    GError**            error
+static void wintc_sh_view_trash_activate_item(
+    WinTCIShextView*      view,
+    guint                 item_hash,
+    WinTCShextActCallback callback,
+    gpointer              user_data
 );
 static gint wintc_sh_view_trash_compare_items(
     WinTCIShextView* view,
@@ -427,14 +427,17 @@ static void wintc_sh_view_trash_get_property(
 // INTERFACE METHODS (WinTCIShextView)
 //
 static gboolean wintc_sh_view_trash_activate_item(
-    WINTC_UNUSED(WinTCIShextView*    view),
-    WINTC_UNUSED(guint               item_data),
-    WINTC_UNUSED(WinTCShextPathInfo* path_info),
-    GError** error
+    WINTC_UNUSED(WinTCIShextView* view),
+    WINTC_UNUSED(guint            item_hash),
+    WinTCShextActCallback callback,
+    gpointer              user_data
 )
 {
+    //
     // FIXME: Implement this
     //
+    GError* error = NULL;
+
     g_set_error(
         error,
         wintc_general_error_quark(),
@@ -443,7 +446,18 @@ static gboolean wintc_sh_view_trash_activate_item(
         __func__
     );
 
-    return FALSE;
+    WinTCShextActResult* result = g_new(WinTCShextActResult, 1);
+
+    result->view = view;
+    result->result = WINTC_SHEXT_ACT_RESULT_FAILED;
+    result->data   = error;
+
+    if (callback)
+    {
+        callback(result, user_data);
+    }
+
+    wintc_shext_act_result_free(result);
 }
 
 static gint wintc_sh_view_trash_compare_items(

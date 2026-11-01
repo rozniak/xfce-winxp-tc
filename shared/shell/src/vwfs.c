@@ -53,11 +53,11 @@ static void wintc_sh_view_fs_set_property(
     GParamSpec*   pspec
 );
 
-static gboolean wintc_sh_view_fs_activate_item(
-    WinTCIShextView*    view,
-    guint               item_hash,
-    WinTCShextPathInfo* path_info,
-    GError**            error
+static void wintc_sh_view_fs_activate_item(
+    WinTCIShextView*      view,
+    guint                 item_hash,
+    WinTCShextActCallback callback,
+    gpointer              user_data
 );
 static gint wintc_sh_view_fs_compare_items(
     WinTCIShextView* view,
@@ -148,10 +148,10 @@ static gchar* get_file_mime_icon(
     GFile* file
 );
 static gboolean real_activate_item(
-    WinTCShViewFS*      view_fs,
-    WinTCShextViewItem* item,
-    WinTCShextPathInfo* path_info,
-    GError**            error
+    WinTCShViewFS*        view_fs,
+    WinTCShextViewItem*   item,
+    WinTCShextActCallback callback,
+    gpointer              user_data
 );
 
 static gchar* wintc_sh_view_fs_build_path_for_view_item(
@@ -650,11 +650,11 @@ static void wintc_sh_view_fs_set_property(
 //
 // INTERFACE METHODS (WinTCIShextView)
 //
-static gboolean wintc_sh_view_fs_activate_item(
-    WinTCIShextView*    view,
-    guint               item_hash,
-    WinTCShextPathInfo* path_info,
-    GError**            error
+static void wintc_sh_view_fs_activate_item(
+    WinTCIShextView*      view,
+    guint                 item_hash,
+    WinTCShextActCallback callback,
+    gpointer              user_data
 )
 {
     WinTCShViewFS* view_fs = WINTC_SH_VIEW_FS(view);
@@ -672,14 +672,14 @@ static gboolean wintc_sh_view_fs_activate_item(
             "%s",
             "shell: fs - attempt to activate non-existent item"
         );
-        return FALSE;
+        return;
     }
 
     return real_activate_item(
         view_fs,
         item,
-        path_info,
-        error
+        callback,
+        user_data
     );
 }
 
@@ -1340,13 +1340,15 @@ static gchar* get_file_mime_icon(
     return ret;
 }
 
-static gboolean real_activate_item(
-    WinTCShViewFS*      view_fs,
-    WinTCShextViewItem* item,
-    WinTCShextPathInfo* path_info,
-    GError**            error
+static void real_activate_item(
+    WinTCShViewFS*        view_fs,
+    WinTCShextViewItem*   item,
+    WinTCShextActCallback callback,
+    gpointer              user_data
 )
 {
+    GError* error = NULL;
+
     // If the target is a dir or has a shell extension then set that as
     // the target path
     //
@@ -1374,17 +1376,25 @@ static gboolean real_activate_item(
     }
     else
     {
-        gchar* mime_type = wintc_query_mime_for_file(next_path, error);
+        gchar* mime_type = wintc_query_mime_for_file(next_path, &error);
 
-        if (!mime_type)
+        if (mime_type)
         {
-            g_free(next_path);
-            return FALSE;
+            if (
+                wintc_shext_host_has_view_for_mime(
+                    view_fs->shext_host,
+                    mime_type
+                )
+            )
+            {
+                target_path = g_strdup_printf("file://%s", next_path);
+            }
+
+            g_free(mime_type);
         }
-
-        if (wintc_shext_host_has_view_for_mime(view_fs->shext_host, mime_type))
+        else
         {
-            target_path = g_strdup_printf("file://%s", next_path);
+            wintc_log_error_and_clear(&error);
         }
     }
 
@@ -1393,12 +1403,16 @@ static gboolean real_activate_item(
     //
     // Otherwise just run the command
     //
-    gboolean success = TRUE;
+    WinTCShextActResult* result = g_new(WinTCShextActResult, 1);
+
+    result->view = WINTC_ISHEXT_VIEW(view);
 
     if (target_path)
     {
-        if (path_info)
+        if (callback)
         {
+            WinTCShextPathInfo* path_info = g_new(WinTCShextPathInfo, 1);
+
             if (view_fs->guid_context)
             {
                 path_info->base_path =
@@ -1412,22 +1426,52 @@ static gboolean real_activate_item(
             {
                 path_info->base_path = g_steal_pointer(&target_path);
             }
+
+            result->result = WINTC_SHEXT_ACT_RESULT_NAVIGATE;
+            result->data   = path_info;
         }
         else
         {
-            success = wintc_launch_command(target_path, error);
+            if (wintc_launch_command(target_path, &error))
+            {
+                result->result = WINTC_SHEXT_ACT_RESULT_NONE;
+            }
+            else
+            {
+                result->result = WINTC_SHEXT_ACT_RESULT_FAILED;
+                result->data   = error;
+            }
         }
 
         g_free(target_path);
     }
     else
     {
-        success = wintc_launch_command(next_path, error);
+        if (wintc_launch_command(next_path, &error))
+        {
+            result->result = WINTC_SHEXT_ACT_RESULT_NONE;
+        }
+        else
+        {
+            result->result = WINTC_SHEXT_ACT_RESULT_FAILED;
+            result->data   = error;
+        }
     }
 
-    g_free(next_path);
+    if (callback)
+    {
+        callback(result, user_data);
+    }
+    else
+    {
+        if (result->result == WINTC_SHEXT_ACT_RESULT_FAILED)
+        {
+            wintc_log_error_and_clear((GError**) &result->data);
+        }
+    }
 
-    return success;
+    wintc_shext_act_result_free(result);
+    g_free(next_path);
 }
 
 static gchar* wintc_sh_view_fs_build_path_for_view_item(
@@ -1641,17 +1685,12 @@ static void action_open(
 
         // Valid - attempt launch
         //
-        if (
-            !real_activate_item(
-                view_fs,
-                item,
-                NULL,
-                &error
-            )
-        )
-        {
-            wintc_display_error_and_clear(&error, NULL);
-        }
+        real_activate_item(
+            view_fs,
+            item,
+            NULL,
+            NULL
+        );
     }
 
     g_list_foreach(list_targets, (GFunc) wintc_free_cb, NULL);

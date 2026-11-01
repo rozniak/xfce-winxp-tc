@@ -45,11 +45,12 @@ typedef WinTCIShextView* (*WinTCShextViewCtor) (
     const gchar*              assoc_str,
     const WinTCShextPathInfo* path_info
 );
-typedef gboolean (*WinTCShextActivateItemFunc) (
-    WinTCShextHost*     shext_host,
-    WinTCShextViewItem* item,
-    WinTCShextPathInfo* path_info,
-    GError**            error
+typedef void (*WinTCShextActivateItemFunc) (
+    WinTCShextHost*       shext_host,
+    WinTCIShextView*      view,
+    WinTCShextViewItem*   item,
+    WinTCShextActCallback callback,
+    gpointer              user_data
 );
 
 //

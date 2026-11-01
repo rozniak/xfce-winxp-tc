@@ -129,29 +129,33 @@ static void cb_async_volume_mount(
     gpointer      user_data
 );
 
-static gboolean cb_shext_activate_item_default(
-    WinTCShextHost*     shext_host,
-    WinTCShextViewItem* item,
-    WinTCShextPathInfo* path_info,
-    GError**            error
+static void cb_shext_activate_item_default(
+    WinTCShextHost*       shext_host,
+    WinTCIShextView*      view,
+    WinTCShextViewItem*   item,
+    WinTCShextActCallback callback,
+    gpointer              user_data
 );
-static gboolean cb_shext_activate_item_drive(
-    WinTCShextHost*     shext_host,
-    WinTCShextViewItem* item,
-    WinTCShextPathInfo* path_info,
-    GError**            error
+static void cb_shext_activate_item_drive(
+    WinTCShextHost*       shext_host,
+    WinTCIShextView*      view,
+    WinTCShextViewItem*   item,
+    WinTCShextActCallback callback,
+    gpointer              user_data
 );
-static gboolean cb_shext_activate_item_mount(
-    WinTCShextHost*     shext_host,
-    WinTCShextViewItem* item,
-    WinTCShextPathInfo* path_info,
-    GError**            error
+static void cb_shext_activate_item_mount(
+    WinTCShextHost*       shext_host,
+    WinTCIShextView*      view,
+    WinTCShextViewItem*   item,
+    WinTCShextActCallback callback,
+    gpointer              user_data
 );
-static gboolean cb_shext_activate_item_volume(
-    WinTCShextHost*     shext_host,
-    WinTCShextViewItem* item,
-    WinTCShextPathInfo* path_info,
-    GError**            error
+static void cb_shext_activate_item_volume(
+    WinTCShextHost*       shext_host,
+    WinTCIShextView*      view,
+    WinTCShextViewItem*   item,
+    WinTCShextActCallback callback,
+    gpointer              user_data
 );
 
 static void on_volume_monitor_drive_connected(
@@ -1246,25 +1250,44 @@ static void cb_async_volume_mount(
     g_object_unref((GObject*) user_data); // Bins the GtkMountOperation
 }
 
-static gboolean cb_shext_activate_item_default(
+static void cb_shext_activate_item_default(
     WINTC_UNUSED(WinTCShextHost* shext_host),
-    WinTCShextViewItem* item,
-    WinTCShextPathInfo* path_info,
-    WINTC_UNUSED(GError** error)
+    WinTCIShextView*      view,
+    WinTCShextViewItem*   item,
+    WinTCShextActCallback callback,
+    gpointer              user_data
 )
 {
+    WinTCShextPathInfo*  path_info = g_new(WinTCShextPathInfo, 1);
+    WinTCShextActResult* result    = g_new(WinTCShextActResult, 1);
+
     path_info->base_path = g_strdup(item->priv);
-    return TRUE;
+
+    result->view   = view;
+    result->result = WINTC_SHEXT_ACT_RESULT_NAVIGATE;
+    result->data   = path_info;
+
+    if (callback)
+    {
+        callback(result, user_data);
+    }
+
+    wintc_shext_act_result_free(result);
 }
 
-static gboolean cb_shext_activate_item_drive(
+static void cb_shext_activate_item_drive(
     WINTC_UNUSED(WinTCShextHost* shext_host),
-    WinTCShextViewItem* item,
-    WINTC_UNUSED(WinTCShextPathInfo* path_info),
-    GError**            error
+    WinTCIShextView*      view,
+    WinTCShextViewItem*   item,
+    WinTCShextActCallback callback,
+    gpointer              user_data
 )
 {
     GDrive* drive = (GDrive*) item->priv;
+
+    WinTCShextActResult* result = g_new(WinTCShextActResult, 1);
+
+    result->view = view;
 
     if (g_drive_is_media_removable(drive))
     {
@@ -1307,47 +1330,71 @@ static gboolean cb_shext_activate_item_drive(
             );
         }
 
-        return TRUE;
+        result->result = WINTC_SHEXT_ACT_RESULT_NONE;
+    }
+    else // Assume a blank unformatted drive
+    {
+        // FIXME: Implement this
+        //
+        GError* error = NULL;
+
+        g_set_error(
+            &error,
+            WINTC_GENERAL_ERROR,
+            WINTC_GENERAL_ERROR_NOTIMPL,
+            "%s",
+            "Sorry, formatting disks is not yet implemented."
+        );
+
+        result->result = WINTC_SHEXT_ACT_RESULT_FAILED;
+        result->data   = error;
     }
 
-    // Else, assume a blank unformatted drive
-    //
-    // FIXME: Implement this
-    //
-    g_set_error(
-        error,
-        WINTC_GENERAL_ERROR,
-        WINTC_GENERAL_ERROR_NOTIMPL,
-        "%s",
-        "Sorry, formatting disks is not yet implemented."
-    );
+    if (callback)
+    {
+        callback(result, user_data);
+    }
 
-    return FALSE;
+    wintc_shext_act_result_free(result);
 }
 
-static gboolean cb_shext_activate_item_mount(
+static void cb_shext_activate_item_mount(
     WINTC_UNUSED(WinTCShextHost* shext_host),
-    WinTCShextViewItem* item,
-    WinTCShextPathInfo* path_info,
-    WINTC_UNUSED(GError** error)
+    WinTCIShextView*      view,
+    WinTCShextViewItem*   item,
+    WinTCShextActCallback callback,
+    gpointer              user_data
 )
 {
     GMount* mount = (GMount*) item->priv;
     GFile*  file  = g_mount_get_root(mount);
 
+    WinTCShextPathInfo*  path_info = g_new(WinTCShextPathInfo, 1);
+    WinTCShextActResult* result    = g_new(WinTCShextActResult, 1);
+
     path_info->base_path =
         g_strdup_printf("file://%s", g_file_peek_path(file));
 
-    g_object_unref(file);
+    result->view   = view;
+    result->result = WINTC_SHEXT_ACT_RESULT_NAVIGATE;
+    result->data   = path_info;
 
-    return TRUE;
+    if (callback)
+    {
+        callback(result, user_data);
+    }
+
+    wintc_shext_act_result_free(result);
+
+    g_object_unref(file);
 }
 
-static gboolean cb_shext_activate_item_volume(
+static void cb_shext_activate_item_volume(
     WINTC_UNUSED(WinTCShextHost* shext_host),
-    WinTCShextViewItem* item,
-    WINTC_UNUSED(WinTCShextPathInfo* path_info),
-    WINTC_UNUSED(GError** error)
+    WinTCIShextView*      view,
+    WinTCShextViewItem*   item,
+    WinTCShextActCallback callback,
+    gpointer              user_data
 )
 {
     GVolume*         volume   = (GVolume*) item->priv;
@@ -1362,7 +1409,19 @@ static gboolean cb_shext_activate_item_volume(
         mount_op // So we can clean up
     );
 
-    return TRUE;
+    // FIXME: Just respond with NONE result atm
+    //
+    WinTCShextActResult* result = g_new(WinTCShextActResult, 1);
+
+    result->view   = view;
+    result->result = WINTC_SHEXT_ACT_RESULT_NONE;
+
+    if (callback)
+    {
+        callback(result, user_data);
+    }
+
+    wintc_shext_act_result_free(result);
 }
 
 static void on_volume_monitor_drive_connected(

@@ -89,21 +89,21 @@ static void wintc_ishext_view_default_init(
 //
 // INTERFACE METHODS
 //
-gboolean wintc_ishext_view_activate_item(
-    WinTCIShextView*    view,
-    guint               item_hash,
-    WinTCShextPathInfo* path_info,
-    GError**            error
+void wintc_ishext_view_activate_item(
+    WinTCIShextView*      view,
+    guint                 item_hash,
+    WinTCShextActCallback callback,
+    gpointer              user_data
 )
 {
     WinTCIShextViewInterface* iface =
         WINTC_ISHEXT_VIEW_GET_IFACE(view);
 
-    return iface->activate_item(
+    iface->activate_item(
         view,
         item_hash,
-        path_info,
-        error
+        callback,
+        user_data
     );
 }
 
@@ -572,4 +572,22 @@ gboolean wintc_shext_path_info_equal(
     return
         g_strcmp0(path_info1->base_path,     path_info2->base_path)     == 0 &&
         g_strcmp0(path_info1->extended_path, path_info2->extended_path) == 0;
+}
+
+void wintc_shext_act_result_free(
+    WinTCShextActResult* result
+)
+{
+    switch (result->result)
+    {
+        case WINTC_SHEXT_ACT_RESULT_FAILED:
+            g_error_free((GError*) result->data);
+            break;
+
+        case WINTC_SHEXT_ACT_RESULT_NAVIGATE:
+            wintc_shext_path_info_free((WinTCShextPathInfo*) result->data);
+            break;
+
+        default: break;
+    }
 }

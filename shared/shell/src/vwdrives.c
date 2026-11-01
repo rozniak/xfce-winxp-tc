@@ -44,11 +44,11 @@ static void wintc_sh_view_drives_set_property(
     GParamSpec*   pspec
 );
 
-static gboolean wintc_sh_view_drives_activate_item(
-    WinTCIShextView*    view,
-    guint               item_data,
-    WinTCShextPathInfo* path_info,
-    GError**            error
+static void wintc_sh_view_drives_activate_item(
+    WinTCIShextView*      view,
+    guint                 item_hash,
+    WinTCShextActCallback callback,
+    gpointer              user_data
 );
 static gint wintc_sh_view_drives_compare_items(
     WinTCIShextView* view,
@@ -375,11 +375,11 @@ static void wintc_sh_view_drives_set_property(
 //
 // INTERFACE METHODS (WinTCIShextView)
 //
-static gboolean wintc_sh_view_drives_activate_item(
-    WinTCIShextView*    view,
-    guint               item_hash,
-    WinTCShextPathInfo* path_info,
-    GError**            error
+static void wintc_sh_view_drives_activate_item(
+    WinTCIShextView*      view,
+    guint                 item_hash,
+    WinTCShextActCallback callback,
+    gpointer              user_data
 )
 {
     WinTCShViewDrives* view_drives = WINTC_SH_VIEW_DRIVES(view);
@@ -390,11 +390,11 @@ static gboolean wintc_sh_view_drives_activate_item(
             GUINT_TO_POINTER(item_hash)
         );
 
-    return tl_item->activate_cb(
+    tl_item->activate_cb(
         view_drives->shext_host,
         tl_item->item,
-        path_info,
-        error
+        callback,
+        user_data
     );
 }
 

@@ -53,6 +53,11 @@ static void wintc_sh_browser_set_property(
     GParamSpec*   pspec
 );
 
+static void cb_shext_activate_result(
+    WinTCShextActResult* result_obj,
+    gpointer             user_data
+);
+
 static void on_current_view_items_added(
     WinTCIShextView*           view,
     WinTCShextViewItemsUpdate* update,
@@ -243,8 +248,11 @@ gboolean wintc_sh_browser_activate_item(
     GError**            error
 )
 {
-    GError*            local_error = NULL;
-    WinTCShextPathInfo path_info   = { 0 };
+    //
+    // FIXME: This function needs updating because the API uses a callback now
+    //        so it should probably fire a signal to say 'busy' in this
+    //        function then fire another when it's done
+    //
 
     WINTC_SAFE_REF_CLEAR(error);
 
@@ -256,83 +264,16 @@ gboolean wintc_sh_browser_activate_item(
 
     // Attempt to activate the item in the view
     //
-    if (
-        !wintc_ishext_view_activate_item(
-            browser->current_view,
-            item_hash,
-            &path_info,
-            &local_error
-        )
-    )
-    {
-        g_propagate_error(error, local_error);
-        return FALSE;
-    }
+    wintc_ishext_view_activate_item(
+        browser->current_view,
+        item_hash,
+        (WinTCShextActCallback) cb_shext_activate_result,
+        browser
+    );
 
-    // It's possible the item launched an executable rather than it being a
-    // location change
-    //
-    if (!path_info.base_path)
-    {
-        return TRUE;
-    }
-
+    return TRUE;
     // Navigate to the path
     //
-    gboolean success;
-
-    if (wintc_sh_folder_options_get_browse_in_same_window(browser->fldr_opts))
-    {
-        success =
-            wintc_sh_browser_set_location(
-                browser,
-                &path_info,
-                &local_error
-            );
-    }
-    else
-    {
-        gchar* path = wintc_shext_path_info_get_as_single_path(&path_info);
-
-        // Determine what to open with, us or explorer
-        //
-        GApplication* app = g_application_get_default();
-
-        if (
-            browser->flags & WINTC_SH_BROWSER_BEHAVIOUR_DONT_USE_SELF_EXE ||
-            !app
-        )
-        {
-            gchar* cmdline = g_strdup_printf("explorer \"%s\"", path);
-
-            success =
-                wintc_launch_command(
-                    cmdline,
-                    &local_error
-                );
-
-            g_free(cmdline);
-        }
-        else
-        {
-            GFile* file = g_file_new_for_path(path);
-
-            g_application_open(app, &file, 1, NULL);
-
-            success = TRUE;
-        }
-
-        g_free(path);
-    }
-
-    if (!success)
-    {
-        g_propagate_error(error, local_error);
-    }
-
-    wintc_shext_path_info_free_data(&path_info);
-
-    return success;
 }
 
 gboolean wintc_sh_browser_can_navigate_to_parent(
@@ -499,6 +440,92 @@ gboolean wintc_sh_browser_set_location(
 //
 // CALLBACKS
 //
+static void cb_shext_activate_result(
+    WinTCShextActResult* result_obj,
+    gpointer             user_data
+)
+{
+    WinTCShBrowser* browser = WINTC_SH_BROWSER(user_data);
+    GError*         error   = NULL;
+
+    // FIXME: Handle PENDING!!
+    //
+    switch (result_obj->result)
+    {
+        case WINTC_SHEXT_ACT_RESULT_FAILED:
+            wintc_display_error_and_clear(
+                (GError**) &result_obj->data,
+                NULL
+            );
+            break;
+
+        case WINTC_SHEXT_ACT_RESULT_NAVIGATE:
+        {
+            WinTCShextPathInfo* path_info =
+                (WinTCShextPathInfo*) result_obj->data;
+
+            if (
+                wintc_sh_folder_options_get_browse_in_same_window(
+                    browser->fldr_opts
+                )
+            )
+            {
+                if (
+                    !wintc_sh_browser_set_location(
+                        browser,
+                        path_info,
+                        &error
+                    )
+                )
+                {
+                    wintc_display_error_and_clear(&error, NULL);
+                }
+            }
+            else
+            {
+                gchar* path =
+                    wintc_shext_path_info_get_as_single_path(path_info);
+
+                // Determine what to open with, us or explorer
+                //
+                GApplication* app = g_application_get_default();
+
+                if (
+                    browser->flags & WINTC_SH_BROWSER_BEHAVIOUR_DONT_USE_SELF_EXE ||
+                    !app
+                )
+                {
+                    gchar* cmdline = g_strdup_printf("explorer \"%s\"", path);
+
+                    if (
+                        !wintc_launch_command(
+                            cmdline,
+                            &error
+                        )
+                    )
+                    {
+                        wintc_display_error_and_clear(&error, NULL);
+                    }
+
+                    g_free(cmdline);
+                }
+                else
+                {
+                    GFile* file = g_file_new_for_path(path);
+
+                    g_application_open(app, &file, 1, NULL);
+                }
+
+                g_free(path);
+            }
+
+            break;
+        }
+
+        default: break;
+    }
+}
+
 static void on_current_view_items_added(
     WINTC_UNUSED(WinTCIShextView* view),
     WinTCShextViewItemsUpdate* update,

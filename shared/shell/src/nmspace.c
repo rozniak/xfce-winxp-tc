@@ -23,11 +23,12 @@ enum
 //
 // FORWARD DECLARATIONS
 //
-static gboolean cb_activate_item_default(
-    WinTCShextHost*     shext_host,
-    WinTCShextViewItem* item,
-    WinTCShextPathInfo* path_info,
-    GError**            error
+static void cb_activate_item_default(
+    WinTCShextHost*       shext_host,
+    WinTCIShextView*      view,
+    WinTCShextViewItem*   item,
+    WinTCShextActCallback callback,
+    gpointer              user_data
 );
 
 static WinTCIShextView* factory_view_by_guid_cb(
@@ -192,16 +193,29 @@ void wintc_sh_init_namespace_tree(
 //
 // CALLBACKS
 //
-static gboolean cb_activate_item_default(
+static void cb_activate_item_default(
     WINTC_UNUSED(WinTCShextHost* shext_host),
-    WinTCShextViewItem* item,
-    WinTCShextPathInfo* path_info,
-    WINTC_UNUSED(GError** error)
+    WinTCIShextView*      view,
+    WinTCShextViewItem*   item,
+    WinTCShextActCallback callback,
+    gpointer              user_data
 )
 {
+    WinTCShextPathInfo*  path_info = g_new(WinTCShextPathInfo, 1);
+    WinTCShextActResult* result    = g_new(WinTCShextActResult, 1);
+
     path_info->base_path = g_strdup(item->priv);
 
-    return TRUE;
+    result->view   = view;
+    result->result = WINTC_SHEXT_ACT_RESULT_NAVIGATE;
+    result->data   = path_info;
+
+    if (callback)
+    {
+        callback(result, user_data);
+    }
+
+    wintc_shext_act_result_free(result);
 }
 
 static WinTCIShextView* factory_view_by_guid_cb(

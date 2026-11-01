@@ -11,8 +11,38 @@
 #include "viewops.h"
 
 //
+// PUBLIC ENUMS
+//
+typedef enum _WinTCShextActResultKind
+{
+    WINTC_SHEXT_ACT_RESULT_NONE,
+    WINTC_SHEXT_ACT_RESULT_FAILED,
+    WINTC_SHEXT_ACT_RESULT_NAVIGATE,
+    WINTC_SHEXT_ACT_RESULT_PENDING
+} WinTCShextActResultKind;
+
+//
+// PUBLIC CALLBACK PROTOTYPES
+//
+typedef struct _WinTCShextActResult WinTCShextActResult;
+
+typedef void (*WinTCShextActCallback) (
+    WinTCShextActResult* result_obj,
+    gpointer             user_data
+);
+
+//
 // PUBLIC STRUCTURES
 //
+typedef struct _WinTCIShextView WinTCIShextView;
+
+typedef struct _WinTCShextActResult
+{
+    WinTCIShextView*        view;
+    WinTCShextActResultKind result;
+    gpointer                data;
+} WinTCShextActResult;
+
 typedef struct _WinTCShextPathInfo
 {
     gchar* base_path;
@@ -36,11 +66,11 @@ struct _WinTCIShextViewInterface
 {
     GTypeInterface base_iface;
 
-    gboolean (*activate_item) (
-        WinTCIShextView*    view,
-        guint               item_hash,
-        WinTCShextPathInfo* path_info,
-        GError**            error
+    void (*activate_item) (
+        WinTCIShextView*      view,
+        guint                 item_hash,
+        WinTCShextActCallback callback,
+        gpointer              user_data
     );
 
     gint (*compare_items) (
@@ -133,11 +163,11 @@ struct _WinTCIShextViewInterface
 //
 // INTERFACE METHODS
 //
-gboolean wintc_ishext_view_activate_item(
-    WinTCIShextView*    view,
-    guint               item_hash,
-    WinTCShextPathInfo* path_info,
-    GError**            error
+void wintc_ishext_view_activate_item(
+    WinTCIShextView*      view,
+    guint                 item_hash,
+    WinTCShextActCallback callback,
+    gpointer              user_data
 );
 
 gint wintc_ishext_view_compare_items(
@@ -273,6 +303,13 @@ guint wintc_shext_path_info_hash(
 gboolean wintc_shext_path_info_equal(
     gconstpointer v1,
     gconstpointer v2
+);
+
+//
+// WinTCShextActResult methods
+//
+void wintc_shext_act_result_free(
+    WinTCShextActResult* result
 );
 
 #endif
