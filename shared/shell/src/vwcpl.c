@@ -132,6 +132,11 @@ static void action_open(
     gpointer       user_data
 );
 
+static void cb_shext_activate_result(
+    WinTCShextActResult* result_obj,
+    gpointer             user_data
+);
+
 //
 // STATIC DATA
 //
@@ -301,7 +306,7 @@ static void wintc_sh_view_cpl_activate_item(
 
     WinTCShCplApplet*    applet;
     WinTCShextViewItem*  item;
-    WinTCShextActResult* result = g_new(WinTCShextActResult, 1);
+    WinTCShextActResult* result = g_new0(WinTCShextActResult, 1);
 
     item   = wintc_sh_view_cpl_get_view_item(view_cpl, item_hash);
     applet = (WinTCShCplApplet*) item->priv;
@@ -324,7 +329,7 @@ static void wintc_sh_view_cpl_activate_item(
     }
     else
     {
-        WinTCShextPathInfo* path_info = g_new(WinTCShextPathInfo, 1);
+        WinTCShextPathInfo* path_info = g_new0(WinTCShextPathInfo, 1);
 
         path_info->base_path = g_strdup(applet->exec);
 
@@ -607,7 +612,7 @@ static void wintc_sh_view_cpl_refresh_items(
     for (GList* iter = view_cpl->cpls; iter; iter = iter->next)
     {
         WinTCShCplApplet*   applet    = (WinTCShCplApplet*) iter->data;
-        WinTCShextViewItem* view_item = g_new(WinTCShextViewItem, 1);
+        WinTCShextViewItem* view_item = g_new0(WinTCShextViewItem, 1);
 
         view_item->display_name = applet->display_name;
         view_item->icon_name    = applet->icon_name ?
@@ -716,24 +721,40 @@ static void action_open(
     // 
     for (GList* iter = ctx->targets; iter; iter = iter->next)
     {
-        GError*            error     = NULL;
-        WinTCShextPathInfo path_info = { 0 };
+        wintc_sh_view_cpl_activate_item(
+            ctx->view,
+            GPOINTER_TO_UINT(iter->data),
+            (WinTCShextActCallback) cb_shext_activate_result,
+            NULL
+        );
+    }
+}
 
-        if (
-            wintc_sh_view_cpl_activate_item(
-                ctx->view,
-                GPOINTER_TO_UINT(iter->data),
-                &path_info,
-                &error
-            )
-        )
+static void cb_shext_activate_result(
+    WinTCShextActResult* result_obj,
+    WINTC_UNUSED(gpointer user_data)
+)
+{
+    GError* error = NULL;
+
+    switch (result_obj->result)
+    {
+        case WINTC_SHEXT_ACT_RESULT_FAILED:
+            wintc_display_error_and_clear(
+                (GError**) &(result_obj->data),
+                NULL
+            );
+            break;
+
+        case WINTC_SHEXT_ACT_RESULT_NAVIGATE:
         {
-            // If this was a shell folder, open in new window
-            //
-            if (path_info.base_path)
+            WinTCShextPathInfo* path_info =
+                (WinTCShextPathInfo*) result_obj->data;
+
+            if (path_info->base_path)
             {
                 gchar* uri = wintc_shext_path_info_get_as_single_path(
-                                 &path_info
+                                 path_info
                              );
                 gchar* cmd = g_strdup_printf("explorer %s", uri);
 
@@ -744,12 +765,11 @@ static void action_open(
 
                 g_free(uri);
                 g_free(cmd);
-                wintc_shext_path_info_free_data(&path_info);
             }
+
+            break;
         }
-        else
-        {
-            wintc_display_error_and_clear(&error, NULL);
-        }
+
+        default: break;
     }
 }

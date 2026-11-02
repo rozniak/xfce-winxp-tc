@@ -147,7 +147,7 @@ static void clear_view_item(
 static gchar* get_file_mime_icon(
     GFile* file
 );
-static gboolean real_activate_item(
+static void real_activate_item(
     WinTCShViewFS*        view_fs,
     WinTCShextViewItem*   item,
     WinTCShextActCallback callback,
@@ -659,8 +659,6 @@ static void wintc_sh_view_fs_activate_item(
 {
     WinTCShViewFS* view_fs = WINTC_SH_VIEW_FS(view);
 
-    WINTC_SAFE_REF_CLEAR(error);
-
     // Retrieve the item itself
     //
     WinTCShextViewItem* item =
@@ -675,7 +673,7 @@ static void wintc_sh_view_fs_activate_item(
         return;
     }
 
-    return real_activate_item(
+    real_activate_item(
         view_fs,
         item,
         callback,
@@ -1403,15 +1401,15 @@ static void real_activate_item(
     //
     // Otherwise just run the command
     //
-    WinTCShextActResult* result = g_new(WinTCShextActResult, 1);
+    WinTCShextActResult* result = g_new0(WinTCShextActResult, 1);
 
-    result->view = WINTC_ISHEXT_VIEW(view);
+    result->view = WINTC_ISHEXT_VIEW(view_fs);
 
     if (target_path)
     {
         if (callback)
         {
-            WinTCShextPathInfo* path_info = g_new(WinTCShextPathInfo, 1);
+            WinTCShextPathInfo* path_info = g_new0(WinTCShextPathInfo, 1);
 
             if (view_fs->guid_context)
             {
@@ -1661,7 +1659,6 @@ static void action_open(
     WinTCShViewActions* ctx     = (WinTCShViewActions*) user_data;
     WinTCShViewFS*      view_fs = WINTC_SH_VIEW_FS(ctx->view);
 
-    GError* error        = NULL;
     GList*  list_targets =
         wintc_sh_view_fs_convert_list_hashes(
             view_fs,

@@ -533,8 +533,8 @@ static void wintc_sh_view_desktop_activate_item(
         return;
     }
 
-    WinTCShextPathInfo*  path_info = g_new(WinTCShextPathInfo, 1);
-    WinTCShextActResult* result    = g_new(WinTCShextActResult, 1);
+    WinTCShextPathInfo*  path_info = g_new0(WinTCShextPathInfo, 1);
+    WinTCShextActResult* result    = g_new0(WinTCShextActResult, 1);
 
     path_info->base_path = g_strdup(item->priv);
 

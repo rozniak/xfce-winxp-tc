@@ -426,7 +426,7 @@ static void wintc_sh_view_trash_get_property(
 //
 // INTERFACE METHODS (WinTCIShextView)
 //
-static gboolean wintc_sh_view_trash_activate_item(
+static void wintc_sh_view_trash_activate_item(
     WINTC_UNUSED(WinTCIShextView* view),
     WINTC_UNUSED(guint            item_hash),
     WinTCShextActCallback callback,
@@ -439,7 +439,7 @@ static gboolean wintc_sh_view_trash_activate_item(
     GError* error = NULL;
 
     g_set_error(
-        error,
+        &error,
         wintc_general_error_quark(),
         WINTC_GENERAL_ERROR_NOTIMPL,
         "Method not implemented: %s",
@@ -448,7 +448,7 @@ static gboolean wintc_sh_view_trash_activate_item(
 
     WinTCShextActResult* result = g_new(WinTCShextActResult, 1);
 
-    result->view = view;
+    result->view   = view;
     result->result = WINTC_SHEXT_ACT_RESULT_FAILED;
     result->data   = error;
 

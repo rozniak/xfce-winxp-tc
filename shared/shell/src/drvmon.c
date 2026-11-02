@@ -1258,8 +1258,8 @@ static void cb_shext_activate_item_default(
     gpointer              user_data
 )
 {
-    WinTCShextPathInfo*  path_info = g_new(WinTCShextPathInfo, 1);
-    WinTCShextActResult* result    = g_new(WinTCShextActResult, 1);
+    WinTCShextPathInfo*  path_info = g_new0(WinTCShextPathInfo, 1);
+    WinTCShextActResult* result    = g_new0(WinTCShextActResult, 1);
 
     path_info->base_path = g_strdup(item->priv);
 
@@ -1285,7 +1285,7 @@ static void cb_shext_activate_item_drive(
 {
     GDrive* drive = (GDrive*) item->priv;
 
-    WinTCShextActResult* result = g_new(WinTCShextActResult, 1);
+    WinTCShextActResult* result = g_new0(WinTCShextActResult, 1);
 
     result->view = view;
 
@@ -1369,8 +1369,8 @@ static void cb_shext_activate_item_mount(
     GMount* mount = (GMount*) item->priv;
     GFile*  file  = g_mount_get_root(mount);
 
-    WinTCShextPathInfo*  path_info = g_new(WinTCShextPathInfo, 1);
-    WinTCShextActResult* result    = g_new(WinTCShextActResult, 1);
+    WinTCShextPathInfo*  path_info = g_new0(WinTCShextPathInfo, 1);
+    WinTCShextActResult* result    = g_new0(WinTCShextActResult, 1);
 
     path_info->base_path =
         g_strdup_printf("file://%s", g_file_peek_path(file));
@@ -1411,7 +1411,7 @@ static void cb_shext_activate_item_volume(
 
     // FIXME: Just respond with NONE result atm
     //
-    WinTCShextActResult* result = g_new(WinTCShextActResult, 1);
+    WinTCShextActResult* result = g_new0(WinTCShextActResult, 1);
 
     result->view   = view;
     result->result = WINTC_SHEXT_ACT_RESULT_NONE;

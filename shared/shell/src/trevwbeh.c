@@ -52,6 +52,11 @@ static void clear_tree_row_reference(
     GtkTreeRowReference* row_ref
 );
 
+static void cb_shext_activate_result(
+    WinTCShextActResult* result_obj,
+    gpointer             user_data
+);
+
 static void on_browser_load_changed(
     WinTCShBrowser*         self,
     WinTCShBrowserLoadEvent load_event,
@@ -825,6 +830,46 @@ static void clear_tree_row_reference(
     gtk_tree_row_reference_free(row_ref);
 }
 
+static void cb_shext_activate_result(
+    WinTCShextActResult* result_obj,
+    gpointer             user_data
+)
+{
+    WinTCShTreeViewBehaviour* behaviour =
+        WINTC_SH_TREE_VIEW_BEHAVIOUR(user_data);
+
+    GError* error = NULL;
+
+    switch (result_obj->result)
+    {
+        case WINTC_SHEXT_ACT_RESULT_FAILED:
+            wintc_display_error_and_clear(
+                (GError**) &(result_obj->data),
+                wintc_widget_get_toplevel_window(behaviour->tree_view)
+            );
+            break;
+
+        case WINTC_SHEXT_ACT_RESULT_NAVIGATE:
+            if (
+                !wintc_sh_browser_set_location(
+                    behaviour->browser,
+                    (WinTCShextPathInfo*) result_obj->data,
+                    &error
+                )
+            )
+            {
+                wintc_display_error_and_clear(
+                    &error,
+                    wintc_widget_get_toplevel_window(behaviour->tree_view)
+                );
+            }
+
+            break;
+
+        default: break;
+    }
+}
+
 static void on_browser_load_changed(
     WinTCShBrowser*         self,
     WinTCShBrowserLoadEvent load_event,
@@ -877,8 +922,6 @@ static void on_tree_view_row_activated(
     // (if we just did get_path on the node itself it would only give us the
     // real path, which will not work for descendants of a shell folder)
     //
-    WinTCShextPathInfo path_info = { 0 };
-
     GError*          error = NULL;
     GtkTreeIter      parent;
     guint            parent_hash;
@@ -899,23 +942,17 @@ static void on_tree_view_row_activated(
                 GUINT_TO_POINTER(parent_hash)
             );
 
-        if (
-            !wintc_ishext_view_activate_item(
-                view,
-                hash,
-                &path_info,
-                &error
-            )
-        )
-        {
-            wintc_log_error_and_clear(&error);
-            return;
-        }
+        wintc_ishext_view_activate_item(
+            view,
+            hash,
+            (WinTCShextActCallback) cb_shext_activate_result,
+            behaviour
+        );
     }
-    else
+    else // Handle root node case
     {
-        // Handle the root node case
-        //
+        WinTCShextPathInfo path_info = { 0 };
+
         view =
             g_hash_table_lookup(
                 behaviour->map_hash_to_view,
@@ -926,20 +963,20 @@ static void on_tree_view_row_activated(
             view,
             &path_info
         );
-    }
 
-    if (
-        !wintc_sh_browser_set_location(
-            behaviour->browser,
-            &path_info,
-            &error
+        if (
+            !wintc_sh_browser_set_location(
+                behaviour->browser,
+                &path_info,
+                &error
+            )
         )
-    )
-    {
-        wintc_log_error_and_clear(&error);
-    }
+        {
+            wintc_log_error_and_clear(&error);
+        }
 
-    wintc_shext_path_info_free_data(&path_info);
+        wintc_shext_path_info_free_data(&path_info);
+    }
 }
 
 static void on_view_items_added(

@@ -392,6 +392,7 @@ static void wintc_sh_view_drives_activate_item(
 
     tl_item->activate_cb(
         view_drives->shext_host,
+        view,
         tl_item->item,
         callback,
         user_data
