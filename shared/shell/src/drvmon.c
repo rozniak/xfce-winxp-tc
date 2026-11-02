@@ -37,6 +37,17 @@ typedef struct _WinTCShellDrive
     gboolean        suppress;
 } WinTCShellDrive;
 
+typedef struct _WinTCShPendingMount
+{
+    WinTCShDriveMonitor* drvmon;
+
+    WinTCIShextView*      view;
+    WinTCShextActCallback callback;
+    gpointer              user_data;
+
+    GMountOperation* mount_op;
+} WinTCShPendingMount;
+
 //
 // FORWARD DECLARATIONS
 //
@@ -1240,14 +1251,43 @@ static void cb_async_volume_mount(
     gpointer      user_data
 )
 {
-    GError* error = NULL;
+    WinTCShPendingMount* pending = (WinTCShPendingMount*) user_data;
 
-    if (!g_volume_mount_finish((GVolume*) source_object, res, &error))
+    GError*              error  = NULL;
+    WinTCShextActResult* result = g_new0(WinTCShextActResult, 1);
+
+    result->view = pending->view;
+
+    if (g_volume_mount_finish(G_VOLUME(source_object), res, &error))
     {
-        wintc_display_error_and_clear(&error, NULL);
+        WinTCShextPathInfo* path_info = g_new0(WinTCShextPathInfo, 1);
+
+        GMount* mount = g_volume_get_mount(G_VOLUME(source_object));
+        GFile*  file  = g_mount_get_root(mount);
+
+        path_info->base_path =
+            g_strdup_printf("file://%s", g_file_peek_path(file));
+
+        result->result = WINTC_SHEXT_ACT_RESULT_NAVIGATE;
+        result->data   = path_info;
+
+        g_object_unref(file);
+        g_object_unref(mount);
+    }
+    else
+    {
+        result->result = WINTC_SHEXT_ACT_RESULT_FAILED;
+        result->data   = error;
     }
 
-    g_object_unref((GObject*) user_data); // Bins the GtkMountOperation
+    if (pending->callback)
+    {
+        pending->callback(result, pending->user_data);
+    }
+
+    wintc_shext_act_result_free(result);
+    g_object_unref(pending->mount_op);
+    g_free(pending);
 }
 
 static void cb_shext_activate_item_default(
@@ -1400,21 +1440,29 @@ static void cb_shext_activate_item_volume(
     GVolume*         volume   = (GVolume*) item->priv;
     GMountOperation* mount_op = gtk_mount_operation_new(NULL);
 
+    WinTCShPendingMount* pending = g_new(WinTCShPendingMount, 1);
+
+    pending->drvmon    = NULL;
+    pending->view      = view;
+    pending->callback  = callback;
+    pending->user_data = user_data;
+    pending->mount_op  = mount_op;
+
     g_volume_mount(
         volume,
         G_MOUNT_MOUNT_NONE,
         mount_op,
         NULL,
         (GAsyncReadyCallback) cb_async_volume_mount,
-        mount_op // So we can clean up
+        pending
     );
 
-    // FIXME: Just respond with NONE result atm
+    // Notify PENDING result whilst the mount happens
     //
     WinTCShextActResult* result = g_new0(WinTCShextActResult, 1);
 
     result->view   = view;
-    result->result = WINTC_SHEXT_ACT_RESULT_NONE;
+    result->result = WINTC_SHEXT_ACT_RESULT_PENDING;
 
     if (callback)
     {
