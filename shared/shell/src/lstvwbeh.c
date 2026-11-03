@@ -246,6 +246,9 @@ static void wintc_sh_list_view_behaviour_constructed(
     GObject* object
 )
 {
+    (G_OBJECT_CLASS(wintc_sh_list_view_behaviour_parent_class))
+        ->constructed(object);
+    
     WinTCShListViewBehaviour* behaviour =
         WINTC_SH_LIST_VIEW_BEHAVIOUR(object);
 
@@ -356,6 +359,14 @@ static void wintc_sh_list_view_behaviour_constructed(
         G_CONNECT_DEFAULT
     );
 
+    g_object_bind_property(
+        G_OBJECT(behaviour->browser),
+        "busy",
+        G_OBJECT(behaviour->list_view),
+        "sensitive",
+        G_BINDING_SYNC_CREATE | G_BINDING_INVERT_BOOLEAN
+    );
+
     // Load initial items
     //
     if (behaviour->current_view)
@@ -373,9 +384,6 @@ static void wintc_sh_list_view_behaviour_constructed(
 
         g_clear_list(&list_items, NULL);
     }
-
-    (G_OBJECT_CLASS(wintc_sh_list_view_behaviour_parent_class))
-        ->constructed(object);
 }
 
 static void wintc_sh_list_view_behaviour_dispose(

@@ -6,6 +6,7 @@
 #include <wintc/shellext.h>
 
 #include "../public/browser.h"
+#include "../public/error.h"
 #include "../public/fldropts.h"
 
 //
@@ -16,6 +17,7 @@ enum
     PROP_NULL,
     PROP_SHEXT_HOST,
     PROP_FOLDER_OPTIONS,
+    PROP_BUSY,
     N_PROPERTIES
 };
 
@@ -53,6 +55,11 @@ static void wintc_sh_browser_set_property(
     GParamSpec*   pspec
 );
 
+static void wintc_sh_browser_set_busy(
+    WinTCShBrowser* browser,
+    gboolean        busy
+);
+
 static void cb_shext_activate_result(
     WinTCShextActResult* result_obj,
     gpointer             user_data
@@ -86,6 +93,7 @@ struct _WinTCShBrowser
     // Browser state
     //
     WinTCIShextView* current_view;
+    gboolean         busy;
 
     gulong sigid_items_added;
 };
@@ -125,6 +133,14 @@ static void wintc_sh_browser_class_init(
             "The folder options object to use.",
             WINTC_TYPE_SH_FOLDER_OPTIONS,
             G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY
+        );
+    wintc_sh_browser_properties[PROP_BUSY] =
+        g_param_spec_boolean(
+            "busy",
+            "Busy",
+            "Determines whether the browser is currently busy.",
+            FALSE,
+            G_PARAM_READABLE | G_PARAM_EXPLICIT_NOTIFY
         );
 
     g_object_class_install_properties(
@@ -187,12 +203,18 @@ static void wintc_sh_browser_dispose(
 static void wintc_sh_browser_get_property(
     GObject*    object,
     guint       prop_id,
-    WINTC_UNUSED(GValue* value),
+    GValue*     value,
     GParamSpec* pspec
 )
 {
+    WinTCShBrowser* browser = WINTC_SH_BROWSER(object);
+
     switch (prop_id)
     {
+        case PROP_BUSY:
+            g_value_set_boolean(value, browser->busy);
+            break;
+
         default:
             G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
             break;
@@ -248,12 +270,6 @@ gboolean wintc_sh_browser_activate_item(
     GError**            error
 )
 {
-    //
-    // FIXME: This function needs updating because the API uses a callback now
-    //        so it should probably fire a signal to say 'busy' in this
-    //        function then fire another when it's done
-    //
-
     WINTC_SAFE_REF_CLEAR(error);
 
     if (!browser->current_view)
@@ -261,6 +277,25 @@ gboolean wintc_sh_browser_activate_item(
         g_critical("%s", "shell: browser - activate item with no view");
         return FALSE;
     }
+
+    // Ensure we're not waiting for an existing op
+    //
+    if (browser->busy)
+    {
+        g_set_error(
+            error,
+            WINTC_SHELL_ERROR,
+            WINTC_SHELL_ERROR_BROWSER_BUSY,
+            "%s",
+            "There is an ongoing operation, please complete it and try again."
+        );
+
+        return FALSE;
+    }
+
+    // Mark shell as busy
+    //
+    wintc_sh_browser_set_busy(browser, TRUE);
 
     // Attempt to activate the item in the view
     //
@@ -272,8 +307,6 @@ gboolean wintc_sh_browser_activate_item(
     );
 
     return TRUE;
-    // Navigate to the path
-    //
 }
 
 gboolean wintc_sh_browser_can_navigate_to_parent(
@@ -438,6 +471,22 @@ gboolean wintc_sh_browser_set_location(
 }
 
 //
+// PRIVATE FUNCTIONS
+//
+static void wintc_sh_browser_set_busy(
+    WinTCShBrowser* browser,
+    gboolean        busy
+)
+{
+    browser->busy = busy;
+
+    g_object_notify_by_pspec(
+        G_OBJECT(browser),
+        wintc_sh_browser_properties[PROP_BUSY]
+    );
+}
+
+//
 // CALLBACKS
 //
 static void cb_shext_activate_result(
@@ -448,21 +497,24 @@ static void cb_shext_activate_result(
     WinTCShBrowser* browser = WINTC_SH_BROWSER(user_data);
     GError*         error   = NULL;
 
-    // FIXME: Handle PENDING!!
-    //
     switch (result_obj->result)
     {
         case WINTC_SHEXT_ACT_RESULT_FAILED:
+            wintc_sh_browser_set_busy(browser, FALSE);
+
             wintc_display_error_and_clear(
                 (GError**) &result_obj->data,
                 NULL
             );
+
             break;
 
         case WINTC_SHEXT_ACT_RESULT_NAVIGATE:
         {
             WinTCShextPathInfo* path_info =
                 (WinTCShextPathInfo*) result_obj->data;
+
+            wintc_sh_browser_set_busy(browser, FALSE);
 
             if (
                 wintc_sh_folder_options_get_browse_in_same_window(
