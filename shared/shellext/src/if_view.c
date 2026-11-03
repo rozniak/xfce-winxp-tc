@@ -590,4 +590,6 @@ void wintc_shext_act_result_free(
 
         default: break;
     }
+
+    g_free(result);
 }
