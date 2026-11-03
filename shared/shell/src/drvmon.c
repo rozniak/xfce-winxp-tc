@@ -94,8 +94,7 @@ static void wintc_sh_drive_monitor_get_drive_info(
 );
 static WinTCShellDrive* wintc_sh_drive_monitor_get_shell_drive(
     WinTCShDriveMonitor* drvmon,
-    GMount*              mount,
-    GVolume*             volume
+    GObject*             volume_or_mount
 );
 static WinTCShellDrive* wintc_sh_drive_monitor_find_shell_drive_by_device(
     WinTCShDriveMonitor* drvmon,
@@ -204,7 +203,7 @@ static void on_volume_monitor_volume_removed(
 // STATIC DATA
 //
 static GHashTable* S_MAP_SHEXT_HOST_TO_DRVMON   = NULL;
-static GQuark      S_QUARK_DRVMON_DRIVE_MAPPING = 0;
+static GQuark      S_QUARK_DRVMON_SH_DRIVE = 0;
 static GQuark      S_QUARK_DRVMON_VOLUME_UUID   = 0;
 
 static GParamSpec* wintc_sh_drive_monitor_properties[N_PROPERTIES] = { 0 };
@@ -265,7 +264,7 @@ static void wintc_sh_drive_monitor_class_init(
 
     // Set up our quark(s)
     //
-    S_QUARK_DRVMON_DRIVE_MAPPING =
+    S_QUARK_DRVMON_SH_DRIVE =
         g_quark_from_static_string("drvmon-drive-mapping");
     S_QUARK_DRVMON_VOLUME_UUID =
         g_quark_from_static_string("drvmon-volume-uuid");
@@ -280,7 +279,7 @@ static void wintc_sh_drive_monitor_init(
             g_direct_hash,
             g_direct_equal,
             NULL,
-            (GDestroyNotify) g_free
+            (GDestroyNotify) g_rc_box_release
         );
     self->map_id_to_icon =
         g_hash_table_new_full(
@@ -690,7 +689,7 @@ static void wintc_sh_drive_monitor_add_drive(
     GDrive*              drive
 )
 {
-    WinTCShellDrive* sh_drive = g_new(WinTCShellDrive, 1);
+    WinTCShellDrive* sh_drive = g_rc_box_new(WinTCShellDrive);
 
     sh_drive->drvmon   = drvmon;
     sh_drive->drive    = drive;
@@ -759,21 +758,7 @@ static void wintc_sh_drive_monitor_add_mount(
     // Look up owner shell drive
     //
     WinTCShellDrive* sh_drive =
-        wintc_sh_drive_monitor_get_shell_drive(drvmon, mount, NULL);
-
-    // Attach references to source drive / mount now - this information gets
-    // lost by GIO when the mount is ripped away (such as when Brasero acquires
-    // a lock on the CD/DVD drive volume)
-    //
-    if (sh_drive)
-    {
-        g_object_set_qdata_full(
-            G_OBJECT(mount),
-            S_QUARK_DRVMON_DRIVE_MAPPING,
-            g_object_ref(sh_drive->drive),
-            (GDestroyNotify) g_object_unref
-        );
-    }
+        wintc_sh_drive_monitor_get_shell_drive(drvmon, G_OBJECT(mount));
 
     if (volume)
     {
@@ -834,7 +819,7 @@ static void wintc_sh_drive_monitor_add_volume(
     // Look up owner shell drive
     //
     WinTCShellDrive* sh_drive =
-        wintc_sh_drive_monitor_get_shell_drive(drvmon, NULL, volume);
+        wintc_sh_drive_monitor_get_shell_drive(drvmon, G_OBJECT(volume));
 
     if (!sh_drive)
     {
@@ -934,35 +919,42 @@ static void wintc_sh_drive_monitor_get_drive_info(
 
 static WinTCShellDrive* wintc_sh_drive_monitor_get_shell_drive(
     WinTCShDriveMonitor* drvmon,
-    GMount*              mount,
-    GVolume*             volume
+    GObject*             volume_or_mount
 )
 {
-    GDrive*          drive    = mount ?
-                                    g_mount_get_drive(mount) :
-                                    g_volume_get_drive(volume);
-    WinTCShellDrive* sh_drive = NULL;
+    WinTCShellDrive* sh_drive =
+        g_object_get_qdata(
+            volume_or_mount,
+            S_QUARK_DRVMON_SH_DRIVE
+        );
 
-    if (drive)
+    if (!sh_drive)
     {
-        sh_drive =
-            g_hash_table_lookup(drvmon->map_drive_to_sh_drive, drive);
+        GDrive* drive =
+            G_IS_VOLUME(volume_or_mount) ?
+                g_volume_get_drive(G_VOLUME(volume_or_mount)) :
+                g_mount_get_drive(G_MOUNT(volume_or_mount));
 
-        if (volume)
+        if (drive)
         {
-            g_object_unref(drive);
-        }
-    }
-    else if (mount) // Second attempt
-    {
-        sh_drive =
-            g_hash_table_lookup(
-                drvmon->map_drive_to_sh_drive,
-                g_object_get_qdata(
-                    G_OBJECT(mount),
-                    S_QUARK_DRVMON_DRIVE_MAPPING
-                )
+            sh_drive =
+                g_hash_table_lookup(
+                    drvmon->map_drive_to_sh_drive,
+                    drive
+                );
+
+            // Store the struct ref directly because it is possible that drives
+            // are unref'd first when the user physically removes them from
+            // the machine -- we'd have no way of getting the sh_drive back in
+            // that case
+            //
+            g_object_set_qdata_full(
+                volume_or_mount,
+                S_QUARK_DRVMON_SH_DRIVE,
+                g_rc_box_acquire(sh_drive),
+                (GDestroyNotify) g_rc_box_release
             );
+        }
     }
 
     return sh_drive;
@@ -1118,7 +1110,7 @@ static void wintc_sh_drive_monitor_remove_mount(
 )
 {
     WinTCShellDrive* sh_drive =
-        wintc_sh_drive_monitor_get_shell_drive(drvmon, mount, FALSE);
+        wintc_sh_drive_monitor_get_shell_drive(drvmon, G_OBJECT(mount));
 
     // Remove the mount icon
     //
@@ -1193,7 +1185,7 @@ static void wintc_sh_drive_monitor_remove_volume(
 )
 {
     WinTCShellDrive* sh_drive =
-        wintc_sh_drive_monitor_get_shell_drive(drvmon, FALSE, volume);
+        wintc_sh_drive_monitor_get_shell_drive(drvmon, G_OBJECT(volume));
 
     // Remove the volume icon
     //
