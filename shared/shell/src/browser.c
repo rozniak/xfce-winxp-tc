@@ -506,11 +506,14 @@ static void cb_shext_activate_result(
     WinTCShBrowser* browser = WINTC_SH_BROWSER(user_data);
     GError*         error   = NULL;
 
+    if (result_obj->result != WINTC_SHEXT_ACT_RESULT_PENDING)
+    {
+        wintc_sh_browser_set_busy(browser, FALSE);
+    }
+
     switch (result_obj->result)
     {
         case WINTC_SHEXT_ACT_RESULT_FAILED:
-            wintc_sh_browser_set_busy(browser, FALSE);
-
             wintc_display_error_and_clear(
                 (GError**) &result_obj->data,
                 NULL
@@ -522,8 +525,6 @@ static void cb_shext_activate_result(
         {
             WinTCShextPathInfo* path_info =
                 (WinTCShextPathInfo*) result_obj->data;
-
-            wintc_sh_browser_set_busy(browser, FALSE);
 
             if (
                 wintc_sh_folder_options_get_browse_in_same_window(
