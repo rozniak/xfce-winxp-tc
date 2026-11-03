@@ -32,11 +32,11 @@ static void wintc_cpl_view_printers_get_property(
     GParamSpec* pspec
 );
 
-static gboolean wintc_cpl_view_printers_activate_item(
-    WinTCIShextView*    view,
-    guint               item_hash,
-    WinTCShextPathInfo* path_info,
-    GError**            error
+static void wintc_cpl_view_printers_activate_item(
+    WinTCIShextView*      view,
+    guint                 item_hash,
+    WinTCShextActCallback callback,
+    gpointer              user_data
 );
 static gint wintc_cpl_view_printers_compare_items(
     WinTCIShextView* view,
@@ -298,16 +298,37 @@ static void wintc_cpl_view_printers_get_property(
 //
 // INTERFACE METHODS (WinTCIShextView)
 //
-static gboolean wintc_cpl_view_printers_activate_item(
-    WINTC_UNUSED(WinTCIShextView*    view),
-    WINTC_UNUSED(guint               item_hash),
-    WINTC_UNUSED(WinTCShextPathInfo* path_info),
-    GError** error
+static void wintc_cpl_view_printers_activate_item(
+    WinTCIShextView*      view,
+    WINTC_UNUSED(guint item_hash),
+    WinTCShextActCallback callback,
+    gpointer              user_data
 )
 {
-    WINTC_SAFE_REF_CLEAR(error);
-    g_critical("%s Not Implemented", __func__);
-    return FALSE;
+    //
+    // FIXME: Implement this
+    //
+    GError*              error = NULL;
+    WinTCShextActResult* result = g_new0(WinTCShextActResult, 1);
+
+    g_set_error(
+        &error,
+        WINTC_GENERAL_ERROR,
+        WINTC_GENERAL_ERROR_NOTIMPL,
+        "%s",
+        "Sorry, this is not implemented!"
+    );
+
+    result->view   = view;
+    result->result = WINTC_SHEXT_ACT_RESULT_FAILED;
+    result->data   = error;
+
+    if (callback)
+    {
+        callback(result, user_data);
+    }
+
+    wintc_shext_act_result_free(result);
 }
 
 static gint wintc_cpl_view_printers_compare_items(

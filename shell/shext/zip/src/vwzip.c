@@ -44,11 +44,11 @@ static void wintc_view_zip_set_property(
     GParamSpec*   pspec
 );
 
-static gboolean wintc_view_zip_activate_item(
-    WinTCIShextView*    view,
-    guint               item_hash,
-    WinTCShextPathInfo* path_info,
-    GError**            error
+static void wintc_view_zip_activate_item(
+    WinTCIShextView*      view,
+    guint                 item_hash,
+    WinTCShextActCallback callback,
+    gpointer              user_data
 );
 static gint wintc_view_zip_compare_items(
     WinTCIShextView* view,
@@ -368,16 +368,14 @@ static void wintc_view_zip_set_property(
 //
 // INTERFACE METHODS
 //
-static gboolean wintc_view_zip_activate_item(
-    WinTCIShextView*    view,
-    guint               item_hash,
-    WinTCShextPathInfo* path_info,
-    GError**            error
+static void wintc_view_zip_activate_item(
+    WinTCIShextView*      view,
+    guint                 item_hash,
+    WinTCShextActCallback callback,
+    gpointer              user_data
 )
 {
     WinTCViewZip* view_zip = WINTC_VIEW_ZIP(view);
-
-    WINTC_SAFE_REF_CLEAR(error);
 
     WinTCShextViewItem* item =
         wintc_view_zip_get_view_item(view_zip, item_hash);
@@ -388,32 +386,50 @@ static gboolean wintc_view_zip_activate_item(
             "%s",
             "shell: zip - attempt to activate non-existent item"
         );
-        return FALSE;
+
+        return;
     }
 
-    // Handle opening directories
+    // Handle activation depending on if this is a dir or file
     //
-    gboolean is_dir = g_str_has_suffix(item->priv, G_DIR_SEPARATOR_S);
+    WinTCShextActResult* result = g_new0(WinTCShextActResult, 1);
 
-    if (is_dir)
+    result->view = view;
+
+    if (g_str_has_suffix(item->priv, G_DIR_SEPARATOR_S))
     {
+        WinTCShextPathInfo* path_info = g_new(WinTCShextPathInfo, 1);
+
         path_info->base_path     = g_strdup(view_zip->zip_uri);
         path_info->extended_path = g_strdup(item->priv);
 
-        return TRUE;
+        result->result = WINTC_SHEXT_ACT_RESULT_NAVIGATE;
+        result->data   = path_info;
+    }
+    else
+    {
+        // TODO: We'll need to extract files first to tmp to be able to open
+        //       them - deal with in a separate issue
+        //
+        GError* error = NULL;
+
+        g_set_error(
+            &error,
+            WINTC_GENERAL_ERROR,
+            WINTC_GENERAL_ERROR_NOTIMPL,
+            "ZIP file extraction not implemented yet."
+        );
+
+        result->result = WINTC_SHEXT_ACT_RESULT_FAILED;
+        result->data   = error;
     }
 
-    // TODO: We'll need to extract files first to tmp to be able to open
-    //       them - deal with in a separate issue
-    //
-    g_set_error(
-        error,
-        WINTC_GENERAL_ERROR,
-        WINTC_GENERAL_ERROR_NOTIMPL,
-        "ZIP file extraction not implemented yet."
-    );
+    if (callback)
+    {
+        callback(result, user_data);
+    }
 
-    return FALSE;
+    wintc_shext_act_result_free(result);
 }
 
 static gint wintc_view_zip_compare_items(
