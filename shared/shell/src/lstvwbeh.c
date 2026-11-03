@@ -1233,6 +1233,7 @@ static void on_list_view_item_activated(
 
         wintc_sh_browser_activate_item(
             behaviour->browser,
+            NULL,
             hash,
             &error
         );

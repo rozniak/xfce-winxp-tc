@@ -266,17 +266,26 @@ WinTCShBrowser* wintc_sh_browser_new(
 
 gboolean wintc_sh_browser_activate_item(
     WinTCShBrowser*     browser,
+    WinTCIShextView*    view,
     guint               item_hash,
     GError**            error
 )
 {
     WINTC_SAFE_REF_CLEAR(error);
 
-    if (!browser->current_view)
+    WinTCIShextView* target_view = view;
+
+    if (!target_view)
     {
-        g_critical("%s", "shell: browser - activate item with no view");
-        return FALSE;
+        if (!browser->current_view)
+        {
+            g_critical("%s", "shell: browser - activate item with no view");
+            return FALSE;
+        }
+
+        target_view = browser->current_view;
     }
+
 
     // Ensure we're not waiting for an existing op
     //
@@ -300,7 +309,7 @@ gboolean wintc_sh_browser_activate_item(
     // Attempt to activate the item in the view
     //
     wintc_ishext_view_activate_item(
-        browser->current_view,
+        target_view,
         item_hash,
         (WinTCShextActCallback) cb_shext_activate_result,
         browser

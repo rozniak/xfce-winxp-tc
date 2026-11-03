@@ -1234,13 +1234,14 @@ static void on_icon_view_item_activated(
             -1
         );
 
-        wintc_sh_browser_activate_item(
-            behaviour->browser,
-            hash,
-            &error
-        );
-
-        if (error)
+        if (
+            !wintc_sh_browser_activate_item(
+                behaviour->browser,
+                NULL,
+                hash,
+                &error
+            )
+        )
         {
             wintc_display_error_and_clear(
                 &error,
