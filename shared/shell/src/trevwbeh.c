@@ -188,6 +188,9 @@ static void wintc_sh_tree_view_behaviour_constructed(
     GObject* object
 )
 {
+    (G_OBJECT_CLASS(wintc_sh_tree_view_behaviour_parent_class))
+        ->constructed(object);
+
     WinTCShTreeViewBehaviour* behaviour =
         WINTC_SH_TREE_VIEW_BEHAVIOUR(object);
 
@@ -288,10 +291,15 @@ static void wintc_sh_tree_view_behaviour_constructed(
         G_CONNECT_DEFAULT
     );
 
-    wintc_sh_tree_view_behaviour_update_view(behaviour, behaviour->browser);
+    g_object_bind_property(
+        G_OBJECT(behaviour->browser),
+        "busy",
+        G_OBJECT(behaviour->tree_view),
+        "sensitive",
+        G_BINDING_SYNC_CREATE | G_BINDING_INVERT_BOOLEAN
+    );
 
-    (G_OBJECT_CLASS(wintc_sh_tree_view_behaviour_parent_class))
-        ->constructed(object);
+    wintc_sh_tree_view_behaviour_update_view(behaviour, behaviour->browser);
 }
 
 static void wintc_sh_tree_view_behaviour_dispose(

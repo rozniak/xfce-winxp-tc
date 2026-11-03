@@ -272,6 +272,9 @@ static void wintc_sh_icon_view_behaviour_constructed(
     GObject* object
 )
 {
+    (G_OBJECT_CLASS(wintc_sh_icon_view_behaviour_parent_class))
+        ->constructed(object);
+
     WinTCShIconViewBehaviour* behaviour =
         WINTC_SH_ICON_VIEW_BEHAVIOUR(object);
 
@@ -458,8 +461,13 @@ static void wintc_sh_icon_view_behaviour_constructed(
         G_CONNECT_DEFAULT
     );
 
-    (G_OBJECT_CLASS(wintc_sh_icon_view_behaviour_parent_class))
-        ->constructed(object);
+    g_object_bind_property(
+        G_OBJECT(behaviour->browser),
+        "busy",
+        G_OBJECT(behaviour->icon_view),
+        "sensitive",
+        G_BINDING_SYNC_CREATE | G_BINDING_INVERT_BOOLEAN
+    );
 }
 
 static void wintc_sh_icon_view_behaviour_dispose(
