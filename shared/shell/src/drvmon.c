@@ -814,34 +814,34 @@ static void wintc_sh_drive_monitor_add_volume(
     GVolume*             volume
 )
 {
-   gchar* obj_path = NULL;
+    const gchar* guid_category = WINTC_SH_GUID_CATEGORY_OTHER;
 
-    // Look up owner shell drive
+    gchar* obj_path = NULL;
+
+    // If the volume is associated with a drive, we must try to remove any
+    // parent drive icon and associate it with the same GUID
     //
     WinTCShellDrive* sh_drive =
         wintc_sh_drive_monitor_get_shell_drive(drvmon, G_OBJECT(volume));
 
-    if (!sh_drive)
+    if (sh_drive)
     {
-        g_critical("%s", "shell: drvmon: volume with no existing drive!");
-        return;
-    }
+        guid_category = sh_drive->guid_category;
 
-    // If the drive has an icon, remove it
-    //
-    obj_path =
-        g_drive_get_identifier(
-            sh_drive->drive,
-            G_DRIVE_IDENTIFIER_KIND_UNIX_DEVICE
+        obj_path =
+            g_drive_get_identifier(
+                sh_drive->drive,
+                G_DRIVE_IDENTIFIER_KIND_UNIX_DEVICE
+            );
+
+        wintc_sh_drive_monitor_remove_icon(
+            drvmon,
+            obj_path,
+            guid_category
         );
 
-    wintc_sh_drive_monitor_remove_icon(
-        drvmon,
-        obj_path,
-        sh_drive->guid_category
-    );
-
-    g_free(obj_path);
+        g_free(obj_path);
+    }
 
     // Install placeholder volume icon
     //
@@ -856,7 +856,7 @@ static void wintc_sh_drive_monitor_add_volume(
     wintc_sh_drive_monitor_add_icon(
         drvmon,
         obj_path,
-        sh_drive->guid_category,
+        guid_category,
         g_volume_get_name(volume),
         wintc_icon_get_available_name(icon),
         volume,
@@ -1184,31 +1184,41 @@ static void wintc_sh_drive_monitor_remove_volume(
     GVolume*             volume
 )
 {
+    gchar*           obj_path;
     WinTCShellDrive* sh_drive =
         wintc_sh_drive_monitor_get_shell_drive(drvmon, G_OBJECT(volume));
 
-    // Remove the volume icon
-    //
-    gchar* obj_path =
+    obj_path =
         g_volume_get_identifier(
             volume,
             G_DRIVE_IDENTIFIER_KIND_UNIX_DEVICE
         );
 
-    wintc_sh_drive_monitor_remove_icon(
-        drvmon,
-        obj_path,
-        sh_drive->guid_category
-    );
+    if (sh_drive)
+    {
+        wintc_sh_drive_monitor_remove_icon(
+            drvmon,
+            obj_path,
+            sh_drive->guid_category
+        );
+
+        // Add drive icon if there are no more volumes
+        //
+        if (!g_drive_has_volumes(sh_drive->drive))
+        {
+            wintc_sh_drive_monitor_register_drive_icon(drvmon, sh_drive);
+        }
+    }
+    else
+    {
+        wintc_sh_drive_monitor_remove_icon(
+            drvmon,
+            obj_path,
+            WINTC_SH_GUID_CATEGORY_OTHER
+        );
+    }
 
     g_free(obj_path);
-
-    // Add drive icon if there are no more volumes
-    //
-    if (!g_drive_has_volumes(sh_drive->drive))
-    {
-        wintc_sh_drive_monitor_register_drive_icon(drvmon, sh_drive);
-    }
 }
 
 static void clear_view_item(
