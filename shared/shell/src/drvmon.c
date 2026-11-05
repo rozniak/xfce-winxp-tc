@@ -1175,7 +1175,22 @@ static void wintc_sh_drive_monitor_remove_mount(
 
     if (volume)
     {
-        wintc_sh_drive_monitor_add_volume(drvmon, volume);
+        // Okay so GVFS (or more specifically, one of its backends *AHEM* mtp
+        // *AHEM*) is rubbish and the volume that 'exists' actually doesn't
+        // exist because it was just removed, and yet the mount still holds
+        // a stale reference to it
+        //
+        // We check here - does the volume have a reference to this mount? Only
+        // restore the volume icon if so
+        //
+        GMount* volume_mount = g_volume_get_mount(volume);
+
+        if (volume_mount == mount)
+        {
+            wintc_sh_drive_monitor_add_volume(drvmon, volume);
+
+            g_object_unref(volume_mount);
+        }
 
         g_object_unref(volume);
     }
