@@ -32,6 +32,7 @@ wintc_resolve_library(garcon-gtk3-1     GARCON_GTK3    PRIVATE)
 wintc_resolve_library(gdk-pixbuf-2.0    GDK_PIXBUF     PRIVATE)
 wintc_resolve_library(glib-2.0          GLIB           PRIVATE)
 wintc_resolve_library(gtk+-3.0          GTK3           PRIVATE)
+wintc_resolve_library(libnm             NM             PRIVATE)
 wintc_resolve_library(upower-glib       UPOWER_GLIB    PRIVATE)
 wintc_resolve_library(wintc-comctl      WINTC_COMCTL   PRIVATE)
 wintc_resolve_library(wintc-comgtk      WINTC_COMGTK   PRIVATE)
@@ -60,14 +61,23 @@ wintc_gdbus_codegen(
     false
 )
 
-# FIXME: For now, exclude the network icon stuff from build on FreeBSD
-set(
-    TASKBAND_SOURCES
+add_executable(
+    wintc-taskband
     src/application.c
     src/application.h
     src/intapi.h
     src/main.c
     src/meta.h
+    src/net/device.c
+    src/net/device.h
+    src/net/dialogs.c
+    src/net/dialogs.h
+    src/net/netwnd.c
+    src/net/netwnd.h
+    src/net/statwnd.c
+    src/net/statwnd.h
+    src/net/util.c
+    src/net/util.h
     src/resources.c
     src/sni-dbus.c
     src/sni-dbus.h
@@ -94,6 +104,8 @@ set(
     src/systray/clock.h
     src/systray/icon.c
     src/systray/icon.h
+    src/systray/network.c
+    src/systray/network.h
     src/systray/notifarea.c
     src/systray/notifarea.h
     src/systray/power.c
@@ -110,22 +122,6 @@ set(
     src/taskbuttons/toolbar.h
     src/taskbuttons/windowmonitor.c
     src/taskbuttons/windowmonitor.h
-)
-
-if (NOT ${WINTC_PKGMGR} STREQUAL "bsdpkg")
-    wintc_resolve_library(libnm NM PRIVATE)
-
-    set(
-        TASKBAND_SOURCES
-        ${TASKBAND_SOURCES}
-        src/systray/network.c
-        src/systray/network.h
-    )
-endif()
-
-add_executable(
-    wintc-taskband
-    ${TASKBAND_SOURCES}
 )
 
 target_compile_options(
@@ -145,6 +141,7 @@ target_include_directories(
     PRIVATE ${GDK_PIXBUF_INCLUDE_DIRS}
     PRIVATE ${GLIB_INCLUDE_DIRS}
     PRIVATE ${GTK3_INCLUDE_DIRS}
+    PRIVATE ${NM_INCLUDE_DIRS}
     PRIVATE ${UPOWER_GLIB_INCLUDE_DIRS}
     PRIVATE ${WINTC_COMCTL_INCLUDE_DIRS}
     PRIVATE ${WINTC_COMGTK_INCLUDE_DIRS}
@@ -166,6 +163,7 @@ target_link_directories(
     PRIVATE ${GDK_PIXBUF_LIBRARY_DIRS}
     PRIVATE ${GLIB_LIBRARY_DIRS}
     PRIVATE ${GTK3_LIBRARY_DIRS}
+    PRIVATE ${NM_LIBRARY_DIRS}
     PRIVATE ${UPOWER_GLIB_LIBRARY_DIRS}
     PRIVATE ${WINTC_COMCTL_LIBRARY_DIRS}
     PRIVATE ${WINTC_COMGTK_LIBRARY_DIRS}
@@ -188,6 +186,7 @@ target_link_libraries(
     PRIVATE ${GDK_PIXBUF_LIBRARIES}
     PRIVATE ${GLIB_LIBRARIES}
     PRIVATE ${GTK3_LIBRARIES}
+    PRIVATE ${NM_LIBRARIES}
     PRIVATE ${UPOWER_GLIB_LIBRARIES}
     PRIVATE ${WINTC_COMCTL_LIBRARIES}
     PRIVATE ${WINTC_COMGTK_LIBRARIES}
@@ -198,21 +197,6 @@ target_link_libraries(
     PRIVATE ${WINTC_SHLANG_LIBRARIES}
     PRIVATE ${WINTC_SNDAPI_LIBRARIES}
 )
-
-if (NOT ${WINTC_PKGMGR} STREQUAL "bsdpkg")
-    target_include_directories(
-        wintc-taskband
-        PRIVATE ${NM_INCLUDE_DIRS}
-    )
-    target_link_directories(
-        wintc-taskband
-        PRIVATE ${NM_LIBRARY_DIRS}
-    )
-    target_link_libraries(
-        wintc-taskband
-        PRIVATE ${NM_LIBRARIES}
-    )
-endif()
 
 add_dependencies(
     wintc-taskband
