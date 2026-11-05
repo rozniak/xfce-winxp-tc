@@ -243,7 +243,7 @@ gboolean wintc_shext_host_add_toplevel_item(
     const gchar*               id,
     WinTCShextViewItem*        view_item,
     WinTCShextActivateItemFunc activate_cb,
-    WINTC_UNUSED(GError** error)
+    GError**                   error
 )
 {
     gchar*   guid_u = g_ascii_strup(guid_category, -1);
@@ -256,9 +256,14 @@ gboolean wintc_shext_host_add_toplevel_item(
 
     if (!category)
     {
-        g_critical(
-            "shellext: add toplevel: no toplevel category: %s",
-            guid_u
+        g_set_error(
+            error,
+            WINTC_SHEXT_ERROR,
+            WINTC_SHEXT_ERROR_HOST_TOPLEVEL_NO_SUCH_CATEGORY,
+            "A shell extension attempted to register a top level item with "
+            "the name '%s', however the category it requested it be placed in "
+            "does not exist. The item will not appear in My Computer.",
+            view_item->display_name
         );
 
         goto cleanup;
@@ -268,9 +273,14 @@ gboolean wintc_shext_host_add_toplevel_item(
     //
     if (g_hash_table_lookup(category->map_id_to_item, id))
     {
-        g_critical(
-            "shellext: add toplevel: item already exists: %s",
-            id
+        g_set_error(
+            error,
+            WINTC_SHEXT_ERROR,
+            WINTC_SHEXT_ERROR_HOST_TOPLEVEL_EXISTS,
+            "A shell extension attempted to register a top level item with "
+            "the name '%s', however an item with that name already exists. "
+            "The duplicate item will not appear in My Computer.",
+            view_item->display_name
         );
 
         goto cleanup;

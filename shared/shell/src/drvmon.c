@@ -716,9 +716,11 @@ static void wintc_sh_drive_monitor_add_icon(
     WinTCShextActivateItemFunc activate_cb
 )
 {
+    GError* error = NULL;
+
     if (!obj_path)
     {
-        WINTC_LOG_DEBUG("shell: drvmon: no obj path for %s", display_name);
+        g_critical("shell: drvmon: no obj path for %s", display_name);
         return;
     }
 
@@ -731,20 +733,40 @@ static void wintc_sh_drive_monitor_add_icon(
     item->hint         = 0;
     item->priv         = priv;
 
-    wintc_shext_host_add_toplevel_item(
-        drvmon->shext_host,
-        guid_category,
-        obj_path,
-        item,
-        activate_cb,
-        NULL // FIXME: Error handling
-    );
+    if (
+        wintc_shext_host_add_toplevel_item(
+            drvmon->shext_host,
+            guid_category,
+            obj_path,
+            item,
+            activate_cb,
+            &error
+        )
+    )
+    {
+        g_hash_table_insert(
+            drvmon->map_id_to_icon,
+            g_strdup(obj_path),
+            item
+        );
+    }
+    else
+    {
+        clear_view_item(item);
 
-    g_hash_table_insert(
-        drvmon->map_id_to_icon,
-        g_strdup(obj_path),
-        item
-    );
+        if (
+            !g_error_matches(
+                error,
+                WINTC_SHEXT_ERROR,
+                WINTC_SHEXT_ERROR_HOST_TOPLEVEL_EXISTS
+            )
+        )
+        {
+            wintc_display_error_and_clear(&error, NULL);
+        }
+
+        g_clear_error(&error);
+    }
 }
 
 static void wintc_sh_drive_monitor_add_mount(
@@ -752,6 +774,8 @@ static void wintc_sh_drive_monitor_add_mount(
     GMount*              mount
 )
 {
+    const gchar* guid_category = WINTC_SH_GUID_CATEGORY_OTHER;
+
     gchar*   obj_path;
     GVolume* volume = g_mount_get_volume(mount);
 
@@ -760,20 +784,26 @@ static void wintc_sh_drive_monitor_add_mount(
     WinTCShellDrive* sh_drive =
         wintc_sh_drive_monitor_get_shell_drive(drvmon, G_OBJECT(mount));
 
+    if (sh_drive)
+    {
+        guid_category = sh_drive->guid_category;
+    }
+
+    // If this mount has a volume we must deal with it
+    //
     if (volume)
     {
+        // Map the UUID in case the volume disappears from us
+        //
         g_object_set_qdata_full(
             G_OBJECT(mount),
             S_QUARK_DRVMON_VOLUME_UUID,
             g_volume_get_uuid(volume),
             (GDestroyNotify) g_free
         );
-    }
 
-    // If the volume has an icon, remove it
-    //
-    if (volume)
-    {
+        // Remove any volume icon if there is one
+        //
         obj_path =
             g_volume_get_identifier(
                 volume,
@@ -783,7 +813,7 @@ static void wintc_sh_drive_monitor_add_mount(
         wintc_sh_drive_monitor_remove_icon(
             drvmon,
             obj_path,
-            sh_drive->guid_category
+            guid_category
         );
 
         g_free(obj_path);
@@ -795,16 +825,21 @@ static void wintc_sh_drive_monitor_add_mount(
     GFile* file = g_mount_get_default_location(mount);
     GIcon* icon = g_mount_get_icon(mount);
 
+    obj_path =
+        g_file_peek_path(file) ?
+            g_file_get_path(file) : g_file_get_uri(file);
+
     wintc_sh_drive_monitor_add_icon(
         drvmon,
-        g_file_peek_path(file),
-        sh_drive ? sh_drive->guid_category : WINTC_SH_GUID_CATEGORY_OTHER,
+        obj_path,
+        WINTC_SH_GUID_CATEGORY_OTHER,
         g_mount_get_name(mount),
         wintc_icon_get_available_name(icon),
         mount,
         (WinTCShextActivateItemFunc) cb_shext_activate_item_mount
     );
 
+    g_free(obj_path);
     g_object_unref(file);
     g_object_unref(icon);
 }
@@ -1092,6 +1127,12 @@ static void wintc_sh_drive_monitor_remove_icon(
     const gchar*         guid_category
 )
 {
+    if (!obj_path)
+    {
+        g_critical("%s", "shell: drvmon: remove icon -- missing obj_path");
+        return;
+    }
+
     wintc_shext_host_remove_toplevel_item(
         drvmon->shext_host,
         guid_category,
@@ -1115,7 +1156,9 @@ static void wintc_sh_drive_monitor_remove_mount(
     // Remove the mount icon
     //
     GFile* file     = g_mount_get_default_location(mount);
-    gchar* obj_path = g_file_get_path(file);
+    gchar* obj_path =
+        g_file_peek_path(file) ?
+            g_file_get_path(file) : g_file_get_uri(file);
 
     wintc_sh_drive_monitor_remove_icon(
         drvmon,

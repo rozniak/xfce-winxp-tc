@@ -7,7 +7,9 @@
 
 typedef enum
 {
-    WINTC_SHEXT_ERROR_HOST_NO_VIEW
+    WINTC_SHEXT_ERROR_HOST_NO_VIEW = 1,
+    WINTC_SHEXT_ERROR_HOST_TOPLEVEL_EXISTS,
+    WINTC_SHEXT_ERROR_HOST_TOPLEVEL_NO_SUCH_CATEGORY
 } WinTCShextError;
 
 GQuark wintc_shext_error_quark(void);
