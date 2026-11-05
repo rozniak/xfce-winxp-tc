@@ -1497,8 +1497,7 @@ static void cb_shext_activate_item_mount(
     WinTCShextPathInfo*  path_info = g_new0(WinTCShextPathInfo, 1);
     WinTCShextActResult* result    = g_new0(WinTCShextActResult, 1);
 
-    path_info->base_path =
-        g_strdup_printf("file://%s", g_file_peek_path(file));
+    path_info->base_path = g_file_get_uri(file);
 
     result->view   = view;
     result->result = WINTC_SHEXT_ACT_RESULT_NAVIGATE;
