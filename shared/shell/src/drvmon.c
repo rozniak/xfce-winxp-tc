@@ -752,20 +752,45 @@ static void wintc_sh_drive_monitor_add_icon(
     }
     else
     {
-        clear_view_item(item);
 
         if (
-            !g_error_matches(
+            g_error_matches(
                 error,
                 WINTC_SHEXT_ERROR,
                 WINTC_SHEXT_ERROR_HOST_TOPLEVEL_EXISTS
             )
         )
         {
-            wintc_display_error_and_clear(&error, NULL);
+            g_clear_error(&error);
+
+            // Sometimes GVFS creates a dummy item then the real item with the
+            // exact same path afterwards
+            //
+            // We should just replace the existing item in that case
+            //
+            wintc_shext_host_remove_toplevel_item(
+                drvmon->shext_host,
+                guid_category,
+                obj_path
+            );
+
+            if (
+                wintc_shext_host_add_toplevel_item(
+                    drvmon->shext_host,
+                    guid_category,
+                    obj_path,
+                    item,
+                    activate_cb,
+                    &error
+                )
+            )
+            {
+                return; // Success! No need to clean up
+            }
         }
 
-        g_clear_error(&error);
+        clear_view_item(item);
+        wintc_display_error_and_clear(&error, NULL);
     }
 }
 
