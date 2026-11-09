@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+    <gresource prefix="/uk/oddmatics/wintc/netshell">
+        <file>net.css</file>
+        <file>net_p.css</file>
+        <file>net-repairdlg.ui</file>
+        <file>net-statwnd.ui</file>
+        <file>wlan-connect.png</file>
+        <file>wlan-keydlg.ui</file>
+        <file>wlan-netitem.ui</file>
+        <file>wlan-netwnd.ui</file>
+        <file>wlan-opendlg.ui</file>
+        <file>wlan-progdlg.ui</file>
+        <file>wlan-tasks.ui</file>
+    </gresource>
+</gresources>

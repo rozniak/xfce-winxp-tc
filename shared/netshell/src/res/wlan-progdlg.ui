@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk+" version="3.24"/>
+  <!-- Layout follows XP's 'Please wait while Windows connects' dialog -->
+  <object class="GtkBox" id="main-box">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="orientation">vertical</property>
+
+    <!-- The animation is added in code -->
+    <child>
+      <object class="GtkBox" id="box-anim">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="orientation">horizontal</property>
+
+        <style>
+          <class name="wintc-mb-md" />
+          <class name="wintc-wlan-connect-anim" />
+        </style>
+      </object>
+    </child>
+
+    <child>
+      <object class="GtkLabel" id="label-text">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="max-width-chars">52</property>
+        <property name="width-chars">52</property>
+        <property name="wrap">True</property>
+        <property name="xalign">0.0</property>
+      </object>
+    </child>
+
+    <child>
+      <object class="GtkLabel" id="label-status">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="ellipsize">end</property>
+        <property name="xalign">0.0</property>
+
+        <style>
+          <class name="wintc-mt-md" />
+        </style>
+      </object>
+    </child>
+
+    <child>
+      <object class="GtkBox">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="orientation">horizontal</property>
+        <property name="spacing">8</property>
+
+        <child>
+          <object class="GtkProgressBar" id="progress-bar">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="hexpand">True</property>
+            <property name="valign">center</property>
+          </object>
+        </child>
+
+        <child>
+          <object class="GtkButton" id="button-cancel">
+            <property name="visible">True</property>
+            <property name="can-default">True</property>
+            <property name="can-focus">True</property>
+            <property name="label" translatable="no">%CTL_CANCEL%</property>
+            <property name="receives-default">True</property>
+          </object>
+        </child>
+
+        <style>
+          <class name="wintc-mt-md" />
+        </style>
+      </object>
+    </child>
+
+    <style>
+      <class name="wintc-mb-md" />
+      <class name="wintc-ml-md" />
+      <class name="wintc-mr-md" />
+      <class name="wintc-mt-md" />
+    </style>
+  </object>
+</interface>

@@ -1,0 +1,8 @@
+/** Network connection UI - overrides that must beat the theme */
+
+/** The signal strength bars are a fixed size image, as in XP */
+image.wintc-wlan-signal
+{
+    min-height: 32px;
+    min-width:  32px;
+}

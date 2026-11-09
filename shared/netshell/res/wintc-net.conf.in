@@ -1,0 +1,37 @@
+#
+# Bring up network adapters that rc.conf(5) says nothing about, see
+# @CMAKE_INSTALL_FULL_LIBEXECDIR@/wintc/wintc-net-devd
+#
+# These take over the stock rules in /etc/devd.conf and
+# /etc/devd/dhclient.conf, whose actions the helper still runs first
+#
+notify 10 {
+	match "system"		"IFNET";
+	match "subsystem"	"!(usbus|wlan)[0-9]+";
+	match "type"		"ATTACH";
+	action "@CMAKE_INSTALL_FULL_LIBEXECDIR@/wintc/wintc-net-devd ifnet-attach $subsystem";
+};
+
+notify 10 {
+	match "system"		"IFNET";
+	match "type"		"LINK_UP";
+	media-type		"ethernet";
+	action "@CMAKE_INSTALL_FULL_LIBEXECDIR@/wintc/wintc-net-devd link-up $subsystem";
+};
+
+notify 10 {
+	match "system"		"IFNET";
+	match "type"		"LINK_UP";
+	media-type		"802.11";
+	action "@CMAKE_INSTALL_FULL_LIBEXECDIR@/wintc/wintc-net-devd link-up $subsystem";
+};
+
+attach 10 {
+	device-name "$wifi-driver-regex";
+	action "@CMAKE_INSTALL_FULL_LIBEXECDIR@/wintc/wintc-net-devd attach $device-name";
+};
+
+detach 10 {
+	device-name "$wifi-driver-regex";
+	action "@CMAKE_INSTALL_FULL_LIBEXECDIR@/wintc/wintc-net-devd detach $device-name";
+};
