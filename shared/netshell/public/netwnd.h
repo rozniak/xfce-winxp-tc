@@ -1,5 +1,5 @@
-#ifndef __NET_NETWND_H__
-#define __NET_NETWND_H__
+#ifndef __NETSHELL_NETWND_H__
+#define __NETSHELL_NETWND_H__
 
 #include <glib.h>
 #include <gtk/gtk.h>

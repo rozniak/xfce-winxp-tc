@@ -3,7 +3,9 @@
 
 #include "@LIB_HEADER_DIR@/client.h"
 #include "@LIB_HEADER_DIR@/device.h"
+#include "@LIB_HEADER_DIR@/dialogs.h"
 #include "@LIB_HEADER_DIR@/netwnd.h"
 #include "@LIB_HEADER_DIR@/statwnd.h"
+#include "@LIB_HEADER_DIR@/util.h"
 
 #endif

@@ -13,7 +13,7 @@ set(PROJECT_MAINTAINER "Rory Fewell <roryf@oddmatics.uk>")
 
 set(PROJECT_ROOT ${CMAKE_CURRENT_LIST_DIR})
 
-set(WINTC_NO_PEDANTIC_COMPILE true) # Necessary due to NetworkManager headers
+set(WINTC_NO_PEDANTIC_COMPILE true) # Necessary due to GDBus codegen
 
 include(GNUInstallDirs)
 
@@ -36,6 +36,7 @@ wintc_resolve_library(upower-glib       UPOWER_GLIB    PRIVATE)
 wintc_resolve_library(wintc-comctl      WINTC_COMCTL   PRIVATE)
 wintc_resolve_library(wintc-comgtk      WINTC_COMGTK   PRIVATE)
 wintc_resolve_library(wintc-exec        WINTC_EXEC     PRIVATE)
+wintc_resolve_library(wintc-netshell    WINTC_NETSHELL PRIVATE)
 wintc_resolve_library(wintc-shcommon    WINTC_SHCOMMON PRIVATE)
 wintc_resolve_library(wintc-shelldpa    WINTC_SHELLDPA PRIVATE)
 wintc_resolve_library(wintc-shellext    WINTC_SHELLEXT PRIVATE)
@@ -67,16 +68,6 @@ add_executable(
     src/intapi.h
     src/main.c
     src/meta.h
-    src/net/client.h
-    src/net/device.h
-    src/net/dialogs.c
-    src/net/dialogs.h
-    src/net/netwnd.c
-    src/net/netwnd.h
-    src/net/statwnd.c
-    src/net/statwnd.h
-    src/net/util.c
-    src/net/util.h
     src/resources.c
     src/sni-dbus.c
     src/sni-dbus.h
@@ -123,64 +114,6 @@ add_executable(
     src/taskbuttons/windowmonitor.h
 )
 
-# The network adapters are driven by NetworkManager, except on FreeBSD which
-# doesn't have it - there they are driven through the kernel and wpa_supplicant
-# directly (see src/net/client.h), with devd(8) bringing up new adapters and a
-# pkexec(1) helper for changing them (see bsd/)
-#
-if (${WINTC_PKGMGR} STREQUAL "bsdpkg")
-    target_sources(
-        wintc-taskband
-        PRIVATE src/net/bsd/backend.h
-        PRIVATE src/net/bsd/client.c
-        PRIVATE src/net/bsd/device.c
-        PRIVATE src/net/bsd/wpactrl.c
-        PRIVATE src/net/bsd/wpactrl.h
-    )
-
-    set(WINTC_NETCTL_PATH ${CMAKE_INSTALL_FULL_LIBEXECDIR}/wintc/wintc-netctl)
-
-    target_compile_definitions(
-        wintc-taskband
-        PRIVATE WINTC_NETCTL_PATH="${WINTC_NETCTL_PATH}"
-    )
-
-    configure_file(
-        bsd/uk.co.oddmatics.wintc.taskband.policy.in
-        uk.co.oddmatics.wintc.taskband.policy
-        @ONLY
-    )
-    configure_file(
-        bsd/wintc-net.conf.in
-        wintc-net.conf
-        @ONLY
-    )
-
-    install(
-        PROGRAMS
-            bsd/wintc-net-devd
-            bsd/wintc-netctl
-        DESTINATION ${CMAKE_INSTALL_LIBEXECDIR}/wintc
-    )
-    install(
-        FILES ${CMAKE_BINARY_DIR}/uk.co.oddmatics.wintc.taskband.policy
-        DESTINATION share/polkit-1/actions
-    )
-    install(
-        FILES ${CMAKE_BINARY_DIR}/wintc-net.conf
-        DESTINATION etc/devd
-    )
-else()
-    wintc_resolve_library(libnm NM PRIVATE)
-
-    target_sources(
-        wintc-taskband
-        PRIVATE src/net/nm/backend.h
-        PRIVATE src/net/nm/client.c
-        PRIVATE src/net/nm/device.c
-    )
-endif()
-
 target_compile_options(
     wintc-taskband
     PRIVATE ${WINTC_COMPILE_OPTIONS}
@@ -198,11 +131,11 @@ target_include_directories(
     PRIVATE ${GDK_PIXBUF_INCLUDE_DIRS}
     PRIVATE ${GLIB_INCLUDE_DIRS}
     PRIVATE ${GTK3_INCLUDE_DIRS}
-    PRIVATE ${NM_INCLUDE_DIRS}
     PRIVATE ${UPOWER_GLIB_INCLUDE_DIRS}
     PRIVATE ${WINTC_COMCTL_INCLUDE_DIRS}
     PRIVATE ${WINTC_COMGTK_INCLUDE_DIRS}
     PRIVATE ${WINTC_EXEC_INCLUDE_DIRS}
+    PRIVATE ${WINTC_NETSHELL_INCLUDE_DIRS}
     PRIVATE ${WINTC_SHCOMMON_INCLUDE_DIRS}
     PRIVATE ${WINTC_SHELLDPA_INCLUDE_DIRS}
     PRIVATE ${WINTC_SHELLEXT_INCLUDE_DIRS}
@@ -220,11 +153,11 @@ target_link_directories(
     PRIVATE ${GDK_PIXBUF_LIBRARY_DIRS}
     PRIVATE ${GLIB_LIBRARY_DIRS}
     PRIVATE ${GTK3_LIBRARY_DIRS}
-    PRIVATE ${NM_LIBRARY_DIRS}
     PRIVATE ${UPOWER_GLIB_LIBRARY_DIRS}
     PRIVATE ${WINTC_COMCTL_LIBRARY_DIRS}
     PRIVATE ${WINTC_COMGTK_LIBRARY_DIRS}
     PRIVATE ${WINTC_EXEC_LIBRARY_DIRS}
+    PRIVATE ${WINTC_NETSHELL_LIBRARY_DIRS}
     PRIVATE ${WINTC_SHCOMMON_LIBRARY_DIRS}
     PRIVATE ${WINTC_SHELLDPA_LIBRARY_DIRS}
     PRIVATE ${WINTC_SHELLEXT_LIBRARY_DIRS}
@@ -243,11 +176,11 @@ target_link_libraries(
     PRIVATE ${GDK_PIXBUF_LIBRARIES}
     PRIVATE ${GLIB_LIBRARIES}
     PRIVATE ${GTK3_LIBRARIES}
-    PRIVATE ${NM_LIBRARIES}
     PRIVATE ${UPOWER_GLIB_LIBRARIES}
     PRIVATE ${WINTC_COMCTL_LIBRARIES}
     PRIVATE ${WINTC_COMGTK_LIBRARIES}
     PRIVATE ${WINTC_EXEC_LIBRARIES}
+    PRIVATE ${WINTC_NETSHELL_LIBRARIES}
     PRIVATE ${WINTC_SHCOMMON_LIBRARIES}
     PRIVATE ${WINTC_SHELLDPA_LIBRARIES}
     PRIVATE ${WINTC_SHELLEXT_LIBRARIES}

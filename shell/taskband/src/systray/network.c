@@ -3,15 +3,10 @@
 #include <gtk/gtk.h>
 #include <net/if.h>
 #include <wintc/comgtk.h>
+#include <wintc/netshell.h>
 #include <wintc/shellext.h>
 
 #include "../intapi.h"
-#include "../net/client.h"
-#include "../net/device.h"
-#include "../net/dialogs.h"
-#include "../net/netwnd.h"
-#include "../net/statwnd.h"
-#include "../net/util.h"
 #include "icon.h"
 #include "network.h"
 
@@ -292,7 +287,20 @@ static void wintc_notification_network_init(
 {
     GtkBuilder* builder;
 
-    wintc_net_ensure_styles();
+    // Apply stylesheet for the notification
+    //
+    GtkCssProvider* css = gtk_css_provider_new();
+
+    gtk_css_provider_load_from_resource(
+        css,
+        "/uk/oddmatics/wintc/taskband/tray-net.css"
+    );
+
+    gtk_style_context_add_provider_for_screen(
+        gdk_screen_get_default(),
+        GTK_STYLE_PROVIDER(css),
+        GTK_STYLE_PROVIDER_PRIORITY_FALLBACK
+    );
 
     // Set up the context menus
     //

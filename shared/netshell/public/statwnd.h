@@ -1,5 +1,5 @@
-#ifndef __NET_STATWND_H__
-#define __NET_STATWND_H__
+#ifndef __NETSHELL_STATWND_H__
+#define __NETSHELL_STATWND_H__
 
 #include <glib.h>
 #include <gtk/gtk.h>

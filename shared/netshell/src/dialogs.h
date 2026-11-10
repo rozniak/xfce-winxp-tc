@@ -38,10 +38,4 @@ GtkWidget* wintc_wlan_unsecured_dialog_new(
     const gchar* ssid
 );
 
-void wintc_net_repair_connection(
-    WinTCNetDevice* device,
-    const gchar*    connection_name,
-    GtkWidget*      parent
-);
-
 #endif

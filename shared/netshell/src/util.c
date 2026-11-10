@@ -5,7 +5,7 @@
 #include <wintc/exec.h>
 
 #include "../public/device.h"
-#include "util.h"
+#include "../public/util.h"
 
 //
 // STATIC DATA
@@ -350,11 +350,11 @@ void wintc_net_ensure_styles(void)
 
     gtk_css_provider_load_from_resource(
         css_net,
-        "/uk/oddmatics/wintc/taskband/net.css"
+        "/uk/oddmatics/wintc/netshell/net.css"
     );
     gtk_css_provider_load_from_resource(
         css_net_p,
-        "/uk/oddmatics/wintc/taskband/net_p.css"
+        "/uk/oddmatics/wintc/netshell/net_p.css"
     );
 
     gtk_style_context_add_provider_for_screen(

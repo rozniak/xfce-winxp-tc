@@ -5,9 +5,10 @@
 #include <wintc/shlang.h>
 
 #include "../public/device.h"
+#include "../public/dialogs.h"
 #include "../public/statwnd.h"
+#include "../public/util.h"
 #include "dialogs.h"
-#include "util.h"
 
 //
 // PRIVATE CONSTANTS
@@ -239,7 +240,7 @@ static void wintc_net_status_window_init(
 
     builder =
         gtk_builder_new_from_resource(
-            "/uk/oddmatics/wintc/taskband/net-statwnd.ui"
+            "/uk/oddmatics/wintc/netshell/net-statwnd.ui"
         );
 
     wintc_lc_builder_preprocess_widget_text(builder);

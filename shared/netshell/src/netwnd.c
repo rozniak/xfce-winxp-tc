@@ -7,8 +7,8 @@
 
 #include "../public/device.h"
 #include "../public/netwnd.h"
+#include "../public/util.h"
 #include "dialogs.h"
-#include "util.h"
 
 //
 // PRIVATE CONSTANTS
@@ -294,7 +294,7 @@ static void wintc_wlan_networks_window_init(
 
     builder =
         gtk_builder_new_from_resource(
-            "/uk/oddmatics/wintc/taskband/wlan-netwnd.ui"
+            "/uk/oddmatics/wintc/netshell/wlan-netwnd.ui"
         );
 
     wintc_lc_builder_preprocess_widget_text(builder);
@@ -535,7 +535,7 @@ static void wintc_wlan_networks_window_add_task_group(
 
     builder =
         gtk_builder_new_from_resource(
-            "/uk/oddmatics/wintc/taskband/wlan-tasks.ui"
+            "/uk/oddmatics/wintc/netshell/wlan-tasks.ui"
         );
 
     wintc_builder_get_objects(
@@ -566,7 +566,7 @@ static void wintc_wlan_networks_window_add_task_group(
 
         builder =
             gtk_builder_new_from_resource(
-                "/uk/oddmatics/wintc/taskband/wlan-tasks.ui"
+                "/uk/oddmatics/wintc/netshell/wlan-tasks.ui"
             );
 
         wintc_builder_get_objects(
@@ -723,7 +723,7 @@ static GtkWidget* wintc_wlan_networks_window_create_row(
 
     builder =
         gtk_builder_new_from_resource(
-            "/uk/oddmatics/wintc/taskband/wlan-netitem.ui"
+            "/uk/oddmatics/wintc/netshell/wlan-netitem.ui"
         );
 
     wintc_builder_get_objects(

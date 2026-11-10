@@ -58,6 +58,7 @@ wintc-exec-->bt,rt-->libwintc-exec
 wintc-launch-->bt-->NULL
 wintc-launch-->rt-->wintc-launch
 wintc-msgina-->bt,rt-->libwintc-msgina
+wintc-netshell-->bt,rt-->libwintc-netshell
 wintc-registry-->bt,rt-->libwintc-registry
 wintc-setupapi-->bt,rt-->libwintc-setupapi
 wintc-shcommon-->bt,rt-->libwintc-shcommon

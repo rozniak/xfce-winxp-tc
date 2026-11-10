@@ -1,10 +1,10 @@
-#ifndef __NET_UTIL_H__
-#define __NET_UTIL_H__
+#ifndef __NETSHELL_UTIL_H__
+#define __NETSHELL_UTIL_H__
 
 #include <glib.h>
 #include <gtk/gtk.h>
 
-#include "../public/device.h"
+#include "device.h"
 
 //
 // PUBLIC DEFINES

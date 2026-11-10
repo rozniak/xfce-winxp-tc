@@ -10,7 +10,7 @@
     Same defaults as NetworkManager's network-control: the user sitting at
     the machine may switch adapters on and off and renew leases
   -->
-  <action id="uk.co.oddmatics.wintc.taskband.network-control">
+  <action id="uk.co.oddmatics.wintc.netshell.network-control">
     <description>Change network connections</description>
     <message>Authentication is required to change network connections</message>
     <defaults>

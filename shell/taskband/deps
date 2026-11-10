@@ -12,6 +12,7 @@ bt,rt:upower-glib
 bt,rt:wintc-comctl
 bt,rt:wintc-comgtk
 bt,rt:wintc-exec
+bt,rt:wintc-netshell
 bt,rt:wintc-shcommon
 bt,rt:wintc-shelldpa
 bt,rt:wintc-shellext

@@ -1,5 +1,5 @@
-#ifndef __NET_DEVICE_H__
-#define __NET_DEVICE_H__
+#ifndef __NETSHELL_DEVICE_H__
+#define __NETSHELL_DEVICE_H__
 
 #include <gio/gio.h>
 #include <glib.h>

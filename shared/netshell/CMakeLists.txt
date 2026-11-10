@@ -33,12 +33,14 @@ add_library(
     public/device.h
     src/dialogs.c
     src/dialogs.h
+    public/dialogs.h
     src/netwnd.c
     public/netwnd.h
+    src/resources.c
     src/statwnd.c
     public/statwnd.h
     src/util.c
-    src/util.h
+    public/util.h
 )
 
 # We prefer to use NetworkManager, except on FreeBSD which does not have it and

@@ -1,0 +1,6 @@
+
+/** Bold default item in the tray context menu */
+menuitem.wintc-default-item label
+{
+    font-weight: bold;
+}

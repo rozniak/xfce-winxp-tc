@@ -7,6 +7,7 @@
 #include <wintc/shlang.h>
 
 #include "../public/device.h"
+#include "../public/dialogs.h"
 #include "dialogs.h"
 
 //
@@ -114,7 +115,7 @@ GtkWidget* wintc_wlan_key_dialog_new(
         net_dialog_new_from_resource(
             parent,
             title,
-            "/uk/oddmatics/wintc/taskband/wlan-keydlg.ui",
+            "/uk/oddmatics/wintc/netshell/wlan-keydlg.ui",
             &builder
         );
 
@@ -245,7 +246,7 @@ GtkWidget* wintc_wlan_progress_dialog_new(
         net_dialog_new_from_resource(
             parent,
             title,
-            "/uk/oddmatics/wintc/taskband/wlan-progdlg.ui",
+            "/uk/oddmatics/wintc/netshell/wlan-progdlg.ui",
             &builder
         );
 
@@ -274,7 +275,7 @@ GtkWidget* wintc_wlan_progress_dialog_new(
     GError*    error  = NULL;
     GdkPixbuf* pixbuf =
         gdk_pixbuf_new_from_resource(
-            "/uk/oddmatics/wintc/taskband/wlan-connect.png",
+            "/uk/oddmatics/wintc/netshell/wlan-connect.png",
             &error
         );
 
@@ -399,7 +400,7 @@ GtkWidget* wintc_wlan_unsecured_dialog_new(
         net_dialog_new_from_resource(
             parent,
             title,
-            "/uk/oddmatics/wintc/taskband/wlan-opendlg.ui",
+            "/uk/oddmatics/wintc/netshell/wlan-opendlg.ui",
             &builder
         );
 
@@ -463,7 +464,7 @@ void wintc_net_repair_connection(
         net_dialog_new_from_resource(
             parent ? wintc_widget_get_toplevel_window(parent) : NULL,
             title,
-            "/uk/oddmatics/wintc/taskband/net-repairdlg.ui",
+            "/uk/oddmatics/wintc/netshell/net-repairdlg.ui",
             &builder
         );
 

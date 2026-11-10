@@ -24,7 +24,7 @@
 #include <wintc/comgtk.h>
 
 #include "../../public/device.h"
-#include "../util.h"
+#include "../../public/util.h"
 #include "backend.h"
 #include "wpactrl.h"
 

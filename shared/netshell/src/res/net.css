@@ -101,9 +101,3 @@
 {
     margin: 6px 10px 10px 10px;
 }
-
-/** Bold default item in the tray context menu */
-menuitem.wintc-default-item label
-{
-    font-weight: bold;
-}
