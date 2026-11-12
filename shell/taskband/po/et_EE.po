@@ -32,8 +32,8 @@ msgstr ""
 msgid "Click here to begin"
 msgstr "Alustamiseks klõpsake siin"
 
-msgid "Close"
-msgstr "Sule"
+msgid "Exit        Alt+F4"
+msgstr "Sule        Alt+F4"
 
 msgid "Connect To"
 msgstr "Loo ühendus"

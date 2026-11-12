@@ -260,6 +260,17 @@
                             <property name="position">2</property>
                           </packing>
                         </child>
+                        <child>
+                          <object class="GtkImage">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="file">/usr/share/themes/Windows XP style (Blue)/Resources/composed/pan_right_arrow.png</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">False</property>
+                          </packing>
+                        </child>
                       </object>
                     </child>
                     <style>
@@ -528,6 +539,17 @@
                             <property name="expand">True</property>
                             <property name="fill">True</property>
                             <property name="position">2</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkImage">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="file">/usr/share/themes/Windows XP style (Blue)/Resources/composed/pan_right_arrow.png</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">False</property>
                           </packing>
                         </child>
                       </object>

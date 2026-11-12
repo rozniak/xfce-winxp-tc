@@ -46,3 +46,12 @@ menuitem.start-all-programs > box
 {
     font-size: 0pt;
 }
+
+menu menuitem arrow.right {
+    color: transparent;
+    background-image: url("file:///usr/share/themes/Windows%20XP%20style%20(Blue)/Resources/composed/pan_right_arrow.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    min-width: 10px;
+    min-height: 10px;
+}

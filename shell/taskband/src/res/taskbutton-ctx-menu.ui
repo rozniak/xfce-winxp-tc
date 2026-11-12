@@ -8,25 +8,25 @@
   <menu id="menu-model">
     <section>
       <item>
-        <attribute name="label">Restore</attribute>
+        <attribute name="label" translatable="yes">Restore</attribute>
         <attribute name="icon">window-restore-symbolic</attribute>
         <attribute name="action">window-manager.restore</attribute>
       </item>
       
       <item>
-        <attribute name="label">Minimize</attribute>
+        <attribute name="label" translatable="yes">Minimize</attribute>
         <attribute name="icon">window-minimize-symbolic</attribute>
         <attribute name="action">window-manager.minimize</attribute>
       </item>
       <item>
-        <attribute name="label">Maximize</attribute>
+        <attribute name="label" translatable="yes">Maximize</attribute>
         <attribute name="icon">window-maximize-symbolic</attribute>
         <attribute name="action">window-manager.maximize</attribute>
       </item>
     </section>
     <section>
       <item>
-        <attribute name="label">Exit        Alt+F4</attribute>
+        <attribute name="label" translatable="yes">Exit        Alt+F4</attribute>
         <attribute name="icon">window-close-symbolic</attribute>
         <attribute name="action">window-manager.exit</attribute>
       </item>

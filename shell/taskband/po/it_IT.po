@@ -33,8 +33,8 @@ msgstr ""
 msgid "Click here to begin"
 msgstr "Fare clic per iniziare."
 
-msgid "Close"
-msgstr "Chiudi"
+msgid "Exit        Alt+F4"
+msgstr "Chiudi        Alt+F4"
 
 msgid "Connect To"
 msgstr "Connetti a"
@@ -112,7 +112,8 @@ msgstr "Apre il browser Internet."
 
 msgid "Opens your e-mail program so you can send or read a message."
 msgstr ""
-"Apre il programma di posta elettronica per l'invio o la lettura dei messaggi."
+"Apre il programma di posta elettronica per l'invio o la lettura dei "
+"messaggi."
 
 msgid ""
 "Provides options for closing your programs and logging off, or for leaving "
