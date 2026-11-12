@@ -32,8 +32,8 @@ msgstr ""
 msgid "Click here to begin"
 msgstr "Začnite kliknutím sem."
 
-msgid "Close"
-msgstr "Zavrieť"
+msgid "Exit        Alt+F4"
+msgstr "Zavrieť        Alt+F4"
 
 msgid "Connect To"
 msgstr "Pripojenie"
@@ -77,7 +77,8 @@ msgstr ""
 "ostatných služieb technickej podpory."
 
 msgid "Opens a program, folder, document, or Web site."
-msgstr "Spustí program alebo otvorí priečinok, dokument alebo webovú lokalitu."
+msgstr ""
+"Spustí program alebo otvorí priečinok, dokument alebo webovú lokalitu."
 
 msgid ""
 "Opens a window where you can pick search options and work with search "

@@ -32,8 +32,8 @@ msgstr ""
 msgid "Click here to begin"
 msgstr "לחץ כאן כדי להתחיל"
 
-msgid "Close"
-msgstr "סגור"
+msgid "Exit        Alt+F4"
+msgstr "סגור        Alt+F4"
 
 msgid "Connect To"
 msgstr "התחבר אל"
