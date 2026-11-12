@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <menu id="menu">
+    <section>
+      <item>
+        <attribute name="action">notif.enable</attribute>
+        <attribute name="label">Enable</attribute>
+      </item>
+    </section>
+
+    <section>
+      <item>
+        <attribute name="action">notif.open-connections</attribute>
+        <attribute name="label">Open Networks Connections</attribute>
+      </item>
+    </section>
+  </menu>
+</interface>

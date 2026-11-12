@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <menu id="menu">
+    <section>
+      <item>
+        <attribute name="action">notif.disable</attribute>
+        <attribute name="label">Disable</attribute>
+      </item>
+      <item>
+        <attribute name="action">notif.status</attribute>
+        <attribute name="label">Status</attribute>
+      </item>
+      <item>
+        <attribute name="action">notif.repair</attribute>
+        <attribute name="label">Repair</attribute>
+      </item>
+    </section>
+
+    <section>
+      <item>
+        <attribute name="action">notif.firewall</attribute>
+        <attribute name="label">Change Windows Firewall settings</attribute>
+      </item>
+    </section>
+
+    <section>
+      <item>
+        <attribute name="action">notif.open-connections</attribute>
+        <attribute name="label">Open Networks Connections</attribute>
+      </item>
+    </section>
+  </menu>
+</interface>

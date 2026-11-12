@@ -20,6 +20,18 @@
 #define NET_DEFAULT_ITEM_CSS_CLASS "wintc-default-item"
 
 //
+// PRIVATE ENUMS
+//
+enum
+{
+    CTX_MENU_NET_CONNECTED,
+    CTX_MENU_NET_LAN_DISCONNECTED,
+    CTX_MENU_NET_WLAN_DISCONNECTED,
+    CTX_MENU_NET_DISABLED,
+    N_CTX_MENUS
+};
+
+//
 // PRIVATE STRUCTURES
 //
 
@@ -240,13 +252,7 @@ struct _WinTCNotificationNetwork
 
     // UI
     //
-    GtkWidget* menu_connected;
-    GtkWidget* menu_disabled;
-    GtkWidget* menu_lan_disconnected;
-    GtkWidget* menu_wlan_disconnected;
-    GtkWidget* item_status;
-    GtkWidget* item_view_networks;
-    GtkWidget* sep_view_networks;
+    GtkWidget* menus[N_CTX_MENUS];
 
     GSimpleActionGroup* action_group;
     WinTCNetAdapter*    menu_adapter;
@@ -285,8 +291,6 @@ static void wintc_notification_network_init(
     WinTCNotificationNetwork* self
 )
 {
-    GtkBuilder* builder;
-
     // Apply stylesheet for the notification
     //
     GtkCssProvider* css = gtk_css_provider_new();
@@ -302,63 +306,45 @@ static void wintc_notification_network_init(
         GTK_STYLE_PROVIDER_PRIORITY_FALLBACK
     );
 
-    // Set up the context menus
+    // Set up action group
     //
-    builder =
-        gtk_builder_new_from_resource(
-            "/uk/oddmatics/wintc/taskband/menu-tray-net.ui"
-        );
-
-    wintc_builder_get_objects(
-        builder,
-        "menu-connected",         &(self->menu_connected),
-        "menu-disabled",          &(self->menu_disabled),
-        "menu-lan-disconnected",  &(self->menu_lan_disconnected),
-        "menu-wlan-disconnected", &(self->menu_wlan_disconnected),
-        "item-status",            &(self->item_status),
-        "item-view-networks",     &(self->item_view_networks),
-        "sep-view-networks",      &(self->sep_view_networks),
-        NULL
-    );
-
-    g_object_ref_sink(self->menu_connected);
-    g_object_ref_sink(self->menu_disabled);
-    g_object_ref_sink(self->menu_lan_disconnected);
-    g_object_ref_sink(self->menu_wlan_disconnected);
-
-    g_object_unref(builder);
-
-    self->action_group = g_simple_action_group_new();
+    GSimpleActionGroup* action_group = g_simple_action_group_new();
 
     g_action_map_add_action_entries(
-        G_ACTION_MAP(self->action_group),
+        G_ACTION_MAP(action_group),
         S_ACTIONS,
         G_N_ELEMENTS(S_ACTIONS),
         self
     );
 
-    GtkWidget* menus[] = {
-        self->menu_connected,
-        self->menu_disabled,
-        self->menu_lan_disconnected,
-        self->menu_wlan_disconnected
+    // Set up the context menus
+    //
+    static const gchar* s_menu_xml[N_CTX_MENUS] = {
+        "/uk/oddmatics/wintc/taskband/menunetc.ui",
+        "/uk/oddmatics/wintc/taskband/menunetd.ui",
+        "/uk/oddmatics/wintc/taskband/menunetw.ui",
+        "/uk/oddmatics/wintc/taskband/menunetx.ui"
     };
-
-    for (gsize i = 0; i < G_N_ELEMENTS(menus); i++)
+    for (gint i = 0; i < N_CTX_MENUS; i++)
     {
+        GtkBuilder* builder =
+            gtk_builder_new_from_resource(s_menu_xml[i]);
+
+        GMenuModel* model =
+            G_MENU_MODEL(gtk_builder_get_object(builder, "menu"));
+
+        self->menus[i] = gtk_menu_new_from_model(model);
+
         gtk_widget_insert_action_group(
-            menus[i],
-            "net",
-            G_ACTION_GROUP(self->action_group)
+            self->menus[i],
+            "notif",
+            G_ACTION_GROUP(action_group)
         );
+
+        g_object_unref(builder);
     }
 
-    // Status is what a click on a connected icon does, so it's in bold
-    //
-    wintc_widget_add_style_class(
-        self->item_status,
-        NET_DEFAULT_ITEM_CSS_CLASS
-    );
+    g_object_unref(action_group);
 }
 
 //
@@ -454,23 +440,15 @@ static void wintc_notification_network_dispose(
         network->spare_icon = NULL;
     }
 
-    GtkWidget** menus[] = {
-        &(network->menu_connected),
-        &(network->menu_disabled),
-        &(network->menu_lan_disconnected),
-        &(network->menu_wlan_disconnected)
-    };
-
-    for (gsize i = 0; i < G_N_ELEMENTS(menus); i++)
+    for (gint i = 0; i < N_CTX_MENUS; i++)
     {
-        if (*(menus[i]))
+        if (network->menus[i])
         {
-            gtk_widget_destroy(*(menus[i]));
-            g_clear_object(menus[i]);
+            gtk_widget_destroy(network->menus[i]);
+            g_clear_object(&(network->menus[i]));
         }
     }
 
-    g_clear_object(&(network->action_group));
     g_clear_object(&(network->client));
 
     (G_OBJECT_CLASS(wintc_notification_network_parent_class))
@@ -672,21 +650,23 @@ static void wintc_notification_network_popup_menu(
     //
     if (state == WINTC_NET_STATE_DISABLED)
     {
-        menu = network->menu_disabled;
+        menu = network->menus[CTX_MENU_NET_DISABLED];
     }
     else if (net_state_has_status(state))
     {
-        menu = network->menu_connected;
+        menu = network->menus[CTX_MENU_NET_CONNECTED];
 
-        gtk_widget_set_visible(network->item_view_networks, wireless);
-        gtk_widget_set_visible(network->sep_view_networks,  wireless);
+        // FIXME: Not possible with GMenuModel
+        // 
+        //gtk_widget_set_visible(network->item_view_networks, wireless);
+        //gtk_widget_set_visible(network->sep_view_networks,  wireless);
     }
     else
     {
         menu =
             wireless ?
-                network->menu_wlan_disconnected :
-                network->menu_lan_disconnected;
+                network->menus[CTX_MENU_NET_WLAN_DISCONNECTED] :
+                network->menus[CTX_MENU_NET_LAN_DISCONNECTED];
     }
 
     struct
@@ -728,10 +708,10 @@ static void wintc_notification_network_remove_adapter(
 
     if (network->menu_adapter == adapter)
     {
-        gtk_menu_popdown(GTK_MENU(network->menu_connected));
-        gtk_menu_popdown(GTK_MENU(network->menu_disabled));
-        gtk_menu_popdown(GTK_MENU(network->menu_lan_disconnected));
-        gtk_menu_popdown(GTK_MENU(network->menu_wlan_disconnected));
+        for (gint i = 0; i < N_CTX_MENUS; i++)
+        {
+            gtk_menu_popdown(GTK_MENU(network->menus[i]));
+        }
 
         network->menu_adapter = NULL;
     }

@@ -3,6 +3,11 @@
     <gresource prefix="/uk/oddmatics/wintc/taskband">
         <file>menu-tray-net.ui</file>
         <file>tray-net.css</file>
+        <file>menunetc.ui</file>
+        <file>menunetd.ui</file>
+        <file>menunetw.ui</file>
+        <file>menunetx.ui</file>
+
         <file>personal-menu.ui</file>
         <file>start-button.ui</file>
         <file>start-menu.css</file>
