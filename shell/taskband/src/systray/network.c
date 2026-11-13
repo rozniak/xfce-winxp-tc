@@ -308,10 +308,10 @@ static void wintc_notification_network_init(
 
     // Set up action group
     //
-    GSimpleActionGroup* action_group = g_simple_action_group_new();
+    self->action_group = g_simple_action_group_new();
 
     g_action_map_add_action_entries(
-        G_ACTION_MAP(action_group),
+        G_ACTION_MAP(self->action_group),
         S_ACTIONS,
         G_N_ELEMENTS(S_ACTIONS),
         self
@@ -325,6 +325,7 @@ static void wintc_notification_network_init(
         "/uk/oddmatics/wintc/taskband/menunetw.ui",
         "/uk/oddmatics/wintc/taskband/menunetx.ui"
     };
+
     for (gint i = 0; i < N_CTX_MENUS; i++)
     {
         GtkBuilder* builder =
@@ -338,13 +339,11 @@ static void wintc_notification_network_init(
         gtk_widget_insert_action_group(
             self->menus[i],
             "notif",
-            G_ACTION_GROUP(action_group)
+            G_ACTION_GROUP(self->action_group)
         );
 
         g_object_unref(builder);
     }
-
-    g_object_unref(action_group);
 }
 
 //
@@ -449,6 +448,7 @@ static void wintc_notification_network_dispose(
         }
     }
 
+    g_clear_object(&(network->action_group));
     g_clear_object(&(network->client));
 
     (G_OBJECT_CLASS(wintc_notification_network_parent_class))
