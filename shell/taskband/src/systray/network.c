@@ -90,28 +90,29 @@ static void wintc_notification_network_sync_devices(
     WinTCNotificationNetwork* network
 );
 
-static void net_adapter_do_default_action(
+static void wintc_net_adapter_do_default_action(
     WinTCNetAdapter* adapter
 );
-static void net_adapter_show_networks(
+static void wintc_net_adapter_show_networks(
     WinTCNetAdapter* adapter
 );
-static void net_adapter_show_status(
+static void wintc_net_adapter_show_status(
     WinTCNetAdapter* adapter
 );
-static void net_adapter_update(
+static void wintc_net_adapter_update(
     WinTCNetAdapter* adapter
 );
-static void net_adapter_update_icon(
+static void wintc_net_adapter_update_icon(
     WinTCNetAdapter* adapter
+);
+
+static gboolean wintc_net_state_has_status(
+    WinTCNetState state
 );
 
 static gint net_compare_devices(
     gconstpointer a,
     gconstpointer b
-);
-static gboolean net_state_has_status(
-    WinTCNetState state
 );
 
 static void action_disable(
@@ -612,7 +613,7 @@ static void wintc_notification_network_add_adapter(
         adapter->connection_name
     );
 
-    net_adapter_update(adapter);
+    wintc_net_adapter_update(adapter);
 }
 
 static WinTCNetAdapter* wintc_notification_network_find_adapter(
@@ -652,7 +653,7 @@ static void wintc_notification_network_popup_menu(
     {
         menu = network->menus[CTX_MENU_NET_DISABLED];
     }
-    else if (net_state_has_status(state))
+    else if (wintc_net_state_has_status(state))
     {
         menu = network->menus[CTX_MENU_NET_CONNECTED];
 
@@ -676,7 +677,7 @@ static void wintc_notification_network_popup_menu(
     } action_states[] = {
         { "disable",          state != WINTC_NET_STATE_DISABLED             },
         { "enable",           state == WINTC_NET_STATE_DISABLED             },
-        { "status",           net_state_has_status(state)                   },
+        { "status",           wintc_net_state_has_status(state)                   },
         { "repair",           wintc_net_device_is_connected(adapter->device) },
         { "view-networks",    wireless                                      },
         { "firewall",         wintc_net_tool_exists("gufw")                 },
@@ -788,13 +789,9 @@ static void wintc_notification_network_sync_devices(
 
     // Remove adapters that went away...
     //
-    GList* iter = network->adapters;
-
-    while (iter)
+    for (GList* iter = network->adapters; iter; iter = iter->next)
     {
         WinTCNetAdapter* adapter = (WinTCNetAdapter*) iter->data;
-
-        iter = iter->next;
 
         if (!g_ptr_array_find(devices, adapter->device, NULL))
         {
@@ -827,15 +824,15 @@ static void wintc_notification_network_sync_devices(
     g_ptr_array_free(shown, TRUE);
 }
 
-static void net_adapter_do_default_action(
+static void wintc_net_adapter_do_default_action(
     WinTCNetAdapter* adapter
 )
 {
     WinTCNetState state = wintc_net_device_get_state(adapter->device);
 
-    if (net_state_has_status(state))
+    if (wintc_net_state_has_status(state))
     {
-        net_adapter_show_status(adapter);
+        wintc_net_adapter_show_status(adapter);
         return;
     }
 
@@ -843,7 +840,7 @@ static void net_adapter_do_default_action(
     {
         if (state != WINTC_NET_STATE_DISABLED)
         {
-            net_adapter_show_networks(adapter);
+            wintc_net_adapter_show_networks(adapter);
         }
 
         return;
@@ -863,7 +860,7 @@ static void net_adapter_do_default_action(
     }
 }
 
-static void net_adapter_show_networks(
+static void wintc_net_adapter_show_networks(
     WinTCNetAdapter* adapter
 )
 {
@@ -891,7 +888,7 @@ static void net_adapter_show_networks(
     wintc_focus_window(GTK_WINDOW(adapter->wnd_networks));
 }
 
-static void net_adapter_show_status(
+static void wintc_net_adapter_show_status(
     WinTCNetAdapter* adapter
 )
 {
@@ -921,7 +918,7 @@ static void net_adapter_show_status(
     wintc_focus_window(GTK_WINDOW(adapter->wnd_status));
 }
 
-static void net_adapter_update(
+static void wintc_net_adapter_update(
     WinTCNetAdapter* adapter
 )
 {
@@ -955,7 +952,7 @@ static void net_adapter_update(
         g_clear_handle_id(&(adapter->id_anim), g_source_remove);
     }
 
-    net_adapter_update_icon(adapter);
+    wintc_net_adapter_update_icon(adapter);
 
     // Tooltip, as in XP:
     //   Wireless Network Connection (linksys)
@@ -968,7 +965,7 @@ static void net_adapter_update(
     //
     GString* tooltip = g_string_new(adapter->connection_name);
     gboolean active  =
-        net_state_has_status(state) &&
+        wintc_net_state_has_status(state) &&
         state != WINTC_NET_STATE_DISCONNECTING;
 
     if (adapter->kind == WINTC_NET_DEVICE_KIND_WIRELESS)
@@ -978,12 +975,12 @@ static void net_adapter_update(
 
         if (active && active_network)
         {
-            g_string_append_printf(tooltip, " (%s)", active_network->ssid);
-
             gchar* speed =
                 wintc_net_speed_to_text(
                     wintc_net_device_get_speed(adapter->device)
                 );
+
+            g_string_append_printf(tooltip, " (%s)", active_network->ssid);
 
             g_string_append_c(tooltip, '\n');
             g_string_append_printf(tooltip, _("Speed: %s"), speed);
@@ -1059,7 +1056,7 @@ static void net_adapter_update(
     g_string_free(tooltip, TRUE);
 }
 
-static void net_adapter_update_icon(
+static void wintc_net_adapter_update_icon(
     WinTCNetAdapter* adapter
 )
 {
@@ -1096,6 +1093,24 @@ static void net_adapter_update_icon(
     adapter->icon_names = icon_names;
 }
 
+static gboolean wintc_net_state_has_status(
+    WinTCNetState state
+)
+{
+    switch (state)
+    {
+        case WINTC_NET_STATE_CONNECTING:
+        case WINTC_NET_STATE_ACQUIRING:
+        case WINTC_NET_STATE_CONNECTED:
+        case WINTC_NET_STATE_LIMITED:
+        case WINTC_NET_STATE_DISCONNECTING:
+            return TRUE;
+
+        default:
+            return FALSE;
+    }
+}
+
 static gint net_compare_devices(
     gconstpointer a,
     gconstpointer b
@@ -1122,24 +1137,6 @@ static gint net_compare_devices(
     }
 
     return index_a < index_b ? -1 : 1;
-}
-
-static gboolean net_state_has_status(
-    WinTCNetState state
-)
-{
-    switch (state)
-    {
-        case WINTC_NET_STATE_CONNECTING:
-        case WINTC_NET_STATE_ACQUIRING:
-        case WINTC_NET_STATE_CONNECTED:
-        case WINTC_NET_STATE_LIMITED:
-        case WINTC_NET_STATE_DISCONNECTING:
-            return TRUE;
-
-        default:
-            return FALSE;
-    }
 }
 
 //
@@ -1231,7 +1228,7 @@ static void action_status(
 
     WINTC_RETURN_IF_FAIL(network->menu_adapter);
 
-    net_adapter_show_status(network->menu_adapter);
+    wintc_net_adapter_show_status(network->menu_adapter);
 }
 
 static void action_view_networks(
@@ -1244,7 +1241,7 @@ static void action_view_networks(
 
     WINTC_RETURN_IF_FAIL(network->menu_adapter);
 
-    net_adapter_show_networks(network->menu_adapter);
+    wintc_net_adapter_show_networks(network->menu_adapter);
 }
 
 static void on_client_devices_changed(
@@ -1289,7 +1286,7 @@ static void on_device_activity_changed(
     gpointer user_data
 )
 {
-    net_adapter_update_icon((WinTCNetAdapter*) user_data);
+    wintc_net_adapter_update_icon((WinTCNetAdapter*) user_data);
 }
 
 static void on_device_state_changed(
@@ -1297,7 +1294,7 @@ static void on_device_state_changed(
     gpointer user_data
 )
 {
-    net_adapter_update((WinTCNetAdapter*) user_data);
+    wintc_net_adapter_update((WinTCNetAdapter*) user_data);
 }
 
 static void on_icon_theme_changed(
@@ -1313,7 +1310,7 @@ static void on_icon_theme_changed(
 
         adapter->icon_names = NULL;
 
-        net_adapter_update_icon(adapter);
+        wintc_net_adapter_update_icon(adapter);
     }
 }
 
@@ -1335,7 +1332,7 @@ static gboolean on_notif_icon_button_press_event(
     switch (event->button)
     {
         case GDK_BUTTON_PRIMARY:
-            net_adapter_do_default_action(adapter);
+            wintc_net_adapter_do_default_action(adapter);
             return TRUE;
 
         case GDK_BUTTON_SECONDARY:
@@ -1356,7 +1353,7 @@ static void on_status_window_view_networks(
     gpointer user_data
 )
 {
-    net_adapter_show_networks((WinTCNetAdapter*) user_data);
+    wintc_net_adapter_show_networks((WinTCNetAdapter*) user_data);
 }
 
 static gboolean on_timeout_anim(
@@ -1368,7 +1365,7 @@ static gboolean on_timeout_anim(
     adapter->anim_step =
         (adapter->anim_step + 1) % G_N_ELEMENTS(S_ACQUIRING_FRAMES);
 
-    net_adapter_update_icon(adapter);
+    wintc_net_adapter_update_icon(adapter);
 
     return G_SOURCE_CONTINUE;
 }
