@@ -6,6 +6,7 @@
 #include <wintc/shlang.h>
 
 #include "../public/device.h"
+#include "../public/icons.h"
 #include "../public/netwnd.h"
 #include "../public/util.h"
 #include "dialogs.h"

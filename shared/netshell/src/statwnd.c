@@ -6,6 +6,7 @@
 
 #include "../public/device.h"
 #include "../public/dialogs.h"
+#include "../public/icons.h"
 #include "../public/statwnd.h"
 #include "../public/util.h"
 #include "dialogs.h"

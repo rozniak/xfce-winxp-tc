@@ -34,6 +34,7 @@ add_library(
     src/dialogs.c
     src/dialogs.h
     public/dialogs.h
+    public/icons.h
     src/netwnd.c
     public/netwnd.h
     src/resources.c
