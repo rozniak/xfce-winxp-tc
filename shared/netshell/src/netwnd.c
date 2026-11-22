@@ -8,6 +8,7 @@
 #include "../public/device.h"
 #include "../public/icons.h"
 #include "../public/netwnd.h"
+#include "../public/strings.h"
 #include "../public/util.h"
 #include "dialogs.h"
 

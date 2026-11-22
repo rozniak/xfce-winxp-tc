@@ -40,6 +40,8 @@ add_library(
     src/resources.c
     src/statwnd.c
     public/statwnd.h
+    src/strings.c
+    public/strings.h
     src/util.c
     public/util.h
 )

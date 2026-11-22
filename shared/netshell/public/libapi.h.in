@@ -7,6 +7,7 @@
 #include "@LIB_HEADER_DIR@/icons.h"
 #include "@LIB_HEADER_DIR@/netwnd.h"
 #include "@LIB_HEADER_DIR@/statwnd.h"
+#include "@LIB_HEADER_DIR@/strings.h"
 #include "@LIB_HEADER_DIR@/util.h"
 
 #endif
