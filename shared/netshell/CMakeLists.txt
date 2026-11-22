@@ -30,10 +30,12 @@ wintc_compile_resources()
 add_library(
     libwintc-netshell
     public/client.h
+    src/device.c
     public/device.h
     src/dialogs.c
     src/dialogs.h
     public/dialogs.h
+    src/icons.c
     public/icons.h
     src/netwnd.c
     public/netwnd.h
@@ -43,7 +45,9 @@ add_library(
     src/strings.c
     public/strings.h
     src/util.c
-    public/util.h
+    src/util.h
+    src/tool.c
+    public/tool.h
 )
 
 # We prefer to use NetworkManager, except on FreeBSD which does not have it and

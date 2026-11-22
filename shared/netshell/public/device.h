@@ -196,6 +196,14 @@ gboolean wintc_net_device_action_finish(
     GError**        error
 );
 
+void wintc_wlan_network_free(
+    WinTCWlanNetwork* network
+);
+gint wintc_wlan_network_compare(
+    gconstpointer a,
+    gconstpointer b
+);
+
 void wintc_net_ip_info_free(
     WinTCNetIpInfo* info
 );

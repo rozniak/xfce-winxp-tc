@@ -9,8 +9,9 @@
 #include "../public/icons.h"
 #include "../public/statwnd.h"
 #include "../public/strings.h"
-#include "../public/util.h"
+#include "../public/tool.h"
 #include "dialogs.h"
+#include "util.h"
 
 //
 // PRIVATE CONSTANTS
