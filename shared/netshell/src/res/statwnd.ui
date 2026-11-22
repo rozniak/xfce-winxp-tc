@@ -21,6 +21,8 @@
             <property name="visible">True</property>
             <property name="can-focus">False</property>
             <property name="orientation">vertical</property>
+            <property name="valign">GTK_ALIGN_FILL</property>
+            <property name="vexpand">True</property>
 
             <child>
               <object class="GtkFrame">
@@ -165,6 +167,10 @@
                   </object>
                 </child>
               </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+              </packing>
             </child>
 
             <child>
@@ -301,6 +307,10 @@
                   </object>
                 </child>
               </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+              </packing>
             </child>
 
             <child>
@@ -407,7 +417,7 @@
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
                         <property name="hexpand">True</property>
-                        <property name="xalign">0.0</property>
+                        <property name="xalign">1.0</property>
                       </object>
                       <packing>
                         <property name="left-attach">2</property>
@@ -432,7 +442,7 @@
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
                         <property name="selectable">True</property>
-                        <property name="xalign">0.0</property>
+                        <property name="xalign">1.0</property>
                       </object>
                       <packing>
                         <property name="left-attach">2</property>
@@ -456,7 +466,7 @@
                       <object class="GtkLabel" id="label-subnet-mask">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
-                        <property name="xalign">0.0</property>
+                        <property name="xalign">1.0</property>
                       </object>
                       <packing>
                         <property name="left-attach">2</property>
@@ -480,7 +490,7 @@
                       <object class="GtkLabel" id="label-gateway">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
-                        <property name="xalign">0.0</property>
+                        <property name="xalign">1.0</property>
                       </object>
                       <packing>
                         <property name="left-attach">2</property>
@@ -492,7 +502,6 @@
                       <object class="GtkBox">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
-                        <property name="halign">end</property>
                         <property name="orientation">horizontal</property>
 
                         <child>
@@ -503,6 +512,10 @@
                             <property name="use-underline">True</property>
                           </object>
                         </child>
+
+                        <style>
+                          <class name="wintc-button-box" />
+                        </style>
                       </object>
                       <packing>
                         <property name="left-attach">1</property>
@@ -546,6 +559,10 @@
                     <property name="valign">start</property>
                   </object>
                 </child>
+
+                <style>
+                  <class name="wintc-button-box" />
+                </style>
               </object>
             </child>
 

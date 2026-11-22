@@ -4,7 +4,7 @@
         <file>net.css</file>
         <file>net_p.css</file>
         <file>net-repairdlg.ui</file>
-        <file>net-statwnd.ui</file>
+        <file>statwnd.ui</file>
         <file>wlan-connect.png</file>
         <file>wlan-keydlg.ui</file>
         <file>wlan-netitem.ui</file>

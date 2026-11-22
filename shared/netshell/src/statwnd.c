@@ -239,11 +239,22 @@ static void wintc_net_status_window_init(
     gtk_window_set_position(GTK_WINDOW(self), GTK_WIN_POS_CENTER);
     gtk_window_set_resizable(GTK_WINDOW(self), FALSE);
 
+    gtk_widget_set_size_request(
+        GTK_WIDGET(self),
+        360,
+        420
+    );
+    gtk_window_set_default_size(
+        GTK_WINDOW(self),
+        360,
+        420
+    );
+
     wintc_widget_add_style_class(GTK_WIDGET(self), "wintc-net-status");
 
     builder =
         gtk_builder_new_from_resource(
-            "/uk/oddmatics/wintc/netshell/net-statwnd.ui"
+            "/uk/oddmatics/wintc/netshell/statwnd.ui"
         );
 
     wintc_lc_builder_preprocess_widget_text(builder);
