@@ -476,6 +476,11 @@ static void window_manager_update_text(
     const gchar* new_text =
         wintc_wndmgmt_window_get_name(window_manager->managed_window);
 
+    if (window_manager->button == NULL)
+    {
+        return;
+    }
+
     gtk_label_set_text(
         window_manager->button_text,
         new_text
