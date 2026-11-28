@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <object class="GtkBox" id="main-box">
+    <property name="visible">True</property>
+    <property name="orientation">vertical</property>
+
+    <child>
+      <object class="GtkLabel">
+        <property name="visible">True</property>
+        <property name="label" translatable="yes">Network Connection Details:</property>
+        <property name="xalign">0.0</property>
+
+        <style>
+          <class name="wintc-mb-md" />
+        </style>
+      </object>
+    </child>
+
+    <child>
+      <object class="GtkScrolledWindow">
+        <property name="visible">True</property>
+        <property name="overlay-scrolling">False</property>
+
+        <child>
+          <object class="GtkTreeView" id="tree-view">
+            <property name="visible">True</property>
+          </object>
+        </child>
+
+        <style>
+          <class name="wintc-frame-3d-opt" />
+          <class name="wintc-mb-lg" />
+        </style>
+      </object>
+      <packing>
+        <property name="expand">True</property>
+        <property name="fill">True</property>
+      </packing>
+    </child>
+
+    <child>
+      <object class="GtkSeparator">
+        <property name="visible">True</property>
+        <property name="orientation">horizontal</property>
+
+        <style>
+          <class name="wintc-mb-md" />
+          <class name="wintc-mt-lg" />
+        </style>
+      </object>
+    </child>
+
+    <child>
+      <object class="GtkBox">
+        <property name="visible">True</property>
+        <property name="orientation">horizontal</property>
+
+        <child>
+          <object class="GtkButton" id="button-close">
+            <property name="visible">True</property>
+            <property name="label" translatable="yes">Close</property>
+          </object>
+          <packing>
+            <property name="pack-type">end</property>
+          </packing>
+        </child>
+
+        <style>
+          <class name="wintc-button-box" />
+        </style>
+      </object>
+    </child>
+
+    <style>
+      <class name="wintc-mb-lg" />
+      <class name="wintc-ml-lg" />
+      <class name="wintc-mr-lg" />
+      <class name="wintc-mt-lg" />
+    </style>
+  </object>
+</interface>

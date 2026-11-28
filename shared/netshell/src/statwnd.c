@@ -110,11 +110,6 @@ static void on_device_state_changed(
     WinTCNetDevice* device,
     gpointer        user_data
 );
-static void on_dialog_details_response(
-    GtkDialog* self,
-    gint       response_id,
-    gpointer   user_data
-);
 static gboolean on_timeout_update(
     gpointer user_data
 );
@@ -531,13 +526,13 @@ static void wintc_net_status_window_show_details(
         const gchar* property;
         const gchar* value;
     } rows[] = {
-        { _("Physical Address"), hwaddr                                   },
-        { _("IP Address"),       info->address ? info->address : ""       },
-        { _("Subnet Mask"),      mask                                     },
-        { _("Default Gateway"),  info->gateway ? info->gateway : ""       },
+        { _("Physical Address"), hwaddr                                     },
+        { _("IP Address"),       info->address ? info->address : ""         },
+        { _("Subnet Mask"),      mask                                       },
+        { _("Default Gateway"),  info->gateway ? info->gateway : ""         },
         { _("DHCP Server"),      info->dhcp_server ? info->dhcp_server : "" },
-        { _("Lease Obtained"),   obtained ? obtained : ""                 },
-        { _("Lease Expires"),    expires  ? expires  : ""                 }
+        { _("Lease Obtained"),   obtained ? obtained : ""                   },
+        { _("Lease Expires"),    expires  ? expires  : ""                   }
     };
 
     for (gsize i = 0; i < G_N_ELEMENTS(rows); i++)
@@ -598,9 +593,25 @@ static void wintc_net_status_window_show_details(
 
     // Build the dialog
     //
-    GtkWidget* tree_view = gtk_tree_view_new_with_model(GTK_TREE_MODEL(store));
+    GtkBuilder* builder =
+        gtk_builder_new_from_resource("/uk/oddmatics/wintc/netshell/dlgif.ui");
 
-    g_object_unref(store);
+    GtkWidget* button_close;
+    GtkWidget* main_box;
+    GtkWidget* tree_view;
+    
+    wintc_builder_get_objects(
+        builder,
+        "button-close", &button_close,
+        "main-box",     &main_box,
+        "tree-view",    &tree_view,
+        NULL
+    );
+
+    gtk_tree_view_set_model(
+        GTK_TREE_VIEW(tree_view),
+        GTK_TREE_MODEL(store)
+    );
 
     gtk_tree_view_insert_column_with_attributes(
         GTK_TREE_VIEW(tree_view),
@@ -619,30 +630,20 @@ static void wintc_net_status_window_show_details(
         NULL
     );
 
-    GtkWidget* scrolled = gtk_scrolled_window_new(NULL, NULL);
+    // Construct dialog window
+    //
+    wnd->dialog_details = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 
-    gtk_scrolled_window_set_shadow_type(
-        GTK_SCROLLED_WINDOW(scrolled),
-        GTK_SHADOW_IN
-    );
-    gtk_widget_set_size_request(scrolled, 320, 240);
-    gtk_container_add(GTK_CONTAINER(scrolled), tree_view);
-
-    wnd->dialog_details =
-        gtk_dialog_new_with_buttons(
-            _("Network Connection Details"),
-            GTK_WINDOW(wnd),
-            GTK_DIALOG_DESTROY_WITH_PARENT,
-            wintc_lc_get_control_text(WINTC_CTLTXT_CLOSE, WINTC_PUNC_NONE),
-            GTK_RESPONSE_CLOSE,
-            NULL
-        );
-
-    g_object_add_weak_pointer(
-        G_OBJECT(wnd->dialog_details),
-        (gpointer*) &(wnd->dialog_details)
+    gtk_container_add(
+        GTK_CONTAINER(wnd->dialog_details),
+        main_box
     );
 
+    gtk_window_set_default_size(
+        GTK_WINDOW(wnd->dialog_details),
+        340,
+        320
+    );
     gtk_window_set_icon_name(
         GTK_WINDOW(wnd->dialog_details),
         gtk_window_get_icon_name(GTK_WINDOW(wnd))
@@ -651,31 +652,31 @@ static void wintc_net_status_window_show_details(
         GTK_WINDOW(wnd->dialog_details),
         TRUE
     );
-
-    GtkWidget* box_content =
-        gtk_dialog_get_content_area(GTK_DIALOG(wnd->dialog_details));
-    GtkWidget* label_heading =
-        gtk_label_new(_("Network Connection Details:"));
-
-    gtk_label_set_xalign(GTK_LABEL(label_heading), 0.0f);
-
-    wintc_widget_add_style_class(label_heading, "wintc-mb-sm");
-    wintc_widget_add_style_class(scrolled,      "wintc-mb-md");
-    wintc_widget_add_style_class(box_content,   "wintc-ml-md");
-    wintc_widget_add_style_class(box_content,   "wintc-mr-md");
-    wintc_widget_add_style_class(box_content,   "wintc-mt-md");
-
-    gtk_box_pack_start(GTK_BOX(box_content), label_heading, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(box_content), scrolled,      TRUE,  TRUE,  0);
+    gtk_window_set_resizable(
+        GTK_WINDOW(wnd->dialog_details),
+        FALSE
+    );
+    gtk_window_set_title(
+        GTK_WINDOW(wnd->dialog_details),
+        _("Network Connection Details")
+    );
 
     g_signal_connect(
-        wnd->dialog_details,
-        "response",
-        G_CALLBACK(on_dialog_details_response),
+        button_close,
+        "clicked",
+        G_CALLBACK(wintc_button_close_window_on_clicked),
         NULL
     );
 
+    g_object_add_weak_pointer(
+        G_OBJECT(wnd->dialog_details),
+        (gpointer*) &(wnd->dialog_details)
+    );
+
     gtk_widget_show_all(wnd->dialog_details);
+
+    g_object_unref(builder);
+    g_object_unref(store);
 }
 
 static void wintc_net_status_window_update(
@@ -990,15 +991,6 @@ static void on_device_state_changed(
 )
 {
     wintc_net_status_window_update(WINTC_NET_STATUS_WINDOW(user_data));
-}
-
-static void on_dialog_details_response(
-    GtkDialog* self,
-    WINTC_UNUSED(gint response_id),
-    WINTC_UNUSED(gpointer user_data)
-)
-{
-    gtk_widget_destroy(GTK_WIDGET(self));
 }
 
 static gboolean on_timeout_update(
